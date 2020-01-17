@@ -1,0 +1,8 @@
+providers:
+  emu:
+    url: http://${PAVICS_FQDN}:8888/wps
+    title: Emu
+    public: true
+    c4i: false
+    type: wps
+    sync_type: wps

@@ -1,0 +1,93 @@
+#!/bin/sh
+# Deploy tutorial notebooks to JupyterHub instance under folder
+# tutorial-notebooks.
+#
+# Notebooks are made read-only to prevent one user changing them and affect
+# other users.
+#
+# Same notebooks as tested by Jenkins and same notebooks as the Binder
+# https://mybinder.org/v2/gh/Ouranosinc/PAVICS-e2e-workflow-tests/master.
+#
+# This is meant to be run on the same host running PAVICS.
+#
+# Logs to /var/log/PAVICS/notebookdeploy.log, re-use existing logrotate.
+
+
+if [ -z "$DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME" ]; then
+    # dupe with pavics-compose.sh
+    DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME=jupyterhub_user_persistence
+fi
+
+LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
+exec >>$LOG_FILE 2>&1
+
+cleanup_on_exit() {
+    rm -rfv "$TMPDIR"
+    echo "
+notebookdeploy finished START_TIME=$START_TIME
+notebookdeploy finished   END_TIME=`date -Isecond`"
+}
+
+trap cleanup_on_exit EXIT
+
+NOTEBOOK_DIR_MNT="/notebook_dir"
+TUTORIAL_NOTEBOOKS_DIR="tutorial-notebooks"
+if [ -z "$WORKFLOW_TESTS_BRANCH" ]; then
+    # when testing, override this
+    WORKFLOW_TESTS_BRANCH="master"
+fi
+
+START_TIME="`date -Isecond`"
+echo "==========
+notebookdeploy START_TIME=$START_TIME"
+
+set -x
+
+TMPDIR="`mktemp -d -t notebookdeploy.XXXXXXXXXXXX`"
+
+cd $TMPDIR
+mkdir $TUTORIAL_NOTEBOOKS_DIR
+cd $TUTORIAL_NOTEBOOKS_DIR
+
+wget --quiet https://raw.githubusercontent.com/Ouranosinc/PAVICS-e2e-workflow-tests/$WORKFLOW_TESTS_BRANCH/downloadrepos
+chmod a+x downloadrepos
+
+wget --quiet https://raw.githubusercontent.com/Ouranosinc/PAVICS-e2e-workflow-tests/$WORKFLOW_TESTS_BRANCH/default_build_params
+
+wget --quiet https://raw.githubusercontent.com/Ouranosinc/PAVICS-e2e-workflow-tests/$WORKFLOW_TESTS_BRANCH/binder/reorg-notebooks
+chmod a+x reorg-notebooks
+
+# same sequence as Binder, same layout as Binder
+wget --quiet --output-document - https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/archive/master.tar.gz | tar xz
+./downloadrepos
+./reorg-notebooks
+mv -v PAVICS-e2e-workflow-tests-master/notebooks/*.ipynb ./
+rm -rfv PAVICS-e2e-workflow-tests-master
+rm -rfv downloadrepos default_build_params reorg-notebooks
+
+TMP_SCRIPT="$TMPDIR/deploy-notebook"
+cat << __EOF__ > $TMP_SCRIPT
+#!/bin/sh -x
+
+cd $NOTEBOOK_DIR_MNT
+rm -rf $TUTORIAL_NOTEBOOKS_DIR
+cp -rv /$TUTORIAL_NOTEBOOKS_DIR $TUTORIAL_NOTEBOOKS_DIR
+# make read-only
+chown -R root:root $TUTORIAL_NOTEBOOKS_DIR
+__EOF__
+chmod a+x $TMP_SCRIPT
+
+docker pull bash
+docker run --rm \
+  --name deploy_tutorial_notebooks \
+  -u root \
+  -v $TMP_SCRIPT:/deploy-notebook:ro \
+  -v $TMPDIR/$TUTORIAL_NOTEBOOKS_DIR:/$TUTORIAL_NOTEBOOKS_DIR:ro \
+  -v $DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME:$NOTEBOOK_DIR_MNT:rw \
+  --entrypoint /deploy-notebook \
+  bash
+
+set +x
+
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4

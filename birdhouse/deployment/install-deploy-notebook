@@ -1,0 +1,37 @@
+#!/bin/sh
+# Script to deploy the automated unattended continuous deployment of tutorial
+# Jupyter notebooks.
+#
+# Will deploy:
+#
+# * cron job to hourly deploy the tutorial notebooks
+#   (/etc/cron.hourly/PAVICS-deploy-notebooks), update check frequency here
+#
+
+CRON_FILE="/etc/cron.hourly/PAVICS-deploy-notebooks"
+
+usage() {
+    echo "USAGE: $0 pavics-checkout"
+}
+
+if [ -z "$1" ]; then
+    echo "ERROR: please supply mandatory arguments" 1>&2
+    usage
+    exit 2
+fi
+
+
+REPO_ROOT="`realpath "$1"`"; shift  # path to PAVICS checkout
+
+if [ ! -e "$REPO_ROOT/birdhouse/deployment/trigger-deploy-notebook" ]; then
+    echo "ERROR: bad/wrong pavics-checkout '$REPO_ROOT' " 1>&2
+    usage
+    exit 2
+fi
+
+
+set -x
+
+sudo cp -v $REPO_ROOT/birdhouse/deployment/trigger-deploy-notebook $CRON_FILE
+sudo chown root:root $CRON_FILE
+sudo chmod 755 $CRON_FILE

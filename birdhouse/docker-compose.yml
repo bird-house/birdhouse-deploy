@@ -1,0 +1,372 @@
+version: "2.1"
+services:
+  proxy:
+    image: pavics/canarieapi:0.3.5
+    container_name: proxy
+    ports:
+      - "80:80"
+      - "443:${PROXY_SECURE_PORT}"
+      - "58094:8094"
+      - "58093:8093"
+      - "58091:8091"
+      - "58079:8079"
+      - "58086:8086"
+    volumes:
+      - ./config/proxy/conf.d:/etc/nginx/conf.d
+      - ./config/proxy/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/canarie-api/docker_configuration.py:/config/docker_configuration.py
+      - $SSL_CERTIFICATE:/etc/nginx/cert.pem
+      - wps_outputs:/pavics-data/wps_outputs
+      - ./config/canarie-api/entrypoint:/entrypoint:ro
+    environment:
+      CANARIE_API_CONFIG_FN: /config/docker_configuration.py
+    links:
+      - thredds
+    entrypoint: /entrypoint
+    restart: always
+
+  frontend:
+    image: pavics/pavics-frontend:1.0.5
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./config/frontend/frontend.env
+    restart: always
+
+  project-api:
+    image: pavics/pavics-project-api:0.9.0
+    container_name: project-api
+    environment:
+      POSTGRES_HOST: postgres
+    ports:
+      - "3005:3005"
+    links:
+      - postgres
+    env_file:
+      - ./config/postgres/credentials.env
+    restart: always
+
+  postgres:
+    image: postgres:9.6
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - /data/frontend_persist:/var/lib/postgresql/data/pgdata
+      - ./config/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./config/postgres/postgres-setup.sh:/postgres-setup.sh
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    env_file:
+      - ./config/postgres/credentials.env
+    restart: always
+
+  phoenix:
+    image: pavics/pyramid-phoenix:pavics-0.2.3
+    container_name: phoenix
+    environment:
+      HOSTNAME: $HOSTNAME
+      HTTP_PORT: 8081
+      HTTPS_PORT: 8443
+      OUTPUT_PORT: 38443
+    ports:
+      - "8081:8081"
+      - "8443:8443"
+      - "38443:38443"
+      - "9001:9001"
+    volumes:
+      - ./config/phoenix/custom.cfg:/opt/birdhouse/src/phoenix/custom.cfg
+      - $SSL_CERTIFICATE:/opt/birdhouse/etc/nginx/cert.pem
+    links:
+      - mongodb
+    depends_on:
+      - malleefowl
+      - flyingpigeon
+      - catalog
+      - proxy
+    restart: always
+
+  catalog:
+    image: pavics/pavics-datacatalog:0.6.11
+    container_name: catalog
+    ports:
+      - "8086:80"
+    volumes:
+      - ./config/catalog/catalog.cfg:/home/catalog.cfg
+      - wps_outputs:/var/www/html/wps_results
+    depends_on:
+      - postgres
+    restart: always
+
+  geoserver:
+    image: pavics/geoserver:stable
+    container_name: geoserver
+    ports:
+      - "8087:8080"
+    volumes:
+      - /data/geoserver:/opt/geoserver/data_dir
+      - ./config/geoserver/web.xml:/usr/local/tomcat/conf/web.xml
+    links:
+      - postgis
+    restart: always
+
+  malleefowl:
+    image: pavics/malleefowl:pavics-0.3.5
+    container_name: malleefowl
+    environment:
+      HOSTNAME: $HOSTNAME
+      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+      HTTP_PORT: 8091
+      HTTPS_PORT: 28091
+      OUTPUT_PORT: 38091
+    ports:
+      - "8091:8091"
+      - "28091:28091"
+      - "38091:38091"
+      - "48091:9001"
+    volumes:
+      - /data/datasets:/pavics-data
+      - ./config/malleefowl/custom.cfg:/opt/birdhouse/src/malleefowl/custom.cfg
+      - data:/opt/birdhouse/var/lib
+      - wps_outputs:/opt/birdhouse/var/lib/pywps/outputs
+    depends_on:
+      - postgres
+    restart: always
+
+  flyingpigeon:
+    image: birdhouse/flyingpigeon:1.5.1
+    container_name: flyingpigeon
+    environment:
+      - PYWPS_CFG=/wps.cfg
+    ports:
+      - "8093:8093"
+    volumes:
+      - ./config/flyingpigeon/wps.cfg:/wps.cfg
+      - wps_outputs:/data/wpsoutputs
+      - /tmp
+    depends_on:
+      - postgres
+    restart: always
+
+  finch:
+    image: birdhouse/finch:version-0.2.7
+    container_name: finch
+    environment:
+      HOSTNAME: $HOSTNAME
+      HTTP_PORT: 5000
+      PYWPS_CFG: /wps.cfg
+    ports:
+      - "8095:5000"
+    volumes:
+      - ./config/finch/wps.cfg:/wps.cfg
+      # - data:/opt/birdhouse/var/lib
+      - wps_outputs:/data/wpsoutputs
+      - /tmp
+    restart: always
+
+  raven:
+    image: pavics/raven:0.9.0
+    container_name: raven
+    ports:
+      - "8096:9099"
+    environment:
+      PYWPS_CFG: /wps.cfg
+    volumes:
+      - ./config/raven/wps.cfg:/wps.cfg
+      - wps_outputs:/data/wpsoutputs
+      - /tmp
+    restart: always
+
+  hummingbird:
+    image: pavics/hummingbird
+    container_name: hummingbird
+    environment:
+      HOSTNAME: $HOSTNAME
+      HTTP_PORT: 8097
+      HTTPS_PORT: 28097
+      OUTPUT_PORT: 38097
+    ports:
+      - "8097:8097"
+      - "28097:28097"
+      - "38097:38097"
+      - "48097:9001"
+    volumes:
+      - ./config/hummingbird/custom.cfg:/opt/birdhouse/src/hummingbird/custom.cfg
+      - data:/opt/birdhouse/var/lib
+      - wps_outputs:/opt/birdhouse/var/lib/pywps/outputs
+    depends_on:
+      - postgres
+    restart: always
+
+  solr:
+    image: pavics/solr:stable
+    container_name: solr
+    ports:
+      - "8983:8983"
+      - "48983:9001"
+    volumes_from:
+      - mongodb
+    restart: always
+
+  ncwms2:
+    image: pavics/ncwms2:stable
+    container_name: ncwms2
+    ports:
+      - "8080:8080"
+      - "48080:9001"
+    volumes:
+      - /data/datasets:/pavics-data
+      - wps_outputs:/pavics-data/wps_outputs
+      - ./config/ncwms2/custom.cfg:/opt/birdhouse/custom.cfg
+      - ./config/ncwms2/server.xml:/opt/birdhouse/eggs/birdhousebuilder.recipe.tomcat-0.2.9-py2.7.egg/birdhousebuilder/recipe/tomcat/server.xml
+    volumes_from:
+      - mongodb
+    restart: always
+
+  thredds:
+    image: unidata/thredds-docker:4.6.14
+    container_name: thredds
+    ports:
+      - "8083:8080"
+    env_file:
+      - ./config/thredds/thredds.env
+    environment:
+      # for reconstructing proper URL back to user when Thredds behind proxy
+      # because Twitcher eats the "Host" http header set by Nginx
+      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+    volumes:
+      - thredds_persistence:/usr/local/tomcat/content/thredds
+      - /data/datasets:/pavics-data
+      - wps_outputs:/pavics-data/wps_outputs
+      - ./config/thredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
+      - ./config/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
+      - ./config/thredds/wmsConfig.xml:/usr/local/tomcat/content/thredds/wmsConfig.xml:ro
+      - ./config/thredds/entrypointwrapper:/entrypointwrapper:ro
+    entrypoint: /entrypointwrapper
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080${TWITCHER_PROTECTED_PATH}/thredds/catalog.html"]
+
+  mongodb:
+    image: mongo:3.4.0
+    container_name: mongodb
+    # Mongodb crash with permission denied errors if the command is not overriden like this
+    command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
+    restart: always
+
+  postgis:
+    image: pavics/postgis:stable
+    container_name: postgis
+    restart: always
+
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/ubuntu/portainer:/data
+    ports:
+      - "9000:9000"
+    restart: always
+
+  magpie:
+    image: pavics/magpie:1.7.3
+    container_name: magpie
+    ports:
+      - "2001:2001"
+    environment:
+      TWITCHER_PROTECTED_URL: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}
+      # target directories to allow loading multiple config files of corresponding category
+      # each compose override should volume mount its files in the matching directories
+      MAGPIE_PROVIDERS_CONFIG_PATH: "/opt/local/src/magpie/config/providers"
+      MAGPIE_PERMISSIONS_CONFIG_PATH: "/opt/local/src/magpie/config/permissions"
+      MAGPIE_POSTGRES_HOST: postgres-magpie
+      FORWARDED_ALLOW_IPS: "*"
+    env_file:
+      - ./config/postgres-magpie/credentials.env
+    depends_on:
+      - postgres-magpie
+    links:
+      - postgres-magpie
+    volumes:
+      - ./config/postgres-magpie/credentials.env:/opt/local/src/magpie/env/postgres.env
+      - ./config/magpie/providers.cfg:/opt/local/src/magpie/config/providers/providers.cfg
+      - ./config/magpie/permissions.cfg:/opt/local/src/magpie/config/permissions/permissions.cfg
+      - ./config/magpie/magpie.ini:/opt/local/src/magpie/config/magpie.ini
+    restart: always
+
+  twitcher:
+    image: pavics/twitcher:magpie-1.7.3
+    container_name: twitcher
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./config/postgres-magpie/credentials.env
+    depends_on:
+      - postgres-magpie
+      - magpie
+    links:
+      - postgres-magpie
+    volumes:
+      - ./config/twitcher/twitcher.ini:/opt/birdhouse/src/twitcher/twitcher.ini
+    command: "pserve /opt/birdhouse/src/twitcher/twitcher.ini"
+    restart: always
+
+  postgres-magpie:
+    image: postgres:9.6
+    container_name: postgres-magpie
+    ports:
+      - "5433:5432"
+    env_file:
+      - ./config/postgres-magpie/credentials.env
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - /data/magpie_persist:/var/lib/postgresql/data/pgdata
+      - ./config/postgres-magpie/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    restart: always
+
+  jupyterhub:
+    image: pavics/jupyterhub:1.0-20190501
+    container_name: jupyterhub
+    hostname: jupyterhub
+    ports:
+      - "8800:8000"
+    environment:
+      #DOCKER_NOTEBOOK_IMAGE: jupyter/scipy-notebook:latest
+      DOCKER_NOTEBOOK_IMAGE: ${DOCKER_NOTEBOOK_IMAGE}
+      DOCKER_NETWORK_NAME: jupyterhub_network
+      DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME: ${DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME}
+      JUPYTERHUB_ADMIN_USERS: ${JUPYTERHUB_ADMIN_USERS}
+      JUPYTERHUB_USERS_PASS: ${JUPYTERHUB_USERS_PASS}
+    volumes:
+      - ./config/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
+      - ./config/jupyterhub/entrypoint:/entrypoint:ro
+      - ./config/jupyterhub/template_paths:/template_paths:ro
+      - jupyterhub_data_persistence:/persist:rw
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    # ensure Hub and Notebook servers are on the same network 'jupyterhub_network'
+    # the Hub and the rest of the stack are on network 'default'
+    networks:
+      - default
+      - jupyterhub_network
+    entrypoint: /entrypoint
+    restart: always
+
+# need external network so the folder name is not prefixed to network name
+networks:
+  jupyterhub_network:
+    external:
+      name: "jupyterhub_network"
+
+volumes:
+  data: {}
+  wps_outputs: {}
+  jupyterhub_data_persistence:
+    external:
+      name: jupyterhub_data_persistence
+  thredds_persistence:
+    external:
+      name: thredds_persistence
+# vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2

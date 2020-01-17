@@ -1,0 +1,28 @@
+import os
+import logging
+
+c.JupyterHub.bind_url = 'http://:8000/jupyter'
+c.JupyterHub.hub_ip = 'jupyterhub'
+
+c.JupyterHub.cookie_secret_file = '/persist/jupyterhub_cookie_secret'
+c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
+
+c.JupyterHub.template_paths = ['/template_paths']
+
+c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+c.DockerSpawner.image = os.environ['DOCKER_NOTEBOOK_IMAGE']
+c.DockerSpawner.use_internal_ip = True
+c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
+notebook_dir = '/notebook_dir'
+c.DockerSpawner.notebook_dir = notebook_dir
+c.DockerSpawner.volumes = { os.environ['DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME']: notebook_dir }
+c.DockerSpawner.default_url = '/lab'
+c.DockerSpawner.remove = True  # delete containers when servers are stopped
+${ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS}
+c.DockerSpawner.pull_policy = "always"  # for images not using pinned version
+c.DockerSpawner.debug = True
+c.JupyterHub.log_level = logging.DEBUG
+
+c.Spawner.debug = True
+
+c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}

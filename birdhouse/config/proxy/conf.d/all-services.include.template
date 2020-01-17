@@ -1,0 +1,92 @@
+    location / {
+        return 302 https://$host/jupyter/hub/login;
+    }
+
+    location /frontend/ {
+        proxy_pass http://${PAVICS_FQDN}:3000;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-Proto $real_scheme;
+    }
+
+    location /magpie/ {
+        proxy_pass http://${PAVICS_FQDN}:2001/;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-Proto $real_scheme;
+		include /etc/nginx/conf.d/cors.include;
+    }
+
+    location /twitcher/ {
+        proxy_pass http://${PAVICS_FQDN}:8000/;
+		proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-Proto $real_scheme;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location /thredds/ {
+	#return 302 /twitcher/ows/proxy$request_uri;
+	proxy_pass https://${PAVICS_FQDN}/twitcher/ows/proxy/thredds/;
+        # direct hit Thredds, bypassing twitcher, for debugging only
+        # proxy_pass http://thredds:8080/twitcher/ows/proxy/thredds/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $real_scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location /wpsoutputs/ {
+	alias /pavics-data/wps_outputs/;
+    }
+
+    location /geoserver/ {
+	proxy_pass http://${PAVICS_FQDN}:8087;
+	proxy_set_header Host $host;
+	proxy_set_header X-Forwarded-Proto $real_scheme;
+	proxy_set_header  Accept-Encoding "";
+	gzip_proxied any;
+	gzip on;
+	gzip_comp_level 1;
+	gzip_types application/json text/plain application/xml text/html;
+    }
+
+    location /ncWMS2/ {
+    #    proxy_pass http://${PAVICS_FQDN}:8080;
+    #	 proxy_set_header Host $host;
+    #	 proxy_set_header X-Forwarded-Proto $real_scheme;
+    #    include /etc/nginx/conf.d/cors.include;
+        return 302 /twitcher/ows/proxy$request_uri;
+    }
+
+    location /project-api/ {
+        proxy_pass http://${PAVICS_FQDN}:3005/;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-Proto $real_scheme;
+    }
+
+    location /portainer/ {
+        proxy_pass http://${PAVICS_FQDN}:9000/;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-Proto $real_scheme;
+    }
+
+    location /jupyter/ {
+        proxy_pass http://${PAVICS_FQDN}:8800/jupyter/;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $real_scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # websocket headers
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+    }
+
+    location /canarie/ {
+        proxy_pass http://127.0.0.1:2000;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-Proto $real_scheme;
+        proxy_set_header X-Script-Name /canarie;
+    }
+
+    location /doc {
+        return 302 ${DOC_URL};
+    }
+

@@ -1,0 +1,15 @@
+permissions:
+  - service: emu
+    permission: getcapabilities
+    group: anonymous
+    action: create
+
+  - service: emu
+    permission: describeprocess
+    group: anonymous
+    action: create
+
+  - service: emu
+    permission: execute
+    group: anonymous
+    action: create
