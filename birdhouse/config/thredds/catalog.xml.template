@@ -22,6 +22,9 @@
       <filter>
         <include wildcard="*.nc" />
         <include wildcard="*.ncml" />
+        <include wildcard="*.txt" />
+        <include wildcard="*.md" />
+        <include wildcard="*.rst" />
       </filter>
 
     </datasetScan>
