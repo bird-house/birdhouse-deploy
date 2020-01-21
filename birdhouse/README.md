@@ -19,6 +19,20 @@ This script will source the `env.local` file, apply the appropriate variable sub
 If the file `env.local` is somewhere else, symlink it here, next to
 `docker-compose.yml` because many scripts assume this location.
 
+To follow infrastructure-as-code, it is encouraged to source control the above
+`env.local` file and any override needed to customized this PAVICS deployment
+for your organization.  For an example of possible override, see how the [emu
+service](optional-components/emu/docker-compose-extra.yml)
+([README](optional-components/README.md)) can be optionally added to the
+deployment via the [override
+mechanism](https://docs.docker.com/compose/extends/).
+
+The automatic deployment is able to handle multiple repos so will trigger if
+this repo or your private-personalized-config repo changes, giving you
+automated continuous deployment.  See the continuous deployment setup section
+below and the variable `AUTODEPLOY_EXTRA_REPOS` in
+[`env.local.example`](env.local.example).
+
 To launch all the containers, use the following command:
 ```
 ./pavics-compose.sh up -d
