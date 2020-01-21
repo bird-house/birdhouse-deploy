@@ -100,7 +100,7 @@ if [ ! -f "$SSH_DEPLOY_KEY" ]; then
 fi
 
 if [ -f "$COMPOSE_DIR/docker-compose.override.yml" ]; then
-    echo "${GREEN}INFO:${NORMAL} docker-compose.override.yml found, you are deviating from the committed state"
+    echo "${YELLOW}WARNING:${NORMAL} docker-compose.override.yml found, should use EXTRA_CONF_DIRS in env.local instead"
 fi
 
 START_TIME="`date -Isecond`"
