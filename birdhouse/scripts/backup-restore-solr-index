@@ -37,7 +37,7 @@ if [ x"$MODE" = xbackup ]; then
     docker run --rm --name $BACKUP_CONTAINER_NAME \
         --volumes-from $SOLR_CONTAINER_NAME \
         -v $BACKUP_BASEDIR:/backup -w / bash \
-        tar czf "/backup/$BACKUP_FILENAME" data/solr/birdhouse/data/index/
+        tar czf "/backup/$BACKUP_FILENAME" data/solr/
 elif [ x"$MODE" = xrestore ]; then
     docker run --rm --name $BACKUP_CONTAINER_NAME \
         --volumes-from $SOLR_CONTAINER_NAME \
