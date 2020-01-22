@@ -27,7 +27,7 @@ service](optional-components/emu/docker-compose-extra.yml)
 deployment via the [override
 mechanism](https://docs.docker.com/compose/extends/).
 
-The automatic deployment is able to handle multiple repos so will trigger if
+The automatic deployment is able to handle multiple repos, so will trigger if
 this repo or your private-personalized-config repo changes, giving you
 automated continuous deployment.  See the continuous deployment setup section
 below and the variable `AUTODEPLOY_EXTRA_REPOS` in
