@@ -4,8 +4,9 @@
 #
 # "hostname.domain" will be used as PAVICS_FQDN in env.local file.
 #
-# If this combinabion of "hostname.domain" name do not exist on the DNS, look
-# at docker-compose.override.yml.example and also set it manually in your
+# If this combinabion of "hostname.domain" name do not exist on the DNS, use
+# the override mechanism https://docs.docker.com/compose/extends/ to add the
+# extra DNS entry and also set it manually in your
 # /etc/hosts file.
 hostname: mypavics
 domain: ouranos.ca

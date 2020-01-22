@@ -100,7 +100,7 @@ services:
     restart: always
 
   geoserver:
-    image: pavics/geoserver:stable
+    image: pavics/geoserver:2.9.3
     container_name: geoserver
     ports:
       - "8087:8080"
@@ -179,7 +179,7 @@ services:
     restart: always
 
   hummingbird:
-    image: pavics/hummingbird
+    image: pavics/hummingbird:0.5_dev
     container_name: hummingbird
     environment:
       HOSTNAME: $HOSTNAME
@@ -200,7 +200,7 @@ services:
     restart: always
 
   solr:
-    image: pavics/solr:stable
+    image: pavics/solr:5.2.1
     container_name: solr
     ports:
       - "8983:8983"
@@ -210,7 +210,7 @@ services:
     restart: always
 
   ncwms2:
-    image: pavics/ncwms2:stable
+    image: pavics/ncwms2:2.0.4
     container_name: ncwms2
     ports:
       - "8080:8080"
@@ -256,7 +256,7 @@ services:
     restart: always
 
   postgis:
-    image: pavics/postgis:stable
+    image: pavics/postgis:2.2
     container_name: postgis
     restart: always
 
