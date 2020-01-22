@@ -205,6 +205,8 @@ services:
     ports:
       - "8983:8983"
       - "48983:9001"
+    volumes:
+      - /data/solr:/data
     volumes_from:
       - mongodb
     restart: always
