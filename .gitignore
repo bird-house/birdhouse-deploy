@@ -1,0 +1,14 @@
+birdhouse/env.local
+birdhouse/certkey.pem
+birdhouse/cert.pem
+birdhouse/key.pem
+vagrant_variables.yml
+.vagrant/
+ubuntu-bionic-18.04-cloudimg-console.log
+.idea
+.vscode
+*.bak
+weaver/
+
+# vim temp files
+*.swp

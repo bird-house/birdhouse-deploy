@@ -1,0 +1,8 @@
+[server]
+outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs
+outputpath = /data/wpsoutputs
+
+[logging]
+level = DEBUG
+
+${EXTRA_PYWPS_CONFIG}

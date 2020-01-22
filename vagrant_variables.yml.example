@@ -1,0 +1,62 @@
+---
+# Ensure this combinabion of "hostname.domain" name really exist on the DNS of
+# the network you are bridging onto.
+#
+# "hostname.domain" will be used as PAVICS_FQDN in env.local file.
+#
+# If this combinabion of "hostname.domain" name do not exist on the DNS, use
+# the override mechanism https://docs.docker.com/compose/extends/ to add the
+# extra DNS entry and also set it manually in your
+# /etc/hosts file.
+hostname: mypavics
+domain: ouranos.ca
+
+# Set network bridge, else you'll simply be prompted on vagrant up.
+# network_bridge: enp0s25
+
+# Set hostip if you want to force an IP, useful to keep the same IP after each
+# VM destroy and recreate.
+# hostip: 1.2.3.4
+
+# Force a default gateway if networking issue (ex: VM in a different DMZ VLan).
+# default_gateway: 1.2.3.4
+
+# Datasets dirs on the host to be mounted read-only into the VM at the same
+# location, useful to avoid having to copy those gigantic netCDF files to the
+# VM disk.
+# Can use sshfs if the datasets are really large to avoid having to copy it
+# locally.  Ex:
+#   sshfs -o ro -o allow_other datahost:/mount/DATA /data/datasets
+#datasets_dirs:
+# - { srcdir: "/data/datasets", destdir: "/data/datasets" }
+# - { srcdir: "/data/datasets-priv", destdir: "/data/datasetsPrivate" }
+# - { srcdir: "C:/data/datasets", destdir: "/data/datasets" }
+
+# If you want to provide a SSL certificate yourself, name it 'certkey.pem' and
+# it won't be overriden, see vagrant-utils/configure-pavics.sh.  Otherwise one
+# will be generated automatically for you.
+
+# If you want to provide an env.local yourself, just create it and it won't be
+# overriden, see vagrant-utils/configure-pavics.sh for what values vagrant
+# expects and try to match it.  Otherwise one will be generated automatically
+# for you from the default values in env.local.example.
+
+# SSH deploy key to be used with the automated unattended deploy script.
+# Automated unattended deployment will be enabled if this deploy key is set.
+# If not set, no deploy key will be copied.
+# See creation and setup of this deploy key in birdhouse/deployment/deploy.sh.
+#
+# ssh_deploy_key: "~/.ssh/id_rsa_git_ssh_read_only"
+
+# Pagekite info to expose this vagrant box to the internet for collaborative
+# testing/debugging.  Using the example below, this box will be available at
+# SUB-NAME.pagekite.me
+#
+# kitename: NAME.pagekite.me
+# kitesecret: SECRET
+# kitesubdomain: SUB
+
+# VM Settings
+# memory: 8192
+# cpus: 2
+# disksize: '100GB'

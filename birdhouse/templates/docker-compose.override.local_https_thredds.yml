@@ -1,0 +1,19 @@
+version: '2'
+services:
+  thredds:
+    extra_hosts:
+      - "dummy.crim.ca:${LOCALHOST_IP}"
+    volumes:
+      - ${PATH_TO_LOCAL_NETCDF_FILES}:/pavics-data
+
+  proxy:
+    extra_hosts:
+      - "dummy.crim.ca:${LOCALHOST_IP}"
+
+  magpie:
+    extra_hosts:
+      - "dummy.crim.ca:${LOCALHOST_IP}"
+
+  twitcher:
+    extra_hosts:
+      - "dummy.crim.ca:${LOCALHOST_IP}"

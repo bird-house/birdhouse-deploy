@@ -1,0 +1,34 @@
+#!/bin/sh -x
+
+ACCOUNT_CONF="/etc/pagekite.d/10_account.rc"
+
+if [ -n "$KITENAME" -a -n "$KITESECRET" -a -n "$KITESUBDOMAIN" ]; then
+
+    DEBIAN_FRONTEND=noninteractive apt-get install --yes pagekite
+
+    cat <<EOF | tee "$ACCOUNT_CONF"
+kitename   = $KITENAME
+kitesecret = $KITESECRET
+EOF
+
+    cat <<EOF | tee /etc/pagekite.d/80_httpd.rc
+service_on = http:$KITESUBDOMAIN-@kitename : localhost:80 : @kitesecret
+EOF
+
+    systemctl restart pagekite
+    systemctl enable pagekite
+
+else
+
+    if dpkg -l pagekite; then
+        systemctl stop pagekite
+        systemctl disable pagekite
+    fi
+
+    if [ -f "$ACCOUNT_CONF" ]; then
+        rm -v "$ACCOUNT_CONF"
+    fi
+
+    # do not need to remove other configs files because without account info,
+    # nothing will work
+fi

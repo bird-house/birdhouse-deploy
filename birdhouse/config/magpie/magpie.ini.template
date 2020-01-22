@@ -1,0 +1,122 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+# From sample
+# https://github.com/Ouranosinc/Magpie/blob/master/config/magpie.ini
+###
+
+[composite:main]
+use = egg:Paste#urlmap
+/ = magpie_app
+#/api = api_app
+#/magpie/api = api_app
+
+[app:magpie_app]
+use = egg:magpie
+filter-with = urlprefix
+
+pyramid.reload_templates = false
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+pyramid.default_locale_name = en
+pyramid.includes = pyramid_tm ziggurat_foundations.ext.pyramid.sign_in ziggurat_foundations.ext.pyramid.get_user
+
+# magpie
+#
+#   other overridable variables available in magpie/constants.py
+#
+magpie.port = 2001
+magpie.url = http://localhost:2001
+magpie.max_restart = 5
+magpie.push_phoenix = true
+# This secret should be the same in Twitcher !
+magpie.secret = ${MAGPIE_SECRET}
+magpie.admin_user = ${MAGPIE_ADMIN_USERNAME}
+magpie.admin_password = ${MAGPIE_ADMIN_PASSWORD}
+
+# ziggurat
+ziggurat_foundations.model_locations.User = magpie.models:User
+ziggurat_foundations.sign_in.username_key = user_name
+ziggurat_foundations.sign_in.password_key = password
+ziggurat_foundations.sign_in.came_from_key = came_from
+ziggurat_foundations.sign_in.sign_in_pattern = /signin_internal
+ziggurat_foundations.sign_in.sign_out_pattern = /signout
+ziggurat_foundations.session_provider_callable = magpie.models:get_session_callable
+
+# github (login provider)
+github.client_id=${GITHUB_CLIENT_ID}
+github.client_secret=${GITHUB_CLIENT_SECRET}
+
+[app:api_app]
+use = egg:Paste#static
+document_root = %(here)s/ui/swagger
+
+[filter:urlprefix]
+use = egg:PasteDeploy#prefix
+# prefix must be adjusted according to 'MAGPIE_URL' / 'magpie.url'
+prefix = /magpie
+
+###
+# wsgi server configuration
+###
+
+[server:main]
+use = egg:gunicorn#main
+host = localhost
+port=2001
+timeout=10
+workers=3
+threads=4
+
+# used by magpie/alembic with symlink, %(here)s corresponds to this directory
+[alembic]
+script_location = %(here)s/../magpie/alembic
+#sqlalchemy.url = postgresql://postgres:postgres@localhost/magpie
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[loggers]
+keys = root, magpie, sqlalchemy, alembic
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+formatter = generic
+
+[logger_magpie]
+level = INFO
+handlers =
+qualname = magpie
+formatter = generic
+
+[logger_sqlalchemy]
+level = INFO
+handlers =
+qualname = sqlalchemy.engine
+formatter = generic
+
+[logger_alembic]
+level = INFO
+handlers =
+qualname = alembic
+formatter = generic
+
+[handler_console]
+class = StreamHandler
+args = (sys.stdout,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = [%(asctime)s] %(levelname)-10.10s [%(threadName)s][%(name)s] %(message)s
