@@ -23,10 +23,10 @@ EXISTING_CONTEXT_ROOT="thredds"
 WANTED_CONTEXT_ROOT="twitcher/ows/proxy/thredds"
 WANTED_CONTEXT_ROOT_WARFILE_NAME="twitcher#ows#proxy#thredds"
 
-if [ -d "$WEBAPPS_ROOT/$EXISTING_CONTEXT_ROOT" ]; then
-    mv "$WEBAPPS_ROOT/$EXISTING_CONTEXT_ROOT" "$WEBAPPS_ROOT/$WANTED_CONTEXT_ROOT_WARFILE_NAME"
-    sed -i "s@<param-value>$EXISTING_CONTEXT_ROOT</param-value>@<param-value>$WANTED_CONTEXT_ROOT</param-value>@g" "$WEBAPPS_ROOT/$WANTED_CONTEXT_ROOT_WARFILE_NAME/WEB-INF/web.xml"
-fi
+#if [ -d "$WEBAPPS_ROOT/$EXISTING_CONTEXT_ROOT" ]; then
+#    mv "$WEBAPPS_ROOT/$EXISTING_CONTEXT_ROOT" "$WEBAPPS_ROOT/$WANTED_CONTEXT_ROOT_WARFILE_NAME"
+#    sed -i "s@<param-value>$EXISTING_CONTEXT_ROOT</param-value>@<param-value>$WANTED_CONTEXT_ROOT</param-value>@g" "$WEBAPPS_ROOT/$WANTED_CONTEXT_ROOT_WARFILE_NAME/WEB-INF/web.xml"
+#fi
 
 
 # chain existing entrypoint
