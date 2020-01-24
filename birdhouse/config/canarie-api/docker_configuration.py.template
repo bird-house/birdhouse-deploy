@@ -88,7 +88,7 @@ SERVICES = {
             },
             'Thredds': {
                 'request': {
-                    'url': 'http://${PAVICS_FQDN}:8083/twitcher/ows/proxy/thredds/catalog.html'
+                    'url': 'http://${PAVICS_FQDN}:8083/thredds/catalog.html'
                 }
             },
             'Jupyter': {
