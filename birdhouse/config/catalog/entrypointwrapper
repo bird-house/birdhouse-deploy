@@ -1,0 +1,17 @@
+#!/bin/sh -x
+
+apt-get update
+apt-get install --yes curl
+
+cd /usr/local/lib/python2.7/dist-packages/threddsclient/
+
+ls -l client.py*
+
+rm -v client.pyc
+curl --silent https://raw.githubusercontent.com/bird-house/threddsclient/fa12c369d84b8d1acbf46514a0808cc69bec902e/threddsclient/client.py > client.py
+
+ls -l client.py*
+
+# Existing CMD from Dockerfile
+python /home/docker_configs.py && \
+    /etc/init.d/apache2 start && tail -f /dev/null

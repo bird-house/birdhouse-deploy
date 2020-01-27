@@ -95,8 +95,10 @@ services:
     volumes:
       - ./config/catalog/catalog.cfg:/home/catalog.cfg
       - wps_outputs:/var/www/html/wps_results
+      - ./config/catalog/entrypointwrapper:/entrypointwrapper:ro
     depends_on:
       - postgres
+    entrypoint: /entrypointwrapper
     restart: always
 
   geoserver:
