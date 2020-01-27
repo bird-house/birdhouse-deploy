@@ -17,6 +17,10 @@ cd /usr/local/lib/python2.7/dist-packages/pavics_datacatalog-0.6.11-py2.7.egg/pa
 perl -pe 's/logger.setLevel\(logging.INFO\)/logger.setLevel\(logging.DEBUG\)/' -i wps_pavicsearch.py
 rm -v wps_pavicsearch.pyc
 
+cd /usr/local/lib/python2.7/dist-packages/pavics
+rm -v catalog.pyc
+curl --silent https://raw.githubusercontent.com/Ouranosinc/pyPavics/19a10525441c9808ecae4799a6a573005ef1a37f/pavics/catalog.py > catalog.py
+
 # Existing CMD from Dockerfile
 cd /
 python /home/docker_configs.py && \
