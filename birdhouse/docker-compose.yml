@@ -98,6 +98,8 @@ services:
       - ./config/catalog/entrypointwrapper:/entrypointwrapper:ro
     depends_on:
       - postgres
+    links:
+      - thredds
     entrypoint: /entrypointwrapper
     restart: always
 

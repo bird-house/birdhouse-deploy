@@ -3,7 +3,7 @@ solr_host=http://${PAVICS_FQDN}:8983/solr/birdhouse/
 
 # Multiple thredds hosts can be given, comma separated
 # note: this URL is also used as prefix when comparing authorizations from magpie
-thredds_host=https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/thredds
+thredds_host=http://thredds:8080/thredds
 
 # Multiple esgf nodes can be given, comma separated
 esgf_nodes=https://esgf-node.llnl.gov/esg-search
