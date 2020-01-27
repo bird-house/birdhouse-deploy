@@ -4,13 +4,13 @@
          xmlns:xlink="http://www.w3.org/1999/xlink" >
 
     <service name="all" serviceType="Compound" base="" >
-        <service name="http" serviceType="HTTPServer" base="/twitcher/ows/proxy/thredds/fileServer/" />
-        <service name="odap" serviceType="OpenDAP" base="/twitcher/ows/proxy/thredds/dodsC/" />
-        <service name="ncml" serviceType="NCML" base="/twitcher/ows/proxy/thredds/ncml/"/>
-        <service name="uddc" serviceType="UDDC" base="/twitcher/ows/proxy/thredds/uddc/"/>
-        <service name="iso" serviceType="ISO" base="/twitcher/ows/proxy/thredds/iso/"/>
-        <service name="wcs" serviceType="WCS" base="/twitcher/ows/proxy/thredds/wcs/" />
-        <service name="wms" serviceType="WMS" base="/twitcher/ows/proxy/thredds/wms/" />
+        <service name="http" serviceType="HTTPServer" base="/thredds/fileServer/" />
+        <service name="odap" serviceType="OpenDAP" base="/thredds/dodsC/" />
+        <service name="ncml" serviceType="NCML" base="/thredds/ncml/"/>
+        <service name="uddc" serviceType="UDDC" base="/thredds/uddc/"/>
+        <service name="iso" serviceType="ISO" base="/thredds/iso/"/>
+        <service name="wcs" serviceType="WCS" base="/thredds/wcs/" />
+        <service name="wms" serviceType="WMS" base="/thredds/wms/" />
     </service>
 
     <datasetScan name="Birdhouse" ID="birdhouse" path="birdhouse" location="/pavics-data">
