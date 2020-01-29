@@ -12,12 +12,6 @@
 #
 # Logs to /var/log/PAVICS/notebookdeploy.log, re-use existing logrotate.
 
-
-if [ -z "$DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME" ]; then
-    # dupe with pavics-compose.sh
-    DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME=jupyterhub_user_persistence
-fi
-
 LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
 exec >>$LOG_FILE 2>&1
 
@@ -83,7 +77,7 @@ docker run --rm \
   -u root \
   -v $TMP_SCRIPT:/deploy-notebook:ro \
   -v $TMPDIR/$TUTORIAL_NOTEBOOKS_DIR:/$TUTORIAL_NOTEBOOKS_DIR:ro \
-  -v $DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME:$NOTEBOOK_DIR_MNT:rw \
+  -v "${JUPYTERHUB_USER_DATA_DIR}":$NOTEBOOK_DIR_MNT:rw \
   --entrypoint /deploy-notebook \
   bash
 

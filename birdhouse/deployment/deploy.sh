@@ -164,15 +164,6 @@ cd $COMPOSE_DIR
 # immediately cache the new notebook image for faster startup by JupyterHub
 docker pull $DOCKER_NOTEBOOK_IMAGE
 
-# deploy new README.ipynb to Jupyter instance
-docker run --rm --name deploy_README_ipynb \
-    -v $DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME:/notebook_dir \
-    -v $REPO_ROOT/docs/source/notebooks:/nb:ro \
-    -u root \
-    bash \
-    bash -c "cp -v /nb/README.ipynb /notebook_dir/.; \
-             chown root:root /notebook_dir/README.ipynb"
-
 set +x
 
 echo "

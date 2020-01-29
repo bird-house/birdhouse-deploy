@@ -248,7 +248,13 @@ services:
     entrypoint: /entrypointwrapper
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080${TWITCHER_PROTECTED_PATH}/thredds/catalog.html"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "http://localhost:8080${TWITCHER_PROTECTED_PATH}/thredds/catalog.html",
+        ]
 
   mongodb:
     image: mongo:3.4.0
@@ -339,13 +345,12 @@ services:
       #DOCKER_NOTEBOOK_IMAGE: jupyter/scipy-notebook:latest
       DOCKER_NOTEBOOK_IMAGE: ${DOCKER_NOTEBOOK_IMAGE}
       DOCKER_NETWORK_NAME: jupyterhub_network
-      DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME: ${DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME}
+      JUPYTERHUB_USER_DATA_DIR: ${JUPYTERHUB_USER_DATA_DIR}
       JUPYTERHUB_ADMIN_USERS: ${JUPYTERHUB_ADMIN_USERS}
-      JUPYTERHUB_USERS_PASS: ${JUPYTERHUB_USERS_PASS}
     volumes:
       - ./config/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
-      - ./config/jupyterhub/entrypoint:/entrypoint:ro
       - ./config/jupyterhub/template_paths:/template_paths:ro
+      - ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}
       - jupyterhub_data_persistence:/persist:rw
       - /var/run/docker.sock:/var/run/docker.sock:rw
     # ensure Hub and Notebook servers are on the same network 'jupyterhub_network'
@@ -353,7 +358,6 @@ services:
     networks:
       - default
       - jupyterhub_network
-    entrypoint: /entrypoint
     restart: always
 
 # need external network so the folder name is not prefixed to network name

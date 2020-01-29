@@ -1,8 +1,12 @@
 import os
 import logging
+import subprocess
 
 c.JupyterHub.bind_url = 'http://:8000/jupyter'
 c.JupyterHub.hub_ip = 'jupyterhub'
+
+c.JupyterHub.authenticator_class = 'jupyterhub_magpie_authenticator.MagpieAuthenticator'
+c.MagpieAuthenticator.magpie_url = "http://magpie:2001"
 
 c.JupyterHub.cookie_secret_file = '/persist/jupyterhub_cookie_secret'
 c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
@@ -10,12 +14,36 @@ c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
 c.JupyterHub.template_paths = ['/template_paths']
 
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+
+# JupyterHub requires a single-user instance of the Notebook server, so we
+# default to using the `start-singleuser.sh` script included in the
+# jupyter/docker-stacks *-notebook images as the Docker run command when
+# spawning containers.  Optionally, you can override the Docker run command
+# using the DOCKER_SPAWN_CMD environment variable.
+
+# spawn_cmd = os.environ.get('DOCKER_SPAWN_CMD', "jupyterhub-singleuser")
+
+# c.DockerSpawner.extra_create_kwargs.update({ 'command': 'jupyterhub-singleuser' })
+
 c.DockerSpawner.image = os.environ['DOCKER_NOTEBOOK_IMAGE']
 c.DockerSpawner.use_internal_ip = True
 c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
+
 notebook_dir = '/notebook_dir'
+host_user_data_dir = os.path.join(os.environ['JUPYTERHUB_USER_DATA_DIR'], "{username}")
+
 c.DockerSpawner.notebook_dir = notebook_dir
-c.DockerSpawner.volumes = { os.environ['DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME']: notebook_dir }
+c.DockerSpawner.volumes = { host_user_data_dir: notebook_dir }
+
+def create_dir_hook(spawner):
+    username = spawner.user.name
+    user_dir = os.path.join(os.environ['JUPYTERHUB_USER_DATA_DIR'], username)
+    if not os.path.exists(user_dir):
+        os.mkdir(user_dir, 0o755)
+    subprocess.call(["chown", "-R", "1000:1000", user_dir])
+    
+c.Spawner.pre_spawn_hook = create_dir_hook
+
 c.DockerSpawner.default_url = '/lab'
 c.DockerSpawner.remove = True  # delete containers when servers are stopped
 ${ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS}
