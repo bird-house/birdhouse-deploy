@@ -56,7 +56,7 @@ providers:
     sync_type: wps
 
   ${CATALOG_THREDDS_SERVICE}:
-    url: http://${PAVICS_FQDN}:8083/twitcher/ows/proxy/thredds
+    url: http://${PAVICS_FQDN}:8083/thredds
     title: Thredds
     public: true
     c4i: false
