@@ -355,6 +355,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:rw
     # ensure Hub and Notebook servers are on the same network 'jupyterhub_network'
     # the Hub and the rest of the stack are on network 'default'
+    links:
+      - magpie
     networks:
       - default
       - jupyterhub_network
