@@ -24,7 +24,7 @@ c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
 notebook_dir = '/notebook_dir'
 jupyterhub_data_dir = os.environ['JUPYTERHUB_USER_DATA_DIR']
 host_user_data_dir = join(jupyterhub_data_dir, "{username}")
-container_workspace_dir = join(notebook_dir, "workspace")
+container_workspace_dir = join(notebook_dir, "writable-workspace")
 
 c.DockerSpawner.notebook_dir = notebook_dir
 
