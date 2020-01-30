@@ -336,7 +336,7 @@ services:
     restart: always
 
   jupyterhub:
-    image: pavics/jupyterhub:1.0-20200130
+    image: pavics/jupyterhub:1.0.0-20200130
     container_name: jupyterhub
     hostname: jupyterhub
     ports:
