@@ -13,7 +13,7 @@ c.MagpieAuthenticator.magpie_url = "http://magpie:2001"
 c.JupyterHub.cookie_secret_file = '/persist/jupyterhub_cookie_secret'
 c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
 
-c.JupyterHub.template_paths = ['custom_templates']
+c.JupyterHub.template_paths = ['/custom_templates']
 
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 
