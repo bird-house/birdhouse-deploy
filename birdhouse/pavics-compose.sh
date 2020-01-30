@@ -88,6 +88,10 @@ if [ -z "$PAVICS_FQDN_PUBLIC" ]; then
   export PAVICS_FQDN_PUBLIC="$PAVICS_FQDN"
 fi
 
+if [ -z "$JUPYTERHUB_USER_DATA_DIR" ]; then
+  export JUPYTERHUB_USER_DATA_DIR="/data/jupyterhub_user_data"
+fi
+
 if [ "$ALLOW_UNSECURE_HTTP" = "True" ]; then
   export INCLUDE_FOR_PORT_80="include /etc/nginx/conf.d/all-services.include;"
 else
