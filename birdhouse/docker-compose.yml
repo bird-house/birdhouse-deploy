@@ -349,7 +349,7 @@ services:
       JUPYTERHUB_ADMIN_USERS: ${JUPYTERHUB_ADMIN_USERS}
     volumes:
       - ./config/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
-      - ./config/jupyterhub/template_paths:/template_paths:ro
+      - ./config/jupyterhub/custom_templates:/custom_templates:ro
       - ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}
       - jupyterhub_data_persistence:/persist:rw
       - /var/run/docker.sock:/var/run/docker.sock:rw

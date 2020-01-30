@@ -13,7 +13,7 @@ c.MagpieAuthenticator.magpie_url = "http://magpie:2001"
 c.JupyterHub.cookie_secret_file = '/persist/jupyterhub_cookie_secret'
 c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
 
-c.JupyterHub.template_paths = ['/template_paths']
+c.JupyterHub.template_paths = ['custom_templates']
 
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 
@@ -24,10 +24,11 @@ c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
 notebook_dir = '/notebook_dir'
 jupyterhub_data_dir = os.environ['JUPYTERHUB_USER_DATA_DIR']
 host_user_data_dir = join(jupyterhub_data_dir, "{username}")
+container_workspace_dir = join(notebook_dir, "workspace")
 
 c.DockerSpawner.notebook_dir = notebook_dir
 
-c.DockerSpawner.volumes = {host_user_data_dir: notebook_dir}
+c.DockerSpawner.volumes = {host_user_data_dir: container_workspace_dir}
 
 host_tutorial_notebooks_dir = join(jupyterhub_data_dir, "tutorial-notebooks")
 if os.path.exists(host_tutorial_notebooks_dir):
