@@ -127,9 +127,6 @@ if [[ $1 == "up" ]]; then
   # create externally so nothing will delete these data volume automatically
   docker volume create jupyterhub_data_persistence  # jupyterhub db and cookie secret
   docker volume create thredds_persistence  # logs, cache
-
-  # Create the path to contain user notebooks if it doesn't exist
-  mkdir -p "${JUPYTERHUB_USER_DATA_DIR}"
 fi
 
 COMPOSE_CONF_LIST="-f docker-compose.yml"
