@@ -31,6 +31,11 @@ fi
 
 . "$REPO_ROOT/birdhouse/common.env"
 
+if [ -f "$REPO_ROOT/birdhouse/env.local" ]; then
+    # allow override of JUPYTERHUB_USER_DATA_DIR
+    . "$REPO_ROOT/birdhouse/env.local"
+fi
+
 set -x
 
 sudo cat $REPO_ROOT/birdhouse/deployment/trigger-deploy-notebook | envsubst '${JUPYTERHUB_USER_DATA_DIR}' > $CRON_FILE

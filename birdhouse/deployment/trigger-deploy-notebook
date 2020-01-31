@@ -15,7 +15,8 @@
 if [ -z "$JUPYTERHUB_USER_DATA_DIR" ]; then
   # running script manually (not with cron) source env.local file.
   COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath -- "$0")")")"
-  . "$COMPOSE_DIR/env.local"
+  . "$COMPOSE_DIR/common.env"  # default JUPYTERHUB_USER_DATA_DIR
+  . "$COMPOSE_DIR/env.local"  # optional override JUPYTERHUB_USER_DATA_DIR
 fi
 
 LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
