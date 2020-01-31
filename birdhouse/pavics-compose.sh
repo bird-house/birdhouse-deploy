@@ -33,7 +33,6 @@ OPTIONAL_VARS='
   $PAVICS_FQDN_PUBLIC
   $INCLUDE_FOR_PORT_80
   $ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS
-  $JUPYTERHUB_USER_DATA_DIR
   $EXTRA_PYWPS_CONFIG
   $THREDDS_ORGANIZATION
   $GITHUB_CLIENT_ID
@@ -86,10 +85,6 @@ fi
 if [ -z "$PAVICS_FQDN_PUBLIC" ]; then
   # default value before instantiating template configs
   export PAVICS_FQDN_PUBLIC="$PAVICS_FQDN"
-fi
-
-if [ -z "$JUPYTERHUB_USER_DATA_DIR" ]; then
-  export JUPYTERHUB_USER_DATA_DIR="/data/jupyterhub_user_data"
 fi
 
 if [ "$ALLOW_UNSECURE_HTTP" = "True" ]; then

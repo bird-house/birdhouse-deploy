@@ -29,12 +29,7 @@ if [ ! -e "$REPO_ROOT/birdhouse/deployment/trigger-deploy-notebook" ]; then
     exit 2
 fi
 
-. "$REPO_ROOT/birdhouse/env.local"
-
-if [ -z "$JUPYTERHUB_USER_DATA_DIR" ]; then
-  # same as in pavics-compose.sh
-  export JUPYTERHUB_USER_DATA_DIR="/data/jupyterhub_user_data"
-fi
+. "$REPO_ROOT/birdhouse/common.env"
 
 set -x
 
