@@ -129,6 +129,9 @@ cd $COMPOSE_DIR
 
 . ./common.env
 
+# reload again after common.env since env.local can override common.env
+. $ENV_LOCAL_FILE
+
 # stop all to force reload any changed config that are volume-mount into the containers
 ./pavics-compose.sh stop
 
@@ -157,6 +160,10 @@ cd $COMPOSE_DIR
 
 # reload again after git pull because this file could be changed by the pull
 . ./common.env
+
+# reload again after common.env since env.local can override common.env
+# (ex: JUPYTERHUB_USER_DATA_DIR)
+. $ENV_LOCAL_FILE
 
 # restart everything, only changed containers will be destroyed and recreated
 ./pavics-compose.sh up -d
