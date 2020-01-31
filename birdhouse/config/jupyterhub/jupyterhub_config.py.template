@@ -2,7 +2,6 @@ import os
 from os.path import join
 import logging
 import subprocess
-from shutil import copy
 
 c.JupyterHub.bind_url = 'http://:8000/jupyter'
 c.JupyterHub.hub_ip = 'jupyterhub'
@@ -37,14 +36,14 @@ c.DockerSpawner.volumes = {host_user_data_dir: container_workspace_dir}
 host_tutorial_notebooks_dir = join(jupyterhub_data_dir, "tutorial-notebooks")
 if os.path.exists(host_tutorial_notebooks_dir):
     c.DockerSpawner.volumes[host_tutorial_notebooks_dir] = {
-        "bind": join(notebook_dir, "tutorial-notebooks"), 
+        "bind": join(notebook_dir, "tutorial-notebooks"),
         "mode": "ro"
     }
 
 readme = join(jupyterhub_data_dir, "README.ipynb")
 if os.path.exists(readme):
     c.DockerSpawner.volumes[readme] = {
-        "bind": join(notebook_dir, "README.ipynb"), 
+        "bind": join(notebook_dir, "README.ipynb"),
         "mode": "ro"
     }
 
@@ -56,7 +55,7 @@ def create_dir_hook(spawner):
         os.mkdir(user_dir, 0o755)
 
     subprocess.call(["chown", "-R", "1000:1000", user_dir])
-    
+
 c.Spawner.pre_spawn_hook = create_dir_hook
 
 c.DockerSpawner.default_url = '/lab'
