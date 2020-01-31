@@ -7,12 +7,13 @@
   preverve them.
 </p>
 <p>
-  Contact <strong>${SUPPORT_EMAIL}</strong> for information on how to 
+  Contact <strong>${SUPPORT_EMAIL}</strong> for information on how to
   <strong>get an account and a private workspace</strong>.
 </p>
 <p>
   The only writable folder is <strong>writable-workspace</strong>
-  and it is persisted between sessions.
+  (/notebook_dir/writable-workspace in the terminal) and it is persisted
+  between sessions.
 </p>
 <p>
   Please <strong>be considerate</strong> with the amount of
