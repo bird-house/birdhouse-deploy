@@ -18,7 +18,6 @@ VARS='
   $SUPPORT_EMAIL
   $CMIP5_THREDDS_ROOT
   $JUPYTERHUB_ADMIN_USERS
-  $JUPYTERHUB_USERS_PASS
   $CATALOG_USERNAME
   $CATALOG_PASSWORD
   $CATALOG_THREDDS_SERVICE
@@ -125,19 +124,8 @@ if [[ $1 == "up" ]]; then
 
   # no error if already exist
   # create externally so nothing will delete these data volume automatically
-  docker volume create ${DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME}  # users notebooks
   docker volume create jupyterhub_data_persistence  # jupyterhub db and cookie secret
   docker volume create thredds_persistence  # logs, cache
-
-  # set proper write permissions for image pavics/workflow-tests
-  # this is shared for all users, no multi users isolation
-  # see open issue https://github.com/moby/moby/issues/32582 [feature] Allow
-  # mounting sub-directories of named volumes
-  # for multi user isolation, we should leverage sub-directories of named
-  # volumes
-  docker run --rm --name set_permissions \
-    -v ${DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME}:/notebook_dir bash \
-    bash -c "chown 1000:1000 /notebook_dir"
 fi
 
 COMPOSE_CONF_LIST="-f docker-compose.yml"

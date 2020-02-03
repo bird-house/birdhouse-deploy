@@ -12,10 +12,11 @@
 #
 # Logs to /var/log/PAVICS/notebookdeploy.log, re-use existing logrotate.
 
-
-if [ -z "$DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME" ]; then
-    # dupe with pavics-compose.sh
-    DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME=jupyterhub_user_persistence
+if [ -z "$JUPYTERHUB_USER_DATA_DIR" ]; then
+  # running script manually (not with cron) source env.local file.
+  COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath -- "$0")")")"
+  . "$COMPOSE_DIR/common.env"  # default JUPYTERHUB_USER_DATA_DIR
+  . "$COMPOSE_DIR/env.local"  # optional override JUPYTERHUB_USER_DATA_DIR
 fi
 
 LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
@@ -70,8 +71,8 @@ cat << __EOF__ > $TMP_SCRIPT
 #!/bin/sh -x
 
 cd $NOTEBOOK_DIR_MNT
-rm -rf $TUTORIAL_NOTEBOOKS_DIR
-cp -rv /$TUTORIAL_NOTEBOOKS_DIR $TUTORIAL_NOTEBOOKS_DIR
+rm -rf $TUTORIAL_NOTEBOOKS_DIR/*
+cp -rv /$TUTORIAL_NOTEBOOKS_DIR/* $TUTORIAL_NOTEBOOKS_DIR
 # make read-only
 chown -R root:root $TUTORIAL_NOTEBOOKS_DIR
 __EOF__
@@ -83,7 +84,7 @@ docker run --rm \
   -u root \
   -v $TMP_SCRIPT:/deploy-notebook:ro \
   -v $TMPDIR/$TUTORIAL_NOTEBOOKS_DIR:/$TUTORIAL_NOTEBOOKS_DIR:ro \
-  -v $DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME:$NOTEBOOK_DIR_MNT:rw \
+  -v "$JUPYTERHUB_USER_DATA_DIR":$NOTEBOOK_DIR_MNT:rw \
   --entrypoint /deploy-notebook \
   bash
 

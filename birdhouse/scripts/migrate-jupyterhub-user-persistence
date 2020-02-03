@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# Migrate data from the old jupyterhub_user_persistence named volume to the new
+# location /data/jupyterhub_user_data/public.
+#
+
+BASE_CMD="docker run -it --rm --name migrate_jupyterhub_user_persistence \
+    -u root \
+    -v /data:/data \
+    -v jupyterhub_user_persistence:/jpuser \
+    bash"
+
+set -x
+
+$BASE_CMD bash -c "mkdir -p /data/jupyterhub_user_data/public \
+    && cp -r /jpuser/* /data/jupyterhub_user_data/public/ \
+    && rm -rf /data/jupyterhub_user_data/public/tutorial-notebooks \
+    && rm /data/jupyterhub_user_data/public/README.ipynb \
+    && chown -R 1000:1000 /data/jupyterhub_user_data/public"
