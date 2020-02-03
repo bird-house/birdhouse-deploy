@@ -15,5 +15,7 @@ set -x
 $BASE_CMD bash -c "mkdir -p /data/jupyterhub_user_data/public \
     && cp -r /jpuser/* /data/jupyterhub_user_data/public/ \
     && rm -rf /data/jupyterhub_user_data/public/tutorial-notebooks \
+    && touch /data/jupyterhub_user_data/tutorial-notebooks \
     && rm /data/jupyterhub_user_data/public/README.ipynb \
+    && touch /data/jupyterhub_user_data/README.ipynb \
     && chown -R 1000:1000 /data/jupyterhub_user_data/public"
