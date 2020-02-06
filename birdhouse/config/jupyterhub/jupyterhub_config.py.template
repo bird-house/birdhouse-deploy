@@ -4,6 +4,10 @@ import logging
 import subprocess
 
 c.JupyterHub.bind_url = 'http://:8000/jupyter'
+
+## Whether to shutdown single-user servers when the Hub shuts down.
+c.JupyterHub.cleanup_servers = False
+
 c.JupyterHub.hub_ip = 'jupyterhub'
 
 c.JupyterHub.authenticator_class = 'jupyterhub_magpie_authenticator.MagpieAuthenticator'
