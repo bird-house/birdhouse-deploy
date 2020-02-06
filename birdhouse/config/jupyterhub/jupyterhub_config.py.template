@@ -67,4 +67,7 @@ c.JupyterHub.log_level = logging.DEBUG
 
 c.Spawner.debug = True
 
+## Extra arguments to be passed to the single-user server.
+c.Spawner.args = ["--NotebookApp.terminals_enabled=False"]
+
 c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}
