@@ -4,6 +4,10 @@ import logging
 import subprocess
 
 c.JupyterHub.bind_url = 'http://:8000/jupyter'
+
+## Whether to shutdown single-user servers when the Hub shuts down.
+c.JupyterHub.cleanup_servers = False
+
 c.JupyterHub.hub_ip = 'jupyterhub'
 
 c.JupyterHub.authenticator_class = 'jupyterhub_magpie_authenticator.MagpieAuthenticator'
@@ -56,7 +60,15 @@ def create_dir_hook(spawner):
 
     subprocess.call(["chown", "-R", "1000:1000", user_dir])
 
+    if username == 'public':
+        # Restrict resources for the public user
+        spawner.cpu_limit = 0.25  # 25% of 1 CPU, seems not honored by DockerSpawner
+        spawner.mem_limit = "500M"  # 500 MB
+
 c.Spawner.pre_spawn_hook = create_dir_hook
+
+## Disable per-user configuration of single-user servers.
+c.Spawner.disable_user_config = True
 
 c.DockerSpawner.default_url = '/lab'
 c.DockerSpawner.remove = True  # delete containers when servers are stopped
@@ -67,4 +79,13 @@ c.JupyterHub.log_level = logging.DEBUG
 
 c.Spawner.debug = True
 
+## Extra arguments to be passed to the single-user server.
+c.Spawner.args = ["--NotebookApp.terminals_enabled=False"]
+
 c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}
+
+## Force refresh of auth prior to spawn.
+# Do nothing right now, pending implementation of
+# MagpieAuthenticator.refresh_user() (see
+# https://github.com/Ouranosinc/jupyterhub/issues/2)
+c.Authenticator.refresh_pre_spawn = True
