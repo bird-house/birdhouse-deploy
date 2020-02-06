@@ -60,6 +60,11 @@ def create_dir_hook(spawner):
 
     subprocess.call(["chown", "-R", "1000:1000", user_dir])
 
+    if username == 'public':
+        # Restrict resources for the public user
+        spawner.cpu_limit = 0.25  # 25% of 1 CPU, seems not honored by DockerSpawner
+        spawner.mem_limit = "500M"  # 500 MB
+
 c.Spawner.pre_spawn_hook = create_dir_hook
 
 ## Disable per-user configuration of single-user servers.
