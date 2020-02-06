@@ -71,3 +71,9 @@ c.Spawner.debug = True
 c.Spawner.args = ["--NotebookApp.terminals_enabled=False"]
 
 c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}
+
+## Force refresh of auth prior to spawn.
+# Do nothing right now, pending implementation of
+# MagpieAuthenticator.refresh_user() (see
+# https://github.com/Ouranosinc/jupyterhub/issues/2)
+c.Authenticator.refresh_pre_spawn = True
