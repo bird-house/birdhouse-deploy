@@ -109,8 +109,7 @@ if [ -z "$VERIFY_SSL" ]; then
 fi
 
 # we apply all the templates
-# FIXME: 'private-config' to be removed when moved to other repo
-find ./config ./private-config ./optional-components -name '*.template' -print0 |
+find ./config ./optional-components -name '*.template' -print0 |
   while IFS= read -r -d $'\0' FILE
   do
     DEST=${FILE%.template}
