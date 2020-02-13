@@ -14,7 +14,7 @@ ls -l client.py*
 
 # change logging level to DEBUG
 cd /usr/local/lib/python2.7/dist-packages/pavics_datacatalog-0.6.11-py2.7.egg/pavics_datacatalog/wps_processes
-perl -pe 's/logger.setLevel\(logging.INFO\)/logger.setLevel\(logging.DEBUG\)/' -i wps_pavicsearch.py
+curl --silent https://raw.githubusercontent.com/Ouranosinc/PAVICS-DataCatalog/1b81c2e0ad12a3ae32f400d4688cb8abae828fa5/pavics_datacatalog/wps_processes/wps_pavicsearch.py > wps_pavicsearch.py
 rm -v wps_pavicsearch.pyc
 
 cd /usr/local/lib/python2.7/dist-packages/pavics
