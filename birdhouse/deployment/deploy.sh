@@ -137,13 +137,6 @@ set -x
 # stop all to force reload any changed config that are volume-mount into the containers
 ./pavics-compose.sh stop
 
-# user containers are not managed by docker-compose, have to handle them manually
-# rm and not just stop to force spawning newer image
-for jupyter_cont in `docker ps --format '{{.Names}}' | grep jupyter-`; do
-    docker stop $jupyter_cont
-    docker rm $jupyter_cont
-done
-
 # override git ssh command because this repo is private and need proper credentials
 #
 # https://git-scm.com/docs/git-config#Documentation/git-config.txt-sshvariant
