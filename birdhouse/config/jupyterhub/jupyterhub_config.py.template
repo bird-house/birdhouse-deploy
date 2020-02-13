@@ -1,21 +1,75 @@
 import os
+from os.path import join
 import logging
+import subprocess
 
 c.JupyterHub.bind_url = 'http://:8000/jupyter'
+
+## Whether to shutdown single-user servers when the Hub shuts down.
+c.JupyterHub.cleanup_servers = False
+
 c.JupyterHub.hub_ip = 'jupyterhub'
+
+c.JupyterHub.authenticator_class = 'jupyterhub_magpie_authenticator.MagpieAuthenticator'
+c.MagpieAuthenticator.magpie_url = "http://magpie:2001"
 
 c.JupyterHub.cookie_secret_file = '/persist/jupyterhub_cookie_secret'
 c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
 
-c.JupyterHub.template_paths = ['/template_paths']
+c.JupyterHub.template_paths = ['/custom_templates']
 
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+
 c.DockerSpawner.image = os.environ['DOCKER_NOTEBOOK_IMAGE']
 c.DockerSpawner.use_internal_ip = True
 c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
+
 notebook_dir = '/notebook_dir'
+jupyterhub_data_dir = os.environ['JUPYTERHUB_USER_DATA_DIR']
+host_user_data_dir = join(jupyterhub_data_dir, "{username}")
+container_workspace_dir = join(notebook_dir, "writable-workspace")
+container_home_dir = join(container_workspace_dir, ".home")
+
 c.DockerSpawner.notebook_dir = notebook_dir
-c.DockerSpawner.volumes = { os.environ['DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME']: notebook_dir }
+c.DockerSpawner.environment = {
+    "HOME": container_home_dir
+}
+
+c.DockerSpawner.volumes = {host_user_data_dir: container_workspace_dir}
+
+host_tutorial_notebooks_dir = join(jupyterhub_data_dir, "tutorial-notebooks")
+if os.path.exists(host_tutorial_notebooks_dir):
+    c.DockerSpawner.volumes[host_tutorial_notebooks_dir] = {
+        "bind": join(notebook_dir, "tutorial-notebooks"),
+        "mode": "ro"
+    }
+
+readme = join(jupyterhub_data_dir, "README.ipynb")
+if os.path.exists(readme):
+    c.DockerSpawner.volumes[readme] = {
+        "bind": join(notebook_dir, "README.ipynb"),
+        "mode": "ro"
+    }
+
+def create_dir_hook(spawner):
+    username = spawner.user.name
+    user_dir = join(jupyterhub_data_dir, username)
+
+    if not os.path.exists(user_dir):
+        os.mkdir(user_dir, 0o755)
+
+    subprocess.call(["chown", "-R", "1000:1000", user_dir])
+
+    if username == 'public':
+        # Restrict resources for the public user
+        spawner.cpu_limit = 0.25  # 25% of 1 CPU, seems not honored by DockerSpawner
+        spawner.mem_limit = "500M"  # 500 MB
+
+c.Spawner.pre_spawn_hook = create_dir_hook
+
+## Disable per-user configuration of single-user servers.
+c.Spawner.disable_user_config = True
+
 c.DockerSpawner.default_url = '/lab'
 c.DockerSpawner.remove = True  # delete containers when servers are stopped
 ${ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS}
@@ -25,4 +79,13 @@ c.JupyterHub.log_level = logging.DEBUG
 
 c.Spawner.debug = True
 
+## Extra arguments to be passed to the single-user server.
+c.Spawner.args = ["--NotebookApp.terminals_enabled=False"]
+
 c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}
+
+## Force refresh of auth prior to spawn.
+# Do nothing right now, pending implementation of
+# MagpieAuthenticator.refresh_user() (see
+# https://github.com/Ouranosinc/jupyterhub/issues/2)
+c.Authenticator.refresh_pre_spawn = True

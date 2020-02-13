@@ -1,4 +1,8 @@
 # coding: utf-8
+import os
+import logging
+
+logger = logging.getLogger("canarie-api-config")
 
 MY_SERVER_NAME = 'https://${PAVICS_FQDN_PUBLIC}/canarie'
 
@@ -273,3 +277,17 @@ PLATFORMS = {
         }
     }
 }
+
+CANARIE_MONITORING_EXTRA_CONF_DIR = os.environ.get(
+    'CANARIE_MONITORING_EXTRA_CONF_DIR', '/bogus-notexist')
+
+if os.path.exists(CANARIE_MONITORING_EXTRA_CONF_DIR):
+    # alphabetically sorted for reproducible override precedence
+    for extra_conf in sorted(os.listdir(CANARIE_MONITORING_EXTRA_CONF_DIR)):
+        extra_conf_full_path = "{CANARIE_MONITORING_EXTRA_CONF_DIR}/{extra_conf}".format(**locals())
+        # only handle files ending with .py
+        if os.path.isfile(extra_conf_full_path) and extra_conf_full_path.endswith(".py"):
+            logger.info("canarie-api: loading extra config '{extra_conf_full_path}'".format(**locals()))
+            execfile(extra_conf_full_path)
+        else:
+            logger.info("canarie-api: ignoring extra config '{extra_conf_full_path}'".format(**locals()))

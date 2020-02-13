@@ -129,13 +129,20 @@ cd $COMPOSE_DIR
 
 . ./common.env
 
+set +x  # hide passwd in env.local in logs
+# reload again after common.env since env.local can override common.env
+. $ENV_LOCAL_FILE
+set -x
+
 # stop all to force reload any changed config that are volume-mount into the containers
 ./pavics-compose.sh stop
 
-# this container is not managed by docker-compose, have to handle it manually
+# user containers are not managed by docker-compose, have to handle them manually
 # rm and not just stop to force spawning newer image
-docker stop jupyter-public
-docker rm jupyter-public
+for jupyter_cont in `docker ps --format '{{.Names}}' | grep jupyter-`; do
+    docker stop $jupyter_cont
+    docker rm $jupyter_cont
+done
 
 # override git ssh command because this repo is private and need proper credentials
 #
@@ -158,6 +165,12 @@ cd $COMPOSE_DIR
 # reload again after git pull because this file could be changed by the pull
 . ./common.env
 
+set +x  # hide passwd in env.local in logs
+# reload again after common.env since env.local can override common.env
+# (ex: JUPYTERHUB_USER_DATA_DIR)
+. $ENV_LOCAL_FILE
+set -x
+
 # restart everything, only changed containers will be destroyed and recreated
 ./pavics-compose.sh up -d
 
@@ -166,7 +179,7 @@ docker pull $DOCKER_NOTEBOOK_IMAGE
 
 # deploy new README.ipynb to Jupyter instance
 docker run --rm --name deploy_README_ipynb \
-    -v $DOCKER_JUPYTERHUB_USER_PERSISTENCE_VOLUME:/notebook_dir \
+    -v "$JUPYTERHUB_USER_DATA_DIR":/notebook_dir \
     -v $REPO_ROOT/docs/source/notebooks:/nb:ro \
     -u root \
     bash \

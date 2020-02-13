@@ -1,0 +1,8 @@
+# This file will not be loaded since it does not end with ".py".
+SERVICES['node']['monitoring'].update({
+    'Thredds-public': {
+        'request': {
+            'url': 'https://${PAVICS_FQDN_PUBLIC}/wrong-suffix',
+        },
+    },
+})

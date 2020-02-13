@@ -44,12 +44,12 @@ postgres instance. See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-
 
 ## Manual steps post deployment
 
-Change geoserver default admin password:
+### Change geoserver default admin password
 
 * Go to
-  https://<PAVICS_HOST>/geoserver/web/wicket/bookmarkable/org.geoserver.security.web.UserGroupRoleServicesPage (Security -> Users, Groups, and Roles)
+  https://<PAVICS_FQDN>/geoserver/web/wicket/bookmarkable/org.geoserver.security.web.UserGroupRoleServicesPage (Security -> Users, Groups, and Roles)
 
-* Login using the default username `admin` and password `geoserver`.
+* Login using the default username `admin` and default password `geoserver`.
 
 * Click on tab "Users/Groups".
 
@@ -58,6 +58,23 @@ Change geoserver default admin password:
 * Change the password.
 
 * Click "Save".
+
+
+### Create `public` user in Magpie for JupyterHub login
+
+* Go to
+  https://<PAVICS_FQDN>/magpie/ui/login, login with the `admin` user,
+  password should be in `env.local`.
+
+* Then go to https://<PAVICS_FQDN>/magpie/ui/users/add
+
+* Fill in:
+  * User name: `public`
+  * Email: anything is fine
+  * Password: `public`
+  * User group: `anonymous`
+
+* Click "Add User".
 
 
 ## Mostly automated unattended continuous deployment

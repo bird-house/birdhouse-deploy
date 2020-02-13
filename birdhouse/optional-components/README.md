@@ -1,5 +1,20 @@
 # Optional components
 
+## Monitor all components in Canarie node, both public and internal url
+
+So that the url https://<PAVICS_FQDN>/canarie/node/service/stats also return
+what the end user really see (a component might work but is not accessible to
+the end user).
+
+This assume all the WPS services are public.  If not the case, make a copy of
+this config and adjust accordingly.
+
+How to enable this config in `env.local` (a copy from
+[`env.local.example`](../env.local.example)):
+
+* Add `./optional-components/canarie-api-full-monitoring` to `EXTRA_CONF_DIRS`.
+
+
 ## Emu WPS service for testing
 
 How to enable Emu in `env.local` (a copy from

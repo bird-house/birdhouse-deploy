@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# Migrate data from the old jupyterhub_user_persistence named volume to the new
+# location JUPYTERHUB_USER_DATA_DIR/PUBLIC_USERNAME.
+#
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+COMPOSE_DIR="`dirname "$THIS_DIR"`"
+
+PUBLIC_USERNAME="public"
+
+# Default JUPYTERHUB_USER_DATA_DIR
+. $COMPOSE_DIR/common.env
+
+if [ -e "$COMPOSE_DIR/env.local" ]; then
+    # Optional override JUPYTERHUB_USER_DATA_DIR
+    . $COMPOSE_DIR/env.local
+fi
+
+BASE_CMD="docker run -it --rm --name migrate_jupyterhub_user_persistence \
+    -u root \
+    -v /data:/data \
+    -v jupyterhub_user_persistence:/jpuser \
+    bash"
+
+set -x
+
+$BASE_CMD bash -c "mkdir -p $JUPYTERHUB_USER_DATA_DIR/$PUBLIC_USERNAME \
+    && cp -r /jpuser/* $JUPYTERHUB_USER_DATA_DIR/$PUBLIC_USERNAME/ \
+    && rm -rf $JUPYTERHUB_USER_DATA_DIR/$PUBLIC_USERNAME/tutorial-notebooks \
+    && touch $JUPYTERHUB_USER_DATA_DIR/tutorial-notebooks \
+    && rm $JUPYTERHUB_USER_DATA_DIR/$PUBLIC_USERNAME/README.ipynb \
+    && touch $JUPYTERHUB_USER_DATA_DIR/README.ipynb \
+    && chown -R 1000:1000 $JUPYTERHUB_USER_DATA_DIR/$PUBLIC_USERNAME"
