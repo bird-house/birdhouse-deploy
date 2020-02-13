@@ -19,7 +19,7 @@ rm -v wps_pavicsearch.pyc
 
 cd /usr/local/lib/python2.7/dist-packages/pavics
 rm -v catalog.pyc
-curl --silent https://raw.githubusercontent.com/Ouranosinc/pyPavics/19a10525441c9808ecae4799a6a573005ef1a37f/pavics/catalog.py > catalog.py
+curl --silent https://raw.githubusercontent.com/Ouranosinc/pyPavics/a10d596b6f0b3d70c96cc0cac5356014aac42dab/pavics/catalog.py > catalog.py
 
 # Existing CMD from Dockerfile
 cd /
