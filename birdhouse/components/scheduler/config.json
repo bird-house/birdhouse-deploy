@@ -5,4 +5,11 @@
     "comment":"comment test echo",
     "dockerargs":"--rm --name testecho",
     "image":"bash"
+},{
+    "name":"notebookdeploy",
+    "comment":"Auto-deploy tutorial notebooks",
+    "schedule":"@every 15m",
+    "command":"${COMPOSE_DIR}/deployment/trigger-deploy-notebook",
+    "dockerargs":"--rm --name notebookdeploy --volume /var/run/docker.sock:/var/run/docker.sock:ro --volume /var/log/PAVICS:/var/log/PAVICS:rw --volume ${COMPOSE_DIR}:${COMPOSE_DIR}:rw --volume /data:/data:rw --env COMPOSE_DIR=${COMPOSE_DIR}",
+    "image":"docker:19.03.6-git"
 }]
