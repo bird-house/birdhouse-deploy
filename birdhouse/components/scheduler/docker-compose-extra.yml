@@ -1,0 +1,12 @@
+version: '2.1'
+
+services:
+  scheduler:
+    image: willfarrell/crontab:0.5.0
+    container_name: scheduler
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./components/scheduler/config.json:/opt/crontab/config.json:ro
+    restart: always
+
+# vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
