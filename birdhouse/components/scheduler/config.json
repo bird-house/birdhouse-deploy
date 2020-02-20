@@ -1,11 +1,4 @@
 [{
-    "schedule":"@every 5m",
-    "command":"env; echo toto",
-    "name":"test echo",
-    "comment":"comment test echo",
-    "dockerargs":"--rm --name testecho",
-    "image":"bash"
-},{
     "name":"notebookdeploy",
     "comment":"Auto-deploy tutorial notebooks",
     "schedule":"@every 15m",
