@@ -109,7 +109,7 @@ if [ -z "$VERIFY_SSL" ]; then
 fi
 
 # we apply all the templates
-find ./config ./optional-components -name '*.template' -print0 |
+find ./config ./components ./optional-components -name '*.template' -print0 |
   while IFS= read -r -d $'\0' FILE
   do
     DEST=${FILE%.template}
