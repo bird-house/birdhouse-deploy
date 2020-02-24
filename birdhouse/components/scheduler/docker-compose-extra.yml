@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   scheduler:
-    image: willfarrell/crontab:0.5.0
+    image: pavics/crontab:0.6-rc2
     container_name: scheduler
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
