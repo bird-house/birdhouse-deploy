@@ -25,3 +25,15 @@
     --env TMP_BASE_DIR=/tmp/notebookdeploy
     --env JUPYTERHUB_USER_DATA_DIR=${JUPYTERHUB_USER_DATA_DIR}
   image: 'docker:19.03.6-git'
+
+- name: autodeploy
+  comment: Auto-deploy entire PAVICS platform
+  schedule: '@every 2m'
+  command: '${COMPOSE_DIR}/deployment/triggerdeploy.sh ${COMPOSE_DIR}'
+  dockerargs: >-
+    --rm --name autodeploy
+    --volume /var/log/PAVICS:/var/log/PAVICS:rw
+    --volume ${COMPOSE_DIR}/..:${COMPOSE_DIR}/..:rw
+    --volume /home/vagrant/.ssh:/root/.ssh:ro
+    --env COMPOSE_DIR=${COMPOSE_DIR}
+  image: 'docker:19.03.6-git'
