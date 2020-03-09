@@ -14,9 +14,11 @@
 
 if [ -z "$JUPYTERHUB_USER_DATA_DIR" ]; then
   # running script manually (not with cron) source env.local file.
-  COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath -- "$0")")")"
+  COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
   . "$COMPOSE_DIR/common.env"  # default JUPYTERHUB_USER_DATA_DIR
-  . "$COMPOSE_DIR/env.local"  # optional override JUPYTERHUB_USER_DATA_DIR
+  if [ -e "$COMPOSE_DIR/env.local" ]; then
+      . "$COMPOSE_DIR/env.local"  # optional override JUPYTERHUB_USER_DATA_DIR
+  fi
 fi
 
 LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
@@ -38,13 +40,17 @@ if [ -z "$WORKFLOW_TESTS_BRANCH" ]; then
     WORKFLOW_TESTS_BRANCH="master"
 fi
 
+if [ -z "$TMP_BASE_DIR" ]; then
+    TMP_BASE_DIR="/tmp"
+fi
+
 START_TIME="`date -Isecond`"
 echo "==========
 notebookdeploy START_TIME=$START_TIME"
 
 set -x
 
-TMPDIR="`mktemp -d -t notebookdeploy.XXXXXXXXXXXX`"
+TMPDIR="`mktemp -d -t notebookdeploy.XXXXXXXXXXXX -p $TMP_BASE_DIR`"
 
 cd $TMPDIR
 mkdir $TUTORIAL_NOTEBOOKS_DIR

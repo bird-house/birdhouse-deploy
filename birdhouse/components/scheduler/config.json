@@ -1,0 +1,8 @@
+[{
+    "name":"notebookdeploy",
+    "comment":"Auto-deploy tutorial notebooks",
+    "schedule":"@every 15m",
+    "command":"${COMPOSE_DIR}/deployment/trigger-deploy-notebook",
+    "dockerargs":"--rm --name notebookdeploy --volume /var/run/docker.sock:/var/run/docker.sock:ro --volume /var/log/PAVICS:/var/log/PAVICS:rw --volume ${COMPOSE_DIR}:${COMPOSE_DIR}:ro --volume ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}:rw --volume /tmp/notebookdeploy:/tmp/notebookdeploy:rw --env COMPOSE_DIR=${COMPOSE_DIR} --env TMP_BASE_DIR=/tmp/notebookdeploy --env JUPYTERHUB_USER_DATA_DIR=${JUPYTERHUB_USER_DATA_DIR}",
+    "image":"docker:19.03.6-git"
+}]
