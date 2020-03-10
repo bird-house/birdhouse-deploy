@@ -167,7 +167,7 @@ services:
     restart: always
 
   raven:
-    image: pavics/raven:0.9.0
+    image: pavics/raven:0.10.0
     container_name: raven
     ports:
       - "8096:9099"
