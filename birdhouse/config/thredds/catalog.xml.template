@@ -13,7 +13,7 @@
         <service name="wms" serviceType="WMS" base="/twitcher/ows/proxy/thredds/wms/" />
     </service>
 
-    <service name="ncml" serviceType="Compound" base="" >
+    <service name="ncmlservice" serviceType="Compound" base="" >
         <service name="http" serviceType="HTTPServer" base="/twitcher/ows/proxy/thredds/fileServer/" />
         <service name="odap" serviceType="OpenDAP" base="/twitcher/ows/proxy/thredds/dodsC/" />
         <service name="ncml" serviceType="NCML" base="/twitcher/ows/proxy/thredds/ncml/"/>
@@ -40,7 +40,7 @@
     <datasetScan name="Datasets" ID="datasets" path="datasets" location="/pavics-ncml">
 
       <metadata inherited="true">
-        <serviceName>ncml</serviceName>
+        <serviceName>ncmlservice</serviceName>
       </metadata>
 
       <filter>
