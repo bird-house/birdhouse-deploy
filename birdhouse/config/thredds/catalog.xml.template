@@ -13,14 +13,6 @@
         <service name="wms" serviceType="WMS" base="/twitcher/ows/proxy/thredds/wms/" />
     </service>
 
-    <service name="ncmlservice" serviceType="Compound" base="" >
-        <service name="http" serviceType="HTTPServer" base="/twitcher/ows/proxy/thredds/fileServer/" />
-        <service name="odap" serviceType="OpenDAP" base="/twitcher/ows/proxy/thredds/dodsC/" />
-        <service name="ncml" serviceType="NCML" base="/twitcher/ows/proxy/thredds/ncml/"/>
-        <service name="uddc" serviceType="UDDC" base="/twitcher/ows/proxy/thredds/uddc/"/>
-        <service name="iso" serviceType="ISO" base="/twitcher/ows/proxy/thredds/iso/"/>
-    </service>
-
     <datasetScan name="Birdhouse" ID="birdhouse" path="birdhouse" location="/pavics-data">
 
       <metadata inherited="true">
@@ -40,7 +32,7 @@
     <datasetScan name="Datasets" ID="datasets" path="datasets" location="/pavics-ncml">
 
       <metadata inherited="true">
-        <serviceName>ncmlservice</serviceName>
+        <serviceName>all</serviceName>
       </metadata>
 
       <filter>
@@ -52,6 +44,5 @@
       </filter>
 
     </datasetScan>
-
 
 </catalog>
