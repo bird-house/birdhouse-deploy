@@ -151,7 +151,7 @@ services:
     restart: always
 
   finch:
-    image: birdhouse/finch:version-0.4.1
+    image: birdhouse/finch:version-0.5.1
     container_name: finch
     environment:
       HOSTNAME: $HOSTNAME
