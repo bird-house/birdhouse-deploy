@@ -60,7 +60,7 @@ postgres instance. See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-
 * Click "Save".
 
 
-### Create `public` user in Magpie for JupyterHub login
+### Create public demo user in Magpie for JupyterHub login
 
 * Go to
   https://<PAVICS_FQDN>/magpie/ui/login, login with the `admin` user,
@@ -69,9 +69,9 @@ postgres instance. See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-
 * Then go to https://<PAVICS_FQDN>/magpie/ui/users/add
 
 * Fill in:
-  * User name: `public`
+  * User name: <value of JUPYTER_DEMO_USER in `env.local`>
   * Email: anything is fine
-  * Password: `public`
+  * Password: < you decide >
   * User group: `anonymous`
 
 * Click "Add User".
