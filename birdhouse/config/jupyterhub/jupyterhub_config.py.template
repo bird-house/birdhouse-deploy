@@ -62,8 +62,9 @@ def create_dir_hook(spawner):
 
     if username == os.environ['JUPYTER_DEMO_USER']:
         # Restrict resources for the public demo user
-        spawner.cpu_limit = 0.25  # 25% of 1 CPU, seems not honored by DockerSpawner
-        spawner.mem_limit = "500M"  # 500 MB
+        # CPU limit, seems not honored by DockerSpawner
+        spawner.cpu_limit = float(os.environ['JUPYTER_DEMO_USER_CPU_LIMIT'])
+        spawner.mem_limit = os.environ['JUPYTER_DEMO_USER_MEM_LIMIT']
 
 c.Spawner.pre_spawn_hook = create_dir_hook
 
