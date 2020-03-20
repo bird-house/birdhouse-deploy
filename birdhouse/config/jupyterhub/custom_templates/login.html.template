@@ -1,5 +1,7 @@
 {% extends "templates/login.html" %} {% set announcement_login = '
 
+${JUPYTER_LOGIN_BANNER_TOP_SECTION}
+
 <p><strong>Public demo login:</strong> ${JUPYTER_DEMO_USER}</p>
 <p>
   Given this public nature, anyone can tamper with your notebooks so please
@@ -29,4 +31,6 @@
   This Jupyter instance can restart every day.
   <strong>Long running processes will be killed without notice.</strong>
 </p>
+
+${JUPYTER_LOGIN_BANNER_BOTTOM_SECTION}
 ' %}
