@@ -1,14 +1,16 @@
 {% extends "templates/login.html" %} {% set announcement_login = '
 
-<p><strong>Public login:</strong> public/public</p>
+<p><strong>Public demo login:</strong> ${JUPYTER_DEMO_USER}</p>
 <p>
   Given this public nature, anyone can tamper with your notebooks so please
   <strong>export your valuable notebooks elsewhere</strong> if you want to
-  preverve them.
+  preverve them.  This public demo account also have limitted computing
+  resources.
 </p>
 <p>
   Contact <strong>${SUPPORT_EMAIL}</strong> for information on how to
-  <strong>get an account and a private workspace</strong>.
+  <strong>get an account and a private workspace or the password of the
+  public demo account</strong>.
 </p>
 <p>
   The only writable folder is <strong>writable-workspace</strong>
@@ -18,6 +20,10 @@
 <p>
   Please <strong>be considerate</strong> with the amount of
   <strong>disk space usage</strong> on this Jupyter instance.
+</p>
+<p>
+  Please <strong>shutdown the kernel</strong> and <strong>close un-used
+  notebooks</strong> to avoid wasting computing resources.
 </p>
 <p>
   This Jupyter instance can restart every day.
