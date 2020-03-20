@@ -8,8 +8,6 @@ THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
-PUBLIC_USERNAME="public"
-
 # Default JUPYTERHUB_USER_DATA_DIR
 . $COMPOSE_DIR/common.env
 
@@ -17,6 +15,8 @@ if [ -e "$COMPOSE_DIR/env.local" ]; then
     # Optional override JUPYTERHUB_USER_DATA_DIR
     . $COMPOSE_DIR/env.local
 fi
+
+PUBLIC_USERNAME="$JUPYTER_DEMO_USER"
 
 BASE_CMD="docker run -it --rm --name migrate_jupyterhub_user_persistence \
     -u root \
