@@ -34,6 +34,7 @@
     --rm --name autodeploy
     --volume /var/log/PAVICS:/var/log/PAVICS:rw
     --volume ${COMPOSE_DIR}/..:${COMPOSE_DIR}/..:rw
-    --volume /home/vagrant/.ssh:/root/.ssh:ro
+    --volume ${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:ro
     --env COMPOSE_DIR=${COMPOSE_DIR}
+    --env AUTODEPLOY_DEPLOY_KEY_ROOT_DIR=${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}
   image: 'docker:19.03.6-git'

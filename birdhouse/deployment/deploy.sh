@@ -5,18 +5,18 @@
 # takes care of all the common steps for a standard deployment (see corner
 # cases not handled below).
 #
-# One time Setup for a *private* PAVICS repository:
+# One time Setup for each *private* repository (not applicable for *public* repos):
 #
 # * create a ssh deploy key (do not re-use your personal key)
-#   `ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa_git_ssh_read_only` (no passphrase)
+#   `ssh-keygen -b 4096 -t rsa -f ~/.ssh/{repo-name}_deploy_key` (no passphrase)
 #
-# * add the public key ~/.ssh/id_rsa_git_ssh_read_only.pub to the repo as read-only deploy key
+# * add the public key ~/.ssh/{repo-name}_deploy_key.pub to the repo as read-only deploy key
 #   see https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys
 #
 # * if on host with git version less than 2.3 (no support for GIT_SSH_COMMAND),
 #   have to configure your ~/.ssh/config  with the following:
 #     Host github.com
-#     IdentityFile ~/.ssh/id_rsa_git_ssh_read_only
+#     IdentityFile ~/.ssh/{repo-name}_deploy_key
 #     UserKnownHostsFile /dev/null
 #     StrictHostKeyChecking no
 #
@@ -34,7 +34,8 @@
 #   Just run this script pointing to the checkout repo and optionally the env.local file.
 #
 #   It will find the rest that it needs from the checkout repo.  Only external
-#   depency is ~/.ssh/id_rsa_git_ssh_read_only.
+#   dependencies are the multiple ~/.ssh/{repo-name}_deploy_key (one deploy key
+#   for each repo).
 #
 # Corner cases not handled:
 #
@@ -92,13 +93,6 @@ if [ ! -f "$ENV_LOCAL_FILE" ]; then
     exit 2
 fi
 
-SSH_DEPLOY_KEY="$HOME/.ssh/id_rsa_git_ssh_read_only"
-
-if [ ! -f "$SSH_DEPLOY_KEY" ]; then
-    echo "${RED}ERROR:${NORMAL} '$SSH_DEPLOY_KEY' not found, please create it and set it up for this repo" 1>&2
-    exit 2
-fi
-
 if [ -f "$COMPOSE_DIR/docker-compose.override.yml" ]; then
     echo "${YELLOW}WARNING:${NORMAL} docker-compose.override.yml found, should use EXTRA_CONF_DIRS in env.local instead"
 fi
@@ -137,14 +131,19 @@ set -x
 # stop all to force reload any changed config that are volume-mount into the containers
 ./pavics-compose.sh stop
 
-# override git ssh command because this repo is private and need proper credentials
-#
-# https://git-scm.com/docs/git-config#Documentation/git-config.txt-sshvariant
-export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentityFile=$SSH_DEPLOY_KEY"
-
 for adir in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
     if [ -d "$adir" ]; then
         cd $adir
+
+        EXTRA_REPO="`git rev-parse --show-toplevel`"
+        DEPLOY_KEY="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR/`basename "$EXTRA_REPO"`_deploy_key"
+        export GIT_SSH_COMMAND=""  # git ver 2.3+
+        if [ -e "$DEPLOY_KEY" ]; then
+            # override git ssh command for private repos only
+            #
+            # https://git-scm.com/docs/git-config#Documentation/git-config.txt-sshvariant
+            export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentityFile=$DEPLOY_KEY"
+        fi
 
         # pull the current branch, so this deploy script supports any branches, not just master
         git pull
