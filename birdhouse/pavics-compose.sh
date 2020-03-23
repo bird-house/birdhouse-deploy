@@ -42,6 +42,7 @@ OPTIONAL_VARS='
   $JUPYTER_DEMO_USER
   $JUPYTER_LOGIN_BANNER_TOP_SECTION
   $JUPYTER_LOGIN_BANNER_BOTTOM_SECTION
+  $AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH
@@ -110,6 +111,14 @@ if [ -z "$VERIFY_SSL" ]; then
   # default value before instantiating template configs
   export VERIFY_SSL="true"
 fi
+
+export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""
+for adir in $AUTODEPLOY_EXTRA_REPOS; do
+  # 4 spaces in front of '--volume' is important
+  AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES="$AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
+    --volume ${adir}:${adir}:rw"
+done
+export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
 find ./config ./components ./optional-components -name '*.template' -print0 |

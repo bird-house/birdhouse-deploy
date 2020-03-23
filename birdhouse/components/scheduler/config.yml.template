@@ -31,7 +31,7 @@
   schedule: '@every 2m'
   command: '${COMPOSE_DIR}/deployment/triggerdeploy.sh ${COMPOSE_DIR}'
   dockerargs: >-
-    --rm --name autodeploy
+    --rm --name autodeploy${AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES}
     --volume /var/log/PAVICS:/var/log/PAVICS:rw
     --volume ${COMPOSE_DIR}/..:${COMPOSE_DIR}/..:rw
     --volume ${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:ro
