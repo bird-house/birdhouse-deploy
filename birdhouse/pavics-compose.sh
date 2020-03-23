@@ -39,6 +39,9 @@ OPTIONAL_VARS='
   $GITHUB_CLIENT_SECRET
   $MAGPIE_DB_NAME
   $VERIFY_SSL
+  $JUPYTER_DEMO_USER
+  $JUPYTER_LOGIN_BANNER_TOP_SECTION
+  $JUPYTER_LOGIN_BANNER_BOTTOM_SECTION
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH

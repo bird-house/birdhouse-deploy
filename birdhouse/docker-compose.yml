@@ -151,7 +151,7 @@ services:
     restart: always
 
   finch:
-    image: birdhouse/finch:version-0.2.7
+    image: birdhouse/finch:version-0.5.1
     container_name: finch
     environment:
       HOSTNAME: $HOSTNAME
@@ -167,7 +167,7 @@ services:
     restart: always
 
   raven:
-    image: pavics/raven:0.9.0
+    image: pavics/raven:0.10.0
     container_name: raven
     ports:
       - "8096:9099"
@@ -241,6 +241,7 @@ services:
     volumes:
       - thredds_persistence:/usr/local/tomcat/content/thredds
       - /data/datasets:/pavics-data
+      - /data/ncml:/pavics-ncml
       - wps_outputs:/pavics-data/wps_outputs
       - ./config/thredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
       - ./config/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
@@ -348,6 +349,9 @@ services:
       DOCKER_NETWORK_NAME: jupyterhub_network
       JUPYTERHUB_USER_DATA_DIR: ${JUPYTERHUB_USER_DATA_DIR}
       JUPYTERHUB_ADMIN_USERS: ${JUPYTERHUB_ADMIN_USERS}
+      JUPYTER_DEMO_USER: ${JUPYTER_DEMO_USER}
+      JUPYTER_DEMO_USER_MEM_LIMIT: ${JUPYTER_DEMO_USER_MEM_LIMIT}
+      JUPYTER_DEMO_USER_CPU_LIMIT: ${JUPYTER_DEMO_USER_CPU_LIMIT}
     volumes:
       - ./config/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
       - ./config/jupyterhub/custom_templates:/custom_templates:ro
