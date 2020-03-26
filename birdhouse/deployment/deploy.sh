@@ -135,8 +135,17 @@ for adir in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
     if [ -d "$adir" ]; then
         cd $adir
 
+        if [ -z "$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR" ]; then
+            AUTODEPLOY_DEPLOY_KEY_ROOT_DIR="$HOME/.ssh"
+        fi
+
         EXTRA_REPO="`git rev-parse --show-toplevel`"
         DEPLOY_KEY="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR/`basename "$EXTRA_REPO"`_deploy_key"
+        DEFAULT_DEPLOY_KEY="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR/id_rsa_git_ssh_read_only"
+        if [ ! -e "$DEPLOY_KEY" -a -e "$DEFAULT_DEPLOY_KEY" ]; then
+            DEPLOY_KEY="$DEFAULT_DEPLOY_KEY"
+        fi
+
         export GIT_SSH_COMMAND=""  # git ver 2.3+
         if [ -e "$DEPLOY_KEY" ]; then
             # override git ssh command for private repos only

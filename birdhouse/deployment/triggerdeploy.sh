@@ -48,8 +48,17 @@ fi
 should_trigger() {
     EXTRA_REPO="`git rev-parse --show-toplevel`"
 
+    if [ -z "$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR" ]; then
+        AUTODEPLOY_DEPLOY_KEY_ROOT_DIR="$HOME/.ssh"
+    fi
+
     DEPLOY_KEY="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR/`basename "$EXTRA_REPO"`_deploy_key"
+    DEFAULT_DEPLOY_KEY="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR/id_rsa_git_ssh_read_only"
+    if [ ! -e "$DEPLOY_KEY" -a -e "$DEFAULT_DEPLOY_KEY" ]; then
+        DEPLOY_KEY="$DEFAULT_DEPLOY_KEY"
+    fi
     DEPLOY_KEY_DISPLAY=""
+
     export GIT_SSH_COMMAND=""  # git ver 2.3+
     if [ -e "$DEPLOY_KEY" ]; then
         DEPLOY_KEY_DISPLAY=" deploy_key='$DEPLOY_KEY'"
