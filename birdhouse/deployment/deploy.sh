@@ -152,6 +152,8 @@ for adir in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
             #
             # https://git-scm.com/docs/git-config#Documentation/git-config.txt-sshvariant
             export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentityFile=$DEPLOY_KEY"
+        else
+            unset GIT_SSH_COMMAND
         fi
 
         # pull the current branch, so this deploy script supports any branches, not just master

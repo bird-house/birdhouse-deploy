@@ -63,6 +63,8 @@ should_trigger() {
     if [ -e "$DEPLOY_KEY" ]; then
         DEPLOY_KEY_DISPLAY=" deploy_key='$DEPLOY_KEY'"
         export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentityFile=$DEPLOY_KEY"
+    else
+        unset GIT_SSH_COMMAND
     fi
 
     echo "triggerdeploy: checking repo '$EXTRA_REPO'$DEPLOY_KEY_DISPLAY"
