@@ -1,6 +1,8 @@
 #!/bin/sh
 # Script to automate local deployment process.
 #
+# Log to "/var/log/PAVICS/autodeploy.log" if AUTODEPLOY_SILENT is not empty.
+#
 # Still have to ssh to target machine but at least this single script
 # takes care of all the common steps for a standard deployment (see corner
 # cases not handled below).
@@ -51,6 +53,10 @@
 #   are re-read.  docker-compose is not aware of any changes outside of the
 #   docker-compose.yml file.
 
+if [ ! -z "$AUTODEPLOY_SILENT" ]; then
+    LOG_FILE="/var/log/PAVICS/autodeploy.log"
+    exec >>$LOG_FILE 2>&1
+fi
 
 usage() {
     echo "USAGE: $0 <path to folder with docker-compose.yml file> [path to env.local]"

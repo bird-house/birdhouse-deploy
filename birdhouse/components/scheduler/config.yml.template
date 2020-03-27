@@ -40,4 +40,5 @@
     --env COMPOSE_DIR=${COMPOSE_DIR}
     --env AUTODEPLOY_DEPLOY_KEY_ROOT_DIR=${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}
     --env JUPYTERHUB_USER_DATA_DIR=${JUPYTERHUB_USER_DATA_DIR}
+    --env AUTODEPLOY_SILENT=true
   image: 'pavics/docker-compose-git:docker-18.09.7-compose-1.25.1'

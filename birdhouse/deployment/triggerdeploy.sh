@@ -10,6 +10,10 @@
 #
 #   Follow same instructions in deploy.sh.
 
+if [ ! -z "$AUTODEPLOY_SILENT" ]; then
+    LOG_FILE="/var/log/PAVICS/autodeploy.log"
+    exec >>$LOG_FILE 2>&1
+fi
 
 usage() {
     echo "USAGE: $0 <path to folder with docker-compose.yml file> [path to env.local]"
