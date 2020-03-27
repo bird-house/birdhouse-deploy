@@ -52,12 +52,6 @@
 #   docker-compose.yml file.
 
 
-GREEN=$(tput setaf 2)
-YELLOW=$(tput setaf 3)
-RED=$(tput setaf 1)
-NORMAL=$(tput sgr0)
-
-
 usage() {
     echo "USAGE: $0 <path to folder with docker-compose.yml file> [path to env.local]"
 }
@@ -66,7 +60,7 @@ COMPOSE_DIR="$1"
 ENV_LOCAL_FILE="$2"
 
 if [ -z "$COMPOSE_DIR" ]; then
-    echo "${RED}ERROR:${NORMAL} please provide path to PAVICS docker-compose dir." 1>&2
+    echo "ERROR: please provide path to PAVICS docker-compose dir." 1>&2
     usage
     exit 2
 else
@@ -84,17 +78,17 @@ REPO_ROOT="`realpath "$COMPOSE_DIR/.."`"
 
 if [ ! -f "$COMPOSE_DIR/docker-compose.yml" -o \
      ! -f "$COMPOSE_DIR/pavics-compose.sh" ]; then
-    echo "${RED}ERROR:${NORMAL} missing docker-compose.yml or pavics-compose.sh file in '$COMPOSE_DIR'" 1>&2
+    echo "ERROR: missing docker-compose.yml or pavics-compose.sh file in '$COMPOSE_DIR'" 1>&2
     exit 2
 fi
 
 if [ ! -f "$ENV_LOCAL_FILE" ]; then
-    echo "${RED}ERROR:${NORMAL} env.local '$ENV_LOCAL_FILE' not found, please instantiate from '$COMPOSE_DIR/env.local.example'" 1>&2
+    echo "ERROR: env.local '$ENV_LOCAL_FILE' not found, please instantiate from '$COMPOSE_DIR/env.local.example'" 1>&2
     exit 2
 fi
 
 if [ -f "$COMPOSE_DIR/docker-compose.override.yml" ]; then
-    echo "${YELLOW}WARNING:${NORMAL} docker-compose.override.yml found, should use EXTRA_CONF_DIRS in env.local instead"
+    echo "WARNING: docker-compose.override.yml found, should use EXTRA_CONF_DIRS in env.local instead"
 fi
 
 START_TIME="`date -Isecond`"
@@ -115,11 +109,11 @@ for adir in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
 
         # fail fast if unclean checkout
         if [ ! -z "`git status -u --porcelain`" ]; then
-            echo "${RED}ERROR:${NORMAL} unclean repo '$adir'" 1>&2
+            echo "ERROR: unclean repo '$adir'" 1>&2
             exit 1
         fi
     else
-        echo "${YELLOW}WARNING:${NORMAL} extra repo '$adir' do not exist"
+        echo "WARNING: extra repo '$adir' do not exist"
     fi
 done
 
@@ -163,7 +157,7 @@ for adir in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
         # pull the current branch, so this deploy script supports any branches, not just master
         git pull
     else
-        echo "${YELLOW}WARNING:${NORMAL} extra repo '$adir' do not exist"
+        echo "WARNING: extra repo '$adir' do not exist"
     fi
 done
 
