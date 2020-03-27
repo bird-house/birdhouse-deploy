@@ -43,6 +43,7 @@ OPTIONAL_VARS='
   $JUPYTER_LOGIN_BANNER_TOP_SECTION
   $JUPYTER_LOGIN_BANNER_BOTTOM_SECTION
   $AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
+  $AUTODEPLOY_DEPLOY_KEY_ROOT_DIR
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH

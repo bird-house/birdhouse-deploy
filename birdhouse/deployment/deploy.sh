@@ -100,6 +100,10 @@ fi
 START_TIME="`date -Isecond`"
 echo "deploy START_TIME=$START_TIME"
 
+# Good value from "scheduler" container.
+# To restore after re-loading common.env and env.local.
+AUTODEPLOY_DEPLOY_KEY_ROOT_DIR_SAVE="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR"
+
 # Read AUTODEPLOY_EXTRA_REPOS
 . $ENV_LOCAL_FILE
 
@@ -135,8 +139,8 @@ for adir in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
     if [ -d "$adir" ]; then
         cd $adir
 
-        if [ -z "$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR" ]; then
-            AUTODEPLOY_DEPLOY_KEY_ROOT_DIR="$HOME/.ssh"
+        if [ ! -z "$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR_SAVE" ]; then
+            AUTODEPLOY_DEPLOY_KEY_ROOT_DIR="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR_SAVE"
         fi
 
         EXTRA_REPO="`git rev-parse --show-toplevel`"
