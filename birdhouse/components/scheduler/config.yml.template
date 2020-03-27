@@ -32,9 +32,12 @@
   command: '${COMPOSE_DIR}/deployment/triggerdeploy.sh ${COMPOSE_DIR}'
   dockerargs: >-
     --rm --name autodeploy${AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES}
+    --volume /var/run/docker.sock:/var/run/docker.sock:ro
     --volume /var/log/PAVICS:/var/log/PAVICS:rw
     --volume ${COMPOSE_DIR}/..:${COMPOSE_DIR}/..:rw
     --volume ${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:ro
+    --volume ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}:rw
     --env COMPOSE_DIR=${COMPOSE_DIR}
     --env AUTODEPLOY_DEPLOY_KEY_ROOT_DIR=${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}
+    --env JUPYTERHUB_USER_DATA_DIR=${JUPYTERHUB_USER_DATA_DIR}
   image: 'docker:19.03.6-git'
