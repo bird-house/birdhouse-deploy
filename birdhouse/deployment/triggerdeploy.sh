@@ -52,10 +52,6 @@ fi
 should_trigger() {
     EXTRA_REPO="`git rev-parse --show-toplevel`"
 
-    if [ ! -z "$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR_SAVE" ]; then
-        AUTODEPLOY_DEPLOY_KEY_ROOT_DIR="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR_SAVE"
-    fi
-
     DEPLOY_KEY="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR/`basename "$EXTRA_REPO"`_deploy_key"
     DEFAULT_DEPLOY_KEY="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR/id_rsa_git_ssh_read_only"
     if [ ! -e "$DEPLOY_KEY" -a -e "$DEFAULT_DEPLOY_KEY" ]; then
@@ -117,10 +113,6 @@ should_trigger() {
 START_TIME="`date -Isecond`"
 echo "==========
 triggerdeploy START_TIME=$START_TIME"
-
-# Good value from "scheduler" container.
-# To restore after re-loading common.env and env.local.
-AUTODEPLOY_DEPLOY_KEY_ROOT_DIR_SAVE="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR"
 
 # Read AUTODEPLOY_EXTRA_REPOS
 . $ENV_LOCAL_FILE
