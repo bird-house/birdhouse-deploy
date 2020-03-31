@@ -1,0 +1,14 @@
+SERVICES['node']['monitoring'].update({
+    'Emu-public': {
+        'request': {
+            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/emu?service=WPS&version=1.0.0&request=GetCapabilities'
+        },
+    },
+    'Emu': {
+        'request': {
+            'url': 'http://${PAVICS_FQDN}:8888/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+        }
+    },
+})
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python
