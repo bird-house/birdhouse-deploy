@@ -1,0 +1,42 @@
+version: '2.1'
+services:
+  proxy:
+    volumes:
+    - ./optional-components/testthredds/conf.extra-service.d:/etc/nginx/conf.extra-service.d/testthredds:ro
+    links:
+    - testthredds
+
+  testthredds:
+    image: unidata/thredds-docker:4.6.14
+    container_name: testthredds
+    ports:
+      - "8084:8080"
+    env_file:
+      - ./config/thredds/thredds.env
+    environment:
+      # for reconstructing proper URL back to user when Thredds behind proxy
+      # because Twitcher eats the "Host" http header set by Nginx
+      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+    volumes:
+      - testthredds_persistence:/usr/local/tomcat/content/thredds
+      - /data/testdatasets:/pavics-testdata:ro
+      - /data/datasets:/pavics-data:ro
+      - /data/ncml:/pavics-ncml:ro
+      - wps_outputs:/pavics-data/wps_outputs:ro
+      - ./optional-components/testthredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
+      - ./config/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
+      - ./config/thredds/wmsConfig.xml:/usr/local/tomcat/content/thredds/wmsConfig.xml:ro
+      - ./optional-components/testthredds/entrypointwrapper:/entrypointwrapper:ro
+    entrypoint: /entrypointwrapper
+    restart: always
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "http://localhost:8080/testthredds/catalog.html",
+        ]
+
+volumes:
+  testthredds_persistence: {}

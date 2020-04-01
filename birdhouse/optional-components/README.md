@@ -26,3 +26,23 @@ How to enable Emu in `env.local` (a copy from
 Emu service will be available at `http://PAVICS_FQDN:8888/wps` or
 `https://PAVICS_FQDN_PUBLIC/twitcher/ows/proxy/emu` where `PAVICS_FQDN`
 and `PAVICS_FQDN_PUBLIC` are defined in your `env.local`.
+
+
+## A second Thredds server for testing
+
+How to enable in `env.local` (a copy from
+[`env.local.example`](../env.local.example)):
+
+* Add `./optional-components/testthredds` to `EXTRA_CONF_DIRS`.
+
+Test Thredds service will be available at `http://PAVICS_FQDN:8084/testthredds`
+or `https://PAVICS_FQDN_PUBLIC/testthredds` where `PAVICS_FQDN` and
+`PAVICS_FQDN_PUBLIC` are defined in your `env.local`.
+
+New container have new `TestDatasets` with volume-mount to `/data/testdatasets`
+on the host.  So your testing `.nc` and `.ncml` files should be added to
+`/data/testdatasets` on the host for them to show up on this Test Thredds
+server.
+
+No Twitcher/Magpie access control, this Test Thredds is directly behind the
+Nginx proxy.
