@@ -29,4 +29,20 @@
 
     </datasetScan>
 
+    <datasetScan name="TestWps_Output" ID="testwps_outputs" path="testwps_outputs" location="/testwps_outputs">
+
+      <metadata inherited="true">
+        <serviceName>all</serviceName>
+      </metadata>
+
+      <filter>
+        <include wildcard="*.nc" />
+        <include wildcard="*.ncml" />
+        <include wildcard="*.txt" />
+        <include wildcard="*.md" />
+        <include wildcard="*.rst" />
+      </filter>
+
+    </datasetScan>
+
 </catalog>

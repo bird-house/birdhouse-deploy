@@ -22,6 +22,7 @@ services:
       - /data/testdatasets:/pavics-testdata:ro
       - /data/datasets:/pavics-data:ro
       - /data/ncml:/pavics-ncml:ro
+      - testwps_outputs:/testwps_outputs:ro
       - wps_outputs:/pavics-data/wps_outputs:ro
       - ./optional-components/testthredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
       - ./config/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
@@ -40,3 +41,4 @@ services:
 
 volumes:
   testthredds_persistence: {}
+  testwps_outputs: {}

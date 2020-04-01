@@ -44,5 +44,8 @@ on the host.  So your testing `.nc` and `.ncml` files should be added to
 `/data/testdatasets` on the host for them to show up on this Test Thredds
 server.
 
+`TestWps_Output` dataset is for other WPS services to write to, similar to
+`birdhouse/wps_outputs` dataset in the production Thredds.
+
 No Twitcher/Magpie access control, this Test Thredds is directly behind the
 Nginx proxy.
