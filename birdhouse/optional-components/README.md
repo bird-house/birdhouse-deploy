@@ -45,7 +45,9 @@ on the host.  So your testing `.nc` and `.ncml` files should be added to
 server.
 
 `TestWps_Output` dataset is for other WPS services to write to, similar to
-`birdhouse/wps_outputs` dataset in the production Thredds.
+`birdhouse/wps_outputs` dataset in the production Thredds.  With Emu, add
+`export EMU_WPS_OUTPUTS_VOL=testwps_outputs` to `env.local` for Emu to write to
+`TestWps_Output` dataset.
 
 No Twitcher/Magpie access control, this Test Thredds is directly behind the
 Nginx proxy.
