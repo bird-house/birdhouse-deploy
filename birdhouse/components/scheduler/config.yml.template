@@ -12,7 +12,7 @@
 
 - name: notebookdeploy
   comment: Auto-deploy tutorial notebooks
-  schedule: '@every 15m'
+  schedule: '${AUTODEPLOY_NOTEBOOK_FREQUENCY}'
   command: '${COMPOSE_DIR}/deployment/trigger-deploy-notebook'
   dockerargs: >-
     --rm --name notebookdeploy
@@ -28,7 +28,7 @@
 
 - name: autodeploy
   comment: Auto-deploy entire PAVICS platform
-  schedule: '@every 2m'
+  schedule: '${AUTODEPLOY_PLATFORM_FREQUENCY}'
   command: '${COMPOSE_DIR}/deployment/triggerdeploy.sh ${COMPOSE_DIR}'
   dockerargs: >-
     --rm --name autodeploy${AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES}
