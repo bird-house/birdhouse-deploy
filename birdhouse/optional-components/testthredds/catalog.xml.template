@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog name="${THREDDS_ORGANIZATION} TEST Thredds Catalog"
+         xmlns="http://www.unidata.ucar.edu/namespaces/thredds/InvCatalog/v1.0"
+         xmlns:xlink="http://www.w3.org/1999/xlink" >
+
+    <service name="all" serviceType="Compound" base="" >
+        <service name="http" serviceType="HTTPServer" base="/testthredds/fileServer/" />
+        <service name="odap" serviceType="OpenDAP" base="/testthredds/dodsC/" />
+        <service name="ncml" serviceType="NCML" base="/testthredds/ncml/"/>
+        <service name="uddc" serviceType="UDDC" base="/testthredds/uddc/"/>
+        <service name="iso" serviceType="ISO" base="/testthredds/iso/"/>
+        <service name="wcs" serviceType="WCS" base="/testthredds/wcs/" />
+        <service name="wms" serviceType="WMS" base="/testthredds/wms/" />
+    </service>
+
+    <datasetScan name="TestDatasets" ID="testdatasets" path="testdatasets" location="/pavics-testdata">
+
+      <metadata inherited="true">
+        <serviceName>all</serviceName>
+      </metadata>
+
+      <filter>
+        <include wildcard="*.nc" />
+        <include wildcard="*.ncml" />
+        <include wildcard="*.txt" />
+        <include wildcard="*.md" />
+        <include wildcard="*.rst" />
+      </filter>
+
+    </datasetScan>
+
+    <datasetScan name="TestWps_Output" ID="testwps_outputs" path="testwps_outputs" location="/testwps_outputs">
+
+      <metadata inherited="true">
+        <serviceName>all</serviceName>
+      </metadata>
+
+      <filter>
+        <include wildcard="*.nc" />
+        <include wildcard="*.ncml" />
+        <include wildcard="*.txt" />
+        <include wildcard="*.md" />
+        <include wildcard="*.rst" />
+      </filter>
+
+    </datasetScan>
+
+</catalog>

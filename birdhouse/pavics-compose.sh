@@ -124,7 +124,7 @@ done
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
-find ./config ./components ./optional-components -name '*.template' |
+find ./config ./components ./optional-components $EXTRA_CONF_DIRS -name '*.template' |
   while read FILE
   do
     DEST=${FILE%.template}
