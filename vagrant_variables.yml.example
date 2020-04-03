@@ -42,7 +42,6 @@ domain: ouranos.ca
 # for you from the default values in env.local.example.
 
 # SSH deploy key to be used with the automated unattended deploy script.
-# Automated unattended deployment will be enabled if this deploy key is set.
 # If not set, no deploy key will be copied.
 # See creation and setup of this deploy key in birdhouse/deployment/deploy.sh.
 #
