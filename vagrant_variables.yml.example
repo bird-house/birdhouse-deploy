@@ -59,3 +59,5 @@ domain: ouranos.ca
 # memory: 8192
 # cpus: 2
 # disksize: '100GB'
+# box: 'ubuntu/bionic64'
+# box: 'centos/7'
