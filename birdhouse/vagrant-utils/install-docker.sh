@@ -1,59 +1,72 @@
 #!/usr/bin/env bash
 
-# Install Docker CE on Ubuntu per
-# https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/
+# # Install Docker CE on Ubuntu per
+# # https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/
+# 
+# # From https://github.com/stefanlasiewski/vagrant-ubuntu-docker/blob/756db1689947b1ba6eb360354bc10150c510a52a/install-docker.sh
+# 
+# set -e # Exit if any subcommand fails
+# set -x # Print commands for troubleshooting
+# 
+# # The Docker version may be specified as $1
+# if [ $# -eq 1 ]; then
+#   docker_version=$1
+# fi
+# 
+# # 1. Update the apt package index:
+# 
+# sudo apt-get --yes --quiet update
+# 
+# # 2. Install packages to allow apt to use a repository over HTTPS:
+# 
+# sudo apt-get --yes --quiet install \
+#     apt-transport-https \
+#     ca-certificates \
+#     curl \
+#     software-properties-common
+# 
+# # 3. Add Docker’s official GPG key:
+# 
+# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+# 
+# # Verify that you now have the key with the fingerprint 9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88, by searching for the last 8 characters of the fingerprint.
+# 
+# sudo apt-key fingerprint 0EBFCD88
+# 
+# # 4. Use the following command to set up the stable repository. You always need the stable repository, even if you want to install builds from the edge or test repositories as well. To add the edge or test repository, add the word edge or test (or both) after the word stable in the commands below.
+# #DOCKER_REPOS="stable edge"
+# DOCKER_REPOS="stable"
+# 
+# sudo add-apt-repository \
+#    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+#    $(lsb_release -cs) \
+#    $DOCKER_REPOS"
+# 
+# # INSTALL DOCKER CE
+# 
+# # 1. Update the apt package index.
+# 
+# sudo apt-get --yes --quiet update
+# 
+# # 2. Install the latest version of Docker CE, or go to the next step to install a specific version. Any existing installation of Docker is replaced.
+# if [ "$docker_version" ]; then
+#   sudo apt-get install --yes --quiet docker-ce=$docker_version
+# else
+#   sudo apt-get install --yes --quiet docker-ce
+# fi
 
-# From https://github.com/stefanlasiewski/vagrant-ubuntu-docker/blob/756db1689947b1ba6eb360354bc10150c510a52a/install-docker.sh
 
-set -e # Exit if any subcommand fails
-set -x # Print commands for troubleshooting
+sudo yum install -y yum-utils
 
-# The Docker version may be specified as $1
-if [ $# -eq 1 ]; then
-  docker_version=$1
-fi
+sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
 
-# 1. Update the apt package index:
+sudo yum install -y docker-ce docker-ce-cli containerd.io
 
-sudo apt-get --yes --quiet update
+sudo systemctl enable docker
+sudo systemctl start docker
 
-# 2. Install packages to allow apt to use a repository over HTTPS:
-
-sudo apt-get --yes --quiet install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    software-properties-common
-
-# 3. Add Docker’s official GPG key:
-
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-
-# Verify that you now have the key with the fingerprint 9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88, by searching for the last 8 characters of the fingerprint.
-
-sudo apt-key fingerprint 0EBFCD88
-
-# 4. Use the following command to set up the stable repository. You always need the stable repository, even if you want to install builds from the edge or test repositories as well. To add the edge or test repository, add the word edge or test (or both) after the word stable in the commands below.
-#DOCKER_REPOS="stable edge"
-DOCKER_REPOS="stable"
-
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   $DOCKER_REPOS"
-
-# INSTALL DOCKER CE
-
-# 1. Update the apt package index.
-
-sudo apt-get --yes --quiet update
-
-# 2. Install the latest version of Docker CE, or go to the next step to install a specific version. Any existing installation of Docker is replaced.
-if [ "$docker_version" ]; then
-  sudo apt-get install --yes --quiet docker-ce=$docker_version
-else
-  sudo apt-get install --yes --quiet docker-ce
-fi
 
 # 4. Verify that Docker CE is installed correctly by running the hello-world image.
 
