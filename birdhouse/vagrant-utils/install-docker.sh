@@ -82,6 +82,8 @@ if [ -n "`df -h | grep ^vagrant`" ]; then
     sudo usermod -a -G docker vagrant
 fi
 
+sudo yum install -y git
+
 # install docker-compose, from https://gist.github.com/wdullaer/f1af16bd7e970389bad3
 LATEST_COMPOSE_VERSION="`git ls-remote https://github.com/docker/compose | grep refs/tags | grep -oP "[0-9]+\.[0-9][0-9]+\.[0-9]+$"|tail -1`"
 # LATEST_COMPOSE_VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)  # need jq :(
