@@ -4,5 +4,6 @@ outputpath = /data/wpsoutputs
 
 [logging]
 level = DEBUG
+database=postgresql://${POSTGRES_PAVICS_USERNAME}:${POSTGRES_PAVICS_PASSWORD}@postgres_finch2/finch2
 
 ${EXTRA_PYWPS_CONFIG}

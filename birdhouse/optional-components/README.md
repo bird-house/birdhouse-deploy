@@ -70,7 +70,9 @@ in your `env.local`.
 
 Use same docker image as regular Finch by default but can be customized.
 
-Use sqlite DB instead of Postgres like the regular Finch.
+Use a separate Postgres DB for this optional component to be completely
+self-contained and to allow experimenting with different versions of Postgres
+DB.
 
 Magpie will be automatically configured to give complete public anonymous
 access for this second Finch.

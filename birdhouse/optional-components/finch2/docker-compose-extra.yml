@@ -13,6 +13,20 @@ services:
       - ./optional-components/finch2/wps.cfg:/wps.cfg:ro
       - wps_outputs:/data/wpsoutputs
       - /tmp
+    links:
+      - postgres_finch2
+    restart: always
+
+  postgres_finch2:
+    image: ${FINCH2_POSTGRES_IMAGE:-postgres:10.12}
+    container_name: postgres_finch2
+    volumes:
+      - postgres_finch2:/var/lib/postgresql/data/pgdata
+      - ./optional-components/finch2/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    env_file:
+      - ./config/postgres/credentials.env
     restart: always
 
   magpie:
@@ -23,3 +37,6 @@ services:
   proxy:
     volumes:
     - ./optional-components/finch2/finch2_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/finch2_canarie_api_monitoring.py:ro
+
+volumes:
+  postgres_finch2: {}
