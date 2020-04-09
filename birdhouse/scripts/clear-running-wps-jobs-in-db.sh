@@ -15,8 +15,12 @@ else
     shift
 fi
 
+if [ -z "$POSTGRES_CONTAINER_NAME" ]; then
+    POSTGRES_CONTAINER_NAME=postgres
+fi
+
 set -x
-docker exec postgres psql -U $POSTGRES_USER $DB_NAME -c "select * from pywps_requests where percent_done > -1 and percent_done < 100.0;"
+docker exec $POSTGRES_CONTAINER_NAME psql -U $POSTGRES_USER $DB_NAME -c "select * from pywps_requests where percent_done > -1 and percent_done < 100.0;"
 
 set +x
 echo "
@@ -27,4 +31,4 @@ Clear those jobs? (Ctrl-C to cancel, any keys to continue)"
 read a
 
 set -x
-docker exec postgres psql -U $POSTGRES_USER $DB_NAME -c "delete from pywps_requests where percent_done > -1 and percent_done < 100.0;"
+docker exec $POSTGRES_CONTAINER_NAME psql -U $POSTGRES_USER $DB_NAME -c "delete from pywps_requests where percent_done > -1 and percent_done < 100.0;"
