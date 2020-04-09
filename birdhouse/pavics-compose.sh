@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 YELLOW=$(tput setaf 3)
 RED=$(tput setaf 1)
@@ -42,6 +42,10 @@ OPTIONAL_VARS='
   $JUPYTER_DEMO_USER
   $JUPYTER_LOGIN_BANNER_TOP_SECTION
   $JUPYTER_LOGIN_BANNER_BOTTOM_SECTION
+  $AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
+  $AUTODEPLOY_PLATFORM_FREQUENCY
+  $AUTODEPLOY_NOTEBOOK_FREQUENCY
+  $AUTODEPLOY_EXTRA_SCHEDULER_JOBS
   $FINCH2_PORT
   $FINCH2_NAME
 '
@@ -50,23 +54,23 @@ OPTIONAL_VARS='
 # tip: ln -s /path/to/pavics-compose.sh ~/bin/
 cd $(dirname $(readlink -f $0 || realpath $0))
 
-source common.env
+. ./common.env
 
 # we source local configs, if present
 # we don't use usual .env filename, because docker-compose uses it
-[[ -f env.local ]] && source env.local
+[ -f env.local ] && . ./env.local
 
 for i in ${VARS}
 do
-  v="${i#$}"
-  if [[ -z "${!v}" ]]
+  v="${i}"
+  if [ -z "`eval "echo ${v}"`" ]
   then
     echo "${RED}Error${NORMAL}: Required variable $v is not set. Check env.local file."
     exit 1
   fi
 done
 
-if [[ ! -f docker-compose.yml ]]
+if [ ! -f docker-compose.yml ]
 then
   echo "Error, this script must be ran from the folder containing the docker-compose.yml file"
   exit 1
@@ -74,14 +78,14 @@ fi
 
 ## check fails when root access is required to access this file.. workaround possible by going through docker daemon... but
 # will add delay
-# if [[ ! -f $SSL_CERTIFICATE ]]
+# if [ ! -f $SSL_CERTIFICATE ]
 # then
 #   echo "Error, SSL certificate file $SSL_CERTIFICATE is missing"
 #   exit 1
 # fi
 
 TIMEWAIT_REUSE=$(/sbin/sysctl -n  net.ipv4.tcp_tw_reuse)
-if [[ ${TIMEWAIT_REUSE} -eq 0 ]]
+if [ ${TIMEWAIT_REUSE} -eq 0 ]
 then
   echo "${YELLOW}Warning:${NORMAL} the sysctl net.ipv4.tcp_tw_reuse is not enabled"
   echo "         It it suggested to set it to 1, otherwise the pavicscrawler may fail"
@@ -92,7 +96,7 @@ if [ -z "$PAVICS_FQDN_PUBLIC" ]; then
   export PAVICS_FQDN_PUBLIC="$PAVICS_FQDN"
 fi
 
-if [ "$ALLOW_UNSECURE_HTTP" = "True" ]; then
+if [ x"$ALLOW_UNSECURE_HTTP" = x"True" ]; then
   export INCLUDE_FOR_PORT_80="include /etc/nginx/conf.d/all-services.include;"
 else
   export INCLUDE_FOR_PORT_80="include /etc/nginx/conf.d/redirect-to-https.include;"
@@ -113,15 +117,23 @@ if [ -z "$VERIFY_SSL" ]; then
   export VERIFY_SSL="true"
 fi
 
+export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""
+for adir in $AUTODEPLOY_EXTRA_REPOS; do
+  # 4 spaces in front of '--volume' is important
+  AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES="$AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
+    --volume ${adir}:${adir}:rw"
+done
+export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
+
 # we apply all the templates
-find ./config ./optional-components $EXTRA_CONF_DIRS -name '*.template' -print0 |
-  while IFS= read -r -d $'\0' FILE
+find ./config ./components ./optional-components $EXTRA_CONF_DIRS -name '*.template' |
+  while read FILE
   do
     DEST=${FILE%.template}
     cat ${FILE} | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > ${DEST}
   done
 
-if [[ $1 == "up" ]]; then
+if [ x"$1" = x"up" ]; then
   # this is external in docker-compose.yml so have to create here
   # no error if already exist, just an error message
   docker network create jupyterhub_network
@@ -146,16 +158,16 @@ ERR=$?
 
 # execute post-compose function if exists and no error occurred
 type post-compose 2>&1 | grep 'post-compose is a function' > /dev/null
-if [[ $? -eq 0 ]]
+if [ $? -eq 0 ]
 then
-  [[ ${ERR} -gt 0 ]] && { echo "Error occurred with docker-compose, not running post-compose"; exit $?; }
+  [ ${ERR} -gt 0 ] && { echo "Error occurred with docker-compose, not running post-compose"; exit $?; }
   post-compose $*
 fi
 
 
-while [[ $# -gt 0 ]]
+while [ $# -gt 0 ]
 do
-  if [[ $1 == "up" ]]; then
+  if [ x"$1" = x"up" ]; then
     # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
     PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose restart proxy
 

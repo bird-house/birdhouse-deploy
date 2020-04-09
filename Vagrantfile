@@ -40,7 +40,6 @@ Vagrant.configure("2") do |config|
 
   if settings.has_key?('ssh_deploy_key')
       config.vm.provision :file, source: settings['ssh_deploy_key'], destination: ".ssh/id_rsa_git_ssh_read_only"
-      config.vm.provision :shell, path: "birdhouse/deployment/install-automated-deployment.sh", args: ["/vagrant", "vagrant", "5-mins"]
   end
 
   if settings.has_key?('datasets_dirs')
