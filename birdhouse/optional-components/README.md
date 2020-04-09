@@ -51,3 +51,24 @@ server.
 
 No Twitcher/Magpie access control, this Test Thredds is directly behind the
 Nginx proxy.
+
+
+## A second Finch server for testing
+
+How to enable in `env.local` (a copy from
+[`env.local.example`](../env.local.example)):
+
+* Add `./optional-components/finch2` to `EXTRA_CONF_DIRS`.
+
+Second Finch service will be available at `http://PAVICS_FQDN:8010/wps`
+or `https://PAVICS_FQDN_PUBLIC/twitcher/ows/proxy/finch2` where `PAVICS_FQDN` and
+`PAVICS_FQDN_PUBLIC` are defined in your `env.local`.
+
+Use same docker image as regular Finch.
+
+Use sqlite DB instead of Postgres like the regular Finch.
+
+Magpie will be automatically configured to give complete public anonymous
+access for this second Finch.
+
+Canarie monitoring will also be automatically configured for this second Finch.

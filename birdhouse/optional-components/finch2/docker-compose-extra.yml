@@ -1,0 +1,25 @@
+version: '2.1'
+services:
+  finch2:
+    image: ${FINCH_IMAGE}
+    container_name: finch2
+    environment:
+      HOSTNAME: $HOSTNAME
+      HTTP_PORT: 5000
+      PYWPS_CFG: /wps.cfg
+    ports:
+      - "8010:5000"
+    volumes:
+      - ./optional-components/finch2/wps.cfg:/wps.cfg:ro
+      - wps_outputs:/data/wpsoutputs
+      - /tmp
+    restart: always
+
+  magpie:
+    volumes:
+    - ./optional-components/finch2/finch2-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/finch2-magpie-permission.cfg:ro
+    - ./optional-components/finch2/finch2-magpie-provider.cfg:/opt/local/src/magpie/config/providers/finch2-magpie-provider.cfg:ro
+
+  proxy:
+    volumes:
+    - ./optional-components/finch2/finch2_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/finch2_canarie_api_monitoring.py:ro

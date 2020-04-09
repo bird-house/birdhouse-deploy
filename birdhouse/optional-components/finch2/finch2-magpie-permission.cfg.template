@@ -1,0 +1,15 @@
+permissions:
+  - service: finch2
+    permission: getcapabilities
+    group: anonymous
+    action: create
+
+  - service: finch2
+    permission: describeprocess
+    group: anonymous
+    action: create
+
+  - service: finch2
+    permission: execute
+    group: anonymous
+    action: create

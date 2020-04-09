@@ -1,0 +1,14 @@
+SERVICES['node']['monitoring'].update({
+    'Finch2-public': {
+        'request': {
+            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/finch2?service=WPS&version=1.0.0&request=GetCapabilities'
+        },
+    },
+    'Finch2': {
+        'request': {
+            'url': 'http://${PAVICS_FQDN}:8010/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+        }
+    },
+})
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python

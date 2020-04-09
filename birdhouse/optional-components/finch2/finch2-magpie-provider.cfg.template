@@ -1,0 +1,8 @@
+providers:
+  finch2:
+    url: http://${PAVICS_FQDN}:8010/wps
+    title: Finch2
+    public: true
+    c4i: false
+    type: wps
+    sync_type: wps
