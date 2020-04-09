@@ -4,11 +4,9 @@ services:
     image: ${FINCH2_IMAGE}
     container_name: finch2
     environment:
-      HOSTNAME: $HOSTNAME
-      HTTP_PORT: 5000
       PYWPS_CFG: /wps.cfg
     ports:
-      - "${FINCH2_PORT}:5000"
+      - "${FINCH2_PORT}:${FINCH2_INTERNAL_PORT:-5000}"
     volumes:
       - ./optional-components/finch2/wps.cfg:/wps.cfg:ro
       - wps_outputs:/data/wpsoutputs
