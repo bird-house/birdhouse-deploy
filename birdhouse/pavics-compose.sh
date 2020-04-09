@@ -42,6 +42,8 @@ OPTIONAL_VARS='
   $JUPYTER_DEMO_USER
   $JUPYTER_LOGIN_BANNER_TOP_SECTION
   $JUPYTER_LOGIN_BANNER_BOTTOM_SECTION
+  $FINCH2_PORT
+  $FINCH2_NAME
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH

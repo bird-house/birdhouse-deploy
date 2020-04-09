@@ -1,15 +1,15 @@
 permissions:
-  - service: finch2
+  - service: ${FINCH2_NAME}
     permission: getcapabilities
     group: anonymous
     action: create
 
-  - service: finch2
+  - service: ${FINCH2_NAME}
     permission: describeprocess
     group: anonymous
     action: create
 
-  - service: finch2
+  - service: ${FINCH2_NAME}
     permission: execute
     group: anonymous
     action: create

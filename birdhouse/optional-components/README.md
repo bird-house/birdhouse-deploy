@@ -60,11 +60,15 @@ How to enable in `env.local` (a copy from
 
 * Add `./optional-components/finch2` to `EXTRA_CONF_DIRS`.
 
-Second Finch service will be available at `http://PAVICS_FQDN:8010/wps`
-or `https://PAVICS_FQDN_PUBLIC/twitcher/ows/proxy/finch2` where `PAVICS_FQDN` and
-`PAVICS_FQDN_PUBLIC` are defined in your `env.local`.
+* Optionally set `FINCH2_IMAGE`, `FINCH2_PORT`, `FINCH2_NAME` in `env.local`
+  for further customizations.  Default values are in [`common.env`](../common.env).
 
-Use same docker image as regular Finch.
+Second Finch service will be available at `http://PAVICS_FQDN:FINCH2_PORT/wps`
+or `https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/FINCH2_NAME` where
+`PAVICS_FQDN`, `PAVICS_FQDN_PUBLIC` and `TWITCHER_PROTECTED_PATH` are defined
+in your `env.local`.
+
+Use same docker image as regular Finch by default but can be customized.
 
 Use sqlite DB instead of Postgres like the regular Finch.
 

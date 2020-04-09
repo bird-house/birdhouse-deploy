@@ -1,7 +1,7 @@
 providers:
-  finch2:
-    url: http://${PAVICS_FQDN}:8010/wps
-    title: Finch2
+  ${FINCH2_NAME}:
+    url: http://${PAVICS_FQDN}:${FINCH2_PORT}/wps
+    title: ${FINCH2_NAME}
     public: true
     c4i: false
     type: wps
