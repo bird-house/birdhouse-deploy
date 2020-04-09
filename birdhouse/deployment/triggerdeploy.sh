@@ -10,6 +10,10 @@
 #
 #   Follow same instructions in deploy.sh.
 
+if [ ! -z "$AUTODEPLOY_SILENT" ]; then
+    LOG_FILE="/var/log/PAVICS/autodeploy.log"
+    exec >>$LOG_FILE 2>&1
+fi
 
 usage() {
     echo "USAGE: $0 <path to folder with docker-compose.yml file> [path to env.local]"
@@ -47,7 +51,23 @@ fi
 
 should_trigger() {
     EXTRA_REPO="`git rev-parse --show-toplevel`"
-    echo "triggerdeploy: checking repo '$EXTRA_REPO'"
+
+    DEPLOY_KEY="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR/`basename "$EXTRA_REPO"`_deploy_key"
+    DEFAULT_DEPLOY_KEY="$AUTODEPLOY_DEPLOY_KEY_ROOT_DIR/id_rsa_git_ssh_read_only"
+    if [ ! -e "$DEPLOY_KEY" -a -e "$DEFAULT_DEPLOY_KEY" ]; then
+        DEPLOY_KEY="$DEFAULT_DEPLOY_KEY"
+    fi
+    DEPLOY_KEY_DISPLAY=""
+
+    export GIT_SSH_COMMAND=""  # git ver 2.3+
+    if [ -e "$DEPLOY_KEY" ]; then
+        DEPLOY_KEY_DISPLAY=" deploy_key='$DEPLOY_KEY'"
+        export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentityFile=$DEPLOY_KEY"
+    else
+        unset GIT_SSH_COMMAND
+    fi
+
+    echo "triggerdeploy: checking repo '$EXTRA_REPO'$DEPLOY_KEY_DISPLAY"
 
     # fetch remote branches, not affecting current checkout
     git fetch --prune --all
@@ -90,8 +110,6 @@ should_trigger() {
 }
 
 
-SSH_DEPLOY_KEY="$HOME/.ssh/id_rsa_git_ssh_read_only"
-
 START_TIME="`date -Isecond`"
 echo "==========
 triggerdeploy START_TIME=$START_TIME"
@@ -100,8 +118,6 @@ triggerdeploy START_TIME=$START_TIME"
 . $ENV_LOCAL_FILE
 
 set -x
-
-export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentityFile=$SSH_DEPLOY_KEY"
 
 SHOULD_TRIGGER=""
 for adir in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do

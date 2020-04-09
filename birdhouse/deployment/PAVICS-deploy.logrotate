@@ -7,4 +7,5 @@
     minsize 500k
     copytruncate
     compress
+    dateext
 }
