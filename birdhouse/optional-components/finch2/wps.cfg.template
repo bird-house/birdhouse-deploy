@@ -4,6 +4,6 @@ outputpath = /data/wpsoutputs
 
 [logging]
 level = INFO
-database=postgresql://${POSTGRES_PAVICS_USERNAME}:${POSTGRES_PAVICS_PASSWORD}@postgres_finch2/finch2
+database=postgresql://${POSTGRES_PAVICS_USERNAME}:${POSTGRES_PAVICS_PASSWORD}@postgres_generic_bird/generic_bird
 
 ${EXTRA_PYWPS_CONFIG}

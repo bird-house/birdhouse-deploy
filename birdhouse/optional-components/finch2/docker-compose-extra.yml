@@ -1,26 +1,26 @@
 version: '2.1'
 services:
-  finch2:
-    image: ${FINCH2_IMAGE}
-    container_name: finch2
+  generic_bird:
+    image: ${GENERIC_BIRD_IMAGE}
+    container_name: generic_bird
     environment:
       PYWPS_CFG: /wps.cfg
     ports:
-      - "${FINCH2_PORT}:${FINCH2_INTERNAL_PORT:-5000}"
+      - "${GENERIC_BIRD_PORT}:${GENERIC_BIRD_INTERNAL_PORT:-5000}"
     volumes:
-      - ./optional-components/finch2/wps.cfg:/wps.cfg:ro
+      - ./optional-components/generic_bird/wps.cfg:/wps.cfg:ro
       - wps_outputs:/data/wpsoutputs
       - /tmp
     links:
-      - postgres_finch2
+      - postgres_generic_bird
     restart: always
 
-  postgres_finch2:
-    image: ${FINCH2_POSTGRES_IMAGE:-postgres:10.12}
-    container_name: postgres_finch2
+  postgres_generic_bird:
+    image: ${GENERIC_BIRD_POSTGRES_IMAGE:-postgres:10.12}
+    container_name: postgres_generic_bird
     volumes:
-      - postgres_finch2:/var/lib/postgresql/data/pgdata
-      - ./optional-components/finch2/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - postgres_generic_bird:/var/lib/postgresql/data/pgdata
+      - ./optional-components/generic_bird/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
     env_file:
@@ -29,12 +29,12 @@ services:
 
   magpie:
     volumes:
-    - ./optional-components/finch2/finch2-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/finch2-magpie-permission.cfg:ro
-    - ./optional-components/finch2/finch2-magpie-provider.cfg:/opt/local/src/magpie/config/providers/finch2-magpie-provider.cfg:ro
+    - ./optional-components/generic_bird/generic_bird-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/generic_bird-magpie-permission.cfg:ro
+    - ./optional-components/generic_bird/generic_bird-magpie-provider.cfg:/opt/local/src/magpie/config/providers/generic_bird-magpie-provider.cfg:ro
 
   proxy:
     volumes:
-    - ./optional-components/finch2/finch2_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/finch2_canarie_api_monitoring.py:ro
+    - ./optional-components/generic_bird/generic_bird_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/generic_bird_canarie_api_monitoring.py:ro
 
 volumes:
-  postgres_finch2: {}
+  postgres_generic_bird: {}

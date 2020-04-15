@@ -1,7 +1,7 @@
 providers:
-  ${FINCH2_NAME}:
-    url: http://${PAVICS_FQDN}:${FINCH2_PORT}/wps
-    title: ${FINCH2_NAME}
+  ${GENERIC_BIRD_NAME}:
+    url: http://${PAVICS_FQDN}:${GENERIC_BIRD_PORT}/wps
+    title: ${GENERIC_BIRD_NAME}
     public: true
     c4i: false
     type: wps

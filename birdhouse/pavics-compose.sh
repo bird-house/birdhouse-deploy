@@ -46,8 +46,8 @@ OPTIONAL_VARS='
   $AUTODEPLOY_PLATFORM_FREQUENCY
   $AUTODEPLOY_NOTEBOOK_FREQUENCY
   $AUTODEPLOY_EXTRA_SCHEDULER_JOBS
-  $FINCH2_PORT
-  $FINCH2_NAME
+  $GENERIC_BIRD_PORT
+  $GENERIC_BIRD_NAME
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH

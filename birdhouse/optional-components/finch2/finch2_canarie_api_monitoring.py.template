@@ -1,12 +1,12 @@
 SERVICES['node']['monitoring'].update({
-    '${FINCH2_NAME}-public': {
+    '${GENERIC_BIRD_NAME}-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/${FINCH2_NAME}?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/${GENERIC_BIRD_NAME}?service=WPS&version=1.0.0&request=GetCapabilities'
         },
     },
-    '${FINCH2_NAME}': {
+    '${GENERIC_BIRD_NAME}': {
         'request': {
-            'url': 'http://${PAVICS_FQDN}:${FINCH2_PORT}/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'http://${PAVICS_FQDN}:${GENERIC_BIRD_PORT}/wps?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
 })

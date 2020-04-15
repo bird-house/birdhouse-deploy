@@ -1,1 +1,1 @@
-CREATE DATABASE finch2;
+CREATE DATABASE generic_bird;
