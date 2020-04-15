@@ -1,0 +1,15 @@
+permissions:
+  - service: ${GENERIC_BIRD_NAME}
+    permission: getcapabilities
+    group: anonymous
+    action: create
+
+  - service: ${GENERIC_BIRD_NAME}
+    permission: describeprocess
+    group: anonymous
+    action: create
+
+  - service: ${GENERIC_BIRD_NAME}
+    permission: execute
+    group: anonymous
+    action: create
