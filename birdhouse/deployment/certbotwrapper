@@ -1,0 +1,61 @@
+#!/bin/sh -e
+# Renew LetsEncrypt SSL certificate using certbot docker image.
+#
+# Important:
+# * SUPPORT_EMAIL from env.local is used as renew email, make sure it's valid!
+# * certbot requires your port 80 and 443 be accessible directly on the internet
+#
+# Useful extra options:
+# * more --domain
+# * --staging
+# * --dry-run
+#
+# Port 80 and 443 must be free at the time of invoking this script
+# (pavics-compose.sh stop proxy)
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+
+# Default values
+. $THIS_DIR/../common.env
+
+if [ -e "$THIS_DIR/../env.local" ]; then
+    # Override default values
+    . $THIS_DIR/../env.local
+fi
+
+set -x
+
+CERT_DOMAIN="$PAVICS_FQDN_PUBLIC"
+if [ -z "$CERT_DOMAIN" ]; then
+    CERT_DOMAIN="$PAVICS_FQDN"
+fi
+
+docker run --rm --name certbot \
+  -v "/etc/letsencrypt:/etc/letsencrypt" \
+  -v "/var/lib/letsencrypt:/var/lib/letsencrypt" \
+  -v "/var/log/letsencrypt:/var/log/letsencrypt" \
+  -p 443:443 -p 80:80 \
+  certbot/certbot:v1.3.0 \
+  certonly \
+  --non-interactive \
+  --agree-tos \
+  --no-eff-email \
+  --standalone \
+  --email $SUPPORT_EMAIL \
+  --domain $CERT_DOMAIN \
+  "$@"
+RC=$?
+
+set +x
+echo "
+What to do next:
+
+CERTPATH=\"/etc/letsencrypt/live/$CERT_DOMAIN\"
+cd $THIS_DIR/..
+sudo cat \$CERTPATH/fullchain.pem \$CERTPATH/privkey.pem > $SSL_CERTIFICATE
+openssl x509 -noout -text -in $SSL_CERTIFICATE
+./pavics-compose.sh up -d
+"
+
+exit $RC
