@@ -78,6 +78,9 @@ cat << __EOF__ > $TMP_SCRIPT
 
 cd $NOTEBOOK_DIR_MNT
 rm -rf $TUTORIAL_NOTEBOOKS_DIR/*
+if [ ! -d $TUTORIAL_NOTEBOOKS_DIR ]; then
+  mkdir $TUTORIAL_NOTEBOOKS_DIR
+fi
 cp -rv /$TUTORIAL_NOTEBOOKS_DIR/* $TUTORIAL_NOTEBOOKS_DIR
 # make read-only
 chown -R root:root $TUTORIAL_NOTEBOOKS_DIR
