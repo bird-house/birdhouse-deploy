@@ -14,6 +14,10 @@ Vagrant.configure("2") do |config|
   # 2019-07-03 with VirtualBox 6.0.8
   config.vbguest.auto_update = false
 
+  # https://blog.centos.org/2018/01/updated-centos-vagrant-images-available-v1801-01/
+  # Fix /vagrant shared folders (together with vagrant-vbguest) for Centos 7.
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+
   # bridge networking to get real DNS name on local network, PAVICS does not
   # seems to work with numerical IP address for PAVICS_FQDN
   if settings.has_key?('hostip')
