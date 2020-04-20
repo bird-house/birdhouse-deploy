@@ -47,9 +47,23 @@ domain: ouranos.ca
 #
 # ssh_deploy_key: "~/.ssh/id_rsa_git_ssh_read_only"
 
+# LetsEncrypt settings
+#
+# Requires port 80 and 443 directly open on the internet (could be insecure).
+# If this is not possible, use Pagekite below to have a real SSL certificate
+# and to expose your VM on the internet.
+#
+# letsencrypt_email is also used as SUPPORT_EMAIL in env.local.
+#
+# If letsencrypt_email is set, will get SSL cert from LetsEncrypt.
+#
+#letsencrypt_email: helpdesk@example.com
+
 # Pagekite info to expose this vagrant box to the internet for collaborative
-# testing/debugging.  Using the example below, this box will be available at
-# SUB-NAME.pagekite.me
+# testing/debugging and to have a real SSL certificate.  Using the example
+# below, this box will be available at https://SUB-NAME.pagekite.me/
+#
+# Pagekite only works for ubuntu based box.  Centos not supported yet.
 #
 # kitename: NAME.pagekite.me
 # kitesecret: SECRET

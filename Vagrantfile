@@ -36,6 +36,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :shell, path: "birdhouse/vagrant-utils/provision.sh", env: {"VM_HOSTNAME" => settings['hostname'],
                                                                                   "VM_DOMAIN" => settings['domain'],
+                                                                                  "LETSENCRYPT_EMAIL" => settings['letsencrypt_email'],
                                                                                   "KITENAME" => settings.fetch('kitename',''),
                                                                                   "KITESECRET" => settings.fetch('kitesecret',''),
                                                                                   "KITESUBDOMAIN" => settings.fetch('kitesubdomain',''),

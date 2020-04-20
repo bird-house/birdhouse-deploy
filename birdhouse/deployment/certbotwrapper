@@ -7,6 +7,7 @@
 #
 # Useful extra options:
 # * more --domain
+# * --cert-name  # to avoid automatic /etc/letsencrypt/live/DOMAIN-0001 "safe" naming
 # * --staging
 # * --dry-run
 #
