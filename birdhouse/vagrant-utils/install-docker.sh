@@ -89,9 +89,9 @@ if [ -n "`df -h | grep ^vagrant`" ]; then
 fi
 
 # install docker-compose, from https://gist.github.com/wdullaer/f1af16bd7e970389bad3
-LATEST_COMPOSE_VERSION="`git ls-remote https://github.com/docker/compose | grep refs/tags | grep -oP "[0-9]+\.[0-9][0-9]+\.[0-9]+$"|tail -1`"
+LATEST_COMPOSE_VERSION="`git ls-remote https://github.com/docker/compose | grep refs/tags | grep -v refs/tags/v | grep -oP "[0-9]+\.[0-9][0-9]+\.[0-9]+$"|tail -1`"
 # LATEST_COMPOSE_VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)  # need jq :(
 sudo curl -L "https://github.com/docker/compose/releases/download/$LATEST_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 sudo curl -L "https://raw.githubusercontent.com/docker/compose/${LATEST_COMPOSE_VERSION}/contrib/completion/bash/docker-compose" -o /etc/bash_completion.d/docker-compose
-
+docker-compose --version
