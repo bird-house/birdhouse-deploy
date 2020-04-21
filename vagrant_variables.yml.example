@@ -63,8 +63,6 @@ domain: ouranos.ca
 # testing/debugging and to have a real SSL certificate.  Using the example
 # below, this box will be available at https://SUB-NAME.pagekite.me/
 #
-# Pagekite only works for ubuntu based box.  Centos not supported yet.
-#
 # kitename: NAME.pagekite.me
 # kitesecret: SECRET
 # kitesubdomain: SUB
