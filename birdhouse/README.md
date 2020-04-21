@@ -137,6 +137,11 @@ respective VM, allowing us to see the differences in behavior.
 See [`vagrant_variables.yml.example`](../vagrant_variables.yml.example) for what's
 configurable with Vagrant.
 
+If using Centos box, follow [`disk-resize`](vagrant-utils/disk-resize) after
+first `vagrant up` failure due to disk full.  Then `vagrant reload && vagrant
+provision` to continue.  If using Ubuntu box, no manual steps required,
+everything just work.
+
 Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads), both the
 platform and the extension pack, and
 [Vagrant](https://www.vagrantup.com/downloads.html).

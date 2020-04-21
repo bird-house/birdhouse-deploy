@@ -71,5 +71,5 @@ domain: ouranos.ca
 # memory: 8192
 # cpus: 2
 # disksize: '100GB'
-# box: 'ubuntu/bionic64'
-# box: 'centos/7'
+# box: 'ubuntu/bionic64'  # no manual steps required
+# box: 'centos/7'  # will require manual 'vagrant-utils/disk-resize' inside box
