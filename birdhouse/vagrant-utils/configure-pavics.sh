@@ -8,18 +8,18 @@ if [ ! -f env.local ]; then
 export SSL_CERTIFICATE='./certkey.pem'  # path to the nginx ssl certificate, path and key bundle
 export PAVICS_FQDN='${VM_HOSTNAME}.$VM_DOMAIN' # Fully qualified domain name of this Pavics installation
 EOF
+
     if [ -n "$LETSENCRYPT_EMAIL" ]; then
     cat <<EOF >> env.local
 export SUPPORT_EMAIL="$LETSENCRYPT_EMAIL"
 EOF
-    fi
-
-    if [ -n "$KITENAME" -a -n "$KITESUBDOMAIN" ]; then
+    elif [ -n "$KITENAME" -a -n "$KITESUBDOMAIN" ]; then
     cat <<EOF >> env.local
 export PAVICS_FQDN_PUBLIC="$KITESUBDOMAIN-$KITENAME"
 export ALLOW_UNSECURE_HTTP="True"
 EOF
     fi
+
 else
     echo "existing env.local file, not overriding"
 fi
