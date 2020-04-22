@@ -27,6 +27,7 @@ fi
 if [ ! -f certkey.pem ]; then
     . ./env.local
     if [ -n "$LETSENCRYPT_EMAIL" ]; then
+        ./pavics-compose.sh stop proxy
         deployment/certbotwrapper --cert-name $PAVICS_FQDN
         CERTPATH="/etc/letsencrypt/live/$PAVICS_FQDN"
         sudo cat $CERTPATH/fullchain.pem $CERTPATH/privkey.pem > $SSL_CERTIFICATE
