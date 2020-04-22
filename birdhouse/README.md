@@ -140,7 +140,7 @@ configurable with Vagrant.
 If using Centos box, follow [`disk-resize`](vagrant-utils/disk-resize) after
 first `vagrant up` failure due to disk full.  Then `vagrant reload && vagrant
 provision` to continue.  If using Ubuntu box, no manual steps required,
-everything just work.
+everything just works.
 
 Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads), both the
 platform and the extension pack, and
