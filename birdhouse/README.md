@@ -42,6 +42,7 @@ enabled and configured in the `env.local` file (a copy from
 * Set `AUTODEPLOY_EXTRA_REPOS`, `AUTODEPLOY_DEPLOY_KEY_ROOT_DIR`,
   `AUTODEPLOY_PLATFORM_FREQUENCY`, `AUTODEPLOY_NOTEBOOK_FREQUENCY` as
   desired, full documentation in [`env.local.example`](env.local.example).
+* Run once [`fix-write-perm`](deployment/fix-write-perm), see doc in script.
 
 To launch all the containers, use the following command:
 ```
