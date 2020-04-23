@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 # Deploy tutorial notebooks to JupyterHub instance under folder
 # tutorial-notebooks.
 #
