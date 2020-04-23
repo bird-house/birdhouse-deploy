@@ -77,7 +77,7 @@ TMP_SCRIPT="$TMPDIR/deploy-notebook"
 cat << __EOF__ > $TMP_SCRIPT
 #!/bin/sh -x
 
-if [ -n "`ls --almost-all /$TUTORIAL_NOTEBOOKS_DIR/`" ]; then
+if [ -n "\`ls -A /$TUTORIAL_NOTEBOOKS_DIR/\`" ]; then
     cd $NOTEBOOK_DIR_MNT
     rm -rf $TUTORIAL_NOTEBOOKS_DIR/*
     cp -rv /$TUTORIAL_NOTEBOOKS_DIR/* $TUTORIAL_NOTEBOOKS_DIR
