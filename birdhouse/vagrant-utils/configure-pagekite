@@ -4,7 +4,12 @@ ACCOUNT_CONF="/etc/pagekite.d/10_account.rc"
 
 if [ -n "$KITENAME" -a -n "$KITESECRET" -a -n "$KITESUBDOMAIN" ]; then
 
-    DEBIAN_FRONTEND=noninteractive apt-get install --yes pagekite
+    if ! grep centos /etc/os-release; then
+        DEBIAN_FRONTEND=noninteractive apt-get install --yes pagekite
+    else
+        yum install --assumeyes epel-release
+        yum install --assumeyes pagekite
+    fi
 
     cat <<EOF | tee "$ACCOUNT_CONF"
 kitename   = $KITENAME
@@ -20,7 +25,18 @@ EOF
 
 else
 
-    if dpkg -l pagekite; then
+    DISABLE_PAGEKITE=""
+    if ! grep centos /etc/os-release; then
+        if dpkg -l pagekite; then
+            DISABLE_PAGEKITE=true
+        fi
+    else
+        if rpm -q pagekite; then
+            DISABLE_PAGEKITE=true
+        fi
+    fi
+
+    if [ -n "$DISABLE_PAGEKITE" ]; then
         systemctl stop pagekite
         systemctl disable pagekite
     fi

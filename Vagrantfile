@@ -4,7 +4,7 @@ settings=YAML.load_file(config_file)
 
 Vagrant.configure("2") do |config|
   config.vagrant.plugins = ["vagrant-disksize", "vagrant-vbguest"]
-  config.vm.box = "ubuntu/bionic64"
+  config.vm.box = settings.fetch('box', "ubuntu/bionic64")
   config.vm.define settings['hostname']
   config.vm.hostname = settings['hostname']
   # thin provisioning, won't take 100G upfront
@@ -13,6 +13,10 @@ Vagrant.configure("2") do |config|
   # bug https://github.com/hashicorp/vagrant/issues/3341 still happening as of
   # 2019-07-03 with VirtualBox 6.0.8
   config.vbguest.auto_update = false
+
+  # https://blog.centos.org/2018/01/updated-centos-vagrant-images-available-v1801-01/
+  # Fix /vagrant shared folders (together with vagrant-vbguest) for Centos 7.
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 
   # bridge networking to get real DNS name on local network, PAVICS does not
   # seems to work with numerical IP address for PAVICS_FQDN
@@ -32,6 +36,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :shell, path: "birdhouse/vagrant-utils/provision.sh", env: {"VM_HOSTNAME" => settings['hostname'],
                                                                                   "VM_DOMAIN" => settings['domain'],
+                                                                                  "LETSENCRYPT_EMAIL" => settings['letsencrypt_email'],
                                                                                   "KITENAME" => settings.fetch('kitename',''),
                                                                                   "KITESECRET" => settings.fetch('kitesecret',''),
                                                                                   "KITESUBDOMAIN" => settings.fetch('kitesubdomain',''),
