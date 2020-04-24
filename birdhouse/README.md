@@ -33,6 +33,17 @@ automated continuous deployment.  See the continuous deployment setup section
 below and the variable `AUTODEPLOY_EXTRA_REPOS` in
 [`env.local.example`](env.local.example).
 
+The automatic deployment of the PAVICS platform, of the Jupyter tutorial
+notebooks and of the automatic deployment mechanism itself can all be
+enabled and configured in the `env.local` file (a copy from
+[`env.local.example`](env.local.example)).
+
+* Add `./components/scheduler` to `EXTRA_CONF_DIRS`.
+* Set `AUTODEPLOY_EXTRA_REPOS`, `AUTODEPLOY_DEPLOY_KEY_ROOT_DIR`,
+  `AUTODEPLOY_PLATFORM_FREQUENCY`, `AUTODEPLOY_NOTEBOOK_FREQUENCY` as
+  desired, full documentation in [`env.local.example`](env.local.example).
+* Run once [`fix-write-perm`](deployment/fix-write-perm), see doc in script.
+
 To launch all the containers, use the following command:
 ```
 ./pavics-compose.sh up -d
@@ -78,6 +89,12 @@ postgres instance. See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-
 
 
 ## Mostly automated unattended continuous deployment
+
+***NOTE***: this section about automated unattended continuous deployment is
+superseded by the new `./components/scheduler` that can be entirely
+enabled/disabled via the `env.local` file.  See the part about automatic
+deployment of the PAVICS platform in the "Docker instructions" section
+above for how to configure it.
 
 Automated unattended continuous deployment means if code change in the checkout
 of this repo, on the same currently checkout branch (ex: config changes,
@@ -136,6 +153,11 @@ respective VM, allowing us to see the differences in behavior.
 
 See [`vagrant_variables.yml.example`](../vagrant_variables.yml.example) for what's
 configurable with Vagrant.
+
+If using Centos box, follow [`disk-resize`](vagrant-utils/disk-resize) after
+first `vagrant up` failure due to disk full.  Then `vagrant reload && vagrant
+provision` to continue.  If using Ubuntu box, no manual steps required,
+everything just works.
 
 Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads), both the
 platform and the extension pack, and

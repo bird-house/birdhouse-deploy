@@ -1,0 +1,52 @@
+#!/bin/sh -e
+# Fix write permission lost due to files owned by root user.
+#
+# Run once for this repo and once each time AUTODEPLOY_EXTRA_REPOS changes.
+#
+# The 'autodeploy' container spawned by the 'scheduler' container runs as
+# user root.  It writes to all the git checkout in AUTODEPLOY_EXTRA_REPOS
+# and the current birdhouse-deploy checkout as well.  All the new files
+# created will be owned by the root user.
+#
+# Running those setfacl commands will allow the current user to retain
+# write access to all the new files owned by root user.
+#
+# Other options considered but discarded:
+#
+# * running docker run -u current-uid:current-gid: this involve a
+# pre-existing user in the container matching the current local user and
+# local docker group id, which means this solution is not portable.
+#
+# * on the fly creation of a user with proper uid/gid and member of local
+# docker gid then 'su' to that user to run the autodeploy: this is more
+# complex and we lose all the environment var that given to the initial
+# root user.
+#
+# * use docker user namespace
+# (https://docs.docker.com/engine/security/userns-remap/): this is a
+# global configuration for the docker deamon that impacts all containers
+# on the same host (we only need for the 'autodeploy' container).  Not
+# portable if a host is used to run other services than PAVICS, we do not
+# want to force all other services to the same owner as PAVICS checkout.
+#
+# So the setfacl solution is the simplest, most portable/generic and most
+# localized (only the directories we need) solution.
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+
+# Go to repo root.
+cd $THIS_DIR/../..
+
+# Default values
+. birdhouse/common.env
+
+if [ -e "birdhouse/env.local" ]; then
+    # Override default values
+    . birdhouse/env.local
+fi
+
+set -x
+
+sudo setfacl -Rdm u:$USER:rwX $PWD $AUTODEPLOY_EXTRA_REPOS  # for future files
+sudo setfacl -Rm u:$USER:rwX $PWD $AUTODEPLOY_EXTRA_REPOS  # for existing files
