@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 # Deploy tutorial notebooks to JupyterHub instance under folder
 # tutorial-notebooks.
 #
@@ -25,7 +25,8 @@ LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
 exec >>$LOG_FILE 2>&1
 
 cleanup_on_exit() {
-    rm -rfv "$TMPDIR"
+    rm -rf "$TMPDIR"
+    set +x
     echo "
 notebookdeploy finished START_TIME=$START_TIME
 notebookdeploy finished   END_TIME=`date -Isecond`"
@@ -69,21 +70,23 @@ wget --quiet --output-document - https://github.com/Ouranosinc/PAVICS-e2e-workfl
 ./downloadrepos
 ./reorg-notebooks
 mv -v PAVICS-e2e-workflow-tests-master/notebooks/*.ipynb ./
-rm -rfv PAVICS-e2e-workflow-tests-master
-rm -rfv downloadrepos default_build_params reorg-notebooks
+rm -rf PAVICS-e2e-workflow-tests-master
+rm -rf downloadrepos default_build_params reorg-notebooks
 
 TMP_SCRIPT="$TMPDIR/deploy-notebook"
 cat << __EOF__ > $TMP_SCRIPT
 #!/bin/sh -x
 
-cd $NOTEBOOK_DIR_MNT
-rm -rf $TUTORIAL_NOTEBOOKS_DIR/*
-if [ ! -d $TUTORIAL_NOTEBOOKS_DIR ]; then
-  mkdir $TUTORIAL_NOTEBOOKS_DIR
+if [ -n "\`ls -A /$TUTORIAL_NOTEBOOKS_DIR/\`" ]; then
+    cd $NOTEBOOK_DIR_MNT
+    rm -rf $TUTORIAL_NOTEBOOKS_DIR/*
+    if [ ! -d $TUTORIAL_NOTEBOOKS_DIR ]; then
+        mkdir $TUTORIAL_NOTEBOOKS_DIR
+    fi
+    cp -rv /$TUTORIAL_NOTEBOOKS_DIR/* $TUTORIAL_NOTEBOOKS_DIR
+    # make read-only
+    chown -R root:root $TUTORIAL_NOTEBOOKS_DIR
 fi
-cp -rv /$TUTORIAL_NOTEBOOKS_DIR/* $TUTORIAL_NOTEBOOKS_DIR
-# make read-only
-chown -R root:root $TUTORIAL_NOTEBOOKS_DIR
 __EOF__
 chmod a+x $TMP_SCRIPT
 
@@ -96,8 +99,6 @@ docker run --rm \
   -v "$JUPYTERHUB_USER_DATA_DIR":$NOTEBOOK_DIR_MNT:rw \
   --entrypoint /deploy-notebook \
   bash
-
-set +x
 
 
 # vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4
