@@ -1,0 +1,47 @@
+#!/bin/sh
+# Detect user install (pip intall --user) in Jupyter environment.
+#
+# User install is error-prone since it overrides the official package version
+# from the environment.  This means when new environments are available, user
+# will not receive update for the packages that are user installed since the
+# version is pinned at the user installed version.
+#
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+
+# Default values
+. $THIS_DIR/../common.env
+
+if [ -e "$THIS_DIR/../env.local" ]; then
+    # Override default values
+    . $THIS_DIR/../env.local
+fi
+
+set -x
+
+START_TIME="`date -Isecond`"
+
+cd $JUPYTERHUB_USER_DATA_DIR
+
+# Fresh new user do not have .local/lib and .local/bin yet so these commands
+# will return error and it is normal.
+ls -a */.home/.local/lib/python*/site-packages
+ls -a */.home/.local/bin
+
+set +x
+
+echo "
+Errors like
+  ls: cannot access */.home/.local/lib/python*/site-packages: No such file or directory
+  ls: cannot access */.home/.local/bin: No such file or directory
+means no users have user install in their Jupyter env.
+
+If there are user installs, remove by renaming the site-packages and bin folder
+instead of deleting so can rollback if necessary.
+
+Users can uninstall all their user installs themselves from a notebook with:
+  !pip freeze --user  # list their user installs
+  !(pip freeze --user | xargs pip uninstall -y)  # remove all user installs
+  !pip freeze --user  # confirm all gone
+"
