@@ -136,7 +136,7 @@ services:
     restart: always
 
   flyingpigeon:
-    image: birdhouse/flyingpigeon:1.5.1
+    image: birdhouse/flyingpigeon:1.6
     container_name: flyingpigeon
     environment:
       - PYWPS_CFG=/wps.cfg
