@@ -38,8 +38,14 @@ services:
     container_name: prometheus
     volumes:
       - ./components/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_persistence:/prometheus:rw
     ports:
       - 9090:9090
     restart: unless-stopped
+
+volumes:
+  prometheus_persistence:
+    external:
+      name: prometheus_persistence
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
