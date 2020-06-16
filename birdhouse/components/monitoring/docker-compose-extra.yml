@@ -41,6 +41,14 @@ services:
       - prometheus_persistence:/prometheus:rw
     ports:
       - 9090:9090
+    command:
+      # restore original CMD from image
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      # https://prometheus.io/docs/prometheus/latest/storage/
+      - --storage.tsdb.retention.time=90d
     restart: unless-stopped
 
 volumes:
