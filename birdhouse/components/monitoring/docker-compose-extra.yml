@@ -31,5 +31,15 @@ services:
     command: --path.rootfs=/host
     restart: unless-stopped
 
+  # https://prometheus.io/docs/prometheus/latest/installation
+  # Monitor and store collected metrics.
+  prometheus:
+    image: prom/prometheus:v2.19.0
+    container_name: prometheus
+    volumes:
+      - ./components/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - 9090:9090
+    restart: unless-stopped
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
