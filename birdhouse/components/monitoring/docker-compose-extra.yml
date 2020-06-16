@@ -51,6 +51,16 @@ services:
       - --storage.tsdb.retention.time=90d
     restart: unless-stopped
 
+  # https://grafana.com/docs/grafana/latest/installation/docker/
+  # https://grafana.com/docs/grafana/latest/installation/configure-docker/
+  # Visualize metrics from Prometheus
+  grafana:
+    image: grafana/grafana:7.0.3
+    container_name: grafana
+    ports:
+      - 3001:3000
+    restart: unless-stopped
+
 volumes:
   prometheus_persistence:
     external:
