@@ -17,4 +17,19 @@ services:
       - /dev/kmsg
     restart: unless-stopped
 
+  # https://github.com/prometheus/node_exporter
+  # Collect system-wide metrics.
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:v1.0.0
+    container_name: node-exporter
+    volumes:
+      - /:/host:ro,rslave
+    ports:
+      - 9100:9100
+    network_mode: "host"
+    pid: "host"
+    command: --path.rootfs=/host
+    restart: unless-stopped
+
+
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
