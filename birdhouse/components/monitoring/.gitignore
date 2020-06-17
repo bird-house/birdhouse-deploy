@@ -1,2 +1,3 @@
 prometheus.yml
 grafana_datasources.yml
+grafana_dashboards.yml

@@ -59,6 +59,8 @@ services:
     container_name: grafana
     volumes:
       - ./components/monitoring/grafana_datasources.yml:/etc/grafana/provisioning/datasources/grafana_datasources.yml:ro
+      - ./components/monitoring/grafana_dashboards.yml:/etc/grafana/provisioning/dashboards/grafana_dashboards.yml:ro
+      - ./components/monitoring/grafana_dashboards:/etc/grafana/dashboards:ro
     ports:
       - 3001:3000
     restart: unless-stopped
