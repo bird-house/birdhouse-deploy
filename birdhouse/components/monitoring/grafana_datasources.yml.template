@@ -1,0 +1,11 @@
+# https://grafana.com/docs/grafana/latest/administration/provisioning/#example-datasource-config-file
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    uid: local_pavics_prometheus
+    url: http://${PAVICS_FQDN}:9090
+    isDefault: true
+    editable: false
