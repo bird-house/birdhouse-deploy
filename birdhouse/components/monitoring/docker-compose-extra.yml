@@ -61,6 +61,8 @@ services:
       - ./components/monitoring/grafana_datasources.yml:/etc/grafana/provisioning/datasources/grafana_datasources.yml:ro
       - ./components/monitoring/grafana_dashboards.yml:/etc/grafana/provisioning/dashboards/grafana_dashboards.yml:ro
       - ./components/monitoring/grafana_dashboards:/etc/grafana/dashboards:ro
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
     ports:
       - 3001:3000
     restart: unless-stopped
