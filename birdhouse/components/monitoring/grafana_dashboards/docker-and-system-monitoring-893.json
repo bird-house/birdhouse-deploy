@@ -1251,18 +1251,20 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "-sum(rate(node_disk_bytes_read[$interval])) by (device)",
+          "expr": "-sum(rate(node_disk_read_bytes_total[$interval])) by (device)",
           "hide": false,
+          "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "OUT on /{{device}}",
+          "legendFormat": "READ on /{{device}}",
           "metric": "node_disk_bytes_read",
           "refId": "A",
           "step": 600
         },
         {
-          "expr": "sum(rate(node_disk_bytes_written[$interval])) by (device)",
+          "expr": "sum(rate(node_disk_written_bytes_total[$interval])) by (device)",
+          "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "IN on /{{device}}",
+          "legendFormat": "WRITE on /{{device}}",
           "metric": "",
           "refId": "B",
           "step": 600
@@ -1284,11 +1286,12 @@
         "buckets": null,
         "mode": "time",
         "name": null,
-        "show": false,
+        "show": true,
         "values": []
       },
       "yaxes": [
         {
+          "$$hashKey": "object:411",
           "format": "Bps",
           "label": null,
           "logBase": 1,
@@ -1297,6 +1300,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:412",
           "format": "short",
           "label": null,
           "logBase": 1,
