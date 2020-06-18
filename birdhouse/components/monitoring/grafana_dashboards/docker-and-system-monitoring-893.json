@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": 893,
   "graphTooltip": 1,
-  "iteration": 1592509289966,
+  "iteration": 1592509560041,
   "links": [],
   "panels": [
     {
@@ -220,10 +220,12 @@
       "mappingType": 1,
       "mappingTypes": [
         {
+          "$$hashKey": "object:197",
           "name": "value to text",
           "value": 1
         },
         {
+          "$$hashKey": "object:198",
           "name": "range to text",
           "value": 2
         }
@@ -251,9 +253,11 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "min((node_filesystem_size{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"} - node_filesystem_free{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"} )/ node_filesystem_size{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"})",
+          "expr": "min((node_filesystem_size_bytes{fstype=~\"xfs|ext4\"} - node_filesystem_free_bytes{fstype=~\"xfs|ext4\"} )/ node_filesystem_size_bytes{fstype=~\"xfs|ext4\"})",
           "hide": false,
+          "interval": "",
           "intervalFactor": 2,
+          "legendFormat": "",
           "refId": "A",
           "step": 1800
         }
@@ -264,6 +268,7 @@
       "valueFontSize": "80%",
       "valueMaps": [
         {
+          "$$hashKey": "object:200",
           "op": "=",
           "text": "N/A",
           "value": "null"
@@ -2162,5 +2167,5 @@
   "timezone": "browser",
   "title": "Docker and system monitoring",
   "uid": "pf6xQMWGz",
-  "version": 8
+  "version": 9
 }
