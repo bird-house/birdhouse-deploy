@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": 893,
   "graphTooltip": 1,
-  "iteration": 1592507449259,
+  "iteration": 1592509157916,
   "links": [],
   "panels": [
     {
@@ -470,30 +470,34 @@
     },
     {
       "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "rgba(245, 54, 54, 0.9)",
-        "rgba(237, 129, 40, 0.89)",
-        "rgba(50, 172, 45, 0.97)"
-      ],
       "datasource": "Prometheus",
-      "decimals": 0,
-      "editable": true,
-      "error": false,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {},
+          "decimals": 3,
+          "mappings": [
+            {
+              "$$hashKey": "object:663",
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "nullValueMode": "connected",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
         },
         "overrides": []
-      },
-      "format": "percentunit",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
       },
       "gridPos": {
         "h": 4,
@@ -504,58 +508,39 @@
       "id": 27,
       "interval": null,
       "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
       "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
+      "options": {
+        "colorMode": "value",
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ]
+        },
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
         }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(50, 189, 31, 0.18)",
-        "full": false,
-        "lineColor": "rgb(69, 193, 31)",
-        "show": true
       },
-      "tableColumn": "",
+      "pluginVersion": "7.0.3",
       "targets": [
         {
-          "expr": "node_load1{instance=~\"$server:.*\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu{instance=~\"$server:.*\"}))",
+          "expr": "node_load1",
+          "format": "time_series",
+          "interval": "",
           "intervalFactor": 2,
+          "legendFormat": "",
           "refId": "A",
           "step": 1800
         }
       ],
-      "thresholds": "0.8,0.9",
       "title": "Load",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
+      "type": "stat"
     },
     {
       "aliasColors": {
@@ -646,6 +631,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:513",
           "format": "bytes",
           "label": null,
           "logBase": 1,
@@ -654,6 +640,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:514",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -786,6 +773,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:593",
           "format": "percent",
           "label": "",
           "logBase": 1,
@@ -794,6 +782,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:594",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2192,5 +2181,5 @@
   "timezone": "browser",
   "title": "Docker and system monitoring",
   "uid": "pf6xQMWGz",
-  "version": 3
+  "version": 7
 }
