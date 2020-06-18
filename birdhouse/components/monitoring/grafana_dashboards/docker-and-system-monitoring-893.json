@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": 893,
   "graphTooltip": 1,
-  "iteration": 1592511624788,
+  "iteration": 1592514109730,
   "links": [],
   "panels": [
     {
@@ -971,40 +971,6 @@
       }
     },
     {
-      "alert": {
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [
-                10000000000
-              ],
-              "type": "gt"
-            },
-            "query": {
-              "params": [
-                "A",
-                "5m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "avg"
-            },
-            "type": "query"
-          }
-        ],
-        "executionErrorState": "alerting",
-        "frequency": "60s",
-        "handler": 1,
-        "name": "Available Memory alert",
-        "noDataState": "keep_state",
-        "notifications": [
-          {
-            "id": 1
-          }
-        ]
-      },
       "aliasColors": {
         "Available Memory": "#7EB26D",
         "Unavailable Memory": "#7EB26D"
@@ -1122,10 +1088,11 @@
           "step": 20
         },
         {
-          "expr": "node_memory_MemTotal - node_memory_MemAvailable",
+          "expr": "node_memory_MemAvailable_bytes",
           "hide": false,
+          "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "Unavailable Memory",
+          "legendFormat": "Available Memory",
           "refId": "G",
           "step": 600
         },
@@ -1186,15 +1153,7 @@
           "step": 40
         }
       ],
-      "thresholds": [
-        {
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt",
-          "value": 10000000000
-        }
-      ],
+      "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -1210,19 +1169,21 @@
         "buckets": null,
         "mode": "time",
         "name": null,
-        "show": false,
+        "show": true,
         "values": []
       },
       "yaxes": [
         {
+          "$$hashKey": "object:306",
           "format": "bytes",
           "label": "",
           "logBase": 1,
-          "max": 16000000000,
-          "min": 0,
+          "max": null,
+          "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:307",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2097,5 +2058,5 @@
   "timezone": "browser",
   "title": "Docker and system monitoring",
   "uid": "pf6xQMWGz",
-  "version": 13
+  "version": 17
 }
