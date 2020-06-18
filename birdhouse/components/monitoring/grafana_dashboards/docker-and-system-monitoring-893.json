@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": 893,
   "graphTooltip": 1,
-  "iteration": 1592431344951,
+  "iteration": 1592507449259,
   "links": [],
   "panels": [
     {
@@ -808,46 +808,12 @@
       }
     },
     {
-      "alert": {
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [
-                1.25
-              ],
-              "type": "gt"
-            },
-            "query": {
-              "params": [
-                "A",
-                "5m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "avg"
-            },
-            "type": "query"
-          }
-        ],
-        "executionErrorState": "alerting",
-        "frequency": "60s",
-        "handler": 1,
-        "name": "Panel Title alert",
-        "noDataState": "keep_state",
-        "notifications": [
-          {
-            "id": 1
-          }
-        ]
-      },
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "decimals": 0,
+      "decimals": null,
       "editable": true,
       "error": false,
       "fieldConfig": {
@@ -868,12 +834,13 @@
       "id": 28,
       "legend": {
         "avg": false,
-        "current": false,
+        "current": true,
+        "hideZero": false,
         "max": false,
         "min": false,
-        "show": false,
+        "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -892,21 +859,15 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "node_load1{instance=~\"$server:.*\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu{instance=~\"$server:.*\"}))",
+          "expr": "{__name__=~\"^node_load.*\"}",
+          "interval": "",
           "intervalFactor": 2,
+          "legendFormat": "{{__name__}}",
           "refId": "A",
           "step": 600
         }
       ],
-      "thresholds": [
-        {
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt",
-          "value": 1.25
-        }
-      ],
+      "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -922,19 +883,22 @@
         "buckets": null,
         "mode": "time",
         "name": null,
-        "show": false,
+        "show": true,
         "values": []
       },
       "yaxes": [
         {
-          "format": "percentunit",
-          "label": null,
+          "$$hashKey": "object:295",
+          "decimals": 2,
+          "format": "short",
+          "label": "",
           "logBase": 1,
-          "max": "1.50",
+          "max": null,
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:296",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2228,5 +2192,5 @@
   "timezone": "browser",
   "title": "Docker and system monitoring",
   "uid": "pf6xQMWGz",
-  "version": 2
+  "version": 3
 }
