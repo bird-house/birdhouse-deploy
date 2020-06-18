@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": 893,
   "graphTooltip": 1,
-  "iteration": 1592514109730,
+  "iteration": 1592516219174,
   "links": [],
   "panels": [
     {
@@ -1020,7 +1020,7 @@
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": true,
+      "stack": false,
       "steppedLine": false,
       "targets": [
         {
@@ -1151,6 +1151,12 @@
           "legendFormat": "",
           "refId": "P",
           "step": 40
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes",
+          "interval": "",
+          "legendFormat": "Total Memory",
+          "refId": "Q"
         }
       ],
       "thresholds": [],
@@ -2062,5 +2068,5 @@
   "timezone": "browser",
   "title": "Docker and system monitoring",
   "uid": "pf6xQMWGz",
-  "version": 17
+  "version": 20
 }
