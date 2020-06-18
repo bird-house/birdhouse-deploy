@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": 893,
   "graphTooltip": 1,
-  "iteration": 1592510759713,
+  "iteration": 1592511624788,
   "links": [],
   "panels": [
     {
@@ -874,40 +874,6 @@
       }
     },
     {
-      "alert": {
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [
-                850000000000
-              ],
-              "type": "gt"
-            },
-            "query": {
-              "params": [
-                "A",
-                "5m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "avg"
-            },
-            "type": "query"
-          }
-        ],
-        "executionErrorState": "alerting",
-        "frequency": "60s",
-        "handler": 1,
-        "name": "Free/Used Disk Space alert",
-        "noDataState": "keep_state",
-        "notifications": [
-          {
-            "id": 1
-          }
-        ]
-      },
       "aliasColors": {
         "Belegete Festplatte": "#BF1B00",
         "Free Disk Space": "#7EB26D",
@@ -939,12 +905,12 @@
       "id": 13,
       "legend": {
         "avg": false,
-        "current": false,
+        "current": true,
         "max": false,
         "min": false,
-        "show": false,
+        "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -953,38 +919,26 @@
       "options": {
         "dataLinks": []
       },
-      "percentage": false,
+      "percentage": true,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "Used Disk Space",
-          "yaxis": 1
-        }
-      ],
+      "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": true,
+      "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "node_filesystem_size{fstype=\"aufs\"} - node_filesystem_free{fstype=\"aufs\"}",
+          "expr": "(node_filesystem_size_bytes - node_filesystem_free_bytes) / node_filesystem_size_bytes * 100",
           "hide": false,
+          "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "Used Disk Space",
+          "legendFormat": "",
           "refId": "A",
           "step": 600
         }
       ],
-      "thresholds": [
-        {
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt",
-          "value": 850000000000
-        }
-      ],
+      "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -1000,19 +954,21 @@
         "buckets": null,
         "mode": "time",
         "name": null,
-        "show": false,
+        "show": true,
         "values": []
       },
       "yaxes": [
         {
-          "format": "bytes",
+          "$$hashKey": "object:119",
+          "format": "percent",
           "label": "",
           "logBase": 1,
-          "max": 1000000000000,
-          "min": 0,
+          "max": null,
+          "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:120",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -2096,7 +2052,6 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "tags": [],
           "text": "lvupavicsmaster.ouranos.ca",
           "value": [
             "lvupavicsmaster.ouranos.ca"
@@ -2154,5 +2109,5 @@
   "timezone": "browser",
   "title": "Docker and system monitoring",
   "uid": "pf6xQMWGz",
-  "version": 12
+  "version": 13
 }
