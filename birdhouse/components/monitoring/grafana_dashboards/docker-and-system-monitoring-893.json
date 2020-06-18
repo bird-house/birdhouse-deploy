@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": 893,
   "graphTooltip": 1,
-  "iteration": 1592516219174,
+  "iteration": 1592516457604,
   "links": [],
   "panels": [
     {
@@ -1674,7 +1674,7 @@
         "y": 17
       },
       "hiddenSeries": false,
-      "id": 34,
+      "id": 10,
       "legend": {
         "alignAsTable": false,
         "avg": false,
@@ -1703,7 +1703,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(container_memory_swap{name=~\".+\"}) by (name)",
+          "expr": "sum(container_memory_rss{name=~\".+\"}) by (name)",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "{{name}}",
@@ -1723,7 +1723,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Memory Swap per Container",
+      "title": "Memory Usage per Container",
       "tooltip": {
         "msResolution": true,
         "shared": false,
@@ -1785,7 +1785,7 @@
         "y": 24
       },
       "hiddenSeries": false,
-      "id": 10,
+      "id": 34,
       "legend": {
         "alignAsTable": false,
         "avg": false,
@@ -1814,7 +1814,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(container_memory_rss{name=~\".+\"}) by (name)",
+          "expr": "sum(container_memory_swap{name=~\".+\"}) by (name)",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "{{name}}",
@@ -1834,7 +1834,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Memory Usage per Container",
+      "title": "Memory Swap per Container",
       "tooltip": {
         "msResolution": true,
         "shared": false,
@@ -2068,5 +2068,5 @@
   "timezone": "browser",
   "title": "Docker and system monitoring",
   "uid": "pf6xQMWGz",
-  "version": 20
+  "version": 21
 }
