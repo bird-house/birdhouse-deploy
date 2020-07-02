@@ -1,0 +1,13 @@
+# https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
+apiVersion: 1
+
+providers:
+ - name: 'default'
+   folder: 'Local-PAVICS'
+   folderUid: 'local-pavics'
+   disableDeletion: false
+   type: file
+   editable: false
+   allowUiUpdates: false
+   options:
+     path: "/etc/grafana/dashboards"

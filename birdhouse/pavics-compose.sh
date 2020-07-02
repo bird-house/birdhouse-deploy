@@ -142,6 +142,8 @@ if [ x"$1" = x"up" ]; then
   # create externally so nothing will delete these data volume automatically
   docker volume create jupyterhub_data_persistence  # jupyterhub db and cookie secret
   docker volume create thredds_persistence  # logs, cache
+  docker volume create prometheus_persistence  # metrics db
+  docker volume create grafana_persistence  # dashboard and config db
 fi
 
 COMPOSE_CONF_LIST="-f docker-compose.yml"

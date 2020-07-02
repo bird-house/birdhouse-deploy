@@ -1,0 +1,19 @@
+# https://prometheus.io/docs/prometheus/latest/configuration/configuration/
+# http://PAVICS_FQDN:9090/config
+global:
+  scrape_interval:     60s
+  evaluation_interval: 30s
+  # scrape_timeout is set to the global default (10s).
+
+scrape_configs:
+- job_name: cadvisor
+  honor_labels: true
+  static_configs:
+  - targets:
+    - ${PAVICS_FQDN}:9999
+
+- job_name: node-exporter
+  honor_labels: true
+  static_configs:
+  - targets:
+    - ${PAVICS_FQDN}:9100

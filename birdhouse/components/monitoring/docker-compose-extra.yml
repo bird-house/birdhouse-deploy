@@ -1,0 +1,79 @@
+version: '2.1'
+
+services:
+  # https://github.com/google/cadvisor/blob/master/docs/running.md
+  # Collect per container metrics.
+  cadvisor:
+    image: gcr.io/google-containers/cadvisor:v0.36.0
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+    ports:
+      - 9999:8080
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
+
+  # https://github.com/prometheus/node_exporter
+  # Collect system-wide metrics.
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:v1.0.0
+    container_name: node-exporter
+    volumes:
+      - /:/host:ro,rslave
+    ports:
+      - 9100:9100
+    network_mode: "host"
+    pid: "host"
+    command: --path.rootfs=/host
+    restart: unless-stopped
+
+  # https://prometheus.io/docs/prometheus/latest/installation
+  # Monitor and store collected metrics.
+  prometheus:
+    image: prom/prometheus:v2.19.0
+    container_name: prometheus
+    volumes:
+      - ./components/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_persistence:/prometheus:rw
+    ports:
+      - 9090:9090
+    command:
+      # restore original CMD from image
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      # https://prometheus.io/docs/prometheus/latest/storage/
+      - --storage.tsdb.retention.time=90d
+    restart: unless-stopped
+
+  # https://grafana.com/docs/grafana/latest/installation/docker/
+  # https://grafana.com/docs/grafana/latest/installation/configure-docker/
+  # Visualize metrics from Prometheus
+  grafana:
+    image: grafana/grafana:7.0.3
+    container_name: grafana
+    volumes:
+      - ./components/monitoring/grafana_datasources.yml:/etc/grafana/provisioning/datasources/grafana_datasources.yml:ro
+      - ./components/monitoring/grafana_dashboards.yml:/etc/grafana/provisioning/dashboards/grafana_dashboards.yml:ro
+      - ./components/monitoring/grafana_dashboards:/etc/grafana/dashboards:ro
+      - grafana_persistence:/var/lib/grafana:rw
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+    ports:
+      - 3001:3000
+    restart: unless-stopped
+
+volumes:
+  prometheus_persistence:
+    external:
+      name: prometheus_persistence
+  grafana_persistence:
+    external:
+      name: grafana_persistence
+
+# vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
