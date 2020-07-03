@@ -78,6 +78,12 @@ services:
       - ./components/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
       - ./components/monitoring/alertmanager.tmpl:/etc/alertmanager/template/default.tmpl:ro
       - alertmanager_persistence:/alertmanager:rw
+    command:
+      # restore original CMD from image
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+      # enable debug logging
+      - --log.level=debug
     ports:
       - 9093:9093
     restart: unless-stopped
