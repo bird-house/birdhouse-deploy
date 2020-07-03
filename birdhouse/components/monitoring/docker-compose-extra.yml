@@ -76,6 +76,7 @@ services:
     container_name: alertmanager
     volumes:
       - ./components/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./components/monitoring/alertmanager.tmpl:/etc/alertmanager/template/default.tmpl:ro
       - alertmanager_persistence:/alertmanager:rw
     ports:
       - 9093:9093
