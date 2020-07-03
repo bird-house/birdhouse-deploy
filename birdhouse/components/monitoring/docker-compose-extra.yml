@@ -68,6 +68,19 @@ services:
       - 3001:3000
     restart: unless-stopped
 
+  # https://github.com/prometheus/alertmanager
+  # https://prometheus.io/docs/alerting/latest/overview/
+  # Handle alerts: deduplicate, group, route, silence, inhibit
+  alertmanager:
+    image: prom/alertmanager:v0.21.0
+    container_name: alertmanager
+    volumes:
+      - ./components/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_persistence:/alertmanager:rw
+    ports:
+      - 9093:9093
+    restart: unless-stopped
+
 volumes:
   prometheus_persistence:
     external:
@@ -75,5 +88,8 @@ volumes:
   grafana_persistence:
     external:
       name: grafana_persistence
+  alertmanager_persistence:
+    external:
+      name: alertmanager_persistence
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2

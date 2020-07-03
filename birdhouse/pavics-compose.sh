@@ -25,6 +25,8 @@ VARS='
   $POSTGRES_PAVICS_PASSWORD
   $POSTGRES_MAGPIE_USERNAME
   $POSTGRES_MAGPIE_PASSWORD
+  $ALERTMANAGER_ADMIN_EMAIL_RECEIVER
+  $SMTP_SERVER
 '
 
 # list of vars to be substituted in template but they do not have to be set in
@@ -48,6 +50,10 @@ OPTIONAL_VARS='
   $AUTODEPLOY_EXTRA_SCHEDULER_JOBS
   $GENERIC_BIRD_PORT
   $GENERIC_BIRD_NAME
+  $ALERTMANAGER_EXTRA_GLOBAL
+  $ALERTMANAGER_EXTRA_ROUTES
+  $ALERTMANAGER_EXTRA_INHIBITION
+  $ALERTMANAGER_EXTRA_RECEIVERS
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH
@@ -144,6 +150,7 @@ if [ x"$1" = x"up" ]; then
   docker volume create thredds_persistence  # logs, cache
   docker volume create prometheus_persistence  # metrics db
   docker volume create grafana_persistence  # dashboard and config db
+  docker volume create alertmanager_persistence  # storage
 fi
 
 COMPOSE_CONF_LIST="-f docker-compose.yml"
