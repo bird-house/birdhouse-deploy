@@ -1,21 +1,8 @@
+# https://awesome-prometheus-alerts.grep.to/rules
 groups:
-- name: HighUsage
-  rules:
-  # Alert for any cluster that has average CPU idle < 25%
-  - alert: HighCPU
-    expr: avg(irate(node_cpu_seconds_total{mode="idle"}[1m]) * 100) < 25
-    for: 1m
-    labels:
-      severity: warning
-    annotations:
-      summary: "High CPU usage on {{ $labels.instance }}: CPU idle < 25%"
-      description: "{{ $labels.instance }} has a average CPU idle (current value: {{ $value }}s)"
-
 
 - name: NodeUsage
   rules:
-
-# https://awesome-prometheus-alerts.grep.to/rules
 
   - alert: HostOutOfMemory
     expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
