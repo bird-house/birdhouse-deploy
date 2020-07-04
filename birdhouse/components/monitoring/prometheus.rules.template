@@ -104,7 +104,7 @@ groups:
 
 
   - alert: HostUnusualDiskReadLatency
-    expr: rate(node_disk_read_time_seconds_total[1m]) / rate(node_disk_reads_completed_total[1m]) > 100
+    expr: rate(node_disk_read_time_seconds_total[2m]) / rate(node_disk_reads_completed_total[2m]) > 100
     for: 5m
     labels:
       severity: warning
@@ -115,7 +115,7 @@ groups:
 
 
   - alert: HostUnusualDiskWriteLatency
-    expr: rate(node_disk_write_time_seconds_total[1m]) / rate(node_disk_writes_completed_total[1m]) > 100
+    expr: rate(node_disk_write_time_seconds_total[2m]) / rate(node_disk_writes_completed_total[2m]) > 100
     for: 5m
     labels:
       severity: warning
