@@ -93,7 +93,7 @@ groups:
 
 
   - alert: HostOutOfInodes
-    expr: node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint ="/rootfs"} * 100 < 10
+    expr: node_filesystem_files_free / node_filesystem_files * 100 < 10
     for: 5m
     labels:
       severity: warning
