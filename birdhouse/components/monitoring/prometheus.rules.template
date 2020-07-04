@@ -16,7 +16,7 @@ groups:
 
 
   - alert: HostMemoryUnderMemoryPressure
-    expr: rate(node_vmstat_pgmajfault[1m]) > 1000
+    expr: rate(node_vmstat_pgmajfault[2m]) > 1000
     for: 5m
     labels:
       severity: warning
