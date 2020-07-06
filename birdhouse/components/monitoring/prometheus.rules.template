@@ -231,6 +231,8 @@ groups:
       description: "Different kernel versions are running\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
+# node_vmstat_oom_kill seems to need kernel 4.10.15 and newer
+# https://github.com/prometheus/node_exporter/pull/874#issuecomment-377333109
 
   - alert: HostOomKillDetected
     expr: increase(node_vmstat_oom_kill[5m]) > 0
