@@ -87,6 +87,8 @@ services:
       - --storage.path=/alertmanager
       # enable debug logging
       - --log.level=debug
+      # wrong default was http://container-hash:9093/
+      - --web.external-url=http://${PAVICS_FQDN}:9093/
     ports:
       - 9093:9093
     restart: unless-stopped
