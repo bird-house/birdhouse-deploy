@@ -36,6 +36,7 @@ services:
   prometheus:
     image: prom/prometheus:v2.19.0
     container_name: prometheus
+    hostname: ${PAVICS_FQDN}
     volumes:
       - ./components/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./components/monitoring/prometheus.rules:/etc/prometheus/prometheus.rules:ro
