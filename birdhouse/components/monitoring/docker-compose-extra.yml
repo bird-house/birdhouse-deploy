@@ -36,7 +36,6 @@ services:
   prometheus:
     image: prom/prometheus:v2.19.0
     container_name: prometheus
-    hostname: ${PAVICS_FQDN}
     volumes:
       - ./components/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./components/monitoring/prometheus.rules:/etc/prometheus/prometheus.rules:ro
@@ -51,6 +50,8 @@ services:
       - --web.console.templates=/usr/share/prometheus/consoles
       # https://prometheus.io/docs/prometheus/latest/storage/
       - --storage.tsdb.retention.time=90d
+      # wrong default was http://container-hash:9090/
+      - --web.external-url=http://${PAVICS_FQDN}:9090/
     restart: unless-stopped
 
   # https://grafana.com/docs/grafana/latest/installation/docker/
