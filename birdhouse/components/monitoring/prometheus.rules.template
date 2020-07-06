@@ -189,7 +189,7 @@ groups:
 
 
   - alert: HostNodeOvertemperatureAlarm
-    expr: node_hwmon_temp_alarm == 1
+    expr: node_hwmon_temp_crit_alarm_celsius == 1
     for: 5m
     labels:
       severity: critical
