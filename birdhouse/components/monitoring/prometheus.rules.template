@@ -172,6 +172,8 @@ groups:
 
 
 
+# node_hwmon_* requires lm_sensors package
+
   - alert: HostPhysicalComponentTooHot
     expr: node_hwmon_temp_celsius > 75
     for: 5m
