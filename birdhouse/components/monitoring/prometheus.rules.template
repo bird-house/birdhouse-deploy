@@ -160,6 +160,9 @@ groups:
       description: "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
+# node_systemd_* not enabled by default due to kernel configuration and
+# security settings,
+# https://github.com/prometheus/node_exporter#disabled-by-default
 
   - alert: HostSystemdServiceCrashed
     expr: node_systemd_unit_state{state="failed"} == 1
