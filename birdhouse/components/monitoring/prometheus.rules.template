@@ -320,7 +320,7 @@ groups:
       description: "Container Memory usage is above 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
   - alert: ContainerVolumeUsage
-    expr: (1 - (sum(container_fs_inodes_free) BY (instance) / sum(container_fs_inodes_total) BY (instance)) * 100) > 80
+    expr: (1 - sum(container_fs_inodes_free) BY (instance) / sum(container_fs_inodes_total) BY (instance)) * 100 > 80
     for: 5m
     labels:
       severity: warning
