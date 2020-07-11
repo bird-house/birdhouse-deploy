@@ -35,14 +35,7 @@ below and the variable `AUTODEPLOY_EXTRA_REPOS` in
 
 The automatic deployment of the PAVICS platform, of the Jupyter tutorial
 notebooks and of the automatic deployment mechanism itself can all be
-enabled and configured in the `env.local` file (a copy from
-[`env.local.example`](env.local.example)).
-
-* Add `./components/scheduler` to `EXTRA_CONF_DIRS`.
-* Set `AUTODEPLOY_EXTRA_REPOS`, `AUTODEPLOY_DEPLOY_KEY_ROOT_DIR`,
-  `AUTODEPLOY_PLATFORM_FREQUENCY`, `AUTODEPLOY_NOTEBOOK_FREQUENCY` as
-  desired, full documentation in [`env.local.example`](env.local.example).
-* Run once [`fix-write-perm`](deployment/fix-write-perm), see doc in script.
+enabled by following instructions [here](components/README.rst#scheduler).
 
 Resource usage monitoring (CPU, memory, ..) and alerting for the host and each
 of the containers can be enabled by following instructions
@@ -90,62 +83,6 @@ postgres instance. See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-
   * User group: `anonymous`
 
 * Click "Add User".
-
-
-## Mostly automated unattended continuous deployment
-
-***NOTE***: this section about automated unattended continuous deployment is
-superseded by the new `./components/scheduler` that can be entirely
-enabled/disabled via the `env.local` file.  See the part about automatic
-deployment of the PAVICS platform in the "Docker instructions" section
-above for how to configure it.
-
-Automated unattended continuous deployment means if code change in the checkout
-of this repo, on the same currently checkout branch (ex: config changes,
-`docker-compose.yml` changes) a deployment will be performed automatically
-without human intervention.
-
-The trigger for the deployment is new code change on the server on the current
-branch (PR merged, push).  New code change locally will not trigger deployment
-so local development workflow is also supported.
-
-Note: there are still cases where a human intervention is needed.  See note in
-script [`deployment/deploy.sh`](deployment/deploy.sh).
-
-Configure logrotate for all following automations to prevent disk full:
-```
-deployment/install-logrotate-config .. $USER
-```
-
-To enable continuous deployment of PAVICS:
-
-```
-deployment/install-automated-deployment.sh .. $USER [daily|5-mins]
-# read the script for more options/details
-```
-
-If you want to manually force a deployment of PAVICS (note this might not use
-latest version of deploy.sh script):
-```
-deployment/deploy.sh .
-# read the script for more options/details
-```
-
-To enable continuous deployment of tutorial Jupyter notebooks:
-
-```
-deployment/install-deploy-notebook .. $USER
-# read the script for more details
-```
-
-To trigger tutorial Jupyter notebooks deploy manually:
-```
-# configure logrotate before because this script will log to
-# /var/log/PAVICS/notebookdeploy.log
-
-deployment/trigger-deploy-notebook
-# read the script for more details
-```
 
 
 ## Vagrant instructions
