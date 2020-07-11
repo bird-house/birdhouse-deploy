@@ -44,11 +44,9 @@ enabled and configured in the `env.local` file (a copy from
   desired, full documentation in [`env.local.example`](env.local.example).
 * Run once [`fix-write-perm`](deployment/fix-write-perm), see doc in script.
 
-Resource usage monitoring (CPU, memory, ..) for the host and each of the containers
-can be enabled by enabling the `./components/monitoring` in `env.local` file.
-
-* Add `./components/monitoring` to `EXTRA_CONF_DIRS`.
-* Change `GRAFANA_ADMIN_PASSWORD` value.
+Resource usage monitoring (CPU, memory, ..) and alerting for the host and each
+of the containers can be enabled by following instructions
+[here](components/README.rst#monitoring).
 
 To launch all the containers, use the following command:
 ```
