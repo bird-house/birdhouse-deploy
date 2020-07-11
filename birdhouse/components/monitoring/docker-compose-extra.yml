@@ -38,6 +38,7 @@ services:
     container_name: prometheus
     volumes:
       - ./components/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./components/monitoring/prometheus.rules:/etc/prometheus/prometheus.rules:ro
       - prometheus_persistence:/prometheus:rw
     ports:
       - 9090:9090
@@ -49,6 +50,8 @@ services:
       - --web.console.templates=/usr/share/prometheus/consoles
       # https://prometheus.io/docs/prometheus/latest/storage/
       - --storage.tsdb.retention.time=90d
+      # wrong default was http://container-hash:9090/
+      - --web.external-url=http://${PAVICS_FQDN}:9090/
     restart: unless-stopped
 
   # https://grafana.com/docs/grafana/latest/installation/docker/
@@ -68,6 +71,28 @@ services:
       - 3001:3000
     restart: unless-stopped
 
+  # https://github.com/prometheus/alertmanager
+  # https://prometheus.io/docs/alerting/latest/overview/
+  # Handle alerts: deduplicate, group, route, silence, inhibit
+  alertmanager:
+    image: prom/alertmanager:v0.21.0
+    container_name: alertmanager
+    volumes:
+      - ./components/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./components/monitoring/alertmanager.tmpl:/etc/alertmanager/template/default.tmpl:ro
+      - alertmanager_persistence:/alertmanager:rw
+    command:
+      # restore original CMD from image
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+      # enable debug logging
+      - --log.level=debug
+      # wrong default was http://container-hash:9093/
+      - --web.external-url=http://${PAVICS_FQDN}:9093/
+    ports:
+      - 9093:9093
+    restart: unless-stopped
+
 volumes:
   prometheus_persistence:
     external:
@@ -75,5 +100,8 @@ volumes:
   grafana_persistence:
     external:
       name: grafana_persistence
+  alertmanager_persistence:
+    external:
+      name: alertmanager_persistence
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2

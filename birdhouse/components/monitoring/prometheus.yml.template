@@ -17,3 +17,13 @@ scrape_configs:
   static_configs:
   - targets:
     - ${PAVICS_FQDN}:9100
+
+rule_files:
+- "/etc/prometheus/*.rules"
+
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - "${PAVICS_FQDN}:9093"
