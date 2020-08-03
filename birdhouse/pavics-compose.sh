@@ -66,6 +66,18 @@ cd $(dirname $(readlink -f $0 || realpath $0))
 # we don't use usual .env filename, because docker-compose uses it
 [ -f env.local ] && . ./env.local
 
+for adir in ${EXTRA_CONF_DIRS}; do
+  COMPONENT_DEFAULT_ENV="$adir/default.env"
+  if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
+    echo "reading '$COMPONENT_DEFAULT_ENV'"
+    . "$COMPONENT_DEFAULT_ENV"
+  fi
+done
+
+# Re-read env.local to make sure it can override ALL defaults from all
+# components.
+[ -f env.local ] && . ./env.local
+
 for i in ${VARS}
 do
   v="${i}"
