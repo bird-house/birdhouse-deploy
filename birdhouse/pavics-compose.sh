@@ -60,7 +60,7 @@ OPTIONAL_VARS='
 # tip: ln -s /path/to/pavics-compose.sh ~/bin/
 cd $(dirname $(readlink -f $0 || realpath $0))
 
-. ./common.env
+. ./default.env
 
 # we source local configs, if present
 # we don't use usual .env filename, because docker-compose uses it

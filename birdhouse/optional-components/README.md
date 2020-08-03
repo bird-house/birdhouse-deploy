@@ -64,7 +64,7 @@ How to enable in `env.local` (a copy from
 * Add `./optional-components/generic_bird` to `EXTRA_CONF_DIRS`.
 
 * Optionally set `GENERIC_BIRD_IMAGE`, `GENERIC_BIRD_PORT`, `GENERIC_BIRD_NAME` in `env.local`
-  for further customizations.  Default values are in [`common.env`](../common.env).
+  for further customizations.  Default values are in [`default.env`](../default.env).
 
 The WPS service will be available at `http://PAVICS_FQDN:GENERIC_BIRD_PORT/wps`
 or `https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME` where

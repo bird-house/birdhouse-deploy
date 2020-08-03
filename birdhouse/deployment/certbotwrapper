@@ -18,7 +18,7 @@ THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 
 # Default values
-. $THIS_DIR/../common.env
+. $THIS_DIR/../default.env
 
 if [ -e "$THIS_DIR/../env.local" ]; then
     # Override default values

@@ -39,7 +39,7 @@ THIS_DIR="`dirname "$THIS_FILE"`"
 cd $THIS_DIR/../..
 
 # Default values
-. birdhouse/common.env
+. birdhouse/default.env
 
 if [ -e "birdhouse/env.local" ]; then
     # Override default values
