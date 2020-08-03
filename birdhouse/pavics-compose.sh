@@ -120,21 +120,6 @@ else
   export INCLUDE_FOR_PORT_80="include /etc/nginx/conf.d/redirect-to-https.include;"
 fi
 
-if [ -z "$THREDDS_ORGANIZATION" ]; then
-  # default value before instantiating template configs
-  export THREDDS_ORGANIZATION="Birdhouse"
-fi
-
-if [ -z "$MAGPIE_DB_NAME" ]; then
-  # default value before instantiating template configs
-  export MAGPIE_DB_NAME="magpiedb"
-fi
-
-if [ -z "$VERIFY_SSL" ]; then
-  # default value before instantiating template configs
-  export VERIFY_SSL="true"
-fi
-
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""
 for adir in $AUTODEPLOY_EXTRA_REPOS; do
   # 4 spaces in front of '--volume' is important
