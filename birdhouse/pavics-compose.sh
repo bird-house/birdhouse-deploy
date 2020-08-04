@@ -139,9 +139,15 @@ if [ x"$1" = x"up" ]; then
   # create externally so nothing will delete these data volume automatically
   docker volume create jupyterhub_data_persistence  # jupyterhub db and cookie secret
   docker volume create thredds_persistence  # logs, cache
-  docker volume create prometheus_persistence  # metrics db
-  docker volume create grafana_persistence  # dashboard and config db
-  docker volume create alertmanager_persistence  # storage
+
+  for adir in ${EXTRA_CONF_DIRS}; do
+    COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
+    if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
+      echo "executing '$COMPONENT_PRE_COMPOSE_UP'"
+      sh -x "$COMPONENT_PRE_COMPOSE_UP"
+    fi
+  done
+
 fi
 
 COMPOSE_CONF_LIST="-f docker-compose.yml"
@@ -176,6 +182,14 @@ do
     if [ ! -z "$postgres_id" ]; then
       docker exec ${postgres_id} /postgres-setup.sh
     fi
+
+    for adir in ${EXTRA_CONF_DIRS}; do
+      COMPONENT_POST_COMPOSE_UP="$adir/post-docker-compose-up"
+      if [ -x "$COMPONENT_POST_COMPOSE_UP" ]; then
+        echo "executing '$COMPONENT_POST_COMPOSE_UP'"
+        sh -x "$COMPONENT_POST_COMPOSE_UP"
+      fi
+    done
 
     # Note: This command should stay last, as it can take a while depending on network and drive speeds
     # immediately cache the new notebook image for faster startup by JupyterHub
