@@ -1,15 +1,15 @@
 permissions:
-  - service: emu
+  - service: ${EMU_NAME}
     permission: getcapabilities
     group: anonymous
     action: create
 
-  - service: emu
+  - service: ${EMU_NAME}
     permission: describeprocess
     group: anonymous
     action: create
 
-  - service: emu
+  - service: ${EMU_NAME}
     permission: execute
     group: anonymous
     action: create
