@@ -228,7 +228,7 @@ services:
     restart: always
 
   thredds:
-    image: unidata/thredds-docker:4.6.14
+    image: ${THREDDS_IMAGE}
     container_name: thredds
     ports:
       - "8083:8080"

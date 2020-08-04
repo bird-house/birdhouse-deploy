@@ -20,8 +20,12 @@ fi
 # https://www.unidata.ucar.edu/software/tds/v4.6/reference/TomcatBehindProxyServer.html
 WEBAPPS_ROOT="/usr/local/tomcat/webapps"
 EXISTING_CONTEXT_ROOT="thredds"
-WANTED_CONTEXT_ROOT="twitcher/ows/proxy/thredds"
-WANTED_CONTEXT_ROOT_WARFILE_NAME="twitcher#ows#proxy#thredds"
+if [ -z "$WANTED_CONTEXT_ROOT" ]; then
+    WANTED_CONTEXT_ROOT="twitcher/ows/proxy/thredds"
+fi
+if [ -z "$WANTED_CONTEXT_ROOT_WARFILE_NAME" ]; then
+    WANTED_CONTEXT_ROOT_WARFILE_NAME="twitcher#ows#proxy#thredds"
+fi
 
 if [ -d "$WEBAPPS_ROOT/$EXISTING_CONTEXT_ROOT" ]; then
     mv "$WEBAPPS_ROOT/$EXISTING_CONTEXT_ROOT" "$WEBAPPS_ROOT/$WANTED_CONTEXT_ROOT_WARFILE_NAME"

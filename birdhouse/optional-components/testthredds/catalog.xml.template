@@ -4,13 +4,13 @@
          xmlns:xlink="http://www.w3.org/1999/xlink" >
 
     <service name="all" serviceType="Compound" base="" >
-        <service name="http" serviceType="HTTPServer" base="/testthredds/fileServer/" />
-        <service name="odap" serviceType="OpenDAP" base="/testthredds/dodsC/" />
-        <service name="ncml" serviceType="NCML" base="/testthredds/ncml/"/>
-        <service name="uddc" serviceType="UDDC" base="/testthredds/uddc/"/>
-        <service name="iso" serviceType="ISO" base="/testthredds/iso/"/>
-        <service name="wcs" serviceType="WCS" base="/testthredds/wcs/" />
-        <service name="wms" serviceType="WMS" base="/testthredds/wms/" />
+        <service name="http" serviceType="HTTPServer" base="/${TESTTHREDDS_CONTEXT_ROOT}/fileServer/" />
+        <service name="odap" serviceType="OpenDAP" base="/${TESTTHREDDS_CONTEXT_ROOT}/dodsC/" />
+        <service name="ncml" serviceType="NCML" base="/${TESTTHREDDS_CONTEXT_ROOT}/ncml/"/>
+        <service name="uddc" serviceType="UDDC" base="/${TESTTHREDDS_CONTEXT_ROOT}/uddc/"/>
+        <service name="iso" serviceType="ISO" base="/${TESTTHREDDS_CONTEXT_ROOT}/iso/"/>
+        <service name="wcs" serviceType="WCS" base="/${TESTTHREDDS_CONTEXT_ROOT}/wcs/" />
+        <service name="wms" serviceType="WMS" base="/${TESTTHREDDS_CONTEXT_ROOT}/wms/" />
     </service>
 
     <datasetScan name="TestDatasets" ID="testdatasets" path="testdatasets" location="/pavics-testdata">
