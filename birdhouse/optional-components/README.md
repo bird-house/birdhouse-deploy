@@ -44,6 +44,7 @@ access for this Emu WPS service.
 Canarie monitoring will also be automatically configured for this Emu WPS
 service.
 
+
 ## A second Thredds server for testing
 
 How to enable in `env.local` (a copy from
@@ -53,8 +54,9 @@ How to enable in `env.local` (a copy from
 
 * Optionally set `TESTTHREDDS_IMAGE`, `TESTTHREDDS_PORT`,
   `TESTTHREDDS_CONTEXT_ROOT`, `TESTTHREDDS_WARFILE_NAME`,
-  `TESTTHREDDS_INTERNAL_PORT` in `env.local` for further customizations.
-  Default values are in [`testthredds/default.env`](testthredds/default.env).
+  `TESTTHREDDS_INTERNAL_PORT`, `TESTTHREDDS_NAME`,  in `env.local` for further
+  customizations.  Default values are in
+  [`testthredds/default.env`](testthredds/default.env).
 
 Test Thredds service will be available at
 `http://PAVICS_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT` or
@@ -75,6 +77,9 @@ server.
 
 No Twitcher/Magpie access control, this Test Thredds is directly behind the
 Nginx proxy.
+
+Canarie monitoring will also be automatically configured for this second
+Thredds server.
 
 
 ## A generic bird WPS service
