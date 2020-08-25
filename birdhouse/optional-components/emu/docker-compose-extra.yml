@@ -6,10 +6,10 @@ services:
     environment:
       - PYWPS_CFG=/wps.cfg
     ports:
-      - "8888:5000"
+      - "${EMU_PORT}:${EMU_INTERNAL_PORT}"
     volumes:
       - ./optional-components/emu/wps.cfg:/wps.cfg
-      - ${EMU_WPS_OUTPUTS_VOL:-wps_outputs}:/data/wpsoutputs
+      - ${EMU_WPS_OUTPUTS_VOL}:/data/wpsoutputs
       - /tmp
     restart: always
 

@@ -25,8 +25,6 @@ VARS='
   $POSTGRES_PAVICS_PASSWORD
   $POSTGRES_MAGPIE_USERNAME
   $POSTGRES_MAGPIE_PASSWORD
-  $ALERTMANAGER_ADMIN_EMAIL_RECEIVER
-  $SMTP_SERVER
 '
 
 # list of vars to be substituted in template but they do not have to be set in
@@ -48,22 +46,28 @@ OPTIONAL_VARS='
   $AUTODEPLOY_PLATFORM_FREQUENCY
   $AUTODEPLOY_NOTEBOOK_FREQUENCY
   $AUTODEPLOY_EXTRA_SCHEDULER_JOBS
-  $GENERIC_BIRD_PORT
-  $GENERIC_BIRD_NAME
-  $ALERTMANAGER_EXTRA_GLOBAL
-  $ALERTMANAGER_EXTRA_ROUTES
-  $ALERTMANAGER_EXTRA_INHIBITION
-  $ALERTMANAGER_EXTRA_RECEIVERS
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH
 # tip: ln -s /path/to/pavics-compose.sh ~/bin/
 cd $(dirname $(readlink -f $0 || realpath $0))
 
-. ./common.env
+. ./default.env
 
 # we source local configs, if present
 # we don't use usual .env filename, because docker-compose uses it
+[ -f env.local ] && . ./env.local
+
+for adir in ${EXTRA_CONF_DIRS}; do
+  COMPONENT_DEFAULT_ENV="$adir/default.env"
+  if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
+    echo "reading '$COMPONENT_DEFAULT_ENV'"
+    . "$COMPONENT_DEFAULT_ENV"
+  fi
+done
+
+# Re-read env.local to make sure it can override ALL defaults from all
+# components.
 [ -f env.local ] && . ./env.local
 
 for i in ${VARS}
@@ -108,21 +112,6 @@ else
   export INCLUDE_FOR_PORT_80="include /etc/nginx/conf.d/redirect-to-https.include;"
 fi
 
-if [ -z "$THREDDS_ORGANIZATION" ]; then
-  # default value before instantiating template configs
-  export THREDDS_ORGANIZATION="Birdhouse"
-fi
-
-if [ -z "$MAGPIE_DB_NAME" ]; then
-  # default value before instantiating template configs
-  export MAGPIE_DB_NAME="magpiedb"
-fi
-
-if [ -z "$VERIFY_SSL" ]; then
-  # default value before instantiating template configs
-  export VERIFY_SSL="true"
-fi
-
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""
 for adir in $AUTODEPLOY_EXTRA_REPOS; do
   # 4 spaces in front of '--volume' is important
@@ -148,9 +137,15 @@ if [ x"$1" = x"up" ]; then
   # create externally so nothing will delete these data volume automatically
   docker volume create jupyterhub_data_persistence  # jupyterhub db and cookie secret
   docker volume create thredds_persistence  # logs, cache
-  docker volume create prometheus_persistence  # metrics db
-  docker volume create grafana_persistence  # dashboard and config db
-  docker volume create alertmanager_persistence  # storage
+
+  for adir in ${EXTRA_CONF_DIRS}; do
+    COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
+    if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
+      echo "executing '$COMPONENT_PRE_COMPOSE_UP'"
+      sh -x "$COMPONENT_PRE_COMPOSE_UP"
+    fi
+  done
+
 fi
 
 COMPOSE_CONF_LIST="-f docker-compose.yml"
@@ -185,6 +180,14 @@ do
     if [ ! -z "$postgres_id" ]; then
       docker exec ${postgres_id} /postgres-setup.sh
     fi
+
+    for adir in ${EXTRA_CONF_DIRS}; do
+      COMPONENT_POST_COMPOSE_UP="$adir/post-docker-compose-up"
+      if [ -x "$COMPONENT_POST_COMPOSE_UP" ]; then
+        echo "executing '$COMPONENT_POST_COMPOSE_UP'"
+        sh -x "$COMPONENT_POST_COMPOSE_UP"
+      fi
+    done
 
     # Note: This command should stay last, as it can take a while depending on network and drive speeds
     # immediately cache the new notebook image for faster startup by JupyterHub

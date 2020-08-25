@@ -1,7 +1,7 @@
 providers:
-  emu:
-    url: http://${PAVICS_FQDN}:8888/wps
-    title: Emu
+  ${EMU_NAME}:
+    url: http://${PAVICS_FQDN}:${EMU_PORT}/wps
+    title: ${EMU_NAME}
     public: true
     c4i: false
     type: wps

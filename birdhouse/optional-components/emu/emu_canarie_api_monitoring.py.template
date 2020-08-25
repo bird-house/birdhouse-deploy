@@ -1,12 +1,12 @@
 SERVICES['node']['monitoring'].update({
-    'Emu-public': {
+    '${EMU_NAME}-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/emu?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/${EMU_NAME}?service=WPS&version=1.0.0&request=GetCapabilities'
         },
     },
-    'Emu': {
+    '${EMU_NAME}': {
         'request': {
-            'url': 'http://${PAVICS_FQDN}:8888/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'http://${PAVICS_FQDN}:${EMU_PORT}/wps?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
 })

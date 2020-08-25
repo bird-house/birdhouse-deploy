@@ -6,7 +6,7 @@ services:
     environment:
       PYWPS_CFG: /wps.cfg
     ports:
-      - "${GENERIC_BIRD_PORT}:${GENERIC_BIRD_INTERNAL_PORT:-5000}"
+      - "${GENERIC_BIRD_PORT}:${GENERIC_BIRD_INTERNAL_PORT}"
     volumes:
       - ./optional-components/generic_bird/wps.cfg:/wps.cfg:ro
       - wps_outputs:/data/wpsoutputs
@@ -16,7 +16,7 @@ services:
     restart: always
 
   postgres_generic_bird:
-    image: ${GENERIC_BIRD_POSTGRES_IMAGE:-postgres:10.12}
+    image: ${GENERIC_BIRD_POSTGRES_IMAGE}
     container_name: postgres_generic_bird
     volumes:
       - postgres_generic_bird:/var/lib/postgresql/data/pgdata

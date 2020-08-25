@@ -29,7 +29,7 @@ if [ ! -e "$REPO_ROOT/birdhouse/deployment/trigger-deploy-notebook" ]; then
     exit 2
 fi
 
-. "$REPO_ROOT/birdhouse/common.env"
+. "$REPO_ROOT/birdhouse/default.env"
 
 if [ -f "$REPO_ROOT/birdhouse/env.local" ]; then
     # allow override of JUPYTERHUB_USER_DATA_DIR

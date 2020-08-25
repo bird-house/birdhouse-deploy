@@ -1,0 +1,5 @@
+#!/bin/sh -x
+
+docker volume create prometheus_persistence  # metrics db
+docker volume create grafana_persistence  # dashboard and config db
+docker volume create alertmanager_persistence  # storage

@@ -1,0 +1,14 @@
+SERVICES['node']['monitoring'].update({
+    '${TESTTHREDDS_NAME}-public': {
+        'request': {
+            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TESTTHREDDS_CONTEXT_ROOT}/catalog.html'
+        },
+    },
+    '${TESTTHREDDS_NAME}': {
+        'request': {
+            'url': 'http://${PAVICS_FQDN}:${TESTTHREDDS_PORT}/${TESTTHREDDS_CONTEXT_ROOT}/catalog.html'
+        }
+    },
+})
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python
