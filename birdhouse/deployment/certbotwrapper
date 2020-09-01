@@ -13,9 +13,17 @@
 #
 # Port 80 and 443 must be free at the time of invoking this script
 # (pavics-compose.sh stop proxy)
+#
+# Setting environment variable FORCE_CERTBOT_RENEW=1 when calling this script
+# will perform all needed pre and post actions for renewal:
+# * pavics-compose.sh stop proxy
+# * perform the renewal
+# * concat the fullchain.pem and privkey.pem to the proper location
+# * pavics-compose.sh start proxy
 
 THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
+SAVED_PWD="`pwd`"
 
 # Default values
 . $THIS_DIR/../default.env
@@ -30,6 +38,12 @@ set -x
 CERT_DOMAIN="$PAVICS_FQDN_PUBLIC"
 if [ -z "$CERT_DOMAIN" ]; then
     CERT_DOMAIN="$PAVICS_FQDN"
+fi
+
+if [ ! -z "$FORCE_CERTBOT_RENEW" ]; then
+    cd $THIS_DIR/..
+    ./pavics-compose.sh stop proxy
+    cd $SAVED_PWD
 fi
 
 docker run --rm --name certbot \
@@ -58,5 +72,18 @@ sudo cat \$CERTPATH/fullchain.pem \$CERTPATH/privkey.pem > $SSL_CERTIFICATE
 openssl x509 -noout -text -in $SSL_CERTIFICATE
 ./pavics-compose.sh up -d
 "
+
+if [ ! -z "$FORCE_CERTBOT_RENEW" ]; then
+    CERTPATH="/etc/letsencrypt/live/$CERT_DOMAIN"
+    cd $THIS_DIR/..
+    docker run --rm --name copy_cert \
+        -v "$CERTPATH:$CERTPATH" \
+        bash \
+        cat $CERTPATH/fullchain.pem $CERTPATH/privkey.pem > $SSL_CERTIFICATE
+    if [ -z "$FORCE_CERTBOT_RENEW_NO_START_PROXY" ]; then
+        ./pavics-compose.sh start proxy
+    fi
+    cd $SAVED_PWD
+fi
 
 exit $RC
