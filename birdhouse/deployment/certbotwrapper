@@ -64,17 +64,6 @@ docker run --rm --name certbot \
   "$@"
 RC=$?
 
-set +x
-echo "
-What to do next:
-
-CERTPATH=\"/etc/letsencrypt/live/$CERT_DOMAIN\"
-cd $THIS_DIR/..
-sudo cat \$CERTPATH/fullchain.pem \$CERTPATH/privkey.pem > $SSL_CERTIFICATE
-openssl x509 -noout -text -in $SSL_CERTIFICATE
-./pavics-compose.sh up -d
-"
-
 if [ ! -z "$FORCE_CERTBOT_RENEW" ]; then
     CERTPATH="/etc/letsencrypt/live/$CERT_DOMAIN"
     cd $THIS_DIR/..
@@ -86,6 +75,17 @@ if [ ! -z "$FORCE_CERTBOT_RENEW" ]; then
         ./pavics-compose.sh start proxy
     fi
     cd $SAVED_PWD
+else
+    set +x
+    echo "
+What to do next:
+
+CERTPATH=\"/etc/letsencrypt/live/$CERT_DOMAIN\"
+cd $THIS_DIR/..
+sudo cat \$CERTPATH/fullchain.pem \$CERTPATH/privkey.pem > $SSL_CERTIFICATE
+openssl x509 -noout -text -in $SSL_CERTIFICATE
+./pavics-compose.sh up -d
+"
 fi
 
 exit $RC
