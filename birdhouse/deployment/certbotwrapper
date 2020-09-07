@@ -14,12 +14,17 @@
 # Port 80 and 443 must be free at the time of invoking this script
 # (pavics-compose.sh stop proxy)
 #
-# Setting environment variable FORCE_CERTBOT_RENEW=1 when calling this script
-# will perform all needed pre and post actions for renewal:
+# Setting environment variable FORCE_CERTBOT_E2E=1 when calling this script
+# will perform all needed pre and post actions:
 # * pavics-compose.sh stop proxy
-# * perform the renewal
+# * perform the certbot action
 # * concat the fullchain.pem and privkey.pem to the proper location
 # * pavics-compose.sh start proxy
+#
+# Setting environment variable CERTBOT_RENEW=1 when calling this script
+# will perform renew instead of requesting a new cert.  Renew mode will avoid
+# hitting the LetsEncrypt server if cert is not within 1 month of expiry,
+# avoiding unnecessary load on LetsEncrypt server (be a good netizen).
 
 THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
@@ -40,12 +45,23 @@ if [ -z "$CERT_DOMAIN" ]; then
     CERT_DOMAIN="$PAVICS_FQDN"
 fi
 
-EXTRA_CERTBOT_OPTS=""
-if [ ! -z "$FORCE_CERTBOT_RENEW" ]; then
-    EXTRA_CERTBOT_OPTS="--cert-name $CERT_DOMAIN"
+if [ ! -z "$FORCE_CERTBOT_E2E" ]; then
     cd $THIS_DIR/..
     ./pavics-compose.sh stop proxy
     cd $SAVED_PWD
+fi
+CERTBOT_OPTS=""
+if [ ! -z "$CERTBOT_RENEW" ]; then
+    CERTBOT_OPTS="renew"
+else
+    CERTBOT_OPTS="certonly \
+  --non-interactive \
+  --agree-tos \
+  --no-eff-email \
+  --standalone \
+  --email $SUPPORT_EMAIL \
+  --domain $CERT_DOMAIN \
+  --cert-name $CERT_DOMAIN"
 fi
 
 docker run --rm --name certbot \
@@ -54,17 +70,11 @@ docker run --rm --name certbot \
   -v "/var/log/letsencrypt:/var/log/letsencrypt" \
   -p 443:443 -p 80:80 \
   certbot/certbot:v1.3.0 \
-  certonly \
-  --non-interactive \
-  --agree-tos \
-  --no-eff-email \
-  --standalone \
-  --email $SUPPORT_EMAIL \
-  --domain $CERT_DOMAIN $EXTRA_CERTBOT_OPTS \
+  $CERTBOT_OPTS \
   "$@"
 RC=$?
 
-if [ ! -z "$FORCE_CERTBOT_RENEW" ]; then
+if [ ! -z "$FORCE_CERTBOT_E2E" ]; then
     TMP_SSL_CERT="/tmp/tmp_certbotwrapper_ssl_cert.pem"
     CERTPATH="/etc/letsencrypt/live/$CERT_DOMAIN"
     cd $THIS_DIR/..
@@ -77,7 +87,7 @@ if [ ! -z "$FORCE_CERTBOT_RENEW" ]; then
         cp -v $TMP_SSL_CERT $SSL_CERTIFICATE
     fi
     rm -v $TMP_SSL_CERT
-    if [ -z "$FORCE_CERTBOT_RENEW_NO_START_PROXY" ]; then
+    if [ -z "$FORCE_CERTBOT_E2E_NO_START_PROXY" ]; then
         ./pavics-compose.sh start proxy
     fi
     cd $SAVED_PWD
