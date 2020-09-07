@@ -79,7 +79,7 @@ if [ ! -z "$FORCE_CERTBOT_RENEW" ]; then
     CERTPATH="/etc/letsencrypt/live/$CERT_DOMAIN"
     cd $THIS_DIR/..
     docker run --rm --name copy_cert \
-        -v "$CERTPATH:$CERTPATH" \
+        -v "/etc/letsencrypt:/etc/letsencrypt" \
         bash \
         cat $CERTPATH/fullchain.pem $CERTPATH/privkey.pem > $SSL_CERTIFICATE
     if [ -z "$FORCE_CERTBOT_RENEW_NO_START_PROXY" ]; then
