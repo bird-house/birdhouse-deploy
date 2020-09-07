@@ -28,7 +28,7 @@ if [ ! -f certkey.pem ]; then
     . ./env.local
     if [ -n "$LETSENCRYPT_EMAIL" ]; then
         FORCE_CERTBOT_RENEW=1 FORCE_CERTBOT_RENEW_NO_START_PROXY=1 \
-            deployment/certbotwrapper --cert-name $PAVICS_FQDN
+            deployment/certbotwrapper
     else
         openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem \
             -subj "/C=CA/ST=Quebec/L=Montreal/O=RnD/CN=${VM_HOSTNAME}.$VM_DOMAIN"

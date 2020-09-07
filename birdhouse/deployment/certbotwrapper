@@ -40,7 +40,9 @@ if [ -z "$CERT_DOMAIN" ]; then
     CERT_DOMAIN="$PAVICS_FQDN"
 fi
 
+EXTRA_CERTBOT_OPTS=""
 if [ ! -z "$FORCE_CERTBOT_RENEW" ]; then
+    EXTRA_CERTBOT_OPTS="--cert-name $CERT_DOMAIN"
     cd $THIS_DIR/..
     ./pavics-compose.sh stop proxy
     cd $SAVED_PWD
@@ -58,7 +60,7 @@ docker run --rm --name certbot \
   --no-eff-email \
   --standalone \
   --email $SUPPORT_EMAIL \
-  --domain $CERT_DOMAIN \
+  --domain $CERT_DOMAIN $EXTRA_CERTBOT_OPTS \
   "$@"
 RC=$?
 
