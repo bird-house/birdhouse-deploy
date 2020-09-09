@@ -12,14 +12,14 @@
 # * --dry-run
 #
 # Port 80 and 443 must be free at the time of invoking this script
-# (pavics-compose.sh stop proxy)
+# (docker stop proxy)
 #
 # Setting environment variable FORCE_CERTBOT_E2E=1 when calling this script
 # will perform all needed pre and post actions:
-# * pavics-compose.sh stop proxy
+# * docker stop proxy
 # * perform the certbot action
 # * concat the fullchain.pem and privkey.pem to the proper location
-# * pavics-compose.sh start proxy
+# * docker start proxy
 #
 # Setting environment variable CERTBOT_RENEW=1 when calling this script
 # will perform renew instead of requesting a new cert.  Renew mode will avoid
@@ -55,7 +55,7 @@ fi
 
 if [ ! -z "$FORCE_CERTBOT_E2E" ]; then
     cd $THIS_DIR/..
-    ./pavics-compose.sh stop proxy
+    docker stop proxy
     cd $SAVED_PWD
 fi
 CERTBOT_OPTS=""
@@ -96,7 +96,7 @@ if [ ! -z "$FORCE_CERTBOT_E2E" ]; then
     fi
     rm -v $TMP_SSL_CERT
     if [ -z "$FORCE_CERTBOT_E2E_NO_START_PROXY" ]; then
-        ./pavics-compose.sh start proxy
+        docker start proxy
     fi
     cd $SAVED_PWD
 else
@@ -108,7 +108,7 @@ CERTPATH=\"/etc/letsencrypt/live/$CERT_DOMAIN\"
 cd $THIS_DIR/..
 sudo cat \$CERTPATH/fullchain.pem \$CERTPATH/privkey.pem > $SSL_CERTIFICATE
 openssl x509 -noout -text -in $SSL_CERTIFICATE
-./pavics-compose.sh up -d
+docker start proxy
 "
 fi
 
