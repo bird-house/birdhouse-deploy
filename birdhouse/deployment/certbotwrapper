@@ -34,6 +34,10 @@ if [ ! -z "$CERTBOTWRAPPER_LOGFILE" ]; then
     exec >>$CERTBOTWRAPPER_LOGFILE 2>&1
 fi
 
+START_TIME="`date -Isecond`"
+echo "==========
+certbotwrapper START_TIME=$START_TIME"
+
 THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 SAVED_PWD="`pwd`"
@@ -111,5 +115,10 @@ openssl x509 -noout -text -in $SSL_CERTIFICATE
 docker start proxy
 "
 fi
+
+set +x
+echo "
+certbotwrapper finished START_TIME=$START_TIME
+certbotwrapper finished   END_TIME=`date -Isecond`"
 
 exit $RC
