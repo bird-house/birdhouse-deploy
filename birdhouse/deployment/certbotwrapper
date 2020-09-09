@@ -25,6 +25,14 @@
 # will perform renew instead of requesting a new cert.  Renew mode will avoid
 # hitting the LetsEncrypt server if cert is not within 1 month of expiry,
 # avoiding unnecessary load on LetsEncrypt server (be a good netizen).
+#
+# Setting environment variable CERTBOTWRAPPER_LOGFILE='/path/to/logfile.log'
+# will redirect all STDOUT and STDERR to that logfile so this script will be
+# completely silent.
+
+if [ ! -z "$CERTBOTWRAPPER_LOGFILE" ]; then
+    exec >>$CERTBOTWRAPPER_LOGFILE 2>&1
+fi
 
 THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
