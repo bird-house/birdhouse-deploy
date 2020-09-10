@@ -48,6 +48,11 @@ if [ ! -f "$ENV_LOCAL_FILE" ]; then
     exit 2
 fi
 
+# Setup COMPOSE_DIR and PWD for sourcing env.local.
+# Prevent un-expected difference when this script is run inside autodeploy
+# container and manually from the host.
+cd $COMPOSE_DIR
+
 
 should_trigger() {
     EXTRA_REPO="`git rev-parse --show-toplevel`"
