@@ -32,8 +32,9 @@ domain: ouranos.ca
 # - { srcdir: "/data/datasets-priv", destdir: "/data/datasetsPrivate" }
 # - { srcdir: "C:/data/datasets", destdir: "/data/datasets" }
 
-# If you want to provide a SSL certificate yourself, name it 'certkey.pem' and
-# it won't be overriden, see vagrant-utils/configure-pavics.sh.  Otherwise one
+# If you want to provide a SSL certificate yourself, name it
+# '/home/vagrant/certkey.pem' and it won't be overriden, see
+# vagrant-utils/configure-pavics.sh.  Otherwise one
 # will be generated automatically for you.
 
 # If you want to provide an env.local yourself, just create it and it won't be
