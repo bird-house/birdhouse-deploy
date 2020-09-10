@@ -17,6 +17,11 @@ EOF
     if [ -n "$LETSENCRYPT_EMAIL" ]; then
     cat <<EOF >> env.local
 export SUPPORT_EMAIL="$LETSENCRYPT_EMAIL"
+
+# Modify schedule so test systems do not hit LetsEncrypt at the same time as
+# prod systems to avoid loading LetsEncrypt server (be a nice netizen).
+RENEW_LETSENCRYPT_SSL_SCHEDULE="22 9 * * *"  # UTC
+. components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env
 EOF
     elif [ -n "$KITENAME" -a -n "$KITESUBDOMAIN" ]; then
     cat <<EOF >> env.local
