@@ -38,6 +38,8 @@ START_TIME="`date -Isecond`"
 echo "==========
 certbotwrapper START_TIME=$START_TIME"
 
+set -x
+
 THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 SAVED_PWD="`pwd`"
@@ -45,12 +47,18 @@ SAVED_PWD="`pwd`"
 # Default values
 . $THIS_DIR/../default.env
 
-if [ -e "$THIS_DIR/../env.local" ]; then
+ENV_LOCAL_FILE="$THIS_DIR/../env.local"
+
+set +x  # hide password in env.local
+
+if [ -e "$ENV_LOCAL_FILE" ]; then
     # Override default values
-    . $THIS_DIR/../env.local
+    . "$ENV_LOCAL_FILE"
+else
+    echo "WARNING: '$ENV_LOCAL_FILE' not found."
 fi
 
-set -x
+set -x  # resume logging/tracing
 
 CERT_DOMAIN="$PAVICS_FQDN_PUBLIC"
 if [ -z "$CERT_DOMAIN" ]; then
