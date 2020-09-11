@@ -1,7 +1,12 @@
 #!/bin/sh -x
 
+if [ -f env.local ]; then
+    # Get SSL_CERTIFICATE from existing env.local.
+    . ./env.local
+fi
+
 if [ -z "$SSL_CERTIFICATE" ]; then
-    # Overridable
+    # Overridable by existing env.local or existing env var.
     SSL_CERTIFICATE="/home/vagrant/certkey.pem"
 fi
 
