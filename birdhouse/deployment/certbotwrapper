@@ -102,7 +102,7 @@ if [ ! -z "$FORCE_CERTBOT_E2E" ]; then
         -v "/etc/letsencrypt:/etc/letsencrypt" \
         bash \
         cat $CERTPATH/fullchain.pem $CERTPATH/privkey.pem > $TMP_SSL_CERT
-    if ! diff $SSL_CERTIFICATE $TMP_SSL_CERT && [ $RC -eq 0 ]; then
+    if [ -s "$TMP_SSL_CERT" ] && ! diff $SSL_CERTIFICATE $TMP_SSL_CERT && [ $RC -eq 0 ]; then
         # Only modify SSL_CERTIFICATE if there are real changes.
         cp -v $TMP_SSL_CERT $SSL_CERTIFICATE
     fi
