@@ -97,6 +97,11 @@ if [ -f "$COMPOSE_DIR/docker-compose.override.yml" ]; then
     echo "WARNING: docker-compose.override.yml found, should use EXTRA_CONF_DIRS in env.local instead"
 fi
 
+# Setup COMPOSE_DIR and PWD for sourcing env.local.
+# Prevent un-expected difference when this script is run inside autodeploy
+# container and manually from the host.
+cd $COMPOSE_DIR
+
 START_TIME="`date -Isecond`"
 echo "deploy START_TIME=$START_TIME"
 
