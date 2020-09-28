@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# Batch create or delete magpie users using config file at
+# /tmp/create_magpie_users/config.yml (harcoded path).
+#
+# Sample /tmp/create_magpie_users/config.yml:
+#
+# users:
+#   - username: bogus01
+#     password: bogus
+#     email: bogus@example.com
+#     group: users
+#   - username: bogus02
+#     password: bogus
+#     email: bogus@example.com
+#     group: users
+#   - username: bogus03
+#     password: bogus
+#     email: bogus@example.com
+#     group: users
+#
+# Sample usage: create-magpie-users [-d]
+#   -d: delete instead of create
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+COMPOSE_DIR="`dirname "$THIS_DIR"`"
+
+if [ -z "$PAVICS_FQDN" -o -z "$MAGPIE_ADMIN_PASSWORD" ]; then
+    . $COMPOSE_DIR/env.local
+fi
+
+BASE_CMD="docker run --rm -it --name create_magpie_users \
+    -v /tmp/create_magpie_users:/tmp/create_magpie_users:rw \
+    $DOCKER_EXTRA_OPTS \
+    pavics/magpie:2.0.0 magpie_cli batch_update_users https://$PAVICS_FQDN/magpie admin $MAGPIE_ADMIN_PASSWORD"
+
+set -x
+
+$BASE_CMD -f /tmp/create_magpie_users/config.yml -o /tmp/create_magpie_users/ "$@"
