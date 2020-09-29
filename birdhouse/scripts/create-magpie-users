@@ -4,37 +4,57 @@
 # /tmp/create_magpie_users/config.yml (harcoded path).
 #
 # Sample /tmp/create_magpie_users/config.yml:
+# Full sample at
+# https://github.com/Ouranosinc/Magpie/blob/master/config/config.yml:
 #
 # users:
 #   - username: bogus01
-#     password: bogus
+#     password: min_12_length
 #     email: bogus@example.com
 #     group: users
 #   - username: bogus02
-#     password: bogus
+#     password: min_12_length
 #     email: bogus@example.com
 #     group: users
 #   - username: bogus03
-#     password: bogus
+#     password: min_12_length
 #     email: bogus@example.com
 #     group: users
 #
 # Sample usage: create-magpie-users [-d]
-#   -d: delete instead of create
+#   -d: delete users instead of create
 
 THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
-if [ -z "$PAVICS_FQDN" -o -z "$MAGPIE_ADMIN_PASSWORD" ]; then
+if [ -f "$COMPOSE_DIR/env.local" ]; then
+    # Get PAVICS_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
     . $COMPOSE_DIR/env.local
 fi
 
+# Allow override using env var.
+if [ -z "$MAGPIE_SERVER_URL" ]; then
+    MAGPIE_SERVER_URL="https://$PAVICS_FQDN/magpie"
+fi
+
+if [ -z "$MAGPIE_CLI_USER" ]; then
+    MAGPIE_CLI_USER="$MAGPIE_ADMIN_USERNAME"
+fi
+
+if [ -z "$MAGPIE_CLI_PASS" ]; then
+    MAGPIE_CLI_PASS="$MAGPIE_ADMIN_PASSWORD"
+fi
+
+if [ -z "$MAGPIE_CLI_OUTPUT_DIR" ]; then
+    MAGPIE_CLI_OUTPUT_DIR="/tmp/create_magpie_users"
+fi
+
 BASE_CMD="docker run --rm -it --name create_magpie_users \
-    -v /tmp/create_magpie_users:/tmp/create_magpie_users:rw \
+    -v $MAGPIE_CLI_OUTPUT_DIR:$MAGPIE_CLI_OUTPUT_DIR:rw \
     $DOCKER_EXTRA_OPTS \
-    pavics/magpie:2.0.0 magpie_cli batch_update_users https://$PAVICS_FQDN/magpie admin $MAGPIE_ADMIN_PASSWORD"
+    pavics/magpie:2.0.0 magpie_cli batch_update_users $MAGPIE_SERVER_URL $MAGPIE_CLI_USER $MAGPIE_CLI_PASS"
 
 set -x
 
-$BASE_CMD -f /tmp/create_magpie_users/config.yml -o /tmp/create_magpie_users/ "$@"
+$BASE_CMD -f $MAGPIE_CLI_OUTPUT_DIR/config.yml -o $MAGPIE_CLI_OUTPUT_DIR/ "$@"
