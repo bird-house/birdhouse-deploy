@@ -70,6 +70,20 @@ postgres instance. See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-
 
 ### Create public demo user in Magpie for JupyterHub login
 
+Use [`create-magpie-users`](scripts/create-magpie-users) or follow manual
+instructions below.
+
+`config.yml` file if using `create-magpie-users`:
+```
+users:
+  - username: < value of JUPYTER_DEMO_USER in `env.local` >
+    password: < you decide, at least 12 in length >
+    email: < anything is fine >
+    group: anonymous
+```
+
+Manual instructions:
+
 * Go to
   https://<PAVICS_FQDN>/magpie/ui/login, login with the `admin` user,
   password should be in `env.local`.
@@ -78,7 +92,7 @@ postgres instance. See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-
 
 * Fill in:
   * User name: <value of JUPYTER_DEMO_USER in `env.local`>
-  * Email: anything is fine
+  * Email: < anything is fine >
   * Password: < you decide >
   * User group: `anonymous`
 
