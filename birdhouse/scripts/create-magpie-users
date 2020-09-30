@@ -3,6 +3,10 @@
 # Batch create or delete magpie users using config file at
 # /tmp/create_magpie_users/config.yml (harcoded path).
 #
+# Should run from checkout on same host running PAVICS to have access to
+# env.local file for Magpie credentials.  Else these can be provided via
+# environment variables.
+#
 # Sample /tmp/create_magpie_users/config.yml:
 # Full sample at
 # https://github.com/Ouranosinc/Magpie/blob/master/config/config.yml:
