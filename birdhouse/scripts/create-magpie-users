@@ -86,10 +86,14 @@ if [ -z "$MAGPIE_CLI_OUTPUT_DIR" ]; then
     MAGPIE_CLI_OUTPUT_DIR="/tmp/create_magpie_users"
 fi
 
+if [ -z "$MAGPIE_CLI_IMAGE" ]; then
+    MAGPIE_CLI_IMAGE="pavics/magpie:2.0.0"
+fi
+
 BASE_CMD="docker run --rm -it --name create_magpie_users \
     -v $MAGPIE_CLI_OUTPUT_DIR:$MAGPIE_CLI_OUTPUT_DIR:rw \
     $DOCKER_EXTRA_OPTS \
-    pavics/magpie:2.0.0 magpie_cli batch_update_users $MAGPIE_SERVER_URL $MAGPIE_CLI_USER $MAGPIE_CLI_PASS"
+    $MAGPIE_CLI_IMAGE magpie_cli batch_update_users $MAGPIE_SERVER_URL $MAGPIE_CLI_USER $MAGPIE_CLI_PASS"
 
 set -x
 
