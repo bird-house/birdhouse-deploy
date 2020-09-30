@@ -73,7 +73,9 @@ if [ -f "$COMPOSE_DIR/env.local" ]; then
     . $COMPOSE_DIR/env.local
 fi
 
-# Allow override using env var.
+##############################################################################
+# Allow override using same name env var.
+
 if [ -z "$MAGPIE_SERVER_URL" ]; then
     MAGPIE_SERVER_URL="https://$PAVICS_FQDN/magpie"
 fi
@@ -93,6 +95,10 @@ fi
 if [ -z "$MAGPIE_CLI_IMAGE" ]; then
     MAGPIE_CLI_IMAGE="pavics/magpie:2.0.0"
 fi
+
+# End configurable config via env var.
+##############################################################################
+
 
 BASE_CMD="docker run --rm -it --name create_magpie_users \
     -v $MAGPIE_CLI_OUTPUT_DIR:$MAGPIE_CLI_OUTPUT_DIR:rw \
