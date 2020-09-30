@@ -93,7 +93,7 @@ if [ -z "$MAGPIE_CLI_OUTPUT_DIR" ]; then
 fi
 
 if [ -z "$MAGPIE_CLI_IMAGE" ]; then
-    MAGPIE_CLI_IMAGE="pavics/magpie:2.0.0"
+    MAGPIE_CLI_IMAGE="pavics/magpie:2.0.1"
 fi
 
 # End configurable config via env var.
