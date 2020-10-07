@@ -4,6 +4,11 @@
 # See sample input config in deploy-data.config.sample.yml.
 #
 
+if [ ! -z "$DEPLOY_DATA_LOGFILE" ]; then
+    exec >>$DEPLOY_DATA_LOGFILE 2>&1
+fi
+
+
 cleanup_on_exit() {
     set +x
     echo "
