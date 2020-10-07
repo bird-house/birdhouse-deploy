@@ -43,7 +43,7 @@ fi
 
 
 yq() {
-    docker run --rm --name yq -v $CONFIG_YML:$CONFIG_YML:ro $DEPLOY_DATA_YQ_IMAGE yq "$@"
+    docker run --rm --name deploy_data_yq -v $CONFIG_YML:$CONFIG_YML:ro $DEPLOY_DATA_YQ_IMAGE yq "$@"
 }
 
 # Empty value could mean typo in the keys in the config file.
