@@ -29,6 +29,14 @@ yq() {
     docker run --rm --name yq -v $CONFIG_YML:$CONFIG_YML:ro $DEPLOY_DATA_YQ_IMAGE yq "$@"
 }
 
+# Empty value could mean typo in the keys in the config file.
+ensure_not_empty() {
+    if [ -z "$*" ]; then
+        echo "ERROR: value empty" 1>&2
+        exit 1
+    fi
+}
+
 
 START_TIME="`date -Isecond`"
 echo "==========
@@ -37,12 +45,15 @@ datadeploy START_TIME=$START_TIME"
 set -x
 
 GIT_REPO_URLS="`yq r -p v $CONFIG_YML \[*\].repo_url`"
+ensure_not_empty "$GIT_REPO_URLS"
 REPO_NUM=0
 
 for GIT_REPO_URL in $GIT_REPO_URLS; do
 
     GIT_BRANCH="`yq r -p v $CONFIG_YML \[$REPO_NUM\].branch`"
+    ensure_not_empty "$GIT_BRANCH"
     GIT_CHECKOUT_NAME="`yq r -p v $CONFIG_YML \[$REPO_NUM\].checkout_name`"
+    ensure_not_empty "$GIT_CHECKOUT_NAME"
 
     CLONE_DEST="$DEPLOY_DATA_CHECKOUT_CACHE/$GIT_CHECKOUT_NAME"
     if [ ! -d "$CLONE_DEST" ]; then
@@ -59,10 +70,12 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
     fi
 
     SRC_DIRS="`yq r -p v $CONFIG_YML \[$REPO_NUM\].dir_maps\[*\].source_dir`"
+    ensure_not_empty "$SRC_DIRS"
     DIR_NUM=0
 
     for SRC_DIR in $SRC_DIRS; do
         DEST_DIR="`yq r -p v $CONFIG_YML \[$REPO_NUM\].dir_maps\[$DIR_NUM\].dest_dir`"
+        ensure_not_empty "$DEST_DIR"
 
         echo "sync '$SRC_DIR' to '$DEST_DIR'"
         rsync --recursive --links --checksum --delete \
