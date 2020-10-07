@@ -27,7 +27,15 @@ if [ -z "$DEPLOY_DATA_YQ_IMAGE" ]; then
     DEPLOY_DATA_YQ_IMAGE="mikefarah/yq:3.3.4"
 fi
 
-CONFIG_YML="$1"; shift
+CONFIG_YML="$1"
+if [ -z "$CONFIG_YML" ]; then
+    echo "ERROR: missing config.yml file" 1>&2
+    exit 2
+else
+    shift
+    # Docker volume mount requires absolute path.
+    CONFIG_YML="`realpath "$CONFIG_YML"`"
+fi
 
 
 yq() {
