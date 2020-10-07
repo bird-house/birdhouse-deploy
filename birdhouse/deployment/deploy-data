@@ -27,6 +27,10 @@ if [ -z "$DEPLOY_DATA_YQ_IMAGE" ]; then
     DEPLOY_DATA_YQ_IMAGE="mikefarah/yq:3.3.4"
 fi
 
+if [ -z "$DEPLOY_DATA_RSYNC_IMAGE" ]; then
+    DEPLOY_DATA_RSYNC_IMAGE="eeacms/rsync:2.3"
+fi
+
 CONFIG_YML="$1"
 if [ -z "$CONFIG_YML" ]; then
     echo "ERROR: missing config.yml file" 1>&2
@@ -92,9 +96,21 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
         ensure_not_empty "$DEST_DIR"
 
         echo "sync '$SRC_DIR' to '$DEST_DIR'"
-        rsync --recursive --links --checksum --delete \
-            --itemize-changes --human-readable --verbose \
-            $SRC_DIR $DEST_DIR
+        DEST_DIR_PARENT="`dirname "$DEST_DIR"`"
+        SRC_DIR_ABS_PATH="`pwd`/$SRC_DIR"
+        USER_ID="`id -u`"
+        GROUP_ID="`id -g`"
+
+        # Rsync with --checksum to only update file that changed.
+        docker run --rm --name deploy_data_rsync \
+            --volume $SRC_DIR_ABS_PATH:$SRC_DIR_ABS_PATH:ro \
+            --volume $DEST_DIR_PARENT:$DEST_DIR_PARENT:rw \
+            --user $USER_ID:$GROUP_ID \
+            --entrypoint /usr/bin/rsync \
+            $DEPLOY_DATA_RSYNC_IMAGE \
+                --recursive --links --checksum --delete \
+                --itemize-changes --human-readable --verbose \
+                $SRC_DIR_ABS_PATH $DEST_DIR
 
         DIR_NUM=`expr $DIR_NUM + 1`
     done
