@@ -50,7 +50,7 @@ REPO_NUM=0
 
 for GIT_REPO_URL in $GIT_REPO_URLS; do
 
-    GIT_BRANCH="`yq r -p v $CONFIG_YML \[$REPO_NUM\].branch`"
+    GIT_BRANCH="`yq r -p v $CONFIG_YML --defaultValue origin/master \[$REPO_NUM\].branch`"
     ensure_not_empty "$GIT_BRANCH"
     GIT_CHECKOUT_NAME="`yq r -p v $CONFIG_YML \[$REPO_NUM\].checkout_name`"
     ensure_not_empty "$GIT_CHECKOUT_NAME"

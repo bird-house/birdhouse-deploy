@@ -1,11 +1,13 @@
 - repo_url: https://github.com/Ouranosinc/jenkins-master
-  branch: origin/master
+  # optional, default "origin/master"
+  # branch:
   checkout_name: jenkins-master
   dir_maps:
   - source_dir: initial-jenkins-plugins-suggestion
     dest_dir: /tmp/deploy-data-test-deploy/jenkins-plugins
 
 - repo_url: https://github.com/Ouranosinc/jenkins-config
+  # optional, default "origin/master"
   branch: origin/master
   checkout_name: jenkins-config
   dir_maps:
@@ -15,7 +17,8 @@
     dest_dir: /tmp/deploy-data-test-deploy/jcasc
 
 - repo_url: https://github.com/Ouranosinc/pavics-sdi
-  branch: origin/master
+  # optional, default "origin/master"
+  # branch:
   checkout_name: pavics-sdi
   dir_maps:
   - source_dir: docs/source/notebooks
