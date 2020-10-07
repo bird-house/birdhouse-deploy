@@ -64,6 +64,7 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
     else
         echo "refresh repo '$CLONE_DEST' on branch '$GIT_BRANCH'"
         cd $CLONE_DEST
+        git remote -v  # log remote, should match GIT_REPO_URL
         git clean -fdx  # force, recur dir, also clean .gitignore files and untracked files
         git fetch --prune --all
         git checkout --force $GIT_BRANCH  # force checkout to throwaway local changes
