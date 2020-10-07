@@ -1,0 +1,80 @@
+#!/bin/sh
+# Deploy data from git repo(s) to local folder(s).
+#
+# See sample input config in deploy-data.config.sample.yml.
+#
+
+cleanup_on_exit() {
+    set +x
+    echo "
+datadeploy finished START_TIME=$START_TIME
+datadeploy finished   END_TIME=`date -Isecond`"
+}
+
+trap cleanup_on_exit EXIT
+
+
+if [ -z "$DEPLOY_DATA_CHECKOUT_CACHE" ]; then
+    DEPLOY_DATA_CHECKOUT_CACHE="/tmp/deploy-data-clone-cache"
+fi
+
+if [ -z "$DEPLOY_DATA_YQ_IMAGE" ]; then
+    DEPLOY_DATA_YQ_IMAGE="mikefarah/yq:3.3.4"
+fi
+
+CONFIG_YML="$1"; shift
+
+
+yq() {
+    docker run --rm --name yq -v $CONFIG_YML:$CONFIG_YML:ro $DEPLOY_DATA_YQ_IMAGE yq "$@"
+}
+
+
+START_TIME="`date -Isecond`"
+echo "==========
+datadeploy START_TIME=$START_TIME"
+
+set -x
+
+GIT_REPO_URLS="`yq r -p v $CONFIG_YML \[*\].repo_url`"
+REPO_NUM=0
+
+for GIT_REPO_URL in $GIT_REPO_URLS; do
+
+    GIT_BRANCH="`yq r -p v $CONFIG_YML \[$REPO_NUM\].branch`"
+    GIT_CHECKOUT_NAME="`yq r -p v $CONFIG_YML \[$REPO_NUM\].checkout_name`"
+
+    CLONE_DEST="$DEPLOY_DATA_CHECKOUT_CACHE/$GIT_CHECKOUT_NAME"
+    if [ ! -d "$CLONE_DEST" ]; then
+        echo "checkout repo '$GIT_REPO_URL' on branch '$GIT_BRANCH' to '$CLONE_DEST'"
+        git clone $GIT_REPO_URL $CLONE_DEST
+        cd $CLONE_DEST
+        git checkout $GIT_BRANCH
+    else
+        echo "refresh repo '$CLONE_DEST' on branch '$GIT_BRANCH'"
+        cd $CLONE_DEST
+        git clean -fdx  # force, recur dir, also clean .gitignore files and untracked files
+        git fetch --prune --all
+        git checkout --force $GIT_BRANCH  # force checkout to throwaway local changes
+    fi
+
+    SRC_DIRS="`yq r -p v $CONFIG_YML \[$REPO_NUM\].dir_maps\[*\].source_dir`"
+    DIR_NUM=0
+
+    for SRC_DIR in $SRC_DIRS; do
+        DEST_DIR="`yq r -p v $CONFIG_YML \[$REPO_NUM\].dir_maps\[$DIR_NUM\].dest_dir`"
+
+        echo "sync '$SRC_DIR' to '$DEST_DIR'"
+        rsync --recursive --links --checksum --delete \
+            --itemize-changes --human-readable --verbose \
+            $SRC_DIR $DEST_DIR
+
+        DIR_NUM=`expr $DIR_NUM + 1`
+    done
+
+    REPO_NUM=`expr $REPO_NUM + 1`
+
+done
+
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4
