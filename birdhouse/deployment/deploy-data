@@ -94,6 +94,7 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
     for SRC_DIR in $SRC_DIRS; do
         DEST_DIR="`yq r -p v $CONFIG_YML \[$REPO_NUM\].dir_maps\[$DIR_NUM\].dest_dir`"
         ensure_not_empty "$DEST_DIR"
+        RSYNC_EXTRA_OPTS="`yq r -p v $CONFIG_YML \[$REPO_NUM\].dir_maps\[$DIR_NUM\].rsync_extra_opts`"
 
         echo "sync '$SRC_DIR' to '$DEST_DIR'"
         DEST_DIR_PARENT="`dirname "$DEST_DIR"`"
@@ -114,6 +115,7 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
             $DEPLOY_DATA_RSYNC_IMAGE \
                 --recursive --links --checksum --delete \
                 --itemize-changes --human-readable --verbose \
+                --prune-empty-dirs $RSYNC_EXTRA_OPTS \
                 $SRC_DIR_ABS_PATH/ $DEST_DIR
 
         DIR_NUM=`expr $DIR_NUM + 1`

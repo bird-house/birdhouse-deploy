@@ -6,3 +6,4 @@
   # rsync content below source_dir into dest_dir
   - source_dir: tests/testdata
     dest_dir: /data/datasets/testdata/raven
+    rsync_extra_opts: --include=*/ --include=*.nc --exclude=*

@@ -6,6 +6,8 @@
   # rsync content below source_dir into dest_dir
   - source_dir: initial-jenkins-plugins-suggestion
     dest_dir: /tmp/deploy-data-test-deploy/jenkins-plugins
+    # optional, useful for include/exclude filter rules
+    # rsync_extra_opts:
 
 - repo_url: https://github.com/Ouranosinc/jenkins-config
   branch: origin/master
@@ -13,8 +15,10 @@
   dir_maps:
   - source_dir: canarie-presentation/
     dest_dir: /tmp/deploy-data-test-deploy/canarie
+    rsync_extra_opts:
   - source_dir: jcasc
     dest_dir: /tmp/deploy-data-test-deploy/jcasc
+    rsync_extra_opts:
 
 - repo_url: https://github.com/Ouranosinc/pavics-sdi
   # branch:
@@ -22,7 +26,10 @@
   dir_maps:
   - source_dir: docs/source/notebooks
     dest_dir: /tmp/deploy-data-test-deploy/tutorial-notebooks
+    # rsync_extra_opts:
   - source_dir: docs/source/processes/
     dest_dir: /tmp/deploy-data-test-deploy/processes
+    # rsync_extra_opts:
   - source_dir: docs/source/tutorials
     dest_dir: /tmp/deploy-data-test-deploy/tutorials
+    # rsync_extra_opts:
