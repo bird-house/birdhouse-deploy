@@ -110,7 +110,7 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
             $DEPLOY_DATA_RSYNC_IMAGE \
                 --recursive --links --checksum --delete \
                 --itemize-changes --human-readable --verbose \
-                $SRC_DIR_ABS_PATH $DEST_DIR
+                $SRC_DIR_ABS_PATH/ $DEST_DIR
 
         DIR_NUM=`expr $DIR_NUM + 1`
     done

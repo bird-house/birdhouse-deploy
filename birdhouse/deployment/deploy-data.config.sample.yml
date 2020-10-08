@@ -3,27 +3,26 @@
   # branch:
   checkout_name: jenkins-master
   dir_maps:
+  # rsync content below source_dir into dest_dir
   - source_dir: initial-jenkins-plugins-suggestion
     dest_dir: /tmp/deploy-data-test-deploy/jenkins-plugins
 
 - repo_url: https://github.com/Ouranosinc/jenkins-config
-  # optional, default "origin/master"
   branch: origin/master
   checkout_name: jenkins-config
   dir_maps:
-  - source_dir: canarie-presentation
+  - source_dir: canarie-presentation/
     dest_dir: /tmp/deploy-data-test-deploy/canarie
   - source_dir: jcasc
     dest_dir: /tmp/deploy-data-test-deploy/jcasc
 
 - repo_url: https://github.com/Ouranosinc/pavics-sdi
-  # optional, default "origin/master"
   # branch:
   checkout_name: pavics-sdi
   dir_maps:
   - source_dir: docs/source/notebooks
     dest_dir: /tmp/deploy-data-test-deploy/tutorial-notebooks
-  - source_dir: docs/source/processes
+  - source_dir: docs/source/processes/
     dest_dir: /tmp/deploy-data-test-deploy/processes
   - source_dir: docs/source/tutorials
     dest_dir: /tmp/deploy-data-test-deploy/tutorials
