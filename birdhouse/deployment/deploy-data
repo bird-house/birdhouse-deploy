@@ -1,7 +1,25 @@
 #!/bin/sh
 # Deploy data from git repo(s) to local folder(s).
 #
-# See sample input config in deploy-data.config.sample.yml.
+# See sample input config in deploy-data.config.sample.yml for how to specify
+# which git repo(s), which git branch for each repo, which sub-folder(s) to
+# sync to which local folder(s) and rsync extra options for each sub-folder.
+#
+# The git repo clones are cached for faster subsequent runs and rsync is used
+# to only modify files that actually changed, to keep the file tree in sync and
+# to have include/exclude filter rules.  All these options are not available if
+# using regular 'cp'.
+#
+# Docker image is used for yq (yaml file parser) and rsync so this script have
+# very few install dependencies (only need docker and git installed locally)
+# so it can runs inside very minimalistic image (the 'docker' Docker image).
+#
+# Setting environment variable DEPLOY_DATA_LOGFILE='/path/to/logfile.log'
+# will redirect all STDOUT and STDERR to that logfile so this script will be
+# completely silent.
+#
+# Other self explanatory environment variables DEPLOY_DATA_CHECKOUT_CACHE,
+# DEPLOY_DATA_YQ_IMAGE, DEPLOY_DATA_RSYNC_IMAGE.
 #
 
 if [ ! -z "$DEPLOY_DATA_LOGFILE" ]; then

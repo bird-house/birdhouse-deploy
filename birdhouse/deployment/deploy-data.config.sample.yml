@@ -1,3 +1,9 @@
+# Sample config file for deploy-data script.
+#
+# Many git repos are supported.  For each repo, many mapping between source dir
+# and destination dir are supported.  For each mapping, extra rsync option can
+# be provided to include/exclude a subset of files to keep in sync.
+
 - repo_url: https://github.com/Ouranosinc/jenkins-master
   # optional, default "origin/master"
   # branch:
