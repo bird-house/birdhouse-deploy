@@ -30,7 +30,11 @@ RENEW_LETSENCRYPT_SSL_SCHEDULE="22 9 * * *"  # UTC
 # This repo will be volume-mount at /vagrant so can not go higher.
 RENEW_LETSENCRYPT_SSL_NUM_PARENTS_MOUNT="/"
 
-. $PWD/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env
+# Only source if file exist.  Allow for config file to be backward-compat with
+# older version of the repo where the .env file do not exist yet.
+if [ -f "$PWD/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env" ]; then
+    . $PWD/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env
+fi
 EOF
     elif [ -n "$KITENAME" -a -n "$KITESUBDOMAIN" ]; then
     cat <<EOF >> env.local
