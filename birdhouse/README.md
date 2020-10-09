@@ -25,7 +25,10 @@ for your organization.  For an example of possible override, see how the [emu
 service](optional-components/emu/docker-compose-extra.yml)
 ([README](optional-components/README.md)) can be optionally added to the
 deployment via the [override
-mechanism](https://docs.docker.com/compose/extends/).
+mechanism](https://docs.docker.com/compose/extends/).  Ouranos specific
+override can be found in this
+[birdhouse-deploy-ouranos](https://github.com/bird-house/birdhouse-deploy-ouranos)
+repo.
 
 The automatic deployment is able to handle multiple repos, so will trigger if
 this repo or your private-personalized-config repo changes, giving you
