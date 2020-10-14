@@ -8,9 +8,16 @@ config:
   # optional, default "/tmp/deploy-data-clone-cache"
   # can also be set by env var DEPLOY_DATA_CHECKOUT_CACHE
   # setting in this config file have precedence over env var
-  # checkout_cache:
+  #checkout_cache:
+
+  # optional, default unset
+  # for git clone over ssh, useful for private repos
+  # can also be set by env var DEPLOY_DATA_GIT_SSH_IDENTITY_FILE
+  # setting in this config file have precedence over env var
+  #git_ssh_identity_file: /path/to/id_rsa
 
 deploy:
+  # this form if clone over ssh: git@github.com:Ouranosinc/jenkins-master.git
 - repo_url: https://github.com/Ouranosinc/jenkins-master
   # optional, default "origin/master"
   # branch:

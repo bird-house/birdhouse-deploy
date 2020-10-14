@@ -18,6 +18,9 @@
 # will redirect all STDOUT and STDERR to that logfile so this script will be
 # completely silent.
 #
+# Setting environment variable DEPLOY_DATA_GIT_SSH_IDENTITY_FILE='/path/to/id_rsa'
+# will allow git clone over ssh, useful for private repos.
+#
 # Other self explanatory environment variables DEPLOY_DATA_CHECKOUT_CACHE,
 # DEPLOY_DATA_YQ_IMAGE, DEPLOY_DATA_RSYNC_IMAGE.
 #
@@ -79,6 +82,20 @@ datadeploy START_TIME=$START_TIME"
 
 set -x
 
+CHECKOUT_CACHE="`yq r -p v $CONFIG_YML config.checkout_cache`"
+if [ -z "$CHECKOUT_CACHE" ]; then
+    CHECKOUT_CACHE="$DEPLOY_DATA_CHECKOUT_CACHE"
+fi
+
+GIT_SSH_IDENTITY_FILE="`yq r -p v $CONFIG_YML config.git_ssh_identity_file`"
+if [ -z "$GIT_SSH_IDENTITY_FILE" ]; then
+    GIT_SSH_IDENTITY_FILE="$DEPLOY_DATA_GIT_SSH_IDENTITY_FILE"
+fi
+
+if [ ! -z "$GIT_SSH_IDENTITY_FILE" ]; then
+    export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentityFile=$GIT_SSH_IDENTITY_FILE"
+fi
+
 GIT_REPO_URLS="`yq r -p v $CONFIG_YML deploy\[*\].repo_url`"
 ensure_not_empty "$GIT_REPO_URLS"
 REPO_NUM=0
@@ -90,10 +107,6 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
     GIT_CHECKOUT_NAME="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].checkout_name`"
     ensure_not_empty "$GIT_CHECKOUT_NAME"
 
-    CHECKOUT_CACHE="`yq r -p v $CONFIG_YML config.checkout_cache`"
-    if [ -z "$CHECKOUT_CACHE" ]; then
-        CHECKOUT_CACHE="$DEPLOY_DATA_CHECKOUT_CACHE"
-    fi
     CLONE_DEST="$CHECKOUT_CACHE/$GIT_CHECKOUT_NAME"
     if [ ! -d "$CLONE_DEST" ]; then
         echo "checkout repo '$GIT_REPO_URL' on branch '$GIT_BRANCH' to '$CLONE_DEST'"
