@@ -21,21 +21,28 @@
   dir_maps:
   - source_dir: canarie-presentation/
     dest_dir: /tmp/deploy-data-test-deploy/canarie
-    rsync_extra_opts:
+    # sync only .txt, .html and .gif files, if other already existing files,
+    # ignore them, unless they have same extensions.
+    rsync_extra_opts: --include=*/ --include=*.txt --include=*.html --include=*.gif --exclude=*
   - source_dir: jcasc
-    dest_dir: /tmp/deploy-data-test-deploy/jcasc
+    # remap dir jcasc inside previous dir canarie, without conflicting with
+    # previous canarie sync.  This works because no .txt, .html, .gif in jcasc.
+    dest_dir: /tmp/deploy-data-test-deploy/canarie/jcasc
     rsync_extra_opts:
 
 - repo_url: https://github.com/Ouranosinc/pavics-sdi
   # branch:
   checkout_name: pavics-sdi
   dir_maps:
-  - source_dir: docs/source/notebooks
-    dest_dir: /tmp/deploy-data-test-deploy/tutorial-notebooks
-    # rsync_extra_opts:
-  - source_dir: docs/source/processes/
-    dest_dir: /tmp/deploy-data-test-deploy/processes
-    # rsync_extra_opts:
-  - source_dir: docs/source/tutorials
-    dest_dir: /tmp/deploy-data-test-deploy/tutorials
-    # rsync_extra_opts:
+    # sync only 2 sub-dirs and .rst files under source/
+  - source_dir: docs/
+    dest_dir: /tmp/deploy-data-test-deploy/pavics-sdi
+    rsync_extra_opts: --include=*/ --include=source/tutorials/** --include=source/processes/** --include=source/*.rst --exclude=*
+    # sync only .yml files at the root of checkout
+  - source_dir: .
+    dest_dir: /tmp/deploy-data-test-deploy/pavics-sdi
+    rsync_extra_opts: --include=/ --include=*.yml --exclude=*
+    # move dir 'notebooks' one level higher in hierarchy
+  - source_dir: docs/source
+    dest_dir: /tmp/deploy-data-test-deploy/pavics-sdi
+    rsync_extra_opts: --include=*/ --include=notebooks/** --exclude=*
