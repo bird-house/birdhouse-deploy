@@ -79,18 +79,22 @@ datadeploy START_TIME=$START_TIME"
 
 set -x
 
-GIT_REPO_URLS="`yq r -p v $CONFIG_YML \[*\].repo_url`"
+GIT_REPO_URLS="`yq r -p v $CONFIG_YML deploy\[*\].repo_url`"
 ensure_not_empty "$GIT_REPO_URLS"
 REPO_NUM=0
 
 for GIT_REPO_URL in $GIT_REPO_URLS; do
 
-    GIT_BRANCH="`yq r -p v $CONFIG_YML --defaultValue origin/master \[$REPO_NUM\].branch`"
+    GIT_BRANCH="`yq r -p v $CONFIG_YML --defaultValue origin/master deploy\[$REPO_NUM\].branch`"
     ensure_not_empty "$GIT_BRANCH"
-    GIT_CHECKOUT_NAME="`yq r -p v $CONFIG_YML \[$REPO_NUM\].checkout_name`"
+    GIT_CHECKOUT_NAME="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].checkout_name`"
     ensure_not_empty "$GIT_CHECKOUT_NAME"
 
-    CLONE_DEST="$DEPLOY_DATA_CHECKOUT_CACHE/$GIT_CHECKOUT_NAME"
+    CHECKOUT_CACHE="`yq r -p v $CONFIG_YML config.checkout_cache`"
+    if [ -z "$CHECKOUT_CACHE" ]; then
+        CHECKOUT_CACHE="$DEPLOY_DATA_CHECKOUT_CACHE"
+    fi
+    CLONE_DEST="$CHECKOUT_CACHE/$GIT_CHECKOUT_NAME"
     if [ ! -d "$CLONE_DEST" ]; then
         echo "checkout repo '$GIT_REPO_URL' on branch '$GIT_BRANCH' to '$CLONE_DEST'"
         git clone $GIT_REPO_URL $CLONE_DEST
@@ -105,14 +109,14 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
         git checkout --force $GIT_BRANCH  # force checkout to throwaway local changes
     fi
 
-    SRC_DIRS="`yq r -p v $CONFIG_YML \[$REPO_NUM\].dir_maps\[*\].source_dir`"
+    SRC_DIRS="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[*\].source_dir`"
     ensure_not_empty "$SRC_DIRS"
     DIR_NUM=0
 
     for SRC_DIR in $SRC_DIRS; do
-        DEST_DIR="`yq r -p v $CONFIG_YML \[$REPO_NUM\].dir_maps\[$DIR_NUM\].dest_dir`"
+        DEST_DIR="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[$DIR_NUM\].dest_dir`"
         ensure_not_empty "$DEST_DIR"
-        RSYNC_EXTRA_OPTS="`yq r -p v $CONFIG_YML \[$REPO_NUM\].dir_maps\[$DIR_NUM\].rsync_extra_opts`"
+        RSYNC_EXTRA_OPTS="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[$DIR_NUM\].rsync_extra_opts`"
 
         echo "sync '$SRC_DIR' to '$DEST_DIR'"
         DEST_DIR_PARENT="`dirname "$DEST_DIR"`"
