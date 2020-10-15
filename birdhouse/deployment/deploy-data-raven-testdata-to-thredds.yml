@@ -1,4 +1,5 @@
 deploy:
+#- repo_url: git@github.com:Ouranosinc/raven.git
 - repo_url: https://github.com/Ouranosinc/raven
   # optional, default "origin/master"
   # branch:
