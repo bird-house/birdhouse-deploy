@@ -1,0 +1,164 @@
+#!/bin/sh
+# Deploy data from git repo(s) to local folder(s).
+#
+# See sample input config in deploy-data.config.sample.yml for how to specify
+# which git repo(s), which git branch for each repo, which sub-folder(s) to
+# sync to which local folder(s) and rsync extra options for each sub-folder.
+#
+# The git repo clones are cached for faster subsequent runs and rsync is used
+# to only modify files that actually changed, to keep the file tree in sync and
+# to have include/exclude filter rules.  All these options are not available if
+# using regular 'cp'.
+#
+# Docker image is used for yq (yaml file parser) and rsync so this script have
+# very few install dependencies (only need docker and git installed locally)
+# so it can runs inside very minimalistic image (the 'docker' Docker image).
+#
+# Setting environment variable DEPLOY_DATA_LOGFILE='/path/to/logfile.log'
+# will redirect all STDOUT and STDERR to that logfile so this script will be
+# completely silent.
+#
+# Setting environment variable DEPLOY_DATA_GIT_SSH_IDENTITY_FILE='/path/to/id_rsa'
+# will allow git clone over ssh, useful for private repos.
+#
+# Other self explanatory environment variables DEPLOY_DATA_CHECKOUT_CACHE,
+# DEPLOY_DATA_YQ_IMAGE, DEPLOY_DATA_RSYNC_IMAGE.
+#
+
+if [ ! -z "$DEPLOY_DATA_LOGFILE" ]; then
+    exec >>$DEPLOY_DATA_LOGFILE 2>&1
+fi
+
+
+cleanup_on_exit() {
+    set +x
+    echo "
+datadeploy finished START_TIME=$START_TIME
+datadeploy finished   END_TIME=`date -Isecond`"
+}
+
+trap cleanup_on_exit EXIT
+
+
+if [ -z "$DEPLOY_DATA_CHECKOUT_CACHE" ]; then
+    DEPLOY_DATA_CHECKOUT_CACHE="/tmp/deploy-data-clone-cache"
+fi
+
+if [ -z "$DEPLOY_DATA_YQ_IMAGE" ]; then
+    DEPLOY_DATA_YQ_IMAGE="mikefarah/yq:3.3.4"
+fi
+
+if [ -z "$DEPLOY_DATA_RSYNC_IMAGE" ]; then
+    DEPLOY_DATA_RSYNC_IMAGE="eeacms/rsync:2.3"
+fi
+
+CONFIG_YML="$1"
+if [ -z "$CONFIG_YML" ]; then
+    echo "ERROR: missing config.yml file" 1>&2
+    exit 2
+else
+    shift
+    # Docker volume mount requires absolute path.
+    CONFIG_YML="`realpath "$CONFIG_YML"`"
+fi
+
+
+yq() {
+    docker run --rm --name deploy_data_yq -v $CONFIG_YML:$CONFIG_YML:ro $DEPLOY_DATA_YQ_IMAGE yq "$@"
+}
+
+# Empty value could mean typo in the keys in the config file.
+ensure_not_empty() {
+    if [ -z "$*" ]; then
+        echo "ERROR: value empty" 1>&2
+        exit 1
+    fi
+}
+
+
+START_TIME="`date -Isecond`"
+echo "==========
+datadeploy START_TIME=$START_TIME"
+
+set -x
+
+CHECKOUT_CACHE="`yq r -p v $CONFIG_YML config.checkout_cache`"
+if [ -z "$CHECKOUT_CACHE" ]; then
+    CHECKOUT_CACHE="$DEPLOY_DATA_CHECKOUT_CACHE"
+fi
+
+GIT_SSH_IDENTITY_FILE="`yq r -p v $CONFIG_YML config.git_ssh_identity_file`"
+if [ -z "$GIT_SSH_IDENTITY_FILE" ]; then
+    GIT_SSH_IDENTITY_FILE="$DEPLOY_DATA_GIT_SSH_IDENTITY_FILE"
+fi
+
+if [ ! -z "$GIT_SSH_IDENTITY_FILE" ]; then
+    export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentityFile=$GIT_SSH_IDENTITY_FILE"
+fi
+
+GIT_REPO_URLS="`yq r -p v $CONFIG_YML deploy\[*\].repo_url`"
+ensure_not_empty "$GIT_REPO_URLS"
+REPO_NUM=0
+
+for GIT_REPO_URL in $GIT_REPO_URLS; do
+
+    GIT_BRANCH="`yq r -p v $CONFIG_YML --defaultValue origin/master deploy\[$REPO_NUM\].branch`"
+    ensure_not_empty "$GIT_BRANCH"
+    GIT_CHECKOUT_NAME="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].checkout_name`"
+    ensure_not_empty "$GIT_CHECKOUT_NAME"
+
+    CLONE_DEST="$CHECKOUT_CACHE/$GIT_CHECKOUT_NAME"
+    if [ ! -d "$CLONE_DEST" ]; then
+        echo "checkout repo '$GIT_REPO_URL' on branch '$GIT_BRANCH' to '$CLONE_DEST'"
+        git clone $GIT_REPO_URL $CLONE_DEST || exit 1
+        cd $CLONE_DEST
+        git checkout $GIT_BRANCH
+    else
+        echo "refresh repo '$CLONE_DEST' on branch '$GIT_BRANCH'"
+        cd $CLONE_DEST
+        git remote -v  # log remote, should match GIT_REPO_URL
+        git clean -fdx  # force, recur dir, also clean .gitignore files and untracked files
+        git fetch --prune --all || exit 1
+        git checkout --force $GIT_BRANCH  # force checkout to throwaway local changes
+    fi
+
+    SRC_DIRS="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[*\].source_dir`"
+    ensure_not_empty "$SRC_DIRS"
+    DIR_NUM=0
+
+    for SRC_DIR in $SRC_DIRS; do
+        DEST_DIR="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[$DIR_NUM\].dest_dir`"
+        ensure_not_empty "$DEST_DIR"
+        RSYNC_EXTRA_OPTS="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[$DIR_NUM\].rsync_extra_opts`"
+
+        echo "sync '$SRC_DIR' to '$DEST_DIR'"
+        DEST_DIR_PARENT="`dirname "$DEST_DIR"`"
+        SRC_DIR_ABS_PATH="`pwd`/$SRC_DIR"
+        USER_ID="`id -u`"
+        GROUP_ID="`id -g`"
+
+        # Ensure DEST_DIR_PARENT is created using current USER_ID/GROUP_ID for
+        # next rsync to have proper write access.
+        mkdir -p "$DEST_DIR_PARENT"
+
+        # Rsync with --checksum to only update file that changed.
+        docker run --rm --name deploy_data_rsync \
+            --volume $SRC_DIR_ABS_PATH:$SRC_DIR_ABS_PATH:ro \
+            --volume $DEST_DIR_PARENT:$DEST_DIR_PARENT:rw \
+            --user $USER_ID:$GROUP_ID \
+            --entrypoint /usr/bin/rsync \
+            $DEPLOY_DATA_RSYNC_IMAGE \
+                --recursive --links --checksum --delete \
+                --itemize-changes --human-readable --verbose \
+                --prune-empty-dirs $RSYNC_EXTRA_OPTS \
+                $SRC_DIR_ABS_PATH/ $DEST_DIR
+
+        DIR_NUM=`expr $DIR_NUM + 1`
+    done
+
+    REPO_NUM=`expr $REPO_NUM + 1`
+
+done
+
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4
