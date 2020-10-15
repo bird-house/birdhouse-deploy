@@ -110,7 +110,7 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
     CLONE_DEST="$CHECKOUT_CACHE/$GIT_CHECKOUT_NAME"
     if [ ! -d "$CLONE_DEST" ]; then
         echo "checkout repo '$GIT_REPO_URL' on branch '$GIT_BRANCH' to '$CLONE_DEST'"
-        git clone $GIT_REPO_URL $CLONE_DEST || echo "git clone failed" 1>&2 ; exit 1
+        git clone $GIT_REPO_URL $CLONE_DEST || echo "git clone failed" 1>&2 && exit 1
         cd $CLONE_DEST
         git checkout $GIT_BRANCH
     else
@@ -118,7 +118,7 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
         cd $CLONE_DEST
         git remote -v  # log remote, should match GIT_REPO_URL
         git clean -fdx  # force, recur dir, also clean .gitignore files and untracked files
-        git fetch --prune --all || echo "git fetch failed" 1>&2 ; exit 1
+        git fetch --prune --all || echo "git fetch failed" 1>&2 && exit 1
         git checkout --force $GIT_BRANCH  # force checkout to throwaway local changes
     fi
 
