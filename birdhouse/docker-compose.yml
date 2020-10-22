@@ -320,7 +320,8 @@ services:
       - postgres-magpie
     volumes:
       - ./config/twitcher/twitcher.ini:/opt/birdhouse/src/twitcher/twitcher.ini
-    command: "pserve /opt/birdhouse/src/twitcher/twitcher.ini"
+      - ./config/twitcher/increase-bufferedresponse-chunk-size.diff:/increase-bufferedresponse-chunk-size.diff:ro
+    command: "bash -c 'set -x; patch -N -p0 < /increase-bufferedresponse-chunk-size.diff; pserve /opt/birdhouse/src/twitcher/twitcher.ini'"
     restart: always
 
   postgres-magpie:

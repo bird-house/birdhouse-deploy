@@ -1,0 +1,13 @@
+# Temporary work-around for https://github.com/bird-house/twitcher/issues/97
+# until a final clean solution is available.
+--- /opt/birdhouse/src/twitcher/twitcher/owsproxy.py.orig
++++ /opt/birdhouse/src/twitcher/twitcher/owsproxy.py
+@@ -58,7 +58,7 @@
+         self.resp = resp
+ 
+     def __iter__(self):
+-        return self.resp.iter_content(64 * 1024)
++        return self.resp.iter_content(64 * 1024 * 1024)
+ 
+ 
+ def _send_request(request, service, extra_path=None, request_params=None):
