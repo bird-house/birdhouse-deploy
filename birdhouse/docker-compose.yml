@@ -281,7 +281,7 @@ services:
     restart: always
 
   magpie:
-    image: pavics/magpie:1.7.3
+    image: pavics/magpie:2.0.1
     container_name: magpie
     ports:
       - "2001:2001"
