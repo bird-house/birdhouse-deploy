@@ -27,7 +27,7 @@ services:
     restart: always
 
   frontend:
-    image: pavics/pavics-frontend:1.0.5
+    image: pavics/pavics-frontend:1.1.8
     container_name: frontend
     ports:
       - "3000:3000"
