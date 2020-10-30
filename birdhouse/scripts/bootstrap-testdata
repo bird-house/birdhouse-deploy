@@ -1,0 +1,34 @@
+#!/bin/sh -x
+# Bootstrap mininum test data on Thredds.
+
+# To be run locally on the host running Thredds.  Will populate test data files
+# under DATASET_ROOT, customizable by env var.
+
+
+if [ -z "$DATASET_ROOT" ]; then
+    DATASET_ROOT="/data/datasets"
+fi
+
+FROM_SERVER="https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/fileServer/birdhouse"
+
+FILE_LIST="
+nrcan/nrcan_canada_daily/tasmin/nrcan_canada_daily_tasmin_2013.nc
+testdata/flyingpigeon/cmip3/pr.sresa2.miub_echo_g.run1.atm.da.nc
+testdata/flyingpigeon/cmip3/tasmin.sresa2.miub_echo_g.run1.atm.da.nc
+testdata/flyingpigeon/cmip5/tasmax_Amon_MPI-ESM-MR_rcp45_r1i1p1_200601-200612.nc
+testdata/flyingpigeon/cmip5/tasmax_Amon_MPI-ESM-MR_rcp45_r2i1p1_200601-200612.nc
+testdata/secure/tasmax_Amon_MPI-ESM-MR_rcp45_r2i1p1_200601-200612.nc
+testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc
+"
+
+cd "$DATASET_ROOT"
+
+for afile in $FILE_LIST; do
+    if [ ! -f "$afile" ]; then
+        PARENT_DIRS="`dirname "$afile"`"
+        if [ ! -d "$PARENT_DIRS" ]; then
+            mkdir -p "$PARENT_DIRS"
+        fi
+        curl "$FROM_SERVER/$afile" --output "$afile"
+    fi
+done
