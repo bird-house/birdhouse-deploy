@@ -2,6 +2,6 @@ version: '2.1'
 services:
   magpie:
     volumes:
-    - ./optional-components/generic_bird/generic_bird-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/generic_bird-magpie-permission.cfg:ro
-    # - ./optional-components/generic_bird/generic_bird-magpie-provider.cfg:/opt/local/src/magpie/config/providers/generic_bird-magpie-provider.cfg:ro
+    - ./optional-components/all-public-access/all-public-access-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/all-public-access-magpie-permission.cfg:ro
+    # - ./optional-components/all-public-access/all-public-access-magpie-provider.cfg:/opt/local/src/magpie/config/providers/all-public-access-magpie-provider.cfg:ro
 
