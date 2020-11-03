@@ -3,5 +3,4 @@ services:
   magpie:
     volumes:
     - ./optional-components/all-public-access/all-public-access-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/all-public-access-magpie-permission.cfg:ro
-    # - ./optional-components/all-public-access/all-public-access-magpie-provider.cfg:/opt/local/src/magpie/config/providers/all-public-access-magpie-provider.cfg:ro
 
