@@ -1,7 +1,8 @@
 #!/bin/sh
 #
 # Batch create or delete magpie users using config file at
-# /tmp/create_magpie_users/config.yml (harcoded path).
+# /tmp/create_magpie_users/config.yml (configurable using MAGPIE_CLI_CONF env
+# var).
 #
 # Should run from checkout on same host running PAVICS to have access to
 # env.local file for Magpie credentials.  Else these can be provided via
@@ -92,6 +93,10 @@ if [ -z "$MAGPIE_CLI_OUTPUT_DIR" ]; then
     MAGPIE_CLI_OUTPUT_DIR="/tmp/create_magpie_users"
 fi
 
+if [ -z "$MAGPIE_CLI_CONF" ]; then
+    MAGPIE_CLI_CONF="$MAGPIE_CLI_OUTPUT_DIR/config.xml"
+fi
+
 if [ -z "$MAGPIE_CLI_IMAGE" ]; then
     MAGPIE_CLI_IMAGE="pavics/magpie:2.0.1"
 fi
@@ -101,10 +106,11 @@ fi
 
 
 BASE_CMD="docker run --rm -it --name create_magpie_users \
+    -v $MAGPIE_CLI_CONF:$MAGPIE_CLI_CONF:ro \
     -v $MAGPIE_CLI_OUTPUT_DIR:$MAGPIE_CLI_OUTPUT_DIR:rw \
     $DOCKER_EXTRA_OPTS \
     $MAGPIE_CLI_IMAGE magpie_cli batch_update_users $MAGPIE_SERVER_URL $MAGPIE_CLI_USER $MAGPIE_CLI_PASS"
 
 set -x
 
-$BASE_CMD -f $MAGPIE_CLI_OUTPUT_DIR/config.yml -o $MAGPIE_CLI_OUTPUT_DIR/ "$@"
+$BASE_CMD -f $MAGPIE_CLI_CONF -o $MAGPIE_CLI_OUTPUT_DIR/ "$@"
