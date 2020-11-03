@@ -112,3 +112,26 @@ Magpie will be automatically configured to give complete public anonymous
 access for this WPS service.
 
 Canarie monitoring will also be automatically configured for this WPS service.
+
+
+## All access given to test user
+
+Can be used for testing purposes.
+Allows the tests in https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests to pass with the `authtest/authtest` user.
+
+How to enable in `env.local` (a copy from
+[`env.local.example`](../env.local.example)):
+
+* Add `./optional-components/all-public-access` to `EXTRA_CONF_DIRS`.
+
+* Create the `authtest/authtest` user using `../scripts/create-magpie-users`, with this config
+
+```
+users:
+  - username: authtest
+    password: authtest
+    email: authtest@example.com
+    group: users
+```
+
+The `authtest/authtest` user will now have all the permissions described in `./optional-components/all-public-access/all-public-access-magpie-permission.cfg`.
