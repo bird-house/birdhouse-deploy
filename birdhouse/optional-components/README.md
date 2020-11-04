@@ -120,9 +120,12 @@ By enabling this component, all WPS services and data on Thredds are completely 
 Once enabled, if you need to revert the change, you have to do it manually by logging into Magpie. 
 Just disabling this component will not revert the change.
 
+This optional component is required for the test suite at
+https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
+
 How to enable in `env.local` (a copy from
 [`env.local.example`](../env.local.example)):
 
 * Add `./optional-components/all-public-access` to `EXTRA_CONF_DIRS`.
 
-The anonymous user will now have all the permissions described in `./optional-components/all-public-access/all-public-access-magpie-permission.cfg`.
+The anonymous user will now have all the permissions described in [`./optional-components/all-public-access/all-public-access-magpie-permission.cfg`](all-public-access/all-public-access-magpie-permission.cfg).
