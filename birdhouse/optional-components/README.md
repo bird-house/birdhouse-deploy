@@ -131,7 +131,7 @@ users:
   - username: authtest
     password: authtest
     email: authtest@example.com
-    group: users
+    group: anonymous
 ```
 
 The `authtest/authtest` user will now have all the permissions described in `./optional-components/all-public-access/all-public-access-magpie-permission.cfg`.
