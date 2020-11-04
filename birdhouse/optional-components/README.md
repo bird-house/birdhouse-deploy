@@ -112,3 +112,17 @@ Magpie will be automatically configured to give complete public anonymous
 access for this WPS service.
 
 Canarie monitoring will also be automatically configured for this WPS service.
+
+
+## Give public access to all resources for testing purposes
+
+By enabling this component, all WPS services and data on Thredds are completely public, please beware. 
+Once enabled, if you need to revert the change, you have to do it manually by logging into Magpie. 
+Just disabling this component will not revert the change.
+
+How to enable in `env.local` (a copy from
+[`env.local.example`](../env.local.example)):
+
+* Add `./optional-components/all-public-access` to `EXTRA_CONF_DIRS`.
+
+The anonymous user will now have all the permissions described in `./optional-components/all-public-access/all-public-access-magpie-permission.cfg`.
