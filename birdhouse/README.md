@@ -102,7 +102,7 @@ Manual instructions:
 * Click "Add User".
 
 
-### Prepare instance to run automated end-to-end test suite
+### Optional: prepare instance to run automated end-to-end test suite
 
 An end-to-end integration test suite is available at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests with pre-configured
