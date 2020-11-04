@@ -37,6 +37,14 @@ c.DockerSpawner.environment = {
 
 c.DockerSpawner.volumes = {host_user_data_dir: container_workspace_dir}
 
+container_gdrive_settings_path = join(container_home_dir, ".jupyter/lab/user-settings/@jupyterlab/google-drive/drive.jupyterlab-settings")
+host_gdrive_settings_path = os.environ['JUPYTER_GOOGLE_DRIVE_SETTINGS']
+
+c.DockerSpawner.volumes[host_gdrive_settings_path] = {
+    "bind": container_gdrive_settings_path,
+    "mode": "ro"
+}
+
 host_tutorial_notebooks_dir = join(jupyterhub_data_dir, "tutorial-notebooks")
 c.DockerSpawner.volumes[host_tutorial_notebooks_dir] = {
     "bind": join(notebook_dir, "tutorial-notebooks"),
