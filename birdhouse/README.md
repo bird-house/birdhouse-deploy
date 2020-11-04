@@ -102,6 +102,17 @@ Manual instructions:
 * Click "Add User".
 
 
+### Prepare instance to run automated end-to-end test suite
+
+An end-to-end integration test suite is available at
+https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests with pre-configured
+Jenkins at https://github.com/Ouranosinc/jenkins-config.
+
+For that test suite to pass, run the script
+[`bootstrap-instance-for-testsuite`](scripts/bootstrap-instance-for-testsuite)
+to prepare your new instance.  Further documentation inside the script.
+
+
 ## Vagrant instructions
 
 Vagrant allows us to quickly spin up a VM to easily reproduce the runtime
