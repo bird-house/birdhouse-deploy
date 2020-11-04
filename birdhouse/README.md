@@ -112,6 +112,10 @@ For that test suite to pass, run the script
 [`bootstrap-instance-for-testsuite`](scripts/bootstrap-instance-for-testsuite)
 to prepare your new instance.  Further documentation inside the script.
 
+Optional component
+[all-public-access](optional-components#give-public-access-to-all-resources-for-testing-purposes)
+also need to be enabled in `env.local`.
+
 
 ## Vagrant instructions
 
