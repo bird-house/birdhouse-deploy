@@ -116,6 +116,11 @@ Optional component
 [all-public-access](optional-components#give-public-access-to-all-resources-for-testing-purposes)
 also need to be enabled in `env.local`.
 
+ESGF login is also needed for
+https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebooks/esgf-dap.ipynb
+part of test suite.  ESGF credentails can be given to Jenkins via
+https://github.com/Ouranosinc/jenkins-config/blob/aafaf6c33ea60faede2a32850604c07c901189e8/env.local.example#L11-L13
+
 
 ## Vagrant instructions
 
