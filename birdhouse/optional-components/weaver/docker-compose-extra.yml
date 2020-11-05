@@ -1,0 +1,69 @@
+version: '2.1'
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "200k"
+    max-file: "10"
+
+services:
+  # FIXME:
+  #   Weaver API shouldn't be one doing docker run (jobs), but it is actually the one
+  #   running the cwltool app from the received WPS Execute request sent by the worker.
+  #   Configs must be moved to the 'worker' with implementation of direct job monitoring.
+  #   (https://github.com/crim-ca/weaver/issues/21)
+  weaver:
+    image: pavics/weaver:${WEAVER_VERSION}-manager
+    container_name: ${COMPOSE_PROJECT_NAME}_weaver
+    ports:
+      - "4001:4001"
+    environment:
+      HOSTNAME: ${SERVER_FQDN}
+      FORWARDED_ALLOW_IPS: "*"
+      DOCKER_HOST: "tcp://docker-proxy:2375"   # FIXME: see above docker-sibling note
+    env_file:
+      - ./config/mongodb/credentials.env
+    links:
+      - mongodb
+    volumes:
+      - ./config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini
+      - ./config/weaver/data_sources.json:/opt/local/src/weaver/config/data_sources.json
+      - ./config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml
+      - ./config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml
+      - /usr/bin/docker:/usr/bin/docker   # FIXME: see above docker-sibling note
+      - ~/.docker/config.json:/root/.docker/config.json   # FIXME: see above docker-sibling note
+      # NOTE:
+      #   Working and output directories must be mounted as exact same path (e.g.: /tmp/path:/tmp/path)
+      #   to avoid mismatching locations between container-side path resolution of cwltool stagedir/tmpdir/outdir
+      #   and corresponding server-side runtime docker directories since from the docker application will not be
+      #   running inside this docker, but next to it (sibling-dockers).
+      - wps_workdir:${WEAVER_WPS_WORKDIR}     # FIXME: with fix WPS-execute inside worker, shouldn't be required anymore
+      - wps_outputs:${WEAVER_WPS_OUTPUTS_DIR}
+    networks:
+      - default
+      - docker-proxy  # FIXME: see above docker-sibling note
+    restart: always
+    logging: *default-logging
+
+  mongodb:
+    image: mongo:3.4.0
+    container_name: ${COMPOSE_PROJECT_NAME}_mongodb
+    volumes:
+      - data_mongodb:/data/db
+    # Mongodb crash with permission denied errors if the command is not overridden like this
+    command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
+    restart: always
+    logging: *default-logging
+
+volumes:
+  data_mongodb:
+    driver_opts:
+      type: none
+      device: /data/mongodb_persist
+      o: bind
+  wps_workdir: {}
+
+networks:
+  docker-proxy:
+    driver: overlay

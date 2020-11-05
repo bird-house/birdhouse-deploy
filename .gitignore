@@ -8,7 +8,7 @@ ubuntu-bionic-18.04-cloudimg-console.log
 .idea
 .vscode
 *.bak
-weaver/
+docs/_build
 
 # vim temp files
 *.swp

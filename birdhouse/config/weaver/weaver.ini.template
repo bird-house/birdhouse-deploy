@@ -1,0 +1,156 @@
+# Weaver settings configuration
+# See original reference for details:
+#   https://github.com/crim-ca/weaver/blob/master/config/weaver.ini.example
+#
+
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+[app:main]
+use = egg:weaver
+
+pyramid.reload_templates = false
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+pyramid.default_locale_name = en
+
+# mongodb
+mongodb.host = mongodb
+mongodb.port = 27017
+mongodb.db_name = weaver
+
+# --- Weaver Configuration ---
+weaver.configuration = ades
+weaver.url = http://localhost:4001
+
+# --- Weaver requests extension flags ---
+# use request-options for per-request specific disabling instead of globally disabled ssl_verify flag
+weaver.ssl_verify = true
+weaver.request_options = request_options.yml
+
+# --- Weaver CWL settings ---
+# enforce provided effective user/group identifiers for Application Package execution
+# values must be resolved as integers
+# (default: use cwltool auto-resolution according to running machine and current user/group)
+weaver.cwl_euid =
+weaver.cwl_egid =
+
+# --- Weaver WPS settings ---
+weaver.wps = true
+weaver.wps_path = /ows/wps
+weaver.wps_output = true
+weaver.wps_output_dir = /tmp
+weaver.wps_output_url =
+weaver.wps_output_path =
+weaver.wps_workdir =
+
+# --- Weaver WPS metadata ---
+weaver.wps_metadata_identification_title=Weaver
+weaver.wps_metadata_identification_abstract=${SERVER_ABSTRACT}
+weaver.wps_metadata_identification_keywords=Weaver,WPS,OGC,${WEAVER_CONFIG}
+weaver.wps_metadata_identification_accessconstraints=${SERVER_PROTOCOL}://${SERVER_FQDN}${MAGPIE_ROOT}
+weaver.wps_metadata_identification_fees=NONE
+weaver.wps_metadata_provider_name=${SERVER_OWNER}
+weaver.wps_metadata_provider_url=http://pavics-weaver.readthedocs.org/en/latest/
+weaver.wps_metadata_contact_name=${SERVER_CONTACT_NAME}
+weaver.wps_metadata_contact_position=${SERVER_CONTACT_POSITION}
+weaver.wps_metadata_contact_phone=${SERVER_CONTACT_PHONE}
+weaver.wps_metadata_contact_fax=${SERVER_CONTACT_FAX}
+weaver.wps_metadata_contact_deliveryPoint=${SERVER_CONTACT_DELIVERY_POINT}
+weaver.wps_metadata_contact_city=${SERVER_CONTACT_CITY}
+weaver.wps_metadata_contact_stateorprovince=${SERVER_CONTACT_STATE_OR_PROVINCE}
+weaver.wps_metadata_contact_country=${SERVER_CONTACT_COUNTRY}
+weaver.wps_metadata_contact_postalcode=${SERVER_CONTACT_POSTAL_CODE}
+weaver.wps_metadata_contact_email=${SERVER_CONTACT_EMAIL}
+weaver.wps_metadata_contact_url=${SERVER_CONTACT_URL}
+weaver.wps_metadata_contact_role=${SERVER_CONTACT_ROLE}
+
+# --- Weaver WPS REST API ---
+weaver.wps_restapi = true
+weaver.wps_restapi_path = /
+weaver.wps_restapi_ref = https://app.swaggerhub.com/apis/geoprocessing/WPS/
+weaver.wps_restapi_doc = https://raw.githubusercontent.com/opengeospatial/wps-rest-binding/develop/docs/18-062.pdf
+
+# --- Weaver email notification ---
+weaver.wps_email_encrypt_salt = salty-email
+weaver.wps_email_encrypt_rounds = 100000
+weaver.wps_email_notify_smtp_host =
+weaver.wps_email_notify_from_addr = example@email.com
+weaver.wps_email_notify_password = 123456
+weaver.wps_email_notify_port = 25
+weaver.wps_email_notify_ssl = true
+weaver.wps_email_notify_template_dir =
+weaver.wps_email_notify_template_default =
+
+# --- Weaver other configurations ---
+# default WPS processes to always preload
+weaver.wps_processes_file = wps_processes.yml
+# remote ADES dispatching based on data-sources when 'weaver.configuration = EMS'
+weaver.data_sources = data_sources.json
+weaver.extra_options =
+
+###
+# celery scheduler config
+# https://pypi.python.org/pypi/pyramid_celery
+###
+[celery]
+#USE_CELERYCONFIG = True
+BROKER_URL = mongodb://mongodb:27017/celery
+
+###
+# wsgi server configuration
+###
+
+[server:main]
+use = egg:gunicorn#main
+bind = 0.0.0.0:4001
+workers = 5
+timeout = 20
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[loggers]
+keys = root, weaver, celery, cwltool
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_weaver]
+level = DEBUG
+handlers = console
+qualname = weaver
+propagate = 0
+
+[logger_celery]
+level = DEBUG
+handlers = console
+qualname = celery
+propagate = 0
+
+[logger_cwltool]
+level = DEBUG
+handlers = console
+qualname = cwltool
+propagate = 0
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = [%(asctime)s] %(levelname)-8.8s [%(threadName)s][%(name)s] %(message)s
