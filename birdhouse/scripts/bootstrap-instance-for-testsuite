@@ -5,6 +5,9 @@
 # This is a stable interface for test automation shielding it from knowing the
 # intimate details of how to bootstrap a fresh new instance.
 #
+# Assume PAVICS instance is already fully up (`./pavics-compose.sh up -d` has
+# been called).
+#
 
 THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
@@ -22,3 +25,10 @@ sleep 5
 
 # Create test user.
 $THIS_DIR/create-magpie-authtest-user
+
+echo "
+\$ curl --include --silent https://<PAVICS_FQDN>/canarie/node/service/stats | head
+
+Should return the HTTP response code 200 to confirm instance is ready to run
+the testsuite.
+"
