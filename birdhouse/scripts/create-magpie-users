@@ -105,7 +105,7 @@ fi
 ##############################################################################
 
 
-BASE_CMD="docker run --rm -it --name create_magpie_users \
+BASE_CMD="docker run --rm --name create_magpie_users \
     -v $MAGPIE_CLI_CONF:$MAGPIE_CLI_CONF:ro \
     -v $MAGPIE_CLI_OUTPUT_DIR:$MAGPIE_CLI_OUTPUT_DIR:rw \
     $DOCKER_EXTRA_OPTS \
