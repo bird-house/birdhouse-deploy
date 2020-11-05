@@ -94,7 +94,7 @@ if [ -z "$MAGPIE_CLI_OUTPUT_DIR" ]; then
 fi
 
 if [ -z "$MAGPIE_CLI_CONF" ]; then
-    MAGPIE_CLI_CONF="$MAGPIE_CLI_OUTPUT_DIR/config.xml"
+    MAGPIE_CLI_CONF="$MAGPIE_CLI_OUTPUT_DIR/config.yml"
 fi
 
 if [ -z "$MAGPIE_CLI_IMAGE" ]; then
