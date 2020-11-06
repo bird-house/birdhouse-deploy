@@ -1,11 +1,11 @@
     location /${WEAVER_MANAGER_NAME}/ {
         # redirect to secured EMS/ADES
-        return 302 (${SERVER_PROTOCOL})://${PAVICS_FQDN}${TWITCHER_ROOT}${TWITCHER_PROXY_PATH}/${WEAVER_MANAGER_NAME}/;
+        return 302 ${SERVER_PROTOCOL}://${PAVICS_FQDN}${TWITCHER_ROOT}${TWITCHER_PROXY_PATH}/${WEAVER_MANAGER_NAME}/;
     }
 
     location /${WEAVER_WORKER_NAME}/ {
         # redirect to secured worker
-        return 302 (${SERVER_PROTOCOL})://${PAVICS_FQDN}${TWITCHER_ROOT}${TWITCHER_PROXY_PATH}/${WEAVER_WORKER_NAME}/;
+        return 302 ${SERVER_PROTOCOL}://${PAVICS_FQDN}${TWITCHER_ROOT}${TWITCHER_PROXY_PATH}/${WEAVER_WORKER_NAME}/;
     }
 
     # NOTE:
@@ -26,9 +26,13 @@
     #   the same 'magpie' permissions on the 'weaver' service named "${WEAVER_MANAGER_NAME}".
     #   This allows verification of the same service user/group permissions references regardless
     #   whether the 'shortcut' "${WEAVER_ROOT}" route or the full 'twitcher' proxy route is used.
-    location ~* (${WEAVER_ROOT})/(?<extra>.*)$ {
+    location ~* ${WEAVER_ROOT}/(?<extra>.*)$ {
         proxy_pass http://twitcher:8000${TWITCHER_PROXY_PATH}/${WEAVER_MANAGER_NAME}/$extra$is_args$args;
         proxy_set_header Host $host;
         proxy_buffering off;
         include /etc/nginx/conf.d/cors.include;
+    }
+
+    location ^~ ${WEAVER_WPS_OUTPUTS_PATH}/ {
+        alias ${WEAVER_WPS_OUTPUTS_DIR}/;
     }

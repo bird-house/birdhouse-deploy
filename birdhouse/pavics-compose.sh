@@ -6,6 +6,7 @@ NORMAL=$(tput sgr0)
 
 # list of all variables to be substituted in templates
 VARS='
+  $SERVER_PROTOCOL
   $PAVICS_FQDN
   $DOC_URL
   $MAGPIE_SECRET
@@ -25,6 +26,16 @@ VARS='
   $POSTGRES_PAVICS_PASSWORD
   $POSTGRES_MAGPIE_USERNAME
   $POSTGRES_MAGPIE_PASSWORD
+
+  $WEAVER_MANAGER_NAME
+  $WEAVER_ROOT
+  $WEAVER_WORKER_NAME
+  $WEAVER_WPS_NAME
+  $WEAVER_WPS_OUTPUTS_DIR
+  $WEAVER_WPS_OUTPUTS_PATH
+  $WEAVER_WPS_PATH
+  $TWITCHER_PROXY_PATH
+  $TWITCHER_ROOT
 '
 
 # list of vars to be substituted in template but they do not have to be set in
