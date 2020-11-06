@@ -8,6 +8,13 @@ x-logging:
     max-file: "10"
 
 services:
+
+  proxy:
+    volumes:
+    - ./optional-components/weaver/conf.extra-service.d:/etc/nginx/conf.extra-service.d/weaver
+    links:
+      - weaver
+
   # FIXME:
   #   Weaver API shouldn't be one doing docker run (jobs), but it is actually the one
   #   running the cwltool app from the received WPS Execute request sent by the worker.
@@ -55,6 +62,57 @@ services:
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
     restart: always
     logging: *default-logging
+
+  worker:
+    image: pavics/weaver:${WEAVER_VERSION}-worker
+    container_name: ${COMPOSE_PROJECT_NAME}_worker
+    env_file:
+      - ./config/mongodb/credentials.env
+    links:
+      - mongodb
+    volumes:
+      - ./config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini
+      - ./config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml
+      # NOTE:
+      #   Working and output directories must be mounted as exact same path (e.g.: /tmp/path:/tmp/path)
+      #   to avoid mismatching locations between container-side path resolution of cwltool stagedir/tmpdir/outdir
+      #   and corresponding server-side runtime docker directories since from the docker application will not be
+      #   running inside this docker, but next to it (sibling-dockers).
+      - wps_workdir:${WEAVER_WPS_WORKDIR}
+      - wps_outputs:${WEAVER_WPS_OUTPUTS_DIR}
+    restart: always
+    logging: *default-logging
+
+  docker-proxy:
+    # references
+    #   https://github.com/Tecnativa/docker-socket-proxy
+    #   https://stackoverflow.com/a/47293798/5936364
+    #   https://docs.docker.com/engine/api/
+    image: tecnativa/docker-socket-proxy
+    container_name: ${COMPOSE_PROJECT_NAME}_docker-proxy
+    environment:
+      # DOCKER API permissions
+      # These control which operations the docker-proxy allows from other containers
+      - SERVICES=0
+      - TASKS=0
+      - NETWORKS=0
+      - NODES=0
+      - INFO=1
+      - EXEC=1
+      - IMAGES=1
+      - VOLUMES=1
+      - CONTAINERS=1
+      - POST=1
+    # access to docker for sibling execution
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - docker-proxy
+    logging: *default-logging
+    # remote swarm as needed (requires more permissions above)
+    #deploy:
+    #  placement:
+    #    constraints: [node.role == manager]
 
 volumes:
   data_mongodb:
