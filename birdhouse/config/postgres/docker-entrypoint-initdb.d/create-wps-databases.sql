@@ -4,3 +4,4 @@ CREATE DATABASE malleefowl;
 CREATE DATABASE catalog;
 CREATE DATABASE finch;
 CREATE DATABASE raven;
+CREATE DATABASE postgres-pavics;

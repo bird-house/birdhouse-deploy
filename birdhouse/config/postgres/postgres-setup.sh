@@ -11,6 +11,7 @@ databases_to_create=(
     catalog
     finch
     raven
+    postgres-pavics
 )
 
 echo 'Waiting for postgres database connection'
