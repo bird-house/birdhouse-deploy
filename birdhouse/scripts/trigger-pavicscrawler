@@ -1,0 +1,44 @@
+#!/bin/sh
+# Trigger pavicscrawler on local PAVICS host.
+#
+# pavicscrawler is a method of the catalog WPS service to index Thredds
+# catalog into Solr DB for quick searching.
+#
+# To crawl only 1 file:
+#   trigger-pavicscrawler target_files=birdhouse/testdata/secure/tasmax_Amon_MPI-ESM-MR_rcp45_r2i1p1_200601-200612.nc
+#
+# To crawl only 1 dir:
+#   trigger-pavicscrawler target_files=birdhouse/testdata
+#
+# Set env var PAVICS_CRAWLER_HOST to target different PAVICS host.
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+COMPOSE_DIR="`dirname "$THIS_DIR"`"
+
+if [ -f "$COMPOSE_DIR/env.local" ]; then
+    # Get PAVICS_FQDN
+    . $COMPOSE_DIR/env.local
+fi
+
+# Allow override using same name env var.
+if [ -z "$PAVICS_CRAWLER_HOST" ]; then
+    PAVICS_CRAWLER_HOST="$PAVICS_FQDN"
+fi
+
+set -x
+
+curl --include "http://${PAVICS_CRAWLER_HOST}:8086/pywps?service=WPS&request=execute&version=1.0.0&identifier=pavicrawler&storeExecuteResponse=true&status=true&DataInputs=$*"
+
+set +x
+
+echo "
+NOTE the
+statusLocation=\"https://HOST/wpsoutputs/catalog/e31a4914-16e8-11ea-aab9-0242ac130014.xml\"
+returned in the XML body of the curl command. The status of the crawl,
+whether ongoing, failed or success will be in that link.
+
+Once crawler is done, go check the Solr DB at
+http://$PAVICS_CRAWLER_HOST:8983/solr/#/birdhouse/query for content inserted by the
+crawler.  Just click on \"Execute Query\".
+"

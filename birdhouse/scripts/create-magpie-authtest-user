@@ -1,0 +1,24 @@
+#!/bin/sh
+# Create authtest user for testsuite at
+# https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
+#
+# Options:
+#   -d: delete user 'authtest' instead of creating it
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+
+TMP_CONFIG_FILE="/tmp/create-magpie-authtest-user.yml"
+
+cat <<__OEF__ > $TMP_CONFIG_FILE
+users:
+   - username: authtest
+     password: authtest
+     email: authtest@example.com
+     group: anonymous
+__OEF__
+
+set -x
+cat $TMP_CONFIG_FILE
+MAGPIE_CLI_CONF="$TMP_CONFIG_FILE" $THIS_DIR/create-magpie-users "$@"
+rm -v $TMP_CONFIG_FILE

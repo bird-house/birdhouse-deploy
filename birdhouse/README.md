@@ -102,6 +102,31 @@ Manual instructions:
 * Click "Add User".
 
 
+### Optional: prepare instance to run automated end-to-end test suite
+
+An end-to-end integration test suite is available at
+https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests with pre-configured
+Jenkins at https://github.com/Ouranosinc/jenkins-config.
+
+For that test suite to pass, run the script
+[`bootstrap-instance-for-testsuite`](scripts/bootstrap-instance-for-testsuite)
+to prepare your new instance.  Further documentation inside the script.
+
+Optional component
+[all-public-access](optional-components#give-public-access-to-all-resources-for-testing-purposes)
+also need to be enabled in `env.local`.
+
+ESGF login is also needed for
+https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebooks/esgf-dap.ipynb
+part of test suite.  ESGF credentails can be given to Jenkins via
+https://github.com/Ouranosinc/jenkins-config/blob/aafaf6c33ea60faede2a32850604c07c901189e8/env.local.example#L11-L13
+
+The canarie monitoring link
+`https://<PAVICS_FQDN>/canarie/node/service/stats` can be used to confirm the
+instance is ready to run the automated end-to-end test suite.  That link should
+return the HTTP response code `200`.
+
+
 ## Vagrant instructions
 
 Vagrant allows us to quickly spin up a VM to easily reproduce the runtime

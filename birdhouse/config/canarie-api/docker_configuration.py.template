@@ -84,10 +84,10 @@ SERVICES = {
             },
             'Solr': {
                 'request': {
-                    'url': 'http://${PAVICS_FQDN}:8983/solr/birdhouse/select?q=CMIP5&fq=model=CanESM2&fq=experiment:rcp85&wt=json'
+                    'url': 'http://${PAVICS_FQDN}:8983/solr/birdhouse/select?q=CMIP5&fq=model:MPI-ESM-MR&fq=experiment:rcp45&fq=variable:tasmax&fq=institute:MPI-M&fq=frequency:mon&wt=json'
                 },
                 'response': {
-                    'text': '.*catalog_url\":\".+${CMIP5_THREDDS_ROOT}/CanESM2/rcp85/.*/catalog.xml.*'
+                    'text': '.*catalog_url\":\".+/testdata/flyingpigeon/cmip5.*/catalog.xml.*'
                 }
             },
             'Thredds': {
