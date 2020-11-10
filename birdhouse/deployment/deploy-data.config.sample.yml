@@ -1,0 +1,62 @@
+# Sample config file for deploy-data script.
+#
+# Many git repos are supported.  For each repo, many mapping between source dir
+# and destination dir are supported.  For each mapping, extra rsync option can
+# be provided to include/exclude a subset of files to keep in sync.
+
+config:
+  # optional, default "/tmp/deploy-data-clone-cache"
+  # can also be set by env var DEPLOY_DATA_CHECKOUT_CACHE
+  # setting in this config file have precedence over env var
+  #checkout_cache:
+
+  # optional, default unset
+  # for git clone over ssh, useful for private repos
+  # can also be set by env var DEPLOY_DATA_GIT_SSH_IDENTITY_FILE
+  # setting in this config file have precedence over env var
+  #git_ssh_identity_file: /path/to/id_rsa
+
+deploy:
+  # this form if clone over ssh: git@github.com:Ouranosinc/jenkins-master.git
+- repo_url: https://github.com/Ouranosinc/jenkins-master
+  # optional, default "origin/master"
+  # branch:
+  checkout_name: jenkins-master
+  dir_maps:
+  # rsync content below source_dir into dest_dir
+  - source_dir: initial-jenkins-plugins-suggestion
+    dest_dir: /tmp/deploy-data-test-deploy/jenkins-plugins
+    # optional, useful for include/exclude filter rules
+    # rsync_extra_opts:
+
+- repo_url: https://github.com/Ouranosinc/jenkins-config
+  branch: origin/master
+  checkout_name: jenkins-config
+  dir_maps:
+  - source_dir: canarie-presentation/
+    dest_dir: /tmp/deploy-data-test-deploy/canarie
+    # sync only .txt, .html and .gif files, if other already existing files,
+    # ignore them, unless they have same extensions.
+    rsync_extra_opts: --include=*/ --include=*.txt --include=*.html --include=*.gif --exclude=*
+  - source_dir: jcasc
+    # remap dir jcasc inside previous dir canarie, without conflicting with
+    # previous canarie sync.  This works because no .txt, .html, .gif in jcasc.
+    dest_dir: /tmp/deploy-data-test-deploy/canarie/jcasc
+    rsync_extra_opts:
+
+- repo_url: https://github.com/Ouranosinc/pavics-sdi
+  # branch:
+  checkout_name: pavics-sdi
+  dir_maps:
+    # sync only 2 sub-dirs and .rst files under source/
+  - source_dir: docs/
+    dest_dir: /tmp/deploy-data-test-deploy/pavics-sdi
+    rsync_extra_opts: --include=*/ --include=source/tutorials/** --include=source/processes/** --include=source/*.rst --exclude=*
+    # sync only .yml files at the root of checkout
+  - source_dir: .
+    dest_dir: /tmp/deploy-data-test-deploy/pavics-sdi
+    rsync_extra_opts: --include=/ --include=*.yml --exclude=*
+    # move dir 'notebooks' one level higher in hierarchy
+  - source_dir: docs/source
+    dest_dir: /tmp/deploy-data-test-deploy/pavics-sdi
+    rsync_extra_opts: --include=*/ --include=notebooks/** --exclude=*

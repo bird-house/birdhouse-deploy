@@ -25,7 +25,10 @@ for your organization.  For an example of possible override, see how the [emu
 service](optional-components/emu/docker-compose-extra.yml)
 ([README](optional-components/README.md)) can be optionally added to the
 deployment via the [override
-mechanism](https://docs.docker.com/compose/extends/).
+mechanism](https://docs.docker.com/compose/extends/).  Ouranos specific
+override can be found in this
+[birdhouse-deploy-ouranos](https://github.com/bird-house/birdhouse-deploy-ouranos)
+repo.
 
 The automatic deployment is able to handle multiple repos, so will trigger if
 this repo or your private-personalized-config repo changes, giving you
@@ -70,6 +73,20 @@ postgres instance. See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-
 
 ### Create public demo user in Magpie for JupyterHub login
 
+Use [`create-magpie-users`](scripts/create-magpie-users) or follow manual
+instructions below.
+
+`config.yml` file if using `create-magpie-users`:
+```
+users:
+  - username: < value of JUPYTER_DEMO_USER in `env.local` >
+    password: < you decide, at least 12 in length >
+    email: < anything is fine >
+    group: anonymous
+```
+
+Manual instructions:
+
 * Go to
   https://<PAVICS_FQDN>/magpie/ui/login, login with the `admin` user,
   password should be in `env.local`.
@@ -78,11 +95,36 @@ postgres instance. See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-
 
 * Fill in:
   * User name: <value of JUPYTER_DEMO_USER in `env.local`>
-  * Email: anything is fine
+  * Email: < anything is fine >
   * Password: < you decide >
   * User group: `anonymous`
 
 * Click "Add User".
+
+
+### Optional: prepare instance to run automated end-to-end test suite
+
+An end-to-end integration test suite is available at
+https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests with pre-configured
+Jenkins at https://github.com/Ouranosinc/jenkins-config.
+
+For that test suite to pass, run the script
+[`bootstrap-instance-for-testsuite`](scripts/bootstrap-instance-for-testsuite)
+to prepare your new instance.  Further documentation inside the script.
+
+Optional component
+[all-public-access](optional-components#give-public-access-to-all-resources-for-testing-purposes)
+also need to be enabled in `env.local`.
+
+ESGF login is also needed for
+https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebooks/esgf-dap.ipynb
+part of test suite.  ESGF credentails can be given to Jenkins via
+https://github.com/Ouranosinc/jenkins-config/blob/aafaf6c33ea60faede2a32850604c07c901189e8/env.local.example#L11-L13
+
+The canarie monitoring link
+`https://<PAVICS_FQDN>/canarie/node/service/stats` can be used to confirm the
+instance is ready to run the automated end-to-end test suite.  That link should
+return the HTTP response code `200`.
 
 
 ## Vagrant instructions

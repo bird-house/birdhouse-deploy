@@ -50,7 +50,13 @@ OPTIONAL_VARS='
 
 # we switch to the real directory of the script, so it still works when used from $PATH
 # tip: ln -s /path/to/pavics-compose.sh ~/bin/
+# Setup PWD for sourcing env.local.
 cd $(dirname $(readlink -f $0 || realpath $0))
+
+# Setup COMPOSE_DIR for sourcing env.local.
+# Prevent un-expected difference when this script is run inside autodeploy
+# container and manually from the host.
+COMPOSE_DIR="`pwd`"
 
 . ./default.env
 

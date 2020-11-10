@@ -1,0 +1,34 @@
+#!/bin/sh
+# Bootstrap fresh new PAVICS instance to run testsuite at
+# https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
+#
+# This is a stable interface for test automation shielding it from knowing the
+# intimate details of how to bootstrap a fresh new instance.
+#
+# Assume PAVICS instance is already fully up (`./pavics-compose.sh up -d` has
+# been called).
+#
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+
+set -x
+# Populate test .nc file on Thredds.
+$THIS_DIR/bootstrap-testdata
+
+# Index Thredds catalog.
+$THIS_DIR/trigger-pavicscrawler
+
+# For crawler to complete, assuming minimal dataset from bootstrap-testdata so
+# should be super fast to finish crawling.
+sleep 5
+
+# Create test user.
+$THIS_DIR/create-magpie-authtest-user
+
+echo "
+\$ curl --include --silent https://<PAVICS_FQDN>/canarie/node/service/stats | head
+
+Should return the HTTP response code 200 to confirm instance is ready to run
+the testsuite.
+"

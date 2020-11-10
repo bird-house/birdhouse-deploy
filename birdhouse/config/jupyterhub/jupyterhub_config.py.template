@@ -98,3 +98,10 @@ c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}
 # MagpieAuthenticator.refresh_user() (see
 # https://github.com/Ouranosinc/jupyterhub/issues/2)
 c.Authenticator.refresh_pre_spawn = True
+
+## Blacklist of usernames that are not allowed to log in.
+# https://jupyterhub.readthedocs.io/en/stable/api/auth.html
+#
+# For security reasons, block user with known hardcoded public password.
+c.Authenticator.blacklist = set(['authtest'])  # v0.9+
+c.Authenticator.blocked_users = set(['authtest'])  # v1.2+
