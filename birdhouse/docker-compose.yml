@@ -281,7 +281,7 @@ services:
     restart: always
 
   magpie:
-    image: pavics/magpie:3.1.0
+    image: pavics/magpie:3.2.0
     container_name: magpie
     ports:
       - "2001:2001"
@@ -307,7 +307,7 @@ services:
     restart: always
 
   twitcher:
-    image: pavics/twitcher:magpie-3.1.0
+    image: pavics/twitcher:magpie-3.2.0
     container_name: twitcher
     ports:
       - "8000:8000"
