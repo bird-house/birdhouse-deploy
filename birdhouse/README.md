@@ -14,19 +14,20 @@ Requirements:
   version from the distro).
 
 To run `docker-compose` for PAVICS, the [`pavics-compose.sh`](pavics-compose.sh) wrapper script must be used.
-This script will source the `env.local` file, apply the appropriate variable substitutions on all the configuration files ".template", and run `docker-compose` with all the command line arguments given to `pavics-compose.sh`. See [`env.local.example`](env.local.example) for more details on what can go into the `env.local` file.
+This script will source the `env.local` file, apply the appropriate variable substitutions on all the configuration 
+files ".template", and run `docker-compose` with all the command line arguments given to `pavics-compose.sh`. 
+See [`env.local.example`](env.local.example) for more details on what can go into the `env.local` file.
 
 If the file `env.local` is somewhere else, symlink it here, next to
 `docker-compose.yml` because many scripts assume this location.
 
 To follow infrastructure-as-code, it is encouraged to source control the above
 `env.local` file and any override needed to customized this PAVICS deployment
-for your organization.  For an example of possible override, see how the [emu
-service](optional-components/emu/docker-compose-extra.yml)
+for your organization.  For an example of possible override, see how the 
+[emu service](optional-components/emu/docker-compose-extra.yml)
 ([README](optional-components/README.md)) can be optionally added to the
-deployment via the [override
-mechanism](https://docs.docker.com/compose/extends/).  Ouranos specific
-override can be found in this
+deployment via the [override mechanism](https://docs.docker.com/compose/extends/).  
+Ouranos specific override can be found in this
 [birdhouse-deploy-ouranos](https://github.com/bird-house/birdhouse-deploy-ouranos)
 repo.
 
@@ -49,8 +50,9 @@ To launch all the containers, use the following command:
 ./pavics-compose.sh up -d
 ```
 
-If you get a `'No applicable error code, please check error log'` error from the WPS processes, please make sure that the WPS databases exists in the
-postgres instance. See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-wps-pgsql-databases.sh).
+If you get a `'No applicable error code, please check error log'` error from the WPS processes, 
+please make sure that the WPS databases exists in the postgres instance. 
+See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-wps-pgsql-databases.sh).
 
 
 ## Manual steps post deployment
@@ -58,7 +60,8 @@ postgres instance. See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-
 ### Change geoserver default admin password
 
 * Go to
-  https://<PAVICS_FQDN>/geoserver/web/wicket/bookmarkable/org.geoserver.security.web.UserGroupRoleServicesPage (Security -> Users, Groups, and Roles)
+  https://<PAVICS_FQDN>/geoserver/web/wicket/bookmarkable/org.geoserver.security.web.UserGroupRoleServicesPage 
+  (Security -> Users, Groups, and Roles)
 
 * Login using the default username `admin` and default password `geoserver`.
 
@@ -122,7 +125,7 @@ also need to be enabled in `env.local`.
 
 ESGF login is also needed for
 https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebooks/esgf-dap.ipynb
-part of test suite.  ESGF credentails can be given to Jenkins via
+part of test suite.  ESGF credentials can be given to Jenkins via
 https://github.com/Ouranosinc/jenkins-config/blob/aafaf6c33ea60faede2a32850604c07c901189e8/env.local.example#L11-L13
 
 The canarie monitoring link
@@ -207,7 +210,7 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
 
   1. MINOR version when we add new components or update existing components
      that also require change to other existing components (ex: new Magpie that
-     also force Twitcher and/or Frondend update) or the change to the existing
+     also force Twitcher and/or Frontend update) or the change to the existing
      component is a major one (ex: major refactoring of Twitcher, big merge
      with corresponding upstream component from birdhouse project).
 

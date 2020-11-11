@@ -1,6 +1,6 @@
 # Optional components
 
-## Monitor all components in Canarie node, both public and internal url
+## Monitor all components in Canarie node, both public and internal URL
 
 So that the url https://<PAVICS_FQDN>/canarie/node/service/stats also return
 what the end user really see (a component might work but is not accessible to
@@ -121,7 +121,8 @@ By enabling this component, all WPS services and data on Thredds are completely 
 Once enabled, if you need to revert the change, you have to do it manually by logging into Magpie. 
 Just disabling this component will not revert the change. Alternatively, you can create an identical file to
 [`./optional-components/all-public-access/all-public-access-magpie-permission.cfg`](all-public-access/all-public-access-magpie-permission.cfg).
-and replace all desired `action: create` entries into `action: remove` to make sure the permissions are removed as startup if they exist.
+and replace all desired `action: create` entries into `action: remove` to make sure the permissions are removed as 
+startup if they exist.
 
 This optional component is required for the test suite at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
@@ -140,7 +141,8 @@ The anonymous user will now have all the permissions described in
 Optional configuration
 [`./optional-components/secure-thredds/secure-access-magpie-permission.cfg`](secure-thredds/secure-access-magpie-permission.cfg)
 is provided as example to illustrate how to apply permissions on specific THREDDS resources to limit their access publicly.
-This permission configuration can be combined with others, such as [public access](#Give public access to all resources for testing purposes)
+This permission configuration can be combined with others, such as 
+[public access](#Give public access to all resources for testing purposes)
 ones to formulate specific permissions schemes that matches your data structure and desired access rules.
 
 On a typical server, custom and private permission rules should be provided in a similar fashion to ensure that
