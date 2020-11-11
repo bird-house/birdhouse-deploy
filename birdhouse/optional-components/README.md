@@ -142,8 +142,17 @@ Optional configuration
 [`./optional-components/secure-thredds/secure-access-magpie-permission.cfg`](secure-thredds/secure-access-magpie-permission.cfg)
 is provided as example to illustrate how to apply permissions on specific THREDDS resources to limit their access publicly.
 This permission configuration can be combined with others, such as 
-[public access](#Give-public-access-to-all-resources-for-testing-purposes)
+[all-public-access](#Give-public-access-to-all-resources-for-testing-purposes)
 ones to formulate specific permissions schemes that matches your data structure and desired access rules.
+
+How to enable in `env.local` (a copy from
+[`env.local.example`](../env.local.example)):
+
+* Add `./optional-components/secure-thredds` to `EXTRA_CONF_DIRS`.
+
+The anonymous user will *not* have access anymore to THREDDS test directory `birdhouse/testdata/secure` and any other
+directories and files under it. Directories above that one will still be accessible if 
+[all-public-access](#Give-public-access-to-all-resources-for-testing-purposes) component was also employed. 
 
 On a typical server, custom and private permission rules should be provided in a similar fashion to ensure that
 each time a new instance is booted, the same scheme of access configuration is applied. Permissions applied manually 
