@@ -26,7 +26,7 @@ retry.attempts = 3
 # debugtoolbar.hosts = 127.0.0.1 ::1
 
 # twitcher
-twitcher.url = https://${PAVICS_FQDN}/twitcher
+twitcher.url = ${SERVER_PROTOCOL}://${PAVICS_FQDN}/twitcher
 twitcher.adapter = magpie.adapter.MagpieAdapter
 twitcher.rpcinterface = false
 twitcher.username =
@@ -40,7 +40,7 @@ twitcher.workdir =
 twitcher.prefix =
 
 # magpie (for twitcher.adapter)
-magpie.url = https://${PAVICS_FQDN}/magpie
+magpie.url = ${SERVER_PROTOCOL}://${PAVICS_FQDN}/magpie
 magpie.secret = ${MAGPIE_SECRET}
 magpie.admin_user = ${MAGPIE_ADMIN_USERNAME}
 magpie.admin_password = ${MAGPIE_ADMIN_PASSWORD}

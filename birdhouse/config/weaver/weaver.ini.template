@@ -24,7 +24,7 @@ mongodb.db_name = weaver
 
 # --- Weaver Configuration ---
 weaver.configuration = ades
-weaver.url = http://localhost:4001
+weaver.url = http://${PAVICS_FQDN}:4001
 
 # --- Weaver requests extension flags ---
 # use request-options for per-request specific disabling instead of globally disabled ssl_verify flag
