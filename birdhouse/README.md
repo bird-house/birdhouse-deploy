@@ -120,7 +120,7 @@ Optional component
 also need to be enabled in `env.local`.
 
 To test secured access to THREDDS files and directories, optional component 
-[secure-thredds](optional-components#Control secured access to resources)
+[secure-thredds](optional-components#control-secured-access-to-resources-example)
 also need to be enabled in `env.local`.
 
 ESGF login is also needed for

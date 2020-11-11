@@ -136,13 +136,13 @@ The anonymous user will now have all the permissions described in
 [`./optional-components/all-public-access/all-public-access-magpie-permission.cfg`](all-public-access/all-public-access-magpie-permission.cfg).
 
 
-## Control secured access to resources
+## Control secured access to resources example
 
 Optional configuration
 [`./optional-components/secure-thredds/secure-access-magpie-permission.cfg`](secure-thredds/secure-access-magpie-permission.cfg)
 is provided as example to illustrate how to apply permissions on specific THREDDS resources to limit their access publicly.
 This permission configuration can be combined with others, such as 
-[public access](#Give public access to all resources for testing purposes)
+[public access](#Give-public-access-to-all-resources-for-testing-purposes)
 ones to formulate specific permissions schemes that matches your data structure and desired access rules.
 
 On a typical server, custom and private permission rules should be provided in a similar fashion to ensure that
