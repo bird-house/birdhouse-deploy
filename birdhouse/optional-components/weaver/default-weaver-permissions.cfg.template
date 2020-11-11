@@ -1,0 +1,15 @@
+providers:
+  weaver:
+    url: http://${PAVICS_FQDN}:4001
+    title: weaver
+    public: true
+    c4i: false
+    type: wfs
+    sync_type: wfs
+
+permissions:
+  - service: weaver
+    resource: /processes
+    permission: read
+    user: anonymous
+    action: create

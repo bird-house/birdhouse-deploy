@@ -383,7 +383,11 @@ networks:
 
 volumes:
   data: {}
-  wps_outputs: {}
+  wps_outputs:
+    driver_opts:
+      type: none
+      device: /data/wps_outputs
+      o: bind
   jupyterhub_data_persistence:
     external:
       name: jupyterhub_data_persistence

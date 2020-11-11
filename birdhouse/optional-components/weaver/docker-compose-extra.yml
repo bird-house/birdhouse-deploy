@@ -15,6 +15,10 @@ services:
     links:
       - weaver
 
+  magpie:
+    volumes:
+    - ./optional-components/weaver/default-weaver-permissions.cfg:/opt/local/src/magpie/config/permissions/default-weaver-permissions.cfg:ro
+
   # FIXME:
   #   Weaver API shouldn't be one doing docker run (jobs), but it is actually the one
   #   running the cwltool app from the received WPS Execute request sent by the worker.
@@ -71,6 +75,7 @@ services:
     links:
       - mongodb
     volumes:
+      - wps_private:/data/wps_private
       - ./config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini
       - ./config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml
       # NOTE:
@@ -121,6 +126,11 @@ volumes:
       device: /data/mongodb_persist
       o: bind
   wps_workdir: {}
+  wps_private:
+    driver_opts:
+      type: none
+      device: /data/wps_private
+      o: bind
 
 networks:
   docker-proxy:
