@@ -68,9 +68,9 @@ How to Enable the Component
 Old way to deploy the automatic deployment
 ------------------------------------------
 
-Superseeded by this new ``scheduler`` component.  Keeping for reference only.
+Superseded by this new ``scheduler`` component.  Keeping for reference only.
 
-Doing it this old way do not need the ``scheduler`` compoment but lose the
+Doing it this old way do not need the ``scheduler`` component but lose the
 ability for the autodeploy system to update itself.
 
 Configure logrotate for all following automations to prevent disk full::
