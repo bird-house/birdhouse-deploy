@@ -14,8 +14,8 @@ Requirements:
   version from the distro).
 
 To run `docker-compose` for PAVICS, the [`pavics-compose.sh`](pavics-compose.sh) wrapper script must be used.
-This script will source the `env.local` file, apply the appropriate variable substitutions on all the configuration 
-files ".template", and run `docker-compose` with all the command line arguments given to `pavics-compose.sh`. 
+This script will source the `env.local` file, apply the appropriate variable substitutions on all the configuration
+files ".template", and run `docker-compose` with all the command line arguments given to `pavics-compose.sh`.
 See [`env.local.example`](env.local.example) for more details on what can go into the `env.local` file.
 
 If the file `env.local` is somewhere else, symlink it here, next to
@@ -23,10 +23,10 @@ If the file `env.local` is somewhere else, symlink it here, next to
 
 To follow infrastructure-as-code, it is encouraged to source control the above
 `env.local` file and any override needed to customized this PAVICS deployment
-for your organization.  For an example of possible override, see how the 
+for your organization.  For an example of possible override, see how the
 [emu service](optional-components/emu/docker-compose-extra.yml)
 ([README](optional-components/README.md)) can be optionally added to the
-deployment via the [override mechanism](https://docs.docker.com/compose/extends/).  
+deployment via the [override mechanism](https://docs.docker.com/compose/extends/).
 Ouranos specific override can be found in this
 [birdhouse-deploy-ouranos](https://github.com/bird-house/birdhouse-deploy-ouranos)
 repo.
@@ -50,8 +50,8 @@ To launch all the containers, use the following command:
 ./pavics-compose.sh up -d
 ```
 
-If you get a `'No applicable error code, please check error log'` error from the WPS processes, 
-please make sure that the WPS databases exists in the postgres instance. 
+If you get a `'No applicable error code, please check error log'` error from the WPS processes,
+please make sure that the WPS databases exists in the postgres instance.
 See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-wps-pgsql-databases.sh).
 
 
@@ -60,7 +60,7 @@ See [`scripts/create-wps-pgsql-databases.sh`](scripts/create-wps-pgsql-databases
 ### Change geoserver default admin password
 
 * Go to
-  https://<PAVICS_FQDN>/geoserver/web/wicket/bookmarkable/org.geoserver.security.web.UserGroupRoleServicesPage 
+  https://<PAVICS_FQDN>/geoserver/web/wicket/bookmarkable/org.geoserver.security.web.UserGroupRoleServicesPage
   (Security -> Users, Groups, and Roles)
 
 * Login using the default username `admin` and default password `geoserver`.
@@ -119,7 +119,7 @@ Optional component
 [all-public-access](optional-components#give-public-access-to-all-resources-for-testing-purposes)
 also need to be enabled in `env.local`.
 
-To test secured access to THREDDS files and directories, optional component 
+To test secured access to THREDDS files and directories, optional component
 [secure-thredds](optional-components#control-secured-access-to-resources-example)
 also need to be enabled in `env.local`.
 
