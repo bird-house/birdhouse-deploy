@@ -1,0 +1,62 @@
+https://github.com/tlvu/jupyterhub/commit/fb5f98f2fa4566f1aa32534c9960ff9073e064eb.patch
+
+From fb5f98f2fa4566f1aa32534c9960ff9073e064eb Mon Sep 17 00:00:00 2001
+From: Long Vu <vu.long@ouranos.ca>
+Date: Tue, 17 Nov 2020 17:24:38 -0500
+Subject: [PATCH] login page: add optional feature to accept terms and
+ conditions in order to login
+
+The feature is disabled by default.
+
+If enabled (by setting `login_term_url`), user will have to check the
+checkbox to accept the terms and conditions in order to login.
+---
+ share/jupyterhub/templates/login.html | 29 +++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/share/jupyterhub/templates/login.html b/share/jupyterhub/templates/login.html
+index 130339c97..4aad65f5e 100644
+--- a/share/jupyterhub/templates/login.html
++++ b/share/jupyterhub/templates/login.html
+@@ -63,6 +63,18 @@
+       value='Sign In'
+       tabindex="3"
+     />
++
++    {% block login_terms %}
++    {% if login_term_url %}
++    <div id="login_terms" class="login_terms">
++    <input type="checkbox" id="login_terms_checkbox" name="login_terms_checkbox"/>
++    {% block login_terms_text %} {# allow overriding the text #}
++    By logging into the platform you accept the <a href="{{ login_term_url }}">terms and conditions</a>.
++    </div>
++    {% endblock login_terms_text %}
++    {% endif %}
++    {% endblock login_terms %}
++
+   </div>
+ </form>
+ {% endif %}
+@@ -81,4 +93,21 @@
+ }
+ </script>
+ 
++{% if login_term_url %}
++<script>
++// By default disable the login submit button, unless user check the terms and
++// conditions checkbox.
++var loginBtn = document.getElementById('login_submit');
++loginBtn.disabled = "disabled";
++
++document.getElementById('login_terms_checkbox').onclick = function() {
++    if ( this.checked ) {
++        loginBtn.disabled = "";
++    } else {
++        loginBtn.disabled = "disabled";
++    }
++};
++</script>
++{% endif %}
++
+ {% endblock %}
+

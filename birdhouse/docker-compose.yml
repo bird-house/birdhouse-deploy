@@ -356,6 +356,7 @@ services:
     volumes:
       - ./config/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
       - ./config/jupyterhub/custom_templates:/custom_templates:ro
+      - ./config/jupyterhub/login-page.patch:/login-page.patch:ro
       - ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}
       - jupyterhub_data_persistence:/persist:rw
       - /var/run/docker.sock:/var/run/docker.sock:rw
@@ -366,6 +367,7 @@ services:
     # the Hub and the rest of the stack are on network 'default'
       - default
       - jupyterhub_network
+    command: "bash -c 'set -x; patch --directory=/opt/conda --forward --strip=1 < /login-page.patch; jupyterhub'"
     restart: always
 
 # need external network so the folder name is not prefixed to network name
