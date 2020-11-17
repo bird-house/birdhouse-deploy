@@ -338,7 +338,7 @@ services:
     restart: always
 
   jupyterhub:
-    image: pavics/jupyterhub:1.0.0-20200130
+    image: pavics/jupyterhub:1.2.1-20201117-1
     container_name: jupyterhub
     hostname: jupyterhub
     ports:
@@ -367,7 +367,7 @@ services:
     # the Hub and the rest of the stack are on network 'default'
       - default
       - jupyterhub_network
-    command: "bash -c 'set -x; patch --directory=/opt/conda --forward --strip=1 < /login-page.patch; jupyterhub'"
+    command: "bash -c 'set -x; patch --directory=/usr/local --forward --strip=1 < /login-page.patch; jupyterhub'"
     restart: always
 
 # need external network so the folder name is not prefixed to network name
