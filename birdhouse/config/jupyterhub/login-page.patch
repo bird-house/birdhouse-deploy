@@ -1,7 +1,9 @@
-git diff 5bcbc8b328d24eb18deb4ca9b82b13d633522d76 e00ef1aef1d4238bc98cfa852eb0c7b51d5e7c6a share/jupyterhub/templates/login.html
+https://github.com/tlvu/jupyterhub
+git diff 5bcbc8b328d24eb18deb4ca9b82b13d633522d76 11a85d1dc545a5e6295a607d5d09c4b026b3c3a9 share/jupyterhub/templates/login.html
+PR https://github.com/jupyterhub/jupyterhub/pull/3264
 
 diff --git a/share/jupyterhub/templates/login.html b/share/jupyterhub/templates/login.html
-index 9359d9ec..6df3c535 100644
+index 9359d9ec..6a946d66 100644
 --- a/share/jupyterhub/templates/login.html
 +++ b/share/jupyterhub/templates/login.html
 @@ -68,6 +68,18 @@
@@ -15,19 +17,20 @@ index 9359d9ec..6df3c535 100644
 +    <input type="checkbox" id="login_terms_checkbox" name="login_terms_checkbox"/>
 +    {% block login_terms_text %} {# allow overriding the text #}
 +    By logging into the platform you accept the <a href="{{ login_term_url }}">terms and conditions</a>.
-+    </div>
 +    {% endblock login_terms_text %}
++    </div>
 +    {% endif %}
 +    {% endblock login_terms %}
 +
    </div>
  </form>
  {% endif %}
-@@ -92,4 +104,22 @@ $('form').submit((e) => {
+@@ -92,4 +104,24 @@ $('form').submit((e) => {
    form.find('.feedback-widget>*').toggleClass('fa-pulse');
  });
  </script>
 +
++{% block login_terms_script %} {# allow overriding the javascript #}
 +{% if login_term_url %}
 +<script>
 +// By default disable the login submit button, unless user check the terms and
@@ -44,5 +47,6 @@ index 9359d9ec..6df3c535 100644
 +};
 +</script>
 +{% endif %}
++{% endblock login_terms_script %}
 +
  {% endblock %}
