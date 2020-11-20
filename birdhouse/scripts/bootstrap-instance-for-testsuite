@@ -26,9 +26,5 @@ sleep 5
 # Create test user.
 $THIS_DIR/create-magpie-authtest-user
 
-echo "
-\$ curl --include --silent https://<PAVICS_FQDN>/canarie/node/service/stats | head
-
-Should return the HTTP response code 200 to confirm instance is ready to run
-the testsuite.
-"
+# Check if instance properly provisionned for testsuite.
+$THIS_DIR/check-instance-ready

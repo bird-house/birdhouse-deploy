@@ -31,6 +31,19 @@ Ouranos specific override can be found in this
 [birdhouse-deploy-ouranos](https://github.com/bird-house/birdhouse-deploy-ouranos)
 repo.
 
+Suggested deployment layout:
+```
+├── birdhouse-deploy/  # this repo
+│   ├── birdhouse/
+│   │   ├── env.local  # relative symlink to env.local.real below
+│   │   ├── pavics-compose.sh
+│   │   ├── (...)
+├── private-config/    # your private config and override: sibling level of this repo
+│   ├── docker-compose-extra.yml
+│   ├── env.local.real
+│   ├── .git/
+```
+
 The automatic deployment is able to handle multiple repos, so will trigger if
 this repo or your private-personalized-config repo changes, giving you
 automated continuous deployment.  See the continuous deployment setup section

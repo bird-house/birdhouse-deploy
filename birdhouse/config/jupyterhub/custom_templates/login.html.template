@@ -34,3 +34,12 @@ ${JUPYTER_LOGIN_BANNER_TOP_SECTION}
 
 ${JUPYTER_LOGIN_BANNER_BOTTOM_SECTION}
 ' %}
+
+{% set login_term_url = '${JUPYTER_LOGIN_TERMS_URL}' %}
+
+{# Example overriding the actual login terms and condition text #}
+{#
+{% block login_terms_text %}
+Your own text here <a href="{{ login_term_url }}">terms and conditions</a>.
+{% endblock login_terms_text %}
+#}
