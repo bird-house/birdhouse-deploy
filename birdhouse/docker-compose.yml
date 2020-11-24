@@ -108,6 +108,7 @@ services:
     volumes:
       - /data/geoserver:/opt/geoserver/data_dir
       - ./config/geoserver/web.xml:/usr/local/tomcat/conf/web.xml
+      - ./config/geoserver/setenv.sh:/usr/local/tomcat/bin/setenv.sh:ro
     links:
       - postgis
     restart: always
