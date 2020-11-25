@@ -1,1 +1,0 @@
-JAVA_OPTS="-Dhttp.proxySet=true -Dhttp.proxyHost=http://${PAVICS_FQDN_PUBLIC} -Dhttp.proxyPort=80 -Dhttps.proxyHost=https://${PAVICS_FQDN_PUBLIC} -Dhttps.proxyPort=443 $JAVA_OPTS"
