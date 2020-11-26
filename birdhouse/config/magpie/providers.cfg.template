@@ -62,6 +62,8 @@ providers:
     c4i: false
     type: thredds
     sync_type: thredds
+    # below is a custom config to indicate how magpie should convert thredds path elements into resources/permissions
+    # see: https://pavics-magpie.readthedocs.io/en/latest/services.html#servicethredds
     configuration:
       skip_prefix: "thredds"  # prefix to ignore, below prefixes will be matched against whatever comes after in path
       file_patterns:
