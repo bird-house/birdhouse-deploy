@@ -77,11 +77,14 @@ providers:
           - "catalog\\.\\w+"  # note: special case for `THREDDS` top-level directory (root) accessed for `BROWSE`
           - catalog
           - ncml
+          - uddc
+          - iso
       data_type:
         prefixes:
           - fileServer
           - dodsC
-          - dap4
+          - wcs
+          - wms
 
   ncWMS2:
     url: http://${PAVICS_FQDN}:8080/ncWMS2
