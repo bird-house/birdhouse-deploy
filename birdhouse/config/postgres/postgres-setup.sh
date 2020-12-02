@@ -16,7 +16,7 @@ databases_to_create=(
 echo 'Waiting for postgres database connection'
 while ! pg_isready -h postgres -U ${POSTGRES_USER}; do sleep 1; done;
 
-databases=$(psql -h postgres -U ${POSTGRES_USER} -t -c 'SELECT datname FROM pg_database WHERE datistemplate = false;')
+databases=$(psql -h postgres -U ${POSTGRES_USER} -d ${POSTGRES_DB} -t -c 'SELECT datname FROM pg_database WHERE datistemplate = false;')
 
 for db_to_create in ${databases_to_create[*]}
 do
@@ -31,7 +31,7 @@ do
 
     if [ $exists == false ] ; then
         echo "Creating database $db_to_create"
-        psql -h postgres -U ${POSTGRES_USER} -c "CREATE DATABASE $db_to_create;"
+        psql -h postgres -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c "CREATE DATABASE $db_to_create;"
     fi
 
 done
