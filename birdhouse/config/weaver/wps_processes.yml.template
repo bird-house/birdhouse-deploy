@@ -7,5 +7,15 @@
 #   - for each process, `DescribeProcess` request will indicate how to generate and register a WPS-2 equivalent
 #   - each process name will combine the service `name` and process `identifier` to reduce chances of conflicts
 processes:
-  #- url: <some-wps-process>
-  #  name: ...
+  - name: catalog
+    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/catalog
+  - name: finch
+    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/finch
+  - name: flyingpigeon
+    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/flyingpigeon
+  - name: hummingbird
+    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/hummingbird
+  - name: malleefowl
+    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/malleefowl
+  - name: raven
+    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/raven

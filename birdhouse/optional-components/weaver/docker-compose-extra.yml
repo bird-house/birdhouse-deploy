@@ -1,4 +1,4 @@
-version: '2.1'
+version: "3.4"
 
 x-logging:
   &default-logging
@@ -11,13 +11,13 @@ services:
 
   proxy:
     volumes:
-    - ./optional-components/weaver/conf.extra-service.d:/etc/nginx/conf.extra-service.d/weaver
+      - ./optional-components/weaver/conf.extra-service.d:/etc/nginx/conf.extra-service.d/weaver
     links:
       - weaver
 
   magpie:
     volumes:
-    - ./optional-components/weaver/default-weaver-permissions.cfg:/opt/local/src/magpie/config/permissions/default-weaver-permissions.cfg:ro
+      - ./optional-components/weaver/default-weaver-permissions.cfg:/opt/local/src/magpie/config/permissions/default-weaver-permissions.cfg:ro
 
   # FIXME:
   #   Weaver API shouldn't be one doing docker run (jobs), but it is actually the one

@@ -1,11 +1,11 @@
     location /${WEAVER_MANAGER_NAME}/ {
         # redirect to secured EMS/ADES
-        return 302 ${SERVER_PROTOCOL}://${PAVICS_FQDN}${TWITCHER_ROOT}${TWITCHER_PROXY_PATH}/${WEAVER_MANAGER_NAME}/;
+        return 302 https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}/;
     }
 
     location /${WEAVER_WORKER_NAME}/ {
         # redirect to secured worker
-        return 302 ${SERVER_PROTOCOL}://${PAVICS_FQDN}${TWITCHER_ROOT}${TWITCHER_PROXY_PATH}/${WEAVER_WORKER_NAME}/;
+        return 302 https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/${WEAVER_WORKER_NAME}/;
     }
 
     # NOTE:

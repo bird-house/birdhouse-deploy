@@ -23,8 +23,8 @@ mongodb.port = 27017
 mongodb.db_name = weaver
 
 # --- Weaver Configuration ---
-weaver.configuration = ades
-weaver.url = http://${PAVICS_FQDN}:4001
+weaver.configuration = ${WEAVER_CONFIG}
+weaver.url = https://${PAVICS_FQDN}/weaver
 
 # --- Weaver requests extension flags ---
 # use request-options for per-request specific disabling instead of globally disabled ssl_verify flag
@@ -43,7 +43,7 @@ weaver.wps = true
 weaver.wps_path = ${WEAVER_WPS_PATH}
 weaver.wps_output = true
 weaver.wps_output_dir = ${WEAVER_WPS_OUTPUTS_DIR}
-weaver.wps_output_url = ${SERVER_PROTOCOL}://${PAVICS_FQDN}${WEAVER_WPS_OUTPUTS_PATH}
+weaver.wps_output_url = https://${PAVICS_FQDN}${WEAVER_WPS_OUTPUTS_PATH}
 weaver.wps_output_path =
 weaver.wps_workdir = ${WEAVER_WPS_WORKDIR}
 
@@ -51,7 +51,7 @@ weaver.wps_workdir = ${WEAVER_WPS_WORKDIR}
 weaver.wps_metadata_identification_title=Weaver
 weaver.wps_metadata_identification_abstract=${SERVER_ABSTRACT}
 weaver.wps_metadata_identification_keywords=Weaver,WPS,OGC,${WEAVER_CONFIG}
-weaver.wps_metadata_identification_accessconstraints=${SERVER_PROTOCOL}://${PAVICS_FQDN}${MAGPIE_ROOT}
+weaver.wps_metadata_identification_accessconstraints=https://${PAVICS_FQDN}${MAGPIE_ROOT}
 weaver.wps_metadata_identification_fees=NONE
 weaver.wps_metadata_provider_name=${SERVER_OWNER}
 weaver.wps_metadata_provider_url=http://pavics-weaver.readthedocs.org/en/latest/
