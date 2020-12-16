@@ -35,7 +35,7 @@ deploy:
   # post_actions:
   # Current work dir is the checkout root.
   # - action: ENV_VAR=for_script ENV_VAR2=value2 script/inside/checkout arg1 arg2
-  # - action: ENV_VAR=for_script ENV_VAR2=value2 /abs/path/dest_dir/script arg1 arg2
+  # - action: ANY_DEPLOY_DATA_VAR=${ANY_DEPLOY_DATA_VAR} ENV_VAR2=value2 /abs/path/dest_dir/script arg1 arg2
 
 - repo_url: https://github.com/Ouranosinc/jenkins-config
   branch: 0b1592a7102c95a1e5090877b0edfc7d192ce0e2
@@ -75,7 +75,7 @@ deploy:
   # execute actions without rsync
   post_actions:
   - action: ENV_VAR=for_script ENV_VAR2=value2 sh-utils/echoargs --opt1 arg1 arg2
-  - action: ECHOARG1=var1 ECHOARGS2=var2 sh-utils/echoargs --opt1 --opt2 arg1 arg2 arg3
+  - action: REPO_NUM=${REPO_NUM} GIT_REPO_URL=${GIT_REPO_URL} ECHOARGS2=var2 sh-utils/echoargs --opt1 --opt2 arg1 arg2 arg3
   # show execution result of this sample config file
   - action: /bin/ls -l /tmp/deploy-data-clone-cache
   - action: find /tmp/deploy-data-test-deploy
