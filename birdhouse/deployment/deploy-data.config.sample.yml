@@ -19,7 +19,7 @@ config:
 deploy:
   # this form if clone over ssh: git@github.com:Ouranosinc/jenkins-master.git
 - repo_url: https://github.com/Ouranosinc/jenkins-master
-  # optional, default "origin/master"
+  # optional, default "origin/master" (f546be3017dba3717d787c9f7cd64342bd62e730)
   # branch:
   checkout_name: jenkins-master
   # dir_maps, optional: no rsync if missing
@@ -38,7 +38,7 @@ deploy:
   # - action: ENV_VAR=for_script ENV_VAR2=value2 /abs/path/dest_dir/script arg1 arg2
 
 - repo_url: https://github.com/Ouranosinc/jenkins-config
-  branch: origin/master
+  branch: 0b1592a7102c95a1e5090877b0edfc7d192ce0e2
   checkout_name: jenkins-config
   dir_maps:
   - source_dir: canarie-presentation/
@@ -53,7 +53,7 @@ deploy:
     rsync_extra_opts:
 
 - repo_url: https://github.com/Ouranosinc/pavics-sdi
-  # branch:
+  branch: ebf2e3f584ae424de3b01e4f320a91d8f766ec03
   checkout_name: pavics-sdi
   dir_maps:
     # sync only 2 sub-dirs and .rst files under source/
@@ -70,7 +70,7 @@ deploy:
     rsync_extra_opts: --include=*/ --include=notebooks/** --exclude=*
 
 - repo_url: https://gitlab.com/tlvu/debug-utils
-  branch: origin/master
+  branch: 2fad34e0daaf1532e38077fb11af7a84eb3978ab
   checkout_name: debug-utils
   # execute actions without rsync
   post_actions:
