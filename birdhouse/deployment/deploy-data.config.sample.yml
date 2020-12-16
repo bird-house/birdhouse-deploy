@@ -76,6 +76,9 @@ deploy:
   post_actions:
   - action: ENV_VAR=for_script ENV_VAR2=value2 sh-utils/echoargs --opt1 arg1 arg2
   - action: ECHOARG1=var1 ECHOARGS2=var2 sh-utils/echoargs --opt1 --opt2 arg1 arg2 arg3
+  # show execution result of this sample config file
+  - action: /bin/ls -l /tmp/deploy-data-clone-cache
+  - action: find /tmp/deploy-data-test-deploy
 
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
