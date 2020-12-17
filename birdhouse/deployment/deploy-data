@@ -64,7 +64,7 @@ fi
 
 
 yq() {
-    docker run --rm --name deploy_data_yq -v $CONFIG_YML:$CONFIG_YML:ro $DEPLOY_DATA_YQ_IMAGE yq "$@"
+    docker run --rm --name deploy_data_yq_$DOCKER_RUN_TAG -v $CONFIG_YML:$CONFIG_YML:ro $DEPLOY_DATA_YQ_IMAGE yq "$@"
 }
 
 # Empty value could mean typo in the keys in the config file.
@@ -79,6 +79,10 @@ ensure_not_empty() {
 START_TIME="`date -Isecond`"
 echo "==========
 datadeploy START_TIME=$START_TIME"
+
+# 2020-12-16T22:15:03+0000 -> 2020-12-16T22_15_03p0000
+# Allowed chars for container name: [a-zA-Z0-9][a-zA-Z0-9_.-]
+DOCKER_RUN_TAG="`echo "$START_TIME" | sed 's/:/_/g' | sed 's/+/p/g'`"
 
 set -x
 
@@ -123,7 +127,6 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
     fi
 
     SRC_DIRS="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[*\].source_dir`"
-    ensure_not_empty "$SRC_DIRS"
     DIR_NUM=0
 
     for SRC_DIR in $SRC_DIRS; do
@@ -142,7 +145,7 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
         mkdir -p "$DEST_DIR_PARENT"
 
         # Rsync with --checksum to only update file that changed.
-        docker run --rm --name deploy_data_rsync \
+        docker run --rm --name deploy_data_rsync_$DOCKER_RUN_TAG \
             --volume $SRC_DIR_ABS_PATH:$SRC_DIR_ABS_PATH:ro \
             --volume $DEST_DIR_PARENT:$DEST_DIR_PARENT:rw \
             --user $USER_ID:$GROUP_ID \
@@ -154,6 +157,22 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
                 $SRC_DIR_ABS_PATH/ $DEST_DIR
 
         DIR_NUM=`expr $DIR_NUM + 1`
+    done
+
+    POST_ACTIONS_LENGTH="`yq r $CONFIG_YML --length deploy\[$REPO_NUM\].post_actions`"
+    if [ -z "$POST_ACTIONS_LENGTH" ]; then
+        # post_action element do not exist
+        POST_ACTIONS_LENGTH=0
+    fi
+    POST_ACTIONS_LENGTH_FOR_SEQ="`expr $POST_ACTIONS_LENGTH - 1`"
+
+    # will not fire if deploy\[*\].post_actions do not exist or is empty
+    for POST_ACTION_NUM in `seq 0 $POST_ACTIONS_LENGTH_FOR_SEQ`; do
+        POST_ACTION="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].post_actions\[$POST_ACTION_NUM\].action`"
+        ensure_not_empty "$POST_ACTION"
+
+        echo "executing post_action '$POST_ACTION'"
+        eval $POST_ACTION
     done
 
     REPO_NUM=`expr $REPO_NUM + 1`
