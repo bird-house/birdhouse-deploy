@@ -23,7 +23,7 @@ services:
       - ./config/proxy/conf.d:/etc/nginx/conf.d
       - ./config/proxy/nginx.conf:/etc/nginx/nginx.conf
       - ./config/canarie-api/docker_configuration.py:/config/docker_configuration.py
-      - $SSL_CERTIFICATE:/etc/nginx/cert.pem
+      - ${SSL_CERTIFICATE}:/etc/nginx/cert.pem
       - wps_outputs:/pavics-data/wps_outputs
       - ./config/canarie-api/entrypoint:/entrypoint:ro
     environment:
@@ -65,7 +65,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - /data/frontend_persist:/var/lib/postgresql/data/pgdata
+      - postgres_data_persist:/var/lib/postgresql/data/pgdata
       - ./config/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./config/postgres/postgres-setup.sh:/postgres-setup.sh
     environment:
@@ -90,7 +90,7 @@ services:
       - "9001:9001"
     volumes:
       - ./config/phoenix/custom.cfg:/opt/birdhouse/src/phoenix/custom.cfg
-      - $SSL_CERTIFICATE:/opt/birdhouse/etc/nginx/cert.pem
+      - ${SSL_CERTIFICATE}:/opt/birdhouse/etc/nginx/cert.pem
     links:
       - mongodb
     depends_on:
@@ -123,7 +123,7 @@ services:
       # for custom entrypoint
       PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
     volumes:
-      - /data/geoserver:/opt/geoserver/data_dir
+      - geoserver_data_persist:/opt/geoserver/data_dir
       - ./config/geoserver/web.xml:/usr/local/tomcat/conf/web.xml
       - ./config/geoserver/entrypointwrapper:/entrypointwrapper:ro
     links:
@@ -147,7 +147,7 @@ services:
       - "38091:38091"
       - "48091:9001"
     volumes:
-      - /data/datasets:/pavics-data
+      - datasets_persist:/pavics-data
       - ./config/malleefowl/custom.cfg:/opt/birdhouse/src/malleefowl/custom.cfg
       - data:/opt/birdhouse/var/lib
       - wps_outputs:/opt/birdhouse/var/lib/pywps/outputs
@@ -263,7 +263,7 @@ services:
       PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
     volumes:
       - thredds_persistence:/usr/local/tomcat/content/thredds
-      - /data/datasets:/pavics-data
+      - datasets_persist:/pavics-data
       - /data/ncml:/pavics-ncml
       - wps_outputs:/pavics-data/wps_outputs
       - ./config/thredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
@@ -286,8 +286,8 @@ services:
     image: mongo:3.6.21
     container_name: mongodb
     volumes:
-      - data_mongodb:/data/db
-    # Mongodb crash with permission denied errors if the command is not overriden like this
+      - mongodb_data_persist:/data/db
+    # Mongodb crash with permission denied errors if the command is not overridden like this
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
     restart: always
     logging: *default-logging
@@ -364,7 +364,7 @@ services:
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - /data/magpie_persist:/var/lib/postgresql/data/pgdata
+      - magpie_data_persist:/var/lib/postgresql/data/pgdata
       - ./config/postgres-magpie/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     restart: always
     logging: *default-logging
@@ -414,12 +414,33 @@ volumes:
   wps_outputs:
     driver_opts:
       type: none
-      device: /data/wps_outputs
+      device: ${DATA_PERSIST_ROOT}/wps_outputs
       o: bind
-  data_mongodb:
+  magpie_data_persist:
     driver_opts:
       type: none
-      device: /data/mongodb_persist
+      device: ${DATA_PERSIST_ROOT}/magpie_persist
+      o: bind
+  datasets_persist:
+    driver_opts:
+      type: none
+      device: ${DATA_PERSIST_ROOT}/datasets
+      o: bind
+  geoserver_data_persist:
+    driver_opts:
+      type: none
+      device: ${DATA_PERSIST_ROOT}/geoserver
+      o: bind
+  mongodb_data_persist:
+    driver_opts:
+      type: none
+      device: ${DATA_PERSIST_ROOT}/mongodb_persist
+      o: bind
+  postgres_data_persist:
+    driver_opts:
+      type: none
+      # for historical reasons, location is 'frontend' although employed by 'postgres' container.
+      device: ${DATA_PERSIST_ROOT}/frontend_persist
       o: bind
   jupyterhub_data_persistence:
     external:

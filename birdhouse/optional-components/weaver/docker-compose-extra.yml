@@ -26,15 +26,15 @@ services:
   #   (https://github.com/crim-ca/weaver/issues/21)
   weaver:
     image: pavics/weaver:${WEAVER_VERSION}-manager
-    container_name: ${COMPOSE_PROJECT_NAME}_weaver
+    container_name: weaver
     ports:
       - "4001:4001"
     environment:
       HOSTNAME: ${PAVICS_FQDN}
       FORWARDED_ALLOW_IPS: "*"
       DOCKER_HOST: "tcp://docker-proxy:2375"   # FIXME: see above docker-sibling note
-    env_file:
-      - ./config/mongodb/credentials.env
+    #env_file:
+    #  - ./config/mongodb/credentials.env
     links:
       - mongodb
     volumes:
@@ -57,21 +57,11 @@ services:
     restart: always
     logging: *default-logging
 
-  mongodb:
-    image: mongo:3.4.0
-    container_name: ${COMPOSE_PROJECT_NAME}_mongodb
-    volumes:
-      - data_mongodb:/data/db
-    # Mongodb crash with permission denied errors if the command is not overridden like this
-    command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
-    restart: always
-    logging: *default-logging
-
   worker:
     image: pavics/weaver:${WEAVER_VERSION}-worker
-    container_name: ${COMPOSE_PROJECT_NAME}_worker
-    env_file:
-      - ./config/mongodb/credentials.env
+    container_name: worker
+    #env_file:
+    #  - ./config/mongodb/credentials.env
     links:
       - mongodb
     volumes:
@@ -94,7 +84,7 @@ services:
     #   https://stackoverflow.com/a/47293798/5936364
     #   https://docs.docker.com/engine/api/
     image: tecnativa/docker-socket-proxy
-    container_name: ${COMPOSE_PROJECT_NAME}_docker-proxy
+    container_name: docker-proxy
     environment:
       # DOCKER API permissions
       # These control which operations the docker-proxy allows from other containers
@@ -120,18 +110,13 @@ services:
     #    constraints: [node.role == manager]
 
 volumes:
-  data_mongodb:
-    driver_opts:
-      type: none
-      device: /data/mongodb_persist
-      o: bind
   wps_workdir: {}
   wps_private:
     driver_opts:
       type: none
-      device: /data/wps_private
+      device: ${DATA_PERSIST_ROOT}/wps_private
       o: bind
 
 networks:
   docker-proxy:
-    driver: overlay
+    driver: bridge

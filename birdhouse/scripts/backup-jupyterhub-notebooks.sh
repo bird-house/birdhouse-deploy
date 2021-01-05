@@ -6,7 +6,7 @@ if [ -z "$BACKUP_OUT_DIR" ]; then
 fi
 
 if [ -z "$JUPYTERHUB_USER_DATA_DIR" ]; then
-    JUPYTERHUB_USER_DATA_DIR=/data/jupyterhub_user_data
+    JUPYTERHUB_USER_DATA_DIR="${DATA_PERSIST_ROOT}/jupyterhub_user_data"
 fi
 
 docker run --rm \
