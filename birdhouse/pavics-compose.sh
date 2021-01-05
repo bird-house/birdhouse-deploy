@@ -6,7 +6,6 @@ NORMAL=$(tput sgr0)
 
 # list of all variables to be substituted in templates
 VARS='
-  $SERVER_PROTOCOL
   $PAVICS_FQDN
   $DOC_URL
   $MAGPIE_SECRET

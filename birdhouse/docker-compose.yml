@@ -213,8 +213,6 @@ services:
       - "48983:9001"
     volumes:
       - /data/solr:/data
-    volumes_from:
-      - mongodb
     restart: always
 
   ncwms2:
@@ -228,8 +226,6 @@ services:
       - wps_outputs:/pavics-data/wps_outputs
       - ./config/ncwms2/custom.cfg:/opt/birdhouse/custom.cfg
       - ./config/ncwms2/server.xml:/opt/birdhouse/eggs/birdhousebuilder.recipe.tomcat-0.2.9-py2.7.egg/birdhousebuilder/recipe/tomcat/server.xml
-    volumes_from:
-      - mongodb
     restart: always
 
   thredds:
@@ -264,8 +260,10 @@ services:
         ]
 
   mongodb:
-    image: mongo:3.4.0
+    image: mongo:3.6.21
     container_name: mongodb
+    volumes:
+      - data_mongodb:/data/db
     # Mongodb crash with permission denied errors if the command is not overriden like this
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
     restart: always
@@ -388,10 +386,16 @@ volumes:
       type: none
       device: /data/wps_outputs
       o: bind
+  data_mongodb:
+    driver_opts:
+      type: none
+      device: /data/mongodb_persist
+      o: bind
   jupyterhub_data_persistence:
     external:
       name: jupyterhub_data_persistence
   thredds_persistence:
     external:
       name: thredds_persistence
+
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
