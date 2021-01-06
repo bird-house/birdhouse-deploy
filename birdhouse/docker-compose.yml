@@ -285,7 +285,7 @@ services:
         ]
 
   mongodb:
-    image: mongo:3.6.21
+    image: mongo:3.4.0
     container_name: mongodb
     volumes:
       - ${DATA_PERSIST_ROOT}/mongodb_persist:/data/db
