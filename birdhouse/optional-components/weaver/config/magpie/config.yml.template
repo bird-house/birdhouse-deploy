@@ -1,3 +1,6 @@
+## see reference example for details:
+# https://github.com/Ouranosinc/Magpie/blob/master/config/config.yml
+
 providers:
   weaver:
     url: http://${PAVICS_FQDN}:4001

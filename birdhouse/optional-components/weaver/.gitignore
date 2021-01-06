@@ -1,2 +1,6 @@
 conf.extra-service.d/weaver.conf
-default-weaver-permissions.cfg
+config/magpie/permissions.yml
+config/weaver/data_sources.json
+config/weaver/request_options.yml
+config/weaver/wps_processes.yml
+config/weaver/weaver.ini

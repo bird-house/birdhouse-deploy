@@ -65,7 +65,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data_persist:/var/lib/postgresql/data/pgdata
+      - ${DATA_PERSIST_ROOT}/frontend_persist:/var/lib/postgresql/data/pgdata
       - ./config/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./config/postgres/postgres-setup.sh:/postgres-setup.sh
     environment:
@@ -123,7 +123,7 @@ services:
       # for custom entrypoint
       PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
     volumes:
-      - geoserver_data_persist:/opt/geoserver/data_dir
+      - ${DATA_PERSIST_ROOT}/geoserver:/opt/geoserver/data_dir
       - ./config/geoserver/web.xml:/usr/local/tomcat/conf/web.xml
       - ./config/geoserver/entrypointwrapper:/entrypointwrapper:ro
     links:
@@ -147,7 +147,7 @@ services:
       - "38091:38091"
       - "48091:9001"
     volumes:
-      - datasets_persist:/pavics-data
+      - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
       - ./config/malleefowl/custom.cfg:/opt/birdhouse/src/malleefowl/custom.cfg
       - data:/opt/birdhouse/var/lib
       - wps_outputs:/opt/birdhouse/var/lib/pywps/outputs
@@ -232,7 +232,7 @@ services:
       - "8983:8983"
       - "48983:9001"
     volumes:
-      - /data/solr:/data
+      - ${DATA_PERSIST_ROOT}/solr:/data
     restart: always
     logging: *default-logging
 
@@ -243,7 +243,7 @@ services:
       - "8080:8080"
       - "48080:9001"
     volumes:
-      - /data/datasets:/pavics-data
+      - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
       - wps_outputs:/pavics-data/wps_outputs
       - ./config/ncwms2/custom.cfg:/opt/birdhouse/custom.cfg
       - ./config/ncwms2/server.xml:/opt/birdhouse/eggs/birdhousebuilder.recipe.tomcat-0.2.9-py2.7.egg/birdhousebuilder/recipe/tomcat/server.xml
@@ -263,8 +263,8 @@ services:
       PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
     volumes:
       - thredds_persistence:/usr/local/tomcat/content/thredds
-      - datasets_persist:/pavics-data
-      - /data/ncml:/pavics-ncml
+      - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
+      - ${DATA_PERSIST_ROOT}/ncml:/pavics-ncml
       - wps_outputs:/pavics-data/wps_outputs
       - ./config/thredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
       - ./config/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
@@ -286,7 +286,7 @@ services:
     image: mongo:3.6.21
     container_name: mongodb
     volumes:
-      - mongodb_data_persist:/data/db
+      - ${DATA_PERSIST_ROOT}/mongodb_persist:/data/db
     # Mongodb crash with permission denied errors if the command is not overridden like this
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
     restart: always
@@ -364,7 +364,7 @@ services:
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - magpie_data_persist:/var/lib/postgresql/data/pgdata
+      - ${DATA_PERSIST_ROOT}/magpie_persist:/var/lib/postgresql/data/pgdata
       - ./config/postgres-magpie/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     restart: always
     logging: *default-logging
@@ -411,37 +411,7 @@ networks:
 
 volumes:
   data: {}
-  wps_outputs:
-    driver_opts:
-      type: none
-      device: ${DATA_PERSIST_ROOT}/wps_outputs
-      o: bind
-  magpie_data_persist:
-    driver_opts:
-      type: none
-      device: ${DATA_PERSIST_ROOT}/magpie_persist
-      o: bind
-  datasets_persist:
-    driver_opts:
-      type: none
-      device: ${DATA_PERSIST_ROOT}/datasets
-      o: bind
-  geoserver_data_persist:
-    driver_opts:
-      type: none
-      device: ${DATA_PERSIST_ROOT}/geoserver
-      o: bind
-  mongodb_data_persist:
-    driver_opts:
-      type: none
-      device: ${DATA_PERSIST_ROOT}/mongodb_persist
-      o: bind
-  postgres_data_persist:
-    driver_opts:
-      type: none
-      # for historical reasons, location is 'frontend' although employed by 'postgres' container.
-      device: ${DATA_PERSIST_ROOT}/frontend_persist
-      o: bind
+  wps_outputs: {}
   jupyterhub_data_persistence:
     external:
       name: jupyterhub_data_persistence

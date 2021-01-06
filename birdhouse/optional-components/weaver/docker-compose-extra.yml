@@ -17,7 +17,8 @@ services:
 
   magpie:
     volumes:
-      - ./optional-components/weaver/default-weaver-permissions.cfg:/opt/local/src/magpie/config/permissions/default-weaver-permissions.cfg:ro
+      - ./optional-components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/weaver-permissions.cfg:ro
+      - ./optional-components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/providers/weaver-provider.cfg:ro
 
   # FIXME:
   #   Weaver API shouldn't be one doing docker run (jobs), but it is actually the one
@@ -38,10 +39,10 @@ services:
     links:
       - mongodb
     volumes:
-      - ./config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini
-      - ./config/weaver/data_sources.json:/opt/local/src/weaver/config/data_sources.json
-      - ./config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml
-      - ./config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml
+      - ./optional-components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini
+      - ./optional-components/weaver/config/weaver/data_sources.json:/opt/local/src/weaver/config/data_sources.json
+      - ./optional-components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml
+      - ./optional-components/weaver/config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml
       - /usr/bin/docker:/usr/bin/docker   # FIXME: see above docker-sibling note
       - ~/.docker/config.json:/root/.docker/config.json   # FIXME: see above docker-sibling note
       # NOTE:
@@ -65,9 +66,10 @@ services:
     links:
       - mongodb
     volumes:
-      - wps_private:/data/wps_private
-      - ./config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini
-      - ./config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml
+      #- wps_private:/data/wps_private
+      - ${DATA_PERSIST_ROOT}/wps_private:/data/wps_private
+      - ./optional-components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini
+      - ./optional-components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml
       # NOTE:
       #   Working and output directories must be mounted as exact same path (e.g.: /tmp/path:/tmp/path)
       #   to avoid mismatching locations between container-side path resolution of cwltool stagedir/tmpdir/outdir
@@ -111,11 +113,11 @@ services:
 
 volumes:
   wps_workdir: {}
-  wps_private:
-    driver_opts:
-      type: none
-      device: ${DATA_PERSIST_ROOT}/wps_private
-      o: bind
+#  wps_private:
+#    driver_opts:
+#      type: none
+#      device: ${DATA_PERSIST_ROOT}/wps_private
+#      o: bind
 
 networks:
   docker-proxy:
