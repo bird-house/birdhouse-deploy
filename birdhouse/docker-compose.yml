@@ -62,8 +62,10 @@ services:
   postgres:
     image: postgres:9.6
     container_name: postgres
-    ports:
-      - "5432:5432"
+    # Don't expose port!
+    # Add 'docker-compose-extra.yml' with 'EXTRA_CONF_DIRS' pointing to its location in 'env.local' for test instances.
+    # ports:
+    #   - "5432:5432"
     volumes:
       - ${DATA_PERSIST_ROOT}/frontend_persist:/var/lib/postgresql/data/pgdata
       - ./config/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -357,8 +359,10 @@ services:
   postgres-magpie:
     image: postgres:9.6
     container_name: postgres-magpie
-    ports:
-      - "5433:5432"
+    # Don't expose port!
+    # Add 'docker-compose-extra.yml' with 'EXTRA_CONF_DIRS' pointing to its location in 'env.local' for test instances.
+    # ports:
+    #   - "5433:5432"
     env_file:
       - ./config/postgres-magpie/credentials.env
     environment:

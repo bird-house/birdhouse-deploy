@@ -49,24 +49,24 @@ weaver.wps_workdir = ${WEAVER_WPS_WORKDIR}
 
 # --- Weaver WPS metadata ---
 weaver.wps_metadata_identification_title=Weaver
-weaver.wps_metadata_identification_abstract=${SERVER_ABSTRACT}
+weaver.wps_metadata_identification_abstract=${SERVER_SYNOPSIS}
 weaver.wps_metadata_identification_keywords=Weaver,WPS,OGC,${WEAVER_CONFIG}
-weaver.wps_metadata_identification_accessconstraints=https://${PAVICS_FQDN}${MAGPIE_ROOT}
+weaver.wps_metadata_identification_accessconstraints=https://${PAVICS_FQDN}/magpie
 weaver.wps_metadata_identification_fees=NONE
-weaver.wps_metadata_provider_name=${SERVER_OWNER}
+weaver.wps_metadata_provider_name=${SERVER_INSTITUTION}
 weaver.wps_metadata_provider_url=http://pavics-weaver.readthedocs.org/en/latest/
-weaver.wps_metadata_contact_name=${SERVER_CONTACT_NAME}
-weaver.wps_metadata_contact_position=${SERVER_CONTACT_POSITION}
-weaver.wps_metadata_contact_phone=${SERVER_CONTACT_PHONE}
-weaver.wps_metadata_contact_fax=${SERVER_CONTACT_FAX}
-weaver.wps_metadata_contact_deliveryPoint=${SERVER_CONTACT_DELIVERY_POINT}
-weaver.wps_metadata_contact_city=${SERVER_CONTACT_CITY}
-weaver.wps_metadata_contact_stateorprovince=${SERVER_CONTACT_STATE_OR_PROVINCE}
-weaver.wps_metadata_contact_country=${SERVER_CONTACT_COUNTRY}
-weaver.wps_metadata_contact_postalcode=${SERVER_CONTACT_POSTAL_CODE}
-weaver.wps_metadata_contact_email=${SERVER_CONTACT_EMAIL}
-weaver.wps_metadata_contact_url=${SERVER_CONTACT_URL}
-weaver.wps_metadata_contact_role=${SERVER_CONTACT_ROLE}
+weaver.wps_metadata_contact_name=${CONTACT_NAME}
+weaver.wps_metadata_contact_position=${CONTACT_POSITION}
+weaver.wps_metadata_contact_phone=${CONTACT_PHONE}
+weaver.wps_metadata_contact_fax=${CONTACT_FAX}
+weaver.wps_metadata_contact_deliveryPoint=${CONTACT_DELIVERY_POINT}
+weaver.wps_metadata_contact_city=${CONTACT_CITY}
+weaver.wps_metadata_contact_stateorprovince=${CONTACT_STATE_OR_PROVINCE}
+weaver.wps_metadata_contact_country=${CONTACT_COUNTRY}
+weaver.wps_metadata_contact_postalcode=${CONTACT_POSTAL_CODE}
+weaver.wps_metadata_contact_email=${SUPPORT_EMAIL}
+weaver.wps_metadata_contact_url=${SUPPORT_URL}
+weaver.wps_metadata_contact_role=${SUPPORT_ROLE}
 
 # --- Weaver WPS REST API ---
 weaver.wps_restapi = true

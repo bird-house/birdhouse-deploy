@@ -1,5 +1,5 @@
 conf.extra-service.d/weaver.conf
-config/magpie/permissions.yml
+config/magpie/config.yml
 config/weaver/data_sources.json
 config/weaver/request_options.yml
 config/weaver/wps_processes.yml
