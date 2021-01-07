@@ -2,7 +2,7 @@
 # https://github.com/Ouranosinc/Magpie/blob/master/config/config.yml
 
 providers:
-  weaver:
+  ${WEAVER_MANAGER_NAME}:
     url: http://${PAVICS_FQDN}:4001
     title: Weaver
     public: true
@@ -12,27 +12,27 @@ providers:
 
 permissions:
   # Entrypoint
-  - service: weaver
+  - service: ${WEAVER_MANAGER_NAME}
     permission: read-match
     group: anonymous
     action: create
 
   # OpenAPI JSON schema
-  - service: weaver
+  - service: ${WEAVER_MANAGER_NAME}
     resource: /json
     permission: read
     group: anonymous
     action: create
 
   # OpenAPI Swagger
-  - service: weaver
+  - service: ${WEAVER_MANAGER_NAME}
     resource: /api
     permission: read
     group: anonymous
     action: create
 
   # Process deploy/listing
-  - service: weaver
+  - service: ${WEAVER_MANAGER_NAME}
     resource: /processes    # GET is processes listing, POST is deploy: only allow view by anonymous
     permission: read-match  # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
     group: anonymous
