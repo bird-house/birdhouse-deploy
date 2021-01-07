@@ -11,22 +11,29 @@ providers:
     sync_type: api
 
 permissions:
+  # Entrypoint
+  - service: weaver
+    permission: read-match
+    group: anonymous
+    action: create
+
   # OpenAPI JSON schema
   - service: weaver
     resource: /json
     permission: read
-    user: anonymous
+    group: anonymous
     action: create
 
   # OpenAPI Swagger
   - service: weaver
     resource: /api
     permission: read
-    user: anonymous
+    group: anonymous
     action: create
 
+  # Process deploy/listing
   - service: weaver
     resource: /processes    # GET is processes listing, POST is deploy: only allow view by anonymous
     permission: read-match  # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
-    user: anonymous
+    group: anonymous
     action: create
