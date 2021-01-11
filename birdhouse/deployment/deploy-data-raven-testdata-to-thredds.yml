@@ -1,12 +1,12 @@
 deploy:
 #- repo_url: git@github.com:Ouranosinc/raven.git
-- repo_url: https://github.com/Ouranosinc/raven
+- repo_url: https://github.com/Ouranosinc/raven-testdata
   # optional, default "origin/master"
   # branch:
-  checkout_name: raven
+  checkout_name: raven-testdata
   dir_maps:
   # rsync content below source_dir into dest_dir
-  - source_dir: tests/testdata
+  - source_dir: .
     dest_dir: /data/datasets/testdata/raven
     # only sync .nc files
     rsync_extra_opts: --include=*/ --include=*.nc --exclude=*
