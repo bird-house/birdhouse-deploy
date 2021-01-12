@@ -1,0 +1,80 @@
+version: "3.4"
+services:
+  catalog:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure",
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/catalog?service=WPS&request=GetCapabilities",
+        ]
+      interval: 60
+      timeout: 5
+      retries: 2
+  finch:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure",
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/finch?service=WPS&request=GetCapabilities",
+        ]
+      interval: 60
+      timeout: 5
+      retries: 2
+  flyingpigeon:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure",
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/flyingpigeon?service=WPS&request=GetCapabilities",
+        ]
+      interval: 60
+      timeout: 5
+      retries: 2
+  hummingbird:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure",
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&request=GetCapabilities",
+        ]
+      interval: 60
+      timeout: 5
+      retries: 2
+  malleefowl:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure",
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/malleefowl?service=WPS&request=GetCapabilities",
+        ]
+      interval: 60
+      timeout: 5
+      retries: 2
+  raven:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure",
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/raven?service=WPS&request=GetCapabilities",
+        ]
+      interval: 60
+      timeout: 5
+      retries: 2
