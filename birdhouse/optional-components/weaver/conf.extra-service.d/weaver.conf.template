@@ -1,15 +1,15 @@
-    location /${WEAVER_MANAGER_NAME}/ {
+    location /${WEAVER_CONFIG} {
         # redirect to secured EMS/ADES
-        return 302 https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}/;
+        return 302 https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/${WEAVER_CONFIG};
     }
 
     # NOTE:
-    #   Redirect to internal network of twitcher with "${WEAVER_ROOT}" route allows to set
+    #   Redirect to internal network of twitcher with Weaver root endpoint allows to set
     #   the same 'magpie' permissions on the 'weaver' service named "${WEAVER_MANAGER_NAME}".
     #   This allows verification of the same service user/group permissions references regardless
-    #   whether the "${WEAVER_ROOT}" endpoint or the full 'twitcher' proxy route is used.
-    location ~* ${WEAVER_ROOT}/(?<extra>.*)$ {
-        proxy_pass http://${PAVICS_FQDN}:8000${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}/$extra$is_args$args;
+    #   whether the *shortcut* Weaver endpoint or the full 'twitcher' proxy route is used.
+    location ~* /${WEAVER_MANAGER_NAME}(?<extra>.*)$ {
+        proxy_pass https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}$extra$is_args$args;
         proxy_set_header Host $host;
         proxy_buffering off;
         include /etc/nginx/conf.d/cors.include;
