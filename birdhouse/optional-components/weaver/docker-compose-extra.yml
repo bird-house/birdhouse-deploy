@@ -87,7 +87,7 @@ services:
   #   running the cwltool app from the received WPS Execute request sent by the worker.
   #   Configs must be moved to the 'worker' with implementation of direct job monitoring.
   #   (https://github.com/crim-ca/weaver/issues/21)
-  ${WEAVER_MANAGER_NAME}:
+  weaver:
     image: pavics/weaver:${WEAVER_VERSION}-manager
     container_name: ${WEAVER_MANAGER_NAME}
     ports:
@@ -106,7 +106,7 @@ services:
       - hummingbird
       - malleefowl
       - raven
-      - ${WEAVER_WORKER_NAME}
+      - worker
     links:
       - mongodb
     volumes:
@@ -129,7 +129,7 @@ services:
     restart: always
     logging: *default-logging
 
-  ${WEAVER_WORKER_NAME}:
+  worker:
     image: pavics/weaver:${WEAVER_VERSION}-worker
     container_name: ${WEAVER_WORKER_NAME}
     #env_file:
