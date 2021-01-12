@@ -2,9 +2,10 @@
 # https://github.com/Ouranosinc/Magpie/blob/master/config/config.yml
 
 providers:
+  # definition of Weaver service
   ${WEAVER_MANAGER_NAME}:
     url: http://${PAVICS_FQDN}:4001
-    title: Weaver
+    title: Weaver (${WEAVER_CONFIG})
     public: true
     c4i: false
     type: api
@@ -31,9 +32,85 @@ permissions:
     group: anonymous
     action: create
 
-  # Process deploy/listing
+  # Process deploy/listing (builtin/deployed processes)
   - service: ${WEAVER_MANAGER_NAME}
     resource: /processes    # GET is processes listing, POST is deploy: only allow view by anonymous
     permission: read-match  # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
+    group: anonymous
+    action: create
+
+  # Providers listing
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers
+    permission: read-match
+    group: anonymous
+    action: create
+
+  # Provider processes listing
+  # (each provider in './optional-components/weaver/config/weaver/wps_processes.yml.template')
+  # catalog
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/catalog
+    permission: read-match
+    group: anonymous
+    action: create
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/catalog/processes
+    permission: read-match
+    group: anonymous
+    action: create
+  # finch
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/finch
+    permission: read-match
+    group: anonymous
+    action: create
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/finch/processes
+    permission: read-match
+    group: anonymous
+    action: create
+  # flyingpigeon
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/flyingpigeon
+    permission: read-match
+    group: anonymous
+    action: create
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/flyingpigeon/processes
+    permission: read-match
+    group: anonymous
+    action: create
+  # hummingbird
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/hummingbird
+    permission: read-match
+    group: anonymous
+    action: create
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/hummingbird/processes
+    permission: read-match
+    group: anonymous
+    action: create
+  # malleefowl
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/malleefowl
+    permission: read-match
+    group: anonymous
+    action: create
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/malleefowl/processes
+    permission: read-match
+    group: anonymous
+    action: create
+  # raven
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/raven
+    permission: read-match
+    group: anonymous
+    action: create
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/raven/processes
+    permission: read-match
     group: anonymous
     action: create
