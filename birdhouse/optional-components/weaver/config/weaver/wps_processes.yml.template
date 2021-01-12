@@ -1,21 +1,27 @@
 # Details:
-#   - if only the WPS-1 URL endpoint is provided, all processes found by `GetCapabilities` will be added
-#   - if query `identifier=<process-id>` is provided, only matched process(es) will be added.
-#     alternatively, a list of processes can be specified with `processes` sub-field
-#   - if `name` is not provided, a "clean" variation of the hostname will be used
-# Result:
-#   - for each process, `DescribeProcess` request will indicate how to generate and register a WPS-2 equivalent
-#   - each process name will combine the service `name` and process `identifier` to reduce chances of conflicts
-processes:
+#   https://github.com/crim-ca/weaver/blob/master/config/wps_processes.yml.example
+#
+# For each of the below WPS service providers, Weaver will iterate over listed WPS processes returned by GetCapabilities
+# and will register them as individual WPS-REST processes. Each process will be referenced
+
+# using 'providers' instead of 'processes' will register services directly without fetching each process (local copy)
+# this will make resulting deployed processes dynamic according to what those providers actually offer at any given time
+providers:
   - name: catalog
     url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/catalog
+    visible: true
   - name: finch
     url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/finch
+    visible: true
   - name: flyingpigeon
     url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/flyingpigeon
+    visible: true
   - name: hummingbird
     url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/hummingbird
+    visible: true
   - name: malleefowl
     url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/malleefowl
+    visible: true
   - name: raven
     url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/raven
+    visible: true

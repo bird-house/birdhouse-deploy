@@ -36,6 +36,15 @@ services:
       DOCKER_HOST: "tcp://docker-proxy:2375"   # FIXME: see above docker-sibling note
     #env_file:
     #  - ./config/mongodb/credentials.env
+    # ensure other referenced services are created beforehand to avoid booting timing issues
+    depends_on:
+      - catalog
+      - finch
+      - flyingpigeon
+      - hummingbird
+      - malleefowl
+      - raven
+      - worker
     links:
       - mongodb
     volumes:
