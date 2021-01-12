@@ -20,14 +20,76 @@ services:
       - ./optional-components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/weaver-permissions.cfg:ro
       - ./optional-components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/providers/weaver-provider.cfg:ro
 
+  # add health checks for each WPS provider to ensure they are ready for registration into Weaver
+  catalog:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure"
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/catalog?service=WPS&request=GetCapabilities"
+        ]
+  finch:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure"
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/finch?service=WPS&request=GetCapabilities"
+        ]
+  flyingpigeon:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure"
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/flyingpigeon?service=WPS&request=GetCapabilities"
+        ]
+  hummingbird:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure"
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&request=GetCapabilities"
+        ]
+  malleefowl:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure"
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/malleefowl?service=WPS&request=GetCapabilities"
+        ]
+  raven:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--insecure"
+          "--fail",
+          "https://localhost${TWITCHER_PROTECTED_PATH}/raven?service=WPS&request=GetCapabilities"
+        ]
+
   # FIXME:
   #   Weaver API shouldn't be one doing docker run (jobs), but it is actually the one
   #   running the cwltool app from the received WPS Execute request sent by the worker.
   #   Configs must be moved to the 'worker' with implementation of direct job monitoring.
   #   (https://github.com/crim-ca/weaver/issues/21)
-  weaver:
+  ${WEAVER_MANAGER_NAME}:
     image: pavics/weaver:${WEAVER_VERSION}-manager
-    container_name: weaver
+    container_name: ${WEAVER_MANAGER_NAME}
     ports:
       - "4001:4001"
     environment:
@@ -44,7 +106,7 @@ services:
       - hummingbird
       - malleefowl
       - raven
-      - worker
+      - ${WEAVER_WORKER_NAME}
     links:
       - mongodb
     volumes:
@@ -67,9 +129,9 @@ services:
     restart: always
     logging: *default-logging
 
-  worker:
+  ${WEAVER_WORKER_NAME}:
     image: pavics/weaver:${WEAVER_VERSION}-worker
-    container_name: worker
+    container_name: ${WEAVER_WORKER_NAME}
     #env_file:
     #  - ./config/mongodb/credentials.env
     links:
