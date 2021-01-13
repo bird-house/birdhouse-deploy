@@ -35,7 +35,7 @@ permissions:
   # Process deploy/listing (builtin/deployed processes)
   - service: ${WEAVER_MANAGER_NAME}
     resource: /processes    # GET is processes listing, POST is deploy: only allow view by anonymous
-    permission: read-match  # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
+    permission: read        # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
     group: anonymous
     action: create
 
@@ -51,66 +51,36 @@ permissions:
   # catalog
   - service: ${WEAVER_MANAGER_NAME}
     resource: /providers/catalog
-    permission: read-match
-    group: anonymous
-    action: create
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/catalog/processes
-    permission: read-match
+    permission: read
     group: anonymous
     action: create
   # finch
   - service: ${WEAVER_MANAGER_NAME}
     resource: /providers/finch
-    permission: read-match
-    group: anonymous
-    action: create
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/finch/processes
-    permission: read-match
+    permission: read
     group: anonymous
     action: create
   # flyingpigeon
   - service: ${WEAVER_MANAGER_NAME}
     resource: /providers/flyingpigeon
-    permission: read-match
-    group: anonymous
-    action: create
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/flyingpigeon/processes
-    permission: read-match
+    permission: read
     group: anonymous
     action: create
   # hummingbird
   - service: ${WEAVER_MANAGER_NAME}
     resource: /providers/hummingbird
-    permission: read-match
-    group: anonymous
-    action: create
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/hummingbird/processes
-    permission: read-match
+    permission: read
     group: anonymous
     action: create
   # malleefowl
   - service: ${WEAVER_MANAGER_NAME}
     resource: /providers/malleefowl
-    permission: read-match
-    group: anonymous
-    action: create
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/malleefowl/processes
-    permission: read-match
+    permission: read
     group: anonymous
     action: create
   # raven
   - service: ${WEAVER_MANAGER_NAME}
     resource: /providers/raven
-    permission: read-match
-    group: anonymous
-    action: create
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/raven/processes
-    permission: read-match
+    permission: read
     group: anonymous
     action: create
