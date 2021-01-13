@@ -22,7 +22,7 @@ services:
       WANTED_CONTEXT_ROOT_WARFILE_NAME: $TESTTHREDDS_WARFILE_NAME
     volumes:
       - testthredds_persistence:/usr/local/tomcat/content/thredds
-      - testdatasets:/pavics-testdata:ro
+      - ${DATA_PERSIST_ROOT}/testdatasets:/pavics-testdata:ro
       - ${DATA_PERSIST_ROOT}/datasets:/pavics-data:ro
       - ${DATA_PERSIST_ROOT}/ncml:/pavics-ncml:ro
       - testwps_outputs:/testwps_outputs:ro
@@ -45,6 +45,3 @@ services:
 volumes:
   testthredds_persistence: {}
   testwps_outputs: {}
-  testdatasets:
-    driver_opts:
-      device: /data/testdatasets
