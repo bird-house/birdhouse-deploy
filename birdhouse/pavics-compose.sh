@@ -34,6 +34,7 @@ VARS='
 # list of vars to be substituted in template but they do not have to be set in
 # env.local
 OPTIONAL_VARS='
+  $DATA_PERSIST_ROOT
   $PAVICS_FQDN_PUBLIC
   $INCLUDE_FOR_PORT_80
   $ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS
