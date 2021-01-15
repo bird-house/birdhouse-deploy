@@ -54,13 +54,9 @@ services:
       - ./optional-components/weaver/config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml
       - /usr/bin/docker:/usr/bin/docker   # FIXME: see above docker-sibling note
       - ~/.docker/config.json:/root/.docker/config.json   # FIXME: see above docker-sibling note
-      # NOTE:
-      #   Working and output directories must be mounted as exact same path (e.g.: /tmp/path:/tmp/path)
-      #   to avoid mismatching locations between container-side path resolution of cwltool stagedir/tmpdir/outdir
-      #   and corresponding server-side runtime docker directories since from the docker application will not be
-      #   running inside this docker, but next to it (sibling-dockers).
-      - wps_workdir:${WEAVER_WPS_WORKDIR}     # FIXME: with fix WPS-execute inside worker, shouldn't be required anymore
-      - wps_outputs:${WEAVER_WPS_OUTPUTS_DIR}
+      # WARNING: see detail in 'worker' definition
+      - ${WEAVER_WPS_WORKDIR}:${WEAVER_WPS_WORKDIR}     # FIXME: with fix WPS-execute inside worker, shouldn't be required anymore
+      - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     networks:
       - default
       - docker-proxy  # FIXME: see above docker-sibling note
@@ -79,13 +75,16 @@ services:
       - ${DATA_PERSIST_ROOT}/wps_private:/data/wps_private
       - ./optional-components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini
       - ./optional-components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml
-      # NOTE:
-      #   Working and output directories must be mounted as exact same path (e.g.: /tmp/path:/tmp/path)
+      # WARNING:
+      #   Working and output directories must be mounted as exact same path (e.g.: /some/path:/some/path)
       #   to avoid mismatching locations between container-side path resolution of cwltool stagedir/tmpdir/outdir
-      #   and corresponding server-side runtime docker directories since from the docker application will not be
-      #   running inside this docker, but next to it (sibling-dockers).
-      - wps_workdir:${WEAVER_WPS_WORKDIR}
-      - wps_outputs:${WEAVER_WPS_OUTPUTS_DIR}
+      #   and corresponding server-side runtime docker directories since Docker Application Packages will not be
+      #   running inside this docker (not docker-in-docker), but next to it (sibling-dockers).
+      #   Mapping of paths is needed because some part of the code runs inside Weaver/Worker containers, but actual
+      #   execution of the children Application Package of CWL processes calls 'docker run' from the host machine
+      #   and will expect to find the same directory locations.
+      - ${WEAVER_WPS_WORKDIR}:${WEAVER_WPS_WORKDIR}
+      - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     restart: always
     logging: *default-logging
 
@@ -119,14 +118,6 @@ services:
     #deploy:
     #  placement:
     #    constraints: [node.role == manager]
-
-volumes:
-  wps_workdir: {}
-#  wps_private:
-#    driver_opts:
-#      type: none
-#      device: ${DATA_PERSIST_ROOT}/wps_private
-#      o: bind
 
 networks:
   docker-proxy:

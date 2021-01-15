@@ -5,8 +5,8 @@
         "default":"true"
     },
     "public": {
-        "netloc":"${PAVICS_FQDN}",
-        "ades":"https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
+        "netloc":"${PAVICS_FQDN_PUBLIC}",
+        "ades":"https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
     },
     "opensearchdefault": {
         "collection_id": "",

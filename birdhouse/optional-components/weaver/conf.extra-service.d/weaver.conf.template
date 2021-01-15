@@ -6,11 +6,11 @@
     #   whether the *shortcut* Weaver endpoint, the alias or the explicit 'twitcher' proxy route is used.
     # redirect EMS/ADES to actual secured Weaver path
     #location /${WEAVER_CONFIG} {
-    #    return 302 https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME};
+    #    return 302 https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME};
     #}
 
     location /${WEAVER_MANAGER_NAME} {
-        proxy_pass https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME};
+        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME};
         proxy_set_header Host $host;
         proxy_buffering off;
         include /etc/nginx/conf.d/cors.include;

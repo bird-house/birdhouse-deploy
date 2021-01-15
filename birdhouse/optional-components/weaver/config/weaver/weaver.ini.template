@@ -24,7 +24,7 @@ mongodb.db_name = weaver
 
 # --- Weaver Configuration ---
 weaver.configuration = ${WEAVER_CONFIG}
-weaver.url = https://${PAVICS_FQDN}/${WEAVER_MANAGER_NAME}
+weaver.url = https://${PAVICS_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}
 
 # --- Weaver requests extension flags ---
 # use request-options for per-request specific disabling instead of globally disabled ssl_verify flag
@@ -43,7 +43,7 @@ weaver.wps = true
 weaver.wps_path = ${WEAVER_WPS_PATH}
 weaver.wps_output = true
 weaver.wps_output_dir = ${WEAVER_WPS_OUTPUTS_DIR}
-weaver.wps_output_url = https://${PAVICS_FQDN}${WEAVER_WPS_OUTPUTS_PATH}
+weaver.wps_output_url = https://${PAVICS_FQDN_PUBLIC}${WEAVER_WPS_OUTPUTS_PATH}
 weaver.wps_output_path =
 weaver.wps_workdir = ${WEAVER_WPS_WORKDIR}
 
@@ -129,19 +129,20 @@ level = INFO
 handlers = console
 
 [logger_weaver]
-level = DEBUG
+level = ${WEAVER_MANAGER_LOG_LEVEL}
 handlers = console
 qualname = weaver
 propagate = 0
 
 [logger_celery]
-level = DEBUG
+# FIXME: should be 'worker' when CWL execution moved (?)
+level = ${WEAVER_MANAGER_LOG_LEVEL}
 handlers = console
 qualname = celery
 propagate = 0
 
 [logger_cwltool]
-level = DEBUG
+level = ${WEAVER_WORKER_LOG_LEVEL}
 handlers = console
 qualname = cwltool
 propagate = 0
