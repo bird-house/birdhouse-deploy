@@ -56,7 +56,7 @@ permissions:
     action: create
 
   # Provider processes listing
-  # (each provider in './optional-components/weaver/config/weaver/wps_processes.yml.template')
+  # (each provider in './components/weaver/config/weaver/wps_processes.yml.template')
   # catalog
   - service: ${WEAVER_MANAGER_NAME}
     resource: /providers/catalog
