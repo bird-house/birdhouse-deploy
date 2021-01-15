@@ -1,12 +1,22 @@
 # Details:
 #   https://github.com/crim-ca/weaver/blob/master/config/wps_processes.yml.example
 #
-# For each of the below WPS service providers, Weaver will iterate over listed WPS processes returned by GetCapabilities
-# and will register them as individual WPS-REST processes. Each process will be referenced
+# Using 'processes' section:
+#   For each of the below WPS service providers, Weaver would iterate over listed WPS processes returned by their
+#   GetCapabilities response and would register them as individual WPS-REST processes. Each process will be defined
+#   as a local snapshot of the process at that point in time. They would be static an not consider process changes.
+# Using 'providers' section:
+#   Weaver will register each service reference directly without fetching every underlying process immediately.
+#   Later calling process description or execution will make Weaver obtain that definition dynamically from the
+#   referenced WPS DescribeProcess/Execute response to provide a live response.
 
-# using 'providers' instead of 'processes' will register services directly without fetching each process (local copy)
-# this will make resulting deployed processes dynamic according to what those providers actually offer at any given time
-providers:
+# Note:  
+#   All service providers and underlying processes must be publicly accessible for GetCapabilities and DescribeProcess
+#   at boot time in order to allow Weaver to retrieve the information. The application will skip unresolvable references
+#   including unauthorized and forbidden access.
+
+# processes:    # static local snapshot
+providers:      # dynamic remote reference
   - name: catalog
     url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/catalog
     visible: true
