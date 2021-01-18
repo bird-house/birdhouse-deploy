@@ -2,7 +2,7 @@
 Scripts and configurations to deploy the various birds and servers required
 for a full-fledged production platform.
 
-[![Documentation Status](https://readthedocs.org/projects/birdhouse-deploy/badge/?version=latest)](https://birdhouse-deploy.readthedocs.io/en/latest/?badge=latest)
+[comment]: <> ([![Documentation Status]&#40;https://readthedocs.org/projects/birdhouse-deploy/badge/?version=latest&#41;]&#40;https://birdhouse-deploy.readthedocs.io/en/latest/?badge=latest&#41;)
 
 ## PAVICS
 Power Analytics and Visualization for Climate Science - Powered by Birdhouse and other ESGF software
