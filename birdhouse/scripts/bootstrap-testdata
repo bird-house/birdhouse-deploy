@@ -20,6 +20,7 @@ testdata/flyingpigeon/cmip5/tasmax_Amon_MPI-ESM-MR_rcp45_r1i1p1_200601-200612.nc
 testdata/flyingpigeon/cmip5/tasmax_Amon_MPI-ESM-MR_rcp45_r2i1p1_200601-200612.nc
 testdata/secure/tasmax_Amon_MPI-ESM-MR_rcp45_r2i1p1_200601-200612.nc
 testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc
+ets/Watersheds_5797_cfcompliant.nc
 "
 
 cd "$DATASET_ROOT"
