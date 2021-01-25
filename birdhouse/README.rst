@@ -1,7 +1,3 @@
-.. role:: raw-html-m2r(raw)
-   :format: html
-
-
 Docker instructions
 -------------------
 
@@ -23,22 +19,18 @@ Requirements:
   Install latest docker-ce and docker-compose for the chosen distro (not the
   version from the distro).
 
-To run ``docker-compose`` for PAVICS, the `\ ``pavics-compose.sh`` <pavics-compose.sh>`_ wrapper script must be used.
-This script will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration files ".template", and run ``docker-compose`` with all the command line arguments given to ``pavics-compose.sh``. See `\ ``env.local.example`` <env.local.example>`_ for more details on what can go into the ``env.local`` file.
+To run ``docker-compose`` for PAVICS, the `pavics-compose.sh <birdhouse/pavics-compose.sh>`_ wrapper script must be used.
+This script will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration files
+".template", and run ``docker-compose`` with all the command line arguments given to `pavics-compose.sh <birdhouse/pavics-compose.sh>`_.
+See `env.local.example <birdhouse/env.local.example>`_ for more details on what can go into the ``env.local`` file.
 
-If the file ``env.local`` is somewhere else, symlink it here, next to
-``docker-compose.yml`` because many scripts assume this location.
+If the file `env.local` is somewhere else, symlink it here, next to `docker-compose.yml <birdhouse/docker-compose.yml>`_ because many scripts assume this location.
 
 To follow infrastructure-as-code, it is encouraged to source control the above
-``env.local`` file and any override needed to customized this PAVICS deployment
-for your organization.  For an example of possible override, see how the `emu
-service <optional-components/emu/docker-compose-extra.yml>`_
-(\ `README <optional-components/README.md>`_\ ) can be optionally added to the
-deployment via the `override
-mechanism <https://docs.docker.com/compose/extends/>`_.  Ouranos specific
-override can be found in this
-`birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_
-repo.
+`env.local` file and any override needed to customized this PAVICS deployment
+for your organization.  For an example of possible override, see how the `emu service <birdhouse/optional-components/emu/docker-compose-extra.yml>`_
+(`README <birdhouse/optional-components/README.md>`_) can be optionally added to the deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_.
+Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repo.
 
 Suggested deployment layout:
 
@@ -57,16 +49,14 @@ Suggested deployment layout:
 The automatic deployment is able to handle multiple repos, so will trigger if
 this repo or your private-personalized-config repo changes, giving you
 automated continuous deployment.  See the continuous deployment setup section
-below and the variable ``AUTODEPLOY_EXTRA_REPOS`` in
-`\ ``env.local.example`` <env.local.example>`_.
+below and the variable ``AUTODEPLOY_EXTRA_REPOS`` in `env.local.example <birdhouse/env.local.example>`_.
 
 The automatic deployment of the PAVICS platform, of the Jupyter tutorial
 notebooks and of the automatic deployment mechanism itself can all be
-enabled by following instructions `here <components/README.rst#scheduler>`_.
+enabled by following the `scheduling instructions <birdhouse/components/README.rst#scheduler>`_.
 
 Resource usage monitoring (CPU, memory, ..) and alerting for the host and each
-of the containers can be enabled by following instructions
-`here <components/README.rst#monitoring>`_.
+of the containers can be enabled by following the `monitoring instructions <birdhouse/components/README.rst#monitoring>`_.
 
 To launch all the containers, use the following command:
 
@@ -75,7 +65,7 @@ To launch all the containers, use the following command:
    ./pavics-compose.sh up -d
 
 If you get a ``'No applicable error code, please check error log'`` error from the WPS processes, please make sure that the WPS databases exists in the
-postgres instance. See `\ ``scripts/create-wps-pgsql-databases.sh`` <scripts/create-wps-pgsql-databases.sh>`_.
+postgres instance. See `create-wps-pgsql-databases.sh <birdhouse/scripts/create-wps-pgsql-databases.sh>`_.
 
 Manual steps post deployment
 ----------------------------
@@ -86,7 +76,7 @@ Change geoserver default admin password
 
 * 
   Go to
-  https://\ :raw-html-m2r:`<PAVICS_FQDN>`\ /geoserver/web/wicket/bookmarkable/org.geoserver.security.web.UserGroupRoleServicesPage (Security -> Users, Groups, and Roles)
+  ``https://<PAVICS_FQDN>/geoserver/web/wicket/bookmarkable/org.geoserver.security.web.UserGroupRoleServicesPage`` (Security -> Users, Groups, and Roles)
 
 * 
   Login using the default username ``admin`` and default password ``geoserver``.
@@ -106,7 +96,7 @@ Change geoserver default admin password
 Create public demo user in Magpie for JupyterHub login
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Use `\ ``create-magpie-users`` <scripts/create-magpie-users>`_ or follow manual
+Use `create-magpie-users <birdhouse/scripts/create-magpie-users>`_ or follow manual
 instructions below.
 
 ``config.yml`` file if using ``create-magpie-users``\ :
@@ -124,15 +114,13 @@ Manual instructions:
 
 * 
   Go to
-  https://\ :raw-html-m2r:`<PAVICS_FQDN>`\ /magpie/ui/login, login with the ``admin`` user,
-  password should be in ``env.local``.
+  ``https://<PAVICS_FQDN>/magpie/ui/login`` and login with the ``admin`` user. The password should be in ``env.local``.
 
 * 
-  Then go to https://\ :raw-html-m2r:`<PAVICS_FQDN>`\ /magpie/ui/users/add
+  Then go to ``https://<PAVICS_FQDN>/magpie/ui/users/add``.
 
 * 
   Fill in:
-
 
   * User name: <value of JUPYTER_DEMO_USER in ``env.local``\ >
   * Email: < anything is fine >
@@ -150,11 +138,11 @@ https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests with pre-configured
 Jenkins at https://github.com/Ouranosinc/jenkins-config.
 
 For that test suite to pass, run the script
-`\ ``bootstrap-instance-for-testsuite`` <scripts/bootstrap-instance-for-testsuite>`_
+`bootstrap-instance-for-testsuite <birdhouse/scripts/bootstrap-instance-for-testsuite>`_
 to prepare your new instance.  Further documentation inside the script.
 
 Optional component
-`all-public-access <optional-components#give-public-access-to-all-resources-for-testing-purposes>`_
+`all-public-access <birdhouse/optional-components#give-public-access-to-all-resources-for-testing-purposes>`_
 also need to be enabled in ``env.local``.
 
 ESGF login is also needed for
@@ -175,10 +163,10 @@ environment for testing or to have multiple flavors of PAVICS with slightly
 different combinations of the parts all running simultaneously in their
 respective VM, allowing us to see the differences in behavior.
 
-See `\ ``vagrant_variables.yml.example`` <../vagrant_variables.yml.example>`_ for what's
+See `vagrant_variables.yml.example <../vagrant_variables.yml.example>`_ for what's
 configurable with Vagrant.
 
-If using Centos box, follow `\ ``disk-resize`` <vagrant-utils/disk-resize>`_ after
+If using Centos box, follow `disk-resize <birdhouse/vagrant-utils/disk-resize>`_ after
 first ``vagrant up`` failure due to disk full.  Then ``vagrant reload && vagrant
 provision`` to continue.  If using Ubuntu box, no manual steps required,
 everything just works.
@@ -214,7 +202,7 @@ Starting and managing the lifecycle of the VM:
    # ex: cd /vagrant/birdhouse; ./pavics-compose.sh ps
    vagrant ssh
 
-   # poweroff VM
+   # power-off VM
    vagrant halt
 
    # delete VM
@@ -224,7 +212,7 @@ Starting and managing the lifecycle of the VM:
    vagrant reload
 
    # provision again (because all subsequent vagrant up won't provision again)
-   # useful to test all provisionning scripts or to bring a VM at unknown state,
+   # useful to test all provisioning scripts or to bring a VM at unknown state,
    # maybe because it was provisioned too long ago, to the latest state.
    # not needed normally during tight development loop
    vagrant provision
