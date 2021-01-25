@@ -22,6 +22,7 @@ Contents:
    deployment
    birdhouse/components/README
    birdhouse/docker/geoserver/README
+   birdhouse/optional-components/README
    data_catalog
 
 

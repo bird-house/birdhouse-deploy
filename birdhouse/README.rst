@@ -29,7 +29,7 @@ If the file `env.local` is somewhere else, symlink it here, next to `docker-comp
 To follow infrastructure-as-code, it is encouraged to source control the above
 `env.local` file and any override needed to customized this PAVICS deployment
 for your organization.  For an example of possible override, see how the `emu service <birdhouse/optional-components/emu/docker-compose-extra.yml>`_
-(`README <birdhouse/optional-components/README.md>`_) can be optionally added to the deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_.
+(`README <birdhouse/optional-components/README.rst>`_) can be optionally added to the deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_.
 Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repo.
 
 Suggested deployment layout:
@@ -99,7 +99,7 @@ Create public demo user in Magpie for JupyterHub login
 Use `create-magpie-users <birdhouse/scripts/create-magpie-users>`_ or follow manual
 instructions below.
 
-``config.yml`` file if using ``create-magpie-users``\ :
+``config.yml`` file if using ``create-magpie-users``:
 
 .. code-block::
 
@@ -110,7 +110,6 @@ instructions below.
        group: anonymous
 
 Manual instructions:
-
 
 * 
   Go to
@@ -163,7 +162,7 @@ environment for testing or to have multiple flavors of PAVICS with slightly
 different combinations of the parts all running simultaneously in their
 respective VM, allowing us to see the differences in behavior.
 
-See `vagrant_variables.yml.example <../vagrant_variables.yml.example>`_ for what's
+See `vagrant_variables.yml.example <vagrant_variables.yml.example>`_ for what's
 configurable with Vagrant.
 
 If using Centos box, follow `disk-resize <birdhouse/vagrant-utils/disk-resize>`_ after
@@ -171,9 +170,8 @@ first ``vagrant up`` failure due to disk full.  Then ``vagrant reload && vagrant
 provision`` to continue.  If using Ubuntu box, no manual steps required,
 everything just works.
 
-Install `VirtualBox <https://www.virtualbox.org/wiki/Downloads>`_\ , both the
-platform and the extension pack, and
-`Vagrant <https://www.vagrantup.com/downloads.html>`_.
+Install `VirtualBox <https://www.virtualbox.org/wiki/Downloads>`_, both the
+platform and the extension pack, and `Vagrant <https://www.vagrantup.com/downloads.html>`_.
 
 One time setup:
 
