@@ -11,7 +11,7 @@ the end user).
 This assume all the WPS services are public.  If not the case, make a copy of
 this config and adjust accordingly.
 
-How to enable this config in ``env.local`` (a copy from `env.local.example <../env.local.example>`_):
+How to enable this config in ``env.local`` (a copy from `/birdhouse/env.local.example`_ or :download:`download it here </birdhouse/env.local.example>`):
 
 
 * Add ``./optional-components/canarie-api-full-monitoring`` to ``EXTRA_CONF_DIRS``.
@@ -26,8 +26,7 @@ alternative configuration of existing birds.
 No Postgres DB configured.  If need Postgres DB, use generic_bird component
 instead.
 
-How to enable Emu in ``env.local`` (a copy from
-:download:`env.local.example <../env.local.example>`):
+How to enable Emu in ``env.local`` (a copy from `/birdhouse/env.local.example` or :download:`download it here </birdhouse/env.local.example>`):
 
 
 * Add ``./optional-components/emu`` to ``EXTRA_CONF_DIRS``.
@@ -50,7 +49,7 @@ service.
 A second THREDDs server for testing
 -----------------------------------
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example <../env.local.example>`):
+How to enable in ``env.local`` (a copy from `/birdhouse/env.local.example` or :download:`download it here </birdhouse/env.local.example>`.):
 
 
 * 
@@ -60,8 +59,7 @@ How to enable in ``env.local`` (a copy from :download:`env.local.example <../env
   Optionally set ``TESTTHREDDS_IMAGE``\ , ``TESTTHREDDS_PORT``\ ,
   ``TESTTHREDDS_CONTEXT_ROOT``\ , ``TESTTHREDDS_WARFILE_NAME``\ ,
   ``TESTTHREDDS_INTERNAL_PORT``\ , ``TESTTHREDDS_NAME``\ ,  in ``env.local`` for further
-  customizations.  Default values are in
-  `testthredds/default.env <testthredds/default.env>`_.
+  customizations.  Default values are in: `/birdhouse/optional-components/testthredds/default.env`.
 
 Test THREDDs service will be available at
 ``http://PAVICS_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT`` or
@@ -92,7 +90,7 @@ A generic bird WPS service
 Can be used to quickly deploy any birds temporarily without changing code.
 Good to preview new birds or test alternative configuration of existing birds.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example <../env.local.example>`):
+How to enable in ``env.local`` (a copy from ` ./env.local.example`_ or :download:`download it here </birdhouse/env.local.example>`.):
 
 
 * 
@@ -130,7 +128,7 @@ Just disabling this component will not revert the change.
 This optional component is required for the test suite at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example <../env.local.example>`):
+How to enable in ``env.local`` (a copy from `../env.local.example`_ or :download:`download it here </birdhouse/env.local.example>`.):
 
 
 * Add ``./optional-components/all-public-access`` to ``EXTRA_CONF_DIRS``.
