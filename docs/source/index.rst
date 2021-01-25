@@ -20,6 +20,8 @@ Contents:
 
    installation
    deployment
+   birdhouse/components/README
+   birdhouse/docker/geoserver/README
    data_catalog
 
 
