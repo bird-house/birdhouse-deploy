@@ -11,8 +11,7 @@ the end user).
 This assume all the WPS services are public.  If not the case, make a copy of
 this config and adjust accordingly.
 
-How to enable this config in ``env.local`` (a copy from
-`env.local.example <birdhouse/env.local.example>`_):
+How to enable this config in ``env.local`` (a copy from :download:`env.local.example <../env.local.example>`):
 
 
 * Add ``./optional-components/canarie-api-full-monitoring`` to ``EXTRA_CONF_DIRS``.
@@ -28,7 +27,7 @@ No Postgres DB configured.  If need Postgres DB, use generic_bird component
 instead.
 
 How to enable Emu in ``env.local`` (a copy from
-`env.local.example <../env.local.example>`_):
+:download:`env.local.example <../env.local.example>`):
 
 
 * Add ``./optional-components/emu`` to ``EXTRA_CONF_DIRS``.
@@ -51,7 +50,7 @@ service.
 A second THREDDs server for testing
 -----------------------------------
 
-How to enable in ``env.local`` (a copy from `env.local.example <../env.local.example>`_):
+How to enable in ``env.local`` (a copy from :download:`env.local.example <../env.local.example>`):
 
 
 * 
@@ -93,7 +92,7 @@ A generic bird WPS service
 Can be used to quickly deploy any birds temporarily without changing code.
 Good to preview new birds or test alternative configuration of existing birds.
 
-How to enable in ``env.local`` (a copy from `env.local.example <../env.local.example>`_):
+How to enable in ``env.local`` (a copy from :download:`env.local.example <../env.local.example>`):
 
 
 * 
@@ -103,7 +102,7 @@ How to enable in ``env.local`` (a copy from `env.local.example <../env.local.exa
   Optionally set ``GENERIC_BIRD_IMAGE``, ``GENERIC_BIRD_PORT``,
   ``GENERIC_BIRD_NAME``, ``GENERIC_BIRD_INTERNAL_PORT``, and
   ``GENERIC_BIRD_POSTGRES_IMAGE`` in ``env.local`` for further customizations.
-  Default values are in `generic_bird/default.env <birdhouse/optional-components/generic_bird/default.env>`_.
+  Default values are in `generic_bird/default.env <generic_bird/default.env>`_.
 
 The WPS service will be available at ``http://PAVICS_FQDN:GENERIC_BIRD_PORT/wps``
 or ``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME`` where
@@ -131,8 +130,7 @@ Just disabling this component will not revert the change.
 This optional component is required for the test suite at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 
-How to enable in ``env.local`` (a copy from
-`env.local.example <../env.local.example>`_):
+How to enable in ``env.local`` (a copy from :download:`env.local.example <../env.local.example>`):
 
 
 * Add ``./optional-components/all-public-access`` to ``EXTRA_CONF_DIRS``.
