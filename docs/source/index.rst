@@ -7,17 +7,19 @@ Introduction
 ============
 
 PAVICS is a research platform dedicated to climate analysis and visualization. It bundles 
-data search, analytics and visualization services. 
+data search, analytics and visualization services.
 
+.. include:: ../../README.rst
 
+PAVICS is led by Ouranos to provide climate scientists with a set of tools to acquire and analyze climate data.
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-   overview
    installation
+   deployment
    data_catalog
 
 
