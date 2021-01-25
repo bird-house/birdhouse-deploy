@@ -11,7 +11,7 @@ the end user).
 This assume all the WPS services are public.  If not the case, make a copy of
 this config and adjust accordingly.
 
-How to enable this config in ``env.local`` (a copy from `<../env.local.example>`_ or :download:`download it here </birdhouse/env.local.example>`):
+How to enable this config in ``env.local`` (a copy from `env.local.example <../env.local.example>`_ (:download:`download </birdhouse/env.local.example>`)):
 
 
 * Add ``./optional-components/canarie-api-full-monitoring`` to ``EXTRA_CONF_DIRS``.
@@ -26,14 +26,14 @@ alternative configuration of existing birds.
 No Postgres DB configured.  If need Postgres DB, use generic_bird component
 instead.
 
-How to enable Emu in ``env.local`` (a copy from `/birdhouse/env.local.example` or :download:`download it here </birdhouse/env.local.example>`):
+How to enable Emu in ``env.local`` (a copy from `env.local.example <../env.local.example>`_ (:download:`download </birdhouse/env.local.example>`)):
 
 
 * Add ``./optional-components/emu`` to ``EXTRA_CONF_DIRS``.
 * Optionally set ``EMU_IMAGE``, ``EMU_PORT``,
   ``EMU_NAME``, ``EMU_INTERNAL_PORT``,
   ``EMU_WPS_OUTPUTS_VOL`` in ``env.local`` for further customizations.
-  Default values are in `emu/default.env <emu/default.env>`_.
+  Default values are in `optional-components/emu/default.env <emu/default.env>`_ (:download:`download </birdhouse/optional-components/emu/default.env>`).
 
 Emu service will be available at ``http://PAVICS_FQDN:EMU_PORT/wps`` or
 ``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/EMU_NAME`` where
@@ -49,7 +49,7 @@ service.
 A second THREDDs server for testing
 -----------------------------------
 
-How to enable in ``env.local`` (a copy from `/birdhouse/env.local.example` or :download:`download it here </birdhouse/env.local.example>`.):
+How to enable in ``env.local`` (a copy from `env.local.example <../env.local.example>`_ (:download:`download </birdhouse/env.local.example>`)):
 
 
 * 
@@ -59,7 +59,7 @@ How to enable in ``env.local`` (a copy from `/birdhouse/env.local.example` or :d
   Optionally set ``TESTTHREDDS_IMAGE``\ , ``TESTTHREDDS_PORT``\ ,
   ``TESTTHREDDS_CONTEXT_ROOT``\ , ``TESTTHREDDS_WARFILE_NAME``\ ,
   ``TESTTHREDDS_INTERNAL_PORT``\ , ``TESTTHREDDS_NAME``\ ,  in ``env.local`` for further
-  customizations.  Default values are in: `/birdhouse/optional-components/testthredds/default.env`.
+  customizations.  Default values are in: `optional-components/testthredds/default.env <testthredds/default.env>`_ (:download:`download </birdhouse/optional-components/testthredds/default.env>`).
 
 Test THREDDs service will be available at
 ``http://PAVICS_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT`` or
@@ -90,7 +90,7 @@ A generic bird WPS service
 Can be used to quickly deploy any birds temporarily without changing code.
 Good to preview new birds or test alternative configuration of existing birds.
 
-How to enable in ``env.local`` (a copy from ` ./env.local.example`_ or :download:`download it here </birdhouse/env.local.example>`.):
+How to enable in ``env.local`` (a copy from `env.local.example <../env.local.example>`_ (:download:`download </birdhouse/env.local.example>`)):
 
 
 * 
@@ -100,7 +100,7 @@ How to enable in ``env.local`` (a copy from ` ./env.local.example`_ or :download
   Optionally set ``GENERIC_BIRD_IMAGE``, ``GENERIC_BIRD_PORT``,
   ``GENERIC_BIRD_NAME``, ``GENERIC_BIRD_INTERNAL_PORT``, and
   ``GENERIC_BIRD_POSTGRES_IMAGE`` in ``env.local`` for further customizations.
-  Default values are in `generic_bird/default.env <generic_bird/default.env>`_.
+  Default values are in `optional-components/generic_bird/default.env <generic_bird/default.env>`_ (:download:`download </birdhouse/optional-components/generic_bird/default.env>`).
 
 The WPS service will be available at ``http://PAVICS_FQDN:GENERIC_BIRD_PORT/wps``
 or ``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME`` where
@@ -128,9 +128,9 @@ Just disabling this component will not revert the change.
 This optional component is required for the test suite at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 
-How to enable in ``env.local`` (a copy from `<../env.local.example>`_ or :download:`download it here </birdhouse/env.local.example>`.):
+How to enable in ``env.local`` (a copy from `env.local.example <../env.local.example>`_ (:download:`download </birdhouse/env.local.example>`)):
 
 
 * Add ``./optional-components/all-public-access`` to ``EXTRA_CONF_DIRS``.
 
-The anonymous user will now have all the permissions described in `optional-components/all-public-access/all-public-access-magpie-permission.cfg <all-public-access/all-public-access-magpie-permission.cfg>`_.
+The anonymous user will now have all the permissions described in `optional-components/all-public-access/all-public-access-magpie-permission.cfg <all-public-access/all-public-access-magpie-permission.cfg>`_ (:download:`download </birdhouse/optional-components/all-public-access/all-public-access-magpie-permission.cfg>`).
