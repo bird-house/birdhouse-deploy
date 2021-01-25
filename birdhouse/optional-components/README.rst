@@ -11,7 +11,7 @@ the end user).
 This assume all the WPS services are public.  If not the case, make a copy of
 this config and adjust accordingly.
 
-How to enable this config in ``env.local`` (a copy from :download:`env.local.example <../env.local.example>`):
+How to enable this config in ``env.local`` (a copy from `env.local.example <../env.local.example>`_):
 
 
 * Add ``./optional-components/canarie-api-full-monitoring`` to ``EXTRA_CONF_DIRS``.
