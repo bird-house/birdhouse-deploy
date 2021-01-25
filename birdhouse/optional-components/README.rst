@@ -28,14 +28,14 @@ No Postgres DB configured.  If need Postgres DB, use generic_bird component
 instead.
 
 How to enable Emu in ``env.local`` (a copy from
-`env.local.example <birdhouse/env.local.example>`_):
+`env.local.example <../env.local.example>`_):
 
 
 * Add ``./optional-components/emu`` to ``EXTRA_CONF_DIRS``.
 * Optionally set ``EMU_IMAGE``, ``EMU_PORT``,
   ``EMU_NAME``, ``EMU_INTERNAL_PORT``,
   ``EMU_WPS_OUTPUTS_VOL`` in ``env.local`` for further customizations.
-  Default values are in `emu/default.env <birdhouse/optional-components/emu/default.env>`_.
+  Default values are in `emu/default.env <emu/default.env>`_.
 
 Emu service will be available at ``http://PAVICS_FQDN:EMU_PORT/wps`` or
 ``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/EMU_NAME`` where
@@ -51,7 +51,7 @@ service.
 A second THREDDs server for testing
 -----------------------------------
 
-How to enable in ``env.local`` (a copy from `env.local.example <birdhouse/env.local.example>`_):
+How to enable in ``env.local`` (a copy from `env.local.example <../env.local.example>`_):
 
 
 * 
@@ -62,7 +62,7 @@ How to enable in ``env.local`` (a copy from `env.local.example <birdhouse/env.lo
   ``TESTTHREDDS_CONTEXT_ROOT``\ , ``TESTTHREDDS_WARFILE_NAME``\ ,
   ``TESTTHREDDS_INTERNAL_PORT``\ , ``TESTTHREDDS_NAME``\ ,  in ``env.local`` for further
   customizations.  Default values are in
-  `testthredds/default.env <birdhouse/optional-components/testthredds/default.env>`_.
+  `testthredds/default.env <testthredds/default.env>`_.
 
 Test THREDDs service will be available at
 ``http://PAVICS_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT`` or
@@ -93,7 +93,7 @@ A generic bird WPS service
 Can be used to quickly deploy any birds temporarily without changing code.
 Good to preview new birds or test alternative configuration of existing birds.
 
-How to enable in ``env.local`` (a copy from `env.local.example <birdhouse/env.local.example>`_):
+How to enable in ``env.local`` (a copy from `env.local.example <../env.local.example>`_):
 
 
 * 
@@ -137,4 +137,4 @@ How to enable in ``env.local`` (a copy from
 
 * Add ``./optional-components/all-public-access`` to ``EXTRA_CONF_DIRS``.
 
-The anonymous user will now have all the permissions described in `optional-components/all-public-access/all-public-access-magpie-permission.cfg <birdhouse/optional-components/all-public-access/all-public-access-magpie-permission.cfg>`_.
+The anonymous user will now have all the permissions described in `optional-components/all-public-access/all-public-access-magpie-permission.cfg <all-public-access/all-public-access-magpie-permission.cfg>`_.
