@@ -11,7 +11,7 @@ the end user).
 This assume all the WPS services are public.  If not the case, make a copy of
 this config and adjust accordingly.
 
-How to enable this config in ``env.local`` (a copy from `/birdhouse/env.local.example`_ or :download:`download it here </birdhouse/env.local.example>`):
+How to enable this config in ``env.local`` (a copy from `<../env.local.example>`_ or :download:`download it here </birdhouse/env.local.example>`):
 
 
 * Add ``./optional-components/canarie-api-full-monitoring`` to ``EXTRA_CONF_DIRS``.
@@ -128,7 +128,7 @@ Just disabling this component will not revert the change.
 This optional component is required for the test suite at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 
-How to enable in ``env.local`` (a copy from `../env.local.example`_ or :download:`download it here </birdhouse/env.local.example>`.):
+How to enable in ``env.local`` (a copy from `<../env.local.example>`_ or :download:`download it here </birdhouse/env.local.example>`.):
 
 
 * Add ``./optional-components/all-public-access`` to ``EXTRA_CONF_DIRS``.
