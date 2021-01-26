@@ -119,7 +119,7 @@ Maximum backward-compatibility has been kept with the old install scripts style:
 Features missing in old install scripts or how the new mechanism improves on the old install scripts:
 
 * Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if ``triggerdeploy.sh`` (:download:`download <../deployment/triggerdeploy.sh>`)
-  or ``PAVICS-deploy-notebooks`` (TODO: @tlvu Where is this file?) script changes, they have to be deployed manually.  It's very annoying.  Now they are volume-mount in so are fresh on each run.
+  or the deployed ``/etc/cron.hourly/PAVICS-deploy-notebooks`` script changes, they have to be deployed manually.  It's very annoying.  Now they are volume-mount in so are fresh on each run.
 * ``env.local`` now drives absolutely everything, source control that file and we've got a true DevOPS pipeline.
 * Configurable platform and notebook autodeploy frequency.  Previously, this means manually editing the generated cron file, less ideal.
 * Do not need any support on the local host other than ``docker`` and ``docker-compose``.  ``cron/logrotate/git/ssh``
