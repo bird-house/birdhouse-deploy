@@ -82,7 +82,7 @@ To enable continuous deployment of PAVICS::
   # read the script for more options/details
 
 If you want to manually force a deployment of PAVICS (note this might not use
-latest version of deploy.sh script (:download:`download <../deployment/deploy.sh>`)::
+latest version of deploy.sh_ script (:download:`download <../deployment/deploy.sh>`)::
 
   deployment/deploy.sh .
   # read the script for more options/details
@@ -118,7 +118,7 @@ Maximum backward-compatibility has been kept with the old install scripts style:
 
 Features missing in old install scripts or how the new mechanism improves on the old install scripts:
 
-* Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if ``triggerdeploy.sh`` (:download:`download <../deployment/triggerdeploy.sh>`)
+* Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if triggerdeploy.sh_ (:download:`download <../deployment/triggerdeploy.sh>`)
   or the deployed ``/etc/cron.hourly/PAVICS-deploy-notebooks`` script changes, they have to be deployed manually.  It's very annoying.  Now they are volume-mount in so are fresh on each run.
 * ``env.local`` now drives absolutely everything, source control that file and we've got a true DevOPS pipeline.
 * Configurable platform and notebook autodeploy frequency.  Previously, this means manually editing the generated cron file, less ideal.
@@ -233,3 +233,4 @@ Customizing the Component
 .. _env.local.example: ../env.local.example
 .. _fix-write-perm: ../deployment/fix-write-perm
 .. _deploy.sh: ../deployment/deploy.sh
+.. _triggerdeploy.sh: ../deployment/triggerdeploy.sh
