@@ -1,6 +1,10 @@
 Optional components
 ===================
 
+
+.. contents::
+
+
 Monitor all components in CANARIE node, both public and internal url
 --------------------------------------------------------------------
 
