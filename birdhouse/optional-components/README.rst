@@ -15,10 +15,10 @@ the end user).
 This assume all the WPS services are public.  If not the case, make a copy of
 this config and adjust accordingly.
 
-How to enable this config in ``env.local`` (a copy from `env.local.example <../env.local.example>`_ (:download:`download </birdhouse/env.local.example>`)):
-
+How to enable this config in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
 * Add ``./optional-components/canarie-api-full-monitoring`` to ``EXTRA_CONF_DIRS``.
+
 
 Emu WPS service for testing
 ---------------------------
@@ -30,8 +30,7 @@ alternative configuration of existing birds.
 No Postgres DB configured.  If need Postgres DB, use generic_bird component
 instead.
 
-How to enable Emu in ``env.local`` (a copy from `env.local.example <../env.local.example>`_ (:download:`download </birdhouse/env.local.example>`)):
-
+How to enable Emu in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
 * Add ``./optional-components/emu`` to ``EXTRA_CONF_DIRS``.
 * Optionally set ``EMU_IMAGE``, ``EMU_PORT``,
@@ -50,17 +49,15 @@ access for this Emu WPS service.
 CANARIE monitoring will also be automatically configured for this Emu WPS
 service.
 
+
 A second THREDDs server for testing
 -----------------------------------
 
-How to enable in ``env.local`` (a copy from `env.local.example <../env.local.example>`_ (:download:`download </birdhouse/env.local.example>`)):
+How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
+* Add ``./optional-components/testthredds`` to ``EXTRA_CONF_DIRS``.
 
-* 
-  Add ``./optional-components/testthredds`` to ``EXTRA_CONF_DIRS``.
-
-* 
-  Optionally set ``TESTTHREDDS_IMAGE``\ , ``TESTTHREDDS_PORT``\ ,
+* Optionally set ``TESTTHREDDS_IMAGE``\ , ``TESTTHREDDS_PORT``\ ,
   ``TESTTHREDDS_CONTEXT_ROOT``\ , ``TESTTHREDDS_WARFILE_NAME``\ ,
   ``TESTTHREDDS_INTERNAL_PORT``\ , ``TESTTHREDDS_NAME``\ ,  in ``env.local`` for further
   customizations.  Default values are in: `optional-components/testthredds/default.env <testthredds/default.env>`_ (:download:`download </birdhouse/optional-components/testthredds/default.env>`).
@@ -88,20 +85,18 @@ Nginx proxy.
 CANARIE monitoring will also be automatically configured for this second
 THREDDs server.
 
+
 A generic bird WPS service
 --------------------------
 
 Can be used to quickly deploy any birds temporarily without changing code.
 Good to preview new birds or test alternative configuration of existing birds.
 
-How to enable in ``env.local`` (a copy from `env.local.example <../env.local.example>`_ (:download:`download </birdhouse/env.local.example>`)):
+How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
+* Add ``./optional-components/generic_bird`` to ``EXTRA_CONF_DIRS``.
 
-* 
-  Add ``./optional-components/generic_bird`` to ``EXTRA_CONF_DIRS``.
-
-* 
-  Optionally set ``GENERIC_BIRD_IMAGE``, ``GENERIC_BIRD_PORT``,
+* Optionally set ``GENERIC_BIRD_IMAGE``, ``GENERIC_BIRD_PORT``,
   ``GENERIC_BIRD_NAME``, ``GENERIC_BIRD_INTERNAL_PORT``, and
   ``GENERIC_BIRD_POSTGRES_IMAGE`` in ``env.local`` for further customizations.
   Default values are in `optional-components/generic_bird/default.env <generic_bird/default.env>`_ (:download:`download </birdhouse/optional-components/generic_bird/default.env>`).
@@ -122,6 +117,7 @@ access for this WPS service.
 
 CANARIE monitoring will also be automatically configured for this WPS service.
 
+
 Give public access to all resources for testing purposes
 --------------------------------------------------------
 
@@ -132,9 +128,12 @@ Just disabling this component will not revert the change.
 This optional component is required for the test suite at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 
-How to enable in ``env.local`` (a copy from `env.local.example <../env.local.example>`_ (:download:`download </birdhouse/env.local.example>`)):
-
+How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
 * Add ``./optional-components/all-public-access`` to ``EXTRA_CONF_DIRS``.
 
 The anonymous user will now have all the permissions described in `optional-components/all-public-access/all-public-access-magpie-permission.cfg <all-public-access/all-public-access-magpie-permission.cfg>`_ (:download:`download </birdhouse/optional-components/all-public-access/all-public-access-magpie-permission.cfg>`).
+
+
+
+.. _env.local.example: ../env.local.example
