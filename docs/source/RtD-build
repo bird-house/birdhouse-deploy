@@ -2,5 +2,8 @@
 
 # conda activate < some env that has sphinx installed, like finch-docs for example >
 
+# Delete output from previous build.
+rm -rf _build
+
 # This line copied from RtD build log.
 python -m sphinx -T -E -b html -d _build/doctrees -D language=en . _build/html
