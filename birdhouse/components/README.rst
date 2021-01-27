@@ -1,4 +1,3 @@
-#################
 PAVICS Components
 #################
 
@@ -37,7 +36,7 @@ private repo containing the source controlled ``env.local`` file and any other
 docker-compose override for true infrastructure-as-code.
 
 Note: there are still cases where a human intervention is needed. See note in
-script deploy.sh_.
+script deploy.sh_ (:download:`download <../deployment/deploy.sh>`).
 
 
 Usage
@@ -56,21 +55,21 @@ Given the unattended nature, there is no UI.  Logs are used to keep trace.
 How to Enable the Component
 ---------------------------
 
-- Edit ``env.local`` (a copy of env.local.example_)
+- Edit ``env.local`` (a copy of env.local.example_ (:download:`download <../env.local.example>`))
 
   - Add "./components/scheduler" to ``EXTRA_CONF_DIRS``.
   - Set ``AUTODEPLOY_EXTRA_REPOS``, ``AUTODEPLOY_DEPLOY_KEY_ROOT_DIR``,
     ``AUTODEPLOY_PLATFORM_FREQUENCY``, ``AUTODEPLOY_NOTEBOOK_FREQUENCY`` as desired,
     full documentation in env.local.example_.
-  - Run once fix-write-perm_, see doc in script.
+  - Run once fix-write-perm_ (:download:`download <../deployment/fix-write-perm>`), see doc in script.
 
 
 Old way to deploy the automatic deployment
 ------------------------------------------
 
-Superseeded by this new ``scheduler`` component.  Keeping for reference only.
+Superseded by this new ``scheduler`` component.  Keeping for reference only.
 
-Doing it this old way do not need the ``scheduler`` compoment but lose the
+Doing it this old way do not need the ``scheduler`` component but lose the
 ability for the autodeploy system to update itself.
 
 Configure logrotate for all following automations to prevent disk full::
@@ -83,7 +82,7 @@ To enable continuous deployment of PAVICS::
   # read the script for more options/details
 
 If you want to manually force a deployment of PAVICS (note this might not use
-latest version of deploy.sh script)::
+latest version of deploy.sh_ script (:download:`download <../deployment/deploy.sh>`)::
 
   deployment/deploy.sh .
   # read the script for more options/details
@@ -113,24 +112,27 @@ Comparison between the old and new autodeploy mechanism
 Maximum backward-compatibility has been kept with the old install scripts style:
 
 * Still log to the same existing log files under ``/var/log/PAVICS``.
-* Old single ssh deploy key is still compatible, but the new mechanism allows for different ssh deploy keys for each extra repos (again, public repos should use https clone path to avoid dealing with ssh deploy keys in the first place).
+* Old single ssh deploy key is still compatible, but the new mechanism allows for different ssh deploy keys for each extra
+  repos (again, public repos should use https clone path to avoid dealing with ssh deploy keys in the first place).
 * Old install scripts are kept and can still deploy the old way.
 
 Features missing in old install scripts or how the new mechanism improves on the old install scripts:
 
-* Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if ``triggerdeploy.sh`` or ``PAVICS-deploy-notebooks`` script changes, they have to be deployed manually.  It's very annoying.  Now they are volume-mount in so are fresh on each run.
-* ``env.local`` now drive absolutely everything, source control that file and we've got a true DevOPS pipeline.
+* Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if triggerdeploy.sh_ (:download:`download <../deployment/triggerdeploy.sh>`)
+  or the deployed ``/etc/cron.hourly/PAVICS-deploy-notebooks`` script changes, they have to be deployed manually.  It's very annoying.  Now they are volume-mount in so are fresh on each run.
+* ``env.local`` now drives absolutely everything, source control that file and we've got a true DevOPS pipeline.
 * Configurable platform and notebook autodeploy frequency.  Previously, this means manually editing the generated cron file, less ideal.
-* Do not need any support on the local host other than ``docker`` and ``docker-compose``.  ``cron/logrotate/git/ssh`` versions are all locked-down in the docker images used by the autodeploy.  Recall previously we had to deal with git version too old on some hosts.
+* Do not need any support on the local host other than ``docker`` and ``docker-compose``.  ``cron/logrotate/git/ssh``
+  versions are all locked-down in the docker images used by the autodeploy.  Recall previously we had to deal with git version too old on some hosts.
 * Each cron job run in its own docker image meaning the runtime environment is traceable and reproducible.
-* The newly introduced scheduler component is made extensible so other jobs can added into it as well (ex: backup), via ``env.local``, which should be source controlled, meaning all surrounding maintenance related tasks can also be traceable and reproducible.
+* The newly introduced scheduler component is made extensible so other jobs can added into it as well (ex: backup), via ``env.local``,
+  which should be source controlled, meaning all surrounding maintenance related tasks can also be traceable and reproducible.
 
 
 Monitoring
 ==========
 
-This component provides monitoring and alerting for the PAVICS physical host
-and containers.
+This component provides monitoring and alerting for the PAVICS physical host and containers.
 
 Prometheus stack is used:
 
@@ -152,7 +154,7 @@ Usage
 How to Enable the Component
 ---------------------------
 
-- Edit ``env.local`` (a copy of env.local.example_)
+- Edit ``env.local`` (a copy of env.local.example_ (:download:`download <../env.local.example>`))
 
   - Add "./components/monitoring" to ``EXTRA_CONF_DIRS``
   - Set ``GRAFANA_ADMIN_PASSWORD`` to login to Grafana
@@ -231,3 +233,4 @@ Customizing the Component
 .. _env.local.example: ../env.local.example
 .. _fix-write-perm: ../deployment/fix-write-perm
 .. _deploy.sh: ../deployment/deploy.sh
+.. _triggerdeploy.sh: ../deployment/triggerdeploy.sh

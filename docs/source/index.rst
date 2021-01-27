@@ -18,15 +18,18 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   installation
    deployment
+   birdhouse/components/README
+   birdhouse/optional-components/README
    data_catalog
 
 
 Indices and tables
 ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
+..
+  * :ref:`genindex`
+  * :ref:`modindex`
+
 * :ref:`search`
 

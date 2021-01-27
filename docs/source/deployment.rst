@@ -1,4 +1,4 @@
 Deployment
 ==========
 
-.. include:: ../../birdhouse/README.rst
+.. include:: birdhouse/README.rst
