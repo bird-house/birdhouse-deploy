@@ -171,6 +171,12 @@ html_static_path = ['_static']
 # directly to the root of the documentation.
 #
 # html_extra_path = []
+html_extra_path = [
+    'birdhouse/README.rst',
+    'birdhouse/env.local.example',
+    'birdhouse/pavics-compose.sh',
+    'birdhouse/docker-compose.yml',
+]
 
 # If not None, a 'Last updated on:' timestamp is inserted at every page
 # bottom, using the given strftime format.
