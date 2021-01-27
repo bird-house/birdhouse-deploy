@@ -36,7 +36,7 @@ private repo containing the source controlled ``env.local`` file and any other
 docker-compose override for true infrastructure-as-code.
 
 Note: there are still cases where a human intervention is needed. See note in
-script deploy.sh_.
+script deploy.sh_ (:download:`download <../deployment/deploy.sh>`).
 
 
 Usage
