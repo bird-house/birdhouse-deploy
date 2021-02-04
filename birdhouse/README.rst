@@ -67,6 +67,15 @@ To launch all the containers, use the following command:
 If you get a ``'No applicable error code, please check error log'`` error from the WPS processes, please make sure that the WPS databases exists in the
 postgres instance. See `create-wps-pgsql-databases.sh <scripts/create-wps-pgsql-databases.sh>`_ (:download:`download </birdhouse/scripts/create-wps-pgsql-databases.sh>`).
 
+
+Note
+----
+
+* All WPS requests should be completed within ``proxy_read_timeout`` of the
+  Nginx proxy, see `nginx.conf`_ (:download:`download <birdhouse/config/proxy/nginx.conf>`).
+  Any WPS requests that will take longer should use the async mode.
+
+
 Manual steps post deployment
 ----------------------------
 
@@ -243,3 +252,6 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
    PATCH version when we update existing components without impact on other
    existing components and the change is a minor change for the existing
    component.
+
+
+.. _nginx.conf: ./config/proxy/nginx.conf
