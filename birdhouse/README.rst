@@ -6,20 +6,15 @@ Docker instructions
 
 Requirements:
 
+* Centos 7 or Ubuntu Bionic (18.04), other distros untested.
 
-* 
-  Centos 7 or Ubuntu Bionic (18.04), other distros untested.
-
-* 
-  Hostname of Docker host must exist on the network.  Must use bridge
+* Hostname of Docker host must exist on the network.  Must use bridge
   networking if Docker host is a Virtual Machine.
 
-* 
-  User running ``pavics-compose.sh`` below must not be ``root`` but a regular user
+* User running ``pavics-compose.sh`` below must not be ``root`` but a regular user
   belonging to the ``docker`` group.
 
-* 
-  Install latest docker-ce and docker-compose for the chosen distro (not the
+* Install latest docker-ce and docker-compose for the chosen distro (not the
   version from the distro).
 
 To run ``docker-compose`` for PAVICS, the `pavics-compose.sh <pavics-compose.sh>`_ (:download:`download </birdhouse/pavics-compose.sh>`) wrapper script must be used.
@@ -85,25 +80,18 @@ Manual steps post deployment
 Change geoserver default admin password
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
-* 
-  Go to
+* Go to
   ``https://<PAVICS_FQDN>/geoserver/web/wicket/bookmarkable/org.geoserver.security.web.UserGroupRoleServicesPage`` (Security -> Users, Groups, and Roles)
 
-* 
-  Login using the default username ``admin`` and default password ``geoserver``.
+* Login using the default username ``admin`` and default password ``geoserver``.
 
-* 
-  Click on tab "Users/Groups".
+* Click on tab "Users/Groups".
 
-* 
-  Click on user "admin".
+* Click on user "admin".
 
-* 
-  Change the password.
+* Change the password.
 
-* 
-  Click "Save".
+* Click "Save".
 
 Create public demo user in Magpie for JupyterHub login
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -123,23 +111,19 @@ instructions below.
 
 Manual instructions:
 
-* 
-  Go to
+* Go to
   ``https://<PAVICS_FQDN>/magpie/ui/login`` and login with the ``admin`` user. The password should be in ``env.local``.
 
-* 
-  Then go to ``https://<PAVICS_FQDN>/magpie/ui/users/add``.
+* Then go to ``https://<PAVICS_FQDN>/magpie/ui/users/add``.
 
-* 
-  Fill in:
+* Fill in:
 
   * User name: <value of JUPYTER_DEMO_USER in ``env.local``\ >
   * Email: < anything is fine >
   * Password: < you decide >
   * User group: ``anonymous``
 
-* 
-  Click "Add User".
+* Click "Add User".
 
 Optional: prepare instance to run automated end-to-end test suite
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -165,6 +149,7 @@ The canarie monitoring link
 ``https://<PAVICS_FQDN>/canarie/node/service/stats`` can be used to confirm the
 instance is ready to run the automated end-to-end test suite.  That link should
 return the HTTP response code ``200``.
+
 
 Vagrant instructions
 --------------------
@@ -227,6 +212,7 @@ Starting and managing the lifecycle of the VM:
    # not needed normally during tight development loop
    vagrant provision
 
+
 Tagging policy
 --------------
 
@@ -239,20 +225,17 @@ together.  So we need a slight modification to the definition of the standard.
 Given a version number MAJOR.MINOR.PATCH, increment the:
 
 
-#. 
-   MAJOR version when the API or user facing UI changes that requires
+#. MAJOR version when the API or user facing UI changes that requires
    significant documentation update and/or re-training of the users.  Also
    valid when a big milestone has been reached (ex: DACCS is released).
 
-#. 
-   MINOR version when we add new components or update existing components
+#. MINOR version when we add new components or update existing components
    that also require change to other existing components (ex: new Magpie that
    also force Twitcher and/or Frontend update) or the change to the existing
    component is a major one (ex: major refactoring of Twitcher, big merge
    with corresponding upstream component from birdhouse project).
 
-#. 
-   PATCH version when we update existing components without impact on other
+#. PATCH version when we update existing components without impact on other
    existing components and the change is a minor change for the existing
    component.
 
