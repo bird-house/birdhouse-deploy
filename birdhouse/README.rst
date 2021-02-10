@@ -73,6 +73,10 @@ Note
   Nginx proxy, see `nginx.conf`_ (:download:`download <birdhouse/config/proxy/nginx.conf>`).
   Any WPS requests that will take longer should use the async mode.
 
+  Default value ``PROXY_READ_TIMEOUT_VALUE`` in `default.env`_ (:download:`download <birdhouse/default.env>`).
+
+  Overrideable in ``env.local`` file, as usual for all values in ``default.env`` file.
+
 
 Manual steps post deployment
 ----------------------------
@@ -241,3 +245,4 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
 
 
 .. _nginx.conf: ./config/proxy/nginx.conf
+.. _default.env: ./default.env

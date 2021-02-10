@@ -47,6 +47,7 @@ OPTIONAL_VARS='
   $AUTODEPLOY_PLATFORM_FREQUENCY
   $AUTODEPLOY_NOTEBOOK_FREQUENCY
   $AUTODEPLOY_EXTRA_SCHEDULER_JOBS
+  $PROXY_READ_TIMEOUT_VALUE
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH
