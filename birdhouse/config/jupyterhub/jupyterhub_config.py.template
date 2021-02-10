@@ -74,6 +74,14 @@ def create_dir_hook(spawner):
         spawner.cpu_limit = float(os.environ['JUPYTER_DEMO_USER_CPU_LIMIT'])
         spawner.mem_limit = os.environ['JUPYTER_DEMO_USER_MEM_LIMIT']
 
+    # space separated list of username
+    jupyter_power_users = os.environ['JUPYTER_POWER_USERS']
+    jupyter_power_users = jupyter_power_users.split(' ')
+
+    if username not in jupyter_power_users:
+        ## Extra arguments to be passed to the single-user server.
+        spawner.args = ["--NotebookApp.terminals_enabled=False"]
+
 c.Spawner.pre_spawn_hook = create_dir_hook
 
 ## Disable per-user configuration of single-user servers.
@@ -87,9 +95,6 @@ c.DockerSpawner.debug = True
 c.JupyterHub.log_level = logging.DEBUG
 
 c.Spawner.debug = True
-
-## Extra arguments to be passed to the single-user server.
-c.Spawner.args = ["--NotebookApp.terminals_enabled=False"]
 
 c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}
 
