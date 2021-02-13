@@ -233,12 +233,14 @@ Weaver
 
 By enabling this component, the `Weaver`_ service will be integrated into the stack.
 
-This component offers `OGC API - Processes`_ (a.k.a `WPS-REST bindings` and `WPS-T (Transactional)`) support.
-This provides a RESTful JSON interface with asynchronous WPS processes execution over remote instances. Other WPS of
-the stack (`Finch`, `Flyingpigeon`, etc.) will also all be registered under `Weaver`_ in order to provide a common
-endpoint to retrieve all available processes, and dispatch their execution to the appropriate service.
-Finally, `Weaver`_ also adds `Docker` image execution capabilities as a WPS process, allowing deployment and execution
-of custom applications and workflows.
+This component offers `OGC API - Processes`_ interace to WPS components (a.k.a `WPS-REST bindings` and
+`WPS-T (Transactional)` support).
+This provides a RESTful JSON interface with asynchronous WPS processes execution over remote instances. 
+Other WPS components of the birdhouse stack (`finch`_, `flyingpigeon`_, etc.) will also all be registered
+under `Weaver`_ in order to provide a common endpoint to retrieve all available processes, and dispatch 
+their execution to the corresponding service.
+Finally, `Weaver`_ also adds `Docker` image execution capabilities as a WPS process, allowing deployment 
+and execution of custom applications and workflows.
 
 
 Usage
@@ -247,7 +249,9 @@ Usage
 Once this component is enabled, `Weaver`_ will be accessible at ``https://<PAVICS_FQDN_PUBLIC>/weaver`` endpoint,
 where ``PAVICS_FQDN_PUBLIC`` is defined in your ``env.local`` file.
 
-Full process listing (across WPS providers) should be available using request
+Full process listing (across WPS providers) should be available using request:
+
+.. code-block::
 
     GET https://<PAVICS_FQDN_PUBLIC>/weaver/processes?providers=true
 
@@ -283,7 +287,8 @@ Customizing the Component
 
 
 
-
+.. _finch: https://github.com/bird-house/finch
+.. _flyingpigeon: https://github.com/bird-house/flyingpigeon
 .. _Weaver: https://github.com/crim-ca/weaver
 .. _Weaver OpenAPI: https://pavics-weaver.readthedocs.io/en/latest/api.html
 .. _weaver/default.env: ./weaver/default.env
