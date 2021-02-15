@@ -82,7 +82,7 @@ datadeploy START_TIME=$START_TIME"
 
 # 2020-12-16T22:15:03+0000 -> 2020-12-16T22_15_03p0000
 # Allowed chars for container name: [a-zA-Z0-9][a-zA-Z0-9_.-]
-DOCKER_RUN_TAG="`echo "$START_TIME" | sed 's/:/_/g' | sed 's/+/p/g'`"
+DOCKER_RUN_TAG="`echo "$START_TIME" | sed 's/:/_/g' | sed 's/+/p/g'`_$RANDOM"
 
 set -x
 

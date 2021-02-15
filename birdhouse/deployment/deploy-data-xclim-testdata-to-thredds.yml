@@ -1,0 +1,11 @@
+deploy:
+- repo_url: https://github.com/Ouranosinc/xclim-testdata
+  # optional, default "origin/master"
+  branch: origin/main
+  checkout_name: xclim-testdata
+  dir_maps:
+  # rsync content below source_dir into dest_dir
+  - source_dir: .
+    dest_dir: /data/datasets/testdata/xclim
+    # only sync .nc files
+    rsync_extra_opts: --include=*/ --include=*.nc --exclude=*
