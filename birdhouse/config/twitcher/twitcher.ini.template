@@ -21,6 +21,11 @@ sqlalchemy.url = sqlite:///%(here)s/twitcher.sqlite
 
 retry.attempts = 3
 
+# caching settings for specific sections/functions
+cache.regions = acl
+cache.type = memory
+cache.acl.expire = 60
+
 # By default, the toolbar only appears for clients from IP addresses
 # '127.0.0.1' and '::1'.
 # debugtoolbar.hosts = 127.0.0.1 ::1
