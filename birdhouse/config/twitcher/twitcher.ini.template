@@ -22,9 +22,13 @@ sqlalchemy.url = sqlite:///%(here)s/twitcher.sqlite
 retry.attempts = 3
 
 # caching settings for specific sections/functions
-cache.regions = acl
+cache.regions = acl, service
 cache.type = memory
+cache.acl.enabled = true
 cache.acl.expire = 60
+# NOTE: following will only take effect with Magpie >= 3.7
+cache.service.enabled = true
+cache.service.expire = 20
 
 # By default, the toolbar only appears for clients from IP addresses
 # '127.0.0.1' and '::1'.
