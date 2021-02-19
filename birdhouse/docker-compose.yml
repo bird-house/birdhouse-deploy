@@ -358,10 +358,12 @@ services:
       JUPYTER_DEMO_USER_MEM_LIMIT: ${JUPYTER_DEMO_USER_MEM_LIMIT}
       JUPYTER_DEMO_USER_CPU_LIMIT: ${JUPYTER_DEMO_USER_CPU_LIMIT}
       JUPYTER_GOOGLE_DRIVE_SETTINGS: ${JUPYTER_GOOGLE_DRIVE_SETTINGS}
+      JUPYTERHUB_README: ${JUPYTERHUB_README}
     volumes:
       - ./config/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
       - ./config/jupyterhub/custom_templates:/custom_templates:ro
       - ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}
+      - ${JUPYTERHUB_README}:${JUPYTERHUB_README}:ro
       - jupyterhub_data_persistence:/persist:rw
       - /var/run/docker.sock:/var/run/docker.sock:rw
     links:

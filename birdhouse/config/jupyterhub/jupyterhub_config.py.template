@@ -52,7 +52,8 @@ c.DockerSpawner.volumes[host_tutorial_notebooks_dir] = {
     "mode": "ro"
 }
 
-readme = join(jupyterhub_data_dir, "README.ipynb")
+
+readme = os.environ['JUPYTERHUB_README']
 if os.path.exists(readme):
     c.DockerSpawner.volumes[readme] = {
         "bind": join(notebook_dir, "README.ipynb"),
