@@ -20,11 +20,7 @@ services:
       - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/weaver-permissions.cfg:ro
       - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/providers/weaver-provider.cfg:ro
 
-  # FIXME:
-  #   Weaver API shouldn't be one doing docker run (jobs), but it is actually the one
-  #   running the cwltool app from the received WPS Execute request sent by the worker.
-  #   Configs must be moved to the 'worker' with implementation of direct job monitoring.
-  #   (https://github.com/crim-ca/weaver/issues/21)
+  # Image 'weaver' is the API side of the application
   weaver:
     image: pavics/weaver:${WEAVER_VERSION}-manager
     container_name: ${WEAVER_MANAGER_NAME}
@@ -33,7 +29,6 @@ services:
     environment:
       HOSTNAME: ${PAVICS_FQDN}
       FORWARDED_ALLOW_IPS: "*"
-      DOCKER_HOST: "tcp://docker-proxy:2375"   # FIXME: see above docker-sibling note
     #env_file:
     #  - ./config/mongodb/credentials.env
     # ensure other referenced services are created beforehand to avoid booting timing issues
@@ -52,20 +47,19 @@ services:
       - ./components/weaver/config/weaver/data_sources.json:/opt/local/src/weaver/config/data_sources.json:ro
       - ./components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
       - ./components/weaver/config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml:ro
-      - /usr/bin/docker:/usr/bin/docker   # FIXME: see above docker-sibling note
-      - ~/.docker/config.json:/root/.docker/config.json:ro   # FIXME: see above docker-sibling note
-      # WARNING: see detail in 'worker' definition
-      - ${WEAVER_WPS_WORKDIR}:${WEAVER_WPS_WORKDIR}     # FIXME: with fix WPS-execute inside worker, shouldn't be required anymore
+      # WARNING: see detail in 'worker' definition about below mount location
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     networks:
       - default
-      - docker-proxy  # FIXME: see above docker-sibling note
     restart: always
     logging: *default-logging
 
+  # Image 'worker' is the job runner of Weaver, possibly spawning Docker applications according to process definition
   worker:
     image: pavics/weaver:${WEAVER_VERSION}-worker
     container_name: ${WEAVER_WORKER_NAME}
+    environment:
+      DOCKER_HOST: "tcp://docker-proxy:2375"
     #env_file:
     #  - ./config/mongodb/credentials.env
     links:
@@ -85,6 +79,8 @@ services:
       #   and will expect to find the same directory locations.
       - ${WEAVER_WPS_WORKDIR}:${WEAVER_WPS_WORKDIR}
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
+    networks:
+      - docker-proxy
     restart: always
     logging: *default-logging
 
