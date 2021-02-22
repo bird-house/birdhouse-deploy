@@ -25,6 +25,7 @@ VARS='
   $POSTGRES_PAVICS_PASSWORD
   $POSTGRES_MAGPIE_USERNAME
   $POSTGRES_MAGPIE_PASSWORD
+  $JUPYTERHUB_README
 '
 
 # list of vars to be substituted in template but they do not have to be set in
@@ -48,6 +49,7 @@ OPTIONAL_VARS='
   $AUTODEPLOY_NOTEBOOK_FREQUENCY
   $AUTODEPLOY_EXTRA_SCHEDULER_JOBS
   $PROXY_READ_TIMEOUT_VALUE
+  $JUPYTERHUB_README
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH
