@@ -414,6 +414,7 @@ services:
 
 # need external network so the folder name is not prefixed to network name
 networks:
+  mongodb: {}
   jupyterhub_network:
     external:
       name: "jupyterhub_network"
