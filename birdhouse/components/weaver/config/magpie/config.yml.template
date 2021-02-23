@@ -8,7 +8,7 @@ providers:
     title: Weaver (${WEAVER_CONFIG})
     public: true
     c4i: false
-    type: api
+    type: api   # FIXME: 'ades' when https://github.com/Ouranosinc/Magpie/issues/360 implemented
     sync_type: api
 
   # FIXME: remove when https://github.com/Ouranosinc/Magpie/issues/360 implemented, see 'default.env'
@@ -41,7 +41,7 @@ permissions:
     group: anonymous
     action: create
 
-  # Process deploy/listing (builtin/deployed processes)
+  # Process deployment (write) and listing (read)
   - service: ${WEAVER_MANAGER_NAME}
     resource: /processes    # GET is processes listing, POST is deploy: only allow view by anonymous
     permission: read        # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
@@ -102,5 +102,14 @@ permissions:
     action: create
   - service: ${WEAVER_WPS_NAME}
     permission: describeprocess
+    group: anonymous
+    action: create
+
+## TESTING
+  # Grant write access to execute hummingbird's ncdump process (submit job)
+  # (see https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebooks/OGCAPI_processes_example.ipynb)
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/hummingbird/processes/ncdump/jobs
+    permission: write
     group: anonymous
     action: create
