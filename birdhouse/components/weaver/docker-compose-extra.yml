@@ -39,7 +39,7 @@ services:
       - hummingbird
       - malleefowl
       - raven
-      - worker
+      - mongodb
     links:
       - mongodb
     volumes:
@@ -64,6 +64,10 @@ services:
     #  - ./config/mongodb/credentials.env
     links:
       - mongodb
+    depends_on:
+      - mongodb
+      - weaver  # ensure that weaver was able to obtain valid database connection before trying with celery worker
+      - docker-proxy
     volumes:
       #- wps_private:/data/wps_private
       - ${DATA_PERSIST_ROOT}/wps_private:/data/wps_private
