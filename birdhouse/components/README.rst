@@ -9,8 +9,9 @@ Scheduler
 =========
 
 This component provides automated unattended continuous deployment for the
-"PAVICS stack", for the tutorial notebooks on the Jupyter environment and for the
-automated deployment itself.
+"PAVICS stack" (all the git repos in var ``AUTODEPLOY_EXTRA_REPOS``), for the
+tutorial notebooks on the Jupyter environment and for the automated deployment
+itself.
 
 It can also be used to schedule other tasks on the PAVICS physical host.
 
