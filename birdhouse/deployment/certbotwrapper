@@ -2,6 +2,7 @@
 # Renew LetsEncrypt SSL certificate using certbot docker image.
 #
 # Important:
+# * SSL_CERTIFICATE from env.local will be updated, backup that file first!
 # * SUPPORT_EMAIL from env.local is used as renew email, make sure it's valid!
 # * certbot requires your port 80 and 443 be accessible directly on the internet
 #
