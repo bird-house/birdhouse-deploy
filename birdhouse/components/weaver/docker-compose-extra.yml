@@ -42,6 +42,9 @@ services:
       - mongodb
     links:
       - mongodb
+    networks:
+      - default
+      - mongodb
     volumes:
       - ./components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
       - ./components/weaver/config/weaver/data_sources.json:/opt/local/src/weaver/config/data_sources.json:ro
@@ -49,8 +52,6 @@ services:
       - ./components/weaver/config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml:ro
       # WARNING: see detail in 'worker' definition about below mount location
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
-    networks:
-      - default
     restart: always
     logging: *default-logging
 
@@ -62,12 +63,18 @@ services:
       DOCKER_HOST: "tcp://docker-proxy:2375"
     #env_file:
     #  - ./config/mongodb/credentials.env
-    links:
-      - mongodb
     depends_on:
       - mongodb
-      - weaver  # ensure that weaver was able to obtain valid database connection before trying with celery worker
+      - weaver  # fail immediately if Weaver API cannot boot - celery workers have no reason to exist otherwise
       - docker-proxy
+    links:
+      - mongodb
+    networks:
+      # NOTE:
+      #   Don't provide 'default' network such that only connection with other images (birds, proxy) can be
+      #   accomplished through Weaver API which cannot run sibling dockers by itself. Isolate Dockers execution.
+      - docker-proxy
+      - mongodb
     volumes:
       #- wps_private:/data/wps_private
       - ${DATA_PERSIST_ROOT}/wps_private:/data/wps_private
@@ -83,8 +90,6 @@ services:
       #   and will expect to find the same directory locations.
       - ${WEAVER_WPS_WORKDIR}:${WEAVER_WPS_WORKDIR}
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
-    networks:
-      - docker-proxy
     restart: always
     logging: *default-logging
 

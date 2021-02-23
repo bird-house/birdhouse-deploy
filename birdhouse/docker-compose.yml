@@ -95,6 +95,9 @@ services:
       - ${SSL_CERTIFICATE}:/opt/birdhouse/etc/nginx/cert.pem
     links:
       - mongodb
+    networks:
+      - default
+      - mongodb
     depends_on:
       - malleefowl
       - flyingpigeon
@@ -291,6 +294,8 @@ services:
       - ${DATA_PERSIST_ROOT}/mongodb_persist:/data/db
     # Mongodb crash with permission denied errors if the command is not overridden like this
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
+    networks:
+      - mongodb
     restart: always
     logging: *default-logging
 
