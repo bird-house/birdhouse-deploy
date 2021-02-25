@@ -33,7 +33,7 @@
     }
 
     location /wpsoutputs/ {
-        alias ${DATA_PERSIST_ROOT}/wps_outputs/;
+        alias /pavics-data/wps_outputs/;
     }
 
     location /geoserver/ {
