@@ -10,8 +10,8 @@ services:
           "import requests; \
            assert requests.get('http://localhost?service=WPS&request=GetCapabilities').status_code == 200",
         ]
-      interval: 60
-      timeout: 5
+      interval: 60s
+      timeout: 5s
       retries: 2
   finch:
     healthcheck:
@@ -23,8 +23,8 @@ services:
           "--fail",
           "http://localhost:${HTTP_PORT}?service=WPS&request=GetCapabilities",
         ]
-      interval: 60
-      timeout: 5
+      interval: 60s
+      timeout: 5s
       retries: 2
   flyingpigeon:
     healthcheck:
@@ -36,8 +36,8 @@ services:
           "import requests; \
            assert requests.get('http://localhost:8093?service=WPS&request=GetCapabilities').status_code == 200",
         ]
-      interval: 60
-      timeout: 5
+      interval: 60s
+      timeout: 5s
       retries: 2
   hummingbird:
     healthcheck:
@@ -49,8 +49,8 @@ services:
           "import requests; \
            assert requests.get('http://localhost:8097/wps?service=WPS&request=GetCapabilities').status_code == 200",
         ]
-      interval: 60
-      timeout: 5
+      interval: 60s
+      timeout: 5s
       retries: 2
   malleefowl:
     healthcheck:
@@ -62,8 +62,8 @@ services:
           "--fail",
           "http://localhost:8091/wps?service=WPS&request=GetCapabilities",
         ]
-      interval: 60
-      timeout: 5
+      interval: 60s
+      timeout: 5s
       retries: 2
   raven:
     healthcheck:
@@ -75,6 +75,6 @@ services:
           "--fail",
           "http://localhost:9099?service=WPS&request=GetCapabilities",
         ]
-      interval: 60
-      timeout: 5
+      interval: 60s
+      timeout: 5s
       retries: 2
