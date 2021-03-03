@@ -5,10 +5,10 @@ services:
       test:
         [
           "CMD",
-          "curl",
-          "--insecure",
-          "--fail",
-          "https://localhost${TWITCHER_PROTECTED_PATH}/catalog?service=WPS&request=GetCapabilities",
+          "python",
+          "-c",
+          "import requests; \
+           assert requests.get('http://localhost?service=WPS&request=GetCapabilities').status_code == 200",
         ]
       interval: 60
       timeout: 5
@@ -21,7 +21,7 @@ services:
           "curl",
           "--insecure",
           "--fail",
-          "https://localhost${TWITCHER_PROTECTED_PATH}/finch?service=WPS&request=GetCapabilities",
+          "http://localhost:${HTTP_PORT}?service=WPS&request=GetCapabilities",
         ]
       interval: 60
       timeout: 5
@@ -31,10 +31,10 @@ services:
       test:
         [
           "CMD",
-          "curl",
-          "--insecure",
-          "--fail",
-          "https://localhost${TWITCHER_PROTECTED_PATH}/flyingpigeon?service=WPS&request=GetCapabilities",
+          "python",
+          "-c",
+          "import requests; \
+           assert requests.get('http://localhost:8093?service=WPS&request=GetCapabilities').status_code == 200",
         ]
       interval: 60
       timeout: 5
@@ -44,10 +44,10 @@ services:
       test:
         [
           "CMD",
-          "curl",
-          "--insecure",
-          "--fail",
-          "https://localhost${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&request=GetCapabilities",
+          "python",
+          "-c",
+          "import requests; \
+           assert requests.get('http://localhost:8097/wps?service=WPS&request=GetCapabilities').status_code == 200",
         ]
       interval: 60
       timeout: 5
@@ -60,7 +60,7 @@ services:
           "curl",
           "--insecure",
           "--fail",
-          "https://localhost${TWITCHER_PROTECTED_PATH}/malleefowl?service=WPS&request=GetCapabilities",
+          "http://localhost:8091/wps?service=WPS&request=GetCapabilities",
         ]
       interval: 60
       timeout: 5
@@ -73,7 +73,7 @@ services:
           "curl",
           "--insecure",
           "--fail",
-          "https://localhost${TWITCHER_PROTECTED_PATH}/raven?service=WPS&request=GetCapabilities",
+          "http://localhost:9099?service=WPS&request=GetCapabilities",
         ]
       interval: 60
       timeout: 5
