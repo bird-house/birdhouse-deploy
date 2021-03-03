@@ -41,6 +41,20 @@ permissions:
     group: anonymous
     action: create
 
+  # Version details
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /versions
+    permission: read
+    group: anonymous
+    action: create
+
+  # OGC-API conformance
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /conformance
+    permission: read
+    group: anonymous
+    action: create
+
   # Process deployment (write) and listing (read)
   - service: ${WEAVER_MANAGER_NAME}
     resource: /processes    # GET is processes listing, POST is deploy: only allow view by anonymous
