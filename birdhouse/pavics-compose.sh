@@ -25,6 +25,9 @@ VARS='
   $POSTGRES_PAVICS_PASSWORD
   $POSTGRES_MAGPIE_USERNAME
   $POSTGRES_MAGPIE_PASSWORD
+  $PAVICS_E2E_NOTEBOOK_IMAGE
+  $EO_NOTEBOOK_IMAGE
+  $NLP_NOTEBOOK_IMAGE
 '
 
 # list of vars to be substituted in template but they do not have to be set in
