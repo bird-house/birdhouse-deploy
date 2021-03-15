@@ -21,6 +21,9 @@ testdata/flyingpigeon/cmip5/tasmax_Amon_MPI-ESM-MR_rcp45_r2i1p1_200601-200612.nc
 testdata/secure/tasmax_Amon_MPI-ESM-MR_rcp45_r2i1p1_200601-200612.nc
 testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc
 ets/Watersheds_5797_cfcompliant.nc
+testdata/xclim/cmip6/sic_SImon_CCCma-CanESM5_ssp245_r13i1p2f1_2020.nc
+cccma/CanESM2/historical/day/atmos/r1i1p1/tasmin/tasmin_day_CanESM2_historical_r1i1p1_18500101-20051231.nc
+cccma/CanESM2/historical/fx/atmos/r0i0p0/sftlf/sftlf_fx_CanESM2_historical_r0i0p0.nc
 "
 
 cd "$DATASET_ROOT"
