@@ -199,7 +199,11 @@ do
 
     # Note: This command should stay last, as it can take a while depending on network and drive speeds
     # immediately cache the new notebook images for faster startup by JupyterHub
-    docker pull ${DOCKER_NOTEBOOK_IMAGE}
+    for IMAGE in ${DOCKER_NOTEBOOK_IMAGES}
+    do
+      docker pull $IMAGE
+    done
+
   fi
   shift
 done
