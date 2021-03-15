@@ -20,7 +20,7 @@ c.JupyterHub.template_paths = ['/custom_templates']
 
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
 
-c.DockerSpawner.image = os.environ['PAVICS_E2E_NOTEBOOK_IMAGE']
+c.DockerSpawner.image = os.environ['DOCKER_NOTEBOOK_IMAGE']
 c.DockerSpawner.use_internal_ip = True
 c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
 
