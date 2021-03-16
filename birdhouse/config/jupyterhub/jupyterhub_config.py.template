@@ -3,6 +3,8 @@ from os.path import join
 import logging
 import subprocess
 
+c = get_config()  # noqa  # can be called directy without import because injected by IPython
+
 c.JupyterHub.bind_url = 'http://:8000/jupyter'
 
 ## Whether to shutdown single-user servers when the Hub shuts down.
