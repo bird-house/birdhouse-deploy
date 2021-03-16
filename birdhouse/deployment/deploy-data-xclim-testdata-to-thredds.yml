@@ -1,12 +1,11 @@
 deploy:
-#- repo_url: git@github.com:Ouranosinc/raven.git
-- repo_url: https://github.com/Ouranosinc/raven-testdata
+- repo_url: https://github.com/Ouranosinc/xclim-testdata
   # optional, default "origin/master"
-  # branch:
-  checkout_name: raven-testdata
+  branch: origin/main
+  checkout_name: xclim-testdata
   dir_maps:
   # rsync content below source_dir into dest_dir
   - source_dir: .
-    dest_dir: /data/datasets/testdata/raven
+    dest_dir: /data/datasets/testdata/xclim
     # only sync .nc files
     rsync_extra_opts: --include=*/ --include=*.nc --exclude=*
