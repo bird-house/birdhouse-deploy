@@ -178,9 +178,6 @@ set -x
 # restart everything, only changed containers will be destroyed and recreated
 ./pavics-compose.sh up -d
 
-# immediately cache the new notebook image for faster startup by JupyterHub
-docker pull $DOCKER_NOTEBOOK_IMAGE
-
 # deploy new README.ipynb to Jupyter instance
 docker run --rm --name deploy_README_ipynb \
     -v "$JUPYTERHUB_USER_DATA_DIR":/notebook_dir \
