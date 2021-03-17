@@ -90,7 +90,6 @@ fi
 __EOF__
 chmod a+x $TMP_SCRIPT
 
-docker pull bash
 docker run --rm \
   --name deploy_tutorial_notebooks \
   -u root \
@@ -98,7 +97,7 @@ docker run --rm \
   -v $TMPDIR/$TUTORIAL_NOTEBOOKS_DIR:/$TUTORIAL_NOTEBOOKS_DIR:ro \
   -v "$JUPYTERHUB_USER_DATA_DIR":$NOTEBOOK_DIR_MNT:rw \
   --entrypoint /deploy-notebook \
-  bash
+  bash:5.1.4
 
 
 # vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4
