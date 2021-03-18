@@ -2,6 +2,7 @@
 # Renew LetsEncrypt SSL certificate using certbot docker image.
 #
 # Important:
+# * SSL_CERTIFICATE from env.local will be updated, backup that file first!
 # * SUPPORT_EMAIL from env.local is used as renew email, make sure it's valid!
 # * certbot requires your port 80 and 443 be accessible directly on the internet
 #
@@ -13,6 +14,11 @@
 #
 # Port 80 and 443 must be free at the time of invoking this script
 # (docker stop proxy)
+#
+# Renew mode assume initial request has also been performed using this same
+# script.  To ensure working renewal, force again the initial request using
+# this script.  Rename existing /etc/letsencrypt to something else is a simple
+# way to "force requesting again".
 #
 # Setting environment variable FORCE_CERTBOT_E2E=1 when calling this script
 # will perform all needed pre and post actions:
