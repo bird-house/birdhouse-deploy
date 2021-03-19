@@ -9,7 +9,7 @@ docker run --rm \
   -u root \
   -v $BACKUP_OUT_DIR:/backups \
   -v $DATA_VOL_NAME:/data_vol_to_backup:ro \
-  bash \
+  bash:5.1.4 \
   tar czvf /backups/$DATA_VOL_NAME.tgz -C /data_vol_to_backup .
 
 # vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4
