@@ -21,6 +21,16 @@ providers:
     sync_type: wps
 
 permissions:
+  # Administrator permissions over whole service
+  - service: ${WEAVER_MANAGER_NAME}
+    permission: read
+    group: administrators
+    action: create
+  - service: ${WEAVER_MANAGER_NAME}
+    permission: write
+    group: administrators
+    action: create
+
   # Entrypoint
   - service: ${WEAVER_MANAGER_NAME}
     permission: read-match
