@@ -3,6 +3,8 @@ from os.path import join
 import logging
 import subprocess
 
+c = get_config()  # noqa  # can be called directy without import because injected by IPython
+
 c.JupyterHub.bind_url = 'http://:8000/jupyter'
 
 ## Whether to shutdown single-user servers when the Hub shuts down.
@@ -42,10 +44,10 @@ container_gdrive_settings_path = join(container_home_dir, ".jupyter/lab/user-set
 host_gdrive_settings_path = os.environ['JUPYTER_GOOGLE_DRIVE_SETTINGS']
 
 if len(host_gdrive_settings_path) > 0:
-	c.DockerSpawner.volumes[host_gdrive_settings_path] = {
-		"bind": container_gdrive_settings_path,
-		"mode": "ro"
-	}
+    c.DockerSpawner.volumes[host_gdrive_settings_path] = {
+        "bind": container_gdrive_settings_path,
+        "mode": "ro"
+    }
 
 host_tutorial_notebooks_dir = join(jupyterhub_data_dir, "tutorial-notebooks")
 c.DockerSpawner.volumes[host_tutorial_notebooks_dir] = {
@@ -83,7 +85,7 @@ c.Spawner.disable_user_config = True
 
 c.DockerSpawner.default_url = '/lab'
 c.DockerSpawner.remove = True  # delete containers when servers are stopped
-${ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS}
+${ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS}    # noqa
 c.DockerSpawner.pull_policy = "always"  # for images not using pinned version
 c.DockerSpawner.debug = True
 c.JupyterHub.log_level = logging.DEBUG
@@ -93,7 +95,7 @@ c.Spawner.debug = True
 ## Extra arguments to be passed to the single-user server.
 c.Spawner.args = ["--NotebookApp.terminals_enabled=False"]
 
-c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}
+c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}     # noqa
 
 ## Force refresh of auth prior to spawn.
 # Do nothing right now, pending implementation of
@@ -106,6 +108,6 @@ c.Authenticator.refresh_pre_spawn = True
 #
 # For security reasons, block user with known hardcoded public password or
 # non real Jupyter users.
-blocked_users = set(['authtest', '${CATALOG_USERNAME}', 'anonymous'])
+blocked_users = {'authtest', '${CATALOG_USERNAME}', 'anonymous'}
 c.Authenticator.blacklist = blocked_users  # v0.9+
 c.Authenticator.blocked_users = blocked_users  # v1.2+
