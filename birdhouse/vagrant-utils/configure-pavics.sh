@@ -32,6 +32,9 @@ RENEW_LETSENCRYPT_SSL_NUM_PARENTS_MOUNT="/"
 
 # Only source if file exist.  Allow for config file to be backward-compat with
 # older version of the repo where the .env file do not exist yet.
+# Keep this sourcing of renew_letsencrypt_ssl_cert_extra_job.env after
+# latest definition of SSL_CERTIFICATE because it needs the valid value of
+# SSL_CERTIFICATE.
 if [ -f "$PWD/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env" ]; then
     . $PWD/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env
 fi
