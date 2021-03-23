@@ -113,9 +113,9 @@ services:
       GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
       GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
     volumes:
-      # `sudo chown -R 1000:10001 /data/geoserver/` to match user geoserveruser
-      # inside docker image
-      - /data/geoserver:/opt/geoserver/data_dir
+      # run deployment/fix-geoserver-data-dir-perm on existing
+      # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image
+      - ${GEOSERVER_DATA_DIR}:/opt/geoserver/data_dir
       #- ./config/geoserver/web.xml:/usr/local/tomcat/conf/web.xml
       #- ./config/geoserver/entrypointwrapper:/entrypointwrapper:ro
     links:

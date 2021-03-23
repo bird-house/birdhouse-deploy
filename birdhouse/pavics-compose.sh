@@ -147,6 +147,11 @@ if [ x"$1" = x"up" ]; then
   docker volume create jupyterhub_data_persistence  # jupyterhub db and cookie secret
   docker volume create thredds_persistence  # logs, cache
 
+  if [ ! -d "$GEOSERVER_DATA_DIR" ]; then
+    echo "fix GeoServer data dir permission on first run only, when data dir do not exist yet."
+    $COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm
+  fi
+
   for adir in ${EXTRA_CONF_DIRS}; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
     if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then

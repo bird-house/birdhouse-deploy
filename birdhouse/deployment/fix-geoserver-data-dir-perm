@@ -1,0 +1,27 @@
+#!/bin/sh -e
+# Allow geoserver container write perm on its data dir.
+#
+# Geoserver container runs with hardcoded uid 1000 and gid 10001.
+#
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+
+# Go to repo root.
+cd $THIS_DIR/../..
+
+# Default values
+# Get BASH_IMAGE
+# Get GEOSERVER_DATA_DIR
+. birdhouse/default.env
+
+if [ -e "birdhouse/env.local" ]; then
+    # Override default values
+    . birdhouse/env.local
+fi
+
+set -x
+
+docker run --rm --name fix-geoserver-data-dir-perm \
+    --volume ${GEOSERVER_DATA_DIR}:/datadir \
+    $BASH_IMAGE chown -R 1000:10001 /datadir

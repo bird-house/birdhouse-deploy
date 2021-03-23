@@ -106,7 +106,7 @@ if [ ! -z "$FORCE_CERTBOT_E2E" ]; then
     cd $THIS_DIR/..
     docker run --rm --name copy_cert \
         -v "/etc/letsencrypt:/etc/letsencrypt" \
-        bash:5.1.4 \
+        $BASH_IMAGE \
         cat $CERTPATH/fullchain.pem $CERTPATH/privkey.pem > $TMP_SSL_CERT
     if [ -s "$TMP_SSL_CERT" ] && ! diff $SSL_CERTIFICATE $TMP_SSL_CERT && [ $RC -eq 0 ]; then
         # Only modify SSL_CERTIFICATE if there are real changes.
