@@ -69,7 +69,7 @@ domain: ouranos.ca
 # kitesubdomain: SUB
 
 # VM Settings
-# memory: 8192
+# memory: 10240
 # cpus: 2
 # disksize: '100GB'
 # box: 'ubuntu/bionic64'  # no manual steps required
