@@ -109,8 +109,8 @@ services:
       # for custom entrypoint
       #PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
       STABLE_EXTENSIONS: grib-plugin,netcdf-plugin,netcdf-out-plugin
-      GEOSERVER_ADMIN_USER: admin
-      GEOSERVER_ADMIN_PASSWORD: mypass
+      GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
+      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
     volumes:
       # `sudo chown -R 1000:10001 /data/geoserver/` to match user geoserveruser
       # inside docker image

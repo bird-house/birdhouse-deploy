@@ -25,6 +25,7 @@ VARS='
   $POSTGRES_PAVICS_PASSWORD
   $POSTGRES_MAGPIE_USERNAME
   $POSTGRES_MAGPIE_PASSWORD
+  $GEOSERVER_ADMIN_PASSWORD
 '
 
 # list of vars to be substituted in template but they do not have to be set in
