@@ -116,7 +116,6 @@ services:
       # run deployment/fix-geoserver-data-dir-perm on existing
       # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image
       - ${GEOSERVER_DATA_DIR}:/opt/geoserver/data_dir
-      #- ./config/geoserver/web.xml:/usr/local/tomcat/conf/web.xml
       - ./config/geoserver/entrypointwrapper:/entrypointwrapper:ro
     links:
       - postgis
