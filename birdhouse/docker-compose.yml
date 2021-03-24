@@ -121,6 +121,11 @@ services:
       - postgis
     entrypoint: /entrypointwrapper
     restart: always
+    healthcheck:
+      test: curl --fail --silent http://localhost:8080/ || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
 
   malleefowl:
     image: pavics/malleefowl:pavics-0.3.5
