@@ -101,7 +101,7 @@ services:
     restart: always
 
   geoserver:
-    image: kartoza/geoserver:2.18.2
+    image: ${GEOSERVER_IMAGE}
     container_name: geoserver
     ports:
       - "8087:8080"
