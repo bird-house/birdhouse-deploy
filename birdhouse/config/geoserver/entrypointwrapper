@@ -14,4 +14,4 @@ if ! grep " scheme=\"https\" proxyName=\"${PAVICS_FQDN_PUBLIC}\" proxyPort=\"443
 fi
 
 # chain existing entrypoint
-catalina.sh run
+/scripts/entrypoint.sh
