@@ -15,8 +15,7 @@ the end user).
 This assume all the WPS services are public.  If not the case, make a copy of
 this config and adjust accordingly.
 
-How to enable this config in ``env.local`` (a copy from env.local.example_
-(:download:`download </birdhouse/env.local.example>`)):
+How to enable this config in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
 * Add ``./optional-components/canarie-api-full-monitoring`` to ``EXTRA_CONF_DIRS``.
 
@@ -31,15 +30,13 @@ alternative configuration of existing birds.
 No Postgres DB configured.  If need Postgres DB, use generic_bird component
 instead.
 
-How to enable Emu in ``env.local`` (a copy from env.local.example_
-(:download:`download </birdhouse/env.local.example>`)):
+How to enable Emu in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
 * Add ``./optional-components/emu`` to ``EXTRA_CONF_DIRS``.
 * Optionally set ``EMU_IMAGE``, ``EMU_PORT``,
   ``EMU_NAME``, ``EMU_INTERNAL_PORT``,
   ``EMU_WPS_OUTPUTS_VOL`` in ``env.local`` for further customizations.
-  Default values are in `optional-components/emu/default.env <emu/default.env>`_
-  (:download:`download </birdhouse/optional-components/emu/default.env>`).
+  Default values are in `optional-components/emu/default.env <emu/default.env>`_ (:download:`download </birdhouse/optional-components/emu/default.env>`).
 
 Emu service will be available at ``http://PAVICS_FQDN:EMU_PORT/wps`` or
 ``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/EMU_NAME`` where
@@ -53,7 +50,7 @@ CANARIE monitoring will also be automatically configured for this Emu WPS
 service.
 
 
-A second THREDDS server for testing
+A second THREDDs server for testing
 -----------------------------------
 
 How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
@@ -65,12 +62,12 @@ How to enable in ``env.local`` (a copy from env.local.example_ (:download:`downl
   ``TESTTHREDDS_INTERNAL_PORT``\ , ``TESTTHREDDS_NAME``\ ,  in ``env.local`` for further
   customizations.  Default values are in: `optional-components/testthredds/default.env <testthredds/default.env>`_ (:download:`download </birdhouse/optional-components/testthredds/default.env>`).
 
-Test THREDDS service will be available at
+Test THREDDs service will be available at
 ``http://PAVICS_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT`` or
 ``https://PAVICS_FQDN_PUBLIC/TESTTHREDDS_CONTEXT_ROOT`` where ``PAVICS_FQDN`` and
 ``PAVICS_FQDN_PUBLIC`` are defined in your ``env.local``.
 
-Use same docker image as regular THREDDS by default but can be customized.
+Use same docker image as regular THREDDs by default but can be customized.
 
 New container have new ``TestDatasets`` with volume-mount to ``/data/testdatasets``
 on the host.  So your testing ``.nc`` and ``.ncml`` files should be added to
@@ -82,11 +79,11 @@ server.
 ``export EMU_WPS_OUTPUTS_VOL=testwps_outputs`` to ``env.local`` for Emu to write to
 ``TestWps_Output`` dataset.
 
-No Twitcher/Magpie access control, this Test THREDDS is directly behind the
+No Twitcher/Magpie access control, this Test THREDDs is directly behind the
 Nginx proxy.
 
 CANARIE monitoring will also be automatically configured for this second
-THREDDS server.
+THREDDs server.
 
 
 A generic bird WPS service
@@ -102,8 +99,7 @@ How to enable in ``env.local`` (a copy from env.local.example_ (:download:`downl
 * Optionally set ``GENERIC_BIRD_IMAGE``, ``GENERIC_BIRD_PORT``,
   ``GENERIC_BIRD_NAME``, ``GENERIC_BIRD_INTERNAL_PORT``, and
   ``GENERIC_BIRD_POSTGRES_IMAGE`` in ``env.local`` for further customizations.
-  Default values are in `optional-components/generic_bird/default.env <generic_bird/default.env>`_
-  (:download:`download </birdhouse/optional-components/generic_bird/default.env>`).
+  Default values are in `optional-components/generic_bird/default.env <generic_bird/default.env>`_ (:download:`download </birdhouse/optional-components/generic_bird/default.env>`).
 
 The WPS service will be available at ``http://PAVICS_FQDN:GENERIC_BIRD_PORT/wps``
 or ``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME`` where
@@ -121,52 +117,23 @@ access for this WPS service.
 
 CANARIE monitoring will also be automatically configured for this WPS service.
 
-.. _magpie-public-access-config:
 
 Give public access to all resources for testing purposes
 --------------------------------------------------------
 
-By enabling this component, all WPS services and data on THREDDS are completely public, please beware.
-Once enabled, if you need to revert the change, you have to do it manually by logging into Magpie.
+By enabling this component, all WPS services and data on THREDDs are completely public, please beware.
+Once enabled, if you need to revert the change, you have to do it manually by logging into Magpie. 
 Just disabling this component will not revert the change.
-Alternatively, you can create a similar file to |magpie-public-perms|_ and replace all desired ``action: create``
-entries by ``action: remove`` to make sure the permissions are removed as startup if they exist.
 
 This optional component is required for the test suite at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 
-How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
+How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
 * Add ``./optional-components/all-public-access`` to ``EXTRA_CONF_DIRS``.
 
-The anonymous user will now have all the permissions described in |magpie-public-perms|_
-(:download:`download </birdhouse/optional-components/all-public-access/all-public-access-magpie-permission.cfg>`).
+The anonymous user will now have all the permissions described in `optional-components/all-public-access/all-public-access-magpie-permission.cfg <all-public-access/all-public-access-magpie-permission.cfg>`_ (:download:`download </birdhouse/optional-components/all-public-access/all-public-access-magpie-permission.cfg>`).
 
 
-.. _magpie-public-perms: ./all-public-access/all-public-access-magpie-permission.cfg
-.. |magpie-public-perms| replace:: optional-components/all-public-access/all-public-access-magpie-permission.cfg
+
 .. _env.local.example: ../env.local.example
-
-
-Control secured access to resources example
---------------------------------------------------------
-
-Optional configuration |magpie-secure-perms|_ is provided as example to illustrate how to apply permissions on specific
-THREDDS resources to limit their access publicly. This permission configuration can be combined with others, such as
-`magpie-public-access-config`_ ones to formulate specific permissions schemes that matches your data structure and
-desired access rules.
-
-How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
-
-* Add ``./optional-components/secure-thredds`` to ``EXTRA_CONF_DIRS``.
-
-The anonymous user will *NOT* have access anymore to THREDDS test directory ``birdhouse/testdata/secure`` and any other
-directories and files under it. Directories above and next to ``secure`` will still be accessible if
-`magpie-public-access-config`_ component was also enabled.
-
-On a typical server, custom and private permission rules should be provided in a similar fashion to ensure that
-each time a new instance is booted, the same scheme of access configuration is applied. Permissions applied manually
-into Magpie will not be replicated onto other server instance.
-
-.. _magpie-secure-perms: ./secure-thredds/secure-access-magpie-permission.cfg
-.. |magpie-secure-perms| replace:: optional-components/secure-thredds/secure-access-magpie-permission.cfg

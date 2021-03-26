@@ -1,5 +1,0 @@
-version: '2.1'
-services:
-  magpie:
-    volumes:
-    - ./optional-components/secure-thredds/secure-access-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/secure-access-magpie-permission.cfg:ro
