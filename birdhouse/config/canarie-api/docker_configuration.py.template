@@ -49,7 +49,7 @@ SERVICES = {
             },
             'Twitcher': {
                 'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/ows/proxy/flyingpigeon?service=WPS&version=1.0.0&request=GetCapabilities'
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/flyingpigeon?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
             'Geoserver': {
@@ -92,7 +92,7 @@ SERVICES = {
             },
             'Thredds': {
                 'request': {
-                    'url': 'http://${PAVICS_FQDN}:8083/twitcher/ows/proxy/thredds/catalog.html'
+                    'url': 'http://${PAVICS_FQDN}:8083${TWITCHER_PROTECTED_PATH}/thredds/catalog.html'
                 }
             },
             'Jupyter': {
@@ -116,7 +116,7 @@ SERVICES = {
         },
         'stats': {
             'method': '.*',
-            'route': '/twitcher/ows/proxy/finch.*'
+            'route': '${TWITCHER_PROTECTED_PATH}/finch.*'
         },
         'redirect': {
             'doc': 'https://finch.readthedocs.io/en/latest/index.html',
@@ -130,7 +130,7 @@ SERVICES = {
         'monitoring': {
             'Finch': {
                 'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/ows/proxy/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
         }
@@ -150,7 +150,7 @@ SERVICES = {
         },
         'stats': {
             'method': '.*',
-            'route': '/twitcher/ows/proxy/raven.*'
+            'route': '${TWITCHER_PROTECTED_PATH}/raven.*'
         },
         'redirect': {
             'doc': 'https://pavics-raven.readthedocs.io/en/latest/',
@@ -164,7 +164,7 @@ SERVICES = {
         'monitoring': {
             'Raven': {
                 'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/ows/proxy/raven?service=WPS&version=1.0.0&request=GetCapabilities'
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
         }
@@ -197,7 +197,7 @@ SERVICES = {
         'monitoring': {
             'TDS-WMS': {
                 'request': {
-                    'url': 'https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/wms/birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+                    'url': 'https:///${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds/wms/birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc?service=WMS&version=1.3.0&request=GetCapabilities'
                 }
             },
         }
@@ -216,7 +216,7 @@ SERVICES = {
         },
         'stats': {
             'method': '.*',
-            'route': '/twitcher/ows/proxy/finch.*'
+            'route': '${TWITCHER_PROTECTED_PATH}/finch.*'
         },
         'redirect': {
             'doc': 'https://finch.readthedocs.io/en/latest/index.html',
@@ -230,7 +230,7 @@ SERVICES = {
         'monitoring': {
             'Finch': {
                 'request': {
-                     'url': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/ows/proxy/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+                     'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
         }
