@@ -197,7 +197,7 @@ SERVICES = {
         'monitoring': {
             'TDS-WMS': {
                 'request': {
-                    'url': 'https:///${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds/wms/birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds/wms/birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc?service=WMS&version=1.3.0&request=GetCapabilities'
                 }
             },
         }
@@ -260,7 +260,7 @@ PLATFORMS = {
             'source': 'https://github.com/Ouranosinc/pavics-sdi',
             'tryme': 'https://pavics.ouranos.ca',
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
-            'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
+            'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html',
             'factsheet': 'http://www.canarie.ca/software/pavics'
         },
         'monitoring': {
