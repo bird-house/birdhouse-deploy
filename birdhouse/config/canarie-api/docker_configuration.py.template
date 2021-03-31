@@ -32,8 +32,8 @@ SERVICES = {
         'redirect': {
             'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
             'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/releases',
-            'support': 'https://pavics-sdi.readthedocs.io/en/latest/support/index.html',
-            'source': 'https://github.com/Ouranosinc/pavics-sdi',
+            'support': 'https://github.com/bird-house/birdhouse-deploy/issues',
+            'source': 'https://github.com/bird-house/birdhouse-deploy',
             'tryme': 'https://pavics.ouranos.ca',
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
@@ -157,7 +157,7 @@ SERVICES = {
             'releasenotes': 'https://github.com/Ouranosinc/raven/releases',
             'support': 'https://github.com/Ouranosinc/raven/issues',
             'source': 'https://github.com/Ouranosinc/raven',
-            'tryme': 'https://pavics-raven.readthedocs.io/en/latest/processes.html',
+            'tryme': 'https://pavics-raven.readthedocs.io/en/latest/notebooks/index.html',
             'licence': 'https://github.com/Ouranosinc/raven/blob/master/LICENSE.txt',
             'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
         },
@@ -188,7 +188,7 @@ SERVICES = {
         'redirect': {
             'doc': 'https://ouranosinc.github.io/pavics-sdi/arch/frontend.html#gridded-data-rendering',
             'releasenotes': 'https://github.com/Unidata/tds/releases',
-            'support': 'https://ouranosinc.github.io/pavics-sdi/support/index.html',
+            'support': 'https://github.com/Ouranosinc/pavics-sdi/issues',
             'source': 'https://github.com/Unidata/tds',
             'tryme': 'https://ouranosinc.github.io/pavics-sdi/notebooks/rendering.html',
             'licence': 'https://github.com/Unidata/tds/blob/master/LICENSE',
@@ -223,7 +223,7 @@ SERVICES = {
             'releasenotes': 'https://github.com/bird-house/finch/releases',
             'support': 'https://github.com/bird-house/finch/issues',
             'source': 'https://github.com/bird-house/finch',
-            'tryme': 'https://ouranosinc.github.io/pavics-sdi/notebooks/climate_indices.html',
+            'tryme': 'https://pavics-sdi.readthedocs.io/en/latest/notebooks/regridding.html',
             'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
             'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
         },
@@ -256,7 +256,7 @@ PLATFORMS = {
         'redirect': {
             'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
             'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/releases',
-            'support': 'https://pavics-sdi.readthedocs.io/en/latest/support/index.html',
+            'support': 'https://github.com/Ouranosinc/pavics-sdi/issues',
             'source': 'https://github.com/Ouranosinc/pavics-sdi',
             'tryme': 'https://pavics.ouranos.ca',
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
