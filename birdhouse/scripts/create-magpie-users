@@ -98,7 +98,7 @@ if [ -z "$MAGPIE_CLI_CONF" ]; then
 fi
 
 if [ -z "$MAGPIE_CLI_IMAGE" ]; then
-    MAGPIE_CLI_IMAGE="pavics/magpie:3.2.0"
+    MAGPIE_CLI_IMAGE="pavics/magpie:3.8.0"
 fi
 
 # End configurable config via env var.
