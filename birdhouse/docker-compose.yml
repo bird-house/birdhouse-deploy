@@ -297,7 +297,7 @@ services:
       MAGPIE_PROVIDERS_CONFIG_PATH: "/opt/local/src/magpie/config/providers"
       MAGPIE_PERMISSIONS_CONFIG_PATH: "/opt/local/src/magpie/config/permissions"
       MAGPIE_POSTGRES_HOST: postgres-magpie
-      MAGPIE_PORT: ${MAGPIE_PORT}
+      MAGPIE_PORT: 2001
       FORWARDED_ALLOW_IPS: "*"
     env_file:
       - ./config/postgres-magpie/credentials.env
