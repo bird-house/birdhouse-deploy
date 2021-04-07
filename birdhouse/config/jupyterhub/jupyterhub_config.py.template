@@ -49,6 +49,13 @@ if len(host_gdrive_settings_path) > 0:
         "mode": "ro"
     }
 
+host_tutorial_notebooks_dir = join(jupyterhub_data_dir, "tutorial-notebooks")
+c.DockerSpawner.volumes[host_tutorial_notebooks_dir] = {
+    "bind": join(notebook_dir, "tutorial-notebooks"),
+    "mode": "ro"
+}
+
+
 readme = os.environ['JUPYTERHUB_README']
 if os.path.exists(readme):
     c.DockerSpawner.volumes[readme] = {
