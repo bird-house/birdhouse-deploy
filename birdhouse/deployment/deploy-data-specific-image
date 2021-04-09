@@ -1,0 +1,61 @@
+#!/bin/bash
+# Deploy data from git repo(s) to local folder(s).
+# This script is run directly in a specific image (such as pavics/crim-jupyter-eo or pavics/crim-jupyter-nlp).
+# It will be used to refresh the different tutorial notebooks associated with a specific image.
+#
+# The data details is specified in a yaml config file, using this format :
+# - repo_url: path to the github repo (ex.: https://github.com/crim-ca/pavics-jupyter-images)
+#   branch: name of branch containing the required version of the data
+#   source_path: path in the repo of the desired file or folder
+#   dest_dir: directory where the data will be copied in the specific image where the script is run
+#
+# One or more entries respecting this format can be added to the yaml file, in order to download multiple file/folders.
+
+CONFIG_YML="$1"
+if [ -z "$CONFIG_YML" ]; then
+    echo "ERROR: missing config.yml file" 1>&2
+    exit 2
+fi
+
+# Empty value could mean typo in the keys in the config file.
+ensure_not_null() {
+    if [ "$*" = null ]; then
+        echo "ERROR: value empty" 1>&2
+        exit 1
+    fi
+}
+
+# Install required package to read yaml files
+if ! command -v jq &> /dev/null; then
+  apt-get -y install jq
+fi
+pip install yq
+
+# Find how many entries are in the config file
+LENGTH="`yq -r '. | length' $CONFIG_YML`"
+
+if [ -z $LENGTH ]; then
+    echo "ERROR: empty config file" 1>&2
+    exit 1
+fi
+
+for ((i=0;i<$LENGTH;i++)); do
+  GIT_REPO="`yq -r .[$i].repo_url $CONFIG_YML`"
+  ensure_not_null "$GIT_REPO"
+
+  BRANCH="`yq -r .[$i].branch $CONFIG_YML`"
+  ensure_not_null "$BRANCH"
+
+  SOURCE_PATH="`yq -r .[$i].source_path $CONFIG_YML`"
+  ensure_not_null "$SOURCE_PATH"
+
+  DEST_DIR="`yq -r .[$i].dest_dir $CONFIG_YML`"
+  ensure_not_null "$DEST_DIR"
+
+  FULL_URL=$GIT_REPO/branches/$BRANCH/$SOURCE_PATH
+
+  # Download the data from github and copy it to the destination directory
+  svn export --force $FULL_URL $DEST_DIR
+done
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4
