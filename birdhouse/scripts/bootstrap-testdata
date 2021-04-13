@@ -24,6 +24,7 @@ ets/Watersheds_5797_cfcompliant.nc
 testdata/xclim/cmip6/sic_SImon_CCCma-CanESM5_ssp245_r13i1p2f1_2020.nc
 cccma/CanESM2/historical/day/atmos/r1i1p1/tasmin/tasmin_day_CanESM2_historical_r1i1p1_18500101-20051231.nc
 cccma/CanESM2/historical/fx/atmos/r0i0p0/sftlf/sftlf_fx_CanESM2_historical_r0i0p0.nc
+testdata/xclim/NRCANdaily/nrcan_canada_daily_tasmin_1990.nc
 "
 
 cd "$DATASET_ROOT"
