@@ -10,9 +10,18 @@
 #   dest_dir: directory where the data will be copied in the specific image where the script is run
 #
 # One or more entries respecting this format can be added to the yaml file, in order to download multiple file/folders.
+#
+# Setting environment variable DEPLOY_DATA_LOGFILE='/path/to/logfile.log'
+# will redirect all STDOUT and STDERR to that logfile so this script will be
+# completely silent.
 
-LOG_FILE="/var/log/PAVICS/notebookdeploy-specific-image.log"
-exec >>$LOG_FILE 2>&1
+if [ ! -z "$DEPLOY_DATA_LOGFILE" ]; then
+    exec >>$DEPLOY_DATA_LOGFILE 2>&1
+fi
+
+START_TIME="`date -Isecond`"
+echo "==========
+deploy-data-specific-image START_TIME=$START_TIME"
 
 TEMPLATE_CONFIG_YML="$1"
 if [ -z "$TEMPLATE_CONFIG_YML" ]; then
@@ -29,10 +38,10 @@ ensure_not_null() {
 }
 
 # Install required package to read yaml files
-if ! command -v jq &> /dev/null; then
-  apt-get -y install jq
-fi
-pip install yq
+#if ! command -v jq &> /dev/null; then
+#  apt-get -y install jq
+#fi
+#pip install yq
 
 # Find how many entries are in the config file
 LENGTH="`yq -r '. | length' $TEMPLATE_CONFIG_YML`"
@@ -42,8 +51,8 @@ if [ -z $LENGTH ]; then
     exit 1
 fi
 
-CONFIG_YML="notebook_config.yml"
-# Replace environment variables to their values
+CONFIG_YML="/tmp/notebook_config.yml"
+# Replace environment variables from template to their actual values
 envsubst < $TEMPLATE_CONFIG_YML > $CONFIG_YML
 
 for ((i=0;i<$LENGTH;i++)); do
@@ -67,5 +76,7 @@ for ((i=0;i<$LENGTH;i++)); do
   # Download the data from github and copy it to the destination directory
   svn export --force $FULL_URL $DEST_DIR
 done
+
+echo "notebookdeploy finished   END_TIME=`date -Isecond`"
 
 # vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4
