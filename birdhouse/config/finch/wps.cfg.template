@@ -2,6 +2,9 @@
 outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs
 outputpath = /data/wpsoutputs
 
+# default 3mb, fix "Broken pipe" between the proxy and the wps service
+maxrequestsize = 100mb
+
 [logging]
 level = INFO
 database=postgresql://${POSTGRES_PAVICS_USERNAME}:${POSTGRES_PAVICS_PASSWORD}@postgres/finch
