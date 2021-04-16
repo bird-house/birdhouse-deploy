@@ -11,6 +11,8 @@
 #
 # One or more entries respecting this format can be added to the yaml file, in order to download multiple file/folders.
 #
+# An installation of jq and yq is preferred prior to executing this script.
+#
 # Setting environment variable DEPLOY_DATA_LOGFILE='/path/to/logfile.log'
 # will redirect all STDOUT and STDERR to that logfile so this script will be
 # completely silent.
@@ -37,11 +39,13 @@ ensure_not_null() {
     fi
 }
 
-# Install required package to read yaml files
-#if ! command -v jq &> /dev/null; then
-#  apt-get -y install jq
-#fi
-#pip install yq
+# Check installation of required package to read yaml files
+if ! command -v jq &> /dev/null; then
+  apt-get -y install jq
+fi
+if ! command -v yq &> /dev/null; then
+  pip install yq
+fi
 
 # Find how many entries are in the config file
 LENGTH="`yq -r '. | length' $TEMPLATE_CONFIG_YML`"
