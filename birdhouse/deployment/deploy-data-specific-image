@@ -1,6 +1,6 @@
 #!/bin/bash
 # Deploy data from git repo(s) to local folder(s).
-# This script is run directly in a specific image (such as pavics/crim-jupyter-eo or pavics/crim-jupyter-nlp).
+# This script is run directly on a specific image (such as pavics/crim-jupyter-eo or pavics/crim-jupyter-nlp).
 # It will be used to refresh the different tutorial notebooks associated with a specific image.
 #
 # The data details is specified in a yaml config file, using this format :
