@@ -1,13 +1,15 @@
 #!/bin/bash
 # Deploy data from git repo(s) to local folder(s).
 # This script is run directly on a specific image (such as pavics/crim-jupyter-eo or pavics/crim-jupyter-nlp).
-# It will be used to refresh the different tutorial notebooks associated with a specific image.
+# It will be used to download and update the different tutorial notebooks associated with a specific image.
 #
-# The data details is specified in a yaml config file, using this format :
+# This is meant to be run on the same host running PAVICS.
+#
+# The data details is specified in a yaml config file (TEMPLATE_CONFIG_YML), using this format :
 # - repo_url: path to the github repo (ex.: https://github.com/crim-ca/pavics-jupyter-images)
-#   branch: name of branch containing the required version of the data
-#   source_path: path in the repo of the desired file or folder
-#   dest_dir: directory where the data will be copied in the specific image where the script is run
+#   branch: name of the branch containing the required version of the data
+#   source_path: path of the desired file or folder in the source repo
+#   dest_dir: directory where the data will be copied to in the specific image where the script is run
 #
 # One or more entries respecting this format can be added to the yaml file, in order to download multiple file/folders.
 #
