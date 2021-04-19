@@ -3,6 +3,8 @@ from os.path import join
 import logging
 import subprocess
 
+from dockerspawner import DockerSpawner
+
 c = get_config()  # noqa  # can be called directy without import because injected by IPython
 
 c.JupyterHub.bind_url = 'http://:8000/jupyter'
@@ -20,7 +22,22 @@ c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
 
 c.JupyterHub.template_paths = ['/custom_templates']
 
-c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+class CustomDockerSpawner(DockerSpawner):
+
+    def start(self):
+        if(os.environ['MOUNT_IMAGE_SPECIFIC_NOTEBOOKS'] == 'true'):
+            host_dir = join(os.environ['JUPYTERHUB_USER_DATA_DIR'], 'tutorial-notebooks', self.user_options.get('image'))
+            image_dir = join('/notebook_dir/tutorial-notebooks', self.user_options.get('image'))
+
+            # Mount a volume with a tutorial-notebook subfolder corresponding to the image name, if it exists
+            if(os.path.isdir(host_dir)):
+                self.volumes[host_dir] = {
+                    'bind': image_dir,
+                    'mode': 'ro'
+                }
+        return super().start()
+
+c.JupyterHub.spawner_class = CustomDockerSpawner
 
 # Selects the first image from the list by default
 c.DockerSpawner.image = os.environ['DOCKER_NOTEBOOK_IMAGES'].split()[0]
@@ -49,9 +66,10 @@ if len(host_gdrive_settings_path) > 0:
         "mode": "ro"
     }
 
+#  Mount folder containing the notebooks that should be available to all images
 host_tutorial_notebooks_dir = join(jupyterhub_data_dir, "tutorial-notebooks")
-c.DockerSpawner.volumes[host_tutorial_notebooks_dir] = {
-    "bind": join(notebook_dir, "tutorial-notebooks"),
+c.DockerSpawner.volumes[join(host_tutorial_notebooks_dir, "common")] = {
+    "bind": join(notebook_dir, "tutorial-notebooks/common"),
     "mode": "ro"
 }
 
