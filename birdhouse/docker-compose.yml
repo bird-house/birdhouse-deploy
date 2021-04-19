@@ -286,7 +286,7 @@ services:
     restart: always
 
   magpie:
-    image: pavics/magpie:1.7.3
+    image: pavics/magpie:3.8.0
     container_name: magpie
     ports:
       - "2001:2001"
@@ -297,6 +297,7 @@ services:
       MAGPIE_PROVIDERS_CONFIG_PATH: "/opt/local/src/magpie/config/providers"
       MAGPIE_PERMISSIONS_CONFIG_PATH: "/opt/local/src/magpie/config/permissions"
       MAGPIE_POSTGRES_HOST: postgres-magpie
+      MAGPIE_PORT: 2001
       FORWARDED_ALLOW_IPS: "*"
     env_file:
       - ./config/postgres-magpie/credentials.env
@@ -312,7 +313,7 @@ services:
     restart: always
 
   twitcher:
-    image: pavics/twitcher:magpie-1.7.3
+    image: pavics/twitcher:magpie-3.8.0
     container_name: twitcher
     ports:
       - "8000:8000"
