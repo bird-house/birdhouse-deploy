@@ -233,8 +233,6 @@ services:
       - "48983:9001"
     volumes:
       - /data/solr:/data
-    volumes_from:
-      - mongodb
     restart: always
     logging: *default-logging
 
@@ -249,8 +247,6 @@ services:
       - wps_outputs:/pavics-data/wps_outputs
       - ./config/ncwms2/custom.cfg:/opt/birdhouse/custom.cfg
       - ./config/ncwms2/server.xml:/opt/birdhouse/eggs/birdhousebuilder.recipe.tomcat-0.2.9-py2.7.egg/birdhousebuilder/recipe/tomcat/server.xml
-    volumes_from:
-      - mongodb
     restart: always
     logging: *default-logging
 
