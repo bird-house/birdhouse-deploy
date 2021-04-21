@@ -29,7 +29,6 @@ VARS='
   $SERVER_INSTITUTION
   $SUPPORT_EMAIL
   $SUPPORT_URL
-  $SUPPORT_ROLE
 '
 
 # list of vars to be substituted in template but they do not have to be set in
@@ -54,15 +53,6 @@ OPTIONAL_VARS='
   $AUTODEPLOY_NOTEBOOK_FREQUENCY
   $AUTODEPLOY_EXTRA_SCHEDULER_JOBS
   $PROXY_READ_TIMEOUT_VALUE
-  $CONTACT_NAME
-  $CONTACT_POSITION
-  $CONTACT_PHONE
-  $CONTACT_FAX
-  $CONTACT_DELIVERY_POINT
-  $CONTACT_CITY
-  $CONTACT_STATE_OR_PROVINCE
-  $CONTACT_COUNTRY
-  $CONTACT_POSTAL_CODE
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH

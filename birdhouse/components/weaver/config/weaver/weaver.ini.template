@@ -49,24 +49,24 @@ weaver.wps_workdir = ${WEAVER_WPS_WORKDIR}
 
 # --- Weaver WPS metadata ---
 weaver.wps_metadata_identification_title=Weaver
-weaver.wps_metadata_identification_abstract=${SERVER_SYNOPSIS}
+weaver.wps_metadata_identification_abstract=Weaver is an Execution Management Service (EMS) that allows the execution of workflows chaining various applications and Web Processing Services (WPS) inputs and outputs. Remote execution is deferred by the EMS to an Application Deployment and Execution Service (ADES), as defined by Common Workflow Language (CWL) configurations.
 weaver.wps_metadata_identification_keywords=Weaver,WPS,OGC,${WEAVER_CONFIG}
 weaver.wps_metadata_identification_accessconstraints=https://${PAVICS_FQDN_PUBLIC}/magpie
 weaver.wps_metadata_identification_fees=NONE
-weaver.wps_metadata_provider_name=${SERVER_INSTITUTION}
+weaver.wps_metadata_provider_name=crim-ca/weaver
 weaver.wps_metadata_provider_url=http://pavics-weaver.readthedocs.org/en/latest/
-weaver.wps_metadata_contact_name=${CONTACT_NAME}
-weaver.wps_metadata_contact_position=${CONTACT_POSITION}
-weaver.wps_metadata_contact_phone=${CONTACT_PHONE}
-weaver.wps_metadata_contact_fax=${CONTACT_FAX}
-weaver.wps_metadata_contact_deliveryPoint=${CONTACT_DELIVERY_POINT}
-weaver.wps_metadata_contact_city=${CONTACT_CITY}
-weaver.wps_metadata_contact_stateorprovince=${CONTACT_STATE_OR_PROVINCE}
-weaver.wps_metadata_contact_country=${CONTACT_COUNTRY}
-weaver.wps_metadata_contact_postalcode=${CONTACT_POSTAL_CODE}
-weaver.wps_metadata_contact_email=${SUPPORT_EMAIL}
-weaver.wps_metadata_contact_url=${SUPPORT_URL}
-weaver.wps_metadata_contact_role=${SUPPORT_ROLE}
+weaver.wps_metadata_contact_name=CRIM, Centre de Recherche Informatique de Montréal
+weaver.wps_metadata_contact_position=
+weaver.wps_metadata_contact_phone=1-514-840-1234
+weaver.wps_metadata_contact_fax=
+weaver.wps_metadata_contact_deliveryPoint=405 Ogilvy Avenue #101, Montréal, QC
+weaver.wps_metadata_contact_city=Montréal
+weaver.wps_metadata_contact_stateorprovince=Québec
+weaver.wps_metadata_contact_country=Canada
+weaver.wps_metadata_contact_postalcode=H3N 1M3
+weaver.wps_metadata_contact_email=info@crim.ca
+weaver.wps_metadata_contact_url=https://crim.ca
+weaver.wps_metadata_contact_role=Maintainer
 
 # --- Weaver WPS REST API ---
 weaver.wps_restapi = true
