@@ -1,4 +1,12 @@
-version: "2.1"
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "200k"
+    max-file: "10"
+
 services:
   proxy:
     image: pavics/canarieapi:0.3.5
@@ -25,6 +33,7 @@ services:
       - thredds
     entrypoint: /entrypoint
     restart: always
+    logging: *default-logging
 
   frontend:
     image: pavics/pavics-frontend:1.0.5
@@ -34,6 +43,7 @@ services:
     env_file:
       - ./config/frontend/frontend.env
     restart: always
+    logging: *default-logging
 
   project-api:
     image: pavics/pavics-project-api:0.9.0
@@ -47,6 +57,7 @@ services:
     env_file:
       - ./config/postgres/credentials.env
     restart: always
+    logging: *default-logging
 
   postgres:
     image: postgres:9.6
@@ -62,6 +73,7 @@ services:
     env_file:
       - ./config/postgres/credentials.env
     restart: always
+    logging: *default-logging
 
   phoenix:
     image: pavics/pyramid-phoenix:pavics-0.2.3
@@ -87,6 +99,7 @@ services:
       - catalog
       - proxy
     restart: always
+    logging: *default-logging
 
   catalog:
     image: pavics/pavics-datacatalog:0.6.11
@@ -99,6 +112,7 @@ services:
     depends_on:
       - postgres
     restart: always
+    logging: *default-logging
 
   geoserver:
     image: pavics/geoserver:2.9.3
@@ -116,6 +130,7 @@ services:
       - postgis
     entrypoint: /entrypointwrapper
     restart: always
+    logging: *default-logging
 
   malleefowl:
     image: pavics/malleefowl:pavics-0.3.5
@@ -139,6 +154,7 @@ services:
     depends_on:
       - postgres
     restart: always
+    logging: *default-logging
 
   flyingpigeon:
     image: birdhouse/flyingpigeon:1.6
@@ -154,6 +170,7 @@ services:
     depends_on:
       - postgres
     restart: always
+    logging: *default-logging
 
   finch:
     image: ${FINCH_IMAGE}
@@ -170,6 +187,7 @@ services:
       - wps_outputs:/data/wpsoutputs
       - /tmp
     restart: always
+    logging: *default-logging
 
   raven:
     image: pavics/raven:0.12.1
@@ -183,6 +201,7 @@ services:
       - wps_outputs:/data/wpsoutputs
       - /tmp
     restart: always
+    logging: *default-logging
 
   hummingbird:
     image: pavics/hummingbird:0.5_dev
@@ -204,6 +223,7 @@ services:
     depends_on:
       - postgres
     restart: always
+    logging: *default-logging
 
   solr:
     image: pavics/solr:5.2.1
@@ -216,6 +236,7 @@ services:
     volumes_from:
       - mongodb
     restart: always
+    logging: *default-logging
 
   ncwms2:
     image: pavics/ncwms2:2.0.4
@@ -231,6 +252,7 @@ services:
     volumes_from:
       - mongodb
     restart: always
+    logging: *default-logging
 
   thredds:
     image: ${THREDDS_IMAGE}
@@ -254,6 +276,7 @@ services:
       - ./config/thredds/entrypointwrapper:/entrypointwrapper:ro
     entrypoint: /entrypointwrapper
     restart: always
+    logging: *default-logging
     healthcheck:
       test:
         [
@@ -269,11 +292,13 @@ services:
     # Mongodb crash with permission denied errors if the command is not overriden like this
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
     restart: always
+    logging: *default-logging
 
   postgis:
     image: pavics/postgis:2.2
     container_name: postgis
     restart: always
+    logging: *default-logging
 
   portainer:
     image: portainer/portainer
@@ -284,6 +309,7 @@ services:
     ports:
       - "9000:9000"
     restart: always
+    logging: *default-logging
 
   magpie:
     image: pavics/magpie:3.8.0
@@ -311,6 +337,7 @@ services:
       - ./config/magpie/permissions.cfg:/opt/local/src/magpie/config/permissions/permissions.cfg
       - ./config/magpie/magpie.ini:/opt/local/src/magpie/config/magpie.ini
     restart: always
+    logging: *default-logging
 
   twitcher:
     image: pavics/twitcher:magpie-3.8.0
@@ -328,6 +355,7 @@ services:
       - ./config/twitcher/twitcher.ini:/opt/birdhouse/src/twitcher/twitcher.ini
     command: "pserve /opt/birdhouse/src/twitcher/twitcher.ini"
     restart: always
+    logging: *default-logging
 
   postgres-magpie:
     image: postgres:9.6
@@ -342,6 +370,7 @@ services:
       - /data/magpie_persist:/var/lib/postgresql/data/pgdata
       - ./config/postgres-magpie/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     restart: always
+    logging: *default-logging
 
   jupyterhub:
     image: pavics/jupyterhub:1.3.0-20201211
@@ -374,6 +403,7 @@ services:
       - default
       - jupyterhub_network
     restart: always
+    logging: *default-logging
 
 # need external network so the folder name is not prefixed to network name
 networks:
@@ -390,4 +420,5 @@ volumes:
   thredds_persistence:
     external:
       name: thredds_persistence
+
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
