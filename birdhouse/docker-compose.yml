@@ -62,10 +62,7 @@ services:
   postgres:
     image: postgres:9.6
     container_name: postgres
-    # Don't expose port!
-    # Add 'docker-compose-extra.yml' with 'EXTRA_CONF_DIRS' pointing to its location in 'env.local' for test instances.
-    # ports:
-    #   - "5432:5432"
+    # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
     volumes:
       - ${DATA_PERSIST_ROOT}/frontend_persist:/var/lib/postgresql/data/pgdata
       - ./config/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -296,6 +293,7 @@ services:
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
     networks:
       - mongodb
+    # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
     restart: always
     logging: *default-logging
 
@@ -365,10 +363,7 @@ services:
   postgres-magpie:
     image: postgres:9.6
     container_name: postgres-magpie
-    # Don't expose port!
-    # Add 'docker-compose-extra.yml' with 'EXTRA_CONF_DIRS' pointing to its location in 'env.local' for test instances.
-    # ports:
-    #   - "5433:5432"
+    # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
     env_file:
       - ./config/postgres-magpie/credentials.env
     environment:
