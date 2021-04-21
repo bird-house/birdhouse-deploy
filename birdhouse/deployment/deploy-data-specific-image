@@ -23,12 +23,17 @@ if [ ! -z "$DEPLOY_DATA_LOGFILE" ]; then
     exec >>$DEPLOY_DATA_LOGFILE 2>&1
 fi
 
+if [ -z "$NOTEBOOK_DEST_DIR" ]; then
+    echo "ERROR: NOTEBOOK_DEST_DIR variable has not been set" 1>&2
+    exit 2
+fi
+
 START_TIME="`date -Isecond`"
 echo "==========
 deploy-data-specific-image START_TIME=$START_TIME"
 
-TEMPLATE_CONFIG_YML="$1"
-if [ -z "$TEMPLATE_CONFIG_YML" ]; then
+CONFIG_YML="$1"
+if [ -z "$CONFIG_YML" ]; then
     echo "ERROR: missing config.yml file" 1>&2
     exit 2
 fi
@@ -50,16 +55,12 @@ if ! command -v yq &> /dev/null; then
 fi
 
 # Find how many entries are in the config file
-LENGTH="`yq -r '. | length' $TEMPLATE_CONFIG_YML`"
+LENGTH="`yq -r '. | length' $CONFIG_YML`"
 
 if [ -z $LENGTH ]; then
     echo "ERROR: empty config file" 1>&2
     exit 1
 fi
-
-CONFIG_YML="/tmp/notebook_config.yml"
-# Replace environment variables from template to their actual values
-envsubst < $TEMPLATE_CONFIG_YML > $CONFIG_YML
 
 for ((i=0;i<$LENGTH;i++)); do
   # Extract data from config
@@ -72,15 +73,12 @@ for ((i=0;i<$LENGTH;i++)); do
   SOURCE_PATH="`yq -r .[$i].source_path $CONFIG_YML`"
   ensure_not_null "$SOURCE_PATH"
 
-  DEST_DIR=$( eval echo "`yq -r .[$i].dest_dir $CONFIG_YML`")
-  ensure_not_null "$DEST_DIR"
-
   FULL_URL=$GIT_REPO/branches/$BRANCH/$SOURCE_PATH
 
-  echo "Extracting ${FULL_URL} to ${DEST_DIR}"
+  echo "Extracting ${FULL_URL} to ${NOTEBOOK_DEST_DIR}"
 
   # Download the data from github and copy it to the destination directory
-  svn export --force $FULL_URL $DEST_DIR
+  svn export --force $FULL_URL $NOTEBOOK_DEST_DIR
 done
 
 echo "notebookdeploy finished   END_TIME=`date -Isecond`"
