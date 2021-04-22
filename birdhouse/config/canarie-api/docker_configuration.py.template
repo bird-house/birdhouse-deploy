@@ -34,7 +34,7 @@ SERVICES = {
             'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/releases',
             'support': 'https://github.com/bird-house/birdhouse-deploy/issues',
             'source': 'https://github.com/bird-house/birdhouse-deploy',
-            'tryme': 'https://pavics.ouranos.ca',
+            'tryme': 'https://${PAVICS_FQDN_PUBLIC}',
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
         },
