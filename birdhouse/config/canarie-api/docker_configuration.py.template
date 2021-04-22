@@ -16,7 +16,7 @@ SERVICES = {
     'node': {
         'info': {
             'name': 'Node',
-            'synopsis': 'Nodes are data, compute and index endpoints accessed through the PAVICS platform or external clients. The Node service is the backend that allows: data storage, harvesting, indexation and discovery of local and federated data; authentication and authorization; server registration and management. Node service is therefore composed of several other services.',
+            'synopsis': 'Nodes are data, compute and index endpoints accessed through the ${SERVER_NAME} platform or external clients. The Node service is the backend that allows: data storage, harvesting, indexation and discovery of local and federated data; authentication and authorization; server registration and management. Node service is therefore composed of several other services.',
             'version': '1.11.25',
             'institution': '${SERVER_INSTITUTION}',
             'releaseTime': '2021-03-26T00:00:00Z',
