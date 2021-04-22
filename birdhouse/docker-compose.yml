@@ -416,6 +416,7 @@ networks:
 
 volumes:
   data: {}
+  mongodb: {}
   wps_outputs: {}
   jupyterhub_data_persistence:
     external:

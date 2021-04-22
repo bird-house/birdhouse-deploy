@@ -5,6 +5,8 @@ RED=$(tput setaf 1)
 NORMAL=$(tput sgr0)
 
 # list of all variables to be substituted in templates
+#   some of these variables *could* employ provided values in 'default.env',
+#   but they must ultimately be defined one way or another for the server to work
 VARS='
   $PAVICS_FQDN
   $DOC_URL
@@ -29,12 +31,13 @@ VARS='
   $SERVER_INSTITUTION
   $SUPPORT_EMAIL
   $SUPPORT_URL
+  $DATA_PERSIST_ROOT
 '
 
-# list of vars to be substituted in template but they do not have to be set in
-# env.local
+# list of vars to be substituted in template but they do not have to be set in env.local
+#   these variables can be omitted completely as they can be inferred from other values or are not specifically required
+#   they usually are intended to provide additional features or extended customization of their behavior
 OPTIONAL_VARS='
-  $DATA_PERSIST_ROOT
   $PAVICS_FQDN_PUBLIC
   $INCLUDE_FOR_PORT_80
   $ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS

@@ -243,7 +243,7 @@ SERVICES = {
 }
 
 PLATFORMS = {
-    'pavics': {
+    '${SERVER_NAME}': {
         'info': {
             'name': '${SERVER_NAME}',
             'synopsis': '${SERVER_SYNOPSIS}',
@@ -262,7 +262,7 @@ PLATFORMS = {
             'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
             'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/releases',
             'support': '${SUPPORT_URL}',
-            'source': 'https://github.com/Ouranosinc/pavics-sdi',
+            'source': 'https://github.com/bird-house/birdhouse-deploy',
             'tryme': 'https://pavics.ouranos.ca',
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html',
