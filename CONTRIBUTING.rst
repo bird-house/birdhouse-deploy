@@ -53,5 +53,5 @@ Policy rules
 PAVICS multi organization git repository management
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: images/multi_organizations_management.jpg
+.. image:: https://raw.githubusercontent.com/bird-house/birdhouse-deploy/master/docs/source/images/multi_organizations_management.jpg
   :alt: PAVICS multi organization git repository management
