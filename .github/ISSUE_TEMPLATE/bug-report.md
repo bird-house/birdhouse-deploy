@@ -3,7 +3,7 @@ name: ":bug: Bug Report"
 about: Create an issue related to a bug or encountered problem.
 title: ":bug: [BUG]: "
 labels: bug
-assignees: tlvu, fmigneault
+assignees: tlvu, MatProv
 
 ---
 
