@@ -270,8 +270,6 @@ services:
       - ${DATA_PERSIST_ROOT}/mongodb_persist:/data/db
     # Mongodb crash with permission denied errors if the command is not overriden like this
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
-    networks:
-      - mongodb
     restart: always
 
   postgis:
@@ -387,7 +385,6 @@ networks:
 
 volumes:
   data: {}
-  mongodb: {}
   wps_outputs: {}
   jupyterhub_data_persistence:
     external:
