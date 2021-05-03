@@ -16,9 +16,9 @@ SERVICES = {
     'node': {
         'info': {
             'name': 'Node',
-            'synopsis': 'Nodes are data, compute and index endpoints accessed through the ${SERVER_NAME} platform or external clients. The Node service is the backend that allows: data storage, harvesting, indexation and discovery of local and federated data; authentication and authorization; server registration and management. Node service is therefore composed of several other services.',
+            'synopsis': 'Nodes are data, compute and index endpoints accessed through the PAVICS platform or external clients. The Node service is the backend that allows: data storage, harvesting, indexation and discovery of local and federated data; authentication and authorization; server registration and management. Node service is therefore composed of several other services.',
             'version': '1.11.25',
-            'institution': '${SERVER_INSTITUTION}',
+            'institution': 'Ouranos',
             'releaseTime': '2021-03-26T00:00:00Z',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
@@ -238,12 +238,12 @@ SERVICES = {
 }
 
 PLATFORMS = {
-    '${SERVER_NAME}': {
+    'pavics': {
         'info': {
-            'name': '${SERVER_NAME}',
-            'synopsis': '${SERVER_SYNOPSIS}',
+            'name': 'PAVICS',
+            'synopsis': 'The PAVICS (Power Analytics for Visualization of Climate Science) platform is a collection of climate analysis services served through Open Geospatial Consortium (OGC) protocols. These services include data access, processing and visualization. Both data and algorithms can be accessed either programmatically, through OGC-compliant clients such as QGIS or ArcGIS, or a custom web interface.',
             'version': '1.11.25',
-            'institution': '${SERVER_INSTITUTION}',
+            'institution': 'Ouranos',
             'releaseTime': '2021-03-26T00:00:00Z',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
@@ -256,8 +256,8 @@ PLATFORMS = {
         'redirect': {
             'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
             'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/releases',
-            'support': '${SUPPORT_URL}',
-            'source': 'https://github.com/bird-house/birdhouse-deploy',
+            'support': 'https://github.com/Ouranosinc/pavics-sdi/issues',
+            'source': 'https://github.com/Ouranosinc/pavics-sdi',
             'tryme': 'https://pavics.ouranos.ca',
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html',
