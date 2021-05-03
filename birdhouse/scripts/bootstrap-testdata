@@ -1,5 +1,5 @@
 #!/bin/sh -x
-# Bootstrap mininum test data on Thredds.
+# Bootstrap minimum test data on Thredds.
 # To run testsuite in https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 #
 # To be run locally on the host running Thredds.  Will populate test data files
