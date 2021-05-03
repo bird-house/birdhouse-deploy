@@ -26,17 +26,14 @@ VARS='
   $POSTGRES_PAVICS_PASSWORD
   $POSTGRES_MAGPIE_USERNAME
   $POSTGRES_MAGPIE_PASSWORD
-  $SERVER_NAME
-  $SERVER_SYNOPSIS
-  $SERVER_INSTITUTION
   $SUPPORT_EMAIL
-  $SUPPORT_URL
   $DATA_PERSIST_ROOT
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local
-#   these variables can be omitted completely as they can be inferred from other values or are not specifically required
+#   their default values are from 'default.env', so they do not have to be defined in 'env.local' if values are adequate
 #   they usually are intended to provide additional features or extended customization of their behavior
+#   when the value provided explicitly, it will be used instead of guessing it by inferred values from other variables
 OPTIONAL_VARS='
   $PAVICS_FQDN_PUBLIC
   $INCLUDE_FOR_PORT_80
