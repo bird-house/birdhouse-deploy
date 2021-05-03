@@ -1,8 +1,10 @@
-# Overview
+## Overview
 
-Please include a summary of the changes and which issues are fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
+Please include a summary of the changes and which issues are fixed. 
 
-This PR fixes [issue id](url)
+Please also include relevant motivation and context. 
+
+List any dependencies that are required for this change.
 
 ## Changes
 
@@ -16,7 +18,7 @@ This PR fixes [issue id](url)
 
 ## Related Issue / Discussion
 
-- Resolves ...
+- Resolves [issue id](url)
 
 ## Additional Information
 
