@@ -20,6 +20,14 @@ services:
       - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/weaver-permissions.cfg:ro
       - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/providers/weaver-provider.cfg:ro
 
+  mongodb:
+    # extend MongoDB to use a shared network that Weaver will be able to access directly
+    # do this as we assume that 'ports' are not exposed, meaning that the DB should be accessible only from that network
+    # also limits external access from other images such as docker container from dispatched execution by workers
+    networks:
+      - mongodb
+    # don't provide volumes, assume that if data persistence was requested, it should be added via another extra compose
+
   # Image 'weaver' is the API side of the application
   weaver:
     image: pavics/weaver:${WEAVER_VERSION}-manager
@@ -117,6 +125,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
+      # don't provide other networks
+      # only Weaver workers should do the bridge between docker/non-docker accessible images
+      # this way, docker images executed by the workers will not have direct access to databases and datasets
       - docker-proxy
     logging: *default-logging
     # remote swarm as needed (requires more permissions above)
@@ -125,5 +136,6 @@ services:
     #    constraints: [node.role == manager]
 
 networks:
+  mongodb: {}
   docker-proxy:
     driver: bridge
