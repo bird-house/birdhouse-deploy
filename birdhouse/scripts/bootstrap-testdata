@@ -1,5 +1,5 @@
 #!/bin/sh -x
-# Bootstrap mininum test data on Thredds.
+# Bootstrap minimum test data on Thredds.
 # To run testsuite in https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 #
 # To be run locally on the host running Thredds.  Will populate test data files
@@ -7,7 +7,7 @@
 
 
 if [ -z "$DATASET_ROOT" ]; then
-    DATASET_ROOT="/data/datasets"
+    DATASET_ROOT="${DATA_PERSIST_ROOT:-/data}/datasets"
 fi
 
 FROM_SERVER="https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/fileServer/birdhouse"
