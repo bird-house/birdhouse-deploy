@@ -1,5 +1,5 @@
     location / {
-        return 302 https://$host/jupyter/hub/login;
+        ${PROXY_ROOT_LOCATION}
     }
 
     location /frontend/ {

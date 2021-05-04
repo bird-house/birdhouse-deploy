@@ -19,7 +19,6 @@ services:
         [
           "CMD",
           "curl",
-          "--insecure",
           "--fail",
           "http://localhost:${HTTP_PORT}?service=WPS&request=GetCapabilities",
         ]
@@ -58,7 +57,6 @@ services:
         [
           "CMD",
           "curl",
-          "--insecure",
           "--fail",
           "http://localhost:8091/wps?service=WPS&request=GetCapabilities",
         ]
@@ -71,7 +69,6 @@ services:
         [
           "CMD",
           "curl",
-          "--insecure",
           "--fail",
           "http://localhost:9099?service=WPS&request=GetCapabilities",
         ]
