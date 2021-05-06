@@ -4,7 +4,7 @@ x-logging:
   &default-logging
   driver: "json-file"
   options:
-    max-size: "200k"
+    max-size: "50m"
     max-file: "10"
 
 services:
