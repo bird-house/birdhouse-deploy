@@ -121,6 +121,27 @@ access for this WPS service.
 
 CANARIE monitoring will also be automatically configured for this WPS service.
 
+
+Enable health checks for WPS services
+--------------------------------------------------------
+
+At any given time, WPS services could stop responding. Using the ``healthcheck`` feature from ``docker-compose``, it is
+possible to monitor the services at regular intervals to ensure they remain accessible. Using this, it is possible to
+rapidly identify if a service might be misbehaving.
+
+Since the various WPS services are executed using a different applications and dependencies in their respective
+Docker images, the method required to validate their status can vary a lot for each case. This optional component
+defines all the appropriate ``healthcheck`` for all known WPS services in PAVICS.
+
+How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
+
+* Add ``./optional-components/wps-healthchecks`` to ``EXTRA_CONF_DIRS``.
+
+Once enabled, every WPS service will be monitored at regular intervals and ``docker-compose`` will indicate in their
+health status. Command ``pavics-compose ps`` can be employed to list running images, and along with it, the statuses
+reported by each ``healthcheck``.
+
+
 .. _magpie-public-access-config:
 
 Give public access to all resources for testing purposes
@@ -170,3 +191,18 @@ into Magpie will not be replicated onto other server instance.
 
 .. _magpie-secure-perms: ./secure-thredds/secure-access-magpie-permission.cfg
 .. |magpie-secure-perms| replace:: optional-components/secure-thredds/secure-access-magpie-permission.cfg
+
+
+Control public exposure of database ports
+--------------------------------------------------------
+
+Because databases may contain sensitive of private data, they should never be directly exposed.
+On the other hand, accessing them remotely can be practical for testing such as in a staging server environment.
+
+This component is intended to automatically map the databases (``PostgreSQL``, ``MongoDB``) as such.
+
+How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
+
+* Add ``./optional-components/database-external-ports`` to ``EXTRA_CONF_DIRS``.
+
+That's it. Databases will be accessible using the mapped ports in then optional component configuration.
