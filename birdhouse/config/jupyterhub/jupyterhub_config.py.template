@@ -107,6 +107,15 @@ c.JupyterHub.log_level = logging.DEBUG
 
 c.Spawner.debug = True
 
+## Timeout (in seconds) to wait for spawners to initialize
+c.JupyterHub.init_spawners_timeout = 20  # default 10
+
+## Timeout (in seconds) before giving up on a spawned HTTP server
+c.Spawner.http_timeout = 60  # default 30
+
+## Timeout (in seconds) before giving up on starting of single-user server.
+c.Spawner.start_timeout = 120  # default 60
+
 ## Extra arguments to be passed to the single-user server.
 c.Spawner.args = ["--NotebookApp.terminals_enabled=False"]
 

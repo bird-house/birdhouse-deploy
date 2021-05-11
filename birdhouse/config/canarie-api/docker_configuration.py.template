@@ -17,26 +17,26 @@ SERVICES = {
         'info': {
             'name': 'Node',
             'synopsis': 'Nodes are data, compute and index endpoints accessed through the PAVICS platform or external clients. The Node service is the backend that allows: data storage, harvesting, indexation and discovery of local and federated data; authentication and authorization; server registration and management. Node service is therefore composed of several other services.',
-            'version': '1.2.2',
+            'version': '1.11.25',
             'institution': 'Ouranos',
-            'releaseTime': '2019-06-22T00:00:00Z',
+            'releaseTime': '2021-03-26T00:00:00Z',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
             'category': 'Resource/Cloud Management',
-            'tags': ['Climatology', 'Cloud']
+            'tags': ['Climatology']
         },
         'stats': {
             'method': '.*',
             'route': '/(magpie|geoserver|thredds|wpsoutputs|jupyter)/.*'
         },
         'redirect': {
-            'doc': 'https://ouranosinc.github.io/pavics-sdi/arch/backend.html',
-            'releasenotes': 'https://ouranosinc.github.io/pavics-sdi/releasenotes.html',
-            'support': 'https://ouranosinc.github.io/pavics-sdi/support/index.html',
-            'source': 'https://github.com/Ouranosinc/pavics-sdi',
-            'tryme': 'https://pavics.ouranos.ca',
-            'licence': 'https://ouranosinc.github.io/pavics-sdi/license.html',
-            'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+            'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
+            'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/releases',
+            'support': 'https://github.com/bird-house/birdhouse-deploy/issues',
+            'source': 'https://github.com/bird-house/birdhouse-deploy',
+            'tryme': 'https://${PAVICS_FQDN_PUBLIC}',
+            'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
+            'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
         },
         'monitoring': {
             'Magpie': {
@@ -49,7 +49,7 @@ SERVICES = {
             },
             'Twitcher': {
                 'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/ows/proxy/flyingpigeon?service=WPS&version=1.0.0&request=GetCapabilities'
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/flyingpigeon?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
             'Geoserver': {
@@ -92,7 +92,7 @@ SERVICES = {
             },
             'Thredds': {
                 'request': {
-                    'url': 'http://${PAVICS_FQDN}:8083/twitcher/ows/proxy/thredds/catalog.html'
+                    'url': 'http://${PAVICS_FQDN}:8083${TWITCHER_PROTECTED_PATH}/thredds/catalog.html'
                 }
             },
             'Jupyter': {
@@ -106,9 +106,9 @@ SERVICES = {
         'info': {
             'name': 'Climate indices',
             'synopsis': 'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, the number of degree-days of cooling, the duration of heatwaves, etc. This returns annual values of the most popular climate indices.',
-            'version': '0.2.4',
+            'version': '0.7.1',
             'institution': 'Ouranos',
-            'releaseTime': '2019-05-27T00:00:00Z',
+            'releaseTime': '2021-03-25T00:00:00Z',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
             'category': 'Data Manipulation',
@@ -116,21 +116,21 @@ SERVICES = {
         },
         'stats': {
             'method': '.*',
-            'route': '/twitcher/ows/proxy/finch.*'
+            'route': '${TWITCHER_PROTECTED_PATH}/finch.*'
         },
         'redirect': {
             'doc': 'https://finch.readthedocs.io/en/latest/index.html',
             'releasenotes': 'https://github.com/bird-house/finch/releases',
-            'support': 'https://ouranosinc.github.io/pavics-sdi/support/index.html',
+            'support': 'https://github.com/bird-house/finch/issues',
             'source': 'https://github.com/bird-house/finch',
             'tryme': 'https://ouranosinc.github.io/pavics-sdi/notebooks/climate_indices.html',
-            'licence': 'https://ouranosinc.github.io/pavics-sdi/license.html',
+            'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
             'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
         },
         'monitoring': {
             'Finch': {
                 'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/ows/proxy/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
         }
@@ -140,9 +140,9 @@ SERVICES = {
             'name': 'Hydrological modeling and analysis',
             'synopsis': ('A suite of WPS processes to calibrate and run hydrological models, including geographical'
             'information retrieval and processing as well as time series analysis.'),
-            'version': '0.7.0',
+            'version': '0.11.1',
             'institution': 'Ouranos',
-            'releaseTime': '2019-06-05T00:00:00Z',
+            'releaseTime': '2021-02-01T00:00:00Z',
             'researchSubject': 'Hydrology',
             'supportEmail': '${SUPPORT_EMAIL}',
             'category': 'Data Manipulation',
@@ -150,21 +150,21 @@ SERVICES = {
         },
         'stats': {
             'method': '.*',
-            'route': '/twitcher/ows/proxy/raven.*'
+            'route': '${TWITCHER_PROTECTED_PATH}/raven.*'
         },
         'redirect': {
             'doc': 'https://pavics-raven.readthedocs.io/en/latest/',
             'releasenotes': 'https://github.com/Ouranosinc/raven/releases',
-            'support': 'https://ouranosinc.github.io/pavics-sdi/support/index.html',
+            'support': 'https://github.com/Ouranosinc/raven/issues',
             'source': 'https://github.com/Ouranosinc/raven',
-            'tryme': 'https://pavics-raven.readthedocs.io/en/latest/processes.html',
-            'licence': 'https://ouranosinc.github.io/pavics-sdi/license.html',
+            'tryme': 'https://pavics-raven.readthedocs.io/en/latest/notebooks/index.html',
+            'licence': 'https://github.com/Ouranosinc/raven/blob/master/LICENSE.txt',
             'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
         },
         'monitoring': {
             'Raven': {
                 'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/ows/proxy/raven?service=WPS&version=1.0.0&request=GetCapabilities'
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
         }
@@ -173,31 +173,31 @@ SERVICES = {
         'info': {
             'name': 'High-resolution spatial gridded data renderer',
             'synopsis': 'This service renders gridded data on the server and sends images to the client for display within mapping applications using Open Geospatial Consortium (OGC) Web Mappping Service (WMS) standard.',
-            'version': '1.0.0',
-            'institution': 'Ouranos',
-            'releaseTime': '2017-10-05T00:00:00Z',
+            'version': '4.6.15',
+            'institution': 'Unidata',
+            'releaseTime': '2020-06-16T00:00:00Z',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
             'category': 'Data Manipulation',
-            'tags': ['Climatology', 'Cloud']
+            'tags': ['Climatology']
         },
         'stats': {
             'method': '.*',
-            'route': '/ncWMS2/.*'
+            'route': '/thredds/.*'
         },
         'redirect': {
             'doc': 'https://ouranosinc.github.io/pavics-sdi/arch/frontend.html#gridded-data-rendering',
-            'releasenotes': 'https://github.com/Reading-eScience-Centre/ncwms/releases/tag/ncwms-2.4.1',
-            'support': 'https://ouranosinc.github.io/pavics-sdi/support/index.html',
-            'source': 'https://hub.docker.com/r/pavics/ncwms2/',
+            'releasenotes': 'https://github.com/Unidata/tds/releases',
+            'support': 'https://github.com/Ouranosinc/pavics-sdi/issues',
+            'source': 'https://github.com/Unidata/tds',
             'tryme': 'https://ouranosinc.github.io/pavics-sdi/notebooks/rendering.html',
-            'licence': 'https://ouranosinc.github.io/pavics-sdi/license.html',
+            'licence': 'https://github.com/Unidata/tds/blob/master/LICENSE',
             'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
         },
         'monitoring': {
             'ncWMS': {
                 'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/ncWMS2/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds/wms/birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc?service=WMS&version=1.3.0&request=GetCapabilities'
                 }
             },
         }
@@ -205,10 +205,10 @@ SERVICES = {
     'slicer': {
         'info': {
             'name': 'Spatial and temporal data slicer',
-            'synopsis': 'This service allows the subsetting and download of NetCDF data using OPEnDAP protocol.',
-            'version': '1.0.0',
+            'synopsis': 'These services allows the subsetting and download of NetCDF over user-defined regions and periods.',
+            'version': '0.7.1',
             'institution': 'Ouranos',
-            'releaseTime': '2017-10-05T00:00:00Z',
+            'releaseTime': '2021-03-25T00:00:00Z',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
             'category': 'Data Manipulation',
@@ -216,21 +216,21 @@ SERVICES = {
         },
         'stats': {
             'method': '.*',
-            'route': '/twitcher/ows/proxy/flyingpigeon.*'
+            'route': '${TWITCHER_PROTECTED_PATH}/finch.*'
         },
         'redirect': {
-            'doc': 'https://ouranosinc.github.io/pavics-sdi/processes/basic_climate.html#spatial-and-temporal-subsetting',
-            'releasenotes': 'https://github.com/Ouranosinc/flyingpigeon/releases/tag/pavics-0.4.3',
-            'support': 'https://ouranosinc.github.io/pavics-sdi/support/index.html',
-            'source': 'https://github.com/Ouranosinc/flyingpigeon/blob/master/flyingpigeon/processes/wps_subset_WFS.py',
-            'tryme': 'https://ouranosinc.github.io/pavics-sdi/notebooks/subsetting.html',
-            'licence': 'https://ouranosinc.github.io/pavics-sdi/license.html',
+            'doc': 'https://finch.readthedocs.io/en/latest/index.html',
+            'releasenotes': 'https://github.com/bird-house/finch/releases',
+            'support': 'https://github.com/bird-house/finch/issues',
+            'source': 'https://github.com/bird-house/finch',
+            'tryme': 'https://pavics-sdi.readthedocs.io/en/latest/notebooks/regridding.html',
+            'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
             'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
         },
         'monitoring': {
             'Flyingpigeon': {
                 'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/ows/proxy/flyingpigeon?service=WPS&version=1.0.0&request=GetCapabilities'
+                     'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
         }
@@ -242,9 +242,9 @@ PLATFORMS = {
         'info': {
             'name': 'PAVICS',
             'synopsis': 'The PAVICS (Power Analytics for Visualization of Climate Science) platform is a collection of climate analysis services served through Open Geospatial Consortium (OGC) protocols. These services include data access, processing and visualization. Both data and algorithms can be accessed either programmatically, through OGC-compliant clients such as QGIS or ArcGIS, or a custom web interface.',
-            'version': '1.2.2',
+            'version': '1.11.25',
             'institution': 'Ouranos',
-            'releaseTime': '2019-06-17T00:00:00Z',
+            'releaseTime': '2021-03-26T00:00:00Z',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
             'tags': ['Climatology', 'Cloud']
@@ -254,13 +254,13 @@ PLATFORMS = {
             'route': '/project-api/.*'
         },
         'redirect': {
-            'doc': 'https://ouranosinc.github.io/pavics-sdi',
-            'releasenotes': 'https://ouranosinc.github.io/pavics-sdi/releasenotes.html',
-            'support': 'https://ouranosinc.github.io/pavics-sdi/support/index.html',
+            'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
+            'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/releases',
+            'support': 'https://github.com/Ouranosinc/pavics-sdi/issues',
             'source': 'https://github.com/Ouranosinc/pavics-sdi',
             'tryme': 'https://pavics.ouranos.ca',
-            'licence': 'https://ouranosinc.github.io/pavics-sdi/license.html',
-            'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html',
+            'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
+            'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html',
             'factsheet': 'http://www.canarie.ca/software/pavics'
         },
         'monitoring': {

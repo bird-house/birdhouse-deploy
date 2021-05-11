@@ -43,12 +43,12 @@
 # Constant could not be found: WSO2_CERTIFICATE_FILE (using default: None)
 # Constant could not be found: WSO2_SSL_VERIFY (using default: True)
 # 28-Sep-20 23:15:37 - INFO - Output results sent to [/tmp/create_magpie_users/magpie_create_users_log__20200928__231537.txt]
-# 
+#
 # $ cat /tmp/create_magpie_users/magpie_create_users_log__20200928__231537.txt
-# 
+#
 # USERNAME     PASSWORD         RESULT
 # ____________________________________________________________
-# 
+#
 # bogus01      I1gthT3JgjAb     200 : Login successful.
 # bogus02      McsksZTe7nwN     200 : Login successful.
 # bogus03      8a3GKcaqRxFW     200 : Login successful.
@@ -56,10 +56,10 @@
 # Output when user already exist:
 #
 # $ cat /tmp/create_magpie_users/magpie_create_users_log__20200929__190328.txt
-# 
+#
 # USERNAME     PASSWORD         RESULT
 # ___________________________________________________________________________________________
-# 
+#
 # bogus01      P8sL5zwKcF8c     409 : User name matches an already existing user name.
 # bogus02      s5XXrVPgfzsQ     409 : User name matches an already existing user name.
 # bogus03      bvNWVWCQi8M6     409 : User name matches an already existing user name.
@@ -98,7 +98,7 @@ if [ -z "$MAGPIE_CLI_CONF" ]; then
 fi
 
 if [ -z "$MAGPIE_CLI_IMAGE" ]; then
-    MAGPIE_CLI_IMAGE="pavics/magpie:2.0.1"
+    MAGPIE_CLI_IMAGE="pavics/magpie:3.8.0"
 fi
 
 # End configurable config via env var.
