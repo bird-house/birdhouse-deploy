@@ -25,7 +25,7 @@ c.JupyterHub.template_paths = ['/custom_templates']
 class CustomDockerSpawner(DockerSpawner):
     def start(self):
         if(os.environ['MOUNT_IMAGE_SPECIFIC_NOTEBOOKS'] == 'true'):
-            host_dir = join(os.environ['JUPYTERHUB_USER_DATA_DIR'], 'tutorial-notebooks')
+            host_dir = join(os.environ['JUPYTERHUB_USER_DATA_DIR'], 'tutorial-notebooks-specific-images')
 
             # Mount a volume with a tutorial-notebook subfolder corresponding to the image name, if it exists
             image_name = self.user_options.get('image')
@@ -101,7 +101,7 @@ c.Spawner.disable_user_config = True
 c.DockerSpawner.default_url = '/lab'
 c.DockerSpawner.remove = True  # delete containers when servers are stopped
 ${ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS}    # noqa
-c.DockerSpawner.pull_policy = "always"  # for images not using pinned version
+# c.DockerSpawner.pull_policy = "always"  # for images not using pinned version
 c.DockerSpawner.debug = True
 c.JupyterHub.log_level = logging.DEBUG
 
