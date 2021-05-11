@@ -310,7 +310,7 @@ services:
     logging: *default-logging
 
   magpie:
-    image: pavics/magpie:3.10.0
+    image: pavics/magpie:3.12.0
     container_name: magpie
     ports:
       - "2001:2001"
@@ -338,7 +338,7 @@ services:
     logging: *default-logging
 
   twitcher:
-    image: pavics/twitcher:magpie-3.10.0
+    image: pavics/twitcher:magpie-3.12.0
     container_name: twitcher
     ports:
       - "8000:8000"
