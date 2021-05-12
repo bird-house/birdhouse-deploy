@@ -69,6 +69,9 @@ THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
+# must retrieve MAGPIE_VERSION
+. "${COMPOSE_DIR}/default.env"
+
 if [ -f "$COMPOSE_DIR/env.local" ]; then
     # Get PAVICS_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
     . $COMPOSE_DIR/env.local
@@ -98,7 +101,7 @@ if [ -z "$MAGPIE_CLI_CONF" ]; then
 fi
 
 if [ -z "$MAGPIE_CLI_IMAGE" ]; then
-    MAGPIE_CLI_IMAGE="pavics/magpie:3.12.0"
+    MAGPIE_CLI_IMAGE="pavics/magpie:${MAGPIE_VERSION}"
 fi
 
 # End configurable config via env var.
