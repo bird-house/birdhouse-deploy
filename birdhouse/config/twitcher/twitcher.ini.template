@@ -22,7 +22,7 @@ sqlalchemy.url = sqlite:///%(here)s/twitcher.sqlite
 retry.attempts = 3
 
 # Caching settings for specific sections/functions - improves performance response times of recurring requests
-# Although related to Magpie, cache regions settings executed by 'MagpieAdapter' are running under Twitcher to 
+# Although related to Magpie, cache regions settings executed by 'MagpieAdapter' are running under Twitcher to
 # resolve Access Control Lists to services, and must therefore be placed in Twitcher configuration.
 # NOTE: Caching will only take effect with Magpie >= 3.7
 # Detail:
@@ -35,9 +35,9 @@ retry.attempts = 3
 cache.regions = acl, service
 cache.type = memory
 cache.acl.enabled = true
-cache.acl.expire = 60
+cache.acl.expire = 20
 cache.service.enabled = true
-cache.service.expire = 20
+cache.service.expire = 60
 
 # By default, the toolbar only appears for clients from IP addresses
 # '127.0.0.1' and '::1'.
