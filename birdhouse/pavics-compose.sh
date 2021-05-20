@@ -5,6 +5,8 @@ RED=$(tput setaf 1)
 NORMAL=$(tput sgr0)
 
 # list of all variables to be substituted in templates
+#   some of these variables *could* employ provided values in 'default.env',
+#   but they must ultimately be defined one way or another for the server to work
 VARS='
   $PAVICS_FQDN
   $DOC_URL
@@ -15,7 +17,6 @@ VARS='
   $PHOENIX_PASSWORD
   $PHOENIX_PASSWORD_HASH
   $TOMCAT_NCWMS_PASSWORD
-  $SUPPORT_EMAIL
   $CMIP5_THREDDS_ROOT
   $JUPYTERHUB_ADMIN_USERS
   $CATALOG_USERNAME
@@ -25,11 +26,15 @@ VARS='
   $POSTGRES_PAVICS_PASSWORD
   $POSTGRES_MAGPIE_USERNAME
   $POSTGRES_MAGPIE_PASSWORD
+  $SUPPORT_EMAIL
+  $DATA_PERSIST_ROOT
   $GEOSERVER_ADMIN_PASSWORD
 '
 
-# list of vars to be substituted in template but they do not have to be set in
-# env.local
+# list of vars to be substituted in template but they do not have to be set in env.local
+#   their default values are from 'default.env', so they do not have to be defined in 'env.local' if values are adequate
+#   they usually are intended to provide additional features or extended customization of their behavior
+#   when the value provided explicitly, it will be used instead of guessing it by inferred values from other variables
 OPTIONAL_VARS='
   $PAVICS_FQDN_PUBLIC
   $INCLUDE_FOR_PORT_80
@@ -49,6 +54,7 @@ OPTIONAL_VARS='
   $AUTODEPLOY_NOTEBOOK_FREQUENCY
   $AUTODEPLOY_EXTRA_SCHEDULER_JOBS
   $PROXY_READ_TIMEOUT_VALUE
+  $PROXY_ROOT_LOCATION
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH

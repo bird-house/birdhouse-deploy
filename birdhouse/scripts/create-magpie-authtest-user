@@ -10,12 +10,16 @@ THIS_DIR="`dirname "$THIS_FILE"`"
 
 TMP_CONFIG_FILE="/tmp/create-magpie-authtest-user.yml"
 
+# Test user is added to 'thredds-secure-authtest-group' to obtain access to 'secure' directory under 'thredds' service.
+# Those permissions are defined in 'optional-components/secure-thredds/secure-access-magpie-permission.cfg'
+# which should also be included in 'EXTRA_CONF_DIRS' of your custom 'env.local' file.
+# This user is also automatically added to 'anonymous' group without the need of explicit membership here.
 cat <<__OEF__ > $TMP_CONFIG_FILE
 users:
    - username: authtest
      password: authtest1234
      email: authtest@example.com
-     group: anonymous
+     group: thredds-secure-authtest-group
 __OEF__
 
 set -x

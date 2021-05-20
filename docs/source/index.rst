@@ -22,6 +22,7 @@ Contents:
    birdhouse/components/README
    birdhouse/optional-components/README
    data_catalog
+   contributing
 
 
 Indices and tables
