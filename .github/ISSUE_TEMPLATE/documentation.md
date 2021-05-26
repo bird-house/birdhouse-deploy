@@ -23,4 +23,4 @@ assignees: tlvu
 | --------------------- | --------------------------------------------------------------
 | Server/Platform URL   | <!-- Any applicable instance, e.g: https://pavics.ouranos.ca -->
 | Related issues/PR     | <!-- URL to any existing issues in https://github.com/Ouranosinc/pavics-sdi/issues ? -->
-| Related documentation | <!-- URL to incorrect https://ouranosinc.github.io/pavics-sdi/index.html HTML doc tag? -->
+| Related documentation | <!-- URL to incorrect https://pavics-sdi.readthedocs.io/ HTML doc tag? -->
