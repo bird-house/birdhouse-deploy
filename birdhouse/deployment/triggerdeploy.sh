@@ -119,7 +119,7 @@ START_TIME="`date -Isecond`"
 echo "==========
 triggerdeploy START_TIME=$START_TIME"
 
-. ./default.env
+. $COMPOSE_DIR/default.env
 
 # Read AUTODEPLOY_EXTRA_REPOS
 . $ENV_LOCAL_FILE
