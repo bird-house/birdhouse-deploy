@@ -245,5 +245,24 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
    component.
 
 
+To help properly update versions in all files that could reference to the latest tag,
+the `bump2version <https://github.com/c4urself/bump2version>`_ utility is employed.
+Running this tool will modify versions, apply change logs updates and generate a Git tag.
+
+One of the following commands should be used to generate a new tag version.
+The local ``.bumpversion.cfg`` file should be detected automatically when
+located at the root of the repository.
+
+.. code-block:: shell
+
+    # bump to a specific semantic version
+    bump2version --new-version "<MAJOR>.<MINOR>.<PATCH>" patch
+
+    # bump to a one increment above the corresponding part (eg: minor for 1.0.1 -> 1.1.0)
+    bump2version [major|minor|patch]
+
+    # test result without applying it
+    bump2version --verbose --dry-run <other options>
+
 .. _nginx.conf: ./config/proxy/nginx.conf
 .. _default.env: ./default.env
