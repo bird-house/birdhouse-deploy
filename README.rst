@@ -4,10 +4,30 @@ birdhouse-deploy
 Scripts and configurations to deploy the various birds and servers required
 for a full-fledged production platform.
 
-..
-    .. image:: https://readthedocs.org/projects/birdhouse-deploy/badge/?version=latest
-        :target: https://birdhouse-deploy.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
+.. start-badges
+
+.. list-table::
+    :stub-columns: 1
+
+    * - statuses
+      - | |readthedocs|
+    * - releases
+      - | |latest-version| |commits-since|
+
+.. |commits-since| image:: https://img.shields.io/github/commits-since/bird-house/birdhouse-deploy/1.13.9.svg
+    :alt: Commits since latest release
+    :target: https://github.com/bird-house/birdhouse-deploy/compare/1.13.9...master
+
+.. |latest-version| image:: https://img.shields.io/badge/tag-1.13.9-blue.svg?style=flat
+    :alt: Latest Tag
+    :target: https://github.com/bird-house/birdhouse-deploy/tree/1.13.9
+
+.. |readthedocs| image:: https://readthedocs.org/projects/birdhouse-deploy/badge/?version=latest
+    :alt: ReadTheDocs Build Status (latest version)
+    :target: https://birdhouse-deploy.readthedocs.io/en/latest/?badge=latest
+
+.. end-badges
+
 
 PAVICS
 ------

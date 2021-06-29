@@ -4,7 +4,7 @@
 
 ## [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 
-[//]: # - List changes here, using '-' for each new entry to make it a list...
+[//]: # list changes here, using '-' for each new entry (remove this when items are added)
 
 ## [1.13.9](https://github.com/bird-house/birdhouse-deploy/tree/1.13.9) (2021-06-18)
 

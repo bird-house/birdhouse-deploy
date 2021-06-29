@@ -41,6 +41,7 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'm2r',  # add mdinclude
 ]
 
 # Add any paths that contain templates here, relative to this directory.
