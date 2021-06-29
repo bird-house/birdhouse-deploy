@@ -22,6 +22,9 @@ formats: all
 # Optionally set the version of Python and requirements required to build your docs
 python:
   version: 3.6
+  install:
+    - method: pip
+      path: m2r2
 
 #conda:
 #  environment: environment-docs.yml
