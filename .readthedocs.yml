@@ -23,8 +23,7 @@ formats: all
 python:
   version: 3.6
   install:
-    - method: pip
-      path: m2r2
+    - requirements: docs/requirements.txt
 
 #conda:
 #  environment: environment-docs.yml
