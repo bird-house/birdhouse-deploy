@@ -18,7 +18,7 @@
 
 ## [1.13.9](https://github.com/bird-house/birdhouse-deploy/tree/1.13.9) (2021-06-18)
 
-- jupyter: update for raven notebooks
+- `jupyter`: update for raven notebooks
 
   To deploy the new Jupyter env to PAVICS.
 
@@ -34,14 +34,14 @@
 
 ## [1.13.8](https://github.com/bird-house/birdhouse-deploy/tree/1.13.8) (2021-06-15)
 
-- jupyter: new version for updated ravenpy, birdy and xclim
+- `jupyter`: new version for updated `ravenpy`, `birdy` and `xclim`
 
   PR to deploy the new Jupyter env to PAVICS.
 
-  See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/75
+  See PR [Ouranosinc/PAVICS-e2e-workflow-tests#75](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/75)
   for more details.
 
-  Relevant changes:
+  ### Changes
 
   ```diff
   <   - ravenpy=0.4.2=py37_1
@@ -112,29 +112,33 @@
 
 ## [1.13.7](https://github.com/bird-house/birdhouse-deploy/tree/1.13.7) (2021-06-10)
 
-- jupyterhub: allow config override via env.local
+- `jupyterhub`: allow config override via env.local
 
-  ## Overview
+  ### Overview
 
-  This is basically the same as `ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS` but at the bottom of the file so it can override everything.
+  This is basically the same as `ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS` but at the bottom of the file so it can 
+  override everything.
 
   `ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS` is kept for backward-compat.
 
-  First useful application is to enable server culling for auto shutdown of idle kernels and idle jupyter single server, hopefully fixes https://github.com/bird-house/birdhouse-deploy/issues/67.
+  First useful application is to enable server culling for auto shutdown of idle kernels and idle jupyter single server,
+  hopefully fixes [#67](https://github.com/bird-house/birdhouse-deploy/issues/67).
 
-  The culling settings will only take effect the next time user restart their personal Jupyter server because it seems that the Jupyter server is the one culling itself.  JupyterHub do not perform the culling, it simply forward the culling settings to the Jupyter server.
+  The culling settings will only take effect the next time user restart their personal Jupyter server because it seems 
+  that the Jupyter server is the one culling itself.  JupyterHub do not perform the culling, it simply forwards the 
+  culling settings to the Jupyter server.
 
   ```sh
   $ docker inspect jupyter-lvu --format '{{ .Args }}'
   [run -n birdy /usr/local/bin/start-notebook.sh --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=180 --MappingKernelManager.cull_idle_timeout=180 --MappingKernelManager.cull_connected=True]
   ```
 
-  ## Changes
+  ### Changes
 
   **Non-breaking changes**
-  - jupyterhub: allow config override via env.local
+  - `jupyterhub`: allow config override via env.local
 
-  ## Tests
+  ### Tests
 
   Deployed to https://lvupavicsdev.ouranos.ca/jupyter (timeout set to 5 mins)
 
@@ -142,7 +146,9 @@
 
 - Bugfix for autodeploy job
 
-  The new code added with [this merge](https://github.com/bird-house/birdhouse-deploy/commit/d90765acabe248e65c4899929fbe37a9e8661643) created a new bug for the autodeploy job.
+  The new code added with 
+  [this merge](https://github.com/bird-house/birdhouse-deploy/commit/d90765acabe248e65c4899929fbe37a9e8661643) 
+  created a new bug for the autodeploy job.
 
   From the autodeploy job's log :
   ```
@@ -150,13 +156,18 @@
   Error: DEPLOY_DATA_JOB_SCHEDULE not set
   ```
   If the `AUTODEPLOY_NOTEBOOK_FREQUENCY` variable is not set in the `env.local` file, it would create the error above.
-  The variable is set in the `default.env` file, in case it is not defined in the `env.local`, and is then used for the new env file from pavics-jupyter-base [here](https://github.com/bird-house/pavics-jupyter-base/blob/1f81480fe90e0a110f0320c6d6cb17f73b657733/scheduler-jobs/deploy_data_pavics_jupyter.env#L15).
-  The error happens because the `default.env` was not called in the `triggerdeploy.sh` script, and the variable was not set when running the `env.local`.
+  The variable is set in the `default.env` file, in case it is not defined in the `env.local`, and is then used for the 
+  new env file from `pavics-jupyter-base` 
+  [here](https://github.com/bird-house/pavics-jupyter-base/blob/1f81480fe90e0a110f0320c6d6cb17f73b657733/scheduler-jobs/deploy_data_pavics_jupyter.env#L15).
+  The error happens because the `default.env` was not called in the `triggerdeploy.sh` script, and the variable was not 
+  set when running the `env.local`.
 
   Solution was tested in a test environment and the cronjob seems to be fixed now.
 
-  I tried to see if the same situation could be found anywhere else. From what I see, default.env seems to be called in a consistent way before the env.local.
-  There is just [here](https://github.com/bird-house/birdhouse-deploy/blob/7e2b8cb428be29d52d27b4b1faa73be7017712ea/birdhouse/deployment/deploy.sh#L109), where the default.env doesn't seem to be called. A default.env call has also been added in that file.
+  Tests were executed to see if the same situation could be found anywhere else. 
+  From what was observed, `default.env` seems to be called consistently before the `env.local`.
+  Only [here](https://github.com/bird-house/birdhouse-deploy/blob/7e2b8cb428be29d52d27b4b1faa73be7017712ea/birdhouse/deployment/deploy.sh#L109), 
+  `default.env` doesn't seem to be called. A `default.env` call has also been added in that file.
 
 ## [1.13.5](https://github.com/bird-house/birdhouse-deploy/tree/1.13.5) (2021-05-19)
 
@@ -217,15 +228,15 @@
 
 ## [1.13.1](https://github.com/bird-house/birdhouse-deploy/tree/1.13.1) (2021-05-10)
 
-- jupyterhub: update to ver 1.4.0-20210506
+- `jupyterhub`: update to ver 1.4.0-20210506
 
-  ## Changes
+  ### Changes
 
   **Non-breaking changes**
 
-  - jupyterhub: update to ver 1.4.0-20210506
+  - `jupyterhub`: update to ver 1.4.0-20210506
 
-  ## Tests
+  ### Tests
 
   - Deployed to https://lvupavics.ouranos.ca/jupyter
   - Able to login
@@ -237,46 +248,49 @@
 
 ## [1.13.0](https://github.com/bird-house/birdhouse-deploy/tree/1.13.0) (2021-05-06)
 
-- bump default log retention to 500m instead of 2m, more suitable for prod
+- bump default log retention to `500m` instead of `2m`, more suitable for prod
 
-  # Overview
+  ### Overview
 
-  Bump default log retention to 500m instead of 2m, more suitable for prod
+  Bump default log retention to `500m` instead of `2m`, more suitable for prod
 
-  Forgot to push during PR https://github.com/bird-house/birdhouse-deploy/pull/152.
+  Forgot to push during PR [#152](https://github.com/bird-house/birdhouse-deploy/pull/152).
 
-  ## Changes
+  ### Changes
 
   **Non-breaking changes**
-  - Bump default log retention to 500m instead of 2m, more suitable for prod
+  - Bump default log retention to `500m` instead of `2m`, more suitable for prod
 
 ## [1.12.4](https://github.com/bird-house/birdhouse-deploy/tree/1.12.4) (2021-05-06)
 
-- Update to new finch 0.7.4.
+- Update to new finch [0.7.4](https://github.com/bird-house/finch/tree/v0.7.4).
 
-  # Overview
+  ### Overview
 
-  Updates finch's image to just released 0.7.4.
+  Updates finch's image to just released [0.7.4](https://github.com/bird-house/finch/tree/v0.7.4).
 
-  ## Changes
+  ### Changes
 
   **Non-breaking changes**
   - Updates finch's xclim to 0.26.
-  - Finch now has improved metadata handling : output's attributes are read from config and ensemble processes's datasets are included in the attributes of the output.
+  - Finch now has improved metadata handling : output's attributes are read from config and ensemble 
+    processes' datasets are included in the attributes of the output.
   - Ensemble processes now compute meaningful statistics for indicators using day-of-year "units".
 
-  ## Tests
+  ### Tests
 
-  * https://daccs-jenkins.crim.ca/job/PAVICS-e2e-workflow-tests/job/master/392/parameters/ against our prod `pavics.ouranos.ca` to baseline the state of things
+  * https://daccs-jenkins.crim.ca/job/PAVICS-e2e-workflow-tests/job/master/392/parameters/ against 
+    Ouranos' prod `pavics.ouranos.ca` to baseline the state of things
 
-  * https://daccs-jenkins.crim.ca/job/PAVICS-e2e-workflow-tests/job/master/393/parameters/ against my `lvupavicsdev.ouranos.ca` that has this PR deployed.
+  * https://daccs-jenkins.crim.ca/job/PAVICS-e2e-workflow-tests/job/master/393/parameters/ against 
+    `lvupavicsdev.ouranos.ca` that has this PR deployed.
 
   Both all passes.
 
 ## [1.12.3](https://github.com/bird-house/birdhouse-deploy/tree/1.12.3) (2021-05-04)
 
 - Change overview:
-  * allow to customize `/data` persistence root on disk, retaining current default for existing deployment
+  * allow customization of `/data` persistence root on disk, retaining current default for existing deployment
   * add data persistence for `mongodb` container
 
 ## [1.12.2](https://github.com/bird-house/birdhouse-deploy/tree/1.12.2) (2021-04-28)
@@ -285,7 +299,7 @@
 
 ## [1.12.1](https://github.com/bird-house/birdhouse-deploy/tree/1.12.1) (2021-04-28)
 
-- proxy: allow homepage (location /) to be configurable
+- `proxy`: allow homepage (location /) to be configurable
 
 ## [1.12.0](https://github.com/bird-house/birdhouse-deploy/tree/1.12.0) (2021-04-19)
 
@@ -322,22 +336,30 @@
 
 - Update Raven and Jupyter env for Raven demo
 
-  Raven release notes PR https://github.com/Ouranosinc/raven/pull/374 + https://github.com/Ouranosinc/raven/pull/382
+  Raven release notes in 
+  PR [Ouranosinc/raven#374](https://github.com/Ouranosinc/raven/pull/374])
+  and [Ouranosinc/raven#382](https://github.com/Ouranosinc/raven/pull/382)
 
-  Jupyter env update PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/71
+  Jupyter env update in 
+  PR [Ouranosinc/PAVICS-e2e-workflow-tests#71](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/71)
 
   Other fixes:
-  * Fix intermittent Jupyter spawning error by doubling various timeouts config (it's intermittent so hard to test so we are not sure which ones of timeout fixed it)
-  * Fix Finch and Raven "Broken pipe" error when the request size is larger than default 3mb (bumped to 100mb) (fixes https://github.com/Ouranosinc/raven/issues/361 and Finch related comment https://github.com/bird-house/finch/issues/98#issuecomment-811230388)
-  * Lower chance to have "Max connection" error for Finch and Raven (bump parallelprocesses from 2 to 10). In prod, the server has the CPU needed to run 10 concurrent requests if needed so this prevent users having to "wait" after each other.
+  * Fix intermittent Jupyter spawning error by doubling various timeouts config 
+    (it's intermittent so hard to test so we are not sure which ones of timeout fixed it)
+  * Fix Finch and Raven "Broken pipe" error when the request size is larger than default 3mb (bumped to 100mb) 
+    (fixes [Ouranosinc/raven#361](https://github.com/Ouranosinc/raven/issues/361) 
+    and Finch related [comment](https://github.com/bird-house/finch/issues/98#issuecomment-811230388))
+  * Lower chance to have "Max connection" error for Finch and Raven (bump parallelprocesses from 2 to 10). 
+    In prod, the server has the CPU needed to run 10 concurrent requests if needed so this prevent users having to
+    "wait" after each other.
 
 ## [1.11.28](https://github.com/bird-house/birdhouse-deploy/tree/1.11.28) (2021-04-09)
 
-- jupyter: update for new clisops, xclim, ravenpy
+- `jupyter`: update for new `clisops`, `xclim`, `ravenpy`
 
   Matching PR to deploy the new Jupyter env to PAVICS.
 
-  See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/68
+  See PR [Ouranosinc/PAVICS-e2e-workflow-tests#68](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/68)
   for more info.
 
   Relevant changes:
@@ -385,7 +407,8 @@
 
 - reverted name of monitoring routes to original
 
-  The Canarie API complains that `stats` are up but don't return the correct response. I assume it's because I changed the monitoring key to reflect the actual content.
+  The Canarie API complains that `stats` are up but don't return the correct response.
+  It is assumed that it was because the monitoring key was changed to reflect the actual content.
 
   Validation service: https://science.canarie.ca/researchsoftware/services/validator/service.html
   Use Managed
@@ -483,12 +506,15 @@
 
   Adds CRIM's nlp and eo images to the available list of images in JupyterHub
 
-  The base image (pavics-jupyter-base) wasn't added to the list, because it is assumed the users will always be using the other more specialized images.
+  The base image (pavics-jupyter-base) wasn't added to the list, because it is assumed the users will always be 
+  using the other more specialized images.
 
-  We were already able to add/override Jupyter images but this PR makes it more integrated: those image will also be pulled in advanced so startup is much faster for big images since these images will already be cached.
+  We were already able to add/override Jupyter images but this PR makes it more integrated: those image will 
+  also be pulled in advanced so startup is much faster for big images since these images will already be cached.
 
   Backward incompatible changes:
-  DOCKER_NOTEBOOK_IMAGE renamed to DOCKER_NOTEBOOK_IMAGES and is now a space separated list of images. Any existing override in env.local using the old name will have to switch to the new name.
+  DOCKER_NOTEBOOK_IMAGE renamed to DOCKER_NOTEBOOK_IMAGES and is now a space separated list of images. 
+  Any existing override in env.local using the old name will have to switch to the new name.
 
 ## [1.11.22](https://github.com/bird-house/birdhouse-deploy/tree/1.11.22) (2021-03-16)
 
@@ -496,26 +522,32 @@
 
   Require PR https://github.com/bird-house/birdhouse-deploy/pull/131 for extra testdata for the new regridding notebook.
 
-  Regridding notebook will also need to be adjusted for some output to pass Jenkins test suite, PR https://github.com/Ouranosinc/pavics-sdi/pull/206.
+  Regridding notebook will also need to be adjusted for some output to pass Jenkins test suite, 
+  PR https://github.com/Ouranosinc/pavics-sdi/pull/206.
 
-  Nbval escape regex also needed for the regridding notebook, PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/63
+  Nbval escape regex also needed for the regridding notebook, 
+  PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/63
 
   See Finch changelog in PR https://github.com/bird-house/finch/pull/158
 
-  Passing Jenkins build http://jenkins.ouranos.ca/job/PAVICS-e2e-workflow-tests/job/update-nbval-sanitize-config-for-pavics-sdi-regridding-notebook/10/console
+  Passing Jenkins build 
+  http://jenkins.ouranos.ca/job/PAVICS-e2e-workflow-tests/job/update-nbval-sanitize-config-for-pavics-sdi-regridding-notebook/10/console
 
 ## [1.11.21](https://github.com/bird-house/birdhouse-deploy/tree/1.11.21) (2021-02-19)
 
 - Configurable Jupyterhub README
 
-  While the [`README.ipynb`](https://github.com/bird-house/birdhouse-deploy/blob/master/docs/source/notebooks/README.ipynb) provided by `birdhouse-deploy` is good, it does not quite fit our needs at PCIC. This PR allows users to configure their own `README` for Jupyterhub.
+  While 
+  the [`README.ipynb`](https://github.com/bird-house/birdhouse-deploy/blob/master/docs/source/notebooks/README.ipynb) 
+  provided by `birdhouse-deploy` is good, it does not quite fit our needs at PCIC. This PR allows users to configure 
+  their own `README` for Jupyterhub.
 
-  ## Changes
+  ### Changes
   - Adds `JUPYERHUB_README` as configuration option in the appropriate spots
 
 ## [1.11.20](https://github.com/bird-house/birdhouse-deploy/tree/1.11.20) (2021-02-19)
 
-- jupyter: update to version 210216 for xESMF
+- `jupyter`: update to version 210216 for xESMF
 
   Matching PR to deploy https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/61 to PAVICS.
 
@@ -541,9 +573,10 @@
 
 ## [1.11.19](https://github.com/bird-house/birdhouse-deploy/tree/1.11.19) (2021-02-10)
 
-- proxy: proxy_read_timeout config should be configurable
+- `proxy`: proxy_read_timeout config should be configurable
 
-  We have a performance problem with the production deployment at Ouranos so we need a longer timeout.  Being a Ouranos specific need, it should not be hardcoded as in previous PR https://github.com/bird-house/birdhouse-deploy/pull/122.
+  We have a performance problem with the production deployment at Ouranos so we need a longer timeout. 
+  Being an Ouranos specific need, it should not be hardcoded as in previous PR https://github.com/bird-house/birdhouse-deploy/pull/122.
 
   The previous increase was sometime not enough !
 
@@ -610,7 +643,9 @@
 
   Jupyter env change details: https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/60
 
-  Jenkins run (this Jupyter env `pavics/workflow-tests:210201.2` against a devel version of Raven `0.11.1` + `--nbval-lax`) http://jenkins.ouranos.ca/job/PAVICS-e2e-workflow-tests/job/test-nbval-lax-DO_NOT_MERGE/4/console
+  Jenkins run 
+  (this Jupyter env `pavics/workflow-tests:210201.2` against a devel version of Raven `0.11.1` + `--nbval-lax`) 
+  http://jenkins.ouranos.ca/job/PAVICS-e2e-workflow-tests/job/test-nbval-lax-DO_NOT_MERGE/4/console
 
   Only known error:
   ```
@@ -660,7 +695,7 @@
 
 ## [1.11.15](https://github.com/bird-house/birdhouse-deploy/tree/1.11.15) (2021-01-14)
 
-- jupyter: update to version 201214
+- `jupyter`: update to version 201214
 
   Matching PR to deploy the new Jupyter env in PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/56 to PAVICS.
 
@@ -692,7 +727,8 @@
 
 - Add ability to execute post actions for deploy-data script.
 
-  Script `deploy-data` was previously introduced in PR https://github.com/bird-house/birdhouse-deploy/pull/72 to deploy any files from any git repos to the local host it runs.
+  Script `deploy-data` was previously introduced in PR [#72](https://github.com/bird-house/birdhouse-deploy/pull/72) to 
+  deploy any files from any git repos to the local host it runs.
 
   Now it grows the ability to run commands from the git repo it just pulls.
 
@@ -700,14 +736,17 @@
   * post-processing after files from git repo are deployed (ex: advanced file re-mapping)
   * execute up-to-date scripts from git repos (PR https://github.com/bird-house/birdhouse-deploy-ouranos/pull/2)
 
-  Combining this `deploy-data` with the `scheduler` component means we have a way for cronjobs to automatically always execute the most up-to-date version of any scripts from any git repos.
+  Combining this `deploy-data` with the `scheduler` component means we have a way for cronjobs to 
+  automatically always execute the most up-to-date version of any scripts from any git repos.
 
 ## [1.11.13](https://github.com/bird-house/birdhouse-deploy/tree/1.11.13) (2020-12-14)
 
-- jupyterhub: update to version 1.3.0 to include login terms patch
+- `jupyterhub`: update to version 1.3.0 to include login terms patch
 
   This version of jupyterhub includes the login terms patch originally
-  introduced in commit 8be8eeac211d3f5c2de620781db8832fdb8f9093 (PR https://github.com/bird-house/birdhouse-deploy/pull/104).
+  introduced in commit 
+  [8be8eeac211d3f5c2de620781db8832fdb8f9093](https://github.com/bird-house/birdhouse-deploy/commit/8be8eeac211d3f5c2de620781db8832fdb8f9093)
+  of PR [#104](https://github.com/bird-house/birdhouse-deploy/pull/104).
 
   This official login terms feature has a few enhancements (see https://github.com/jupyterhub/jupyterhub/pull/3264#discussion_r530466178):
 
@@ -753,9 +792,11 @@
   </ows:DCP>
   ```
 
-  This config automate manual step to set proxy base url in Geoserver UI https://docs.geoserver.org/2.9.3/user/configuration/globalsettings.html#proxy-base-url
+  This config automate manual step to set proxy base url in Geoserver UI 
+  https://docs.geoserver.org/2.9.3/user/configuration/globalsettings.html#proxy-base-url
 
-  I had to override the docker image entrypoint to edit the `server.xml` on the fly before starting Geoserver (Tomcat) since setting Java proxy config did not seem to work (see first commit).
+  I had to override the docker image entrypoint to edit the `server.xml` on the fly before starting Geoserver (Tomcat) 
+  since setting Java proxy config did not seem to work (see first commit).
 
   Related to https://github.com/Ouranosinc/raven/issues/297.
 
@@ -763,9 +804,10 @@
 
 - Various small fixes.
 
-  monitoring: prevent losing stats when VM auto start from a power failure
+  `monitoring`: prevent losing stats when VM auto start from a power failure
 
-  check-instance-ready: new script to smoke test instance (use in `bootstrap-instance-for-testsuite` for our automation pipeline).
+  `check-instance-ready`: new script to smoke test instance 
+  (use in `bootstrap-instance-for-testsuite` for our automation pipeline).
 
   jupyter: add CATALOG_USERNAME and anonymous to blocked_users list for security
   See comment https://github.com/bird-house/birdhouse-deploy/pull/102#issuecomment-730109547
@@ -788,17 +830,22 @@
 
 - Add terms conditions to JupyterHub login page and update to latest JupyterHub version.
 
-  User have to check the checkbox agreeing to the terms and conditions in order to login (fixes https://github.com/Ouranosinc/pavics-sdi/issues/188).
+  User have to check the checkbox agreeing to the terms and conditions in order to login 
+  (fixes [Ouranosinc/pavics-sdi#188](https://github.com/Ouranosinc/pavics-sdi/issues/188)).
 
-  User will have to accept the terms and conditions (the checkbox) each time he needs to login. However, if user do not logout or wipe his browser cookies, the next time he navigate to the login page, he'll just log right in, no password is asked so no terms and conditions to accept either.
+  User will have to accept the terms and conditions (the checkbox) each time he needs to login. 
+  However, if user do not logout or wipe his browser cookies, the next time he navigate to the login page, 
+  he'll just log right in, no password is asked so no terms and conditions to accept either.
 
   This behavior is optional and only enabled if `JUPYTER_LOGIN_TERMS_URL` in `env.local` is set.
 
-  Had to patch the `login.html` template from jupyterhub docker image for this feature (PR https://github.com/jupyterhub/jupyterhub/pull/3264).
+  Had to patch the `login.html` template from jupyterhub docker image for this feature 
+  (PR [jupyterhub/jupyterhub#3264](https://github.com/jupyterhub/jupyterhub/pull/3264)).
 
   Also update jupyterhub docker image to latest version.
 
-  Deployed to my test server https://lvupavics.ouranos.ca/jupyter/hub/login (pointing to a bogus terms and conditions link for now).
+  Deployed to my test server https://lvupavics.ouranos.ca/jupyter/hub/login 
+  (pointing to a bogus terms and conditions link for now).
 
   Tested on Firefox and Google Chrome.
 
@@ -814,15 +861,18 @@
 
 ## [1.11.9](https://github.com/bird-house/birdhouse-deploy/tree/1.11.9) (2020-11-13)
 
-- jupyter: new image with 4 new extensions
+- `jupyter`: new image with 4 new extensions
 
-  The google drive extension for JupyterLab requires a settings file containing the clientid of the project created in developers.google.com, which give authorization to use google drive.
+  The google drive extension for JupyterLab requires a settings file containing the clientid of the project created 
+  in developers.google.com, which give authorization to use google drive.
 
   This PR's role is to include this file in the birdhouse configs.
 
-  Matching PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/54 (commit https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/commit/5d5a9aa2251386378406efb5b414b3aa6db0b37e) for the new image with 4 new extensions: jupytext, jupyterlab-google-drive, jupyter_conda and jupyterlab-git
+  Matching PR [Ouranosinc/PAVICS-e2e-workflow-tests#54](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/54)
+  (commit [5d5a9aa2251386378406efb5b414b3aa6db0b37e](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/commit/5d5a9aa2251386378406efb5b414b3aa6db0b37e)) 
+  for the new image with 4 new extensions: `jupytext`, `jupyterlab-google-drive`, `jupyter_conda` and `jupyterlab-git`
 
-  Matching PR https://github.com/Ouranosinc/pavics-sdi/pull/185 for documention about the new extensions.
+  Matching PR https://github.com/Ouranosinc/pavics-sdi/pull/185 for documentation about the new extensions.
 
 ## [1.11.8](https://github.com/bird-house/birdhouse-deploy/tree/1.11.8) (2020-11-06)
 
@@ -848,7 +898,7 @@
 
 ## [1.11.5](https://github.com/bird-house/birdhouse-deploy/tree/1.11.5) (2020-10-27)
 
-- jupyter: new image for python 3.8, new xclim and memory_profiler
+- `jupyter`: new image for python 3.8, new xclim and memory_profiler
 
   Matching PR to deploy the new Jupyter image to PAVICS.
 
@@ -894,7 +944,7 @@
 
 ## [1.11.3](https://github.com/bird-house/birdhouse-deploy/tree/1.11.3) (2020-09-28)
 
-- jupyter: new build for new xclim with fix for missing clisops dependency
+- `jupyter`: new build for new xclim with fix for missing clisops dependency
 
   Matching PR to deploy new Jupyter env from PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/52 (commit https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/commit/18c8397ff30c9ba4b9f56896df4c898c7e9a356e).
 
@@ -1301,7 +1351,7 @@
 
 ## [1.11.1](https://github.com/bird-house/birdhouse-deploy/tree/1.11.1) (2020-09-15)
 
-- jupyter: new updated image with new handcalcs package
+- `jupyter`: new updated image with new handcalcs package
 
   Matching PR to deploy the new jupyter image to PAVICS.
 
@@ -1359,7 +1409,7 @@
 
 ## [1.10.4](https://github.com/bird-house/birdhouse-deploy/tree/1.10.4) (2020-08-05)
 
-- jupyter: new update image with hvplot pinned to older version for violin plot
+- `jupyter`: new update image with hvplot pinned to older version for violin plot
 
   See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/48 (commit https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/commit/4ad6ba6fa2a4ecf6d5d78e0602b39202307bcb76) for more detailed info.
 
@@ -1402,7 +1452,7 @@
 
 ## [1.10.3](https://github.com/bird-house/birdhouse-deploy/tree/1.10.3) (2020-07-21)
 
-- proxy: increase timeout for reading a response from the proxied server
+- `proxy`: increase timeout for reading a response from the proxied server
 
   Fixes https://github.com/Ouranosinc/raven/issues/286
 
@@ -1457,7 +1507,7 @@
 
 ## [1.10.2](https://github.com/bird-house/birdhouse-deploy/tree/1.10.2) (2020-07-18)
 
-- jupyter: new build and add nc-time-axis
+- `jupyter`: new build and add nc-time-axis
 
   Corresponding change to deploy the new Jupyter env to PAVICS.
 
@@ -1589,7 +1639,7 @@
 
 ## [1.9.5](https://github.com/bird-house/birdhouse-deploy/tree/1.9.5) (2020-06-12)
 
-- jupyter: new image for additional plugins
+- `jupyter`: new image for additional plugins
 
   Matching PR to deploy the new Jupyter image to PAVICS.
 
@@ -1620,7 +1670,7 @@
 
 ## [1.9.4](https://github.com/bird-house/birdhouse-deploy/tree/1.9.4) (2020-06-03)
 
-- jupyter: updated build and fix for pyviz jupyterlab extension
+- `jupyter`: updated build and fix for pyviz jupyterlab extension
 
   @tlogan2000 matching PR to actually deploy the new Jupyter env to PAVICS.
 
@@ -1640,7 +1690,7 @@
 
 ## [1.9.3](https://github.com/bird-house/birdhouse-deploy/tree/1.9.3) (2020-05-07)
 
-- jupyter: update to pavics/workflow-tests:200507
+- `jupyter`: update to pavics/workflow-tests:200507
 
   Raven PR https://github.com/Ouranosinc/raven/pull/266 (commit
   https://github.com/Ouranosinc/raven/commit/0763bf52abec1bc0a70927de3a2dc2cc1cf77ec3)
@@ -1925,7 +1975,7 @@
 
 ## [1.8.8](https://github.com/bird-house/birdhouse-deploy/tree/1.8.8) (2020-03-20)
 
-- Jupyter: make configurable public demo user name, passwd, resource limit, login banner
+- `jupyter`: make configurable public demo user name, passwd, resource limit, login banner
 
   For security reasons, the public demo username and password are not hardcoded anymore.
 
@@ -1959,7 +2009,7 @@
 
 ## [1.8.5](https://github.com/bird-house/birdhouse-deploy/tree/1.8.5) (2020-03-13)
 
-- jupyter: update to pavics/workflow-tests:200312 for Raven notebooks
+- `jupyter`: update to pavics/workflow-tests:200312 for Raven notebooks
 
 ## [1.8.4](https://github.com/bird-house/birdhouse-deploy/tree/1.8.4) (2020-03-10)
 
@@ -2029,7 +2079,7 @@
 
 ## [1.7.1](https://github.com/bird-house/birdhouse-deploy/tree/1.7.1) (2020-01-30)
 
-- jupyter: update various packages and add threddsclient
+- `jupyter`: update various packages and add threddsclient
 
   Noticeable changes:
   ```diff
@@ -2056,4 +2106,11 @@
 ## [1.7.0](https://github.com/bird-house/birdhouse-deploy/tree/1.7.0) (2020-01-22)
 
 - backup solr: should save all of /data/solr, not just the index
+
+
+## Prior Versions
+
+All versions prior to [1.7.0](https://github.com/bird-house/birdhouse-deploy/tree/1.7.0) were not officially tagged.
+Is it strongly recommended employing later versions to ensure better traceability of changes that could impact behavior
+and potential issues on new server instances. 
 
