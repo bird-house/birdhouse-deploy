@@ -11,6 +11,7 @@
   - Add this `CHANGES.md` file with all previous version details extracted for PR merge commit messages.
   - Add listing of change history to generated documentation on
     [bird-house/birdhouse-deploy ReadTheDocs](https://birdhouse-deploy.readthedocs.io/en/latest/).
+  - Update ``CONTRIBUTING.rst`` file to include note about updating this changelog for future PR.
   
   ### Fixes
   
