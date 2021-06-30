@@ -4,7 +4,17 @@
 
 ## [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 
-[//]: # list changes here, using '-' for each new entry (remove this when items are added)
+  ###  Changes
+  
+  - Add `bump2version` configuration to allow self-update of files that refer to new version releases 
+    and apply update of features listed in this changelog.
+  - Add this `CHANGES.md` file with all previous version details extracted for PR merge commit messages.
+  - Add listing of change history to generated documentation on
+    [bird-house/birdhouse-deploy ReadTheDocs](https://birdhouse-deploy.readthedocs.io/en/latest/).
+  
+  ### Fixes
+  
+  - Resolves [#157](https://github.com/bird-house/birdhouse-deploy/issues/157)
 
 ## [1.13.9](https://github.com/bird-house/birdhouse-deploy/tree/1.13.9) (2021-06-18)
 
