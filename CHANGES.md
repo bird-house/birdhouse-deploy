@@ -1,8 +1,11 @@
 # Changes
 
-[//]: # **DEFINE LATEST CHANGES UNDER BELOW 'Unreleased' SECTION - THEY WILL BE INTEGRATED IN NEXT RELEASE**
+[//]: # (**DEFINE LATEST CHANGES UNDER BELOW 'Unreleased' SECTION - THEY WILL BE INTEGRATED IN NEXT RELEASE**)
 
-## [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
+[//]: # (NOTE: headers at level 1 must be with equals to avoid comment-interpretation errors when bumping versions)
+
+[Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
+==================================================================================================================
 
   ###  Changes
   
@@ -17,7 +20,8 @@
   
   - Resolves [#157](https://github.com/bird-house/birdhouse-deploy/issues/157)
 
-## [1.13.9](https://github.com/bird-house/birdhouse-deploy/tree/1.13.9) (2021-06-18)
+[1.13.9](https://github.com/bird-house/birdhouse-deploy/tree/1.13.9) (2021-06-18)
+==================================================================================================================
 
 - `jupyter`: update for raven notebooks
 
@@ -33,7 +37,8 @@
 
   See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/76.
 
-## [1.13.8](https://github.com/bird-house/birdhouse-deploy/tree/1.13.8) (2021-06-15)
+[1.13.8](https://github.com/bird-house/birdhouse-deploy/tree/1.13.8) (2021-06-15)
+==================================================================================================================
 
 - `jupyter`: new version for updated `ravenpy`, `birdy` and `xclim`
 
@@ -111,7 +116,8 @@
   Full new `conda env export`:
   [210527.1-update210615-conda-env-export.yml.txt](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/files/6658646/210527.1-update210615-conda-env-export.yml.txt)
 
-## [1.13.7](https://github.com/bird-house/birdhouse-deploy/tree/1.13.7) (2021-06-10)
+[1.13.7](https://github.com/bird-house/birdhouse-deploy/tree/1.13.7) (2021-06-10)
+==================================================================================================================
 
 - `jupyterhub`: allow config override via env.local
 
@@ -143,7 +149,8 @@
 
   Deployed to https://lvupavicsdev.ouranos.ca/jupyter (timeout set to 5 mins)
 
-## [1.13.6](https://github.com/bird-house/birdhouse-deploy/tree/1.13.6) (2021-06-02)
+[1.13.6](https://github.com/bird-house/birdhouse-deploy/tree/1.13.6) (2021-06-02)
+==================================================================================================================
 
 - Bugfix for autodeploy job
 
@@ -170,15 +177,18 @@
   Only [here](https://github.com/bird-house/birdhouse-deploy/blob/7e2b8cb428be29d52d27b4b1faa73be7017712ea/birdhouse/deployment/deploy.sh#L109), 
   `default.env` doesn't seem to be called. A `default.env` call has also been added in that file.
 
-## [1.13.5](https://github.com/bird-house/birdhouse-deploy/tree/1.13.5) (2021-05-19)
+[1.13.5](https://github.com/bird-house/birdhouse-deploy/tree/1.13.5) (2021-05-19)
+==================================================================================================================
 
 - magpie 3.x + gunicorn bind
 
-## [1.13.4](https://github.com/bird-house/birdhouse-deploy/tree/1.13.4) (2021-05-18)
+[1.13.4](https://github.com/bird-house/birdhouse-deploy/tree/1.13.4) (2021-05-18)
+==================================================================================================================
 
 - Update to raven 0.13.0
 
-## [1.13.3](https://github.com/bird-house/birdhouse-deploy/tree/1.13.3) (2021-05-11)
+[1.13.3](https://github.com/bird-house/birdhouse-deploy/tree/1.13.3) (2021-05-11)
+==================================================================================================================
 
 - - Add new docker-compose optional components
     * `optional-components/database-external-ports`
@@ -223,11 +233,13 @@
   twitcher          pserve /opt/birdhouse/src/ ...   Up             0.0.0.0:8000->8000/tcp, 8080/tcp, 8443/tcp, 9001/tcp
   ```
 
-## [1.13.2](https://github.com/bird-house/birdhouse-deploy/tree/1.13.2) (2021-05-11)
+[1.13.2](https://github.com/bird-house/birdhouse-deploy/tree/1.13.2) (2021-05-11)
+==================================================================================================================
 
 - Custom notebooks
 
-## [1.13.1](https://github.com/bird-house/birdhouse-deploy/tree/1.13.1) (2021-05-10)
+[1.13.1](https://github.com/bird-house/birdhouse-deploy/tree/1.13.1) (2021-05-10)
+==================================================================================================================
 
 - `jupyterhub`: update to ver 1.4.0-20210506
 
@@ -247,7 +259,8 @@
 
   - Jupyter hub release note: https://github.com/jupyterhub/jupyterhub/blob/1.4.0/docs/source/changelog.md
 
-## [1.13.0](https://github.com/bird-house/birdhouse-deploy/tree/1.13.0) (2021-05-06)
+[1.13.0](https://github.com/bird-house/birdhouse-deploy/tree/1.13.0) (2021-05-06)
+==================================================================================================================
 
 - bump default log retention to `500m` instead of `2m`, more suitable for prod
 
@@ -262,7 +275,8 @@
   **Non-breaking changes**
   - Bump default log retention to `500m` instead of `2m`, more suitable for prod
 
-## [1.12.4](https://github.com/bird-house/birdhouse-deploy/tree/1.12.4) (2021-05-06)
+[1.12.4](https://github.com/bird-house/birdhouse-deploy/tree/1.12.4) (2021-05-06)
+==================================================================================================================
 
 - Update to new finch [0.7.4](https://github.com/bird-house/finch/tree/v0.7.4).
 
@@ -288,21 +302,25 @@
 
   Both all passes.
 
-## [1.12.3](https://github.com/bird-house/birdhouse-deploy/tree/1.12.3) (2021-05-04)
+[1.12.3](https://github.com/bird-house/birdhouse-deploy/tree/1.12.3) (2021-05-04)
+==================================================================================================================
 
 - Change overview:
   * allow customization of `/data` persistence root on disk, retaining current default for existing deployment
   * add data persistence for `mongodb` container
 
-## [1.12.2](https://github.com/bird-house/birdhouse-deploy/tree/1.12.2) (2021-04-28)
+[1.12.2](https://github.com/bird-house/birdhouse-deploy/tree/1.12.2) (2021-04-28)
+==================================================================================================================
 
 - Add contributions guideline and policy
 
-## [1.12.1](https://github.com/bird-house/birdhouse-deploy/tree/1.12.1) (2021-04-28)
+[1.12.1](https://github.com/bird-house/birdhouse-deploy/tree/1.12.1) (2021-04-28)
+==================================================================================================================
 
 - `proxy`: allow homepage (location /) to be configurable
 
-## [1.12.0](https://github.com/bird-house/birdhouse-deploy/tree/1.12.0) (2021-04-19)
+[1.12.0](https://github.com/bird-house/birdhouse-deploy/tree/1.12.0) (2021-04-19)
+==================================================================================================================
 
 - Magpie upgrade strike II
 
@@ -333,7 +351,8 @@
   8. `docker logs magpie`: check no DB migration error
   9. Trigger Jenkins test suite again
 
-## [1.11.29](https://github.com/bird-house/birdhouse-deploy/tree/1.11.29) (2021-04-16)
+[1.11.29](https://github.com/bird-house/birdhouse-deploy/tree/1.11.29) (2021-04-16)
+==================================================================================================================
 
 - Update Raven and Jupyter env for Raven demo
 
@@ -354,7 +373,8 @@
     In prod, the server has the CPU needed to run 10 concurrent requests if needed so this prevent users having to
     "wait" after each other.
 
-## [1.11.28](https://github.com/bird-house/birdhouse-deploy/tree/1.11.28) (2021-04-09)
+[1.11.28](https://github.com/bird-house/birdhouse-deploy/tree/1.11.28) (2021-04-09)
+==================================================================================================================
 
 - `jupyter`: update for new `clisops`, `xclim`, `ravenpy`
 
@@ -404,7 +424,8 @@
   >   - python=3.7.10=hffdb5ce_100_cpython
   ```
 
-## [1.11.27](https://github.com/bird-house/birdhouse-deploy/tree/1.11.27) (2021-04-01)
+[1.11.27](https://github.com/bird-house/birdhouse-deploy/tree/1.11.27) (2021-04-01)
+==================================================================================================================
 
 - reverted name of monitoring routes to original
 
@@ -420,7 +441,8 @@
 
   ![Screenshot_2021-04-01 CANARIE Research Software Logiciels de recherche de CANARIE](https://user-images.githubusercontent.com/11966697/113295664-7c359b80-92c6-11eb-8c50-5e77f498d84f.png)
 
-## [1.11.26](https://github.com/bird-house/birdhouse-deploy/tree/1.11.26) (2021-03-31)
+[1.11.26](https://github.com/bird-house/birdhouse-deploy/tree/1.11.26) (2021-03-31)
+==================================================================================================================
 
 - Update canarieAPI doc links
 
@@ -429,7 +451,8 @@
   - renderer is provided by THREDDS-WMS.
   - slicer is provided by finch.
 
-## [1.11.25](https://github.com/bird-house/birdhouse-deploy/tree/1.11.25) (2021-03-26)
+[1.11.25](https://github.com/bird-house/birdhouse-deploy/tree/1.11.25) (2021-03-26)
+==================================================================================================================
 
 - finch: update to version 0.7.1
 
@@ -487,7 +510,8 @@
 
   Jenkins build with Finch notebooks passing against newer Finch: http://jenkins.ouranos.ca/job/ouranos-staging/job/lvupavics.ouranos.ca/45/console
 
-## [1.11.24](https://github.com/bird-house/birdhouse-deploy/tree/1.11.24) (2021-03-19)
+[1.11.24](https://github.com/bird-house/birdhouse-deploy/tree/1.11.24) (2021-03-19)
+==================================================================================================================
 
 - Avoid docker pull since pull rate limit on dockerhub
 
@@ -501,7 +525,8 @@
   Error response from daemon: toomanyrequests: You have reached your pull rate limit. You may increase the limit by authenticating and upgrading: https://www.docker.com/increase-rate-limit
   ```
 
-## [1.11.23](https://github.com/bird-house/birdhouse-deploy/tree/1.11.23) (2021-03-17)
+[1.11.23](https://github.com/bird-house/birdhouse-deploy/tree/1.11.23) (2021-03-17)
+==================================================================================================================
 
 - Custom Jupyter user images
 
@@ -517,7 +542,8 @@
   DOCKER_NOTEBOOK_IMAGE renamed to DOCKER_NOTEBOOK_IMAGES and is now a space separated list of images. 
   Any existing override in env.local using the old name will have to switch to the new name.
 
-## [1.11.22](https://github.com/bird-house/birdhouse-deploy/tree/1.11.22) (2021-03-16)
+[1.11.22](https://github.com/bird-house/birdhouse-deploy/tree/1.11.22) (2021-03-16)
+==================================================================================================================
 
 - finch: update to 0.7.0
 
@@ -534,7 +560,8 @@
   Passing Jenkins build 
   http://jenkins.ouranos.ca/job/PAVICS-e2e-workflow-tests/job/update-nbval-sanitize-config-for-pavics-sdi-regridding-notebook/10/console
 
-## [1.11.21](https://github.com/bird-house/birdhouse-deploy/tree/1.11.21) (2021-02-19)
+[1.11.21](https://github.com/bird-house/birdhouse-deploy/tree/1.11.21) (2021-02-19)
+==================================================================================================================
 
 - Configurable Jupyterhub README
 
@@ -546,7 +573,8 @@
   ### Changes
   - Adds `JUPYERHUB_README` as configuration option in the appropriate spots
 
-## [1.11.20](https://github.com/bird-house/birdhouse-deploy/tree/1.11.20) (2021-02-19)
+[1.11.20](https://github.com/bird-house/birdhouse-deploy/tree/1.11.20) (2021-02-19)
+==================================================================================================================
 
 - `jupyter`: update to version 210216 for xESMF
 
@@ -572,7 +600,8 @@
   >   - rioxarray=0.2.0=pyhd8ed1ab_0
   ```
 
-## [1.11.19](https://github.com/bird-house/birdhouse-deploy/tree/1.11.19) (2021-02-10)
+[1.11.19](https://github.com/bird-house/birdhouse-deploy/tree/1.11.19) (2021-02-10)
+==================================================================================================================
 
 - `proxy`: proxy_read_timeout config should be configurable
 
@@ -636,7 +665,8 @@
 
   ===================================================== 15 passed, 1 warning in 218.46s (0:03:38) ======================================================
 
-## [1.11.18](https://github.com/bird-house/birdhouse-deploy/tree/1.11.18) (2021-02-02)
+[1.11.18](https://github.com/bird-house/birdhouse-deploy/tree/1.11.18) (2021-02-02)
+==================================================================================================================
 
 - update Raven and Jupyter env
 
@@ -678,7 +708,8 @@
   20:25:45  ============ 24 failed, 226 passed, 2 skipped in 2528.69s (0:42:08) ============
   ```
 
-## [1.11.17](https://github.com/bird-house/birdhouse-deploy/tree/1.11.17) (2021-01-28)
+[1.11.17](https://github.com/bird-house/birdhouse-deploy/tree/1.11.17) (2021-01-28)
+==================================================================================================================
 
 - finch: update to version 0.6.1
 
@@ -686,7 +717,8 @@
 
   Deployed on my dev server, Jenkins run no new errors: http://jenkins.ouranos.ca/job/PAVICS-e2e-workflow-tests/job/master/900/console
 
-## [1.11.16](https://github.com/bird-house/birdhouse-deploy/tree/1.11.16) (2021-01-14)
+[1.11.16](https://github.com/bird-house/birdhouse-deploy/tree/1.11.16) (2021-01-14)
+==================================================================================================================
 
 - finch: upgrade to version 0.6.0
 
@@ -694,7 +726,8 @@
 
   Should fix https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/58.
 
-## [1.11.15](https://github.com/bird-house/birdhouse-deploy/tree/1.11.15) (2021-01-14)
+[1.11.15](https://github.com/bird-house/birdhouse-deploy/tree/1.11.15) (2021-01-14)
+==================================================================================================================
 
 - `jupyter`: update to version 201214
 
@@ -724,8 +757,8 @@
   >   - jupyter_conda=4.1.0=hd8ed1ab_1
   ```
 
-## [1.11.14](https://github.com/bird-house/birdhouse-deploy/tree/1.11.14) (2020-12-17)
-
+[1.11.14](https://github.com/bird-house/birdhouse-deploy/tree/1.11.14) (2020-12-17)
+==================================================================================================================
 - Add ability to execute post actions for deploy-data script.
 
   Script `deploy-data` was previously introduced in PR [#72](https://github.com/bird-house/birdhouse-deploy/pull/72) to 
@@ -740,8 +773,8 @@
   Combining this `deploy-data` with the `scheduler` component means we have a way for cronjobs to 
   automatically always execute the most up-to-date version of any scripts from any git repos.
 
-## [1.11.13](https://github.com/bird-house/birdhouse-deploy/tree/1.11.13) (2020-12-14)
-
+[1.11.13](https://github.com/bird-house/birdhouse-deploy/tree/1.11.13) (2020-12-14)
+==================================================================================================================
 - `jupyterhub`: update to version 1.3.0 to include login terms patch
 
   This version of jupyterhub includes the login terms patch originally
@@ -765,8 +798,8 @@
   After:
   ![recorded](https://user-images.githubusercontent.com/11966697/100246404-18115e00-2f07-11eb-9061-d35434ace3aa.gif)
 
-## [1.11.12](https://github.com/bird-house/birdhouse-deploy/tree/1.11.12) (2020-11-25)
-
+[1.11.12](https://github.com/bird-house/birdhouse-deploy/tree/1.11.12) (2020-11-25)
+==================================================================================================================
 - Fix geoserver not configured properly behind proxy.
 
   Hitting https://pavics.ouranos.ca/geoserver/wfs?request=GetCapabilities&version=1.1.0
@@ -801,8 +834,8 @@
 
   Related to https://github.com/Ouranosinc/raven/issues/297.
 
-## [1.11.11](https://github.com/bird-house/birdhouse-deploy/tree/1.11.11) (2020-11-20)
-
+[1.11.11](https://github.com/bird-house/birdhouse-deploy/tree/1.11.11) (2020-11-20)
+==================================================================================================================
 - Various small fixes.
 
   `monitoring`: prevent losing stats when VM auto start from a power failure
@@ -827,8 +860,8 @@
       [W 2020-11-20 13:49:18.070 JupyterHub base:752] Failed login for anonymous
       ```
 
-## [1.11.10](https://github.com/bird-house/birdhouse-deploy/tree/1.11.10) (2020-11-18)
-
+[1.11.10](https://github.com/bird-house/birdhouse-deploy/tree/1.11.10) (2020-11-18)
+==================================================================================================================
 - Add terms conditions to JupyterHub login page and update to latest JupyterHub version.
 
   User have to check the checkbox agreeing to the terms and conditions in order to login 
@@ -860,8 +893,8 @@
 
   ![recorded](https://user-images.githubusercontent.com/11966697/99327962-1aa9ee80-2849-11eb-9ce8-3be6a1484e94.gif)
 
-## [1.11.9](https://github.com/bird-house/birdhouse-deploy/tree/1.11.9) (2020-11-13)
-
+[1.11.9](https://github.com/bird-house/birdhouse-deploy/tree/1.11.9) (2020-11-13)
+==================================================================================================================
 - `jupyter`: new image with 4 new extensions
 
   The google drive extension for JupyterLab requires a settings file containing the clientid of the project created 
@@ -875,16 +908,16 @@
 
   Matching PR https://github.com/Ouranosinc/pavics-sdi/pull/185 for documentation about the new extensions.
 
-## [1.11.8](https://github.com/bird-house/birdhouse-deploy/tree/1.11.8) (2020-11-06)
-
+[1.11.8](https://github.com/bird-house/birdhouse-deploy/tree/1.11.8) (2020-11-06)
+==================================================================================================================
 - bump `finch` to version-0.5.3
 
-## [1.11.7](https://github.com/bird-house/birdhouse-deploy/tree/1.11.7) (2020-11-06)
-
+[1.11.7](https://github.com/bird-house/birdhouse-deploy/tree/1.11.7) (2020-11-06)
+==================================================================================================================
 - bump `thredds-docker` to 4.6.15
 
-## [1.11.6](https://github.com/bird-house/birdhouse-deploy/tree/1.11.6) (2020-11-06)
-
+[1.11.6](https://github.com/bird-house/birdhouse-deploy/tree/1.11.6) (2020-11-06)
+==================================================================================================================
 - Prepare fresh deployment for automated tests.
 
   @MatProv is building an automated pipeline that will provision and deploy a full PAVICS stack and run our Jenkins test suite for each PR here.
@@ -897,8 +930,8 @@
 
   Solr query in the canarie monitoring also updated to target the minimal dataset from `bootstrap-testdata` so the canarie monitoring page works on all PAVICS deployment (fixes https://github.com/bird-house/birdhouse-deploy/issues/6).  @MatProv you can use this canarie monitoring page (ex: https://pavics.ouranos.ca/canarie/node/service/status) to confirm the fresh instance is ready to run the Jenkins test suite.
 
-## [1.11.5](https://github.com/bird-house/birdhouse-deploy/tree/1.11.5) (2020-10-27)
-
+[1.11.5](https://github.com/bird-house/birdhouse-deploy/tree/1.11.5) (2020-10-27)
+==================================================================================================================
 - `jupyter`: new image for python 3.8, new xclim and memory_profiler
 
   Matching PR to deploy the new Jupyter image to PAVICS.
@@ -924,8 +957,8 @@
 
   More info, see PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/53 (commit https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/commit/f07f1657ed13a0ed92854c5d01f9d3ed785e870d)
 
-## [1.11.4](https://github.com/bird-house/birdhouse-deploy/tree/1.11.4) (2020-10-15)
-
+[1.11.4](https://github.com/bird-house/birdhouse-deploy/tree/1.11.4) (2020-10-15)
+==================================================================================================================
 - Sync Raven testdata to Thredds for Raven tutorial notebooks.
 
   Leveraging the cron daemon of the scheduler component, sync Raven testdata to Thredds for Raven tutorial notebooks.
@@ -943,8 +976,8 @@
   * README update to reference the new birdhouse-deploy-ouranos.
   * Make sourcing the various pre-configured cronjob backward-compat with older version of the repo where those cronjob did not exist yet.
 
-## [1.11.3](https://github.com/bird-house/birdhouse-deploy/tree/1.11.3) (2020-09-28)
-
+[1.11.3](https://github.com/bird-house/birdhouse-deploy/tree/1.11.3) (2020-09-28)
+==================================================================================================================
 - `jupyter`: new build for new xclim with fix for missing clisops dependency
 
   Matching PR to deploy new Jupyter env from PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/52 (commit https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/commit/18c8397ff30c9ba4b9f56896df4c898c7e9a356e).
@@ -980,8 +1013,8 @@
 
   See PR above for full changes.
 
-## [1.11.2](https://github.com/bird-house/birdhouse-deploy/tree/1.11.2) (2020-09-15)
-
+[1.11.2](https://github.com/bird-house/birdhouse-deploy/tree/1.11.2) (2020-09-15)
+==================================================================================================================
 - Auto-renew LetsEncrypt SSL certificate.
 
   Auto-renew LetsEncrypt SSL certificate leveraging the cron jobs of the "scheduler" component.  Meaning this feature is self-contained in the PAVICS stack, no dependency on the host's cron jobs.
@@ -1350,8 +1383,8 @@
   certbotwrapper finished   END_TIME=2020-09-11T15:00:31+0000
   ```
 
-## [1.11.1](https://github.com/bird-house/birdhouse-deploy/tree/1.11.1) (2020-09-15)
-
+[1.11.1](https://github.com/bird-house/birdhouse-deploy/tree/1.11.1) (2020-09-15)
+==================================================================================================================
 - `jupyter`: new updated image with new handcalcs package
 
   Matching PR to deploy the new jupyter image to PAVICS.
@@ -1387,8 +1420,8 @@
   >   - numba=0.51.2=py37h9fdb41a_0
   ```
 
-## [1.11.0](https://github.com/bird-house/birdhouse-deploy/tree/1.11.0) (2020-08-25)
-
+[1.11.0](https://github.com/bird-house/birdhouse-deploy/tree/1.11.0) (2020-08-25)
+==================================================================================================================
 - Improved plugable component architecture.
 
   Before this PR, components needing default values, needing template variable substitution, needing to execute commands pre and post `docker-compose up` are hardcoding their needs directly to the "core" system, basically "leaking" their requirements out even when they are not activated (fixes https://github.com/bird-house/birdhouse-deploy/issues/62).
@@ -1408,8 +1441,8 @@
   * AlertManager: http://lvupavicsmaster.ouranos.ca:9093/
   * Grafana dashboard: http://lvupavicsmaster.ouranos.ca:3001/d/pf6xQMWGz/docker-and-system-monitoring?orgId=1&refresh=5m
 
-## [1.10.4](https://github.com/bird-house/birdhouse-deploy/tree/1.10.4) (2020-08-05)
-
+[1.10.4](https://github.com/bird-house/birdhouse-deploy/tree/1.10.4) (2020-08-05)
+==================================================================================================================
 - `jupyter`: new update image with hvplot pinned to older version for violin plot
 
   See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/48 (commit https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/commit/4ad6ba6fa2a4ecf6d5d78e0602b39202307bcb76) for more detailed info.
@@ -1451,8 +1484,8 @@
   >   - pytest=6.0.1=py37hc8dfbb8_0
   ```
 
-## [1.10.3](https://github.com/bird-house/birdhouse-deploy/tree/1.10.3) (2020-07-21)
-
+[1.10.3](https://github.com/bird-house/birdhouse-deploy/tree/1.10.3) (2020-07-21)
+==================================================================================================================
 - `proxy`: increase timeout for reading a response from the proxied server
 
   Fixes https://github.com/Ouranosinc/raven/issues/286
@@ -1506,8 +1539,8 @@
   RuntimeError: NetCDF: DAP failure
   ```
 
-## [1.10.2](https://github.com/bird-house/birdhouse-deploy/tree/1.10.2) (2020-07-18)
-
+[1.10.2](https://github.com/bird-house/birdhouse-deploy/tree/1.10.2) (2020-07-18)
+==================================================================================================================
 - `jupyter`: new build and add nc-time-axis
 
   Corresponding change to deploy the new Jupyter env to PAVICS.
@@ -1531,8 +1564,8 @@
   https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/commit/4e03a674930f0974e13724940eee7a608c2158c0)
   for more info.
 
-## [1.10.1](https://github.com/bird-house/birdhouse-deploy/tree/1.10.1) (2020-07-11)
-
+[1.10.1](https://github.com/bird-house/birdhouse-deploy/tree/1.10.1) (2020-07-11)
+==================================================================================================================
 - Monitoring: add alert rules and alert handling (deduplicate, group, route, silence, inhibit).
 
   This is a follow up to the previous PR https://github.com/bird-house/birdhouse-deploy/pull/56 that added the monitoring itself.
@@ -1569,8 +1602,8 @@
 
   Part of issue https://github.com/bird-house/birdhouse-deploy/issues/12
 
-## [1.10.0](https://github.com/bird-house/birdhouse-deploy/tree/1.10.0) (2020-07-02)
-
+[1.10.0](https://github.com/bird-house/birdhouse-deploy/tree/1.10.0) (2020-07-02)
+==================================================================================================================
 - Monitoring for host and each docker container.
 
   ![Screenshot_2020-06-19 Docker and system monitoring - Grafana](https://user-images.githubusercontent.com/11966697/85206384-c7f6f580-b2ef-11ea-848d-46490eb95886.png)
@@ -1615,8 +1648,8 @@
 
   Part of issue https://github.com/bird-house/birdhouse-deploy/issues/12
 
-## [1.9.6](https://github.com/bird-house/birdhouse-deploy/tree/1.9.6) (2020-06-15)
-
+[1.9.6](https://github.com/bird-house/birdhouse-deploy/tree/1.9.6) (2020-06-15)
+==================================================================================================================
 - flyingpigeon: update to version 1.6
 
   Deploy the new Flyingpigeon 1.6 on PAVICS.
@@ -1638,8 +1671,8 @@
   * update pywps to 4.2.3
   * use cruft to keep up-to-date with the cookie-cutter template
 
-## [1.9.5](https://github.com/bird-house/birdhouse-deploy/tree/1.9.5) (2020-06-12)
-
+[1.9.5](https://github.com/bird-house/birdhouse-deploy/tree/1.9.5) (2020-06-12)
+==================================================================================================================
 - `jupyter`: new image for additional plugins
 
   Matching PR to deploy the new Jupyter image to PAVICS.
@@ -1669,8 +1702,8 @@
   https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/commit/441edde3b381eff7ce82e5a171323b31196553be)
   for more info.
 
-## [1.9.4](https://github.com/bird-house/birdhouse-deploy/tree/1.9.4) (2020-06-03)
-
+[1.9.4](https://github.com/bird-house/birdhouse-deploy/tree/1.9.4) (2020-06-03)
+==================================================================================================================
 - `jupyter`: updated build and fix for pyviz jupyterlab extension
 
   @tlogan2000 matching PR to actually deploy the new Jupyter env to PAVICS.
@@ -1689,8 +1722,8 @@
   https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/commit/a93f3b50cc6d108638d232fe9465b2f060e21314)
   for more info.
 
-## [1.9.3](https://github.com/bird-house/birdhouse-deploy/tree/1.9.3) (2020-05-07)
-
+[1.9.3](https://github.com/bird-house/birdhouse-deploy/tree/1.9.3) (2020-05-07)
+==================================================================================================================
 - `jupyter`: update to pavics/workflow-tests:200507
 
   Raven PR https://github.com/Ouranosinc/raven/pull/266 (commit
@@ -1735,8 +1768,8 @@
   https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/commit/bb81982e3fd92bff437eddc5d4ae28202b3ef07c)
   for more info.
 
-## [1.9.2](https://github.com/bird-house/birdhouse-deploy/tree/1.9.2) (2020-04-29)
-
+[1.9.2](https://github.com/bird-house/birdhouse-deploy/tree/1.9.2) (2020-04-29)
+==================================================================================================================
 -
   jupyter: update to pavics/workflow-tests:200427 image
 
@@ -1763,8 +1796,8 @@
   >     - xclim==0.16.0
   ```
 
-## [1.9.1](https://github.com/bird-house/birdhouse-deploy/tree/1.9.1) (2020-04-24)
-
+[1.9.1](https://github.com/bird-house/birdhouse-deploy/tree/1.9.1) (2020-04-24)
+==================================================================================================================
 -
   Fix notebook autodeploy wipe already deployed notebook when GitHub down.
 
@@ -1828,8 +1861,8 @@
   notebookdeploy finished   END_TIME=2020-04-23T10:02:12-0400
   ```
 
-## [1.9.0](https://github.com/bird-house/birdhouse-deploy/tree/1.9.0) (2020-04-24)
-
+[1.9.0](https://github.com/bird-house/birdhouse-deploy/tree/1.9.0) (2020-04-24)
+==================================================================================================================
 -
   vagrant: add centos7 and LetsEncrypt SSL cert support, fix scheduler autodeploy remaining issues
 
@@ -1861,8 +1894,8 @@
 
   ![2020-04-22-070604_1299x1131_scrot](https://user-images.githubusercontent.com/11966697/79974607-a2707b80-8467-11ea-85b6-3b03f198ce9b.png)
 
-## [1.8.10](https://github.com/bird-house/birdhouse-deploy/tree/1.8.10) (2020-04-09)
-
+[1.8.10](https://github.com/bird-house/birdhouse-deploy/tree/1.8.10) (2020-04-09)
+==================================================================================================================
 - Autodeploy the autodeploy phase 2: everything operational but a few compatibility issues remain
 
   Part of https://github.com/bird-house/birdhouse-deploy/issues/27
@@ -1911,8 +1944,8 @@
 
   This is a rather large PR.  For a less technical overview, start with the diff of README.md, env.local.example, common.env.  If a change looks funny to you, read the commit description that introduce that change, the reasoning should be there.
 
-## [1.8.9](https://github.com/bird-house/birdhouse-deploy/tree/1.8.9) (2020-04-08)
-
+[1.8.9](https://github.com/bird-house/birdhouse-deploy/tree/1.8.9) (2020-04-08)
+==================================================================================================================
 - finch: update to 0.5.2
 
   Fix following 2 Jenkins failures:
@@ -1974,8 +2007,8 @@
                 Metalink file storing all references to output files.
   ```
 
-## [1.8.8](https://github.com/bird-house/birdhouse-deploy/tree/1.8.8) (2020-03-20)
-
+[1.8.8](https://github.com/bird-house/birdhouse-deploy/tree/1.8.8) (2020-03-20)
+==================================================================================================================
 - `jupyter`: make configurable public demo user name, passwd, resource limit, login banner
 
   For security reasons, the public demo username and password are not hardcoded anymore.
@@ -1994,12 +2027,12 @@
 
   Test server: https://lvupavics-lvu.pagekite.me/jupyter/ (ask me privately for the password :D)
 
-## [1.8.7](https://github.com/bird-house/birdhouse-deploy/tree/1.8.7) (2020-03-19)
-
+[1.8.7](https://github.com/bird-house/birdhouse-deploy/tree/1.8.7) (2020-03-19)
+==================================================================================================================
 - finch: update to v0.5.1
 
-## [1.8.6](https://github.com/bird-house/birdhouse-deploy/tree/1.8.6) (2020-03-16)
-
+[1.8.6](https://github.com/bird-house/birdhouse-deploy/tree/1.8.6) (2020-03-16)
+==================================================================================================================
 - Thredds: New "Datasets" top level for NCML files
 
   http://lvupavics-lvu.pagekite.me/twitcher/ows/proxy/thredds/catalog/datasets/catalog.html (only gridded_obs/nrcan.ncml works on my dev server).
@@ -2008,16 +2041,16 @@
 
   The content of the new top-level comes from `/data/ncml` from the host.  For comparison content of existing "Birdhouse" was coming from `/data/datasets`.
 
-## [1.8.5](https://github.com/bird-house/birdhouse-deploy/tree/1.8.5) (2020-03-13)
-
+[1.8.5](https://github.com/bird-house/birdhouse-deploy/tree/1.8.5) (2020-03-13)
+==================================================================================================================
 - `jupyter`: update to pavics/workflow-tests:200312 for Raven notebooks
 
-## [1.8.4](https://github.com/bird-house/birdhouse-deploy/tree/1.8.4) (2020-03-10)
-
+[1.8.4](https://github.com/bird-house/birdhouse-deploy/tree/1.8.4) (2020-03-10)
+==================================================================================================================
 - raven: upgrade to pavics/raven:0.10.0
 
-## [1.8.3](https://github.com/bird-house/birdhouse-deploy/tree/1.8.3) (2020-02-17)
-
+[1.8.3](https://github.com/bird-house/birdhouse-deploy/tree/1.8.3) (2020-02-17)
+==================================================================================================================
 - catalog: fix pavicsearch broken due to typo in config
 
   The `thredds_host` should be the exact prefix of each document url found
@@ -2031,8 +2064,8 @@
   https://github.com/bird-house/birdhouse-deploy/pull/5, commit
   https://github.com/bird-house/birdhouse-deploy/commit/83c839178fff170dbcb4c4e0586e67d19b9cfbc5
 
-## [1.8.2](https://github.com/bird-house/birdhouse-deploy/tree/1.8.2) (2020-02-10)
-
+[1.8.2](https://github.com/bird-house/birdhouse-deploy/tree/1.8.2) (2020-02-10)
+==================================================================================================================
 - Optionally monitor all components behind Twitcher using canarie api.
 
   Fixes https://github.com/bird-house/birdhouse-deploy/issues/8
@@ -2057,8 +2090,8 @@
 
   ![Screenshot_2020-02-07 Ouranos - Node Service](https://user-images.githubusercontent.com/11966697/74055606-4a6cc180-49ae-11ea-9cba-887118dbaae6.png)
 
-## [1.8.1](https://github.com/bird-house/birdhouse-deploy/tree/1.8.1) (2020-02-06)
-
+[1.8.1](https://github.com/bird-house/birdhouse-deploy/tree/1.8.1) (2020-02-06)
+==================================================================================================================
 - Increase JupyterHub security.
 
   ab56994 jupyter: limit memory of public user to 500 MB
@@ -2067,8 +2100,8 @@
   3f97cc7 jupyter: get ready to prevent browser session re-use even if password changed
   e2ebcc3 jupyter: disable notebook terminal for security reasons
 
-## [1.8.0](https://github.com/bird-house/birdhouse-deploy/tree/1.8.0) (2020-02-03)
-
+[1.8.0](https://github.com/bird-house/birdhouse-deploy/tree/1.8.0) (2020-02-03)
+==================================================================================================================
 - jupyter data migration: touch new location else jupyterhub won't bind mount them
 
   See PR https://github.com/bird-house/birdhouse-deploy/pull/16
@@ -2078,8 +2111,8 @@
   See the `if os.path.exists` in the `jupyterhub_config.py`:
   https://github.com/bird-house/birdhouse-deploy/blob/53576cc9d36642c50e4a649ca58fc8339559fd4a/birdhouse/config/jupyterhub/jupyterhub_config.py.template#L36-L48
 
-## [1.7.1](https://github.com/bird-house/birdhouse-deploy/tree/1.7.1) (2020-01-30)
-
+[1.7.1](https://github.com/bird-house/birdhouse-deploy/tree/1.7.1) (2020-01-30)
+==================================================================================================================
 - `jupyter`: update various packages and add threddsclient
 
   Noticeable changes:
@@ -2104,12 +2137,13 @@
 
   See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/34 for more info.
 
-## [1.7.0](https://github.com/bird-house/birdhouse-deploy/tree/1.7.0) (2020-01-22)
-
+[1.7.0](https://github.com/bird-house/birdhouse-deploy/tree/1.7.0) (2020-01-22)
+==================================================================================================================
 - backup solr: should save all of /data/solr, not just the index
 
 
-## Prior Versions
+Prior Versions
+==================================================================================================================
 
 All versions prior to [1.7.0](https://github.com/bird-house/birdhouse-deploy/tree/1.7.0) were not officially tagged.
 Is it strongly recommended employing later versions to ensure better traceability of changes that could impact behavior
