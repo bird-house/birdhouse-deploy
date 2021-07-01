@@ -1,8 +1,15 @@
 # Changes
 
-[//]: # (**DEFINE LATEST CHANGES UNDER BELOW 'Unreleased' SECTION - THEY WILL BE INTEGRATED IN NEXT RELEASE**)
+[//]: # (NOTES:)
+[//]: # ( - comments are added here this way because comments in '.bumpversion.cfg' get wiped when it self-updates)
+[//]: # ( - headers at level 2 must be with '---', not ##, to avoid comment-interpretation errors with bumpversion)
+[//]: # (   see: https://github.com/c4urself/bump2version/issues/99)
+[//]: # ( - bump2version will not tag automatically, so it must be done manually after PR is merged and approved)
+[//]: # (   This is to ensure that new tags are applied directly on merge-commit, an not a commit within the PR)
+[//]: # (   see decission: https://github.com/bird-house/birdhouse-deploy/pull/161#discussion_r661746230)
 
-[//]: # (NOTE: headers at level 1 must be with equals to avoid comment-interpretation errors when bumping versions)
+[//]: # (**DEFINE LATEST CHANGES UNDER BELOW 'Unreleased' SECTION - THEY WILL BE INTEGRATED IN NEXT RELEASE VERSION**)
+[//]: # (  bump2version will take care to generate a new empty 'Unreleased' section after version bump)
 
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
