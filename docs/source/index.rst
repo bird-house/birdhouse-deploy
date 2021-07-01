@@ -6,7 +6,7 @@
 Introduction
 ============
 
-PAVICS is a research platform dedicated to climate analysis and visualization. It bundles 
+PAVICS is a research platform dedicated to climate analysis and visualization. It bundles
 data search, analytics and visualization services.
 
 .. include:: ../../README.rst
@@ -23,6 +23,7 @@ Contents:
    birdhouse/optional-components/README
    data_catalog
    contributing
+   changes
 
 
 Indices and tables
