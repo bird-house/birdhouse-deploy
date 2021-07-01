@@ -7,6 +7,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ==================================================================================================================
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.13.10](https://github.com/bird-house/birdhouse-deploy/tree/1.13.10) (%Y-%m-%d)
+==================================================================================================================
+
   ###  Changes
   
   - Add `bump2version` configuration to allow self-update of files that refer to new version releases 
