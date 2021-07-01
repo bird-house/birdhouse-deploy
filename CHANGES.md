@@ -16,7 +16,7 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
-[1.13.10](https://github.com/bird-house/birdhouse-deploy/tree/1.13.10) (%Y-%m-%d)
+[1.13.10](https://github.com/bird-house/birdhouse-deploy/tree/1.13.10) (2021-06-30)
 ------------------------------------------------------------------------------------------------------------------
 
   ###  Changes
