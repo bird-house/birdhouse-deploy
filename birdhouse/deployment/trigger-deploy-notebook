@@ -12,17 +12,19 @@
 #
 # Logs to /var/log/PAVICS/notebookdeploy.log, re-use existing logrotate.
 
-if [ -z "$JUPYTERHUB_USER_DATA_DIR" ]; then
-  # running script manually (not with cron) source env.local file.
-  COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
-  . "$COMPOSE_DIR/default.env"  # default JUPYTERHUB_USER_DATA_DIR
-  if [ -e "$COMPOSE_DIR/env.local" ]; then
-      . "$COMPOSE_DIR/env.local"  # optional override JUPYTERHUB_USER_DATA_DIR
-  fi
-fi
-
 LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
 exec >>$LOG_FILE 2>&1
+
+# running script manually (not with cron) source env.local file.
+if [ -z "$COMPOSE_DIR" ]; then
+    COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+fi
+if [ -e "$COMPOSE_DIR/default.env" ]; then
+    . "$COMPOSE_DIR/default.env"  # default JUPYTERHUB_USER_DATA_DIR
+fi
+if [ -e "$COMPOSE_DIR/env.local" ]; then
+    . "$COMPOSE_DIR/env.local"  # optional override JUPYTERHUB_USER_DATA_DIR
+fi
 
 cleanup_on_exit() {
     rm -rf "$TMPDIR"
