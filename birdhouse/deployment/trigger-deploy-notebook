@@ -15,6 +15,22 @@
 LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
 exec >>$LOG_FILE 2>&1
 
+cleanup_on_exit() {
+    rm -rf "$TMPDIR"
+    set +x
+    echo "
+notebookdeploy finished START_TIME=$START_TIME
+notebookdeploy finished   END_TIME=`date -Isecond`"
+}
+
+trap cleanup_on_exit EXIT
+
+START_TIME="`date -Isecond`"
+echo "==========
+notebookdeploy START_TIME=$START_TIME"
+
+set -x
+
 # running script manually (not with cron) source env.local file.
 if [ -z "$COMPOSE_DIR" ]; then
     COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
@@ -26,16 +42,6 @@ if [ -e "$COMPOSE_DIR/env.local" ]; then
     . "$COMPOSE_DIR/env.local"  # optional override JUPYTERHUB_USER_DATA_DIR
 fi
 
-cleanup_on_exit() {
-    rm -rf "$TMPDIR"
-    set +x
-    echo "
-notebookdeploy finished START_TIME=$START_TIME
-notebookdeploy finished   END_TIME=`date -Isecond`"
-}
-
-trap cleanup_on_exit EXIT
-
 NOTEBOOK_DIR_MNT="/notebook_dir"
 TUTORIAL_NOTEBOOKS_DIR="tutorial-notebooks"
 if [ -z "$WORKFLOW_TESTS_BRANCH" ]; then
@@ -46,12 +52,6 @@ fi
 if [ -z "$TMP_BASE_DIR" ]; then
     TMP_BASE_DIR="/tmp"
 fi
-
-START_TIME="`date -Isecond`"
-echo "==========
-notebookdeploy START_TIME=$START_TIME"
-
-set -x
 
 TMPDIR="`mktemp -d -t notebookdeploy.XXXXXXXXXXXX -p $TMP_BASE_DIR`"
 
