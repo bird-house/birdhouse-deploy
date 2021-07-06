@@ -25,7 +25,7 @@
     To support testing of this PR
     https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/79.
 
-    - jupyter: minor update to add `unzip` package
+  - jupyter: minor update to add `unzip` package
 
     `unzip` needed to test PAVICS-landing notebooks under Jenkins.  No other
     package updates.
