@@ -22,6 +22,18 @@
     Examaple: set `WORKFLOW_TESTS_BRANCH` and any other
     notebook deploy config like `PAVICS_LANDING_BRANCH` in `env.local`.
 
+    To support testing of this PR
+    https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/79.
+
+    - jupyter: minor update to add `unzip` package
+
+    `unzip` needed to test PAVICS-landing notebooks under Jenkins.  No other
+    package updates.
+
+    See PR
+    https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/79
+    for more details.
+
 [1.13.10](https://github.com/bird-house/birdhouse-deploy/tree/1.13.10) (2021-06-30)
 ------------------------------------------------------------------------------------------------------------------
 
