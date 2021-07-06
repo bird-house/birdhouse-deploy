@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.13.11](https://github.com/bird-house/birdhouse-deploy/tree/1.13.11) (2021-07-06)
+------------------------------------------------------------------------------------------------------------------
+
   ###  Changes
 
   - Notebook deployment: allow to specify required branch for any tutorial
