@@ -19,7 +19,7 @@
   - Notebook deployment: allow to specify required branch for any tutorial
     notebook repos in `env.local`.
 
-    Examaple: set `WORKFLOW_TESTS_BRANCH` and any other
+    Example: set `WORKFLOW_TESTS_BRANCH` and any other
     notebook deploy config like `PAVICS_LANDING_BRANCH` in `env.local`.
 
     To support testing of this PR
