@@ -25,6 +25,7 @@
         <include wildcard="*.txt" />
         <include wildcard="*.md" />
         <include wildcard="*.rst" />
+        <include wildcard="*.csv" />
       </filter>
 
     </datasetScan>
@@ -41,6 +42,7 @@
         <include wildcard="*.txt" />
         <include wildcard="*.md" />
         <include wildcard="*.rst" />
+        <include wildcard="*.csv" />
       </filter>
 
     </datasetScan>
