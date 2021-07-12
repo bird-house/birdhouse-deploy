@@ -31,7 +31,7 @@ retry.attempts = 3
 #   while 'service' limits itself to the service name/type resolution from the request path.
 #   Since services are not expected to change often, 'service' cache can be safely increased at a much higher refresh
 #   interval than 'acl' which should re-validate any permission changes more frequently.
-#   Caching be forced reset/ignored by using the 'Cache-Control: no-cache' header during any corresponding request.
+#   Caching can be forced reset/ignored by using the 'Cache-Control: no-cache' header during any corresponding request.
 cache.regions = acl, service
 cache.type = memory
 cache.acl.enabled = true
