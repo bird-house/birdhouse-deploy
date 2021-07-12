@@ -95,13 +95,19 @@ handlers = console
 formatter = generic
 
 [logger_magpie]
+# "level = DEBUG"   logs detailed information about operations/settings (not for production, will leak sensitive data)
+# "level = INFO"    reports useful information, not leaking details about settings
+# "level = WARN"    only potential problems are reported
 level = INFO
 handlers =
 qualname = magpie
 formatter = generic
 
 [logger_sqlalchemy]
-level = INFO
+# "level = DEBUG"   logs SQL queries, transactions and results
+# "level = INFO"    logs SQL queries (data can be identified from query field values)
+# "level = WARN"    logs neither (recommended for production systems, avoid anything below unless for dev/debug system)
+level = WARN
 handlers =
 qualname = sqlalchemy.engine
 formatter = generic

@@ -83,7 +83,7 @@ listen = 0.0.0.0:8000
 ###
 
 [loggers]
-keys = root, twitcher, sqlalchemy
+keys = root, twitcher, magpie, sqlalchemy
 
 [handlers]
 keys = console
@@ -96,17 +96,29 @@ level = INFO
 handlers = console
 
 [logger_twitcher]
+# "level = DEBUG"   logs detailed information about operations/settings (not for production, will leak sensitive data)
+# "level = INFO"    reports useful information, not leaking details about settings
+# "level = WARN"    only potential problems/unexpected results reported, such as when caching is employed
 level = INFO
 handlers =
 qualname = twitcher
 
+# MagpieAdapter or any other Magpie utilities it employs through Twitcher proxy-adapter security check
+[logger_magpie]
+# "level = DEBUG"   logs detailed information about operations/settings (not for production, will leak sensitive data)
+# "level = INFO"    reports useful information about operations, not leaking details about settings
+# "level = WARN"    only potential problems are reported such as missing settings in configuration
+level = INFO
+handlers =
+qualname = magpie
+
 [logger_sqlalchemy]
+# "level = DEBUG"   logs SQL queries, transactions and results
+# "level = INFO"    logs SQL queries (data can be identified from query field values)
+# "level = WARN"    logs neither (recommended for production systems, avoid anything below unless for dev/debug system)
 level = WARN
 handlers =
 qualname = sqlalchemy.engine
-# "level = INFO" logs SQL queries.
-# "level = DEBUG" logs SQL queries and results.
-# "level = WARN" logs neither.  (Recommended for production systems.)
 
 [handler_console]
 class = StreamHandler
