@@ -14,7 +14,17 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+  ### Changes
+
+  - Add request caching settings in `TWitcher` INI configuration to work with `Magpie` to help reduce permission and
+    access control computation time.
+    
+  - Add `magpie` logger under `Twitcher` INI configuration to provide relevant logging details provided 
+    by `MagpieAdapter` it employs for service and resource access resolution.
+
+  - Change logging level of `sqlalchemy.engin` under `Magpie` INI configuration to `WARN` in order to avoid by default
+    over verbose database queries.
+
 
 [1.13.14](https://github.com/bird-house/birdhouse-deploy/tree/1.13.14) (2021-07-29)
 ------------------------------------------------------------------------------------------------------------------
@@ -131,7 +141,7 @@
 [1.13.11](https://github.com/bird-house/birdhouse-deploy/tree/1.13.11) (2021-07-06)
 ------------------------------------------------------------------------------------------------------------------
 
-  ###  Changes
+  ### Changes
 
   - Notebook deployment: allow to specify required branch for any tutorial
     notebook repos in `env.local`.
@@ -154,7 +164,7 @@
 [1.13.10](https://github.com/bird-house/birdhouse-deploy/tree/1.13.10) (2021-06-30)
 ------------------------------------------------------------------------------------------------------------------
 
-  ###  Changes
+  ### Changes
   
   - Add `bump2version` configuration to allow self-update of files that refer to new version releases 
     and apply update of features listed in this changelog.
