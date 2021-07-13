@@ -16,6 +16,11 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.13.12](https://github.com/bird-house/birdhouse-deploy/tree/1.13.12) (2021-07-13)
+------------------------------------------------------------------------------------------------------------------
+
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
   ###  Changes
 
   - Add `csv` files to Thredds filter
