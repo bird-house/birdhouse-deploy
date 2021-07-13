@@ -18,7 +18,7 @@ permissions:
   - service: api
     resource: /api
     permission: read
-    user: anonymous
+    group: anonymous
     action: create
 
   - service: flyingpigeon

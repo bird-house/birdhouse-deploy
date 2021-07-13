@@ -24,16 +24,16 @@
 
     location /thredds/ {
 	#return 302 /twitcher/ows/proxy$request_uri;
-	proxy_pass https://${PAVICS_FQDN}/twitcher/ows/proxy/thredds/;
+	proxy_pass https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/thredds/;
         # direct hit Thredds, bypassing twitcher, for debugging only
-        # proxy_pass http://thredds:8080/twitcher/ows/proxy/thredds/;
+        # proxy_pass http://thredds:8080${TWITCHER_PROTECTED_PATH}/thredds/;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $real_scheme;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
     location /wpsoutputs/ {
-	alias /pavics-data/wps_outputs/;
+        alias /pavics-data/wps_outputs/;
     }
 
     location /geoserver/ {
@@ -52,7 +52,7 @@
     #	 proxy_set_header Host $host;
     #	 proxy_set_header X-Forwarded-Proto $real_scheme;
     #    include /etc/nginx/conf.d/cors.include;
-        return 302 /twitcher/ows/proxy$request_uri;
+        return 302 ${TWITCHER_PROTECTED_PATH}$request_uri;
     }
 
     location /project-api/ {
