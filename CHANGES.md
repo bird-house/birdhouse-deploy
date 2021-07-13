@@ -16,6 +16,10 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+  ###  Changes
+
+  - Add `csv` files to Thredds filter
+
 [1.13.11](https://github.com/bird-house/birdhouse-deploy/tree/1.13.11) (2021-07-06)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -370,21 +374,21 @@
   2. scp `magpie_persist.prod.tgz` to `medus`
   3. login to `medus`
   4. `cd /path/to/birdhouse-deploy/birdhouse`
-  3. `./pavics-compose.sh down`
-  4. `git checkout master`
-  5. `cd /data`
-  2. `rm -rf magpie_persist`
-  3. `tar xzf magpie_persist.prod.tgz`  # restore Magpie DB with prod version
-  4. `cd /path/to/birdhouse-deploy/birdhouse`
-  5. `./pavics-compose.sh up -d`
-  3. Update `env.local` `MAGPIE_ADMIN_PASSWORD` with prod passwd for Twitcher to be able to access Magpie since we juste restore the Magpie DB from prod
-  4. `./pavics-compose.sh restart twitcher`  # for Twitcher to get new Magpie admin passwd
-  4. Baseline working state: trigger Jenkins test suite, ensure all pass except `pavics_thredds.ipynb` that requires new Magpie
-  5. Baseline working state: view existing services permissions on group Anonymous (https://medus.ouranos.ca/magpie/ui/groups/anonymous/default)
-  6. `git checkout restore-previous-broken-magpie-upgrade-so-we-can-work-on-a-fix`  # This current branch
-  7. `./pavics-compose.sh up -d`  # upgrade to new Magpie
-  8. `docker logs magpie`: check no DB migration error
-  9. Trigger Jenkins test suite again
+  5. `./pavics-compose.sh down`
+  6. `git checkout master`
+  7. `cd /data`
+  8. `rm -rf magpie_persist`
+  9. `tar xzf magpie_persist.prod.tgz`  # restore Magpie DB with prod version
+  10. `cd /path/to/birdhouse-deploy/birdhouse`
+  11. `./pavics-compose.sh up -d`
+  12. Update `env.local` `MAGPIE_ADMIN_PASSWORD` with prod passwd for Twitcher to be able to access Magpie since we juste restore the Magpie DB from prod
+  13. `./pavics-compose.sh restart twitcher`  # for Twitcher to get new Magpie admin passwd
+  14. Baseline working state: trigger Jenkins test suite, ensure all pass except `pavics_thredds.ipynb` that requires new Magpie
+  15. Baseline working state: view existing services permissions on group Anonymous (https://medus.ouranos.ca/magpie/ui/groups/anonymous/default)
+  16. `git checkout restore-previous-broken-magpie-upgrade-so-we-can-work-on-a-fix`  # This current branch
+  17. `./pavics-compose.sh up -d`  # upgrade to new Magpie
+  18. `docker logs magpie`: check no DB migration error
+  19. Trigger Jenkins test suite again
 
 [1.11.29](https://github.com/bird-house/birdhouse-deploy/tree/1.11.29) (2021-04-16)
 ------------------------------------------------------------------------------------------------------------------
