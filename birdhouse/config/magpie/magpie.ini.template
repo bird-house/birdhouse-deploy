@@ -28,7 +28,7 @@ pyramid.includes = pyramid_tm ziggurat_foundations.ext.pyramid.sign_in ziggurat_
 #   other overridable variables available in magpie/constants.py
 #
 magpie.port = 2001
-magpie.url = http://localhost:2001
+magpie.url = https://${$PAVICS_FQDN}/magpie
 magpie.max_restart = 5
 magpie.push_phoenix = true
 # This secret should be the same in Twitcher !

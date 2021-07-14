@@ -25,6 +25,13 @@
   - Change logging level of `sqlalchemy.engin` under `Magpie` INI configuration to `WARN` in order to avoid by default
     over verbose database queries.
 
+  - Update `Magpie` version to 3.14.0 with corresponding `Twitcher` using `MagpieAdapter` to obtain fixes about
+    request caching and logging improvements during `Twitcher` security check failure following raised exception.
+
+  ### Fixes
+
+  - Adjust incorrect `magpie.url` value in `Magpie` INI configuration.
+
 
 [1.13.14](https://github.com/bird-house/birdhouse-deploy/tree/1.13.14) (2021-07-29)
 ------------------------------------------------------------------------------------------------------------------
