@@ -22,8 +22,14 @@ sqlalchemy.url = sqlite:///%(here)s/twitcher.sqlite
 retry.attempts = 3
 
 # Caching settings for specific sections/functions - improves performance response times of recurring requests
-# Although related to Magpie, cache regions settings executed by 'MagpieAdapter' are running under Twitcher to
-# resolve Access Control Lists to services, and must therefore be placed in Twitcher configuration.
+# For caching related to Magpie API endpoints themselves, instead refer to Magpie INI configuration file.
+#
+#   Although related to Magpie code, cache regions settings executed by 'MagpieAdapter' are running under Twitcher
+#   to resolve Access Control Lists (ACL) to services/resources, and must therefore be placed in Twitcher configuration.
+#   Caching that takes effect in Twitcher via 'MagpieAdapter' is when requests use the URL endpoint:
+#
+#       <twitcher.url>/<twitcher.ows_proxy_protected_path>/proxy/<service-name>[/...]
+#
 # NOTE: Caching will only take effect with Magpie >= 3.7
 # Detail:
 #   Both 'acl' and 'service' scopes occur on every permission resolution for a given user requesting any access.
@@ -34,6 +40,7 @@ retry.attempts = 3
 #   Caching can be forced reset/ignored by using the 'Cache-Control: no-cache' header during any corresponding request.
 cache.regions = acl, service
 cache.type = memory
+cache.enabled = true
 cache.acl.enabled = true
 cache.acl.expire = 20
 cache.service.enabled = true
