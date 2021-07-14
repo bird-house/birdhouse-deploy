@@ -49,6 +49,24 @@ ziggurat_foundations.session_provider_callable = magpie.models:get_session_calla
 github.client_id=${GITHUB_CLIENT_ID}
 github.client_secret=${GITHUB_CLIENT_SECRET}
 
+# Caching settings for specific sections/functions - improves performance response times of recurring requests
+# See Twitcher INI configuration for caching that takes effect when resolving access enforcement to actual services.
+# Following cache settings apply only during Magpie API requests.
+#
+# NOTE: Caching will only take effect with Magpie >= 3.7
+# Detail:
+#   Region 'acl' takes effect whenever computing "effective permissions" of user/group onto a service/resource.
+#   Because Magpie is employed to manage those permissions and that computing the effective resolution of the
+#   complete resource hierarchy and full user-group membership inheritance is fairly rare, caching is not specifically
+#   needed here. It is actually more often then not useful to always refresh the latest states to be sure of which
+#   permissions are actually applied when the administrator manages them. Therefore, all caches are disabled here, but
+#   this is not the case on Twitcher side.
+cache.regions = acl, service
+cache.type = memory
+cache.enabled = false
+cache.acl.enabled = false
+cache.service.enabled = false
+
 [app:api_app]
 use = egg:Paste#static
 document_root = %(here)s/ui/swagger
