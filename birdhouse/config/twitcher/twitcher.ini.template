@@ -21,6 +21,31 @@ sqlalchemy.url = sqlite:///%(here)s/twitcher.sqlite
 
 retry.attempts = 3
 
+# Caching settings for specific sections/functions - improves performance response times of recurring requests
+# For caching related to Magpie API endpoints themselves, instead refer to Magpie INI configuration file.
+#
+#   Although related to Magpie code, cache regions settings executed by 'MagpieAdapter' are running under Twitcher
+#   to resolve Access Control Lists (ACL) to services/resources, and must therefore be placed in Twitcher configuration.
+#   Caching that takes effect in Twitcher via 'MagpieAdapter' is when requests use the URL endpoint:
+#
+#       <twitcher.url>/<twitcher.ows_proxy_protected_path>/proxy/<service-name>[/...]
+#
+# NOTE: Caching will only take effect with Magpie >= 3.7
+# Detail:
+#   Both 'acl' and 'service' scopes occur on every permission resolution for a given user requesting any access.
+#   The difference is that 'acl' applies for every combination of (user/group, service/resource, permissions),
+#   while 'service' limits itself to the service name/type resolution from the request path.
+#   Since services are not expected to change often, 'service' cache can be safely increased at a much higher refresh
+#   interval than 'acl' which should re-validate any permission changes more frequently.
+#   Caching can be forced reset/ignored by using the 'Cache-Control: no-cache' header during any corresponding request.
+cache.regions = acl, service
+cache.type = memory
+cache.enabled = true
+cache.acl.enabled = true
+cache.acl.expire = 20
+cache.service.enabled = true
+cache.service.expire = 60
+
 # By default, the toolbar only appears for clients from IP addresses
 # '127.0.0.1' and '::1'.
 # debugtoolbar.hosts = 127.0.0.1 ::1
@@ -65,7 +90,7 @@ listen = 0.0.0.0:8000
 ###
 
 [loggers]
-keys = root, twitcher, sqlalchemy
+keys = root, twitcher, magpie, sqlalchemy
 
 [handlers]
 keys = console
@@ -78,17 +103,29 @@ level = INFO
 handlers = console
 
 [logger_twitcher]
+# "level = DEBUG"   logs detailed information about operations/settings (not for production, will leak sensitive data)
+# "level = INFO"    reports useful information, not leaking details about settings
+# "level = WARN"    only potential problems/unexpected results reported, such as when caching is employed
 level = INFO
 handlers =
 qualname = twitcher
 
+# MagpieAdapter or any other Magpie utilities it employs through Twitcher proxy-adapter security check
+[logger_magpie]
+# "level = DEBUG"   logs detailed information about operations/settings (not for production, will leak sensitive data)
+# "level = INFO"    reports useful information about operations, not leaking details about settings
+# "level = WARN"    only potential problems are reported such as missing settings in configuration
+level = INFO
+handlers =
+qualname = magpie
+
 [logger_sqlalchemy]
+# "level = DEBUG"   logs SQL queries, transactions and results
+# "level = INFO"    logs SQL queries (data can be identified from query field values)
+# "level = WARN"    logs neither (recommended for production systems, avoid anything below unless for dev/debug system)
 level = WARN
 handlers =
 qualname = sqlalchemy.engine
-# "level = INFO" logs SQL queries.
-# "level = DEBUG" logs SQL queries and results.
-# "level = WARN" logs neither.  (Recommended for production systems.)
 
 [handler_console]
 class = StreamHandler
