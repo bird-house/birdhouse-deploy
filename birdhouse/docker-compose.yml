@@ -114,22 +114,34 @@ services:
     logging: *default-logging
 
   geoserver:
-    image: pavics/geoserver:2.9.3
+    image: ${GEOSERVER_IMAGE}
     container_name: geoserver
     ports:
       - "8087:8080"
     environment:
       # for custom entrypoint
-      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+      PAVICS_FQDN_PUBLIC: ${PAVICS_FQDN_PUBLIC}
+      STABLE_EXTENSIONS: ${GEOSERVER_STABLE_EXTENSIONS}
+      COMMUNITY_EXTENSIONS: ${GEOSERVER_COMMUNITY_EXTENSIONS}
+      GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
+      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
+      # fix "WARNING: Illegal reflective access by org.geotools.image.ImageWorker" in `docker logs geoserver`
+      JAVA_OPTS: --add-exports=java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED
     volumes:
-      - ${DATA_PERSIST_ROOT}/geoserver:/opt/geoserver/data_dir
-      - ./config/geoserver/web.xml:/usr/local/tomcat/conf/web.xml
+      # run deployment/fix-geoserver-data-dir-perm on existing
+      # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image
+      - ${GEOSERVER_DATA_DIR}:/opt/geoserver/data_dir
       - ./config/geoserver/entrypointwrapper:/entrypointwrapper:ro
     links:
       - postgis
     entrypoint: /entrypointwrapper
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: curl --fail --silent http://localhost:8080/ || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
 
   malleefowl:
     image: pavics/malleefowl:pavics-0.3.5

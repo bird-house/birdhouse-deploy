@@ -81,22 +81,6 @@ Note
 Manual steps post deployment
 ----------------------------
 
-Change geoserver default admin password
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* Go to
-  ``https://<PAVICS_FQDN>/geoserver/web/wicket/bookmarkable/org.geoserver.security.web.UserGroupRoleServicesPage`` (Security -> Users, Groups, and Roles)
-
-* Login using the default username ``admin`` and default password ``geoserver``.
-
-* Click on tab "Users/Groups".
-
-* Click on user "admin".
-
-* Change the password.
-
-* Click "Save".
-
 Create public demo user in Magpie for JupyterHub login
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
