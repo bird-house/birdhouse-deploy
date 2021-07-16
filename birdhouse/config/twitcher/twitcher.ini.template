@@ -40,10 +40,10 @@ retry.attempts = 3
 #   Caching can be forced reset/ignored by using the 'Cache-Control: no-cache' header during any corresponding request.
 cache.regions = acl, service
 cache.type = memory
-cache.enabled = true
-cache.acl.enabled = true
+cache.enabled = false
+cache.acl.enabled = false
 cache.acl.expire = 20
-cache.service.enabled = true
+cache.service.enabled = false
 cache.service.expire = 60
 
 # By default, the toolbar only appears for clients from IP addresses
