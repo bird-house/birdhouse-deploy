@@ -14,12 +14,54 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+  ###  Changes
+
+  - jupyter: update for RavenPy-0.6.0, Xclim-0.28.0 and latest of everything else
+
+    See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/84 for more info.
+
+    Relevant changes:
+    ```diff
+    <   - ravenpy=0.5.2=pyh7f9bfb9_0
+    >   - ravenpy=0.6.0=pyh1bb2064_2
+    
+    <   - xclim=0.27.0=pyhd8ed1ab_0
+    >   - xclim=0.28.0=pyhd8ed1ab_0
+    
+    # birdy rebuild
+    <   - birdy=v0.8.0=pyh6c4a22f_0
+    >   - birdy=v0.8.0=pyh6c4a22f_1
+    
+    <   - cf_xarray=0.5.2=pyh6c4a22f_0
+    >   - cf_xarray=0.6.0=pyh6c4a22f_0
+    
+    <   - cftime=1.4.1=py37h902c9e0_0
+    >   - cftime=1.5.0=py37h6f94858_0
+    
+    <   - dask=2021.6.0=pyhd8ed1ab_0
+    >   - dask=2021.7.0=pyhd8ed1ab_0
+    
+    <   - nc-time-axis=1.2.0=py_1
+    >   - nc-time-axis=1.3.1=pyhd8ed1ab_2
+    
+    <   - rioxarray=0.4.1.post0=pyhd8ed1ab_0
+    >   - rioxarray=0.5.0=pyhd8ed1ab_0
+    
+    <   - numpy=1.20.3=py37h038b26d_1
+    >   - numpy=1.21.1=py37h038b26d_0
+    
+    <   - pandas=1.2.4=py37h219a48f_0
+    >   - pandas=1.2.5=py37h219a48f_0
+    
+    <   - plotly=4.14.3=pyh44b312d_0
+    >   - plotly=5.1.0=pyhd8ed1ab_1
+    
+    <     - nbconvert==5.6.1
+    >   - nbconvert=6.1.0=py37h89c1867_0
+    ```
 
 [1.13.12](https://github.com/bird-house/birdhouse-deploy/tree/1.13.12) (2021-07-13)
 ------------------------------------------------------------------------------------------------------------------
-
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
   ###  Changes
 
