@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.13.13](https://github.com/bird-house/birdhouse-deploy/tree/1.13.13) (2021-07-26)
+------------------------------------------------------------------------------------------------------------------
+
   ###  Changes
 
   - jupyter: update for RavenPy-0.6.0, Xclim-0.28.0 and latest of everything else
