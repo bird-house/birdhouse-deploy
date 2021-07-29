@@ -16,6 +16,62 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.13.14](https://github.com/bird-house/birdhouse-deploy/tree/1.13.14) (2021-07-29)
+------------------------------------------------------------------------------------------------------------------
+
+- jupyter: update for JupyterLab v3, fix memory monitor display and RavenPy-0.7.0
+
+  See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/85 for more info.
+
+  Relevant changes:
+  ```diff
+  <   - jupyterlab=2.2.9=pyhd8ed1ab_0
+  >   - jupyterlab=3.1.0=pyhd8ed1ab_0
+
+  <   - jupyterlab_server=1.2.0=py_0
+  >   - jupyterlab_server=2.6.1=pyhd8ed1ab_0
+
+  <   - jupyter-archive=2.2.0=pyhd8ed1ab_0
+  >   - jupyter-archive=3.0.1=pyhd8ed1ab_0
+
+  <   - jupyter_bokeh=2.0.4=pyhd8ed1ab_0
+  >   - jupyter_bokeh=3.0.2=pyhd8ed1ab_0
+
+  <   - jupyterlab-git=0.24.0=pyhd8ed1ab_0
+  >   - jupyterlab-git=0.31.0=pyhd8ed1ab_0
+
+  <   - nbdime=2.1.0=py_0
+  >   - nbdime=3.1.0=pyhd8ed1ab_0
+
+  # Pip to Conda package
+  <     - nbresuse==0.4.0
+  >   - nbresuse=0.4.0=pyhd8ed1ab_0
+
+  >   - nbclassic=0.3.1=pyhd8ed1ab_1
+
+  >   - jupyterlab-system-monitor=0.8.0=pyhd8ed1ab_1
+  >   - jupyter-resource-usage=0.5.1=pyhd8ed1ab_0
+  >   - jupyterlab-topbar=0.6.1=pyhd8ed1ab_2
+  >     - jupyterlab-logout=0.5.0
+
+  <   - jupyter_conda=5.1.1=hd8ed1ab_0
+
+  <   - ravenpy=0.6.0=pyh1bb2064_2
+  >   - ravenpy=0.7.0=pyh1bb2064_0
+
+  <   - pandas=1.2.5=py37h219a48f_0
+  >   - pandas=1.3.1=py37h219a48f_0
+
+  <   - xarray=0.18.2=pyhd8ed1ab_0
+  >   - xarray=0.19.0=pyhd8ed1ab_1
+
+  <   - dask=2021.7.0=pyhd8ed1ab_0
+  >   - dask=2021.7.1=pyhd8ed1ab_0
+
+  <   - regionmask=0.6.2=pyhd8ed1ab_0
+  >   - regionmask=0.7.0=pyhd8ed1ab_0
+  ```
+
 [1.13.13](https://github.com/bird-house/birdhouse-deploy/tree/1.13.13) (2021-07-26)
 ------------------------------------------------------------------------------------------------------------------
 
