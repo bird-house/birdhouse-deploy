@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.13.14](https://github.com/bird-house/birdhouse-deploy/tree/1.13.14) (2021-07-29)
+------------------------------------------------------------------------------------------------------------------
+
 - jupyter: update for JupyterLab v3, fix memory monitor display and RavenPy-0.7.0
 
   See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/85 for more info.
