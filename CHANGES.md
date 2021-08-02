@@ -39,7 +39,7 @@
     echo "select email,user_name from users" | \
     docker exec -i postgres-magpie psql -U $POSTGRES_MAGPIE_USERNAME magpiedb | \
     sort > /tmp/magpie_users.txt
-    ````
+    ```
 
   ### Fixes
 
