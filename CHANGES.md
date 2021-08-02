@@ -27,6 +27,19 @@
 
   - Update `Magpie` version to 3.14.0 with corresponding `Twitcher` using `MagpieAdapter` to obtain fixes about
     request caching and logging improvements during `Twitcher` security check failure following raised exception.
+    
+    Please note that because the previous default version was 3.12.0, a security fix introduced in 3.13.0 is included.
+    (see details here: [3.13.0 (2021-06-29)](https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst#3130-2021-06-29))
+    
+    This security fix explicitly disallows duplicate emails for different user accounts, which might require manual 
+    database updates if such users exist on your server instance. To look for possible duplicates, the following command
+    can be used. Duplicate entries must be updated or removed such that only unique emails are present.
+    
+    ```shell
+    echo "select email,user_name from users" | \
+    docker exec -i postgres-magpie psql -U $POSTGRES_MAGPIE_USERNAME magpiedb | \
+    sort > /tmp/magpie_users.txt
+    ````
 
   ### Fixes
 
