@@ -22,7 +22,7 @@
   - Add `magpie` logger under `Twitcher` INI configuration to provide relevant logging details provided 
     by `MagpieAdapter` it employs for service and resource access resolution.
 
-  - Change logging level of `sqlalchemy.engin` under `Magpie` INI configuration to `WARN` in order to avoid by default
+  - Change logging level of `sqlalchemy.engine` under `Magpie` INI configuration to `WARN` in order to avoid by default
     over verbose database queries.
 
   - Update `Magpie` version to 3.14.0 with corresponding `Twitcher` using `MagpieAdapter` to obtain fixes about
