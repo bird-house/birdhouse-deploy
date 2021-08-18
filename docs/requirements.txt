@@ -1,0 +1,2 @@
+# extra requirements specifically for documentation purposes
+m2r2

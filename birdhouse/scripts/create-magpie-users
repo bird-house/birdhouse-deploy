@@ -65,13 +65,21 @@
 # bogus03      bvNWVWCQi8M6     409 : User name matches an already existing user name.
 #
 
+RED=$(tput setaf 1)
+NORMAL=$(tput sgr0)
+
 THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
+# must retrieve MAGPIE_VERSION from 'default.env' or 'env.local'
+if [ -f "$COMPOSE_DIR/default.env" ]; then
+    . "${COMPOSE_DIR}/default.env"
+fi
+
 if [ -f "$COMPOSE_DIR/env.local" ]; then
     # Get PAVICS_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
-    . $COMPOSE_DIR/env.local
+    . "${COMPOSE_DIR}/env.local"
 fi
 
 ##############################################################################
@@ -98,7 +106,12 @@ if [ -z "$MAGPIE_CLI_CONF" ]; then
 fi
 
 if [ -z "$MAGPIE_CLI_IMAGE" ]; then
-    MAGPIE_CLI_IMAGE="pavics/magpie:3.8.0"
+    # MAGPIE_VERSION must be provided by 'default.env', 'env.local' or directly
+    if [ -z "${MAGPIE_VERSION}" ]; then
+        echo "${RED}Error${NORMAL}: Required MAGPIE_VERSION is undefined or empty."
+        exit 1
+    fi
+    MAGPIE_CLI_IMAGE="pavics/magpie:${MAGPIE_VERSION}"
 fi
 
 # End configurable config via env var.
