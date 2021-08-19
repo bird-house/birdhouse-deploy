@@ -33,6 +33,37 @@ services:
       - mongodb
     # don't provide volumes, assume that if data persistence was requested, it should be added via another extra compose
 
+  wait-for-wps:
+    # waits until each WPS GetCapabilities responds correctly, such that Weaver will be able to request them
+    # adding 'depends_on' only ensures that containers are running, but startup of WPS apps is not necessarily completed
+    image: jwilder/dockerize
+    container_name: wait-for-wps
+    depends_on:
+      - catalog
+      - finch
+      - flyingpigeon
+      - hummingbird
+      - malleefowl
+      - raven
+    links:
+      - catalog
+      - finch
+      - flyingpigeon
+      - hummingbird
+      - malleefowl
+      - raven
+    restart: "no"
+    command: [
+      "dockerize",
+      "-wait", "http://catalog:80/pywps?service=WPS&request=GetCapabilities",
+      "-wait", "http://finch:5000/wps?service=WPS&request=GetCapabilities",
+      "-wait", "http://flyingpigeon:8093/wps?service=WPS&request=GetCapabilities",
+      "-wait", "http://hummingbird:8097/wps?service=WPS&request=GetCapabilities",
+      "-wait", "http://malleefowl:8091/wps?service=WPS&request=GetCapabilities",
+      "-wait", "http://raven:9099/wps?service=WPS&request=GetCapabilities",
+      "-timeout", "30s"
+    ]
+
   # Image 'weaver' is the API side of the application
   weaver:
     image: pavics/weaver:${WEAVER_VERSION}-manager
@@ -46,12 +77,7 @@ services:
     #  - ./config/mongodb/credentials.env
     # ensure other referenced services are created beforehand to avoid booting timing issues
     depends_on:
-      - catalog
-      - finch
-      - flyingpigeon
-      - hummingbird
-      - malleefowl
-      - raven
+      - wait-for-wps
       - mongodb
     links:
       - mongodb
