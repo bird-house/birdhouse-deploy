@@ -18,20 +18,20 @@
 # processes:    # static local snapshot
 providers:      # dynamic remote reference
   - name: catalog
-    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/catalog
+    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/catalog
     visible: true
   - name: finch
-    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/finch
+    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch
     visible: true
   - name: flyingpigeon
-    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/flyingpigeon
+    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/flyingpigeon
     visible: true
   - name: hummingbird
-    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/hummingbird
+    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird
     visible: true
   - name: malleefowl
-    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/malleefowl
+    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/malleefowl
     visible: true
   - name: raven
-    url: https://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/raven
+    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven
     visible: true

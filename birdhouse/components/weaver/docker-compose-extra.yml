@@ -8,13 +8,14 @@ x-logging:
     max-file: "10"
 
 services:
-
+  # extend proxy configuration with weaver endpoints
   proxy:
     volumes:
       - ./components/weaver/conf.extra-service.d:/etc/nginx/conf.extra-service.d/weaver:ro
     links:
       - weaver
 
+  # extend magpie configuration with setup of weaver service and initial permissions
   magpie:
     volumes:
       # NOTE:
@@ -33,41 +34,21 @@ services:
       - mongodb
     # don't provide volumes, assume that if data persistence was requested, it should be added via another extra compose
 
-  wait-for-wps:
-    # waits until each WPS GetCapabilities responds correctly, such that Weaver will be able to request them
-    # adding 'depends_on' only ensures that containers are running, but startup of WPS apps is not necessarily completed
-    image: jwilder/dockerize
-    container_name: wait-for-wps
-    depends_on:
-      - catalog
-      - finch
-      - flyingpigeon
-      - hummingbird
-      - malleefowl
-      - raven
-    links:
-      - catalog
-      - finch
-      - flyingpigeon
-      - hummingbird
-      - malleefowl
-      - raven
-    restart: "no"
-    command: [
-      "dockerize",
-      "-wait", "http://catalog:80/pywps?service=WPS&request=GetCapabilities",
-      "-wait", "http://finch:5000/wps?service=WPS&request=GetCapabilities",
-      "-wait", "http://flyingpigeon:8093/wps?service=WPS&request=GetCapabilities",
-      "-wait", "http://hummingbird:8097/wps?service=WPS&request=GetCapabilities",
-      "-wait", "http://malleefowl:8091/wps?service=WPS&request=GetCapabilities",
-      "-wait", "http://raven:9099/wps?service=WPS&request=GetCapabilities",
-      "-timeout", "30s"
-    ]
-
   # Image 'weaver' is the API side of the application
   weaver:
-    image: pavics/weaver:${WEAVER_VERSION}-manager
     container_name: ${WEAVER_MANAGER_NAME}
+    # NOTE: Override the usual Weaver-Manager image by one that is built inline with extra dependency to 'dockerize'
+    #   The 'dockerize' CLI utility allows to wait until each WPS GetCapabilities responds correctly, such that once
+    #   Weaver is started, they will all be able to request them and register the providers correctly.
+    #   This is needed because simply adding 'depends_on' only ensures that containers are 'running', but startup of
+    #   WPS applications themselves are not necessarily completed. Successful HTTP responses ensure they are 'ready'.
+    #image: pavics/weaver:${WEAVER_VERSION}-manager
+    image: pavics/weaver:${WEAVER_VERSION}-wait-wps
+    build:
+      context: ./components/weaver
+      dockerfile: Dockerfile
+      args:
+        WEAVER_VERSION: ${WEAVER_VERSION}
     ports:
       - "4001:4001"
     environment:
@@ -77,10 +58,22 @@ services:
     #  - ./config/mongodb/credentials.env
     # ensure other referenced services are created beforehand to avoid booting timing issues
     depends_on:
-      - wait-for-wps
+      - catalog
+      - finch
+      - flyingpigeon
+      - hummingbird
+      - malleefowl
+      - raven
+      #- wait-for-wps
       - mongodb
     links:
       - mongodb
+      - catalog
+      - finch
+      - flyingpigeon
+      - hummingbird
+      - malleefowl
+      - raven
     networks:
       - default
       - mongodb
@@ -93,6 +86,18 @@ services:
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     restart: always
     logging: *default-logging
+    # NOTE: see above 'image' and 'build' sections, start Weaver only after WPS providers can respond
+    command: ["bash", "-c",
+        "/usr/local/bin/dockerize
+          -wait 'http://catalog:80/pywps?service=WPS&request=GetCapabilities'
+          -wait 'http://finch:5000/wps?service=WPS&request=GetCapabilities'
+          -wait 'http://flyingpigeon:8093/wps?service=WPS&request=GetCapabilities'
+          -wait 'http://hummingbird:8097/wps?service=WPS&request=GetCapabilities'
+          -wait 'http://malleefowl:8091/wps?service=WPS&request=GetCapabilities'
+          -wait 'http://raven:9099/wps?service=WPS&request=GetCapabilities'
+          -timeout 30s
+        && pserve '/opt/local/src/weaver/config/weaver.ini'"
+    ]
 
   # Image 'worker' is the job runner of Weaver, possibly spawning Docker applications according to process definition
   worker:
@@ -109,8 +114,8 @@ services:
     links:
       - mongodb
     networks:
-      # NOTE:
-      #   Don't provide 'default' network such that only connection with other images (birds, proxy) can be
+      # WARNING: *DO NOT* provide 'default' network
+      #   Not providing 'default' network ensure that only connection with other images (birds, proxy) can be
       #   accomplished through Weaver API which cannot run sibling dockers by itself. Isolate Dockers execution.
       - docker-proxy
       - mongodb
@@ -132,6 +137,7 @@ services:
     restart: always
     logging: *default-logging
 
+  # Image 'docker-proxy' is the connector between docker image 'worker' jobs and their sibling docker executions
   docker-proxy:
     # references
     #   https://github.com/Tecnativa/docker-socket-proxy
@@ -156,9 +162,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      # don't provide other networks
-      # only Weaver workers should do the bridge between docker/non-docker accessible images
-      # this way, docker images executed by the workers will not have direct access to databases and datasets
+      # WARNING: *DO NOT* provide other networks
+      #   only Weaver 'worker' should do the bridge between docker/non-docker accessible images
+      #   this way, docker images executed by the workers will not have direct access to databases and datasets
       - docker-proxy
     logging: *default-logging
     # remote swarm as needed (requires more permissions above)
