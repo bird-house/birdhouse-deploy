@@ -168,6 +168,10 @@ How to Enable the Component
     - ``ALERTMANAGER_EXTRA_INHIBITION`` to disable rule from firing
     - ``ALERTMANAGER_EXTRA_RECEIVERS`` to add more receivers than the admin emails
 
+  - Alert thresholds can be customized by setting the various ``PROMETHEUS_*_ALERT``
+    vars in ``env.local``.  The list of ``PROMETHEUS_*_ALERT`` vars are in
+    monitoring_default.env_ (:download:`download <monitoring/default.env>`).
+
 
 Grafana Dashboard
 -----------------
@@ -235,3 +239,4 @@ Customizing the Component
 .. _fix-write-perm: ../deployment/fix-write-perm
 .. _deploy.sh: ../deployment/deploy.sh
 .. _triggerdeploy.sh: ../deployment/triggerdeploy.sh
+.. _monitoring_default.env: monitoring/default.env
