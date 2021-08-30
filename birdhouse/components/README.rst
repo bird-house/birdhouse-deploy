@@ -151,6 +151,14 @@ Usage
 - Prometheus alert rules: http://PAVICS_FQDN:9090/rules
 - AlertManager to manage alerts: http://PAVICS_FQDN:9093
 
+The paths above are purposely not behind the proxy to not expose them publicly,
+assuming only ports 80 and 443 are publicly exposed on the internet.  All other
+ports are not exposed.
+
+Only Grafana has authentication, Prometheus alert rules and AlertManager have
+no authentication at all so had they been behind the proxy, anyone will be
+able to access them.
+
 
 How to Enable the Component
 ---------------------------
