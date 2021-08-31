@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.14.1](https://github.com/bird-house/birdhouse-deploy/tree/1.14.1) (2021-08-31)
+------------------------------------------------------------------------------------------------------------------
+
 - monitoring: make some prometheus alert threshold configurable via env.local
 
   Default values are previous hardcoded values so this is fully backward compatible.
