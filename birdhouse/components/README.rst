@@ -151,6 +151,14 @@ Usage
 - Prometheus alert rules: http://PAVICS_FQDN:9090/rules
 - AlertManager to manage alerts: http://PAVICS_FQDN:9093
 
+The paths above are purposely not behind the proxy to not expose them publicly,
+assuming only ports 80 and 443 are publicly exposed on the internet.  All other
+ports are not exposed.
+
+Only Grafana has authentication, Prometheus alert rules and AlertManager have
+no authentication at all so had they been behind the proxy, anyone will be
+able to access them.
+
 
 How to Enable the Component
 ---------------------------
@@ -167,6 +175,10 @@ How to Enable the Component
     - ``ALERTMANAGER_EXTRA_ROUTES`` to add more routes than email notification
     - ``ALERTMANAGER_EXTRA_INHIBITION`` to disable rule from firing
     - ``ALERTMANAGER_EXTRA_RECEIVERS`` to add more receivers than the admin emails
+
+  - Alert thresholds can be customized by setting the various ``PROMETHEUS_*_ALERT``
+    vars in ``env.local``.  The list of ``PROMETHEUS_*_ALERT`` vars are in
+    monitoring_default.env_ (:download:`download <monitoring/default.env>`).
 
 
 Grafana Dashboard
@@ -235,3 +247,4 @@ Customizing the Component
 .. _fix-write-perm: ../deployment/fix-write-perm
 .. _deploy.sh: ../deployment/deploy.sh
 .. _triggerdeploy.sh: ../deployment/triggerdeploy.sh
+.. _monitoring_default.env: monitoring/default.env

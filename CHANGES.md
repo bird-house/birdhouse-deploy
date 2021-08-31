@@ -16,6 +16,27 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.14.1](https://github.com/bird-house/birdhouse-deploy/tree/1.14.1) (2021-08-31)
+------------------------------------------------------------------------------------------------------------------
+
+- monitoring: make some prometheus alert threshold configurable via env.local
+
+  Default values are previous hardcoded values so this is fully backward compatible.
+
+  Different organizations with different policies and hardware can now
+  adapt the alert threshold to their specific needs, decreasing false
+  positive alerts.
+
+  Too much false positive alerts will decrease the importance and
+  usefulness of each alert. Alerts should not feel like spams.
+
+  Not all alert thresholds are changed to make configurable.  Only thresholds
+  that are most likely to need customization or that logically should be
+  configurable are made configurable.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/66.
+
+
 [1.14.0](https://github.com/bird-house/birdhouse-deploy/tree/1.14.0) (2021-08-02)
 ------------------------------------------------------------------------------------------------------------------
 
