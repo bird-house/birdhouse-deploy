@@ -143,7 +143,7 @@ services:
     #   https://github.com/Tecnativa/docker-socket-proxy
     #   https://stackoverflow.com/a/47293798/5936364
     #   https://docs.docker.com/engine/api/
-    image: tecnativa/docker-socket-proxy
+    image: tecnativa/docker-socket-proxy:0.1.1
     container_name: docker-proxy
     environment:
       # DOCKER API permissions
