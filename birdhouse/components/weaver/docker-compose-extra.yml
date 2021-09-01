@@ -42,13 +42,7 @@ services:
     #   Weaver is started, they will all be able to request them and register the providers correctly.
     #   This is needed because simply adding 'depends_on' only ensures that containers are 'running', but startup of
     #   WPS applications themselves are not necessarily completed. Successful HTTP responses ensure they are 'ready'.
-    #image: pavics/weaver:${WEAVER_VERSION}-manager
-    image: pavics/weaver:${WEAVER_VERSION}-wait-wps
-    build:
-      context: ./components/weaver
-      dockerfile: Dockerfile
-      args:
-        WEAVER_VERSION: ${WEAVER_VERSION}
+    image: pavics/weaver:${WEAVER_VERSION}-manager
     ports:
       - "4001:4001"
     environment:
@@ -56,24 +50,10 @@ services:
       FORWARDED_ALLOW_IPS: "*"
     #env_file:
     #  - ./config/mongodb/credentials.env
-    # ensure other referenced services are created beforehand to avoid booting timing issues
     depends_on:
-      - catalog
-      - finch
-      - flyingpigeon
-      - hummingbird
-      - malleefowl
-      - raven
-      #- wait-for-wps
       - mongodb
     links:
       - mongodb
-      - catalog
-      - finch
-      - flyingpigeon
-      - hummingbird
-      - malleefowl
-      - raven
     networks:
       - default
       - mongodb
@@ -86,18 +66,6 @@ services:
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     restart: always
     logging: *default-logging
-    # NOTE: see above 'image' and 'build' sections, start Weaver only after WPS providers can respond
-    command: ["bash", "-c",
-        "/usr/local/bin/dockerize
-          -wait 'http://catalog:80/pywps?service=WPS&request=GetCapabilities'
-          -wait 'http://finch:5000/wps?service=WPS&request=GetCapabilities'
-          -wait 'http://flyingpigeon:8093/wps?service=WPS&request=GetCapabilities'
-          -wait 'http://hummingbird:8097/wps?service=WPS&request=GetCapabilities'
-          -wait 'http://malleefowl:8091/wps?service=WPS&request=GetCapabilities'
-          -wait 'http://raven:9099/wps?service=WPS&request=GetCapabilities'
-          -timeout 30s
-        && pserve '/opt/local/src/weaver/config/weaver.ini'"
-    ]
 
   # Image 'worker' is the job runner of Weaver, possibly spawning Docker applications according to process definition
   weaver-worker:
