@@ -79,7 +79,7 @@ services:
       - mongodb
     volumes:
       - ./components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
-      - ./components/weaver/config/weaver/data_sources.json:/opt/local/src/weaver/config/data_sources.json:ro
+      - ./components/weaver/config/weaver/data_sources.yml:/opt/local/src/weaver/config/data_sources.yml:ro
       - ./components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
       - ./components/weaver/config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml:ro
       # WARNING: see detail in 'worker' definition about below mount location

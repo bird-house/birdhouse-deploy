@@ -89,7 +89,7 @@ weaver.wps_email_notify_template_default =
 # default WPS processes to always preload
 weaver.wps_processes_file = wps_processes.yml
 # remote ADES dispatching based on data-sources when 'weaver.configuration = EMS'
-weaver.data_sources = data_sources.json
+weaver.data_sources = data_sources.yml
 weaver.extra_options =
 
 ###
