@@ -100,7 +100,7 @@ services:
     ]
 
   # Image 'worker' is the job runner of Weaver, possibly spawning Docker applications according to process definition
-  worker:
+  weaver-worker:
     image: pavics/weaver:${WEAVER_VERSION}-worker
     container_name: ${WEAVER_WORKER_NAME}
     environment:
