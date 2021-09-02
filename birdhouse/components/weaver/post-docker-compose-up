@@ -55,7 +55,9 @@ printf "%s" "${PREFIX}Wait for response from Magpie to login [${MAGPIE_URL}]."
 while true; do
     # login (output null + cookie-jar '-' redirects output cookie to variable)
     cookie_jar=$( \
-        curl -k -s -m ${REQUEST_TIMEOUT} -o /dev/null \
+        curl --insecure --silent \
+             -m ${REQUEST_TIMEOUT} \
+             -o /dev/null \
              -X POST \
              -H "Content-Type: application/json" \
              -d "{\"user_name\": \"${MAGPIE_ADMIN_USERNAME}\", \"password\": \"${MAGPIE_ADMIN_PASSWORD}\"}" \
@@ -95,7 +97,8 @@ fi
 printf "%s" "${PREFIX}Wait for response from Weaver [${WEAVER_URL}]."
 while true; do
     resp=$( \
-        curl -k -s -m ${REQUEST_TIMEOUT} \
+        curl --insecure --silent \
+             -m ${REQUEST_TIMEOUT} \
              -w "\n%{http_code}" -o /dev/null \
              -b "${cookie}" \
              -H "Accept: application/json" \
@@ -141,7 +144,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
     printf "%s" "${PREFIX}Wait for response from remote WPS provider [${prov}] on [${prov_url}]."
     while true; do
         # request the URL and obtain the body+http code, then split them for verification
-        resp=$(curl -k -s -m ${REQUEST_TIMEOUT} -w "\n%{http_code}" -b "${cookie}" "${prov_cap}")
+        resp=$(curl --insecure --silent -m ${REQUEST_TIMEOUT} -w "\n%{http_code}" -b "${cookie}" "${prov_cap}")
         ret=$?   # in case proxy not up yet to receive any request
         code=$(echo "${resp}" | tail -n -1)
         body=$(echo "${resp}" | head -n -1)
@@ -166,7 +169,8 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
 
     # unregister in case of multiple up/down to regenerate from scratch, don't care if NotFound returned
     echo "${PREFIX}Unregistering any remote WPS provider matching [${prov}]."
-    curl -k -s -m ${REQUEST_TIMEOUT} \
+    curl --insecure --silent \
+         -m ${REQUEST_TIMEOUT} \
          -w "${PREFIX}Delete [${prov}]: %{http_code}" -o /dev/null \
          -b "${cookie}" \
          -X DELETE \
@@ -175,7 +179,8 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
     # register the new provider and validate
     printf "\n%s" "${PREFIX}Registering remote WPS provider [${prov}] on [${prov_url}]... "
     code=$( \
-        curl -k -s -m ${REQUEST_TIMEOUT} \
+        curl --insecure --silent \
+             -m ${REQUEST_TIMEOUT} \
              -w "%{http_code}" -o /dev/null \
              -b "${cookie}" \
              -H "Content-Type: application/json" \
