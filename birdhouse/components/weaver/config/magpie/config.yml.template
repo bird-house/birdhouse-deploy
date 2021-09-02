@@ -128,12 +128,3 @@ permissions:
     permission: describeprocess
     group: anonymous
     action: create
-
-## TESTING
-  # Grant write access to execute hummingbird's ncdump process (submit job)
-  # (see https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebooks/OGCAPI_processes_example.ipynb)
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/hummingbird/processes/ncdump/jobs
-    permission: write
-    group: anonymous
-    action: create

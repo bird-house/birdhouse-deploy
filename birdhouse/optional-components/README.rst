@@ -206,3 +206,25 @@ How to enable in ``env.local`` (a copy from env.local.example_ (:download:`downl
 * Add ``./optional-components/database-external-ports`` to ``EXTRA_CONF_DIRS``.
 
 That's it. Databases will be accessible using the mapped ports in then optional component configuration.
+
+
+Test Permissions for Weaver
+--------------------------------------------------------
+
+In order to test functionalities offered by `Weaver` component ``./components/weaver``, this optional component
+adds `Magpie` permissions to a test server in order to grant access to specific endpoints.
+This will open public access to specified resources in file |test-weaver-perms|_.
+
+This optional component is intended to be employed in combination with test notebook |pavics-sdi-weaver|_.
+
+How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
+
+* Add ``./optional-components/test-weaver`` to ``EXTRA_CONF_DIRS``
+
+.. note::
+    Definition ``./components/weaver`` is also expected to be in ``EXTRA_CONF_DIRS`` for permissions to have any effect.
+
+.. _test-weaver-perms: ./optional-components/test-weaver/config/magpie/test-weaver-permission.cfg
+.. |test-weaver-perms| replace:: optional-components/test-weaver/config/magpie/test-weaver-permission.cfg
+.. _pavics-sdi-weaver|: https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebook-components/weaver_example.ipynb
+.. |pavics-sdi-weaver| replace:: Ouranosinc/pavics-sdi Weaver Example
