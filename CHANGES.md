@@ -40,6 +40,36 @@
     * Adds ``Magpie`` permissions and service for ``Weaver`` endpoints.
 
 
+[1.14.2](https://github.com/bird-house/birdhouse-deploy/tree/1.14.2) (2021-09-01)
+------------------------------------------------------------------------------------------------------------------
+
+  ## Changes
+
+  - Re-enables the caching feature of `Twitcher` that was disabled temporarily in 
+    [#182](https://github.com/bird-house/birdhouse-deploy/pull/182). 
+    Handles issue [Ouranosinc/Magpie#433](https://github.com/Ouranosinc/Magpie/issues/433).
+
+[1.14.1](https://github.com/bird-house/birdhouse-deploy/tree/1.14.1) (2021-08-31)
+------------------------------------------------------------------------------------------------------------------
+
+- monitoring: make some prometheus alert threshold configurable via env.local
+
+  Default values are previous hardcoded values so this is fully backward compatible.
+
+  Different organizations with different policies and hardware can now
+  adapt the alert threshold to their specific needs, decreasing false
+  positive alerts.
+
+  Too much false positive alerts will decrease the importance and
+  usefulness of each alert. Alerts should not feel like spams.
+
+  Not all alert thresholds are changed to make configurable.  Only thresholds
+  that are most likely to need customization or that logically should be
+  configurable are made configurable.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/66.
+
+
 [1.14.0](https://github.com/bird-house/birdhouse-deploy/tree/1.14.0) (2021-08-02)
 ------------------------------------------------------------------------------------------------------------------
 
