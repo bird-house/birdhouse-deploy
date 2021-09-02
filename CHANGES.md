@@ -16,6 +16,15 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.14.2](https://github.com/bird-house/birdhouse-deploy/tree/1.14.2) (2021-09-01)
+------------------------------------------------------------------------------------------------------------------
+
+  ## Changes
+
+  - Re-enables the caching feature of `Twitcher` that was disabled temporarily in 
+    [#182](https://github.com/bird-house/birdhouse-deploy/pull/182). 
+    Handles issue [Ouranosinc/Magpie#433](https://github.com/Ouranosinc/Magpie/issues/433).
+
 [1.14.1](https://github.com/bird-house/birdhouse-deploy/tree/1.14.1) (2021-08-31)
 ------------------------------------------------------------------------------------------------------------------
 
