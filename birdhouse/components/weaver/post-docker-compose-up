@@ -1,54 +1,149 @@
 #!/bin/sh
 
+# Registers WPS providers into Weaver to provide their OGC-API interface
+#
+# The script first authenticates in Magpie to obtain authorization for requests, as everything could be protected.
+# Then, each provider defined in 'WEAVER_WPS_PROVIDERS' is registered iteratively.
+# All requests have a timeout to avoid hanging indefinitely.
+# Also, maximum total timeout configured by 'WEAVER_WPS_PROVIDERS_MAX_TIME' will break out if nothing responds.
+#
+# This script is executed after 'docker-compose up' of the full bird-house stack.
+# The reason why WPS providers must be registered after starting everything is because Weaver attempts to query
+# them (with GetCapabilities requests) to obtain their metadata.
+# Because some WPS containers could take longer to start, it is otherwise not guaranteed that they would be ready
+# to receive those requests before Weaver starts querying them.
+#
+# Parameters:
+#
+#   WEAVER_WPS_PROVIDERS:
+#       list of provider names (comma or space delimited), all are assumed to be available at
+#       "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/<provider-name>"
+#   WEAVER_WPS_PROVIDERS_MAX_TIME:
+#       limit script execution up to maximum this number of seconds
+#
+# Following configurations are expected to be inherited from bird-house/weaver-component env.local/default.env:
+#   - MAGPIE_ADMIN_USERNAME
+#   - MAGPIE_ADMIN_PASSWORD
+#   - PAVICS_FQDN_PUBLIC
+#   - TWITCHER_PROTECTED_PATH
+#   - WEAVER_MANAGER_NAME
+#
+
+MAGPIE_URL="https://${PAVICS_FQDN_PUBLIC}/magpie"
 WEAVER_URL="https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
-WEAVER_PROVIDER_BIRDS_MAX_TIME=${WEAVER_PROVIDER_BIRDS_MAX_TIME:-60}
+WEAVER_WPS_PROVIDERS_MAX_TIME=${WEAVER_WPS_PROVIDERS_MAX_TIME:-60}
 
 # logging
 YELLOW=${YELLOW:-$(tput setaf 3)}
 RED=${RED:-$(tput setaf 1)}
 NORMAL=${NORMAL:-$(tput sgr0)}
-ERROR="${RED}ERROR${NORMAL}: "
-WARNING="${YELLOW}WARNING${NORMAL}: "
 PREFIX="[Weaver] "
+ERROR="${PREFIX}${RED}ERROR${NORMAL}: "
+WARNING="${PREFIX}${YELLOW}WARNING${NORMAL}: "
 
-if [ -z "${WEAVER_PROVIDER_BIRDS}" ]; then
-    echo "${WARNING}No birds specified in WEAVER_PROVIDER_BIRDS to register WPS remote providers."
+if [ -z "${WEAVER_WPS_PROVIDERS}" ]; then
+    echo "${WARNING}Nothing specified in WEAVER_WPS_PROVIDERS to register WPS remote providers."
     exit 0
 fi
 
+# registration of WPS providers require authenticated access, obtain login from Magpie
 start_time="$(date -u +%s)"
+while true; do
+    # login (output null + cookie-jar '-' redirects output cookie to variable)
+    cookie_jar=$( \
+        curl -k -s -m 2 -o /dev/null \
+             -X POST \
+             -H "Content-Type: application/json" \
+             -d "{\"user_name\": \"${MAGPIE_ADMIN_USERNAME}\", \"password\": \"${MAGPIE_ADMIN_PASSWORD}\"}" \
+             --cookie-jar - \
+             "${MAGPIE_URL}/signin" \
+    )
+    # trim excess stuff in cookie_jar pseudo-file (comments, empty lines)
+    cookie_jar=$(echo "${cookie_jar}" | grep -v '# ' | grep -v -e '^$')
+    # validate exactly 1 cookie retrieved (empty if bad-auth or invalid endpoint)
+    if [ "$(echo "${cookie_jar}" | wc -l)" -eq 1 ]; then
+        fields=$(echo "${cookie_jar}" | wc -w)
+        cookie_name=$(echo "${cookie_jar}" | cut -f $(( fields - 1 )) )
+        cookie_value=$(echo "${cookie_jar}" | cut -f "${fields}")
+        cookie="${cookie_name}=${cookie_value}"
+        break;
+    fi
+    # interrupt if max time reached
+    next_time=$(date -u +%s)
+    delta_time=$(( next_time - start_time ))
+    if [ ${delta_time} -ge "${WEAVER_WPS_PROVIDERS_MAX_TIME}" ]; then
+        msg="Failed to register all provider specified in WEAVER_WPS_PROVIDERS."
+        printf "%s" "${ERROR}Timeout (${WEAVER_WPS_PROVIDERS_MAX_TIME}s)! ${msg}"
+        exit 1
+    fi
+done
+if [ -z "${cookie}" ]; then
+    echo "${ERROR}Failed to retrieve authentication token from Magpie for Weaver WPS providers registration."
+    exit 2
+fi
 
+# parse providers
+WEAVER_WPS_PROVIDERS="$(echo "${WEAVER_WPS_PROVIDERS}" | tr ',' ' ')"
+
+# move on to actual registration of WPS providers
+echo "${PREFIX}Using URL: [${WEAVER_URL}]"
+start_time="$(date -u +%s)"
 ret=1
-for bird in ${WEAVER_PROVIDER_BIRDS}; do
-    bird_name=$(${bird} | cut -f 1 -d ';')
-    bird_url=$(${bird} | cut -f 2 -d ';')
+for prov in ${WEAVER_WPS_PROVIDERS}; do
+    if [ -z "${prov}" ]; then
+        continue
+    fi
+    prov_url="https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${prov}"
+    prov_cap="${prov_url}?service=WPS&request=GetCapabilities"
 
-    code=500
-    while [ ${ret} -gt 0 ] && [ ${code} -ne 200 ]; do
-        # request the url and obtain the body+http code, then split them
-        resp=$(curl -k -s -w "\n%{http_code}" "${bird_url}")
+    # wait for WPS provider to respond
+    printf "%s" "${PREFIX}Wait for response from remote WPS provider [${prov}] on [${prov_url}]."
+    while true; do
+        # request the URL and obtain the body+http code, then split them for verification
+        resp=$(curl -k -s -m 2 -w "\n%{http_code}" -b "${cookie}" "${prov_cap}")
         ret=$?   # in case not up yet
         code=$(echo "${resp}" | tail -n -1)
         body=$(echo "${resp}" | head -n -1)
+        caps=$(echo "${body}" | grep -c "wps:Capabilities")
+        if [ ${ret} -eq 0 ] && [ "${code}" -eq 200 ] && [ "${caps}" -ne 0 ]; then
+            printf "\n%s\n" "${PREFIX}Got valid response from remote WPS provider [${prov}]."
+            break;
+        fi
+        sleep 1
+        printf "."
 
         # interrupt if max time reached
-        next_time="$(date -u +%s)"
-        delta_time=$((${next_time}-${start_time}))
-        if [ ${delta_time} -ge ${WEAVER_PROVIDER_BIRDS_MAX_TIME} ]; then
-            echo "${ERROR}Failed to register all birds specified in WEAVER_PROVIDER_BIRDS."
-            exit 1
+        next_time=$(date -u +%s)
+        delta_time=$(( next_time - start_time ))
+        if [ ${delta_time} -ge "${WEAVER_WPS_PROVIDERS_MAX_TIME}" ]; then
+            msg="Failed to register all provider specified in WEAVER_WPS_PROVIDERS."
+            printf "\n%s\n" "${ERROR}Timeout (${WEAVER_WPS_PROVIDERS_MAX_TIME}s)! ${msg}"
+            exit 3
         fi
     done
 
     # unregister in case of multiple up/down to regenerate from scratch, don't care if NotFound returned
-    echo "${PREFIX}Unregistering any remote bird matching [${bird_name}]"
-    curl -k -s -w "[Weaver] Delete [${bird_name}]: %{http_code}" -o /dev/null \
-         -X DELETE "${WEAVER_URL}/providers/${bird_name}"
+    echo "${PREFIX}Unregistering any remote WPS provider matching [${prov}]."
+    curl -k -s -m 2 -w "${PREFIX}Delete [${prov}]: %{http_code}" -o /dev/null \
+         -b "${cookie}" \
+         -X DELETE \
+         "${WEAVER_URL}/providers/${prov}"
 
     # register the new provider and validate
-    echo "${PREFIX}Registering remote bird [${bird_name}] on [${bird_url}]"
-    curl -H "Content-Type: application/json" -X POST -d '{"": "", "": ""}'
-
-
+    printf "\n%s" "${PREFIX}Registering remote WPS provider [${prov}] on [${prov_url}]... "
+    code=$( \
+        curl -k -s -m 2 -w "%{http_code}" -o /dev/null \
+             -b "${cookie}" \
+             -H "Content-Type: application/json" \
+             -X POST \
+             -d "{\"id\": \"${prov}\", \"url\": \"${prov_url}\"}" \
+             "${WEAVER_URL}/providers" \
+    )
+    ret=$?
+    if [ ${ret} -ne 0 ] || [ "${code}" -ne 201 ]; then
+        printf "\n%s\n" "${ERROR}Failed registration of remote WPS provider [${prov} on [${prov_url}]."
+        exit 4
+    fi
+    echo "OK!"
 done
-
+echo "${PREFIX}All Weaver remote WPS providers registered successfully!"

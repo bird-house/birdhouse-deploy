@@ -15,23 +15,12 @@
 #   at boot time in order to allow Weaver to retrieve the information. The application will skip unresolvable references
 #   including unauthorized and forbidden access.
 
-# processes:    # static local snapshot
-providers:      # dynamic remote reference
-  - name: catalog
-    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/catalog
-    visible: true
-  - name: finch
-    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch
-    visible: true
-  - name: flyingpigeon
-    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/flyingpigeon
-    visible: true
-  - name: hummingbird
-    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird
-    visible: true
-  - name: malleefowl
-    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/malleefowl
-    visible: true
-  - name: raven
-    url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven
-    visible: true
+# Note:
+#   To register WPS providers served by this instance of birdhouse-deploy, employ the WEAVER_WPS_PROVIDERS variable
+#   in "env.local" instead of 'providers' section of this configuration file.
+#   See file "default.env" in directory of Weaver component for an example.
+#   Those providers will be deployed using the 'post-docker-compose-up' script.
+#   More details are provide in the script indicating why this method is recommended.
+
+#processes:    # static local snapshot
+#providers:    # dynamic remote reference
