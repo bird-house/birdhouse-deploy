@@ -22,5 +22,6 @@
 #   Those providers will be deployed using the 'post-docker-compose-up' script.
 #   More details are provide in the script indicating why this method is recommended.
 
-#processes:    # static local snapshot
-#providers:    # dynamic remote reference
+# following sections can be empty, but must be defined
+processes:    # static local snapshot
+providers:    # dynamic remote reference
