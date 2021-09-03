@@ -211,7 +211,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
              -b "${cookie}" \
              -H "Content-Type: application/json" \
              -X POST \
-             -d "{\"name\": \"${prov}\", \"url\": \"${prov_url}\"}" \
+             -d "{\"id\": \"${prov}\", \"url\": \"${prov_url}\"}" \
              "${WEAVER_URL}/providers" \
     )
     ret=$?
