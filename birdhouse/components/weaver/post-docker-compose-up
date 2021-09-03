@@ -30,6 +30,18 @@
 #   - WEAVER_MANAGER_NAME
 #
 
+# in case parent script called with debug (sh -x <script>), hide output for this script and reset on exit
+# this is important, otherwise curl logs will leak tokens!
+old_state="$(set +o)"
+# if this script needs live debugging, comment out following line and call the script with (sh -x <script>)
+set +x
+
+reset_state() {
+  set +vx; eval "${old_state}"
+}
+
+echo "Running: $0"
+
 MAGPIE_URL="https://${PAVICS_FQDN_PUBLIC}/magpie"
 WEAVER_URL="https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
 WEAVER_WPS_PROVIDERS_MAX_TIME=${WEAVER_WPS_PROVIDERS_MAX_TIME:-60}
@@ -45,8 +57,11 @@ WARNING="${PREFIX}${YELLOW}WARNING${NORMAL}: "
 
 if [ -z "${WEAVER_WPS_PROVIDERS}" ]; then
     echo "${WARNING}Nothing specified in WEAVER_WPS_PROVIDERS to register WPS remote providers."
+    reset_state
     exit 0
 fi
+
+echo "  Will try at most for ${WEAVER_WPS_PROVIDERS_MAX_TIME}s"
 
 start_time="$(date -u +%s)"
 
@@ -55,7 +70,7 @@ printf "%s" "${PREFIX}Wait for response from Magpie to login [${MAGPIE_URL}]."
 while true; do
     # login (output null + cookie-jar '-' redirects output cookie to variable)
     cookie_jar=$( \
-        curl --insecure --silent \
+        curl --insecure --silent --location \
              -m ${REQUEST_TIMEOUT} \
              -o /dev/null \
              -X POST \
@@ -65,12 +80,13 @@ while true; do
              "${MAGPIE_URL}/signin" \
     )
     # trim excess stuff in cookie_jar pseudo-file (comments, empty lines)
-    cookie_jar=$(echo "${cookie_jar}" | grep -v '# ' | grep -v -e '^$')
+    # also trim duplicate cookies ".<host>" and "<host>" returned by Magpie behind proxy
+    cookie_jar=$(echo "${cookie_jar}" | grep -v '# ' | grep -v -e '^$' | grep -v '_\.')
     # validate exactly 1 cookie retrieved (empty if bad-auth or invalid endpoint)
-    if [ "$(echo "${cookie_jar}" | wc -l)" -eq 1 ]; then
-        fields=$(echo "${cookie_jar}" | wc -w)
-        cookie_name=$(echo "${cookie_jar}" | cut -f $(( fields - 1 )) )
-        cookie_value=$(echo "${cookie_jar}" | cut -f "${fields}")
+    if [ -z "${cookie_jar}" ] && [ "$(echo "${cookie_jar}" | wc -l)" -eq 1 ]; then
+        fields="$(echo "${cookie_jar}" | wc -w)"
+        cookie_name="$(echo "${cookie_jar}" | cut -f $(( fields - 1 )) )"
+        cookie_value="$(echo "${cookie_jar}" | cut -f "${fields}")"
         cookie="${cookie_name}=${cookie_value}"
         printf " %s\n" "OK!"
         break;
@@ -81,6 +97,7 @@ while true; do
     if [ ${delta_time} -ge "${WEAVER_WPS_PROVIDERS_MAX_TIME}" ]; then
         msg="Failed to register all providers specified in WEAVER_WPS_PROVIDERS: Magpie is not responding."
         printf "\n%s\n" "${ERROR}Timeout (${WEAVER_WPS_PROVIDERS_MAX_TIME}s)! ${msg}"
+        reset_state
         exit 1
     fi
     # wait and retry
@@ -90,6 +107,7 @@ done
 
 if [ -z "${cookie}" ]; then
     echo "${ERROR}Failed to retrieve authentication token from Magpie for Weaver WPS providers registration."
+    reset_state
     exit 2
 fi
 
@@ -97,9 +115,9 @@ fi
 printf "%s" "${PREFIX}Wait for response from Weaver [${WEAVER_URL}]."
 while true; do
     resp=$( \
-        curl --insecure --silent \
+        curl --insecure --silent --location \
              -m ${REQUEST_TIMEOUT} \
-             -w "\n%{http_code}" -o /dev/null \
+             -w "\n%{http_code}" \
              -b "${cookie}" \
              -H "Accept: application/json" \
              -X GET \
@@ -119,6 +137,7 @@ while true; do
     if [ ${delta_time} -ge "${WEAVER_WPS_PROVIDERS_MAX_TIME}" ]; then
         msg="Failed to register all providers specified in WEAVER_WPS_PROVIDERS: Weaver is not responding."
         printf "\n%s\n" "${ERROR}Timeout (${WEAVER_WPS_PROVIDERS_MAX_TIME}s)! ${msg}"
+        reset_state
         exit 3
     fi
     # wait and retry
@@ -144,7 +163,13 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
     printf "%s" "${PREFIX}Wait for response from remote WPS provider [${prov}] on [${prov_url}]."
     while true; do
         # request the URL and obtain the body+http code, then split them for verification
-        resp=$(curl --insecure --silent -m ${REQUEST_TIMEOUT} -w "\n%{http_code}" -b "${cookie}" "${prov_cap}")
+        resp=$( \
+            curl --insecure --silent --location \
+                 -m ${REQUEST_TIMEOUT} \
+                 -w "\n%{http_code}" \
+                 -b "${cookie}" \
+                 "${prov_cap}"
+        )
         ret=$?   # in case proxy not up yet to receive any request
         code=$(echo "${resp}" | tail -n -1)
         body=$(echo "${resp}" | head -n -1)
@@ -160,6 +185,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
         if [ ${delta_time} -ge "${WEAVER_WPS_PROVIDERS_MAX_TIME}" ]; then
             msg="Failed to register all providers specified in WEAVER_WPS_PROVIDERS: [${prov}] is not responding."
             printf "\n%s\n" "${ERROR}Timeout (${WEAVER_WPS_PROVIDERS_MAX_TIME}s)! ${msg}"
+            reset_state
             exit 4
         fi
         # wait and retry
@@ -169,19 +195,19 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
 
     # unregister in case of multiple up/down to regenerate from scratch, don't care if NotFound returned
     echo "${PREFIX}Unregistering any remote WPS provider matching [${prov}]."
-    curl --insecure --silent \
+    curl --insecure --silent --location \
          -m ${REQUEST_TIMEOUT} \
-         -w "${PREFIX}Delete [${prov}]: %{http_code}" -o /dev/null \
+         -w "${PREFIX}Delete [${prov}] response: %{http_code}" -o /dev/null \
          -b "${cookie}" \
          -X DELETE \
          "${WEAVER_URL}/providers/${prov}"
 
     # register the new provider and validate
     printf "\n%s" "${PREFIX}Registering remote WPS provider [${prov}] on [${prov_url}]... "
-    code=$( \
-        curl --insecure --silent \
+    resp=$( \
+        curl --insecure --silent --location \
              -m ${REQUEST_TIMEOUT} \
-             -w "%{http_code}" -o /dev/null \
+             -w "\n%{http_code}" \
              -b "${cookie}" \
              -H "Content-Type: application/json" \
              -X POST \
@@ -189,10 +215,15 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
              "${WEAVER_URL}/providers" \
     )
     ret=$?
+    code=$(echo "${resp}" | tail -n -1)
+    body=$(echo "${resp}" | head -n -1)
     if [ ${ret} -ne 0 ] || [ "${code}" -ne 201 ]; then
         printf "\n%s\n" "${ERROR}Failed registration of remote WPS provider [${prov}] on [${prov_url}]."
+        printf "Error:\n%s\n" "${body}"
+        reset_state
         exit 5
     fi
     echo "OK!"
 done
 echo "${PREFIX}All Weaver remote WPS providers registered successfully!"
+reset_state
