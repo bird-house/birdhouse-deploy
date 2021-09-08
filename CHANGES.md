@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.14.3](https://github.com/bird-house/birdhouse-deploy/tree/1.14.3) (2021-09-08)
+------------------------------------------------------------------------------------------------------------------
+
   ## Changes
 
   - Raven: update to version 0.14.2
