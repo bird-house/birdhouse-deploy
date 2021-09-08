@@ -14,7 +14,32 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+  ## Changes
+
+  - Raven: update to version 0.14.2
+
+    Changelog https://github.com/Ouranosinc/raven/blob/master/CHANGES.rst#0142
+
+    0.14.2
+    ------
+    * Update to RavenPy 0.7.4 (pin climpred below version 2.1.6)
+    * Fixed a process-breaking bug in `wps_hydrobasins_shape_selection`
+
+    0.14.1
+    ------
+    * Update to RavenPy 0.7.3 (pin xclim version 0.28.1)
+
+    0.14
+    ----
+
+    * Update to RavenPy 0.7.2
+    * Use new OWSlib WFS topological filters
+    * More informative install documentation
+    * Upgrade to PyWPS 4.4.5
+
+    Jenkins build only known error (`Full_process_example_1.ipynb`):
+    http://jenkins.ouranos.ca/job/ouranos-staging/job/lvupavicsmaster.ouranos.ca/59/console
+
 
 [1.14.2](https://github.com/bird-house/birdhouse-deploy/tree/1.14.2) (2021-09-01)
 ------------------------------------------------------------------------------------------------------------------
