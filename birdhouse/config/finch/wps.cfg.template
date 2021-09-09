@@ -3,7 +3,7 @@ outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs
 outputpath = /data/wpsoutputs
 
 # default 3mb, fix "Broken pipe" between the proxy and the wps service
-maxrequestsize = 100mb
+maxrequestsize = 400mb
 
 # default 2, too low for a production server with capable CPUs
 parallelprocesses = 10
