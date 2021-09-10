@@ -16,6 +16,53 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.14.4](https://github.com/bird-house/birdhouse-deploy/tree/1.14.4) (2021-09-10)
+------------------------------------------------------------------------------------------------------------------
+
+  ## Changes
+
+  - Jupyter: update for new RavenPy and other new packages
+
+    Bokeh png export now also works.
+
+    Other noticeable changes:
+    ```diff
+    <   - ravenpy=0.7.0=pyh1bb2064_0
+    >   - ravenpy=0.7.4=pyh7f9bfb9_0
+
+    <   - xclim=0.28.0=pyhd8ed1ab_0
+    >   - xclim=0.28.1=pyhd8ed1ab_0
+
+    >   - geckodriver=0.29.1=h3146498_0
+    >   - selenium=3.141.0=py37h5e8e339_1002
+    >   - nested_dict=1.61=pyhd3deb0d_0
+    >   - paramiko=2.7.2=pyh9f0ad1d_0
+    >   - scp=0.14.0=pyhd8ed1ab_0
+    >   - s3fs=2021.8.1=pyhd8ed1ab_0
+
+    # Downgrade !
+    <   - pandas=1.3.1=py37h219a48f_0
+    >   - pandas=1.2.5=py37h219a48f_0
+
+    <   - owslib=0.24.1=pyhd8ed1ab_0
+    >   - owslib=0.25.0=pyhd8ed1ab_0
+
+    <   - cf_xarray=0.6.0=pyh6c4a22f_0
+    >   - cf_xarray=0.6.1=pyh6c4a22f_0
+
+    <   - rioxarray=0.5.0=pyhd8ed1ab_0
+    >   - rioxarray=0.7.0=pyhd8ed1ab_0
+
+    <   - climpred=2.1.4=pyhd8ed1ab_0
+    >   - climpred=2.1.5.post1=pyhd8ed1ab_0
+
+    <   - dask=2021.7.1=pyhd8ed1ab_0
+    >   - dask=2021.9.0=pyhd8ed1ab_0
+    ```
+
+    See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/89 for more info.
+
+
 [1.14.3](https://github.com/bird-house/birdhouse-deploy/tree/1.14.3) (2021-09-08)
 ------------------------------------------------------------------------------------------------------------------
 
