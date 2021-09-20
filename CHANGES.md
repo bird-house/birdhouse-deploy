@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.15.0](https://github.com/bird-house/birdhouse-deploy/tree/1.15.0) (2021-09-20)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 *  **Backward-incompatible change**: do not, by default, volume-mount the Jupyter env README file since that file has been deleted in this repo.  That file is fairly specific to Ouranos while we want this repo to be generic.  PR https://github.com/Ouranosinc/PAVICS-landing/pull/31 restored that file in PAVICS-landing repo that is Ouranos specific.
