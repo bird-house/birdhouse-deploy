@@ -293,7 +293,7 @@ groups:
   rules:
 
   - alert: ContainerKilled
-    expr: time() - container_last_seen{name!~"deploy_tutorial_notebooks|notebookdeploy|autodeploy|deploy_README_ipynb"} > 60
+    expr: time() - container_last_seen{name!~"deploy_tutorial_notebooks|notebookdeploy|autodeploy"} > 60
     for: 5m
     labels:
       severity: warning
