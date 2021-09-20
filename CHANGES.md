@@ -17,6 +17,7 @@
 ## Changes
 
 *  **Backward-incompatible change**: do not, by default, volume-mount the Jupyter env README file since that file has been deleted in this repo.  That file is fairly specific to Ouranos while we want this repo to be generic.  PR https://github.com/Ouranosinc/PAVICS-landing/pull/31 restored that file in PAVICS-landing repo that is Ouranos specific.
+    * Previous default added as a comment in `env.local` for existing deployment to restore the previous behavior.  Although the README file has been deleted in this PR, it has already been previously deployed so existing system can restore the previous behavior of having the existing README file.  This file will simply be not updated anymore.
 
 * Delete the deployment of that README file as well since that README file is deleted. PR https://github.com/bird-house/birdhouse-deploy-ouranos/pull/15 restore the deployment for Ouranos.
 
