@@ -16,6 +16,17 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.15.1](https://github.com/bird-house/birdhouse-deploy/tree/1.15.1) (2021-09-21)
+------------------------------------------------------------------------------------------------------------------
+
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.15.1](https://github.com/bird-house/birdhouse-deploy/tree/1.14.4) (2021-09-21)
+------------------------------------------------------------------------------------------------------------------
+  ## Changes
+  
+  - Finch: Increase ``maxrequestsize`` from 100mb to 400mb to enable ERA5 data subset. Should be possible to bring this back down with smarter averaging processes. 
+
 [1.15.0](https://github.com/bird-house/birdhouse-deploy/tree/1.15.0) (2021-09-20)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -108,8 +119,7 @@ Deployed to https://medus.ouranos.ca/jupyter/ for acceptance testing.
     ```
 
     See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/89 for more info.
-
-
+  
 [1.14.3](https://github.com/bird-house/birdhouse-deploy/tree/1.14.3) (2021-09-08)
 ------------------------------------------------------------------------------------------------------------------
 
