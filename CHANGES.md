@@ -13,6 +13,11 @@
 
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
+
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.14.4](https://github.com/bird-house/birdhouse-deploy/tree/1.14.4) (2021-09-21)
+------------------------------------------------------------------------------------------------------------------
   ## Changes
   
   - Finch: Increase ``maxrequestsize`` from 100mb to 400mb to enable ERA5 data subset. Should be possible to bring this back down with smarter averaging processes. 
