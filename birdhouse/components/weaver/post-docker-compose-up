@@ -65,6 +65,9 @@ echo "  Will try at most for ${WEAVER_WPS_PROVIDERS_MAX_TIME}s"
 
 start_time="$(date -u +%s)"
 
+# ------ PHASE 1 ------
+# Magpie Authentication
+
 # registration of WPS providers require authenticated access, obtain login from Magpie
 printf "%s" "${PREFIX}Wait for response from Magpie to login [${MAGPIE_URL}]."
 while true; do
@@ -83,7 +86,7 @@ while true; do
     # also trim duplicate cookies ".<host>" and "<host>" returned by Magpie behind proxy
     cookie_jar=$(echo "${cookie_jar}" | grep -v '# ' | grep -v -e '^$' | grep -v '_\.')
     # validate exactly 1 cookie retrieved (empty if bad-auth or invalid endpoint)
-    if [ -z "${cookie_jar}" ] && [ "$(echo "${cookie_jar}" | wc -l)" -eq 1 ]; then
+    if [ ! -z "${cookie_jar}" ] && [ "$(echo "${cookie_jar}" | wc -l)" -eq 1 ]; then
         fields="$(echo "${cookie_jar}" | wc -w)"
         cookie_name="$(echo "${cookie_jar}" | cut -f $(( fields - 1 )) )"
         cookie_value="$(echo "${cookie_jar}" | cut -f "${fields}")"
@@ -95,10 +98,10 @@ while true; do
     next_time=$(date -u +%s)
     delta_time=$(( next_time - start_time ))
     if [ ${delta_time} -ge "${WEAVER_WPS_PROVIDERS_MAX_TIME}" ]; then
-        msg="Failed to register all providers specified in WEAVER_WPS_PROVIDERS: Magpie is not responding."
+        msg="Failed to register all providers specified in WEAVER_WPS_PROVIDERS. Magpie is not responding."
         printf "\n%s\n" "${ERROR}Timeout (${WEAVER_WPS_PROVIDERS_MAX_TIME}s)! ${msg}"
         reset_state
-        exit 1
+        exit 11
     fi
     # wait and retry
     sleep 1
@@ -108,8 +111,35 @@ done
 if [ -z "${cookie}" ]; then
     echo "${ERROR}Failed to retrieve authentication token from Magpie for Weaver WPS providers registration."
     reset_state
-    exit 2
+    exit 12
 fi
+
+# validate that Magpie token retrieved is adequate
+printf "Validate Magpie token..."
+resp=$( \
+    curl --insecure --silent --location \
+         -m ${REQUEST_TIMEOUT} \
+         -w "\n%{http_code}" \
+         -b "${cookie}" \
+         -H "Accept: application/json" \
+         -X GET \
+         "${MAGPIE_URL}/session" \
+)
+ret=$?   # in case proxy not up yet to receive any request
+code=$(echo "${resp}" | tail -n -1)
+body=$(echo "${resp}" | head -n -1)
+auth=$(echo "${body}" | grep -c '"authenticated": true')
+admin=$(echo "${body}" | grep -c '"administrators"')
+if [ ${ret} -eq 0 ] && [ "${code}" -eq 200 ] && [ "${auth}" -eq 1 ] && [ "${admin}" -eq 1 ]; then
+    printf " %s\n" "OK!"
+else
+    printf "\n%s\n" "${ERROR}Failed administrative validation of Magpie token for Weaver WPS providers registration."
+    reset_state
+    exit 13
+fi
+
+# ------ PHASE 2 ------
+# Weaver WPS Providers
 
 # validate that Weaver is ready to receive requests
 printf "%s" "${PREFIX}Wait for response from Weaver [${WEAVER_URL}]."
@@ -135,10 +165,10 @@ while true; do
     next_time=$(date -u +%s)
     delta_time=$(( next_time - start_time ))
     if [ ${delta_time} -ge "${WEAVER_WPS_PROVIDERS_MAX_TIME}" ]; then
-        msg="Failed to register all providers specified in WEAVER_WPS_PROVIDERS: Weaver is not responding."
+        msg="Failed to register all providers specified in WEAVER_WPS_PROVIDERS. Weaver is not responding."
         printf "\n%s\n" "${ERROR}Timeout (${WEAVER_WPS_PROVIDERS_MAX_TIME}s)! ${msg}"
         reset_state
-        exit 3
+        exit 21
     fi
     # wait and retry
     sleep 1
@@ -186,7 +216,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
             msg="Failed to register all providers specified in WEAVER_WPS_PROVIDERS: [${prov}] is not responding."
             printf "\n%s\n" "${ERROR}Timeout (${WEAVER_WPS_PROVIDERS_MAX_TIME}s)! ${msg}"
             reset_state
-            exit 4
+            exit 22
         fi
         # wait and retry
         sleep 1
@@ -221,7 +251,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
         printf "\n%s\n" "${ERROR}Failed registration of remote WPS provider [${prov}] on [${prov_url}]."
         printf "Error:\n%s\n" "${body}"
         reset_state
-        exit 5
+        exit 23
     fi
     echo "OK!"
 done
