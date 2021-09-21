@@ -391,7 +391,6 @@ services:
       - ./config/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
       - ./config/jupyterhub/custom_templates:/custom_templates:ro
       - ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}
-      - ${JUPYTERHUB_README}:${JUPYTERHUB_README}:ro
       - jupyterhub_data_persistence:/persist:rw
       - /var/run/docker.sock:/var/run/docker.sock:rw
     links:

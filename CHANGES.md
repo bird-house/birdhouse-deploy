@@ -16,12 +16,105 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
-[1.14.4](https://github.com/bird-house/birdhouse-deploy/tree/1.14.4) (2021-09-21)
+[1.15.1](https://github.com/bird-house/birdhouse-deploy/tree/1.14.4) (2021-09-21)
 ------------------------------------------------------------------------------------------------------------------
   ## Changes
   
   - Finch: Increase ``maxrequestsize`` from 100mb to 400mb to enable ERA5 data subset. Should be possible to bring this back down with smarter averaging processes. 
 
+[1.15.0](https://github.com/bird-house/birdhouse-deploy/tree/1.15.0) (2021-09-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+*  **Backward-incompatible change**: do not, by default, volume-mount the Jupyter env README file since that file has been deleted in this repo.  That file is fairly specific to Ouranos while we want this repo to be generic.  PR https://github.com/Ouranosinc/PAVICS-landing/pull/31 restored that file in PAVICS-landing repo that is Ouranos specific.
+    * Previous default added as a comment in `env.local` for existing deployment to restore the previous behavior.  Although the README file has been deleted in this PR, it has already been previously deployed so existing system can restore the previous behavior of having the existing README file.  This file will simply be not updated anymore.
+
+* Delete the deployment of that README file as well since that README file is deleted. PR https://github.com/bird-house/birdhouse-deploy-ouranos/pull/15 restore the deployment for Ouranos.
+
+* Each Org will be responsible for the deployment of their own README file.  PR https://github.com/bird-house/birdhouse-deploy-ouranos/pull/15 can be used as a working example from Ouranos.
+
+* Add sample code for simple and naive notebook sharing between Jupyter users.
+
+### Notebook sharing details
+
+Shared notebooks will be visible to all users logged in, even the public demo user so do not share any notebooks containing sensitive private info.
+
+Can not share to a specific user.
+
+Anyone will see the login id of everyone else so if the login id needs to be kept private, change this sample code.
+
+Inside Jupyter, user will have the following additional folders:
+
+```
+.
+├── mypublic/  # writable by current user
+│   ├── current-user-public-share-file.ipynb
+│   ├── (...)
+├── public/  # read-only for everyone
+│   ├── loginid-1-public/
+│   │   └── loginid-1-shared-file.ipynb
+│   │   └── (...)
+│   ├── loginid-2-public/
+│   │   └── loginid-2-shared-file.ipynb
+│   │   └── (...)
+│   ├── (...)-public/
+│   │   └── (...)
+```
+
+User can drop their files to be shared under folder `mypublic` and see other users share under `public/{other-loginid}-public`.
+
+Matching PR https://github.com/Ouranosinc/PAVICS-landing/pull/31 updating README inside the Jupyter env to explain this new sharing mechanism.
+
+Deployed to https://medus.ouranos.ca/jupyter/ for acceptance testing.
+
+
+[1.14.4](https://github.com/bird-house/birdhouse-deploy/tree/1.14.4) (2021-09-10)
+------------------------------------------------------------------------------------------------------------------
+
+  ## Changes
+
+  - Jupyter: update for new RavenPy and other new packages
+
+    Bokeh png export now also works.
+
+    Other noticeable changes:
+    ```diff
+    <   - ravenpy=0.7.0=pyh1bb2064_0
+    >   - ravenpy=0.7.4=pyh7f9bfb9_0
+
+    <   - xclim=0.28.0=pyhd8ed1ab_0
+    >   - xclim=0.28.1=pyhd8ed1ab_0
+
+    >   - geckodriver=0.29.1=h3146498_0
+    >   - selenium=3.141.0=py37h5e8e339_1002
+    >   - nested_dict=1.61=pyhd3deb0d_0
+    >   - paramiko=2.7.2=pyh9f0ad1d_0
+    >   - scp=0.14.0=pyhd8ed1ab_0
+    >   - s3fs=2021.8.1=pyhd8ed1ab_0
+
+    # Downgrade !
+    <   - pandas=1.3.1=py37h219a48f_0
+    >   - pandas=1.2.5=py37h219a48f_0
+
+    <   - owslib=0.24.1=pyhd8ed1ab_0
+    >   - owslib=0.25.0=pyhd8ed1ab_0
+
+    <   - cf_xarray=0.6.0=pyh6c4a22f_0
+    >   - cf_xarray=0.6.1=pyh6c4a22f_0
+
+    <   - rioxarray=0.5.0=pyhd8ed1ab_0
+    >   - rioxarray=0.7.0=pyhd8ed1ab_0
+
+    <   - climpred=2.1.4=pyhd8ed1ab_0
+    >   - climpred=2.1.5.post1=pyhd8ed1ab_0
+
+    <   - dask=2021.7.1=pyhd8ed1ab_0
+    >   - dask=2021.9.0=pyhd8ed1ab_0
+    ```
+
+    See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/89 for more info.
+  
 [1.14.3](https://github.com/bird-house/birdhouse-deploy/tree/1.14.3) (2021-09-08)
 ------------------------------------------------------------------------------------------------------------------
 
