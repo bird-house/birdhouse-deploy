@@ -67,7 +67,8 @@ if [ -z "${WEAVER_WPS_PROVIDERS}" ]; then
     exit 0
 fi
 
-echo "  Will try at most for ${WEAVER_WPS_PROVIDERS_MAX_TIME}s"
+echo "  Requested Weaver WPS providers: [${WEAVER_WPS_PROVIDERS}]"
+echo "  Will retry requests at most for ${WEAVER_WPS_PROVIDERS_MAX_TIME}s"
 
 start_time="$(date -u +%s)"
 
