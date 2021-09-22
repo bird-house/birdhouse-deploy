@@ -48,9 +48,15 @@ WEAVER_WPS_PROVIDERS_MAX_TIME=${WEAVER_WPS_PROVIDERS_MAX_TIME:-60}
 REQUEST_TIMEOUT=2
 
 # logging
-YELLOW=${YELLOW:-$(tput setaf 3)}
-RED=${RED:-$(tput setaf 1)}
-NORMAL=${NORMAL:-$(tput sgr0)}
+if [ ! -z "$TERM" ]; then
+    YELLOW=${YELLOW:-$(tput setaf 3)}
+    RED=${RED:-$(tput setaf 1)}
+    NORMAL=${NORMAL:-$(tput sgr0)}
+else
+    YELLOW=""
+    RED=""
+    NORMAL=""
+fi
 PREFIX="[Weaver] "
 ERROR="${PREFIX}${RED}ERROR${NORMAL}: "
 WARNING="${PREFIX}${YELLOW}WARNING${NORMAL}: "
