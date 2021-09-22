@@ -16,12 +16,22 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
-[1.15.1](https://github.com/bird-house/birdhouse-deploy/tree/1.15.1) (2021-09-21)
+[1.15.2](https://github.com/bird-house/birdhouse-deploy/tree/1.15.2) (2021-09-22)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+  ## Changes
+  
+  - Finch: update to version 0.7.5
 
-[1.15.1](https://github.com/bird-house/birdhouse-deploy/tree/1.14.4) (2021-09-21)
+    Changelog https://github.com/bird-house/finch/blob/master/CHANGES.rst#075-2021-09-07
+
+    ### 0.7.5 (2021-09-07)
+    * Update to xclim 0.27
+    * Added ``empirical_quantile_mapping`` process calling ``xclim.sdba.EmpiricalQuantileMapping``.
+    * Update to PyWPS 4.4.5
+
+
+[1.15.1](https://github.com/bird-house/birdhouse-deploy/tree/1.15.1) (2021-09-21)
 ------------------------------------------------------------------------------------------------------------------
   ## Changes
   
