@@ -1,0 +1,19 @@
+# label rules used by .github/workflows/label.yml
+
+# label 'ci' all automation-related steps and files
+#   Since this repository is in itself an automation process to deploy a server instance,
+#   we refer here to CI as the 'meta' configuration files for managing the code and integrations with the repository,
+#   not configurations related to the deployment process itself.
+ci:
+  - .*  # all '.<something>' files
+  - .github/**/*
+  - docs/Makefile
+  - Dockerfile*
+
+documentation:
+  - "*.rst"
+  - "*.example"
+  - ".readthedocs.yml"
+  - docs/**/*
+  - CONTRIBUTING.rst
+  - README.rst

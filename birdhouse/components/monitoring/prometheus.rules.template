@@ -5,18 +5,18 @@ groups:
   rules:
 
   - alert: HostOutOfMemory
-    expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
+    expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < $PROMETHEUS_HostOutOfMemory_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host out of memory (instance {{ $labels.instance }})"
-      description: "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Node memory is filling up (< ${PROMETHEUS_HostOutOfMemory_ALERT}% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 
   - alert: HostMemoryUnderMemoryPressure
-    expr: rate(node_vmstat_pgmajfault[2m]) > 1000
+    expr: rate(node_vmstat_pgmajfault[2m]) > $PROMETHEUS_HostMemoryUnderMemoryPressure_ALERT
     for: 5m
     labels:
       severity: warning
@@ -27,57 +27,57 @@ groups:
 
 
   - alert: HostUnusualNetworkThroughputIn
-    expr: sum by (instance) (irate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100
+    expr: sum by (instance) (irate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > $PROMETHEUS_HostUnusualNetworkThroughputIn_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host unusual network throughput in (instance {{ $labels.instance }})"
-      description: "Host network interfaces are probably receiving too much data (> 100 MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Host network interfaces are probably receiving too much data (> $PROMETHEUS_HostUnusualNetworkThroughputIn_ALERT MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 
   - alert: HostUnusualNetworkThroughputOut
-    expr: sum by (instance) (irate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 100
+    expr: sum by (instance) (irate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > $PROMETHEUS_HostUnusualNetworkThroughputOut_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host unusual network throughput out (instance {{ $labels.instance }})"
-      description: "Host network interfaces are probably sending too much data (> 100 MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Host network interfaces are probably sending too much data (> $PROMETHEUS_HostUnusualNetworkThroughputOut_ALERT MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 
   - alert: HostUnusualDiskReadRate
-    expr: sum by (instance) (irate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50
+    expr: sum by (instance) (irate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > $PROMETHEUS_HostUnusualDiskReadRate_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host unusual disk read rate (instance {{ $labels.instance }})"
-      description: "Disk is probably reading too much data (> 50 MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Disk is probably reading too much data (> $PROMETHEUS_HostUnusualDiskReadRate_ALERT MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 
   - alert: HostUnusualDiskWriteRate
-    expr: sum by (instance) (irate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50
+    expr: sum by (instance) (irate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > $PROMETHEUS_HostUnusualDiskWriteRate_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host unusual disk write rate (instance {{ $labels.instance }})"
-      description: "Disk is probably writing too much data (> 50 MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Disk is probably writing too much data (> $PROMETHEUS_HostUnusualDiskWriteRate_ALERT MB/s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 
   - alert: HostOutOfDiskSpace
-    expr: (node_filesystem_avail_bytes  * 100) / node_filesystem_size_bytes < 10
+    expr: (node_filesystem_avail_bytes  * 100) / node_filesystem_size_bytes < $PROMETHEUS_HostOutOfDiskSpace_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host out of disk space (instance {{ $labels.instance }})"
-      description: "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Disk is almost full (< ${PROMETHEUS_HostOutOfDiskSpace_ALERT}% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 
@@ -93,71 +93,71 @@ groups:
 
 
   - alert: HostOutOfInodes
-    expr: node_filesystem_files_free / node_filesystem_files * 100 < 10
+    expr: node_filesystem_files_free / node_filesystem_files * 100 < $PROMETHEUS_HostOutOfInodes_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host out of inodes (instance {{ $labels.instance }})"
-      description: "Disk is almost running out of available inodes (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Disk is almost running out of available inodes (< ${PROMETHEUS_HostOutOfInodes_ALERT}% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 
   - alert: HostUnusualDiskReadLatency
-    expr: rate(node_disk_read_time_seconds_total[2m]) / rate(node_disk_reads_completed_total[2m]) > 100
+    expr: rate(node_disk_read_time_seconds_total[2m]) / rate(node_disk_reads_completed_total[2m]) > $PROMETHEUS_HostUnusualDiskReadLatency_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host unusual disk read latency (instance {{ $labels.instance }})"
-      description: "Disk latency is growing (read operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Disk latency is growing (read operations > ${PROMETHEUS_HostUnusualDiskReadLatency_ALERT}ms)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 
   - alert: HostUnusualDiskWriteLatency
-    expr: rate(node_disk_write_time_seconds_total[2m]) / rate(node_disk_writes_completed_total[2m]) > 100
+    expr: rate(node_disk_write_time_seconds_total[2m]) / rate(node_disk_writes_completed_total[2m]) > $PROMETHEUS_HostUnusualDiskWriteLatency_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host unusual disk write latency (instance {{ $labels.instance }})"
-      description: "Disk latency is growing (write operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Disk latency is growing (write operations > ${PROMETHEUS_HostUnusualDiskWriteLatency_ALERT}ms)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 
   - alert: HostHighCpuLoad
-    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > $PROMETHEUS_HostHighCpuLoad_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host high CPU load (instance {{ $labels.instance }})"
-      description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "CPU load is > ${PROMETHEUS_HostHighCpuLoad_ALERT}%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 
-  # 1000 context switches is an arbitrary number.
+  # Number of context switches is an arbitrary number.
   # Alert threshold depends on nature of application.
   # Please read: https://github.com/samber/awesome-prometheus-alerts/issues/58
   - alert: HostContextSwitching
-    expr: (rate(node_context_switches_total[5m])) / (count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})) > 2000
+    expr: (rate(node_context_switches_total[5m])) / (count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})) > $PROMETHEUS_HostContextSwitching_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host context switching (instance {{ $labels.instance }})"
-      description: "Context switching is growing on node (> 1000 / s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Context switching is growing on node (> $PROMETHEUS_HostContextSwitching_ALERT / s)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 
   - alert: HostSwapIsFillingUp
-    expr: (1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 80
+    expr: (1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > $PROMETHEUS_HostSwapIsFillingUp_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Host swap is filling up (instance {{ $labels.instance }})"
-      description: "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Swap is filling up (> $PROMETHEUS_HostSwapIsFillingUp_ALERT %)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
 
 # node_systemd_* not enabled by default due to kernel configuration and
@@ -178,7 +178,7 @@ groups:
 # node_hwmon_* requires lm_sensors package
 
   - alert: HostPhysicalComponentTooHot
-    expr: node_hwmon_temp_celsius > 75
+    expr: node_hwmon_temp_celsius > $PROMETHEUS_HostPhysicalComponentTooHot_ALERT
     for: 5m
     labels:
       severity: warning
@@ -293,7 +293,7 @@ groups:
   rules:
 
   - alert: ContainerKilled
-    expr: time() - container_last_seen{name!~"deploy_tutorial_notebooks|notebookdeploy|autodeploy|deploy_README_ipynb"} > 60
+    expr: time() - container_last_seen{name!~"deploy_tutorial_notebooks|notebookdeploy|autodeploy"} > 60
     for: 5m
     labels:
       severity: warning
@@ -302,40 +302,40 @@ groups:
       description: "A container has disappeared\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
   - alert: ContainerCpuUsage
-    expr: (sum(rate(container_cpu_usage_seconds_total{name=~".+"}[3m])) BY (instance, name) * 100) > 80
+    expr: (sum(rate(container_cpu_usage_seconds_total{name=~".+"}[3m])) BY (instance, name) * 100) > $PROMETHEUS_ContainerCpuUsage_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Container CPU usage (instance {{ $labels.instance }})"
-      description: "Container CPU usage is above 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Container CPU usage is above $PROMETHEUS_ContainerCpuUsage_ALERT %\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
   - alert: ContainerMemoryUsage
-    expr: (sum(container_memory_usage_bytes{name=~".+"}) BY (instance, name) / sum(container_spec_memory_limit_bytes{name=~".+"} > 0) BY (instance, name) * 100) > 80
+    expr: (sum(container_memory_usage_bytes{name=~".+"}) BY (instance, name) / sum(container_spec_memory_limit_bytes{name=~".+"} > 0) BY (instance, name) * 100) > $PROMETHEUS_ContainerMemoryUsage_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Container Memory usage (instance {{ $labels.instance }})"
-      description: "Container Memory usage is above 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Container Memory usage is above $PROMETHEUS_ContainerMemoryUsage_ALERT %\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
   - alert: ContainerVolumeUsage
-    expr: (1 - sum(container_fs_inodes_free) BY (instance) / sum(container_fs_inodes_total) BY (instance)) * 100 > 80
+    expr: (1 - sum(container_fs_inodes_free) BY (instance) / sum(container_fs_inodes_total) BY (instance)) * 100 > $PROMETHEUS_ContainerVolumeUsage_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Container Volume usage (instance {{ $labels.instance }})"
-      description: "Container Volume usage is above 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Container Volume usage is above $PROMETHEUS_ContainerVolumeUsage_ALERT %\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
   - alert: ContainerVolumeIoUsage
-    expr: (sum(container_fs_io_current) BY (instance, name) * 100) > 80
+    expr: (sum(container_fs_io_current) BY (instance, name) * 100) > $PROMETHEUS_ContainerVolumeIoUsage_ALERT
     for: 5m
     labels:
       severity: warning
     annotations:
       summary: "Container Volume IO usage (instance {{ $labels.instance }})"
-      description: "Container Volume IO usage is above 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+      description: "Container Volume IO usage is above $PROMETHEUS_ContainerVolumeIoUsage_ALERT %\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
   - alert: ContainerHighThrottleRate
     expr: rate(container_cpu_cfs_throttled_seconds_total[3m]) > 1

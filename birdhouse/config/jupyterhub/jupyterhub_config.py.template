@@ -71,8 +71,8 @@ if len(host_gdrive_settings_path) > 0:
         "mode": "ro"
     }
 
-readme = os.environ['JUPYTERHUB_README']
-if os.path.exists(readme):
+readme = os.environ.get('JUPYTERHUB_README', default="")
+if readme != "":
     c.DockerSpawner.volumes[readme] = {
         "bind": join(notebook_dir, "README.ipynb"),
         "mode": "ro"
@@ -135,3 +135,5 @@ c.Authenticator.refresh_pre_spawn = True
 blocked_users = {'authtest', '${CATALOG_USERNAME}', 'anonymous'}
 c.Authenticator.blacklist = blocked_users  # v0.9+
 c.Authenticator.blocked_users = blocked_users  # v1.2+
+
+${JUPYTERHUB_CONFIG_OVERRIDE}    # noqa

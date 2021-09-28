@@ -12,15 +12,6 @@
 #
 # Logs to /var/log/PAVICS/notebookdeploy.log, re-use existing logrotate.
 
-if [ -z "$JUPYTERHUB_USER_DATA_DIR" ]; then
-  # running script manually (not with cron) source env.local file.
-  COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
-  . "$COMPOSE_DIR/default.env"  # default JUPYTERHUB_USER_DATA_DIR
-  if [ -e "$COMPOSE_DIR/env.local" ]; then
-      . "$COMPOSE_DIR/env.local"  # optional override JUPYTERHUB_USER_DATA_DIR
-  fi
-fi
-
 LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
 exec >>$LOG_FILE 2>&1
 
@@ -34,6 +25,25 @@ notebookdeploy finished   END_TIME=`date -Isecond`"
 
 trap cleanup_on_exit EXIT
 
+START_TIME="`date -Isecond`"
+echo "==========
+notebookdeploy START_TIME=$START_TIME"
+
+set -x
+
+# running script manually (not with cron) source env.local file.
+if [ -z "$COMPOSE_DIR" ]; then
+    COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+fi
+if [ -e "$COMPOSE_DIR/default.env" ]; then
+    . "$COMPOSE_DIR/default.env"  # default JUPYTERHUB_USER_DATA_DIR
+fi
+if [ -e "$COMPOSE_DIR/env.local" ]; then
+    set +x  # do not leak password in logs
+    . "$COMPOSE_DIR/env.local"  # optional override JUPYTERHUB_USER_DATA_DIR
+    set -x
+fi
+
 NOTEBOOK_DIR_MNT="/notebook_dir"
 TUTORIAL_NOTEBOOKS_DIR="tutorial-notebooks"
 if [ -z "$WORKFLOW_TESTS_BRANCH" ]; then
@@ -44,12 +54,6 @@ fi
 if [ -z "$TMP_BASE_DIR" ]; then
     TMP_BASE_DIR="/tmp"
 fi
-
-START_TIME="`date -Isecond`"
-echo "==========
-notebookdeploy START_TIME=$START_TIME"
-
-set -x
 
 TMPDIR="`mktemp -d -t notebookdeploy.XXXXXXXXXXXX -p $TMP_BASE_DIR`"
 
