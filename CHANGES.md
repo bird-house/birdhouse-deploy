@@ -14,7 +14,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+  ## Changes
+  
+  - Magpie/Twitcher: update to version 3.15.1
+    
+    * Apply additional DEBUG logging entries to attempt resolving issues related to caching.
+      See also [Ouranosinc/Magpie#466](https://github.com/Ouranosinc/Magpie/issues/466).
+    * Adjust Twitcher runner to employ `gunicorn` instead of `waitress`.
 
 [1.15.2](https://github.com/bird-house/birdhouse-deploy/tree/1.15.2) (2021-09-22)
 ------------------------------------------------------------------------------------------------------------------

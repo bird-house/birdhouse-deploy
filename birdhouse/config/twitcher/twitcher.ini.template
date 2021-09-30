@@ -81,8 +81,12 @@ file_template = %%(year)d%%(month).2d%%(day).2d_%%(rev)s
 # file_template = %%(rev)s_%%(slug)s
 
 [server:main]
-use = egg:waitress#main
-listen = 0.0.0.0:8000
+use = egg:gunicorn#main
+host = 0.0.0.0
+port = 8000
+timeout = 10
+workers = 10
+threads = 4
 
 ###
 # logging configuration
@@ -106,7 +110,7 @@ handlers = console
 # "level = DEBUG"   logs detailed information about operations/settings (not for production, will leak sensitive data)
 # "level = INFO"    reports useful information, not leaking details about settings
 # "level = WARN"    only potential problems/unexpected results reported, such as when caching is employed
-level = INFO
+level = DEBUG
 handlers =
 qualname = twitcher
 
@@ -115,7 +119,7 @@ qualname = twitcher
 # "level = DEBUG"   logs detailed information about operations/settings (not for production, will leak sensitive data)
 # "level = INFO"    reports useful information about operations, not leaking details about settings
 # "level = WARN"    only potential problems are reported such as missing settings in configuration
-level = INFO
+level = DEBUG
 handlers =
 qualname = magpie
 
