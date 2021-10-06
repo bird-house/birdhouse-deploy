@@ -97,8 +97,13 @@ weaver.extra_options =
 # https://pypi.python.org/pypi/pyramid_celery
 ###
 [celery]
-#USE_CELERYCONFIG = True
-BROKER_URL = mongodb://mongodb:27017/celery
+use_celeryconfig = false
+broker_url = mongodb://mongodb:27017/celery
+result_backend = mongodb://mongodb:27017/
+
+[celery:mongodb_backend_settings]
+database = celery
+taskmeta_collection = weaver-results
 
 ###
 # wsgi server configuration
