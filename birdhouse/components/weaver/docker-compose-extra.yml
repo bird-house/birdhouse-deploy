@@ -66,10 +66,19 @@ services:
       - ./components/weaver/config/weaver/data_sources.yml:/opt/local/src/weaver/config/data_sources.yml:ro
       - ./components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
       - ./components/weaver/config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml:ro
+      - ./components/weaver/celery-healthcheck:/opt/local/bin/weaver/celery-healthcheck:ro
       # WARNING: see detail in 'worker' definition about below mount location
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     restart: always
     logging: *default-logging
+    healthcheck:
+      # Even when explicitly listing tasks in Weaver INI file, sometimes Celery Worker task is incorrectly prepared.
+      # Use the healthcheck to periodically inspect registered celery tasks, which fixes setup problem after startup.
+      test: ["CMD", "bash", "/opt/local/bin/weaver/celery-healthcheck"]
+      start_period: 30s  # leave some time for 'post-docker-compose-up' WPS-provider registration to complete
+      interval: 60s
+      timeout: 10s
+      retries: 2
 
   # Image 'worker' is the job runner of Weaver, possibly spawning Docker applications according to process definition
   weaver-worker:
