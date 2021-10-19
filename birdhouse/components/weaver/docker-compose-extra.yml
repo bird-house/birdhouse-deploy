@@ -55,7 +55,6 @@ services:
     #  - ./config/mongodb/credentials.env
     depends_on:
       - mongodb
-      - weaver-worker  # if not started first, sometimes celery misbehaves and will not pick jobs in queue
     links:
       - mongodb
     networks:
@@ -71,14 +70,6 @@ services:
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     restart: always
     logging: *default-logging
-    healthcheck:
-      # Even when explicitly listing tasks in Weaver INI file, sometimes Celery Worker task is incorrectly prepared.
-      # Use the healthcheck to periodically inspect registered celery tasks, which fixes setup problem after startup.
-      test: ["CMD", "bash", "/opt/local/bin/weaver/celery-healthcheck"]
-      start_period: 30s  # leave some time for 'post-docker-compose-up' WPS-provider registration to complete
-      interval: 60s
-      timeout: 10s
-      retries: 2
 
   # Image 'worker' is the job runner of Weaver, possibly spawning Docker applications according to process definition
   weaver-worker:
@@ -90,6 +81,7 @@ services:
     #  - ./config/mongodb/credentials.env
     depends_on:
       - mongodb
+      - weaver  # if not started first, sometimes celery misbehaves and will not pick jobs in queue
       - docker-proxy
     links:
       - mongodb
@@ -116,6 +108,16 @@ services:
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     restart: always
     logging: *default-logging
+    healthcheck:
+      # Even when explicitly listing tasks in Weaver INI file, sometimes Celery Worker task is incorrectly prepared.
+      # Use the healthcheck to periodically inspect registered celery tasks, which fixes setup problem after startup.
+      test: ["CMD", "bash", "/opt/local/bin/weaver/celery-healthcheck"]
+      # Leave some time for 'post-docker-compose-up' WPS-provider registration to complete.
+      # Weaver API will not have registered the execution tasks until then.
+      start_period: 30s
+      interval: 60s
+      timeout: 10s
+      retries: 2
 
   # Image 'docker-proxy' is the connector between docker image 'worker' jobs and their sibling docker executions
   docker-proxy:
