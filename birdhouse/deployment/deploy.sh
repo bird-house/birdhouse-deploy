@@ -180,15 +180,6 @@ set -x
 # restart everything, only changed containers will be destroyed and recreated
 ./pavics-compose.sh up -d
 
-# deploy new README.ipynb to Jupyter instance
-docker run --rm --name deploy_README_ipynb \
-    -v "$JUPYTERHUB_USER_DATA_DIR":/notebook_dir \
-    -v $REPO_ROOT/docs/source/notebooks:/nb:ro \
-    -u root \
-    bash:5.1.4 \
-    bash -c "cp -v /nb/README.ipynb /notebook_dir/.; \
-             chown root:root /notebook_dir/README.ipynb"
-
 set +x
 
 echo "
