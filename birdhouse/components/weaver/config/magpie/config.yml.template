@@ -72,6 +72,14 @@ permissions:
     group: anonymous
     action: create
 
+  # convenience group that should be allowed deployment of Application Packages provided as OGC-API REST-JSON WPS
+  # NOTE: all users member of this group will be allowed to deploy/undeploy **any** app in Weaver
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /processes
+    permission: write
+    group: app_producers
+    action: create
+
   # Providers listing
   - service: ${WEAVER_MANAGER_NAME}
     resource: /providers

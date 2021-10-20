@@ -12,6 +12,9 @@ services:
   proxy:
     volumes:
       - ./components/weaver/conf.extra-service.d:/etc/nginx/conf.extra-service.d/weaver:ro
+      # because of mounting path naming restrictions (see note in 'worker' definition),
+      # we must add the custom path on top of named 'wps_outputs' volume of other birds for the proxy to expose results
+      - ${WEAVER_WPS_OUTPUTS_DIR}:/pavics-data/wps_outputs/weaver:ro
     links:
       - weaver
 
@@ -42,13 +45,7 @@ services:
     #   Weaver is started, they will all be able to request them and register the providers correctly.
     #   This is needed because simply adding 'depends_on' only ensures that containers are 'running', but startup of
     #   WPS applications themselves are not necessarily completed. Successful HTTP responses ensure they are 'ready'.
-    #image: pavics/weaver:${WEAVER_VERSION}-manager
-    image: pavics/weaver:${WEAVER_VERSION}-wait-wps
-    build:
-      context: ./components/weaver
-      dockerfile: Dockerfile
-      args:
-        WEAVER_VERSION: ${WEAVER_VERSION}
+    image: pavics/weaver:${WEAVER_VERSION}-manager
     ports:
       - "4001:4001"
     environment:
@@ -56,24 +53,10 @@ services:
       FORWARDED_ALLOW_IPS: "*"
     #env_file:
     #  - ./config/mongodb/credentials.env
-    # ensure other referenced services are created beforehand to avoid booting timing issues
     depends_on:
-      - catalog
-      - finch
-      - flyingpigeon
-      - hummingbird
-      - malleefowl
-      - raven
-      #- wait-for-wps
       - mongodb
     links:
       - mongodb
-      - catalog
-      - finch
-      - flyingpigeon
-      - hummingbird
-      - malleefowl
-      - raven
     networks:
       - default
       - mongodb
@@ -82,22 +65,11 @@ services:
       - ./components/weaver/config/weaver/data_sources.yml:/opt/local/src/weaver/config/data_sources.yml:ro
       - ./components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
       - ./components/weaver/config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml:ro
+      - ./components/weaver/celery-healthcheck:/opt/local/bin/weaver/celery-healthcheck:ro
       # WARNING: see detail in 'worker' definition about below mount location
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     restart: always
     logging: *default-logging
-    # NOTE: see above 'image' and 'build' sections, start Weaver only after WPS providers can respond
-    command: ["bash", "-c",
-        "/usr/local/bin/dockerize
-          -wait 'http://catalog:80/pywps?service=WPS&request=GetCapabilities'
-          -wait 'http://finch:5000/wps?service=WPS&request=GetCapabilities'
-          -wait 'http://flyingpigeon:8093/wps?service=WPS&request=GetCapabilities'
-          -wait 'http://hummingbird:8097/wps?service=WPS&request=GetCapabilities'
-          -wait 'http://malleefowl:8091/wps?service=WPS&request=GetCapabilities'
-          -wait 'http://raven:9099/wps?service=WPS&request=GetCapabilities'
-          -timeout 30s
-        && pserve '/opt/local/src/weaver/config/weaver.ini'"
-    ]
 
   # Image 'worker' is the job runner of Weaver, possibly spawning Docker applications according to process definition
   weaver-worker:
@@ -109,7 +81,7 @@ services:
     #  - ./config/mongodb/credentials.env
     depends_on:
       - mongodb
-      - weaver  # fail immediately if Weaver API cannot boot - celery workers have no reason to exist otherwise
+      - weaver  # if not started first, sometimes celery misbehaves and will not pick jobs in queue
       - docker-proxy
     links:
       - mongodb
@@ -124,6 +96,7 @@ services:
       - ${DATA_PERSIST_ROOT}/wps_private:/data/wps_private
       - ./components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
       - ./components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
+      - ./components/weaver/celery-healthcheck:/opt/local/bin/weaver/celery-healthcheck:ro
       # WARNING:
       #   Working and output directories must be mounted as exact same path (e.g.: /some/path:/some/path)
       #   to avoid mismatching locations between container-side path resolution of cwltool stagedir/tmpdir/outdir
@@ -136,6 +109,16 @@ services:
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     restart: always
     logging: *default-logging
+    healthcheck:
+      # Even when explicitly listing tasks in Weaver INI file, sometimes Celery Worker task is incorrectly prepared.
+      # Use the healthcheck to periodically inspect registered celery tasks, which fixes setup problem after startup.
+      test: ["CMD", "bash", "/opt/local/bin/weaver/celery-healthcheck"]
+      # Leave some time for 'post-docker-compose-up' WPS-provider registration to complete.
+      # Weaver API will not have registered the execution tasks until then.
+      start_period: 30s
+      interval: 60s
+      timeout: 10s
+      retries: 2
 
   # Image 'docker-proxy' is the connector between docker image 'worker' jobs and their sibling docker executions
   docker-proxy:

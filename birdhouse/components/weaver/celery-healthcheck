@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+INFO="[INFO]  "
+ERROR="[ERROR] "
+
+echo "${INFO}Starting Celery Healthcheck"
+result=$(celery inspect registered -A pyramid_celery.celery_app --ini "${APP_CONFIG_DIR}/weaver.ini" --timeout 5)
+if [[ -z "${result}" ]]; then
+  echo "${ERROR}Empty Celery response."
+  exit 1
+fi
+
+# should look like:
+#   [... weaver-logs ...]
+#   -> celery@<uuid>: OK
+#       * weaver.processes.execution.execute_process
+result=$(echo "${result}" | tail -n 2)
+status=$(echo "${result}" | head -n 1)
+task=$(echo "${result}" | tail -n 1)
+
+echo "${INFO}Celery inspect results dump:"
+echo "${result}"
+
+if [[ $(echo "${status}" | grep -c "OK") -ne 1 ]]; then
+  echo "${ERROR}Celery inspect did not return expected 'OK' status."
+  exit 2
+fi
+if [[ $(echo "${task}" | grep -c "weaver.processes.execution.execute_process") -ne 1 ]]; then
+  echo "${ERROR}Celery inspect did not retrieve expected task."
+  exit 3
+fi
+
+echo "${INFO}Success. Celery Task is ready."
+exit 0
