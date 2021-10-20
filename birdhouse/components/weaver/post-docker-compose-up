@@ -285,9 +285,9 @@ echo "${PREFIX}All Weaver remote WPS providers registered successfully!"
 echo "${PREFIX}Starting Weaver WebApp/Worker Celery tasks validation..."
 CUR_SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 PAVICS_COMPOSE="$(realpath "${CUR_SCRIPT_DIR}/../../pavics-compose.sh")"
-${PAVICS_COMPOSE} exec weaver "/opt/local/bin/weaver/celery-healthcheck"
+${PAVICS_COMPOSE} exec weaver bash "/opt/local/bin/weaver/celery-healthcheck"
 ret_weaver=$?
-${PAVICS_COMPOSE} exec weaver-worker "/opt/local/bin/weaver/celery-healthcheck"
+${PAVICS_COMPOSE} exec weaver-worker bash "/opt/local/bin/weaver/celery-healthcheck"
 ret_worker=$?
 if [ ${ret_weaver} -ne 0 ] || [ ${ret_worker} -ne 0 ]; then
   echo "Weaver WebApp and/or Worker Celery tasks were not ready. Restarting both..."

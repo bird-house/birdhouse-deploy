@@ -11,11 +11,15 @@ if [[ -z "${result}" ]]; then
 fi
 
 # should look like:
+#   [... weaver-logs ...]
 #   -> celery@<uuid>: OK
 #       * weaver.processes.execution.execute_process
 result=$(echo "${result}" | tail -n 2)
 status=$(echo "${result}" | head -n 1)
 task=$(echo "${result}" | head -n 1)
+
+echo "${INFO}Celery inspect results dump:"
+echo "${result}"
 
 if [[ $(echo "${status}" | grep -c "OK") -ne 1 ]]; then
   echo "${ERROR}Celery inspect did not return expected 'OK' status."
