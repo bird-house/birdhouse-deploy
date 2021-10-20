@@ -1,6 +1,11 @@
 #!/bin/sh
 
-# Registers WPS providers into Weaver to provide their OGC-API interface
+# Operations:
+# 1. Registers WPS providers into Weaver to provide their OGC-API interface.
+# 2. Validate that Weaver workers are ready to receive tasks.
+#
+# 1. WPS provider registration
+# -----------------------------
 #
 # The script first authenticates in Magpie to obtain authorization for requests, as everything could be protected.
 # Afterwards, there is a quick validation that Weaver is up and ready to receive WPS providers registration requests.
@@ -28,6 +33,18 @@
 #   - PAVICS_FQDN_PUBLIC
 #   - TWITCHER_PROTECTED_PATH
 #   - WEAVER_MANAGER_NAME
+#
+# 2. Worker tasks validation
+# -----------------------------
+#
+# When Weaver and its Celery workers are started, tasks often fail to properly register themselves at startup.
+# In order to ensure everything is properly configured and ready to receive jobs, Celery checks are employed to
+# validate that tasks are known by each component (webapp and workers), and ready to submit/receive them.
+# If any of the webapp/worker is not ready, restart them to retry detecting tasks. At that point, it is expected
+# that one of the two should have finished registering tasks, and it is just a matter of synchronizing them.
+#
+# See also the 'celery-healthcheck' script that does the same periodic verification while the images are running,
+# but it will not automatically restart them.
 #
 
 # in case parent script called with debug (sh -x <script>), hide output for this script and reset on exit
@@ -263,4 +280,20 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
     echo "OK!"
 done
 echo "${PREFIX}All Weaver remote WPS providers registered successfully!"
+
+
+echo "${PREFIX}Starting Weaver WebApp/Worker Celery tasks validation..."
+CUR_SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+PAVICS_COMPOSE="$(realpath "${CUR_SCRIPT_DIR}/../../pavics-compose.sh")"
+${PAVICS_COMPOSE} exec weaver "/opt/local/bin/weaver/celery-healthcheck"
+ret_weaver=$?
+${PAVICS_COMPOSE} exec weaver-worker "/opt/local/bin/weaver/celery-healthcheck"
+ret_worker=$?
+if [ ${ret_weaver} -ne 0 ] || [ ${ret_worker} -ne 0 ]; then
+  echo "Weaver WebApp and/or Worker Celery tasks were not ready. Restarting both..."
+  ${PAVICS_COMPOSE} restart weaver weaver-worker
+else
+  echo "Weaver WebApp and/or Worker Celery tasks are both ready."
+fi
+
 reset_state
