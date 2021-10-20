@@ -16,7 +16,7 @@ fi
 #       * weaver.processes.execution.execute_process
 result=$(echo "${result}" | tail -n 2)
 status=$(echo "${result}" | head -n 1)
-task=$(echo "${result}" | head -n 1)
+task=$(echo "${result}" | tail -n 1)
 
 echo "${INFO}Celery inspect results dump:"
 echo "${result}"
