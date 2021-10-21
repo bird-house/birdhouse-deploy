@@ -27,6 +27,21 @@
 
   **Backward-incompatible** change:
   * new mandatory var `GEOSERVER_ADMIN_PASSWORD` needed in `env.local`
+  * manual deployment upgrade procedure required for existing Geoserver datadir (`/data/geoserver/`) to match user inside the Geoserver docker image (`1000:10001`)
+  ```
+  # destroy geoserver container so we can work on its datadir /data/geoserver/
+  ./pavics-compose.sh stop geoserver && ./pavics-compose.sh rm -vf geoserver
+
+  # checkout this new code to have fix-geoserver-data-dir-perm
+  git checkout 1.16.0  # tag containing this PR
+
+  # chown -R 1000:10001 /data/geoserver/
+  # this can take a while depending how big /data/geoserver/ is and how fast is your disk
+  ./deployment/fix-geoserver-data-dir-perm
+
+  # bring up the new geoserver version
+  ./pavics-compose.sh up -d
+  ```
 
   What is cool with this new upstream version, from deployment perspective:
 
