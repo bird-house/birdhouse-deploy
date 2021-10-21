@@ -16,6 +16,45 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.16.0](https://github.com/bird-house/birdhouse-deploy/tree/1.16.0) (2021-10-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Upgrade geoserver to latest upstream kartoza/geoserver:2.19.0
+
+  Completely removed our geoserver custom Docker build.  Upgrade will be much easier next time.  Fixes https://github.com/Ouranosinc/pavics-sdi/issues/197
+
+  **Backward-incompatible** change:
+  * new mandatory var `GEOSERVER_ADMIN_PASSWORD` needed in `env.local`
+
+  What is cool with this new upstream version, from deployment perspective:
+
+  * many plugins are pre-downloaded, we just have to enable them, see https://github.com/kartoza/docker-geoserver/blob/553ed2982685f366ddcbac3d3e1626cb493cf84b/scripts/setup.sh#L13-L41, no need for our custom build to add plugins anymore !!!
+    * full plugin list we can enable https://github.com/kartoza/docker-geoserver/blob/553ed2982685f366ddcbac3d3e1626cb493cf84b/build_data/stable_plugins.txt and https://github.com/kartoza/docker-geoserver/blob/553ed2982685f366ddcbac3d3e1626cb493cf84b/build_data/community_plugins.txt
+
+  * admin password can be set via config, no need for manual step post deployment anymore, sweet !!!
+
+  What might be different from the previous version:
+
+  * Jai and Jai_ImageIO might be different from previous version.  The previous version (https://github.com/bird-house/birdhouse-deploy/tree/c0ffb413a3dff70bbe2c98c38690d6e919f11386/birdhouse/docker/geoserver/resources) we added them manually and there is a "native" component.
+    * The new GeoServer seems to have switched to "JAI-EXT, a set of replacement operations with bug fixes and NODATA support, for all image processing. In case there is no interest in NODATA support, one can disable JAI-EXT and install the native JAI extensions to improve raster processing performance." excerpt from https://github.com/geoserver/geoserver/blob/770dc6f7023bc2ab32597cfc7a3a9cc35ff3b608/doc/en/user/source/production/java.rst#outdated-install-native-jai-and-imageio-extensions.
+    * Also see https://docs.geoserver.org/stable/en/user/configuration/image_processing/index.html.
+    * I have no idea what is the actual performance impact of this change.
+  * No more manual install of various NetCDF system libraries (zlib, hdf5, archive), see our previous custom build https://github.com/bird-house/birdhouse-deploy/blob/c0ffb413a3dff70bbe2c98c38690d6e919f11386/birdhouse/docker/geoserver/Dockerfile#L26-L35
+    * Since we can enable `netcdf-plugin` on the fly so I am guessing those system libraries are not needed anymore but I do not know the actual real impact of this change.
+
+  Blocking issues and PRs:
+  * https://github.com/Ouranosinc/pavics-sdi/issues/220
+  * https://github.com/Ouranosinc/raven/pull/397
+  * https://github.com/CSHS-CWRA/RavenPy/pull/118
+
+  Related issues:
+  * https://github.com/kartoza/docker-geoserver/issues/232
+  * https://github.com/kartoza/docker-geoserver/issues/233
+  * https://github.com/kartoza/docker-geoserver/issues/250
+
+
 [1.15.2](https://github.com/bird-house/birdhouse-deploy/tree/1.15.2) (2021-09-22)
 ------------------------------------------------------------------------------------------------------------------
 
