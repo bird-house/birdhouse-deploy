@@ -14,7 +14,103 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Thredds: Enable Netcdf Subset Service (NCSS)
+
+  "The Netcdf Subset Service (NCSS) is one of the ways that the TDS can serve data. It is an experimental REST protocol for returning subsets of CDM datasets." https://www.unidata.ucar.edu/software/tds/current/reference/NetcdfSubsetServiceConfigure.html
+  
+  More NCSS docs: https://www.unidata.ucar.edu/software/tds/current/reference/NetcdfSubsetServiceReference.html
+  
+  Sample screenshots:
+  
+  ![Screenshot 2021-10-21 at 21-32-14 Catalog Services](https://user-images.githubusercontent.com/11966697/138379386-c658cf05-09a2-44dd-ae6e-9337800212d0.png)
+  
+  ![Screenshot 2021-10-21 at 21-31-13 NetCDF Subset Service for Grids](https://user-images.githubusercontent.com/11966697/138379396-de6cdedf-6bc7-44b8-9da8-42d496abbdf2.png)
+  
+  dataset.xml:
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <gridDataset location="/twitcher/ows/proxy/thredds/ncss/birdhouse/testdata/flyingpigeon/cmip3/tasmin.sresa2.miub_echo_g.run1.atm.da.nc" path="path">
+    <axis name="lat" shape="6" type="double" axisType="Lat">
+      <attribute name="units" value="degrees_north"/>
+      <attribute name="long_name" value="latitude"/>
+      <attribute name="standard_name" value="latitude"/>
+      <attribute name="bounds" value="lat_bnds"/>
+      <attribute name="axis" value="Y"/>
+      <attribute name="_ChunkSizes" type="int" value="6"/>
+      <attribute name="_CoordinateAxisType" value="Lat"/>
+      <values>42.67760468 46.38855743 50.09945297 53.81027222 57.52099228 61.2315712</values>
+    </axis>
+    <axis name="lon" shape="7" type="double" axisType="Lon">
+      <attribute name="units" value="degrees_east"/>
+      <attribute name="long_name" value="longitude"/>
+      <attribute name="standard_name" value="longitude"/>
+      <attribute name="bounds" value="lon_bnds"/>
+      <attribute name="axis" value="X"/>
+      <attribute name="_ChunkSizes" type="int" value="7"/>
+      <attribute name="_CoordinateAxisType" value="Lon"/>
+      <values start="281.25" increment="3.75" npts="7"/>
+    </axis>
+    <axis name="time" shape="7200" type="double" axisType="Time">
+      <attribute name="units" value="days since 1860-1-1"/>
+      <attribute name="calendar" value="360_day"/>
+      <attribute name="bounds" value="time_bnds"/>
+      <attribute name="_ChunkSizes" type="int" value="7200"/>
+      <attribute name="_CoordinateAxisType" value="Time"/>
+      <values start="66960.5" increment="1.0" npts="7200"/>
+    </axis>
+    <gridSet name="time lat lon">
+      <projectionBox>
+        <minx>279.375</minx>
+        <maxx>305.625</maxx>
+        <miny>40.82210731506348</miny>
+        <maxy>63.08675956726074</maxy>
+      </projectionBox>
+      <axisRef name="time"/>
+      <axisRef name="lat"/>
+      <axisRef name="lon"/>
+      <grid name="tasmin" desc="Minimum Daily Surface Air Temperature" shape="time lat lon" type="float">
+        <attribute name="original_name" value="T2MIN"/>
+        <attribute name="coordinates" value="height"/>
+        <attribute name="long_name" value="Minimum Daily Surface Air Temperature"/>
+        <attribute name="standard_name" value="air_temperature"/>
+        <attribute name="cell_methods" value="time: minimum (interval: 30 minutes)"/>
+        <attribute name="units" value="K"/>
+        <attribute name="missing_value" type="float" value="1.0E20"/>
+        <attribute name="history" value="tas=max(195,tas) applied to raw data; min of 194.73 detected;"/>
+        <attribute name="_ChunkSizes" type="int" value="7200 6 7"/>
+      </grid>
+    </gridSet>
+    <LatLonBox>
+      <west>-78.7500</west>
+      <east>-56.2500</east>
+      <south>42.6776</south>
+      <north>61.2315</north>
+    </LatLonBox>
+    <TimeSpan>
+      <begin>2046-01-01T12:00:00Z</begin>
+      <end>2065-12-30T12:00:00Z</end>
+    </TimeSpan>
+    <AcceptList>
+      <GridAsPoint>
+        <accept displayName="xml">xml</accept>
+        <accept displayName="xml (file)">xml_file</accept>
+        <accept displayName="csv">csv</accept>
+        <accept displayName="csv (file)">csv_file</accept>
+        <accept displayName="geocsv">geocsv</accept>
+        <accept displayName="geocsv (file)">geocsv_file</accept>
+        <accept displayName="netcdf">netcdf</accept>
+        <accept displayName="netcdf4">netcdf4</accept>
+      </GridAsPoint>
+      <Grid>
+        <accept displayName="netcdf">netcdf</accept>
+        <accept displayName="netcdf4">netcdf4</accept>
+      </Grid>
+    </AcceptList>
+  </gridDataset>
+  ```
+
 
 [1.16.0](https://github.com/bird-house/birdhouse-deploy/tree/1.16.0) (2021-10-20)
 ------------------------------------------------------------------------------------------------------------------
