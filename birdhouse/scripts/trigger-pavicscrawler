@@ -1,6 +1,8 @@
 #!/bin/sh
 # Trigger pavicscrawler on local PAVICS host.
 #
+# Need to open temporary Thredds "testdata/secure/" on local PAVICS host to anonymous group.
+#
 # pavicscrawler is a method of the catalog WPS service to index Thredds
 # catalog into Solr DB for quick searching.
 #
