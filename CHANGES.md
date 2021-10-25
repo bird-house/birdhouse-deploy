@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.16.1](https://github.com/bird-house/birdhouse-deploy/tree/1.16.1) (2021-10-25)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Thredds: Enable Netcdf Subset Service (NCSS)
