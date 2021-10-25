@@ -15,6 +15,7 @@ THIS_DIR="`dirname "$THIS_FILE"`"
 set -x
 # Populate test .nc file on Thredds.
 # Need to open temporary Thredds "testdata/secure/" on PAVICS production to anonymous group.
+# Need write-access to DATASET_ROOT (/data/datasets/).
 $THIS_DIR/bootstrap-testdata
 
 # Index Thredds catalog.
