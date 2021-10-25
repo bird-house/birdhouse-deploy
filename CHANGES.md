@@ -21,6 +21,10 @@
   "The Netcdf Subset Service (NCSS) is one of the ways that the TDS can serve data. It is an experimental REST protocol for returning subsets of CDM datasets." https://www.unidata.ucar.edu/software/tds/current/reference/NetcdfSubsetServiceConfigure.html
   
   More NCSS docs: https://www.unidata.ucar.edu/software/tds/current/reference/NetcdfSubsetServiceReference.html
+
+  Briefly, the advantage to enable NCSS is to be able to perform subsetting directly in the browser (manipulating URL parameters), avoiding the overhead for using OpenDAP (needs another client than the existing browser).  This even works for `.ncml` files.
+
+  Recall previously using "HTTPServer" link type, we were able to download directly the `.nc` files but for `.ncml` we got the xml content instead. With this new "NetcdfSubset" link type, we can actually download the NetCDF content of a `.ncml` file directly from the browser.
   
   Sample screenshots:
   
