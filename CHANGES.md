@@ -14,7 +14,24 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- geoserver: enable geopkg plugin
+
+  https://docs.geoserver.org/latest/en/user/community/geopkg/
+
+  This plugin brings in the ability to write GeoPackage files in GeoServer.
+  Reading GeoPackage files is part of the core functionality of GeoServer, and
+  does not require this extension.
+
+  GeoPackage is an SQLite based standard format that is able to hold multiple
+  vector and raster data layers in a single file.
+
+  GeoPackage can be used as an output format for WFS GetFeature (creating one
+  vector data layer) as well as WMS GetMap (creating one raster data layer). The
+  GeoServer GeoPackage extension also allows to create a completely custom made
+  GeoPackage with multiple layers, using the GeoPackage process.
+
 
 [1.16.1](https://github.com/bird-house/birdhouse-deploy/tree/1.16.1) (2021-10-25)
 ------------------------------------------------------------------------------------------------------------------
