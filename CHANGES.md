@@ -21,6 +21,7 @@
   https://docs.geoserver.org/latest/en/user/community/geopkg/
 
   ==========
+
   This plugin brings in the ability to write GeoPackage files in GeoServer.
   Reading GeoPackage files is part of the core functionality of GeoServer, and
   does not require this extension.
