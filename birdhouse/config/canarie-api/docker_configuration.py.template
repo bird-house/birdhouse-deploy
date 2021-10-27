@@ -99,12 +99,7 @@ SERVICES = {
                 'request': {
                     'url': 'https://${PAVICS_FQDN_PUBLIC}/jupyter/hub/login'
                 },
-            },
-            'Weaver': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/weaver'
-                },
-            },
+            }
         }
     },
     'indices': {
