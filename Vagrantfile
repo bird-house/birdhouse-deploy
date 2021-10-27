@@ -63,7 +63,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider "virtualbox" do |v|
-      v.memory = settings.fetch('memory', 8192)
+      v.memory = settings.fetch('memory', 10240)
       v.cpus = settings.fetch('cpus', 2)
   end
 

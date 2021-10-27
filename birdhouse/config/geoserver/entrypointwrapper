@@ -13,5 +13,37 @@ if ! grep " scheme=\"https\" proxyName=\"${PAVICS_FQDN_PUBLIC}\" proxyPort=\"443
     diff -u $ORIGINAL_FILE $CONF_FILE
 fi
 
+
+WEB_XML_FILE="/usr/local/tomcat/conf/web.xml"
+
+# Enable Cross-Origin Resource Sharing (CORS) to allow JavaScript applications
+# outside of your own domain, or web browsers, to use GeoServer.
+# Add cors.allowed.methods and cors.allowed.headers as per
+# https://github.com/geoserver/geoserver/blob/770dc6f7023bc2ab32597cfc7a3a9cc35ff3b608/doc/en/user/source/production/container.rst
+# (cors.allowed.origins already good) using
+# existing cors.allowed.methods from
+# https://github.com/Ouranosinc/PAVICS/commit/1e63e3596d1efc620266b85eb04ebbf14f0429af
+# and existing cors.allowed.headers from
+# https://github.com/Ouranosinc/PAVICS/commit/b5cd45f3e40033af35f99771eb2ed0760d1b6018
+if ! grep "<param-name>cors.allowed.methods</param-name>" $WEB_XML_FILE; then
+
+    ORIGINAL_WEB_XML_FILE="${WEB_XML_FILE}.bak.cors.$$"
+    cp -v $WEB_XML_FILE $ORIGINAL_WEB_XML_FILE
+
+    sed -i 's@<filter-class>org.apache.catalina.filters.CorsFilter</filter-class>@<filter-class>org.apache.catalina.filters.CorsFilter</filter-class>\
+        <init-param>\
+            <param-name>cors.allowed.methods</param-name>\
+            <param-value>GET,POST,HEAD,OPTIONS,PUT</param-value>\
+        </init-param>@' $WEB_XML_FILE
+
+    sed -i 's@<param-value>If-Modified-Since,Range,Origin</param-value>@<param-value>Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,Authentication</param-value>@' $WEB_XML_FILE
+
+    # for logging
+    diff -C 15 $ORIGINAL_WEB_XML_FILE $WEB_XML_FILE
+fi
+
 # chain existing entrypoint
-catalina.sh run
+/scripts/entrypoint.sh
+
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4

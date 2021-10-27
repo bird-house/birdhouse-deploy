@@ -1,0 +1,34 @@
+#!/bin/sh -e
+# Allow geoserver container write perm on its data dir.
+#
+# Geoserver container runs with hardcoded uid 1000 and gid 10001.
+#
+# Set env var FIRST_RUN_ONLY to only execute this script once, before first
+# startup of Geoserver.  If Geoserver has already run at least once, file
+# global.xml will exist and this script will not execute.  Without
+# FIRST_RUN_ONLY, this script will always execute.
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+
+# Go to repo root.
+cd $THIS_DIR/../..
+
+# Default values
+# Get BASH_IMAGE
+# Get GEOSERVER_DATA_DIR
+. birdhouse/default.env
+
+if [ -e "birdhouse/env.local" ]; then
+    # Override default values
+    . birdhouse/env.local
+fi
+
+set -x
+
+docker run --rm --name fix-geoserver-data-dir-perm \
+    --volume ${GEOSERVER_DATA_DIR}:/datadir \
+    --env FIRST_RUN_ONLY \
+    $BASH_IMAGE \
+    bash -xc 'if [ -z "$FIRST_RUN_ONLY" -o ! -f /datadir/global.xml ]; \
+    then chown -R 1000:10001 /datadir; else echo "No execute."; fi'
