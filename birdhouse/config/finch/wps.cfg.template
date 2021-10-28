@@ -2,6 +2,10 @@
 outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs/finch
 outputpath = /data/wpsoutputs/finch
 
+# link means hardlink so both temp_path and outputpath should be on the same partition for hardlink to work
+storage_copy_function = link
+temp_path = /data/wpsoutputs/finch/tmp
+
 # default 3mb, fix "Broken pipe" between the proxy and the wps service
 maxrequestsize = 400mb
 

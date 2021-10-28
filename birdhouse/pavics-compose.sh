@@ -204,7 +204,7 @@ do
 
     # because server.outputpath in wps.cfg do not create the dir
     for bird in finch flyingpigeon raven; do
-      docker exec $bird mkdir -p /data/wpsoutputs/$bird
+      docker exec $bird mkdir -p /data/wpsoutputs/$bird/tmp
     done
 
     for adir in ${EXTRA_CONF_DIRS}; do
