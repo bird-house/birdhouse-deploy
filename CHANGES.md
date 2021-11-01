@@ -14,7 +14,29 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+### Changes
+
+- scripts: add `extract-jupyter-users-from-magpie-db`
+
+  Extract Jupyter users from Magpie DB so we can send announcements to all Jupyter users.
+
+  Sample output:
+
+  ```
+  $ ./scripts/extract-jupyter-users-from-magpie-db  > /tmp/out
+  + echo SELECT email,user_name FROM users ORDER BY email
+  + docker exec -i postgres-magpie psql -U postgres-magpie magpiedb
+
+  $ cat /tmp/out
+           email          |   user_name
+  ------------------------+---------------
+   admin-catalog@mail.com | admin-catalog
+   admin@mail.com         | admin
+   anonymous@mail.com     | anonymous
+   authtest@example.com   | authtest
+  (4 rows)
+  ```
+
 
 [1.17.0](https://github.com/bird-house/birdhouse-deploy/tree/1.17.0) (2021-11-01)
 ------------------------------------------------------------------------------------------------------------------
