@@ -92,6 +92,9 @@ services:
       - ${SSL_CERTIFICATE}:/opt/birdhouse/etc/nginx/cert.pem
     links:
       - mongodb
+    networks:
+      - default
+      - mongodb
     depends_on:
       - malleefowl
       - flyingpigeon
@@ -298,9 +301,8 @@ services:
     container_name: mongodb
     volumes:
       - ${DATA_PERSIST_ROOT}/mongodb_persist:/data/db
-    # Mongodb crash with permission denied errors if the command is not overriden like this
+    # Mongodb crash with permission denied errors if the command is not overridden like this
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
-    # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
     restart: always
     logging: *default-logging
 
@@ -417,6 +419,7 @@ services:
 
 # need external network so the folder name is not prefixed to network name
 networks:
+  mongodb: {}
   jupyterhub_network:
     external:
       name: "jupyterhub_network"

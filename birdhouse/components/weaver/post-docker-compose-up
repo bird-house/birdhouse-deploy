@@ -1,0 +1,310 @@
+#!/bin/sh
+
+# Operations:
+# 1. Registers WPS providers into Weaver to provide their OGC-API interface.
+# 2. Validate that Weaver workers are ready to receive tasks.
+#
+# 1. WPS provider registration
+# -----------------------------
+#
+# The script first authenticates in Magpie to obtain authorization for requests, as everything could be protected.
+# Afterwards, there is a quick validation that Weaver is up and ready to receive WPS providers registration requests.
+# Then, each provider defined in 'WEAVER_WPS_PROVIDERS' is registered iteratively.
+# All requests have a timeout to avoid hanging indefinitely.
+# Also, maximum total timeout configured by 'WEAVER_WPS_PROVIDERS_MAX_TIME' will break out if nothing responds.
+#
+# This script is executed after 'docker-compose up' of the full bird-house stack.
+# The reason why WPS providers must be registered after starting everything is because Weaver attempts to query
+# them (with GetCapabilities requests) to obtain their metadata.
+# Because some WPS containers could take longer to start, it is otherwise not guaranteed that they would be ready
+# to receive those requests before Weaver starts querying them.
+#
+# Parameters:
+#
+#   WEAVER_WPS_PROVIDERS:
+#       list of provider names (comma or space delimited), all are assumed to be available at
+#       "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/<provider-name>"
+#   WEAVER_WPS_PROVIDERS_MAX_TIME:
+#       limit script execution up to maximum this number of seconds
+#
+# Following configurations are expected to be inherited from bird-house/weaver-component env.local/default.env:
+#   - MAGPIE_ADMIN_USERNAME
+#   - MAGPIE_ADMIN_PASSWORD
+#   - PAVICS_FQDN_PUBLIC
+#   - TWITCHER_PROTECTED_PATH
+#   - WEAVER_MANAGER_NAME
+#
+# 2. Worker tasks validation
+# -----------------------------
+#
+# When Weaver and its Celery workers are started, tasks often fail to properly register themselves at startup.
+# In order to ensure everything is properly configured and ready to receive jobs, Celery checks are employed to
+# validate that tasks are known by each component (webapp and workers), and ready to submit/receive them.
+# If any of the webapp/worker is not ready, restart them to retry detecting tasks. At that point, it is expected
+# that one of the two should have finished registering tasks, and it is just a matter of synchronizing them.
+#
+# See also the 'celery-healthcheck' script that does the same periodic verification while the images are running,
+# but it will not automatically restart them.
+#
+# Parameters:
+#
+#   PAVICS_LOG_DIR (optional, default=/tmp/pavics-compose):
+#     Location to log results from celery healthcheck outputs.
+#
+
+# in case parent script called with debug (sh -x <script>), hide output for this script and reset on exit
+# this is important, otherwise curl logs will leak tokens!
+old_state="$(set +o)"
+# if this script needs live debugging, comment out following line and call the script with (sh -x <script>)
+set +x
+
+reset_state() {
+  set +vx; eval "${old_state}"
+}
+
+echo "Running: $0"
+
+MAGPIE_URL="https://${PAVICS_FQDN_PUBLIC}/magpie"
+WEAVER_URL="https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
+WEAVER_WPS_PROVIDERS_MAX_TIME=${WEAVER_WPS_PROVIDERS_MAX_TIME:-120}
+REQUEST_TIMEOUT=2
+
+# logging
+if [ ! -z "$TERM" ]; then
+    YELLOW=${YELLOW:-$(tput setaf 3)}
+    RED=${RED:-$(tput setaf 1)}
+    NORMAL=${NORMAL:-$(tput sgr0)}
+else
+    YELLOW=""
+    RED=""
+    NORMAL=""
+fi
+PREFIX="[Weaver] "
+ERROR="${PREFIX}${RED}ERROR${NORMAL}: "
+WARNING="${PREFIX}${YELLOW}WARNING${NORMAL}: "
+
+if [ -z "${WEAVER_WPS_PROVIDERS}" ]; then
+    echo "${WARNING}Nothing specified in WEAVER_WPS_PROVIDERS to register WPS remote providers."
+    reset_state
+    exit 0
+fi
+
+echo "  Requested Weaver WPS providers: [${WEAVER_WPS_PROVIDERS}]"
+echo "  Will retry requests at most for ${WEAVER_WPS_PROVIDERS_MAX_TIME}s"
+
+start_time="$(date -u +%s)"
+
+# ------ PHASE 1 ------
+# Magpie Authentication
+
+# registration of WPS providers require authenticated access, obtain login from Magpie
+printf "%s" "${PREFIX}Wait for response from Magpie to login [${MAGPIE_URL}]."
+while true; do
+    # login (output null + cookie-jar '-' redirects output cookie to variable)
+    cookie_jar=$( \
+        curl --insecure --silent --location \
+             -m ${REQUEST_TIMEOUT} \
+             -o /dev/null \
+             -X POST \
+             -H "Content-Type: application/json" \
+             -d "{\"user_name\": \"${MAGPIE_ADMIN_USERNAME}\", \"password\": \"${MAGPIE_ADMIN_PASSWORD}\"}" \
+             --cookie-jar - \
+             "${MAGPIE_URL}/signin" \
+    )
+    # trim excess stuff in cookie_jar pseudo-file (comments, empty lines)
+    # also trim duplicate cookies ".<host>" and "<host>" returned by Magpie behind proxy
+    cookie_jar=$(echo "${cookie_jar}" | grep -v '# ' | grep -v -e '^$' | grep -v '_\.')
+    # validate exactly 1 cookie retrieved (empty if bad-auth or invalid endpoint)
+    if [ ! -z "${cookie_jar}" ] && [ "$(echo "${cookie_jar}" | wc -l)" -eq 1 ]; then
+        fields="$(echo "${cookie_jar}" | wc -w)"
+        cookie_name="$(echo "${cookie_jar}" | cut -f $(( fields - 1 )) )"
+        cookie_value="$(echo "${cookie_jar}" | cut -f "${fields}")"
+        cookie="${cookie_name}=${cookie_value}"
+        printf " %s\n" "OK!"
+        break;
+    fi
+    # interrupt if max time reached
+    next_time=$(date -u +%s)
+    delta_time=$(( next_time - start_time ))
+    if [ ${delta_time} -ge "${WEAVER_WPS_PROVIDERS_MAX_TIME}" ]; then
+        msg="Failed to register all providers specified in WEAVER_WPS_PROVIDERS. Magpie is not responding."
+        printf "\n%s\n" "${ERROR}Timeout (${WEAVER_WPS_PROVIDERS_MAX_TIME}s)! ${msg}"
+        reset_state
+        exit 11
+    fi
+    # wait and retry
+    sleep 1
+    printf "."
+done
+
+if [ -z "${cookie}" ]; then
+    echo "${ERROR}Failed to retrieve authentication token from Magpie for Weaver WPS providers registration."
+    reset_state
+    exit 12
+fi
+
+# validate that Magpie token retrieved is adequate
+printf "Validate Magpie token..."
+resp=$( \
+    curl --insecure --silent --location \
+         -m ${REQUEST_TIMEOUT} \
+         -w "\n%{http_code}" \
+         -b "${cookie}" \
+         -H "Accept: application/json" \
+         -X GET \
+         "${MAGPIE_URL}/session" \
+)
+ret=$?   # in case proxy not up yet to receive any request
+code=$(echo "${resp}" | tail -n -1)
+body=$(echo "${resp}" | head -n -1)
+auth=$(echo "${body}" | grep -c '"authenticated": true')
+admin=$(echo "${body}" | grep -c '"administrators"')
+if [ ${ret} -eq 0 ] && [ "${code}" -eq 200 ] && [ "${auth}" -eq 1 ] && [ "${admin}" -eq 1 ]; then
+    printf " %s\n" "OK!"
+else
+    printf "\n%s\n" "${ERROR}Failed administrative validation of Magpie token for Weaver WPS providers registration."
+    reset_state
+    exit 13
+fi
+
+# ------ PHASE 2 ------
+# Weaver WPS Providers
+
+# validate that Weaver is ready to receive requests
+printf "%s" "${PREFIX}Wait for response from Weaver [${WEAVER_URL}]."
+while true; do
+    resp=$( \
+        curl --insecure --silent --location \
+             -m ${REQUEST_TIMEOUT} \
+             -w "\n%{http_code}" \
+             -b "${cookie}" \
+             -H "Accept: application/json" \
+             -X GET \
+             "${WEAVER_URL}/" \
+    )
+    ret=$?   # in case proxy not up yet to receive any request
+    code=$(echo "${resp}" | tail -n -1)
+    body=$(echo "${resp}" | head -n -1)
+    info=$(echo "${body}" | grep -c '"Weaver Information"')
+    if [ ${ret} -eq 0 ] && [ "${code}" -eq 200 ] && [ "${info}" -ne 0 ]; then
+        printf " %s\n" "OK!"
+        break;
+    fi
+    # interrupt if max time reached
+    next_time=$(date -u +%s)
+    delta_time=$(( next_time - start_time ))
+    if [ ${delta_time} -ge "${WEAVER_WPS_PROVIDERS_MAX_TIME}" ]; then
+        msg="Failed to register all providers specified in WEAVER_WPS_PROVIDERS. Weaver is not responding."
+        printf "\n%s\n" "${ERROR}Timeout (${WEAVER_WPS_PROVIDERS_MAX_TIME}s)! ${msg}"
+        reset_state
+        exit 21
+    fi
+    # wait and retry
+    sleep 1
+    printf "."
+done
+
+# parse providers
+WEAVER_WPS_PROVIDERS="$(echo "${WEAVER_WPS_PROVIDERS}" | tr ',' ' ')"
+
+# move on to actual registration of WPS providers
+echo "${PREFIX}Using URL: [${WEAVER_URL}]"
+start_time="$(date -u +%s)"
+ret=1
+for prov in ${WEAVER_WPS_PROVIDERS}; do
+    if [ -z "${prov}" ]; then
+        continue
+    fi
+    prov_url="https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${prov}"
+    prov_cap="${prov_url}?service=WPS&request=GetCapabilities"
+
+    # wait for WPS provider to respond
+    printf "%s" "${PREFIX}Wait for response from remote WPS provider [${prov}] on [${prov_url}]."
+    while true; do
+        # request the URL and obtain the body+http code, then split them for verification
+        resp=$( \
+            curl --insecure --silent --location \
+                 -m ${REQUEST_TIMEOUT} \
+                 -w "\n%{http_code}" \
+                 -b "${cookie}" \
+                 "${prov_cap}"
+        )
+        ret=$?   # in case proxy not up yet to receive any request
+        code=$(echo "${resp}" | tail -n -1)
+        body=$(echo "${resp}" | head -n -1)
+        caps=$(echo "${body}" | grep -c "wps:Capabilities")
+        if [ ${ret} -eq 0 ] && [ "${code}" -eq 200 ] && [ "${caps}" -ne 0 ]; then
+            printf "\n%s\n" "${PREFIX}Got valid response from remote WPS provider [${prov}]."
+            break;
+        fi
+
+        # interrupt if max time reached
+        next_time=$(date -u +%s)
+        delta_time=$(( next_time - start_time ))
+        if [ ${delta_time} -ge "${WEAVER_WPS_PROVIDERS_MAX_TIME}" ]; then
+            msg="Failed to register all providers specified in WEAVER_WPS_PROVIDERS: [${prov}] is not responding."
+            printf "\n%s\n" "${ERROR}Timeout (${WEAVER_WPS_PROVIDERS_MAX_TIME}s)! ${msg}"
+            reset_state
+            exit 22
+        fi
+        # wait and retry
+        sleep 1
+        printf "."
+    done
+
+    # unregister in case of multiple up/down to regenerate from scratch, don't care if NotFound returned
+    echo "${PREFIX}Unregistering any remote WPS provider matching [${prov}]."
+    curl --insecure --silent --location \
+         -m ${REQUEST_TIMEOUT} \
+         -w "${PREFIX}Delete [${prov}] response: %{http_code}" -o /dev/null \
+         -b "${cookie}" \
+         -X DELETE \
+         "${WEAVER_URL}/providers/${prov}"
+
+    # register the new provider and validate
+    printf "\n%s" "${PREFIX}Registering remote WPS provider [${prov}] on [${prov_url}]... "
+    resp=$( \
+        curl --insecure --silent --location \
+             -m ${REQUEST_TIMEOUT} \
+             -w "\n%{http_code}" \
+             -b "${cookie}" \
+             -H "Content-Type: application/json" \
+             -X POST \
+             -d "{\"id\": \"${prov}\", \"url\": \"${prov_url}\"}" \
+             "${WEAVER_URL}/providers" \
+    )
+    ret=$?
+    code=$(echo "${resp}" | tail -n -1)
+    body=$(echo "${resp}" | head -n -1)
+    if [ ${ret} -ne 0 ] || [ "${code}" -ne 201 ]; then
+        printf "\n%s\n" "${ERROR}Failed registration of remote WPS provider [${prov}] on [${prov_url}]."
+        printf "Error:\n%s\n" "${body}"
+        reset_state
+        exit 23
+    fi
+    echo "OK!"
+done
+echo "${PREFIX}All Weaver remote WPS providers registered successfully!"
+
+
+echo "${PREFIX}Starting Weaver WebApp/Worker Celery tasks validation..."
+CUR_SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+PAVICS_COMPOSE="$(realpath "${CUR_SCRIPT_DIR}/../../pavics-compose.sh")"
+PAVICS_LOG_DIR="${PAVICS_LOG_DIR:-/tmp/pavics-compose}"
+CELERY_HEALTHCHECK="/opt/local/bin/weaver/celery-healthcheck"
+mkdir -p "${PAVICS_LOG_DIR}"
+# note: use 'tee' instead of capturing in variable to allow displaying results directly when running command
+${PAVICS_COMPOSE} exec weaver bash "${CELERY_HEALTHCHECK}" | tee "${PAVICS_LOG_DIR}/weaver.log"
+ret_weaver=$?
+out_weaver=$(cat "${PAVICS_LOG_DIR}/weaver.log" | tail -n 1 | grep -c "ERROR")
+${PAVICS_COMPOSE} exec weaver-worker bash "${CELERY_HEALTHCHECK}" | tee "${PAVICS_LOG_DIR}/weaver-worker.log"
+ret_worker=$?
+out_worker=$(cat "${PAVICS_LOG_DIR}/weaver-worker.log" | tail -n 1 | grep -c "ERROR")
+if [ ${ret_weaver} -ne 0 ] || [ ${ret_worker} -ne 0 ] || [ "${out_weaver}" -ne 0 ] || [ "${out_worker}" -ne 0 ]; then
+  echo "Weaver WebApp and/or Worker Celery tasks were not ready. Restarting both..."
+  ${PAVICS_COMPOSE} restart weaver weaver-worker
+else
+  echo "Weaver WebApp and/or Worker Celery tasks are both ready."
+fi
+
+reset_state

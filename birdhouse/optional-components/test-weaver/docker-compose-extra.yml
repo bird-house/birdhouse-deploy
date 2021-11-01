@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  magpie:
+    volumes:
+    - ./optional-components/test-weaver/config/magpie/test-weaver-permissions.yml:/opt/local/src/magpie/config/permissions/test-weaver-permissions.yml:ro

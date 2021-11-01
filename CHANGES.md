@@ -16,6 +16,40 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.17.0](https://github.com/bird-house/birdhouse-deploy/tree/1.17.0) (2021-11-01)
+------------------------------------------------------------------------------------------------------------------
+
+  ### Changes
+
+  - Adds [Weaver](https://github.com/crim-ca/weaver) to the stack (optional) when ``./components/weaver`` 
+    is added to ``EXTRA_CONF_DIRS``. For more details, refer to 
+    [Weaver Component](https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/components/README.rst#Weaver)
+    Following happens when enabled:
+    
+    * Service ``weaver`` (API) gets added with endpoints ``/twitcher/ows/proxy/weaver`` and ``/weaver``.
+      
+    * All *birds* offering a WPS 1.x/2.x endpoint are automatically added as providers known by `Weaver`
+      (birds: ``catalog``, ``finch``, ``flyingpigeon``, ``hummingbird``, ``malleefowl`` and ``raven``).
+      This offers an automatic mapping of WPS 1.x/2.x requests of process descriptions and execution nested under
+      the *birds* to corresponding [OGC-API - Processes](https://github.com/opengeospatial/ogcapi-processes/) 
+      RESTful interface (and added functionalities). 
+    
+    * New processes can be deployed and executed using 
+      Dockerized [Application Packages](https://pavics-weaver.readthedocs.io/en/latest/package.html).
+      Additionally, all existing processes (across *bird* providers and Dockerized Application Packages) 
+      can be chained into [Workflows](https://pavics-weaver.readthedocs.io/en/latest/processes.html#workflow)
+      
+    * Images ``weaver-worker`` (`Weaver`'s job executor) and ``docker-proxy`` (sibling Docker container dispatcher)
+      are added to the stack to support above functionalities.
+      
+    * Adds `Magpie` permissions and service for `Weaver` endpoints.
+  
+    * Adds ``./optional-components/test-weaver`` for even more `Magpie` extended permissions for `Weaver` 
+      for getting access to resources for functionalities required by [Weaver Testing notebook][weaver-test-notebook].
+
+[weaver-test-notebook]: https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebook-components/weaver_example.ipynb
+
+
 [1.16.2](https://github.com/bird-house/birdhouse-deploy/tree/1.16.2) (2021-10-27)
 ------------------------------------------------------------------------------------------------------------------
 

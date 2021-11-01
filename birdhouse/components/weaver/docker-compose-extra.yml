@@ -1,0 +1,162 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  # extend proxy configuration with weaver endpoints
+  proxy:
+    volumes:
+      - ./components/weaver/conf.extra-service.d:/etc/nginx/conf.extra-service.d/weaver:ro
+      - ./components/weaver/config/canarie-api/weaver_config.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/weaver_config.py:ro
+      # because of mounting path naming restrictions (see note in 'worker' definition),
+      # we must add the custom path on top of named 'wps_outputs' volume of other birds for the proxy to expose results
+      - ${WEAVER_WPS_OUTPUTS_DIR}:/pavics-data/wps_outputs/weaver:ro
+    links:
+      - weaver
+
+  # extend magpie configuration with setup of weaver service and initial permissions
+  magpie:
+    volumes:
+      # NOTE:
+      #   Although file use the "config.yml" format, it is very important to pass it as independent/duplicate reference
+      #   provider/permissions ".cfg" files. This is because Magpie will not parse multiple "config.yml" files
+      #   additively with other component's ".cfg" files, as "config.yml" are intended for unique-combined definitions.
+      #   Data structure within "config.yml" is the same as within the respective sections in typical ".cfg" files.
+      - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/weaver-permissions.cfg:ro
+      - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/providers/weaver-provider.cfg:ro
+
+  mongodb:
+    # extend MongoDB to use a shared network that Weaver will be able to access directly
+    # do this as we assume that 'ports' are not exposed, meaning that the DB should be accessible only from that network
+    # also limits external access from other images such as docker container from dispatched execution by workers
+    networks:
+      - mongodb
+    # don't provide volumes, assume that if data persistence was requested, it should be added via another extra compose
+
+  # Image 'weaver' is the API side of the application
+  weaver:
+    container_name: ${WEAVER_MANAGER_NAME}
+    # NOTE: Override the usual Weaver-Manager image by one that is built inline with extra dependency to 'dockerize'
+    #   The 'dockerize' CLI utility allows to wait until each WPS GetCapabilities responds correctly, such that once
+    #   Weaver is started, they will all be able to request them and register the providers correctly.
+    #   This is needed because simply adding 'depends_on' only ensures that containers are 'running', but startup of
+    #   WPS applications themselves are not necessarily completed. Successful HTTP responses ensure they are 'ready'.
+    image: pavics/weaver:${WEAVER_VERSION}-manager
+    ports:
+      - "4001:4001"
+    environment:
+      HOSTNAME: ${PAVICS_FQDN}
+      FORWARDED_ALLOW_IPS: "*"
+    #env_file:
+    #  - ./config/mongodb/credentials.env
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+    networks:
+      - default
+      - mongodb
+    volumes:
+      - ./components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
+      - ./components/weaver/config/weaver/data_sources.yml:/opt/local/src/weaver/config/data_sources.yml:ro
+      - ./components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
+      - ./components/weaver/config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml:ro
+      - ./components/weaver/celery-healthcheck:/opt/local/bin/weaver/celery-healthcheck:ro
+      # WARNING: see detail in 'worker' definition about below mount location
+      - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
+    restart: always
+    logging: *default-logging
+
+  # Image 'worker' is the job runner of Weaver, possibly spawning Docker applications according to process definition
+  weaver-worker:
+    image: pavics/weaver:${WEAVER_VERSION}-worker
+    container_name: ${WEAVER_WORKER_NAME}
+    environment:
+      DOCKER_HOST: "tcp://docker-proxy:2375"
+    #env_file:
+    #  - ./config/mongodb/credentials.env
+    depends_on:
+      - mongodb
+      - weaver  # if not started first, sometimes celery misbehaves and will not pick jobs in queue
+      - docker-proxy
+    links:
+      - mongodb
+    networks:
+      # WARNING: *DO NOT* provide 'default' network
+      #   Not providing 'default' network ensure that only connection with other images (birds, proxy) can be
+      #   accomplished through Weaver API which cannot run sibling dockers by itself. Isolate Dockers execution.
+      - docker-proxy
+      - mongodb
+    volumes:
+      #- wps_private:/data/wps_private
+      - ${DATA_PERSIST_ROOT}/wps_private:/data/wps_private
+      - ./components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
+      - ./components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
+      - ./components/weaver/celery-healthcheck:/opt/local/bin/weaver/celery-healthcheck:ro
+      # WARNING:
+      #   Working and output directories must be mounted as exact same path (e.g.: /some/path:/some/path)
+      #   to avoid mismatching locations between container-side path resolution of cwltool stagedir/tmpdir/outdir
+      #   and corresponding server-side runtime docker directories since Docker Application Packages will not be
+      #   running inside this docker (not docker-in-docker), but next to it (sibling-dockers).
+      #   Mapping of paths is needed because some part of the code runs inside Weaver/Worker containers, but actual
+      #   execution of the children Application Package of CWL processes calls 'docker run' from the host machine
+      #   and will expect to find the same directory locations.
+      - ${WEAVER_WPS_WORKDIR}:${WEAVER_WPS_WORKDIR}
+      - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
+    restart: always
+    logging: *default-logging
+    healthcheck:
+      # Even when explicitly listing tasks in Weaver INI file, sometimes Celery Worker task is incorrectly prepared.
+      # Use the healthcheck to periodically inspect registered celery tasks, which fixes setup problem after startup.
+      test: ["CMD", "bash", "/opt/local/bin/weaver/celery-healthcheck"]
+      # Leave some time for 'post-docker-compose-up' WPS-provider registration to complete.
+      # Weaver API will not have registered the execution tasks until then.
+      start_period: 30s
+      interval: 60s
+      timeout: 10s
+      retries: 2
+
+  # Image 'docker-proxy' is the connector between docker image 'worker' jobs and their sibling docker executions
+  docker-proxy:
+    # references
+    #   https://github.com/Tecnativa/docker-socket-proxy
+    #   https://stackoverflow.com/a/47293798/5936364
+    #   https://docs.docker.com/engine/api/
+    image: tecnativa/docker-socket-proxy:0.1.1
+    container_name: docker-proxy
+    environment:
+      # DOCKER API permissions
+      # These control which operations the docker-proxy allows from other containers
+      - SERVICES=0
+      - TASKS=0
+      - NETWORKS=0
+      - NODES=0
+      - INFO=1
+      - EXEC=1
+      - IMAGES=1
+      - VOLUMES=1
+      - CONTAINERS=1
+      - POST=1
+    # access to docker for sibling execution
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      # WARNING: *DO NOT* provide other networks
+      #   only Weaver 'worker' should do the bridge between docker/non-docker accessible images
+      #   this way, docker images executed by the workers will not have direct access to databases and datasets
+      - docker-proxy
+    logging: *default-logging
+    # remote swarm as needed (requires more permissions above)
+    #deploy:
+    #  placement:
+    #    constraints: [node.role == manager]
+
+networks:
+  mongodb: {}
+  docker-proxy:
+    driver: bridge
