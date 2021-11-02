@@ -299,6 +299,8 @@ services:
   mongodb:
     image: mongo:3.4.0
     container_name: mongodb
+    networks:
+      - mongodb
     volumes:
       - ${DATA_PERSIST_ROOT}/mongodb_persist:/data/db
     # Mongodb crash with permission denied errors if the command is not overridden like this

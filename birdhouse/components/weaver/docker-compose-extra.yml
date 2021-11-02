@@ -30,14 +30,6 @@ services:
       - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/weaver-permissions.cfg:ro
       - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/providers/weaver-provider.cfg:ro
 
-  mongodb:
-    # extend MongoDB to use a shared network that Weaver will be able to access directly
-    # do this as we assume that 'ports' are not exposed, meaning that the DB should be accessible only from that network
-    # also limits external access from other images such as docker container from dispatched execution by workers
-    networks:
-      - mongodb
-    # don't provide volumes, assume that if data persistence was requested, it should be added via another extra compose
-
   # Image 'weaver' is the API side of the application
   weaver:
     container_name: ${WEAVER_MANAGER_NAME}
@@ -81,6 +73,7 @@ services:
     #env_file:
     #  - ./config/mongodb/credentials.env
     depends_on:
+      # no 'default' network here such that the worker is not accessible from proxy/http
       - mongodb
       - weaver  # if not started first, sometimes celery misbehaves and will not pick jobs in queue
       - docker-proxy
