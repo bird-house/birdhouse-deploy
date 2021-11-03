@@ -29,7 +29,7 @@
 
 - Minor fix to `install-docker.sh` and comment update for other scripts due to Magpie upgrade
 
-  `install-docker.sh`: fix to work with users with sudo priviledge.  Before it needed user `root`.
+  `install-docker.sh`: fix to work with users with sudo privilege.  Before it needed user `root`.
 
   Other comments in scripts are due to new Magpie in PR https://github.com/bird-house/birdhouse-deploy/pull/107.
 
