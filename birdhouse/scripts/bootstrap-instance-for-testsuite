@@ -14,9 +14,12 @@ THIS_DIR="`dirname "$THIS_FILE"`"
 
 set -x
 # Populate test .nc file on Thredds.
+# Need to open temporary Thredds "testdata/secure/" on PAVICS production to anonymous group.
+# Need write-access to DATASET_ROOT (/data/datasets/).
 $THIS_DIR/bootstrap-testdata
 
 # Index Thredds catalog.
+# Need to open temporary Thredds "testdata/secure/" on local PAVICS host to anonymous group.
 $THIS_DIR/trigger-pavicscrawler
 
 # For crawler to complete, assuming minimal dataset from bootstrap-testdata so
@@ -24,6 +27,7 @@ $THIS_DIR/trigger-pavicscrawler
 sleep 5
 
 # Create test user.
+# Need "optional-components/secure-thredds" activated to pre-create group thredds-secure-authtest-group.
 $THIS_DIR/create-magpie-authtest-user
 
 # Check if instance properly provisionned for testsuite.

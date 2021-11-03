@@ -22,6 +22,18 @@
   If upgrading from previous `1.17.x` version, autodeploy will not resume automatically even with this fix because of 
   the *dirty* state of the repository. A manual `git pull` will be required to fix subsequent autodeploy triggers.
 
+[1.17.3](https://github.com/bird-house/birdhouse-deploy/tree/1.17.3) (2021-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Minor fix to `install-docker.sh` and comment update for other scripts due to Magpie upgrade
+
+  `install-docker.sh`: fix to work with users with sudo priviledge.  Before it needed user `root`.
+
+  Other comments in scripts are due to new Magpie in PR https://github.com/bird-house/birdhouse-deploy/pull/107.
+
+
 [1.17.2](https://github.com/bird-house/birdhouse-deploy/tree/1.17.2) (2021-11-03)
 ------------------------------------------------------------------------------------------------------------------
 
