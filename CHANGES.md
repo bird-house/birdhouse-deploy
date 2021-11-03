@@ -19,6 +19,9 @@
 - Add missing ``config/canarie-api/weaver_config.py`` entry to ``.gitignore`` of ``./components/weaver``
   that is generated from the corresponding template file.
 
+  If upgrading from previous `1.17.x` version, autodeploy will not resume automatically even with this fix because of 
+  the *dirty* state of the repository. A manual `git pull` will be required to fix subsequent autodeploy triggers.
+
 [1.17.2](https://github.com/bird-house/birdhouse-deploy/tree/1.17.2) (2021-11-03)
 ------------------------------------------------------------------------------------------------------------------
 
