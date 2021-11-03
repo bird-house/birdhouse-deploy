@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.17.4](https://github.com/bird-house/birdhouse-deploy/tree/1.17.4) (2021-11-03)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Add missing ``config/canarie-api/weaver_config.py`` entry to ``.gitignore`` of ``./components/weaver``
