@@ -2,6 +2,8 @@
 # Create authtest user for testsuite at
 # https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 #
+# Need "optional-components/secure-thredds" activated to pre-create group thredds-secure-authtest-group.
+#
 # Options:
 #   -d: delete user 'authtest' instead of creating it
 

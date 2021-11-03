@@ -90,7 +90,7 @@ fi
 
 # Add /usr/local/bin to PATH of all users, even root user, so docker-compose
 # can be found.
-echo 'export PATH="$PATH:/usr/local/bin"' > /etc/profile.d/usr_local_path.sh
+echo 'export PATH="$PATH:/usr/local/bin"' | sudo tee /etc/profile.d/usr_local_path.sh
 
 # install docker-compose, from https://gist.github.com/wdullaer/f1af16bd7e970389bad3
 LATEST_COMPOSE_VERSION="`git ls-remote https://github.com/docker/compose | grep refs/tags | grep -v refs/tags/v | grep -oP "[0-9]+\.[0-9][0-9]+\.[0-9]+$"|tail -1`"
