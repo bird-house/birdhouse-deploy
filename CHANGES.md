@@ -14,7 +14,7 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-### Changes
+## Changes
 
 - scripts: add `extract-jupyter-users-from-magpie-db`
 
