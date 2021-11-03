@@ -61,7 +61,7 @@ How to Enable the Component
   - Add "./components/scheduler" to ``EXTRA_CONF_DIRS``.
   - Set ``AUTODEPLOY_EXTRA_REPOS``, ``AUTODEPLOY_DEPLOY_KEY_ROOT_DIR``,
     ``AUTODEPLOY_PLATFORM_FREQUENCY``, ``AUTODEPLOY_NOTEBOOK_FREQUENCY`` as desired,
-    full documentation in env.local.example_.
+    full documentation in `env.local.example`_.
   - Run once fix-write-perm_ (:download:`download <../deployment/fix-write-perm>`), see doc in script.
 
 
@@ -163,7 +163,7 @@ able to access them.
 How to Enable the Component
 ---------------------------
 
-- Edit ``env.local`` (a copy of env.local.example_ (:download:`download <../env.local.example>`))
+- Edit ``env.local`` (a copy of `env.local.example`_ (:download:`download <../env.local.example>`))
 
   - Add "./components/monitoring" to ``EXTRA_CONF_DIRS``
   - Set ``GRAFANA_ADMIN_PASSWORD`` to login to Grafana
@@ -241,8 +241,71 @@ Customizing the Component
   Slack or other services accepting webhooks), ``ALERTMANAGER_EXTRA_RECEIVERS``.
 
 
+Weaver
+======
+
+By enabling this component, the `Weaver`_ service will be integrated into the stack.
+
+This component offers `OGC API - Processes`_ interace to WPS components (a.k.a `WPS-REST bindings` and
+`WPS-T (Transactional)` support).
+This provides a RESTful JSON interface with asynchronous WPS processes execution over remote instances. 
+Other WPS components of the birdhouse stack (`finch`_, `flyingpigeon`_, etc.) will also all be registered
+under `Weaver`_ in order to provide a common endpoint to retrieve all available processes, and dispatch 
+their execution to the corresponding service.
+Finally, `Weaver`_ also adds `Docker` image execution capabilities as a WPS process, allowing deployment 
+and execution of custom applications and workflows.
 
 
+Usage
+-----
+
+Once this component is enabled, `Weaver`_ will be accessible at ``https://<PAVICS_FQDN_PUBLIC>/weaver`` endpoint,
+where ``PAVICS_FQDN_PUBLIC`` is defined in your ``env.local`` file.
+
+Full process listing (across WPS providers) should be available using request:
+
+.. code-block::
+
+    GET https://<PAVICS_FQDN_PUBLIC>/weaver/processes?providers=true
+
+Please refer to the `Weaver OpenAPI`_ for complete description of available requests.
+This description will also be accessible via ``https://<PAVICS_FQDN_PUBLIC>/weaver/api`` once the instance is started.
+
+For any specific details about `Weaver`_ configuration parameters, functionalities or questions, please refer to its
+`documentation <https://pavics-weaver.readthedocs.io/en/latest/>`_.
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+
+  - Add ``"./components/weaver"`` to ``EXTRA_CONF_DIRS``.
+
+  - Component ``birdhouse/optional-components/all-public-access`` should also be enabled to ensure that `Weaver`_
+    can request ``GetCapabilities`` of every WPS provider to be registered. Publicly inaccessible services will not
+    succeed registration and will not provide the WPS-REST interface.
+
+
+Customizing the Component
+-------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+
+  - Optionally, set any additional environment variable overrides amongst values defined in `weaver/default.env`_.
+
+  - Optionally, mount any additional `Weaver`_-specific configuration files
+    (see contents of ``birdhouse/components/weaver/config/weaver``) if extended functionalities need to be defined.
+    Further ``docker-compose-extra.yml`` could be needed to define
+    any other ``volumes`` entries where these component would need to be mounted to.
+
+
+
+.. _finch: https://github.com/bird-house/finch
+.. _flyingpigeon: https://github.com/bird-house/flyingpigeon
+.. _Weaver: https://github.com/crim-ca/weaver
+.. _Weaver OpenAPI: https://pavics-weaver.readthedocs.io/en/latest/api.html
+.. _weaver/default.env: ./weaver/default.env
+.. _OGC API - Processes: https://github.com/opengeospatial/ogcapi-processes
 .. _env.local.example: ../env.local.example
 .. _fix-write-perm: ../deployment/fix-write-perm
 .. _deploy.sh: ../deployment/deploy.sh

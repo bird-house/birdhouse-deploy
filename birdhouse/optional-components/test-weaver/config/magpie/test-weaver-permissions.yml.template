@@ -1,0 +1,9 @@
+## Extra permissions for testing './components/weaver'
+#   Grant write access to execute hummingbird's ncdump process (submit job)
+#   (see https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebook-components/weaver_example.ipynb)
+permissions:
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/hummingbird/processes/ncdump/jobs
+    permission: write
+    group: anonymous
+    action: create

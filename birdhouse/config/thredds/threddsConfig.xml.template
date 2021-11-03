@@ -125,5 +125,13 @@ https://www.unidata.ucar.edu/software/tds/current/reference/ThreddsConfigXMLFile
     <scour>1 hour</scour>
     <maxSize>10 Gb</maxSize>
   </DiskCache>
-  
+
+  <!--
+  https://www.unidata.ucar.edu/software/tds/current/reference/NetcdfSubsetServiceConfigure.html
+  https://github.com/Unidata/thredds/blob/v4.6.15/docs/website/tds/reference/files/NCSS_4_3.pdf
+  -->
+  <NetcdfSubsetService>
+    <allow>true</allow>
+  </NetcdfSubsetService>
+
 </threddsConfig>

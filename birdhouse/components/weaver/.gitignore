@@ -1,0 +1,6 @@
+conf.extra-service.d/weaver.conf
+config/magpie/config.yml
+config/weaver/data_sources.yml
+config/weaver/request_options.yml
+config/weaver/wps_processes.yml
+config/weaver/weaver.ini

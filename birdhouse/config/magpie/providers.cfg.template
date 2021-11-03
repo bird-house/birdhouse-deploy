@@ -88,6 +88,7 @@ providers:
           - dodsC
           - wcs
           - wms
+          - ncss
 
   ncWMS2:
     url: http://${PAVICS_FQDN}:8080/ncWMS2

@@ -23,6 +23,209 @@
 Other scripts are due to new Magpie in PR https://github.com/bird-house/birdhouse-deploy/pull/107.
 
 
+[1.17.2](https://github.com/bird-house/birdhouse-deploy/tree/1.17.2) (2021-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- scripts: add `extract-jupyter-users-from-magpie-db`
+
+  Extract Jupyter users from Magpie DB so we can send announcements to all Jupyter users.
+
+  Sample output:
+
+  ```
+  $ ./scripts/extract-jupyter-users-from-magpie-db  > /tmp/out
+  + echo SELECT email,user_name FROM users ORDER BY email
+  + docker exec -i postgres-magpie psql -U postgres-magpie magpiedb
+
+  $ cat /tmp/out
+           email          |   user_name
+  ------------------------+---------------
+   admin-catalog@mail.com | admin-catalog
+   admin@mail.com         | admin
+   anonymous@mail.com     | anonymous
+   authtest@example.com   | authtest
+  (4 rows)
+  ```
+
+
+[1.17.1](https://github.com/bird-house/birdhouse-deploy/tree/1.17.1) (2021-11-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Apply ``mongodb`` network to ``mongodb`` image in order to allow ``phoenix`` to properly reference it.
+- Remove ``mongodb`` definition from ``./components/weaver`` since the extended ``mongodb`` network is already provided.
+
+[1.17.0](https://github.com/bird-house/birdhouse-deploy/tree/1.17.0) (2021-11-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Adds [Weaver](https://github.com/crim-ca/weaver) to the stack (optional) when ``./components/weaver`` 
+  is added to ``EXTRA_CONF_DIRS``. For more details, refer to 
+  [Weaver Component](https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/components/README.rst#Weaver)
+  Following happens when enabled:
+    
+  * Service ``weaver`` (API) gets added with endpoints ``/twitcher/ows/proxy/weaver`` and ``/weaver``.
+      
+  * All *birds* offering a WPS 1.x/2.x endpoint are automatically added as providers known by `Weaver`
+    (birds: ``catalog``, ``finch``, ``flyingpigeon``, ``hummingbird``, ``malleefowl`` and ``raven``).
+    This offers an automatic mapping of WPS 1.x/2.x requests of process descriptions and execution nested under
+    the *birds* to corresponding [OGC-API - Processes](https://github.com/opengeospatial/ogcapi-processes/) 
+    RESTful interface (and added functionalities). 
+    
+  * New processes can be deployed and executed using 
+    Dockerized [Application Packages](https://pavics-weaver.readthedocs.io/en/latest/package.html).
+    Additionally, all existing processes (across *bird* providers and Dockerized Application Packages) 
+    can be chained into [Workflows](https://pavics-weaver.readthedocs.io/en/latest/processes.html#workflow)
+      
+  * Images ``weaver-worker`` (`Weaver`'s job executor) and ``docker-proxy`` (sibling Docker container dispatcher)
+    are added to the stack to support above functionalities.
+      
+  * Adds `Magpie` permissions and service for `Weaver` endpoints.
+  
+  * Adds ``./optional-components/test-weaver`` for even more `Magpie` extended permissions for `Weaver` 
+    for getting access to resources for functionalities required by [Weaver Testing notebook][weaver-test-notebook].
+
+[weaver-test-notebook]: https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebook-components/weaver_example.ipynb
+
+
+[1.16.2](https://github.com/bird-house/birdhouse-deploy/tree/1.16.2) (2021-10-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- geoserver: enable geopkg plugin
+
+  https://docs.geoserver.org/latest/en/user/community/geopkg/
+
+  ==========
+
+  This plugin brings in the ability to write GeoPackage files in GeoServer.
+  Reading GeoPackage files is part of the core functionality of GeoServer, and
+  does not require this extension.
+
+  GeoPackage is an SQLite based standard format that is able to hold multiple
+  vector and raster data layers in a single file.
+
+  GeoPackage can be used as an output format for WFS GetFeature (creating one
+  vector data layer) as well as WMS GetMap (creating one raster data layer). The
+  GeoServer GeoPackage extension also allows to create a completely custom made
+  GeoPackage with multiple layers, using the GeoPackage process.
+
+  ==========
+
+  Concretely this plugin adds a new GeoPackage download format, see screenshot below:
+  ![Screenshot from 2021-10-27 17-09-05](https://user-images.githubusercontent.com/11966697/139147774-ffd320e4-0d70-4246-a532-f66e065fcd4c.png)
+
+
+[1.16.1](https://github.com/bird-house/birdhouse-deploy/tree/1.16.1) (2021-10-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Thredds: Enable Netcdf Subset Service (NCSS)
+
+  "The Netcdf Subset Service (NCSS) is one of the ways that the TDS can serve data. It is an experimental REST protocol for returning subsets of CDM datasets." https://www.unidata.ucar.edu/software/tds/current/reference/NetcdfSubsetServiceConfigure.html
+  
+  More NCSS docs: https://www.unidata.ucar.edu/software/tds/current/reference/NetcdfSubsetServiceReference.html
+
+  Briefly, the advantage to enable NCSS is to be able to perform subsetting directly in the browser (manipulating URL parameters), avoiding the overhead for using OpenDAP (needs another client than the existing browser).  This even works for `.ncml` files.
+
+  Recall previously using "HTTPServer" link type, we were able to download directly the `.nc` files but for `.ncml` we got the xml content instead. With this new "NetcdfSubset" link type, we can actually download the NetCDF content of a `.ncml` file directly from the browser.
+  
+  Sample screenshots:
+  
+  ![Screenshot 2021-10-21 at 21-32-14 Catalog Services](https://user-images.githubusercontent.com/11966697/138379386-c658cf05-09a2-44dd-ae6e-9337800212d0.png)
+  
+  ![Screenshot 2021-10-21 at 21-31-13 NetCDF Subset Service for Grids](https://user-images.githubusercontent.com/11966697/138379396-de6cdedf-6bc7-44b8-9da8-42d496abbdf2.png)
+  
+  dataset.xml:
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <gridDataset location="/twitcher/ows/proxy/thredds/ncss/birdhouse/testdata/flyingpigeon/cmip3/tasmin.sresa2.miub_echo_g.run1.atm.da.nc" path="path">
+    <axis name="lat" shape="6" type="double" axisType="Lat">
+      <attribute name="units" value="degrees_north"/>
+      <attribute name="long_name" value="latitude"/>
+      <attribute name="standard_name" value="latitude"/>
+      <attribute name="bounds" value="lat_bnds"/>
+      <attribute name="axis" value="Y"/>
+      <attribute name="_ChunkSizes" type="int" value="6"/>
+      <attribute name="_CoordinateAxisType" value="Lat"/>
+      <values>42.67760468 46.38855743 50.09945297 53.81027222 57.52099228 61.2315712</values>
+    </axis>
+    <axis name="lon" shape="7" type="double" axisType="Lon">
+      <attribute name="units" value="degrees_east"/>
+      <attribute name="long_name" value="longitude"/>
+      <attribute name="standard_name" value="longitude"/>
+      <attribute name="bounds" value="lon_bnds"/>
+      <attribute name="axis" value="X"/>
+      <attribute name="_ChunkSizes" type="int" value="7"/>
+      <attribute name="_CoordinateAxisType" value="Lon"/>
+      <values start="281.25" increment="3.75" npts="7"/>
+    </axis>
+    <axis name="time" shape="7200" type="double" axisType="Time">
+      <attribute name="units" value="days since 1860-1-1"/>
+      <attribute name="calendar" value="360_day"/>
+      <attribute name="bounds" value="time_bnds"/>
+      <attribute name="_ChunkSizes" type="int" value="7200"/>
+      <attribute name="_CoordinateAxisType" value="Time"/>
+      <values start="66960.5" increment="1.0" npts="7200"/>
+    </axis>
+    <gridSet name="time lat lon">
+      <projectionBox>
+        <minx>279.375</minx>
+        <maxx>305.625</maxx>
+        <miny>40.82210731506348</miny>
+        <maxy>63.08675956726074</maxy>
+      </projectionBox>
+      <axisRef name="time"/>
+      <axisRef name="lat"/>
+      <axisRef name="lon"/>
+      <grid name="tasmin" desc="Minimum Daily Surface Air Temperature" shape="time lat lon" type="float">
+        <attribute name="original_name" value="T2MIN"/>
+        <attribute name="coordinates" value="height"/>
+        <attribute name="long_name" value="Minimum Daily Surface Air Temperature"/>
+        <attribute name="standard_name" value="air_temperature"/>
+        <attribute name="cell_methods" value="time: minimum (interval: 30 minutes)"/>
+        <attribute name="units" value="K"/>
+        <attribute name="missing_value" type="float" value="1.0E20"/>
+        <attribute name="history" value="tas=max(195,tas) applied to raw data; min of 194.73 detected;"/>
+        <attribute name="_ChunkSizes" type="int" value="7200 6 7"/>
+      </grid>
+    </gridSet>
+    <LatLonBox>
+      <west>-78.7500</west>
+      <east>-56.2500</east>
+      <south>42.6776</south>
+      <north>61.2315</north>
+    </LatLonBox>
+    <TimeSpan>
+      <begin>2046-01-01T12:00:00Z</begin>
+      <end>2065-12-30T12:00:00Z</end>
+    </TimeSpan>
+    <AcceptList>
+      <GridAsPoint>
+        <accept displayName="xml">xml</accept>
+        <accept displayName="xml (file)">xml_file</accept>
+        <accept displayName="csv">csv</accept>
+        <accept displayName="csv (file)">csv_file</accept>
+        <accept displayName="geocsv">geocsv</accept>
+        <accept displayName="geocsv (file)">geocsv_file</accept>
+        <accept displayName="netcdf">netcdf</accept>
+        <accept displayName="netcdf4">netcdf4</accept>
+      </GridAsPoint>
+      <Grid>
+        <accept displayName="netcdf">netcdf</accept>
+        <accept displayName="netcdf4">netcdf4</accept>
+      </Grid>
+    </AcceptList>
+  </gridDataset>
+  ```
+
+
 [1.16.0](https://github.com/bird-house/birdhouse-deploy/tree/1.16.0) (2021-10-20)
 ------------------------------------------------------------------------------------------------------------------
 
