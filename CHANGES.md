@@ -16,6 +16,17 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.17.4](https://github.com/bird-house/birdhouse-deploy/tree/1.17.4) (2021-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Add missing ``config/canarie-api/weaver_config.py`` entry to ``.gitignore`` of ``./components/weaver``
+  that is generated from the corresponding template file.
+
+  If upgrading from previous `1.17.x` version, autodeploy will not resume automatically even with this fix because of 
+  the *dirty* state of the repository. A manual `git pull` will be required to fix subsequent autodeploy triggers.
+
 [1.17.3](https://github.com/bird-house/birdhouse-deploy/tree/1.17.3) (2021-11-03)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -23,7 +34,7 @@
 
 - Minor fix to `install-docker.sh` and comment update for other scripts due to Magpie upgrade
 
-  `install-docker.sh`: fix to work with users with sudo priviledge.  Before it needed user `root`.
+  `install-docker.sh`: fix to work with users with sudo privilege.  Before it needed user `root`.
 
   Other comments in scripts are due to new Magpie in PR https://github.com/bird-house/birdhouse-deploy/pull/107.
 

@@ -1,4 +1,5 @@
 conf.extra-service.d/weaver.conf
+config/canarie-api/weaver_config.py
 config/magpie/config.yml
 config/weaver/data_sources.yml
 config/weaver/request_options.yml
