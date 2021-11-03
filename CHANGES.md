@@ -14,13 +14,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-## Changes
+## Fixes
 
 - Minor fix to `install-docker.sh` and comment update for other scripts due to Magpie upgrade
 
-`install-docker.sh`: fix to work with users with sudo priviledge.  Before it needed user `root`.
+  `install-docker.sh`: fix to work with users with sudo priviledge.  Before it needed user `root`.
 
-Other scripts are due to new Magpie in PR https://github.com/bird-house/birdhouse-deploy/pull/107.
+  Other comments in scripts are due to new Magpie in PR https://github.com/bird-house/birdhouse-deploy/pull/107.
 
 
 [1.17.2](https://github.com/bird-house/birdhouse-deploy/tree/1.17.2) (2021-11-03)
