@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.17.3](https://github.com/bird-house/birdhouse-deploy/tree/1.17.3) (2021-11-03)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Minor fix to `install-docker.sh` and comment update for other scripts due to Magpie upgrade
