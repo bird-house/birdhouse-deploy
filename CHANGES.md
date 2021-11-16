@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.17.5](https://github.com/bird-house/birdhouse-deploy/tree/1.17.5) (2021-11-16)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 - Upgrade Finch to 0.7.7
   [Release notes for 0.7.7](https://github.com/bird-house/finch/releases/tag/v0.7.7)
