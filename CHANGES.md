@@ -17,7 +17,7 @@
 ## Changes
 - Upgrade Finch to 0.7.7
   [Release notes for 0.7.7](https://github.com/bird-house/finch/releases/tag/v0.7.7)
-- [Release notes 0.7.6](https://github.com/bird-house/finch/releases/tag/v0.7.6)
+- [Release notes for 0.7.6](https://github.com/bird-house/finch/releases/tag/v0.7.6)
   
 [1.17.4](https://github.com/bird-house/birdhouse-deploy/tree/1.17.4) (2021-11-03)
 ------------------------------------------------------------------------------------------------------------------
