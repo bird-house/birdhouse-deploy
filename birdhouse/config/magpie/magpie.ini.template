@@ -49,6 +49,37 @@ ziggurat_foundations.session_provider_callable = magpie.models:get_session_calla
 github.client_id=${GITHUB_CLIENT_ID}
 github.client_secret=${GITHUB_CLIENT_SECRET}
 
+# temporary token definition (defaults below if omitted)
+# note: token here refers to uuids employed in temporary URL endpoints, not security auth tokens
+magpie.token_expire = 86400
+
+# user registration and approvals
+
+# below values are the defaults, adjust accordingly for desired behavior
+# email template overrides defaults in: magpie/api/templates
+magpie.user_registration_enabled = false
+magpie.user_registration_email_template =
+magpie.user_registration_approval_enabled = false
+magpie.user_registration_approval_email_recipient =
+magpie.user_registration_approval_email_template =
+magpie.user_registration_approved_email_template =
+magpie.user_registration_declined_email_template =
+magpie.user_registration_notify_enabled = false
+magpie.user_registration_notify_email_recipient =
+magpie.user_registration_notify_email_template =
+
+# user assignment to groups with t&c
+magpie.group_terms_submission_email_template =
+magpie.group_terms_approved_email_template =
+
+# smtp server configuration
+magpie.smtp_user = Magpie
+magpie.smtp_from =
+magpie.smtp_host =
+magpie.smtp_port = 465
+magpie.smtp_ssl = true
+magpie.smtp_password =
+
 # Caching settings for specific sections/functions - improves performance response times of recurring requests
 # See Twitcher INI configuration for caching that takes effect when resolving access enforcement to actual services.
 # Following cache settings apply only during Magpie API requests.
