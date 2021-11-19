@@ -57,28 +57,28 @@ magpie.token_expire = 86400
 
 # below values are the defaults, adjust accordingly for desired behavior
 # email template overrides defaults in: magpie/api/templates
-magpie.user_registration_enabled = false
-magpie.user_registration_email_template =
-magpie.user_registration_approval_enabled = false
-magpie.user_registration_approval_email_recipient =
-magpie.user_registration_approval_email_template =
-magpie.user_registration_approved_email_template =
-magpie.user_registration_declined_email_template =
-magpie.user_registration_notify_enabled = false
-magpie.user_registration_notify_email_recipient =
-magpie.user_registration_notify_email_template =
+magpie.user_registration_enabled = ${MAGPIE_USER_REGISTRATION_ENABLED}
+magpie.user_registration_email_template = ${MAGPIE_USER_REGISTRATION_EMAIL_TEMPLATE}
+magpie.user_registration_approval_enabled = ${MAGPIE_USER_REGISTRATION_APPROVAL_ENABLED}
+magpie.user_registration_approval_email_recipient = ${MAGPIE_USER_REGISTRATION_APPROVAL_EMAIL_RECIPIENT}
+magpie.user_registration_approval_email_template = ${MAGPIE_USER_REGISTRATION_APPROVAL_EMAIL_TEMPLATE}
+magpie.user_registration_approved_email_template = ${MAGPIE_USER_REGISTRATION_APPROVED_EMAIL_TEMPLATE}
+magpie.user_registration_declined_email_template = ${MAGPIE_USER_REGISTRATION_DECLINED_EMAIL_TEMPLATE}
+magpie.user_registration_notify_enabled = ${MAGPIE_USER_REGISTRATION_NOTIFY_ENABLED}
+magpie.user_registration_notify_email_recipient = ${MAGPIE_USER_REGISTRATION_NOTIFY_EMAIL_RECIPIENT}
+magpie.user_registration_notify_email_template = ${MAGPIE_USER_REGISTRATION_NOTIFY_EMAIL_TEMPLATE}
 
-# user assignment to groups with t&c
-magpie.group_terms_submission_email_template =
-magpie.group_terms_approved_email_template =
+# user assignment to groups with terms & conditions
+magpie.group_terms_submission_email_template = ${MAGPIE_GROUP_TERMS_SUBMISSION_EMAIL_TEMPLATE}
+magpie.group_terms_approved_email_template = ${MAGPIE_GROUP_TERMS_APPROVED_EMAIL_TEMPLATE}
 
 # smtp server configuration
 magpie.smtp_user = Magpie
-magpie.smtp_from =
-magpie.smtp_host =
+magpie.smtp_from = ${MAGPIE_SMTP_FROM}
+magpie.smtp_host = ${MAGPIE_SMTP_HOST}
 magpie.smtp_port = 465
 magpie.smtp_ssl = true
-magpie.smtp_password =
+magpie.smtp_password = ${MAGPIE_SMTP_PASSWORD}
 
 # Caching settings for specific sections/functions - improves performance response times of recurring requests
 # See Twitcher INI configuration for caching that takes effect when resolving access enforcement to actual services.
