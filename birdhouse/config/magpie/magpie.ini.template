@@ -58,7 +58,7 @@ magpie.token_expire = 86400
 # below values are the defaults, adjust accordingly for desired behavior
 # email template overrides defaults in: magpie/api/templates
 magpie.user_registration_enabled = ${MAGPIE_USER_REGISTRATION_ENABLED}
-magpie.user_registration_email_template = ${MAGPIE_USER_REGISTRATION_EMAIL_TEMPLATE}
+magpie.user_registration_submission_email_template = ${MAGPIE_USER_REGISTRATION_SUBMISSION_EMAIL_TEMPLATE}
 magpie.user_registration_approval_enabled = ${MAGPIE_USER_REGISTRATION_APPROVAL_ENABLED}
 magpie.user_registration_approval_email_recipient = ${MAGPIE_USER_REGISTRATION_APPROVAL_EMAIL_RECIPIENT}
 magpie.user_registration_approval_email_template = ${MAGPIE_USER_REGISTRATION_APPROVAL_EMAIL_TEMPLATE}
