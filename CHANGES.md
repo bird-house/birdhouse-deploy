@@ -16,6 +16,9 @@
 
 ## Changes
 - Upgrade Magpie to 3.18.0, and add new related environment variables.
+  * Add new environment variables to handle email usage, used for features such as 
+    user registration/approval and user assignment to groups with terms and conditions.
+  * Add expiration variable for temporary tokens.
 
 [1.17.5](https://github.com/bird-house/birdhouse-deploy/tree/1.17.5) (2021-11-16)
 ------------------------------------------------------------------------------------------------------------------
