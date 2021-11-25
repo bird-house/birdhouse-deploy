@@ -92,6 +92,9 @@ services:
       - ${SSL_CERTIFICATE}:/opt/birdhouse/etc/nginx/cert.pem
     links:
       - mongodb
+    networks:
+      - default
+      - mongodb
     depends_on:
       - malleefowl
       - flyingpigeon
@@ -114,22 +117,34 @@ services:
     logging: *default-logging
 
   geoserver:
-    image: pavics/geoserver:2.9.3
+    image: ${GEOSERVER_IMAGE}
     container_name: geoserver
     ports:
       - "8087:8080"
     environment:
       # for custom entrypoint
-      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+      PAVICS_FQDN_PUBLIC: ${PAVICS_FQDN_PUBLIC}
+      STABLE_EXTENSIONS: ${GEOSERVER_STABLE_EXTENSIONS}
+      COMMUNITY_EXTENSIONS: ${GEOSERVER_COMMUNITY_EXTENSIONS}
+      GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
+      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
+      # fix "WARNING: Illegal reflective access by org.geotools.image.ImageWorker" in `docker logs geoserver`
+      JAVA_OPTS: --add-exports=java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED
     volumes:
-      - ${DATA_PERSIST_ROOT}/geoserver:/opt/geoserver/data_dir
-      - ./config/geoserver/web.xml:/usr/local/tomcat/conf/web.xml
+      # run deployment/fix-geoserver-data-dir-perm on existing
+      # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image
+      - ${GEOSERVER_DATA_DIR}:/opt/geoserver/data_dir
       - ./config/geoserver/entrypointwrapper:/entrypointwrapper:ro
     links:
       - postgis
     entrypoint: /entrypointwrapper
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: curl --fail --silent http://localhost:8080/ || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
 
   malleefowl:
     image: pavics/malleefowl:pavics-0.3.5
@@ -284,11 +299,12 @@ services:
   mongodb:
     image: mongo:3.4.0
     container_name: mongodb
+    networks:
+      - mongodb
     volumes:
       - ${DATA_PERSIST_ROOT}/mongodb_persist:/data/db
-    # Mongodb crash with permission denied errors if the command is not overriden like this
+    # Mongodb crash with permission denied errors if the command is not overridden like this
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
-    # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
     restart: always
     logging: *default-logging
 
@@ -405,6 +421,7 @@ services:
 
 # need external network so the folder name is not prefixed to network name
 networks:
+  mongodb: {}
   jupyterhub_network:
     external:
       name: "jupyterhub_network"

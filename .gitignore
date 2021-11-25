@@ -1,14 +1,21 @@
+## Project Files
 birdhouse/env.local
 birdhouse/certkey.pem
 birdhouse/cert.pem
 birdhouse/key.pem
+
+## Deployment
 vagrant_variables.yml
 .vagrant/
 ubuntu-bionic-18.04-cloudimg-console.log
+
+## IDEs
 .idea
 .vscode
-*.bak
-weaver/
 
-# vim temp files
+## Backup Files
+**/*.bak*
+**/*.backup*
+
+## vim temp files
 *.swp

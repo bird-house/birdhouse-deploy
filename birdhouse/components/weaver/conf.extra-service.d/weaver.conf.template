@@ -1,0 +1,25 @@
+
+    # NOTE:
+    #   Redirect to internal network of twitcher with Weaver root endpoint and alias allows to set
+    #   the same 'magpie' permissions on the 'weaver' service defined by "WEAVER_MANAGER_NAME".
+    #   This allows verification of the same service user/group permissions references regardless
+    #   whether the *shortcut* Weaver endpoint, the alias or the explicit 'twitcher' proxy route is used.
+    # redirect EMS/ADES to actual secured Weaver path
+    #location /${WEAVER_CONFIG} {
+    #    return 302 https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME};
+    #}
+
+    location /${WEAVER_MANAGER_NAME} {
+        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME};
+        proxy_set_header Host $host;
+        proxy_buffering off;
+        include /etc/nginx/conf.d/cors.include;
+    }
+
+    # NOTE:
+    #   this is needed only if not using the location already provided by the core configuration
+    #   see 'birdhouse/config/proxy/conf.d/all-services.include.template'
+    # location where process job outputs will be accessible
+    #location ^~ ${WEAVER_WPS_OUTPUTS_PATH}/ {
+    #    alias ${WEAVER_WPS_OUTPUTS_DIR}/;
+    #}

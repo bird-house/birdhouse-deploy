@@ -28,6 +28,7 @@ VARS='
   $POSTGRES_MAGPIE_PASSWORD
   $SUPPORT_EMAIL
   $DATA_PERSIST_ROOT
+  $GEOSERVER_ADMIN_PASSWORD
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local
@@ -152,6 +153,11 @@ if [ x"$1" = x"up" ]; then
   # create externally so nothing will delete these data volume automatically
   docker volume create jupyterhub_data_persistence  # jupyterhub db and cookie secret
   docker volume create thredds_persistence  # logs, cache
+
+  if [ ! -f "$GEOSERVER_DATA_DIR/global.xml" ]; then
+    echo "fix GeoServer data dir permission on first run only, when data dir do not exist yet."
+    FIRST_RUN_ONLY=1 $COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm
+  fi
 
   for adir in ${EXTRA_CONF_DIRS}; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"

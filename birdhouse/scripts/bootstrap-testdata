@@ -2,8 +2,12 @@
 # Bootstrap minimum test data on Thredds.
 # To run testsuite in https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 #
+# Need to open temporary Thredds "testdata/secure/" on PAVICS production to anonymous group.
+#
 # To be run locally on the host running Thredds.  Will populate test data files
 # under DATASET_ROOT, customizable by env var.
+#
+# Need write-access to DATASET_ROOT (/data/datasets/).
 
 
 if [ -z "$DATASET_ROOT" ]; then

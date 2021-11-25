@@ -1,0 +1,5 @@
+# List of request URL(s) from which to apply additional options.
+# See original reference for details:
+#   https://github.com/crim-ca/weaver/blob/master/config/request_options.yml.example
+requests:
+# - [...]

@@ -11,6 +11,7 @@
         <service name="iso" serviceType="ISO" base="/twitcher/ows/proxy/thredds/iso/"/>
         <service name="wcs" serviceType="WCS" base="/twitcher/ows/proxy/thredds/wcs/" />
         <service name="wms" serviceType="WMS" base="/twitcher/ows/proxy/thredds/wms/" />
+        <service name="subsetServer" serviceType="NetcdfSubset" base="/twitcher/ows/proxy/thredds/ncss/" />
     </service>
 
     <datasetScan name="Birdhouse" ID="birdhouse" path="birdhouse" location="/pavics-data">

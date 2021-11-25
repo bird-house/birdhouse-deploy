@@ -1,0 +1,166 @@
+# Weaver settings configuration
+# See original reference for details:
+#   https://github.com/crim-ca/weaver/blob/master/config/weaver.ini.example
+#
+
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+[app:main]
+use = egg:weaver
+
+pyramid.reload_templates = false
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+pyramid.default_locale_name = en
+
+# mongodb
+mongodb.host = mongodb
+mongodb.port = 27017
+mongodb.db_name = weaver
+
+# --- Weaver Configuration ---
+weaver.configuration = ${WEAVER_CONFIG}
+weaver.url = https://${PAVICS_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}
+
+# --- Weaver requests extension flags ---
+# use request-options for per-request specific disabling instead of globally disabled ssl_verify flag
+weaver.ssl_verify = true
+weaver.request_options = request_options.yml
+
+# --- Weaver CWL settings ---
+# enforce provided effective user/group identifiers for Application Package execution
+# values must be resolved as integers
+# (default: use cwltool auto-resolution according to running machine and current user/group)
+weaver.cwl_euid =
+weaver.cwl_egid =
+
+# --- Weaver WPS settings ---
+weaver.wps = true
+weaver.wps_path = ${WEAVER_WPS_PATH}
+weaver.wps_output = true
+weaver.wps_output_dir = ${WEAVER_WPS_OUTPUTS_DIR}
+weaver.wps_output_url = https://${PAVICS_FQDN_PUBLIC}${WEAVER_WPS_OUTPUTS_PATH}
+weaver.wps_output_path =
+weaver.wps_workdir = ${WEAVER_WPS_WORKDIR}
+
+# --- Weaver WPS metadata ---
+weaver.wps_metadata_identification_title=Weaver
+weaver.wps_metadata_identification_abstract=Weaver is an Execution Management Service (EMS) that allows the execution of workflows chaining various applications and Web Processing Services (WPS) inputs and outputs. Remote execution is deferred by the EMS to an Application Deployment and Execution Service (ADES), as defined by Common Workflow Language (CWL) configurations.
+weaver.wps_metadata_identification_keywords=Weaver,WPS,OGC,${WEAVER_CONFIG}
+weaver.wps_metadata_identification_accessconstraints=https://${PAVICS_FQDN_PUBLIC}/magpie
+weaver.wps_metadata_identification_fees=NONE
+weaver.wps_metadata_provider_name=crim-ca/weaver
+weaver.wps_metadata_provider_url=http://pavics-weaver.readthedocs.org/en/latest/
+weaver.wps_metadata_contact_name=CRIM, Centre de Recherche Informatique de Montréal
+weaver.wps_metadata_contact_position=
+weaver.wps_metadata_contact_phone=1-514-840-1234
+weaver.wps_metadata_contact_fax=
+weaver.wps_metadata_contact_deliveryPoint=405 Ogilvy Avenue #101, Montréal, QC
+weaver.wps_metadata_contact_city=Montréal
+weaver.wps_metadata_contact_stateorprovince=Québec
+weaver.wps_metadata_contact_country=Canada
+weaver.wps_metadata_contact_postalcode=H3N 1M3
+weaver.wps_metadata_contact_email=info@crim.ca
+weaver.wps_metadata_contact_url=https://crim.ca
+weaver.wps_metadata_contact_role=Maintainer
+
+# --- Weaver WPS REST API ---
+weaver.wps_restapi = true
+weaver.wps_restapi_path = /
+weaver.wps_restapi_ref = https://app.swaggerhub.com/apis/geoprocessing/WPS/
+weaver.wps_restapi_doc = https://raw.githubusercontent.com/opengeospatial/wps-rest-binding/develop/docs/18-062.pdf
+
+# --- Weaver email notification ---
+weaver.wps_email_encrypt_salt = salty-email
+weaver.wps_email_encrypt_rounds = 100000
+weaver.wps_email_notify_smtp_host =
+weaver.wps_email_notify_from_addr = example@email.com
+weaver.wps_email_notify_password = 123456
+weaver.wps_email_notify_port = 25
+weaver.wps_email_notify_ssl = true
+weaver.wps_email_notify_template_dir =
+weaver.wps_email_notify_template_default =
+
+# --- Weaver other configurations ---
+# default WPS processes to always preload
+weaver.wps_processes_file = wps_processes.yml
+# remote ADES dispatching based on data-sources when 'weaver.configuration = EMS'
+weaver.data_sources = data_sources.yml
+weaver.extra_options =
+
+###
+# celery scheduler config
+# https://pypi.python.org/pypi/pyramid_celery
+###
+[celery]
+use_celeryconfig = false
+broker_url = mongodb://mongodb:27017/celery
+result_backend = mongodb://mongodb:27017/
+
+# following is technically redundant, but Weaver-API sporadically doesn't correctly discover tasks
+# enforce the import location to make sure they are detected and tasks submission can be registered in workers
+imports = weaver.processes.execution
+
+[celery:mongodb_backend_settings]
+database = celery
+taskmeta_collection = weaver-results
+
+###
+# wsgi server configuration
+###
+
+[server:main]
+use = egg:gunicorn#main
+bind = 0.0.0.0:4001
+workers = 5
+timeout = 20
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[loggers]
+keys = root, weaver, celery, cwltool
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_weaver]
+level = ${WEAVER_MANAGER_LOG_LEVEL}
+handlers = console
+qualname = weaver
+propagate = 0
+
+[logger_celery]
+# FIXME: should be 'worker' when CWL execution moved (?)
+level = ${WEAVER_MANAGER_LOG_LEVEL}
+handlers = console
+qualname = celery
+propagate = 0
+
+[logger_cwltool]
+level = ${WEAVER_WORKER_LOG_LEVEL}
+handlers = console
+qualname = cwltool
+propagate = 0
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = [%(asctime)s] %(levelname)-8.8s [%(threadName)s][%(name)s] %(message)s
