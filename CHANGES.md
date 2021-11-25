@@ -16,7 +16,7 @@
 
   ## Changes
   
-  - Magpie/Twitcher: update to version 3.15.1
+  - Magpie/Twitcher: update to version 3.18.1
     
     * Apply additional DEBUG logging entries to attempt resolving issues related to caching.
       See also [Ouranosinc/Magpie#466](https://github.com/Ouranosinc/Magpie/issues/466).
