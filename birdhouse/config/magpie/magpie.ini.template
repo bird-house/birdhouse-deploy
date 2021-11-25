@@ -51,6 +51,7 @@ github.client_secret=${GITHUB_CLIENT_SECRET}
 
 # temporary token definition (defaults below if omitted)
 # note: token here refers to uuids employed in temporary URL endpoints, not security auth tokens
+# Lifetime (in seconds) of the temporary token :
 magpie.token_expire = 86400
 
 # user registration and approvals
@@ -76,8 +77,8 @@ magpie.group_terms_approved_email_template = ${MAGPIE_GROUP_TERMS_APPROVED_EMAIL
 magpie.smtp_user = Magpie
 magpie.smtp_from = ${MAGPIE_SMTP_FROM}
 magpie.smtp_host = ${MAGPIE_SMTP_HOST}
-magpie.smtp_port = 465
-magpie.smtp_ssl = true
+magpie.smtp_port = ${MAGPIE_SMTP_PORT}
+magpie.smtp_ssl = ${MAGPIE_SMTP_SSL}
 magpie.smtp_password = ${MAGPIE_SMTP_PASSWORD}
 
 # Caching settings for specific sections/functions - improves performance response times of recurring requests
