@@ -15,7 +15,7 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
-- Upgrade Magpie/Twitcher to 3.18.0, and add new related environment variables.
+- Upgrade Magpie/Twitcher to 3.19.0, and add new related environment variables.
   * Adjust Twitcher runner to employ `gunicorn` instead of `waitress`.
   * Add new environment variables to handle email usage, used for features such as 
     user registration/approval and user assignment to groups with terms and conditions.
