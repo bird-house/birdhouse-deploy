@@ -47,9 +47,9 @@ services:
     #env_file:
     #  - ./config/mongodb/credentials.env
     depends_on:
-      - mongodb
+      - weaver-mongodb
     links:
-      - mongodb
+      - weaver-mongodb
     networks:
       - default
       - mongodb
@@ -74,11 +74,11 @@ services:
     #  - ./config/mongodb/credentials.env
     depends_on:
       # no 'default' network here such that the worker is not accessible from proxy/http
-      - mongodb
+      - weaver-mongodb
       - weaver  # if not started first, sometimes celery misbehaves and will not pick jobs in queue
       - docker-proxy
     links:
-      - mongodb
+      - weaver-mongodb
     networks:
       # WARNING: *DO NOT* provide 'default' network
       #   Not providing 'default' network ensure that only connection with other images (birds, proxy) can be
@@ -113,6 +113,19 @@ services:
       interval: 60s
       timeout: 10s
       retries: 2
+
+  # Dedicated database for Weaver, since other 'mongodb' image does not employ the same version.
+  weaver-mongodb:
+    image: mongo:5.0
+    container_name: weaver-mongodb
+    networks:
+      - mongodb
+    volumes:
+      - ${DATA_PERSIST_ROOT}/mongodb_weaver_persist:/data/db
+    # Mongodb crash with permission denied errors if the command is not overridden like this
+    command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
+    restart: always
+    logging: *default-logging
 
   # Image 'docker-proxy' is the connector between docker image 'worker' jobs and their sibling docker executions
   docker-proxy:
