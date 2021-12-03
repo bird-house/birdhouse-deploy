@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.17.6](https://github.com/bird-house/birdhouse-deploy/tree/1.17.6) (2021-12-03)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 - Upgrade Magpie/Twitcher to 3.19.0, and add new related environment variables.
   * Adjust Twitcher runner to employ `gunicorn` instead of `waitress`.
