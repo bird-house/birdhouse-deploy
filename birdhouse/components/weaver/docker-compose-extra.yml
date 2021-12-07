@@ -52,7 +52,7 @@ services:
       - weaver-mongodb
     networks:
       - default
-      - mongodb
+      - weaver-mongodb
     volumes:
       - ./components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
       - ./components/weaver/config/weaver/data_sources.yml:/opt/local/src/weaver/config/data_sources.yml:ro
@@ -84,7 +84,7 @@ services:
       #   Not providing 'default' network ensure that only connection with other images (birds, proxy) can be
       #   accomplished through Weaver API which cannot run sibling dockers by itself. Isolate Dockers execution.
       - docker-proxy
-      - mongodb
+      - weaver-mongodb
     volumes:
       #- wps_private:/data/wps_private
       - ${DATA_PERSIST_ROOT}/wps_private:/data/wps_private
@@ -119,7 +119,7 @@ services:
     image: mongo:5.0
     container_name: weaver-mongodb
     networks:
-      - mongodb
+      - weaver-mongodb
     volumes:
       - ${DATA_PERSIST_ROOT}/mongodb_weaver_persist:/data/db
     # Mongodb crash with permission denied errors if the command is not overridden like this
@@ -163,6 +163,6 @@ services:
     #    constraints: [node.role == manager]
 
 networks:
-  mongodb: {}
+  weaver-mongodb: {}
   docker-proxy:
     driver: bridge
