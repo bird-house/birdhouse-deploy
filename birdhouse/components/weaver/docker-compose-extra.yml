@@ -116,7 +116,7 @@ services:
 
   # Dedicated database for Weaver, since other 'mongodb' image does not employ the same version.
   weaver-mongodb:
-    image: mongo:5.0
+    image: mongo:${WEAVER_MONGODB_VERSION}
     container_name: weaver-mongodb
     networks:
       - weaver-mongodb
