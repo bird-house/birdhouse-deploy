@@ -47,12 +47,12 @@ services:
     #env_file:
     #  - ./config/mongodb/credentials.env
     depends_on:
-      - mongodb
+      - weaver-mongodb
     links:
-      - mongodb
+      - weaver-mongodb
     networks:
       - default
-      - mongodb
+      - weaver-mongodb
     volumes:
       - ./components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
       - ./components/weaver/config/weaver/data_sources.yml:/opt/local/src/weaver/config/data_sources.yml:ro
@@ -74,17 +74,17 @@ services:
     #  - ./config/mongodb/credentials.env
     depends_on:
       # no 'default' network here such that the worker is not accessible from proxy/http
-      - mongodb
+      - weaver-mongodb
       - weaver  # if not started first, sometimes celery misbehaves and will not pick jobs in queue
       - docker-proxy
     links:
-      - mongodb
+      - weaver-mongodb
     networks:
       # WARNING: *DO NOT* provide 'default' network
       #   Not providing 'default' network ensure that only connection with other images (birds, proxy) can be
       #   accomplished through Weaver API which cannot run sibling dockers by itself. Isolate Dockers execution.
       - docker-proxy
-      - mongodb
+      - weaver-mongodb
     volumes:
       #- wps_private:/data/wps_private
       - ${DATA_PERSIST_ROOT}/wps_private:/data/wps_private
@@ -113,6 +113,19 @@ services:
       interval: 60s
       timeout: 10s
       retries: 2
+
+  # Dedicated database for Weaver, since other 'mongodb' image does not employ the same version.
+  weaver-mongodb:
+    image: mongo:${WEAVER_MONGODB_VERSION}
+    container_name: weaver-mongodb
+    networks:
+      - weaver-mongodb
+    volumes:
+      - ${DATA_PERSIST_ROOT}/mongodb_weaver_persist:/data/db
+    # Mongodb crash with permission denied errors if the command is not overridden like this
+    command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
+    restart: always
+    logging: *default-logging
 
   # Image 'docker-proxy' is the connector between docker image 'worker' jobs and their sibling docker executions
   docker-proxy:
@@ -150,6 +163,6 @@ services:
     #    constraints: [node.role == manager]
 
 networks:
-  mongodb: {}
+  weaver-mongodb: {}
   docker-proxy:
     driver: bridge

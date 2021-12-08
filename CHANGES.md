@@ -16,6 +16,33 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.18.0](https://github.com/bird-house/birdhouse-deploy/tree/1.18.0) (2021-12-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Upgrade default `Weaver` version to [4.5.0](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#450-2021-11-25) 
+  (from [4.2.1](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#421-2021-10-20)) for new features and fixes.
+  Most notable changes are: 
+  - Adds support of `X-WPS-Output-Context` header to define the WPS output nested directory (for user context).
+  - Adds support of `X-Auth-Docker` header to define a private Docker registry authentication token when the 
+    referenced Docker image in the deployed Application Package requires it to fetch it for Process execution. 
+  - Require `MongoDB==5.0` Docker image for Weaver's database.
+  - Fixes related to handling `dismiss` operation of job executions and retrieval of their results.
+  - Fixes related to fetching remote files and propagation of intermediate results between Workflow steps.
+
+## Important
+Because of the new `MongoDB==5.0` database requirement for Weaver that uses (potentially) distinct version from other 
+birds (notably `phoenix` with `MongoDB==3.4`), a separate Docker image is employed only for Weaver. If some processes, 
+jobs, or other Weaver-related data was already defined on one of your server instances, manual transfer between the 
+generic `${DATA_PERSIST_ROOT}/mongodb_persist` to new  `${DATA_PERSIST_ROOT}/mongodb_weaver_persist` directory must 
+be accomplished. The data in the new directory should then be migrated to the new version following the procedure 
+described in [Database Migration](https://pavics-weaver.readthedocs.io/en/latest/installation.html?#database-migration).
+
+## Legal Notice
+While migrating from ``MongoDB==3.4`` to ``MongoDB==5.0``, its license changes from AGPL to SSPL
+(reference: [mongodb/mongo@6ea81c8/README#L89-L95](https://github.com/mongodb/mongo/blob/6ea81c88/README#L89-L95)).
+This should not impact users using the platform for public and Open Source uses, but should be considered otherwise.
+
 [1.17.6](https://github.com/bird-house/birdhouse-deploy/tree/1.17.6) (2021-12-03)
 ------------------------------------------------------------------------------------------------------------------
 
