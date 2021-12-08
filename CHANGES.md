@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.18.1](https://github.com/bird-house/birdhouse-deploy/tree/1.18.1) (2021-12-08)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 - Update `Mapgie` version [3.19.0](https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst#3190-2021-12-02)  
   to [3.19.1](https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst#3191-2021-12-08) with fix of unhandled
