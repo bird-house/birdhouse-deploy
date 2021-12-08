@@ -18,7 +18,7 @@ pyramid.debug_routematch = false
 pyramid.default_locale_name = en
 
 # mongodb
-mongodb.host = mongodb
+mongodb.host = weaver-mongodb
 mongodb.port = 27017
 mongodb.db_name = weaver
 
