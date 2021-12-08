@@ -33,6 +33,11 @@ generic `${DATA_PERSIST_ROOT}/mongodb_persist` to new  `${DATA_PERSIST_ROOT}/mon
 be accomplished. The data in the new directory should then be migrated to the new version following the procedure 
 described in [Database Migration](https://pavics-weaver.readthedocs.io/en/latest/installation.html?#database-migration).
 
+## Legal Notice
+While migrating from ``MongoDB==3.4`` to ``MongoDB==5.0``, its license changes from AGPL to SSPL
+(reference: [mongodb/mongo@6ea81c8/README#L89-L95](https://github.com/mongodb/mongo/blob/6ea81c88/README#L89-L95)).
+This should not impact users using the platform for public and Open Source uses, but should be considered otherwise.
+
 [1.17.6](https://github.com/bird-house/birdhouse-deploy/tree/1.17.6) (2021-12-03)
 ------------------------------------------------------------------------------------------------------------------
 
