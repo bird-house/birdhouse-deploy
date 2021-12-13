@@ -19,6 +19,8 @@
 
   Quebec gouvernment has shutdown its website due to this vulnerability so it's pretty serious
   (https://montrealgazette.com/news/quebec/quebec-government-shutting-down-websites-report).
+
+  Thredds release notes: https://github.com/Unidata/thredds/releases
   
   https://www.oracle.com/security-alerts/alert-cve-2021-44228.html
   
