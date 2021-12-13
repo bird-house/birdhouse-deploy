@@ -16,6 +16,117 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.18.2](https://github.com/bird-house/birdhouse-deploy/tree/1.18.2) (2021-12-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Thredds: update for Log4j Vulnerability CVE-2021-44228
+
+  Quebec gouvernment has shutdown its website due to this vulnerability so it's pretty serious
+  (https://montrealgazette.com/news/quebec/quebec-government-shutting-down-websites-report).
+
+  Thredds release notes: https://github.com/Unidata/thredds/releases
+  
+  https://www.oracle.com/security-alerts/alert-cve-2021-44228.html
+  
+  **Oracle Security Alert Advisory - CVE-2021-44228 Description**
+  
+  This Security Alert addresses CVE-2021-44228, a remote code execution
+  vulnerability in Apache Log4j. It is remotely exploitable without
+  authentication, i.e., may be exploited over a network without the need for a
+  username and password.
+  
+  Due to the severity of this vulnerability and the publication of exploit code
+  on various sites, Oracle strongly recommends that customers apply the updates
+  provided by this Security Alert as soon as possible.
+  
+  **Affected Products and Versions**
+  Apache Log4j, versions 2.0-2.14.1
+  
+  We have 4 Java component but only 1 is vulnerable: Thredds:
+  
+  **After fix**:
+  ```
+  $ docker run -it --rm unidata/thredds-docker:4.6.18 bash
+  root@f65aadd2955c:/usr/local/tomcat# find -iname '**log4j**'
+  ./webapps/thredds/WEB-INF/classes/log4j2.xml
+  ./webapps/thredds/WEB-INF/lib/log4j-api-2.15.0.jar
+  ./webapps/thredds/WEB-INF/lib/log4j-core-2.15.0.jar
+  ./webapps/thredds/WEB-INF/lib/log4j-slf4j-impl-2.15.0.jar
+  ./webapps/thredds/WEB-INF/lib/log4j-web-2.15.0.jar
+  ```
+  
+  **Before fix (unidata/thredds-docker:4.6.15)**:
+  ```
+  $ docker exec -it thredds find / -iname '**log4j**'
+  find: ‘/proc/1/map_files’: Operation not permitted
+  find: ‘/proc/12/map_files’: Operation not permitted
+  find: ‘/proc/20543/map_files’: Operation not permitted
+  /usr/local/tomcat/webapps/twitcher#ows#proxy#thredds/WEB-INF/classes/log4j2.xml
+  /usr/local/tomcat/webapps/twitcher#ows#proxy#thredds/WEB-INF/lib/log4j-api-2.13.3.jar
+  /usr/local/tomcat/webapps/twitcher#ows#proxy#thredds/WEB-INF/lib/log4j-core-2.13.3.jar
+  /usr/local/tomcat/webapps/twitcher#ows#proxy#thredds/WEB-INF/lib/log4j-slf4j-impl-2.13.3.jar
+  /usr/local/tomcat/webapps/twitcher#ows#proxy#thredds/WEB-INF/lib/log4j-web-2.13.3.jar
+  ```
+  
+  **Other components (ncwms2, geoserver, solr) have log4j older than version 2.0
+  so supposedly not affected**:
+  
+  ```
+  $ docker exec -it ncwms2 find / -iname '**log4j**'
+  /opt/conda/envs/birdhouse/opt/apache-tomcat/webapps/ncWMS2/WEB-INF/classes/log4j.properties
+  /opt/conda/envs/birdhouse/opt/apache-tomcat/webapps/ncWMS2/WEB-INF/lib/log4j-1.2.17.jar
+  /opt/conda/envs/birdhouse/opt/apache-tomcat/webapps/ncWMS2/WEB-INF/lib/slf4j-log4j12-1.7.2.jar
+  
+  $ docker exec -it geoserver find / -iname '**log4j**'
+  /build_data/log4j.properties
+  find: ‘/etc/ssl/private’: Permission denied
+  find: ‘/proc/tty/driver’: Permission denied
+  find: ‘/proc/1/map_files’: Operation not permitted
+  find: ‘/proc/15/task/47547’: No such file or directory
+  find: ‘/proc/15/map_files’: Operation not permitted
+  find: ‘/proc/47492/map_files’: Operation not permitted
+  find: ‘/root’: Permission denied
+  /usr/local/tomcat/log4j.properties
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/log4j-1.2.17.jar
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/metrics-log4j-3.0.2.jar
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/slf4j-log4j12-1.6.4.jar
+  find: ‘/var/cache/apt/archives/partial’: Permission denied
+  find: ‘/var/cache/ldconfig’: Permission denied
+  
+  $ docker exec -it solr find / -iname '**log4j**'
+  /data/solr/log4j.properties
+  /opt/birdhouse/eggs/birdhousebuilder.recipe.solr-0.1.5-py2.7.egg/birdhousebuilder/recipe/solr/templates/log4j.properties
+  /opt/conda/envs/birdhouse/opt/solr/docs/solr-core/org/apache/solr/logging/log4j
+  /opt/conda/envs/birdhouse/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/Log4jInfo.html
+  /opt/conda/envs/birdhouse/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/Log4jWatcher.html
+  /opt/conda/envs/birdhouse/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/class-use/Log4jInfo.html
+  /opt/conda/envs/birdhouse/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/class-use/Log4jWatcher.html
+  /opt/conda/envs/birdhouse/opt/solr/example/resources/log4j.properties
+  /opt/conda/envs/birdhouse/opt/solr/licenses/log4j-1.2.17.jar.sha1
+  /opt/conda/envs/birdhouse/opt/solr/licenses/log4j-LICENSE-ASL.txt
+  /opt/conda/envs/birdhouse/opt/solr/licenses/log4j-NOTICE.txt
+  /opt/conda/envs/birdhouse/opt/solr/licenses/slf4j-log4j12-1.7.7.jar.sha1
+  /opt/conda/envs/birdhouse/opt/solr/server/lib/ext/log4j-1.2.17.jar
+  /opt/conda/envs/birdhouse/opt/solr/server/lib/ext/slf4j-log4j12-1.7.7.jar
+  /opt/conda/envs/birdhouse/opt/solr/server/resources/log4j.properties
+  /opt/conda/envs/birdhouse/opt/solr/server/scripts/cloud-scripts/log4j.properties
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/docs/solr-core/org/apache/solr/logging/log4j
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/Log4jInfo.html
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/Log4jWatcher.html
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/class-use/Log4jInfo.html
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/class-use/Log4jWatcher.html
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/example/resources/log4j.properties
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/licenses/log4j-1.2.17.jar.sha1
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/licenses/log4j-LICENSE-ASL.txt
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/licenses/log4j-NOTICE.txt
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/licenses/slf4j-log4j12-1.7.7.jar.sha1
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/server/lib/ext/log4j-1.2.17.jar
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/server/lib/ext/slf4j-log4j12-1.7.7.jar
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/server/resources/log4j.properties
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/server/scripts/cloud-scripts/log4j.properties
+  ```
+
 [1.18.1](https://github.com/bird-house/birdhouse-deploy/tree/1.18.1) (2021-12-08)
 ------------------------------------------------------------------------------------------------------------------
 
