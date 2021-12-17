@@ -14,7 +14,66 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+- Jupyter: new build with latest changes
+
+  See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/94 for
+  more info.
+
+  Change summary:
+
+  ```diff
+  <   - xclim=0.28.1=pyhd8ed1ab_0
+  >   - xclim=0.31.0=pyhd8ed1ab_0
+  
+  <   - ravenpy=0.7.4=pyh7f9bfb9_0
+  >   - ravenpy=0.7.5=pyhff6ddc9_0
+  
+  <   - xarray=0.19.0=pyhd8ed1ab_1
+  >   - xarray=0.20.1=pyhd8ed1ab_0
+  
+  <   - rasterio=1.2.1=py37ha549118_0
+  >   - rasterio=1.2.6=py37hc20819c_2
+  
+  <   - bokeh=2.3.3=py37h89c1867_0
+  >   - bokeh=2.4.2=py37h89c1867_0
+  
+  <   - cartopy=0.19.0.post1=py37h0c48da3_1
+  >   - cartopy=0.20.0=py37hbe109c4_0
+  
+  <   - cffi=1.14.6=py37hc58025e_0
+  >   - cffi=1.15.0=py37h036bc23_0
+  
+  <   - climpred=2.1.5.post1=pyhd8ed1ab_0
+  >   - climpred=2.1.6=pyhd8ed1ab_1
+  
+  <   - clisops=0.6.5=pyh6c4a22f_0
+  >   - clisops=0.7.0=pyh6c4a22f_0
+  
+  <   - dask=2021.9.0=pyhd8ed1ab_0
+  >   - dask=2021.11.2=pyhd8ed1ab_0
+  
+  <   - gdal=3.1.4=py37h2ec2946_8
+  >   - gdal=3.3.2=py37hd5a0ba4_2
+  
+  <   - geopandas=0.9.0=pyhd8ed1ab_1
+  >   - geopandas=0.10.2=pyhd8ed1ab_0
+  
+  <   - nc-time-axis=1.3.1=pyhd8ed1ab_2
+  >   - nc-time-axis=1.4.0=pyhd8ed1ab_0
+  
+  <   - pandas=1.2.5=py37h219a48f_0
+  >   - pandas=1.3.4=py37he8f5f7f_
+  
+  <   - poppler=0.89.0=h2de54a5_5
+  >   - poppler=21.09.0=ha39eefc_3
+  
+  <   - rioxarray=0.7.0=pyhd8ed1ab_0
+  >   - rioxarray=0.8.0=pyhd8ed1ab_0
+  
+  <   - roocs-utils=0.4.2=pyh6c4a22f_0
+  >   - roocs-utils=0.5.0=pyh6c4a22f_0
+  ```
 
 [1.18.2](https://github.com/bird-house/birdhouse-deploy/tree/1.18.2) (2021-12-13)
 ------------------------------------------------------------------------------------------------------------------
