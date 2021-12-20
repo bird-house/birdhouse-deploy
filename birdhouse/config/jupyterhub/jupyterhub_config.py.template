@@ -96,7 +96,10 @@ def create_dir_hook(spawner):
 c.Spawner.pre_spawn_hook = create_dir_hook
 
 ## Disable per-user configuration of single-user servers.
-c.Spawner.disable_user_config = True
+# Disable because option --disable-user-config not supported by 'jupyter lab'.
+# Upcoming jupyter image will switch from 'jupyter notebook' launch command to 'jupyter lab'.
+# 'jupyter notebook' launch command is being deprecated https://github.com/jupyter/docker-stacks/blob/ace92d3c5f3e619b4d9c33add1d745ba324ae72c/base-notebook/start-notebook.sh#L21
+#c.Spawner.disable_user_config = True
 
 c.DockerSpawner.default_url = '/lab'
 c.DockerSpawner.remove = True  # delete containers when servers are stopped
