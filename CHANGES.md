@@ -14,7 +14,18 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+- vagrant: support RockyLinux
+
+  RockyLinux 8 is the successor to Centos 7.
+
+  Centos 8 has become like a "RHEL 8 beta" than the equivalent of RHEL 8.
+
+  RockyLinux 8 is the new equivalent of RHEL 8, following the original spirit
+  of the Centos project.
+
+  More info at https://rockylinux.org/about.
+
 
 [1.18.3](https://github.com/bird-house/birdhouse-deploy/tree/1.18.3) (2021-12-17)
 ------------------------------------------------------------------------------------------------------------------
