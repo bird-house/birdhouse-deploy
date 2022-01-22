@@ -3,7 +3,7 @@
 set -e # Exit if any subcommand fails
 set -x # Print commands for troubleshooting
 
-if ! grep centos /etc/os-release; then
+if ! grep centos /etc/os-release && ! grep rocky /etc/os-release; then
 
     # Install Docker CE on Ubuntu per
     # https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/
