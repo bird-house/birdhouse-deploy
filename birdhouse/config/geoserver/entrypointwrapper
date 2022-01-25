@@ -42,6 +42,14 @@ if ! grep "<param-name>cors.allowed.methods</param-name>" $WEB_XML_FILE; then
     diff -C 15 $ORIGINAL_WEB_XML_FILE $WEB_XML_FILE
 fi
 
+
+# Add missing jar for the metadata-plugin.
+# Should be fixed by newer version of Geoserver and matching new version of the plugin.
+# https://osgeo-org.atlassian.net/browse/GEOS-10078
+wget https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.30/snakeyaml-1.30.jar \
+    -O /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/snakeyaml-1.30.jar
+
+
 # chain existing entrypoint
 /scripts/entrypoint.sh
 
