@@ -4,7 +4,7 @@ ACCOUNT_CONF="/etc/pagekite.d/10_account.rc"
 
 if [ -n "$KITENAME" -a -n "$KITESECRET" -a -n "$KITESUBDOMAIN" ]; then
 
-    if ! grep centos /etc/os-release; then
+    if ! grep centos /etc/os-release && ! grep rocky /etc/os-release; then
         DEBIAN_FRONTEND=noninteractive apt-get install --yes pagekite
     else
         yum install --assumeyes epel-release
@@ -26,7 +26,7 @@ EOF
 else
 
     DISABLE_PAGEKITE=""
-    if ! grep centos /etc/os-release; then
+    if ! grep centos /etc/os-release && ! grep rocky /etc/os-release; then
         if dpkg -l pagekite; then
             DISABLE_PAGEKITE=true
         fi

@@ -16,6 +16,90 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.18.5](https://github.com/bird-house/birdhouse-deploy/tree/1.18.5) (2022-01-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Jupyter: update Jupyter env for latest XClim, RavenPy and all packages
+
+  Deploy new Jupyter env from PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/95 on PAVICS.
+
+  Detailed changes can be found at https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/95.
+
+  Relevant changes:
+  ```diff
+  <   - xclim=0.31.0=pyhd8ed1ab_0
+  >   - xclim=0.32.1=pyhd8ed1ab_0
+  
+  <   - ravenpy=0.7.5=pyhff6ddc9_0
+  >   - ravenpy=0.7.8=pyh8a188c0_0
+  
+  <   - python=3.7.12=hb7a2778_100_cpython
+  >   - python=3.8.12=hb7a2778_2_cpython
+  
+  # removed
+  <   - vcs=8.2.1=pyh9f0ad1d_0
+  
+  <   - numpy=1.21.4=py37h31617e3_0
+  >   - numpy=1.21.5=py38h87f13fb_0
+  
+  <   - xarray=0.20.1=pyhd8ed1ab_0
+  >   - xarray=0.20.2=pyhd8ed1ab_0
+  
+  <   - rioxarray=0.8.0=pyhd8ed1ab_0
+  >   - rioxarray=0.9.1=pyhd8ed1ab_0
+  
+  <   - cf_xarray=0.6.1=pyh6c4a22f_0
+  >   - cf_xarray=0.6.3=pyhd8ed1ab_0
+  
+  <   - gdal=3.3.2=py37hd5a0ba4_2
+  >   - gdal=3.3.3=py38hcf2042a_0
+  
+  <   - rasterio=1.2.6=py37hc20819c_2
+  >   - rasterio=1.2.10=py38hfd64e68_0
+  
+  <   - climpred=2.1.6=pyhd8ed1ab_1
+  >   - climpred=2.2.0=pyhd8ed1ab_0
+  
+  <   - clisops=0.7.0=pyh6c4a22f_0
+  >   - clisops=0.8.0=pyh6c4a22f_0
+  
+  <   - xesmf=0.6.0=pyhd8ed1ab_0
+  >   - xesmf=0.6.2=pyhd8ed1ab_0
+  
+  <   - birdy=v0.8.0=pyh6c4a22f_1
+  >   - birdy=0.8.1=pyh6c4a22f_1
+  
+  <   - cartopy=0.20.0=py37hbe109c4_0
+  >   - cartopy=0.20.1=py38hf9a4893_1
+  
+  <   - dask=2021.11.2=pyhd8ed1ab_0
+  >   - dask=2022.1.0=pyhd8ed1ab_0
+  
+  <   - numba=0.53.1=py37hb11d6e1_1
+  >   - numba=0.55.0=py38h4bf6c61_0
+  
+  <   - pandas=1.3.4=py37he8f5f7f_1
+  >   - pandas=1.3.5=py38h43a58ef_0
+  ```
+
+
+[1.18.4](https://github.com/bird-house/birdhouse-deploy/tree/1.18.4) (2022-01-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- vagrant: support RockyLinux
+
+  RockyLinux 8 is the successor to Centos 7.
+
+  Centos 8 has become like a "RHEL 8 beta" than the equivalent of RHEL 8.
+
+  RockyLinux 8 is the new equivalent of RHEL 8, following the original spirit
+  of the Centos project.
+
+  More info at https://rockylinux.org/about.
+
+
 [1.18.3](https://github.com/bird-house/birdhouse-deploy/tree/1.18.3) (2021-12-17)
 ------------------------------------------------------------------------------------------------------------------
 
