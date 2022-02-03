@@ -16,6 +16,411 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.18.5](https://github.com/bird-house/birdhouse-deploy/tree/1.18.5) (2022-01-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Jupyter: update Jupyter env for latest XClim, RavenPy and all packages
+
+  Deploy new Jupyter env from PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/95 on PAVICS.
+
+  Detailed changes can be found at https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/95.
+
+  Relevant changes:
+  ```diff
+  <   - xclim=0.31.0=pyhd8ed1ab_0
+  >   - xclim=0.32.1=pyhd8ed1ab_0
+  
+  <   - ravenpy=0.7.5=pyhff6ddc9_0
+  >   - ravenpy=0.7.8=pyh8a188c0_0
+  
+  <   - python=3.7.12=hb7a2778_100_cpython
+  >   - python=3.8.12=hb7a2778_2_cpython
+  
+  # removed
+  <   - vcs=8.2.1=pyh9f0ad1d_0
+  
+  <   - numpy=1.21.4=py37h31617e3_0
+  >   - numpy=1.21.5=py38h87f13fb_0
+  
+  <   - xarray=0.20.1=pyhd8ed1ab_0
+  >   - xarray=0.20.2=pyhd8ed1ab_0
+  
+  <   - rioxarray=0.8.0=pyhd8ed1ab_0
+  >   - rioxarray=0.9.1=pyhd8ed1ab_0
+  
+  <   - cf_xarray=0.6.1=pyh6c4a22f_0
+  >   - cf_xarray=0.6.3=pyhd8ed1ab_0
+  
+  <   - gdal=3.3.2=py37hd5a0ba4_2
+  >   - gdal=3.3.3=py38hcf2042a_0
+  
+  <   - rasterio=1.2.6=py37hc20819c_2
+  >   - rasterio=1.2.10=py38hfd64e68_0
+  
+  <   - climpred=2.1.6=pyhd8ed1ab_1
+  >   - climpred=2.2.0=pyhd8ed1ab_0
+  
+  <   - clisops=0.7.0=pyh6c4a22f_0
+  >   - clisops=0.8.0=pyh6c4a22f_0
+  
+  <   - xesmf=0.6.0=pyhd8ed1ab_0
+  >   - xesmf=0.6.2=pyhd8ed1ab_0
+  
+  <   - birdy=v0.8.0=pyh6c4a22f_1
+  >   - birdy=0.8.1=pyh6c4a22f_1
+  
+  <   - cartopy=0.20.0=py37hbe109c4_0
+  >   - cartopy=0.20.1=py38hf9a4893_1
+  
+  <   - dask=2021.11.2=pyhd8ed1ab_0
+  >   - dask=2022.1.0=pyhd8ed1ab_0
+  
+  <   - numba=0.53.1=py37hb11d6e1_1
+  >   - numba=0.55.0=py38h4bf6c61_0
+  
+  <   - pandas=1.3.4=py37he8f5f7f_1
+  >   - pandas=1.3.5=py38h43a58ef_0
+  ```
+
+
+[1.18.4](https://github.com/bird-house/birdhouse-deploy/tree/1.18.4) (2022-01-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- vagrant: support RockyLinux
+
+  RockyLinux 8 is the successor to Centos 7.
+
+  Centos 8 has become like a "RHEL 8 beta" than the equivalent of RHEL 8.
+
+  RockyLinux 8 is the new equivalent of RHEL 8, following the original spirit
+  of the Centos project.
+
+  More info at https://rockylinux.org/about.
+
+
+[1.18.3](https://github.com/bird-house/birdhouse-deploy/tree/1.18.3) (2021-12-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Jupyter: new build with latest changes
+
+  See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/94 for
+  more info.
+
+  Change summary:
+
+  ```diff
+  <   - xclim=0.28.1=pyhd8ed1ab_0
+  >   - xclim=0.31.0=pyhd8ed1ab_0
+  
+  <   - ravenpy=0.7.4=pyh7f9bfb9_0
+  >   - ravenpy=0.7.5=pyhff6ddc9_0
+  
+  <   - xarray=0.19.0=pyhd8ed1ab_1
+  >   - xarray=0.20.1=pyhd8ed1ab_0
+  
+  <   - rasterio=1.2.1=py37ha549118_0
+  >   - rasterio=1.2.6=py37hc20819c_2
+  
+  <   - bokeh=2.3.3=py37h89c1867_0
+  >   - bokeh=2.4.2=py37h89c1867_0
+  
+  <   - cartopy=0.19.0.post1=py37h0c48da3_1
+  >   - cartopy=0.20.0=py37hbe109c4_0
+  
+  <   - cffi=1.14.6=py37hc58025e_0
+  >   - cffi=1.15.0=py37h036bc23_0
+  
+  <   - climpred=2.1.5.post1=pyhd8ed1ab_0
+  >   - climpred=2.1.6=pyhd8ed1ab_1
+  
+  <   - clisops=0.6.5=pyh6c4a22f_0
+  >   - clisops=0.7.0=pyh6c4a22f_0
+  
+  <   - dask=2021.9.0=pyhd8ed1ab_0
+  >   - dask=2021.11.2=pyhd8ed1ab_0
+  
+  <   - gdal=3.1.4=py37h2ec2946_8
+  >   - gdal=3.3.2=py37hd5a0ba4_2
+  
+  <   - geopandas=0.9.0=pyhd8ed1ab_1
+  >   - geopandas=0.10.2=pyhd8ed1ab_0
+  
+  <   - nc-time-axis=1.3.1=pyhd8ed1ab_2
+  >   - nc-time-axis=1.4.0=pyhd8ed1ab_0
+  
+  <   - pandas=1.2.5=py37h219a48f_0
+  >   - pandas=1.3.4=py37he8f5f7f_
+  
+  <   - poppler=0.89.0=h2de54a5_5
+  >   - poppler=21.09.0=ha39eefc_3
+  
+  <   - rioxarray=0.7.0=pyhd8ed1ab_0
+  >   - rioxarray=0.8.0=pyhd8ed1ab_0
+  
+  <   - roocs-utils=0.4.2=pyh6c4a22f_0
+  >   - roocs-utils=0.5.0=pyh6c4a22f_0
+  ```
+
+[1.18.2](https://github.com/bird-house/birdhouse-deploy/tree/1.18.2) (2021-12-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Thredds: update for Log4j Vulnerability CVE-2021-44228
+
+  Quebec gouvernment has shutdown its website due to this vulnerability so it's pretty serious
+  (https://montrealgazette.com/news/quebec/quebec-government-shutting-down-websites-report).
+
+  Thredds release notes: https://github.com/Unidata/thredds/releases
+  
+  https://www.oracle.com/security-alerts/alert-cve-2021-44228.html
+  
+  **Oracle Security Alert Advisory - CVE-2021-44228 Description**
+  
+  This Security Alert addresses CVE-2021-44228, a remote code execution
+  vulnerability in Apache Log4j. It is remotely exploitable without
+  authentication, i.e., may be exploited over a network without the need for a
+  username and password.
+  
+  Due to the severity of this vulnerability and the publication of exploit code
+  on various sites, Oracle strongly recommends that customers apply the updates
+  provided by this Security Alert as soon as possible.
+  
+  **Affected Products and Versions**
+  Apache Log4j, versions 2.0-2.14.1
+  
+  We have 4 Java component but only 1 is vulnerable: Thredds:
+  
+  **After fix**:
+  ```
+  $ docker run -it --rm unidata/thredds-docker:4.6.18 bash
+  root@f65aadd2955c:/usr/local/tomcat# find -iname '**log4j**'
+  ./webapps/thredds/WEB-INF/classes/log4j2.xml
+  ./webapps/thredds/WEB-INF/lib/log4j-api-2.15.0.jar
+  ./webapps/thredds/WEB-INF/lib/log4j-core-2.15.0.jar
+  ./webapps/thredds/WEB-INF/lib/log4j-slf4j-impl-2.15.0.jar
+  ./webapps/thredds/WEB-INF/lib/log4j-web-2.15.0.jar
+  ```
+  
+  **Before fix (unidata/thredds-docker:4.6.15)**:
+  ```
+  $ docker exec -it thredds find / -iname '**log4j**'
+  find: ‘/proc/1/map_files’: Operation not permitted
+  find: ‘/proc/12/map_files’: Operation not permitted
+  find: ‘/proc/20543/map_files’: Operation not permitted
+  /usr/local/tomcat/webapps/twitcher#ows#proxy#thredds/WEB-INF/classes/log4j2.xml
+  /usr/local/tomcat/webapps/twitcher#ows#proxy#thredds/WEB-INF/lib/log4j-api-2.13.3.jar
+  /usr/local/tomcat/webapps/twitcher#ows#proxy#thredds/WEB-INF/lib/log4j-core-2.13.3.jar
+  /usr/local/tomcat/webapps/twitcher#ows#proxy#thredds/WEB-INF/lib/log4j-slf4j-impl-2.13.3.jar
+  /usr/local/tomcat/webapps/twitcher#ows#proxy#thredds/WEB-INF/lib/log4j-web-2.13.3.jar
+  ```
+  
+  **Other components (ncwms2, geoserver, solr) have log4j older than version 2.0
+  so supposedly not affected**:
+  
+  ```
+  $ docker exec -it ncwms2 find / -iname '**log4j**'
+  /opt/conda/envs/birdhouse/opt/apache-tomcat/webapps/ncWMS2/WEB-INF/classes/log4j.properties
+  /opt/conda/envs/birdhouse/opt/apache-tomcat/webapps/ncWMS2/WEB-INF/lib/log4j-1.2.17.jar
+  /opt/conda/envs/birdhouse/opt/apache-tomcat/webapps/ncWMS2/WEB-INF/lib/slf4j-log4j12-1.7.2.jar
+  
+  $ docker exec -it geoserver find / -iname '**log4j**'
+  /build_data/log4j.properties
+  find: ‘/etc/ssl/private’: Permission denied
+  find: ‘/proc/tty/driver’: Permission denied
+  find: ‘/proc/1/map_files’: Operation not permitted
+  find: ‘/proc/15/task/47547’: No such file or directory
+  find: ‘/proc/15/map_files’: Operation not permitted
+  find: ‘/proc/47492/map_files’: Operation not permitted
+  find: ‘/root’: Permission denied
+  /usr/local/tomcat/log4j.properties
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/log4j-1.2.17.jar
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/metrics-log4j-3.0.2.jar
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/slf4j-log4j12-1.6.4.jar
+  find: ‘/var/cache/apt/archives/partial’: Permission denied
+  find: ‘/var/cache/ldconfig’: Permission denied
+  
+  $ docker exec -it solr find / -iname '**log4j**'
+  /data/solr/log4j.properties
+  /opt/birdhouse/eggs/birdhousebuilder.recipe.solr-0.1.5-py2.7.egg/birdhousebuilder/recipe/solr/templates/log4j.properties
+  /opt/conda/envs/birdhouse/opt/solr/docs/solr-core/org/apache/solr/logging/log4j
+  /opt/conda/envs/birdhouse/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/Log4jInfo.html
+  /opt/conda/envs/birdhouse/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/Log4jWatcher.html
+  /opt/conda/envs/birdhouse/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/class-use/Log4jInfo.html
+  /opt/conda/envs/birdhouse/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/class-use/Log4jWatcher.html
+  /opt/conda/envs/birdhouse/opt/solr/example/resources/log4j.properties
+  /opt/conda/envs/birdhouse/opt/solr/licenses/log4j-1.2.17.jar.sha1
+  /opt/conda/envs/birdhouse/opt/solr/licenses/log4j-LICENSE-ASL.txt
+  /opt/conda/envs/birdhouse/opt/solr/licenses/log4j-NOTICE.txt
+  /opt/conda/envs/birdhouse/opt/solr/licenses/slf4j-log4j12-1.7.7.jar.sha1
+  /opt/conda/envs/birdhouse/opt/solr/server/lib/ext/log4j-1.2.17.jar
+  /opt/conda/envs/birdhouse/opt/solr/server/lib/ext/slf4j-log4j12-1.7.7.jar
+  /opt/conda/envs/birdhouse/opt/solr/server/resources/log4j.properties
+  /opt/conda/envs/birdhouse/opt/solr/server/scripts/cloud-scripts/log4j.properties
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/docs/solr-core/org/apache/solr/logging/log4j
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/Log4jInfo.html
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/Log4jWatcher.html
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/class-use/Log4jInfo.html
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/docs/solr-core/org/apache/solr/logging/log4j/class-use/Log4jWatcher.html
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/example/resources/log4j.properties
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/licenses/log4j-1.2.17.jar.sha1
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/licenses/log4j-LICENSE-ASL.txt
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/licenses/log4j-NOTICE.txt
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/licenses/slf4j-log4j12-1.7.7.jar.sha1
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/server/lib/ext/log4j-1.2.17.jar
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/server/lib/ext/slf4j-log4j12-1.7.7.jar
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/server/resources/log4j.properties
+  /opt/conda/pkgs/solr-5.2.1-1/opt/solr/server/scripts/cloud-scripts/log4j.properties
+  ```
+
+[1.18.1](https://github.com/bird-house/birdhouse-deploy/tree/1.18.1) (2021-12-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Update `Mapgie` version [3.19.0](https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst#3190-2021-12-02)  
+  to [3.19.1](https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst#3191-2021-12-08) with fix of unhandled
+  request concurrent cleanup with adapter caching, as observed in [bird-house/birdhouse-deploy#224 (comment)](
+  https://github.com/bird-house/birdhouse-deploy/pull/224#issuecomment-985668339).
+
+[1.18.0](https://github.com/bird-house/birdhouse-deploy/tree/1.18.0) (2021-12-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Upgrade default `Weaver` version to [4.5.0](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#450-2021-11-25) 
+  (from [4.2.1](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#421-2021-10-20)) for new features and fixes.
+  Most notable changes are: 
+  - Adds support of `X-WPS-Output-Context` header to define the WPS output nested directory (for user context).
+  - Adds support of `X-Auth-Docker` header to define a private Docker registry authentication token when the 
+    referenced Docker image in the deployed Application Package requires it to fetch it for Process execution. 
+  - Require `MongoDB==5.0` Docker image for Weaver's database.
+  - Fixes related to handling `dismiss` operation of job executions and retrieval of their results.
+  - Fixes related to fetching remote files and propagation of intermediate results between Workflow steps.
+
+## Important
+Because of the new `MongoDB==5.0` database requirement for Weaver that uses (potentially) distinct version from other 
+birds (notably `phoenix` with `MongoDB==3.4`), a separate Docker image is employed only for Weaver. If some processes, 
+jobs, or other Weaver-related data was already defined on one of your server instances, manual transfer between the 
+generic `${DATA_PERSIST_ROOT}/mongodb_persist` to new  `${DATA_PERSIST_ROOT}/mongodb_weaver_persist` directory must 
+be accomplished. The data in the new directory should then be migrated to the new version following the procedure 
+described in [Database Migration](https://pavics-weaver.readthedocs.io/en/latest/installation.html?#database-migration).
+
+## Legal Notice
+While migrating from ``MongoDB==3.4`` to ``MongoDB==5.0``, its license changes from AGPL to SSPL
+(reference: [mongodb/mongo@6ea81c8/README#L89-L95](https://github.com/mongodb/mongo/blob/6ea81c88/README#L89-L95)).
+This should not impact users using the platform for public and Open Source uses, but should be considered otherwise.
+
+[1.17.6](https://github.com/bird-house/birdhouse-deploy/tree/1.17.6) (2021-12-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Upgrade Magpie/Twitcher to 3.19.0, and add new related environment variables.
+  * Adjust Twitcher runner to employ `gunicorn` instead of `waitress`.
+  * Add new environment variables to handle email usage, used for features such as 
+    user registration/approval and user assignment to groups with terms and conditions.
+  * Add expiration variable for temporary tokens.
+
+[1.17.5](https://github.com/bird-house/birdhouse-deploy/tree/1.17.5) (2021-11-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Upgrade Finch to 0.7.7
+  [Release notes for 0.7.7](https://github.com/bird-house/finch/releases/tag/v0.7.7)
+- [Release notes for 0.7.6](https://github.com/bird-house/finch/releases/tag/v0.7.6)
+  
+[1.17.4](https://github.com/bird-house/birdhouse-deploy/tree/1.17.4) (2021-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Add missing ``config/canarie-api/weaver_config.py`` entry to ``.gitignore`` of ``./components/weaver``
+  that is generated from the corresponding template file.
+
+  If upgrading from previous `1.17.x` version, autodeploy will not resume automatically even with this fix because of 
+  the *dirty* state of the repository. A manual `git pull` will be required to fix subsequent autodeploy triggers.
+
+[1.17.3](https://github.com/bird-house/birdhouse-deploy/tree/1.17.3) (2021-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Minor fix to `install-docker.sh` and comment update for other scripts due to Magpie upgrade
+
+  `install-docker.sh`: fix to work with users with sudo privilege.  Before it needed user `root`.
+
+  Other comments in scripts are due to new Magpie in PR https://github.com/bird-house/birdhouse-deploy/pull/107.
+
+
+[1.17.2](https://github.com/bird-house/birdhouse-deploy/tree/1.17.2) (2021-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- scripts: add `extract-jupyter-users-from-magpie-db`
+
+  Extract Jupyter users from Magpie DB so we can send announcements to all Jupyter users.
+
+  Sample output:
+
+  ```
+  $ ./scripts/extract-jupyter-users-from-magpie-db  > /tmp/out
+  + echo SELECT email,user_name FROM users ORDER BY email
+  + docker exec -i postgres-magpie psql -U postgres-magpie magpiedb
+
+  $ cat /tmp/out
+           email          |   user_name
+  ------------------------+---------------
+   admin-catalog@mail.com | admin-catalog
+   admin@mail.com         | admin
+   anonymous@mail.com     | anonymous
+   authtest@example.com   | authtest
+  (4 rows)
+  ```
+
+
+[1.17.1](https://github.com/bird-house/birdhouse-deploy/tree/1.17.1) (2021-11-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Apply ``mongodb`` network to ``mongodb`` image in order to allow ``phoenix`` to properly reference it.
+- Remove ``mongodb`` definition from ``./components/weaver`` since the extended ``mongodb`` network is already provided.
+
+[1.17.0](https://github.com/bird-house/birdhouse-deploy/tree/1.17.0) (2021-11-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Adds [Weaver](https://github.com/crim-ca/weaver) to the stack (optional) when ``./components/weaver`` 
+  is added to ``EXTRA_CONF_DIRS``. For more details, refer to 
+  [Weaver Component](https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/components/README.rst#Weaver)
+  Following happens when enabled:
+    
+  * Service ``weaver`` (API) gets added with endpoints ``/twitcher/ows/proxy/weaver`` and ``/weaver``.
+      
+  * All *birds* offering a WPS 1.x/2.x endpoint are automatically added as providers known by `Weaver`
+    (birds: ``catalog``, ``finch``, ``flyingpigeon``, ``hummingbird``, ``malleefowl`` and ``raven``).
+    This offers an automatic mapping of WPS 1.x/2.x requests of process descriptions and execution nested under
+    the *birds* to corresponding [OGC-API - Processes](https://github.com/opengeospatial/ogcapi-processes/) 
+    RESTful interface (and added functionalities). 
+    
+  * New processes can be deployed and executed using 
+    Dockerized [Application Packages](https://pavics-weaver.readthedocs.io/en/latest/package.html).
+    Additionally, all existing processes (across *bird* providers and Dockerized Application Packages) 
+    can be chained into [Workflows](https://pavics-weaver.readthedocs.io/en/latest/processes.html#workflow)
+      
+  * Images ``weaver-worker`` (`Weaver`'s job executor) and ``docker-proxy`` (sibling Docker container dispatcher)
+    are added to the stack to support above functionalities.
+      
+  * Adds `Magpie` permissions and service for `Weaver` endpoints.
+  
+  * Adds ``./optional-components/test-weaver`` for even more `Magpie` extended permissions for `Weaver` 
+    for getting access to resources for functionalities required by [Weaver Testing notebook][weaver-test-notebook].
+
+[weaver-test-notebook]: https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebook-components/weaver_example.ipynb
+
+
 [1.16.2](https://github.com/bird-house/birdhouse-deploy/tree/1.16.2) (2021-10-27)
 ------------------------------------------------------------------------------------------------------------------
 

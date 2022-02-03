@@ -99,7 +99,7 @@ SERVICES = {
                 'request': {
                     'url': 'https://${PAVICS_FQDN_PUBLIC}/jupyter/hub/login'
                 },
-            },
+            }
         }
     },
     'indices': {
