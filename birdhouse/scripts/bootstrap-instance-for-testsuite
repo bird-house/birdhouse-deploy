@@ -20,7 +20,9 @@ $THIS_DIR/bootstrap-testdata
 
 # Index Thredds catalog.
 # Need to open temporary Thredds "testdata/secure/" on local PAVICS host to anonymous group.
-$THIS_DIR/trigger-pavicscrawler
+# Only crawl the subset enough to pass canarie-api monitoring
+# see config/canarie-api/docker_configuration.py.template
+$THIS_DIR/trigger-pavicscrawler target_files=birdhouse/testdata/flyingpigeon/cmip5
 
 # For crawler to complete, assuming minimal dataset from bootstrap-testdata so
 # should be super fast to finish crawling.
