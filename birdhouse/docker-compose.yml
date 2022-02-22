@@ -197,6 +197,8 @@ services:
       - "8095:5000"
     volumes:
       - ./config/finch/wps.cfg:/wps.cfg
+      - ./pywps/pywps/inout/storage/file.py:/opt/conda/envs/finch/lib/python3.9/site-packages/pywps/inout/storage/file.py:ro
+      - ./pywps/pywps/configuration.py:/opt/conda/envs/finch/lib/python3.9/site-packages/pywps/configuration.py:ro
       # - data:/opt/birdhouse/var/lib
       - wps_outputs:/data/wpsoutputs
       - /tmp
