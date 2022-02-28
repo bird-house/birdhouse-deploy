@@ -85,6 +85,10 @@ weaver.wps_email_notify_ssl = true
 weaver.wps_email_notify_template_dir =
 weaver.wps_email_notify_template_default =
 
+# --- Weaver vault configuration ---
+weaver.vault = true
+weaver.vault_dir = /tmp/vault
+
 # --- Weaver other configurations ---
 # default WPS processes to always preload
 weaver.wps_processes_file = wps_processes.yml
