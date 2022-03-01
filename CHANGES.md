@@ -27,6 +27,9 @@
   - Adds [Vault](https://pavics-weaver.readthedocs.io/en/latest/processes.html#vault) functionality allowing temporary
     and secure storage to upload files for single-use process execution.
   - Various bugfixes and conformance resolution related to [OGC API - Processes][ogcapi-proc].
+  - Fix `weaver-mongodb` link references for `weaver-worker`. New default variables `WEAVER_MONGODB_[HOST|PORT|URL]`
+    are defined to construct different INI configuration formats employed by `weaver` and `weaver-worker` images.
+  - Fix missing `EXTRA_VARS` variables in [Weaver's default.env](./birdhouse/components/weaver/default.env).
 
 [ogcapi-proc]: https://github.com/opengeospatial/ogcapi-processes
 
