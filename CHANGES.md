@@ -30,6 +30,8 @@
   - Fix `weaver-mongodb` link references for `weaver-worker`. New default variables `WEAVER_MONGODB_[HOST|PORT|URL]`
     are defined to construct different INI configuration formats employed by `weaver` and `weaver-worker` images.
   - Fix missing `EXTRA_VARS` variables in [Weaver's default.env](./birdhouse/components/weaver/default.env).
+  - Fix [celery-healthcheck](./birdhouse/components/weaver/celery-healthcheck) of `weaver-worker` to consider 
+    multiple tasks.
 
 [ogcapi-proc]: https://github.com/opengeospatial/ogcapi-processes
 
