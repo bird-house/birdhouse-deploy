@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.18.6](https://github.com/bird-house/birdhouse-deploy/tree/1.18.6) (2022-03-08)
+------------------------------------------------------------------------------------------------------------------
+
 - Magpie: update `magpie` service
   from [3.19.1](https://github.com/Ouranosinc/Magpie/tree/3.19.1)
   to [3.21.0](https://github.com/Ouranosinc/Magpie/tree/3.21.0).
