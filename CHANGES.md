@@ -16,6 +16,26 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.18.6](https://github.com/bird-house/birdhouse-deploy/tree/1.18.6) (2022-03-08)
+------------------------------------------------------------------------------------------------------------------
+
+- Magpie: update `magpie` service
+  from [3.19.1](https://github.com/Ouranosinc/Magpie/tree/3.19.1)
+  to [3.21.0](https://github.com/Ouranosinc/Magpie/tree/3.21.0).
+
+  Relevant changes:
+  - Update *WFS*, *WMS* and *WPS* related services to properly implement the relevant *Permissions* and *Resources*
+    according to their specific implementation details. For example, *GeoServer*-based *WMS* implementation supports
+    *Workspaces* and additional operations that are not offered by standard *OGC*-based *WMS*. Some of these
+    implementation specific operations can be taken advantage of with improved *Permissions* and *Resources* resolution.
+  - Add multi-*Resource* effective access resolution for *Services* that support it.
+    For example, accessing multiple *Layers* under a permission-restricted *WFS* with parameters that allow multiple
+    values within a single request is now possible, if the user is granted to all specified *Resources*.
+    Previously, users would require to access each *Layer Resource* individually with distinct requests.
+  - Magpie's API and UI are more verbose about supported hierarchical *Resource* structure under a given *Service* type.
+    When creating *Resources*, specific structures have to be respected, and only valid cases are proposed in the UI.
+  - Minor UI fixes.
+
 [1.18.5](https://github.com/bird-house/birdhouse-deploy/tree/1.18.5) (2022-01-27)
 ------------------------------------------------------------------------------------------------------------------
 
