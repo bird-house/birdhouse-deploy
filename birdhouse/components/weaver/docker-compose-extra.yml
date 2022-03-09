@@ -111,7 +111,7 @@ services:
       # Weaver API will not have registered the execution tasks until then.
       start_period: 30s
       interval: 60s
-      timeout: 10s
+      timeout: 20s
       retries: 2
 
   # Dedicated database for Weaver, since other 'mongodb' image does not employ the same version.
@@ -122,8 +122,6 @@ services:
       - weaver-mongodb
     volumes:
       - ${DATA_PERSIST_ROOT}/mongodb_weaver_persist:/data/db
-    # Mongodb crash with permission denied errors if the command is not overridden like this
-    command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
     restart: always
     logging: *default-logging
 

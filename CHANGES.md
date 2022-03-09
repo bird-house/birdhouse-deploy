@@ -16,6 +16,30 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.18.7](https://github.com/bird-house/birdhouse-deploy/tree/1.18.7) (2022-03-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Weaver: update `weaver` component
+  from [4.5.0](https://github.com/crim-ca/weaver/tree/4.5.0)
+  to [4.12.0](https://github.com/crim-ca/weaver/tree/4.12.0).
+
+  Relevant changes:
+  - Adds `WeaverClient` and *Weaver CLI*. Although not strictly employed by the platform itself to offer *Weaver* as a
+    service, these can be employed to interact with *Weaver* using Python or shell commands, providing access to all
+    WPS *birds* offered by the platform using the common [OGC API - Processes][ogcapi-proc] interface through
+    [Weaver Providers](https://pavics-weaver.readthedocs.io/en/latest/processes.html#remote-provider).
+  - Adds [Vault](https://pavics-weaver.readthedocs.io/en/latest/processes.html#vault) functionality allowing temporary
+    and secure storage to upload files for single-use process execution.
+  - Various bugfixes and conformance resolution related to [OGC API - Processes][ogcapi-proc].
+  - Fix `weaver-mongodb` link references for `weaver-worker`. New default variables `WEAVER_MONGODB_[HOST|PORT|URL]`
+    are defined to construct different INI configuration formats employed by `weaver` and `weaver-worker` images.
+  - Fix missing `EXTRA_VARS` variables in [Weaver's default.env](./birdhouse/components/weaver/default.env).
+  - Fix [celery-healthcheck](./birdhouse/components/weaver/celery-healthcheck) of `weaver-worker` to consider
+    multiple tasks.
+
+[ogcapi-proc]: https://github.com/opengeospatial/ogcapi-processes
+
 [1.18.6](https://github.com/bird-house/birdhouse-deploy/tree/1.18.6) (2022-03-08)
 ------------------------------------------------------------------------------------------------------------------
 
