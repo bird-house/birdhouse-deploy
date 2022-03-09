@@ -16,6 +16,32 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.18.8](https://github.com/bird-house/birdhouse-deploy/tree/1.18.8) (2022-03-09)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Weaver: fix tests
+  
+  Relevant changes:
+  - Increase default timeout (`60s -> 120s`) for
+    [components/weaver/post-docker-compose-up](./birdhouse/components/weaver/post-docker-compose-up) script to allow it
+    to complete with many WPS bird taking a long time to boot. Before this fix, test instances only managed to register 
+    `catalog`, `finch`, and `flyingpigeon` providers, but timed out for `hummingbird` and following WPS birds.
+
+    This resolves the first few cell tests by having birds ready for use:
+
+    ```text
+    [2022-03-09T02:13:34.966Z] pavics-sdi-master/docs/source/notebook-components/weaver_example.ipynb . [ 57%]
+    [2022-03-09T02:13:46.069Z] .......FF.                                                               [ 61%]
+    ```
+
+  - Add override ``request_options.yml`` in
+    [birdhouse/optional-components/test-weaver](./birdhouse/optional-components/test-weaver)
+    that disables SSL verification specifically for the remaining 2 `F` cell above. Error is related to the job 
+    execution itself on the test instance, which fails when Weaver sends requests to `hummingbird`'s `ncdump` process. 
+    An SSL verification error happens, because the test instance uses a self-signed SSL certificate.
+
 [1.18.7](https://github.com/bird-house/birdhouse-deploy/tree/1.18.7) (2022-03-08)
 ------------------------------------------------------------------------------------------------------------------
 
