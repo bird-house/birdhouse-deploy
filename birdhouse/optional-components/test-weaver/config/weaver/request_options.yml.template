@@ -1,0 +1,15 @@
+# Override the default request options with specific ones for tests.
+#
+# See original:
+#   https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/components/weaver/config/weaver/request_options.yml.template
+# See documentation:
+#   https://github.com/crim-ca/weaver/blob/master/config/request_options.yml.example
+#
+# If anything critical is defined in your custom ``request_options.yml``, you should add them here as well to use
+# this optional component, as the original will not be mounted in the service.
+#
+requests:
+  # disable SSL verification for test instance using self-signed certificate
+  # avoid doing this on real instance to keep it secure against man-in-the-middle attacks
+  - url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/weaver/providers/hummingbird/processes/ncdump/jobs
+    verify: false
