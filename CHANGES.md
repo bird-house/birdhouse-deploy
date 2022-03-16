@@ -19,11 +19,6 @@
 [1.18.9](https://github.com/bird-house/birdhouse-deploy/tree/1.18.9) (2022-03-16)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
-
-[1.18.9](https://github.com/bird-house/birdhouse-deploy/tree/1.18.8) (2022-03-16)
-------------------------------------------------------------------------------------------------------------------
-
 ## Changes:
 
 - Finch: update `finch` component 
