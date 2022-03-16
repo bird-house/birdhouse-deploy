@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+INFO="[INFO]  "
+ERROR="[ERROR] "
+
+echo "${INFO}Starting Celery Healthcheck"
+result=$(celery inspect registered -A pyramid_celery.celery_app --ini "${APP_CONFIG_DIR}/weaver.ini" --timeout 5)
+if [[ -z "${result}" ]]; then
+  echo "${ERROR}Empty Celery response."
+  exit 1
+fi
+
+# should look like (minimally):
+#   [... weaver-logs ...]
+#   -> celery@<uuid>: OK
+#       * weaver.processes.execution.execute_process
+# more tasks possible depending on Weaver version and enabled features
+celery_status_index=$(echo "${result}" | grep --line-number -E '^-> celery' | cut -d ':' -f 1)
+if [[ -z "${celery_status_index}" ]]; then
+  echo "${ERROR}Empty Celery status."
+  exit 1
+fi
+celery_status_tasks=$(($(echo "${result}" | wc -l) - celery_status_index))
+celery_status_lines=$((celery_status_tasks + 1))
+celery_status_result=$(echo "${result}" | tail -n ${celery_status_lines})
+celery_status=$(echo "${celery_status_result}" | head -n 1)
+celery_tasks=$(echo "${celery_status_result}" | tail -n ${celery_status_tasks})
+
+echo "${INFO}Celery inspect results dump:"
+echo "${celery_status_result}"
+
+if [[ $(echo "${celery_status}" | grep -c "OK") -ne 1 ]]; then
+  echo "${ERROR}Celery inspect did not return expected 'OK' status."
+  exit 2
+fi
+# validate only the task that is always required
+if [[ $(echo "${celery_tasks}" | grep -c "weaver.processes.execution.execute_process") -ne 1 ]]; then
+  echo "${ERROR}Celery inspect did not retrieve expected task."
+  exit 3
+fi
+
+echo "${INFO}Success. Celery Worker is ready."
+exit 0

@@ -49,6 +49,38 @@ ziggurat_foundations.session_provider_callable = magpie.models:get_session_calla
 github.client_id=${GITHUB_CLIENT_ID}
 github.client_secret=${GITHUB_CLIENT_SECRET}
 
+# temporary token definition (defaults below if omitted)
+# note: token here refers to uuids employed in temporary URL endpoints, not security auth tokens
+# Lifetime (in seconds) of the temporary token :
+magpie.token_expire = 86400
+
+# user registration and approvals
+
+# below values are the defaults, adjust accordingly for desired behavior
+# email template overrides defaults in: magpie/api/templates
+magpie.user_registration_enabled = ${MAGPIE_USER_REGISTRATION_ENABLED}
+magpie.user_registration_submission_email_template = ${MAGPIE_USER_REGISTRATION_SUBMISSION_EMAIL_TEMPLATE}
+magpie.user_registration_approval_enabled = ${MAGPIE_USER_REGISTRATION_APPROVAL_ENABLED}
+magpie.user_registration_approval_email_recipient = ${MAGPIE_USER_REGISTRATION_APPROVAL_EMAIL_RECIPIENT}
+magpie.user_registration_approval_email_template = ${MAGPIE_USER_REGISTRATION_APPROVAL_EMAIL_TEMPLATE}
+magpie.user_registration_approved_email_template = ${MAGPIE_USER_REGISTRATION_APPROVED_EMAIL_TEMPLATE}
+magpie.user_registration_declined_email_template = ${MAGPIE_USER_REGISTRATION_DECLINED_EMAIL_TEMPLATE}
+magpie.user_registration_notify_enabled = ${MAGPIE_USER_REGISTRATION_NOTIFY_ENABLED}
+magpie.user_registration_notify_email_recipient = ${MAGPIE_USER_REGISTRATION_NOTIFY_EMAIL_RECIPIENT}
+magpie.user_registration_notify_email_template = ${MAGPIE_USER_REGISTRATION_NOTIFY_EMAIL_TEMPLATE}
+
+# user assignment to groups with terms & conditions
+magpie.group_terms_submission_email_template = ${MAGPIE_GROUP_TERMS_SUBMISSION_EMAIL_TEMPLATE}
+magpie.group_terms_approved_email_template = ${MAGPIE_GROUP_TERMS_APPROVED_EMAIL_TEMPLATE}
+
+# smtp server configuration
+magpie.smtp_user = Magpie
+magpie.smtp_from = ${MAGPIE_SMTP_FROM}
+magpie.smtp_host = ${MAGPIE_SMTP_HOST}
+magpie.smtp_port = ${MAGPIE_SMTP_PORT}
+magpie.smtp_ssl = ${MAGPIE_SMTP_SSL}
+magpie.smtp_password = ${MAGPIE_SMTP_PASSWORD}
+
 # Caching settings for specific sections/functions - improves performance response times of recurring requests
 # See Twitcher INI configuration for caching that takes effect when resolving access enforcement to actual services.
 # Following cache settings apply only during Magpie API requests.

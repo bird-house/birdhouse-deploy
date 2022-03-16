@@ -12,7 +12,13 @@ Vagrant.configure("2") do |config|
 
   # bug https://github.com/hashicorp/vagrant/issues/3341 still happening as of
   # 2019-07-03 with VirtualBox 6.0.8
-  config.vbguest.auto_update = false
+  if Vagrant.has_plugin?("vagrant-vbguest") then
+    # vagrant plugin list
+    # vagrant vbguest --status
+    # vagrant vbguest --do install  # manual re-install if OS update wiped it
+    # Sometime manual re-install do not work, best to take a VM snapshot before OS update for rollback.
+    config.vbguest.auto_update = false
+  end
 
   # https://blog.centos.org/2018/01/updated-centos-vagrant-images-available-v1801-01/
   # Fix /vagrant shared folders (together with vagrant-vbguest) for Centos 7.

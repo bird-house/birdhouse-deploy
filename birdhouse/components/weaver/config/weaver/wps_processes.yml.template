@@ -1,0 +1,27 @@
+# Details:
+#   https://github.com/crim-ca/weaver/blob/master/config/wps_processes.yml.example
+#
+# Using 'processes' section:
+#   For each of the below WPS service providers, Weaver would iterate over listed WPS processes returned by their
+#   GetCapabilities response and would register them as individual WPS-REST processes. Each process will be defined
+#   as a local snapshot of the process at that point in time. They would be static and won't consider process changes.
+# Using 'providers' section:
+#   Weaver will register each service reference directly without fetching every underlying process immediately.
+#   Later calling process description or execution will make Weaver obtain that definition dynamically from the
+#   referenced WPS DescribeProcess/Execute response to provide a live response.
+
+# Note:
+#   All service providers and underlying processes must be publicly accessible for GetCapabilities and DescribeProcess
+#   at boot time in order to allow Weaver to retrieve the information. The application will skip unresolvable references
+#   including unauthorized and forbidden access.
+
+# Note:
+#   To register WPS providers served by this instance of birdhouse-deploy, employ the WEAVER_WPS_PROVIDERS variable
+#   in "env.local" instead of 'providers' section of this configuration file.
+#   See file "default.env" in directory of Weaver component for an example.
+#   Those providers will be deployed using the 'post-docker-compose-up' script.
+#   More details are provide in the script indicating why this method is recommended.
+
+# following sections can be empty, but must be defined
+processes:    # static local snapshot
+providers:    # dynamic remote reference

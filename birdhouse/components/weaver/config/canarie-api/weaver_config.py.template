@@ -1,0 +1,9 @@
+SERVICES['node']['monitoring'].update({
+    'Weaver': {
+        'request': {
+            'url': 'https://${PAVICS_FQDN_PUBLIC}/weaver'
+        },
+    },
+})
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python
