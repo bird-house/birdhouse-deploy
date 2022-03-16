@@ -16,6 +16,29 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.18.9](https://github.com/bird-house/birdhouse-deploy/tree/1.18.9) (2022-03-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Finch: update `finch` component 
+  from [0.7.7](https://github.com/bird-house/finch/releases/tag/v0.7.7)
+  to [0.8.2](https://github.com/bird-house/finch/releases/tag/v0.8.2)
+
+  Relevant Changes:
+  - v0.8.0
+    - Add hourly_to_daily process
+    - Avoid annoying warnings by updating birdy (environment-docs)
+    - Upgrade to clisops 0.8.0 to accelerate spatial averages over regions. 
+    - Upgrade to xesmf 0.6.2 to fix spatial averaging bug not weighing correctly cells with varying areas. 
+    - Update to PyWPS 4.5.1 to allow the creation of recursive directories for outputs.
+  - v0.8.2
+    - Add ``geoseries_to_netcdf`` process, converting a geojson (like a OGC-API request) to a CF-compliant netCDF. 
+    - Add ``output_name`` argument to most processes (excepted subsetting and averaging processes), to control 
+      the name (or prefix) of the output file. 
+    - New dependency ``python-slugify`` to ensure filenames are safe and valid. 
+    - Pinning dask to ``<=2022.1.0`` to avoid a performance issue with ``2022.1.1``.
+
 [1.18.8](https://github.com/bird-house/birdhouse-deploy/tree/1.18.8) (2022-03-09)
 ------------------------------------------------------------------------------------------------------------------
 
