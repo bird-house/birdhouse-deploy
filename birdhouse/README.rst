@@ -260,6 +260,9 @@ after the merge, instead of onto the commits in the PR prior merging.
 Release Procedure
 -----------------
 
+* Pull/merge latest ``master`` to make sure modifications applied in
+  CHANGES.md_, in next step, are under the most recent "unreleased" section.
+
 * Update CHANGES.md_, commit, push.
 
 * Open a PR with the new content from CHANGES.md_ as the PR description.  PR
@@ -283,7 +286,9 @@ Release Procedure
   steps together, do not take a break in the middle.
 
   * Merge with ``master`` branch, if needed, so next ``bump2version`` step will
-    bump to the proper next version.
+    bump to the proper next version. Might need to review the places where
+    CHANGES.md_ items were inserted following merge to make sure the new ones by
+    this PR are under "unreleased".
 
   * Run ``bump2version`` with appropriate options, as described in "Tagging
     policy" section above.  Push.
@@ -296,6 +301,8 @@ Release Procedure
 
   * Run ``git tag`` on the commit created the by merge, with the same tag as
     ``bump2version`` generated.
+
+  * Run ``git push --tags`` to upload the new version.
 
 
 .. _nginx.conf: ./config/proxy/nginx.conf
