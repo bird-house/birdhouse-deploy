@@ -260,7 +260,7 @@ after the merge, instead of onto the commits in the PR prior merging.
 Release Procedure
 -----------------
 
-* Pull/merge latest ``master`` to make sure modifications applied in
+* Pull/merge latest ``master`` to make sure modifications are applied in
   CHANGES.md_, in next step, are under the most recent "unreleased" section.
 
 * Update CHANGES.md_, commit, push.
