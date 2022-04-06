@@ -28,7 +28,7 @@ fi
 SOURCE_HOST="$1"; shift
 FORCE_MODE="$1"
 
-if [ -z "$FORCE_MODE" ]; then
+if [ ! x"$FORCE_MODE" = xforce ]; then
     # Default to dry-run
     SYNC_DATA_EXTRA_RSYNC_OPTS="$SYNC_DATA_EXTRA_RSYNC_OPTS --dry-run"
 fi
