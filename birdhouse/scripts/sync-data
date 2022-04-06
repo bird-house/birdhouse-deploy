@@ -1,5 +1,5 @@
 #!/bin/sh
-# Sync relevant data to other hosts.
+# Sync relevant data from another host.
 #
 # Useful to prepare a new replacement host or to keep a staging host up-to-date.
 #
@@ -8,7 +8,7 @@
 # Thredds data also excluded since it is huge.
 #
 # Assume
-# * ssh passwordless to target host is setup properly
+# * ssh passwordless to source host is setup properly
 
 THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
@@ -25,7 +25,7 @@ if [ -f "$COMPOSE_DIR/env.local" ]; then
 fi
 
 
-TARGET_HOST="$1"; shift
+SOURCE_HOST="$1"; shift
 FORCE_MODE="$1"
 
 if [ -z "$FORCE_MODE" ]; then
@@ -40,7 +40,10 @@ RSYNC_BASE_CMD="rsync --recursive --links --hard-links --times \
 
 set -x
 
-for item in geoserver/ jupyterhub_user_data/ magpie_persist/; do
+#for item in geoserver/ jupyterhub_user_data/ magpie_persist/; do
+for item in geoserver/; do
     # Assume DATA_PERSIST_ROOT is same between both hosts !
-    $RSYNC_BASE_CMD $DATA_PERSIST_ROOT/$item $TARGET_HOST:$DATA_PERSIST_ROOT/$item
+    $RSYNC_BASE_CMD $SOURCE_HOST:$DATA_PERSIST_ROOT/$item $DATA_PERSIST_ROOT/$item
 done
+
+$COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm
