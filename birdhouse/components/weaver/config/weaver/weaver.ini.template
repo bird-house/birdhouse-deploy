@@ -18,8 +18,8 @@ pyramid.debug_routematch = false
 pyramid.default_locale_name = en
 
 # mongodb
-mongodb.host = weaver-mongodb
-mongodb.port = 27017
+mongodb.host = ${WEAVER_MONGODB_HOST}
+mongodb.port = ${WEAVER_MONGODB_PORT}
 mongodb.db_name = weaver
 
 # --- Weaver Configuration ---
@@ -85,6 +85,10 @@ weaver.wps_email_notify_ssl = true
 weaver.wps_email_notify_template_dir =
 weaver.wps_email_notify_template_default =
 
+# --- Weaver vault configuration ---
+weaver.vault = true
+weaver.vault_dir = /tmp/vault
+
 # --- Weaver other configurations ---
 # default WPS processes to always preload
 weaver.wps_processes_file = wps_processes.yml
@@ -98,8 +102,8 @@ weaver.extra_options =
 ###
 [celery]
 use_celeryconfig = false
-broker_url = mongodb://mongodb:27017/celery
-result_backend = mongodb://mongodb:27017/
+broker_url = ${WEAVER_MONGODB_URL}/celery
+result_backend = ${WEAVER_MONGODB_URL}/
 
 # following is technically redundant, but Weaver-API sporadically doesn't correctly discover tasks
 # enforce the import location to make sure they are detected and tasks submission can be registered in workers

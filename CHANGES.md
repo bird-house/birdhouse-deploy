@@ -16,6 +16,99 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.18.9](https://github.com/bird-house/birdhouse-deploy/tree/1.18.9) (2022-03-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Finch: update `finch` component 
+  from [0.7.7](https://github.com/bird-house/finch/releases/tag/v0.7.7)
+  to [0.8.2](https://github.com/bird-house/finch/releases/tag/v0.8.2)
+
+  Relevant Changes:
+  - v0.8.0
+    - Add hourly_to_daily process
+    - Avoid annoying warnings by updating birdy (environment-docs)
+    - Upgrade to clisops 0.8.0 to accelerate spatial averages over regions. 
+    - Upgrade to xesmf 0.6.2 to fix spatial averaging bug not weighing correctly cells with varying areas. 
+    - Update to PyWPS 4.5.1 to allow the creation of recursive directories for outputs.
+  - v0.8.2
+    - Add ``geoseries_to_netcdf`` process, converting a geojson (like a OGC-API request) to a CF-compliant netCDF. 
+    - Add ``output_name`` argument to most processes (excepted subsetting and averaging processes), to control 
+      the name (or prefix) of the output file. 
+    - New dependency ``python-slugify`` to ensure filenames are safe and valid. 
+    - Pinning dask to ``<=2022.1.0`` to avoid a performance issue with ``2022.1.1``.
+
+[1.18.8](https://github.com/bird-house/birdhouse-deploy/tree/1.18.8) (2022-03-09)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Weaver: fix tests
+  
+  Relevant changes:
+  - Increase default timeout (`60s -> 120s`) for
+    [components/weaver/post-docker-compose-up](./birdhouse/components/weaver/post-docker-compose-up) script to allow it
+    to complete with many WPS bird taking a long time to boot. Before this fix, test instances only managed to register 
+    `catalog`, `finch`, and `flyingpigeon` providers, but timed out for `hummingbird` and following WPS birds.
+
+    This resolves the first few cell tests by having birds ready for use:
+
+    ```text
+    [2022-03-09T02:13:34.966Z] pavics-sdi-master/docs/source/notebook-components/weaver_example.ipynb . [ 57%]
+    [2022-03-09T02:13:46.069Z] .......FF.                                                               [ 61%]
+    ```
+
+  - Add override ``request_options.yml`` in
+    [birdhouse/optional-components/test-weaver](./birdhouse/optional-components/test-weaver)
+    that disables SSL verification specifically for the remaining 2 `F` cell above. Error is related to the job 
+    execution itself on the test instance, which fails when Weaver sends requests to `hummingbird`'s `ncdump` process. 
+    An SSL verification error happens, because the test instance uses a self-signed SSL certificate.
+
+[1.18.7](https://github.com/bird-house/birdhouse-deploy/tree/1.18.7) (2022-03-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Weaver: update `weaver` component
+  from [4.5.0](https://github.com/crim-ca/weaver/tree/4.5.0)
+  to [4.12.0](https://github.com/crim-ca/weaver/tree/4.12.0).
+
+  Relevant changes:
+  - Adds `WeaverClient` and *Weaver CLI*. Although not strictly employed by the platform itself to offer *Weaver* as a
+    service, these can be employed to interact with *Weaver* using Python or shell commands, providing access to all
+    WPS *birds* offered by the platform using the common [OGC API - Processes][ogcapi-proc] interface through
+    [Weaver Providers](https://pavics-weaver.readthedocs.io/en/latest/processes.html#remote-provider).
+  - Adds [Vault](https://pavics-weaver.readthedocs.io/en/latest/processes.html#vault) functionality allowing temporary
+    and secure storage to upload files for single-use process execution.
+  - Various bugfixes and conformance resolution related to [OGC API - Processes][ogcapi-proc].
+  - Fix `weaver-mongodb` link references for `weaver-worker`. New default variables `WEAVER_MONGODB_[HOST|PORT|URL]`
+    are defined to construct different INI configuration formats employed by `weaver` and `weaver-worker` images.
+  - Fix missing `EXTRA_VARS` variables in [Weaver's default.env](./birdhouse/components/weaver/default.env).
+  - Fix [celery-healthcheck](./birdhouse/components/weaver/celery-healthcheck) of `weaver-worker` to consider
+    multiple tasks.
+
+[ogcapi-proc]: https://github.com/opengeospatial/ogcapi-processes
+
+[1.18.6](https://github.com/bird-house/birdhouse-deploy/tree/1.18.6) (2022-03-08)
+------------------------------------------------------------------------------------------------------------------
+
+- Magpie: update `magpie` service
+  from [3.19.1](https://github.com/Ouranosinc/Magpie/tree/3.19.1)
+  to [3.21.0](https://github.com/Ouranosinc/Magpie/tree/3.21.0).
+
+  Relevant changes:
+  - Update *WFS*, *WMS* and *WPS* related services to properly implement the relevant *Permissions* and *Resources*
+    according to their specific implementation details. For example, *GeoServer*-based *WMS* implementation supports
+    *Workspaces* and additional operations that are not offered by standard *OGC*-based *WMS*. Some of these
+    implementation specific operations can be taken advantage of with improved *Permissions* and *Resources* resolution.
+  - Add multi-*Resource* effective access resolution for *Services* that support it.
+    For example, accessing multiple *Layers* under a permission-restricted *WFS* with parameters that allow multiple
+    values within a single request is now possible, if the user is granted to all specified *Resources*.
+    Previously, users would require to access each *Layer Resource* individually with distinct requests.
+  - Magpie's API and UI are more verbose about supported hierarchical *Resource* structure under a given *Service* type.
+    When creating *Resources*, specific structures have to be respected, and only valid cases are proposed in the UI.
+  - Minor UI fixes.
+
 [1.18.5](https://github.com/bird-house/birdhouse-deploy/tree/1.18.5) (2022-01-27)
 ------------------------------------------------------------------------------------------------------------------
 
