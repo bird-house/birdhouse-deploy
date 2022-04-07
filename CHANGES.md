@@ -16,6 +16,51 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.18.10](https://github.com/bird-house/birdhouse-deploy/tree/1.18.10) (2022-04-07)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Jupyter env: new xlrd, pre-commit, pin dask, distributed, cf_xarray, latest of everything else
+
+  Deploy new Jupyter env from PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/101 on PAVICS.
+
+  Detailed changes can be found at https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/101.
+
+  Relevant changes:
+  ```diff
+  >   - pre-commit=2.17.0=py38h578d9bd_0
+  >   - xlrd=2.0.1=pyhd8ed1ab_3
+  
+  <   - xclim=0.32.1=pyhd8ed1ab_0
+  >   - xclim=0.34.0=pyhd8ed1ab_0
+  
+  <   - cfgrib=0.9.9.1=pyhd8ed1ab_1
+  >   - cfgrib=0.9.10.1=pyhd8ed1ab_0
+  
+  <   - cftime=1.5.1.1=py38h6c62de6_1
+  >   - cftime=1.6.0=py38h3ec907f_0
+  
+  <   - intake-xarray=0.5.0=pyhd8ed1ab_0
+  >   - intake-xarray=0.6.0=pyhd8ed1ab_0
+  
+  <   - pandas=1.3.5=py38h43a58ef_0
+  >   - pandas=1.4.1=py38h43a58ef_0
+  
+  <   - regionmask=0.8.0=pyhd8ed1ab_1
+  >   - regionmask=0.9.0=pyhd8ed1ab_0
+  
+  <   - rioxarray=0.9.1=pyhd8ed1ab_0
+  >   - rioxarray=0.10.3=pyhd8ed1ab_0
+  
+  <   - xarray=0.20.2=pyhd8ed1ab_0
+  >   - xarray=2022.3.0=pyhd8ed1ab_0
+  
+  <   - zarr=2.10.3=pyhd8ed1ab_0
+  >   - zarr=2.11.1=pyhd8ed1ab_0
+  ```
+
+
 [1.18.9](https://github.com/bird-house/birdhouse-deploy/tree/1.18.9) (2022-03-16)
 ------------------------------------------------------------------------------------------------------------------
 
