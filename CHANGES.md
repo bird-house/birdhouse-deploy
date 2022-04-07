@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.18.10](https://github.com/bird-house/birdhouse-deploy/tree/1.18.10) (2022-04-07)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes:
 
 - Jupyter env: new xlrd, pre-commit, pin dask, distributed, cf_xarray, latest of everything else
