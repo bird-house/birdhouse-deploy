@@ -380,7 +380,7 @@ services:
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - ${DATA_PERSIST_ROOT}/magpie_persist:/var/lib/postgresql/data/pgdata
+      - ${MAGPIE_PERSIST_DIR}:/var/lib/postgresql/data/pgdata
       - ./config/postgres-magpie/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     restart: always
     logging: *default-logging
