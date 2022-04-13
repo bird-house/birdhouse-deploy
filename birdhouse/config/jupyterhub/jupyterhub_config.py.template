@@ -57,7 +57,8 @@ container_home_dir = join(container_workspace_dir, ".home")
 
 c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.environment = {
-    "HOME": container_home_dir
+    "HOME": container_home_dir,
+    "BOKEH_ALLOW_WS_ORIGIN": "${PAVICS_FQDN}",
 }
 
 c.DockerSpawner.volumes = {host_user_data_dir: container_workspace_dir}
