@@ -14,7 +14,34 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+
+- Jupyter env: new build for new XClim and to get Dask dashboard and Panel server app to work
+
+  Deploy new Jupyter env from PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/105 on PAVICS.
+
+  Detailed changes can be found at https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/105.
+
+  Dask dashboard and Panel server app work both by manually mapping `http://localhost:<PORT>` to
+  `https://pavics.ouranos.ca/jupyter/user/<USER>/proxy/<PORT>` as seen in screenshots below:
+
+  ![Screenshot from 2022-04-12 15-20-58](https://user-images.githubusercontent.com/11966697/163259294-97337abd-91e6-4832-b639-d7d2e89c353d.png) 
+
+  ![Screenshot from 2022-04-12 16-29-06](https://user-images.githubusercontent.com/11966697/163264000-c2d0f993-8d4d-4eeb-8fa7-0cdce454c2f4.png)
+
+  Relevant changes:
+
+  ```diff
+  >   - dask-labextension=5.2.0=pyhd8ed1ab_0
+  >   - jupyter-server-proxy=3.2.1=pyhd8ed1ab_0
+  
+  <   - xclim=0.34.0=pyhd8ed1ab_0
+  >   - xclim=0.35.0=pyhd8ed1ab_0
+  
+  <   - pandas=1.4.1=py38h43a58ef_0
+  >   - pandas=1.4.2=py38h47df419_1
+  ```
+
 
 [1.18.10](https://github.com/bird-house/birdhouse-deploy/tree/1.18.10) (2022-04-07)
 ------------------------------------------------------------------------------------------------------------------
