@@ -58,7 +58,10 @@ container_home_dir = join(container_workspace_dir, ".home")
 c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.environment = {
     "HOME": container_home_dir,
-    "BOKEH_ALLOW_WS_ORIGIN": "${PAVICS_FQDN}",
+    # https://docs.bokeh.org/en/latest/docs/reference/command/subcommands/serve.html
+    "BOKEH_ALLOW_WS_ORIGIN": "${PAVICS_FQDN_PUBLIC}",
+    # https://docs.dask.org/en/stable/configuration.html
+    "DASK_DISTRIBUTED__DASHBOARD__LINK": "https://${PAVICS_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
 }
 
 c.DockerSpawner.volumes = {host_user_data_dir: container_workspace_dir}
