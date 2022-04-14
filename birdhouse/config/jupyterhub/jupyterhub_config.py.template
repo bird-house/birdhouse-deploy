@@ -61,6 +61,7 @@ c.DockerSpawner.environment = {
     # https://docs.bokeh.org/en/latest/docs/reference/command/subcommands/serve.html
     "BOKEH_ALLOW_WS_ORIGIN": "${PAVICS_FQDN_PUBLIC}",
     # https://docs.dask.org/en/stable/configuration.html
+    # https://jupyterhub-on-hadoop.readthedocs.io/en/latest/dask.html
     "DASK_DISTRIBUTED__DASHBOARD__LINK": "https://${PAVICS_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
 }
 
