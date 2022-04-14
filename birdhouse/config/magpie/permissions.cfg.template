@@ -21,6 +21,16 @@ permissions:
     group: anonymous
     action: create
 
+  - service: geoserver-secured
+    permission: getcapabilities
+    group: anonymous
+    action: create
+
+  - service: geoserver-secured
+    permission: describefeaturetype
+    group: anonymous
+    action: create
+
   - service: flyingpigeon
     permission: getcapabilities
     group: administrators
