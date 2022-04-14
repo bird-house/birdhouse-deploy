@@ -106,11 +106,11 @@ providers:
     type: geoserverwms
     sync_type: geoserverwms
 
-  geoserver:
+  geoserver-secured:
     url: http://${PAVICS_FQDN}:8087/geoserver
-    title: geoserver
+    title: geoserver-secured
     public: true
     c4i: false
-    type: wfs
-    sync_type: wfs
+    type: geoserver
+    sync_type: geoserver
 
