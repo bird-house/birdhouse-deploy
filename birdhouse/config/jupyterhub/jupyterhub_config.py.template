@@ -60,6 +60,8 @@ c.DockerSpawner.environment = {
     "HOME": container_home_dir,
     # https://docs.bokeh.org/en/latest/docs/reference/command/subcommands/serve.html
     "BOKEH_ALLOW_WS_ORIGIN": "${PAVICS_FQDN_PUBLIC}",
+    # https://docs.bokeh.org/en/latest/docs/user_guide/jupyter.html#jupyterhub
+    "JUPYTERHUB_EXTERNAL_BASE_URL": "https://${PAVICS_FQDN_PUBLIC}",
     # https://docs.dask.org/en/stable/configuration.html
     # https://jupyterhub-on-hadoop.readthedocs.io/en/latest/dask.html
     "DASK_DISTRIBUTED__DASHBOARD__LINK": "https://${PAVICS_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
