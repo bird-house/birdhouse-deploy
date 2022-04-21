@@ -16,6 +16,25 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.18.11](https://github.com/bird-house/birdhouse-deploy/tree/1.18.11) (2022-04-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Finch: new release for dask performance problem
+
+  PR to deploy new Finch releases in https://github.com/bird-house/finch/pull/233 on PAVICS.
+
+  See the Finch PR for more info.
+
+  Finch release notes:
+
+  0.8.3 (2022-04-21)
+  ------------------
+  * Preserve RCP dimension in ensemble processes, even when only RCP is selected.
+  * Pin ``dask`` and ``distributed`` at ``2022.1.0``, see https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/100
+
+
 [1.18.10](https://github.com/bird-house/birdhouse-deploy/tree/1.18.10) (2022-04-07)
 ------------------------------------------------------------------------------------------------------------------
 
