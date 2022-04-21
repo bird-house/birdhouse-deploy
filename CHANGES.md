@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.18.11](https://github.com/bird-house/birdhouse-deploy/tree/1.18.11) (2022-04-21)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes:
 
 - Finch: new release for dask performance problem
