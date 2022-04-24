@@ -58,8 +58,6 @@ container_home_dir = join(container_workspace_dir, ".home")
 c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.environment = {
     "HOME": container_home_dir,
-    # https://docs.bokeh.org/en/latest/docs/reference/command/subcommands/serve.html
-    "BOKEH_ALLOW_WS_ORIGIN": "${PAVICS_FQDN_PUBLIC}",
     # https://docs.bokeh.org/en/latest/docs/user_guide/jupyter.html#jupyterhub
     # Issue https://github.com/bokeh/bokeh/issues/12090
     # Post on Panel forum:
