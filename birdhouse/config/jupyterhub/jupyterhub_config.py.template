@@ -62,6 +62,7 @@ c.DockerSpawner.environment = {
     # Issue https://github.com/bokeh/bokeh/issues/12090
     # Post on Panel forum:
     # https://discourse.holoviz.org/t/how-to-customize-the-display-url-from-panel-serve-for-use-behind-jupyterhub-with-jupyter-server-proxy/3571
+    # Issue about Panel Preview: https://github.com/holoviz/panel/issues/3440
     "PAVICS_HOST_URL": "https://${PAVICS_FQDN_PUBLIC}",
     # https://docs.dask.org/en/stable/configuration.html
     # https://jupyterhub-on-hadoop.readthedocs.io/en/latest/dask.html
