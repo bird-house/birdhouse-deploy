@@ -22,24 +22,52 @@
 
   Detailed changes can be found at https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/105.
 
-  Dask dashboard and Panel server app work both by manually mapping `http://localhost:<PORT>` to
-  `https://pavics.ouranos.ca/jupyter/user/<USER>/proxy/<PORT>` as seen in screenshots below:
+  Dask dashboard no manual URL mangling required:
 
-  ![Screenshot from 2022-04-12 15-20-58](https://user-images.githubusercontent.com/11966697/163259294-97337abd-91e6-4832-b639-d7d2e89c353d.png) 
+  ![Screenshot from 2022-04-13 22-37-49](https://user-images.githubusercontent.com/11966697/163303916-f781ac23-d10a-4cd6-807c-b10c8703afc3.png)
 
-  ![Screenshot from 2022-04-12 16-29-06](https://user-images.githubusercontent.com/11966697/163264000-c2d0f993-8d4d-4eeb-8fa7-0cdce454c2f4.png)
+  "Render with Panel" button works:
+  ![Screenshot from 2022-05-04 15-18-03](https://user-images.githubusercontent.com/11966697/166810160-f6989da4-6e8f-4407-8fd5-4ef71770e1f2.png)
+
 
   Relevant changes:
 
   ```diff
+  # new
   >   - dask-labextension=5.2.0=pyhd8ed1ab_0
+  >   - jupyter-panel-proxy=0.2.0a2=py_0
   >   - jupyter-server-proxy=3.2.1=pyhd8ed1ab_0
   
-  <   - xclim=0.34.0=pyhd8ed1ab_0
-  >   - xclim=0.35.0=pyhd8ed1ab_0
+  # removed, interfere with panel
+  <     - handcalcs==1.4.1
   
+  <   - xclim=0.34.0=pyhd8ed1ab_0
+  >   - xclim=0.36.0=pyhd8ed1ab_0
+  
+  <   - cf_xarray=0.6.3=pyhd8ed1ab_0
+  >   - cf_xarray=0.7.2=pyhd8ed1ab_0
+  
+  <   - clisops=0.8.0=pyh6c4a22f_0
+  >   - clisops=0.9.0=pyh6c4a22f_0
+  
+  # downgrade by clisops
   <   - pandas=1.4.1=py38h43a58ef_0
-  >   - pandas=1.4.2=py38h47df419_1
+  >   - pandas=1.3.5=py38h43a58ef_0
+  
+  <   - rioxarray=0.10.3=pyhd8ed1ab_0
+  >   - rioxarray=0.11.1=pyhd8ed1ab_0
+  
+  <   - nc-time-axis=1.4.0=pyhd8ed1ab_0
+  >   - nc-time-axis=1.4.1=pyhd8ed1ab_0
+  
+  <   - roocs-utils=0.5.0=pyh6c4a22f_0
+  >   - roocs-utils=0.6.1=pyh6c4a22f_0
+  
+  <   - panel=0.12.7=pyhd8ed1ab_0
+  >   - panel=0.13.1a2=py_0
+  
+  <   - plotly=5.6.0=pyhd8ed1ab_0
+  >   - plotly=5.7.0=pyhd8ed1ab_0
   ```
 
 
