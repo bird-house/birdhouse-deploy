@@ -14,7 +14,22 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+
+- Magpie/Twitcher: update `magpie` service
+  from [3.21.0](https://github.com/Ouranosinc/Magpie/tree/3.21.0)
+  to [3.25.0](https://github.com/Ouranosinc/Magpie/tree/3.25.0) and 
+  bundled `twitcher` from [0.6.2](https://github.com/bird-house/twitcher/tree/v0.6.2)
+  to [0.7.0](https://github.com/bird-house/twitcher/tree/v0.7.0).
+  
+  - Adds [Service Hooks](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks) allowing 
+    Twitcher to apply HTTP pre-request/post-response modifications to requested services and resources in accordance
+    to `MagpieAdapter` implementation and using plugin Python scripts when matched against specific request parameters.
+
+  - Using *Service Hooks*, inject ``X-WPS-Output-Context`` header in Weaver job submission requests through the proxied
+    request by Twitcher and `MagpieAdapter`. This header contains the user ID that indicates to Weaver were to store 
+    job output results, allowing to save them in the corresponding user's workspace directory under `wpsoutputs` path.
+
 
 [1.18.12](https://github.com/bird-house/birdhouse-deploy/tree/1.18.12) (2022-05-05)
 ------------------------------------------------------------------------------------------------------------------
@@ -3314,4 +3329,3 @@ Prior Versions
 All versions prior to [1.7.0](https://github.com/bird-house/birdhouse-deploy/tree/1.7.0) were not officially tagged.
 Is it strongly recommended employing later versions to ensure better traceability of changes that could impact behavior
 and potential issues on new server instances. 
-

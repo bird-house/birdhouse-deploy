@@ -10,6 +10,26 @@ providers:
     c4i: false
     type: api   # FIXME: 'ades' when https://github.com/Ouranosinc/Magpie/issues/360 implemented
     sync_type: api
+    # see following for hooks details:
+    # - https://github.com/Ouranosinc/Magpie/blob/master/config/providers.cfg
+    # - https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks
+    hooks:
+      # when a job is created in weaver, apply the header that will nest output results under user's context directory
+      # see also:
+      # - https://pavics-weaver.readthedocs.io/en/latest/processes.html?highlight=x-wps-output-context#outputs-location
+      # each path below are equivalents, but with more or less specific reference to the requested service/process
+      - type: request
+        path: "/providers/[\\w_-]+/processes/[\\w_-]+/jobs"
+        method: POST
+        target: /opt/local/src/magpie/hooks/adapter_hooks.py:add_x_wps_output_context
+      - type: request
+        path: "/processes/[\\w_-]+/jobs"
+        method: POST
+        target: /opt/local/src/magpie/hooks/adapter_hooks.py:add_x_wps_output_context
+      - type: request
+        path: "/jobs"
+        method: POST
+        target: /opt/local/src/magpie/hooks/adapter_hooks.py:add_x_wps_output_context
 
   # FIXME: remove when https://github.com/Ouranosinc/Magpie/issues/360 implemented, see 'default.env'
   ${WEAVER_WPS_NAME}:

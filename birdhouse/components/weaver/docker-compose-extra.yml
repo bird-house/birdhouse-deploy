@@ -30,6 +30,15 @@ services:
       - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/weaver-permissions.cfg:ro
       - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/providers/weaver-provider.cfg:ro
 
+  # extend twitcher with MagpieAdapter hooks employed for weaver proxied requests
+  twitcher:
+    environment:
+      MAGPIE_CONFIG_PATH: /opt/birdhouse/src/magpie/config.yml
+    volumes:
+      # NOTE: MagpieAdapter hooks are defined within Magpie config, but it is actually Twitcher proxy that runs them
+      - ./components/weaver/config/magpie/config.yml:/opt/birdhouse/src/magpie/config.yml
+      - ./components/weaver/config/magpie/adapter_hooks.py:/opt/birdhouse/src/magpie/adapter_hooks.py
+
   # Image 'weaver' is the API side of the application
   weaver:
     container_name: ${WEAVER_MANAGER_NAME}
