@@ -47,17 +47,6 @@
         gzip_types application/json text/plain application/xml text/html;
     }
 
-    location /geoserver-secured/ {
-        proxy_pass http://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/geoserver-secured/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-Proto $real_scheme;
-        proxy_set_header  Accept-Encoding "";
-        gzip_proxied any;
-        gzip on;
-        gzip_comp_level 1;
-        gzip_types application/json text/plain application/xml text/html;
-    }
-
     location /ncWMS2/ {
     #    proxy_pass http://${PAVICS_FQDN}:8080;
     #	 proxy_set_header Host $host;
