@@ -37,7 +37,7 @@ services:
     volumes:
       # NOTE: MagpieAdapter hooks are defined within Magpie config, but it is actually Twitcher proxy that runs them
       - ./components/weaver/config/magpie/config.yml:/opt/birdhouse/src/magpie/config.yml
-      - ./components/weaver/config/magpie/adapter_hooks.py:/opt/birdhouse/src/magpie/adapter_hooks.py
+      - ./components/weaver/config/magpie/weaver_hooks.py:/opt/birdhouse/src/magpie/hooks/weaver_hooks.py
 
   # Image 'weaver' is the API side of the application
   weaver:
