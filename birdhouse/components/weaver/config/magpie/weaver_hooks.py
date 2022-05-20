@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-These hooks will be running within Twitcher, using MagpieAdapter context.
+These hooks will be running within Twitcher, using MagpieAdapter context, applied for Weaver requests.
 
 The code below can make use of any package that is installed by Magpie/Twitcher.
 """
