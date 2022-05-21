@@ -19,3 +19,7 @@ ubuntu-bionic-18.04-cloudimg-console.log
 
 ## vim temp files
 *.swp
+
+## Python temp files
+**/__pycache__
+**/*.py[cod]

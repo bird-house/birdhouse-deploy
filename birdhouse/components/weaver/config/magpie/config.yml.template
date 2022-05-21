@@ -31,6 +31,10 @@ providers:
         path: "/jobs"
         method: POST
         target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
+      - type: response
+        path: "/processes"
+        method: GET
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:filter_allowed_processes
 
   # FIXME: remove when https://github.com/Ouranosinc/Magpie/issues/360 implemented, see 'default.env'
   ${WEAVER_WPS_NAME}:
