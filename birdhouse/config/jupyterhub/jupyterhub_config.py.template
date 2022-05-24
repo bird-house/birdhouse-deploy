@@ -57,7 +57,16 @@ container_home_dir = join(container_workspace_dir, ".home")
 
 c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.environment = {
-    "HOME": container_home_dir
+    "HOME": container_home_dir,
+    # https://docs.bokeh.org/en/latest/docs/user_guide/jupyter.html#jupyterhub
+    # Issue https://github.com/bokeh/bokeh/issues/12090
+    # Post on Panel forum:
+    # https://discourse.holoviz.org/t/how-to-customize-the-display-url-from-panel-serve-for-use-behind-jupyterhub-with-jupyter-server-proxy/3571
+    # Issue about Panel Preview: https://github.com/holoviz/panel/issues/3440
+    "PAVICS_HOST_URL": "https://${PAVICS_FQDN_PUBLIC}",
+    # https://docs.dask.org/en/stable/configuration.html
+    # https://jupyterhub-on-hadoop.readthedocs.io/en/latest/dask.html
+    "DASK_DISTRIBUTED__DASHBOARD__LINK": "https://${PAVICS_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
 }
 
 c.DockerSpawner.volumes = {host_user_data_dir: container_workspace_dir}
