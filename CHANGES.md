@@ -14,7 +14,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+- Geoserver: Adds `./optional-components/test-geoserver-secured-access`, to test Twitcher-protected access to Geoserver
+  
+  Relevant changes:
+  - New Provider (Magpie) : geoserver-secured
+  - New Location (Proxy) : /geoserver-secured
+  - Copied current WFS GetCapabilities and DescribeFeatureType permissions to new Provider
 
 [1.18.12](https://github.com/bird-house/birdhouse-deploy/tree/1.18.12) (2022-05-05)
 ------------------------------------------------------------------------------------------------------------------
