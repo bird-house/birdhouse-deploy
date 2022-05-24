@@ -72,7 +72,7 @@ def filter_allowed_processes(response, context):
             children = ru.get_resource_children(context.resource, response.request.db, limit_depth=2)
             proc_res = None
             for res in children.values():
-                if res["node"] == "processes":
+                if res["node"].resource_name == "processes":
                     # if nothing under 'processes' resource, then guarantee no permissions, done check
                     if not res["children"]:
                         return response
@@ -83,11 +83,11 @@ def filter_allowed_processes(response, context):
 
             allowed_processes = []
             known_processes = proc_res["children"].values()
-            known_processes = {res["node"].resource.resource_name: res for res in known_processes}
+            known_processes = {res["node"].resource_name: res for res in known_processes}
             for proc_name in processes:
                 if proc_name not in known_processes:
                     continue  # do not bother checking missing resource
-                child_proc = known_processes[proc_name]
+                child_proc = known_processes[proc_name]["node"]
                 perms = context.service.effective_permissions(response.request.user, child_proc, [Permission.READ])
                 if perms[0].access == Access.ALLOW:
                     proc = processes[proc_name]

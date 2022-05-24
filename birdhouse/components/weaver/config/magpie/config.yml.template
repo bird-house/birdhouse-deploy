@@ -91,9 +91,10 @@ permissions:
     action: create
 
   # Process deployment (write) and listing (read)
+  # use 'read-match' to allow only listing, and not describe underlying processes (require 'read' on them individually)
   - service: ${WEAVER_MANAGER_NAME}
     resource: /processes    # GET is processes listing, POST is deploy: only allow view by anonymous
-    permission: read        # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
+    permission: read-match  # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
     group: anonymous
     action: create
 
