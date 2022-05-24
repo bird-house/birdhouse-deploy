@@ -10,6 +10,7 @@ import json
 from typing import TYPE_CHECKING
 
 from magpie.api.management.resource import resource_utils as ru
+from magpie.api.requests import get_user
 from magpie.constants import get_constant
 from magpie.permissions import Access, Permission
 from magpie.utils import get_header
@@ -24,6 +25,8 @@ if TYPE_CHECKING:
 def is_admin(request):
     # type: (Request) -> bool
     admin_group = get_constant("MAGPIE_ADMIN_GROUP", settings_container=request)
+    if not request.user:  # no user authenticated (public)
+        return False
     return admin_group in [group.group_name for group in request.user.groups]
 
 
@@ -84,11 +87,12 @@ def filter_allowed_processes(response, context):
             allowed_processes = []
             known_processes = proc_res["children"].values()
             known_processes = {res["node"].resource_name: res for res in known_processes}
+            request_user = get_user(response.request)
             for proc_name in processes:
                 if proc_name not in known_processes:
                     continue  # do not bother checking missing resource
                 child_proc = known_processes[proc_name]["node"]
-                perms = context.service.effective_permissions(response.request.user, child_proc, [Permission.READ])
+                perms = context.service.effective_permissions(request_user, child_proc, [Permission.READ])
                 if perms[0].access == Access.ALLOW:
                     proc = processes[proc_name]
                     allowed_processes.append(proc)
