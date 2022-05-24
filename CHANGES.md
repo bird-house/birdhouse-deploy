@@ -18,7 +18,7 @@
 
 - Magpie/Twitcher: update `magpie` service
   from [3.21.0](https://github.com/Ouranosinc/Magpie/tree/3.21.0)
-  to [3.25.0](https://github.com/Ouranosinc/Magpie/tree/3.25.0) and 
+  to [3.26.0](https://github.com/Ouranosinc/Magpie/tree/3.26.0) and
   bundled `twitcher` from [0.6.2](https://github.com/bird-house/twitcher/tree/v0.6.2)
   to [0.7.0](https://github.com/bird-house/twitcher/tree/v0.7.0).
   
@@ -30,6 +30,9 @@
     request by Twitcher and `MagpieAdapter`. This header contains the user ID that indicates to Weaver were to store 
     job output results, allowing to save them in the corresponding user's workspace directory under `wpsoutputs` path.
 
+  - Using *Service Hooks*, filter processes returned by Weaver in JSON response from ``/processes`` endpoint using
+    respective permissions applied onto each ``/processes/{processID}`` for the requesting user. Users will only be able
+    to see processes for which they have read access to retrieve the process description.
 
 [1.18.12](https://github.com/bird-house/birdhouse-deploy/tree/1.18.12) (2022-05-05)
 ------------------------------------------------------------------------------------------------------------------
