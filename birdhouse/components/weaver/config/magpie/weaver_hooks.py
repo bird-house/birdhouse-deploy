@@ -58,6 +58,53 @@ def filter_allowed_processes(response, context):
     # type: (Response, HookContext) -> Response
     """
     Filter processes returned by Weaver response according to allowed resources by user.
+
+    Following are sample (clipped) JSON body that can be expected from Weaver (or any OGC API - Processes).
+
+    Using ``GET https://<weaver.url>/processes``
+
+    .. code-block:: json
+        :caption: Detailed process listing from Weaver (other fields than 'processes' are removed for concise example).
+
+        {
+          "processes": [
+            {
+              "id": "ColibriFlyingpigeon_SubsetBbox",
+              "title": "ColibriFlyingpigeon_SubsetBbox",
+              "mutable": true,
+              "keywords": [
+                "application"
+              ],
+              "metadata": [],
+              "jobControlOptions": [
+                "async-execute"
+              ],
+              "outputTransmission": [
+                "reference",
+                "value"
+              ],
+              "processDescriptionURL": "https://<weaver.url>/processes/ColibriFlyingpigeon_SubsetBbox",
+              "processEndpointWPS1": "https://<weaver.url>/ows/wps",
+              "executeEndpoint": "https://<weaver.url>/processes/ColibriFlyingpigeon_SubsetBbox/jobs"
+            }
+          ]
+        }
+
+    Using ``GET https://<weaver.url>/processes?detail=false``
+
+    .. code-block:: json
+        :caption: Simple process listing from Weaver (other fields than 'processes' are removed for concise example).
+
+        {
+          "description": "Listing of available processes successful.",
+          "processes": [
+            "CatFile",
+            "ColibriFlyingpigeon_SubsetBbox",
+          ],
+          "page": 0,
+          "total": 2
+        }
+
     """
     if "application/json" in response.content_type:
         body = response.json
