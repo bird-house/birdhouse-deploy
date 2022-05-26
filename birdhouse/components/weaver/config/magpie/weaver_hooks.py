@@ -4,6 +4,10 @@
 These hooks will be running within Twitcher, using MagpieAdapter context, applied for Weaver requests.
 
 The code below can make use of any package that is installed by Magpie/Twitcher.
+
+.. seealso::
+    Documentation about Magpie/Twitcher request/response hooks is available here:
+    https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks
 """
 
 import json
