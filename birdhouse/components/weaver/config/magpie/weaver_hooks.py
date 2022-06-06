@@ -13,17 +13,23 @@ The code below can make use of any package that is installed by Magpie/Twitcher.
 import json
 from typing import TYPE_CHECKING
 
+import transaction
+
 from magpie.api.management.resource import resource_utils as ru
-from magpie.api.requests import get_user
+from magpie.api.management.user import user_utils as uu
+from magpie.api.requests import get_user, get_service_matchdict_checked
 from magpie.constants import get_constant
-from magpie.permissions import Access, Permission
-from magpie.utils import get_header
+from magpie.models import Route
+from magpie.permissions import Access, Permission, PermissionSet, Scope
+from magpie.utils import get_header, get_logger
 
 if TYPE_CHECKING:
     from pyramid.request import Request
     from pyramid.response import Response
 
     from magpie.adapter import HookContext
+
+LOGGER = get_logger("birdhouse-weaver-hooks")
 
 
 def is_admin(request):
@@ -159,5 +165,117 @@ def filter_allowed_processes(response, context):
             c_len = len(data)
             response.content_length = c_len
             response.headers["Content-Length"] = str(c_len)
+
+    return response
+
+
+def allow_user_deployed_processes(response):
+    # type: (Response) -> Response
+    """
+    Add the user permissions to read (listing and description) and execute the process for the deploying user.
+
+    This will grant access to the process definition by the user that deployed it until they desire to make it public.
+    At a later time, a request to the appropriate group to share (restricted group) or to publish publicly (anonymous)
+    could be made to create the relevant permissions to describe or execute the process by other users.
+
+    Expected response format from service:
+
+    .. code-block:: json
+        {
+          "processSummary": {
+            "id": "<deployed-process-id>",
+            "..."
+          }
+        }
+
+    If any failure occurs, simply return the response to let deployment succeed, but user will not receive access to it
+    automatically. Manual update of permissions would be necessary by platform administrator via Magpie.
+    """
+    p_id = "<undefined>"
+    u_name = "<undefined>"
+    try:
+        # only apply permission if deployment was successful
+        if "application/json" in response.content_type and response.status_code == 201:
+            body = response.json
+            info = body.get("processSummary", {}) or body.get("process", {})  # bw-compat
+            p_id = info.get("id")
+            if not (p_id and isinstance(p_id, str)):
+                return response
+
+            # user is not necessarily admin
+            # in fact, this operation is only needed if non-admin, since admin has full access anyway
+            request = response.request
+            if is_admin(request):
+                return response
+            user = request.user
+            # if deploy endpoint was made public, then even anonymous could deploy (not recommended, but possible)
+            if not user:
+                user = get_user(request)
+            u_name = user.user_name
+
+            # note: matchdict reference of Twitcher owsproxy view is used, just so happens to be same name as Magpie
+            service = get_service_matchdict_checked(request)
+
+            # find the nested resource matching: "weaver/processes/<p_id>"
+            children = ru.get_resource_children(service, request.db, limit_depth=2)
+            p_res = None
+            for res in children.values():
+                if res["node"].resource_name == "processes":
+                    processes_res_id = res["node"].resource_id
+                    for child_res in res["children"].values():
+                        if child_res["node"].resource_name == p_id:
+                            p_res = child_res["node"]
+                            break
+                    break
+            else:
+                # resource 'processes' should already exist, but create it if somehow missing
+                # otherwise, it will be impossible to create '<p_id>' under it
+                resp = ru.create_resource("processes", None, Route.resource_type_name, service.resource_id, request.db)
+                processes_res_id = resp.json["resource"]["resource_id"]
+
+            # note:
+            #  since this is running within a *response* hook, the request transaction is already handled
+            #  define a new transaction to create new resources
+            with transaction.manager:
+
+                # if '<p_id>' somehow already exists, use it
+                if p_res is None:
+                    resp = ru.create_resource(p_id, None, Route.resource_type_name, processes_res_id, request.db)
+                    p_res_id = resp.json["resource"]["resource_id"]
+                    p_res = ru.ResourceService.by_resource_id(p_res_id, request.db)
+                if not p_res:
+                    LOGGER.warning(
+                        "Failed creation of permissions for user [%s] to access deployed process [%s] in Weaver. "
+                        "Could not retrieve resource matching deployed process!", u_name, p_id
+                    )
+                    return response
+
+                # apply necessary permissions to give full access to the deployed process to the user
+                # override permissions to undo what could have been previously applied (only if <p_id> already existed)
+                p_desc = PermissionSet(Permission.READ, Access.ALLOW, Scope.RECURSIVE)   # describe proc + jobs statuses
+                p_exec = PermissionSet(Permission.WRITE, Access.ALLOW, Scope.RECURSIVE)  # edit process + execute jobs
+                r_desc = uu.create_user_resource_permission_response(user, p_res, p_desc, request.db, overwrite=True)
+                r_exec = uu.create_user_resource_permission_response(user, p_res, p_exec, request.db, overwrite=True)
+
+                # summit transaction results (new resources and permissions)
+                transaction.commit()
+
+            # sanity check
+            if r_desc.status_code in [200, 201] and r_exec.status_code in [200, 201]:
+                LOGGER.info(
+                    "Successful creation of permissions for user [%s] to access deployed process [%s] in Weaver.",
+                    u_name, p_id
+                )
+            else:
+                statuses = [r_desc.status_code, r_exec.status_code]
+                LOGGER.warning(
+                    "Failed creation of permissions for user [%s] to access deployed process [%s] in Weaver. "
+                    "Permission creation returned unexpected statuses: %s", u_name, p_id, statuses
+                )
+    except Exception as exc:
+        LOGGER.error(
+            "Failed creation of permissions for user [%s] to access deployed process [%s] in Weaver. "
+            "Unexpected exception occurred: [%s]", u_name, p_id, str(exc)
+        )
 
     return response
