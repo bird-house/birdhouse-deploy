@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.18.13](https://github.com/bird-house/birdhouse-deploy/tree/1.18.13) (2022-06-07)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes:
 
 - deploy-data: new env var DEPLOY_DATA_RSYNC_USER_GRP to avoid running cronjobs as root
