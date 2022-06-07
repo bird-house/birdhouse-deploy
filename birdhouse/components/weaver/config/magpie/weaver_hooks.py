@@ -53,7 +53,7 @@ def add_x_wps_output_context(request):
         else:
             if not is_admin(request):
                 # override disallowed writing to other location
-                # otherwise, up to admin to have writen something sensible
+                # otherwise, up to admin to have written something sensible
                 header = "user-" + str(request.user.id)
     else:
         if request.user is None:
