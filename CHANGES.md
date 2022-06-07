@@ -29,10 +29,19 @@
   - Using *Service Hooks*, inject ``X-WPS-Output-Context`` header in Weaver job submission requests through the proxied
     request by Twitcher and `MagpieAdapter`. This header contains the user ID that indicates to Weaver were to store 
     job output results, allowing to save them in the corresponding user's workspace directory under `wpsoutputs` path.
+    More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/244.
 
   - Using *Service Hooks*, filter processes returned by Weaver in JSON response from ``/processes`` endpoint using
     respective permissions applied onto each ``/processes/{processID}`` for the requesting user. Users will only be able
     to see processes for which they have read access to retrieve the process description.
+    More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/245.
+
+  - Using *Service Hooks*, automatically apply permissions for the user that successfully deployed a Weaver process 
+    using ``POST /processes`` request, granting it direct access to this process during process listing, process 
+    description request and for submitting job execution of this process.
+    Only this user deploying the process will have access to it until further permissions are added in Magpie to share
+    or publish it with other users, groups and/or publicly. The user must have the necessary permission to deploy a new
+    process in the first place. More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/247.
 
 [1.18.12](https://github.com/bird-house/birdhouse-deploy/tree/1.18.12) (2022-05-05)
 ------------------------------------------------------------------------------------------------------------------
