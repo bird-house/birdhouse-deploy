@@ -16,7 +16,7 @@
 
 ## Changes:
 
-- deploy-data: new env var DEPLOY_RSYNC_USER_GRP to follow security best practices
+- deploy-data: new env var DEPLOY_DATA_RSYNC_USER_GRP to avoid running cronjobs as root
 
   When `deploy-data` is used by the `scheduler` component, it is run as
   `root`.  This new env var will force the rsync process to run as a regular user to
