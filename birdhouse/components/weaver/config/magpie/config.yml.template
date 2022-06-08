@@ -10,6 +10,35 @@ providers:
     c4i: false
     type: api   # FIXME: 'ades' when https://github.com/Ouranosinc/Magpie/issues/360 implemented
     sync_type: api
+    # hook locations should be relative to mounted Twitcher location as they are run within that container
+    # see following for hooks details:
+    # - https://github.com/Ouranosinc/Magpie/blob/master/config/providers.cfg
+    # - https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks
+    hooks:
+      # when a job is created in weaver, apply the header that will nest output results under user's context directory
+      # see also:
+      # - https://pavics-weaver.readthedocs.io/en/latest/processes.html?highlight=x-wps-output-context#outputs-location
+      # each path below are equivalents, but with more or less specific reference to the requested service/process
+      - type: request
+        path: "/providers/[\\w_-]+/processes/[\\w_-]+/jobs"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
+      - type: request
+        path: "/processes/[\\w_-]+/jobs"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
+      - type: request
+        path: "/jobs"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
+      - type: response
+        path: "/processes"
+        method: GET
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:filter_allowed_processes
+      - type: response
+        path: "/processes"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_deployed_processes
 
   # FIXME: remove when https://github.com/Ouranosinc/Magpie/issues/360 implemented, see 'default.env'
   ${WEAVER_WPS_NAME}:
@@ -66,9 +95,10 @@ permissions:
     action: create
 
   # Process deployment (write) and listing (read)
+  # use 'read-match' to allow only listing, and not describe underlying processes (require 'read' on them individually)
   - service: ${WEAVER_MANAGER_NAME}
     resource: /processes    # GET is processes listing, POST is deploy: only allow view by anonymous
-    permission: read        # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
+    permission: read-match  # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
     group: anonymous
     action: create
 

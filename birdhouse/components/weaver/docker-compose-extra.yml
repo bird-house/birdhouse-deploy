@@ -23,12 +23,19 @@ services:
   magpie:
     volumes:
       # NOTE:
-      #   Although file use the "config.yml" format, it is very important to pass it as independent/duplicate reference
-      #   provider/permissions ".cfg" files. This is because Magpie will not parse multiple "config.yml" files
-      #   additively with other component's ".cfg" files, as "config.yml" are intended for unique-combined definitions.
-      #   Data structure within "config.yml" is the same as within the respective sections in typical ".cfg" files.
-      - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/weaver-permissions.cfg:ro
-      - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/providers/weaver-provider.cfg:ro
+      #   Although file uses the "config.yml" format, it is very important to pass it as independent/duplicate reference
+      #   provider/permissions config files. This is because 'MAGPIE_CONFIG_PATH' is not used to allow parsing multiple
+      #   config files for each extendable service, using loading of all configuration files found in mount directories.
+      - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/weaver-permissions.yml:ro
+      - ./components/weaver/config/magpie/config.yml:/opt/local/src/magpie/config/providers/weaver-provider.yml:ro
+
+  # extend twitcher with MagpieAdapter hooks employed for weaver proxied requests
+  twitcher:
+    volumes:
+      # NOTE: MagpieAdapter hooks are defined within Magpie config, but it is actually Twitcher proxy that runs them
+      # target mount location depends on main docker-compose 'MAGPIE_PROVIDERS_CONFIG_PATH' environment variable
+      - ./components/weaver/config/magpie/config.yml:/opt/birdhouse/src/magpie/config/weaver-config.yml:ro
+      - ./components/weaver/config/magpie/weaver_hooks.py:/opt/birdhouse/src/magpie/hooks/weaver_hooks.py:ro
 
   # Image 'weaver' is the API side of the application
   weaver:
