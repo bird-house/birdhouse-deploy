@@ -16,6 +16,75 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.19.0](https://github.com/bird-house/birdhouse-deploy/tree/1.19.0) (2022-06-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Magpie/Twitcher: update `magpie` service
+  from [3.21.0](https://github.com/Ouranosinc/Magpie/tree/3.21.0)
+  to [3.26.0](https://github.com/Ouranosinc/Magpie/tree/3.26.0) and
+  bundled `twitcher` from [0.6.2](https://github.com/bird-house/twitcher/tree/v0.6.2)
+  to [0.7.0](https://github.com/bird-house/twitcher/tree/v0.7.0).
+  
+  - Adds [Service Hooks](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks) allowing 
+    Twitcher to apply HTTP pre-request/post-response modifications to requested services and resources in accordance
+    to `MagpieAdapter` implementation and using plugin Python scripts when matched against specific request parameters.
+
+  - Using *Service Hooks*, inject ``X-WPS-Output-Context`` header in Weaver job submission requests through the proxied
+    request by Twitcher and `MagpieAdapter`. This header contains the user ID that indicates to Weaver were to store 
+    job output results, allowing to save them in the corresponding user's workspace directory under `wpsoutputs` path.
+    More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/244.
+
+  - Using *Service Hooks*, filter processes returned by Weaver in JSON response from ``/processes`` endpoint using
+    respective permissions applied onto each ``/processes/{processID}`` for the requesting user. Users will only be able
+    to see processes for which they have read access to retrieve the process description.
+    More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/245.
+
+  - Using *Service Hooks*, automatically apply permissions for the user that successfully deployed a Weaver process 
+    using ``POST /processes`` request, granting it direct access to this process during process listing, process 
+    description request and for submitting job execution of this process.
+    Only this user deploying the process will have access to it until further permissions are added in Magpie to share
+    or publish it with other users, groups and/or publicly. The user must have the necessary permission to deploy a new
+    process in the first place. More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/247.
+
+[1.18.13](https://github.com/bird-house/birdhouse-deploy/tree/1.18.13) (2022-06-07)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- deploy-data: new env var DEPLOY_DATA_RSYNC_USER_GRP to avoid running cronjobs as root
+
+  When `deploy-data` is used by the `scheduler` component, it is run as
+  `root`.  This new env var will force the rsync process to run as a regular user to
+  follow security best practice to avoid running as root when not needed.
+
+  Note that the `git checkout` step done by `deploy-data` is still run as root.
+  This is because `deploy-data` is currently still run as root so it can
+  execute `docker` commands (ex: spawning the `rsync` command above in its own
+  docker container).
+
+  To fix this limitation, the regular user inside the `deploy-data` container
+  need to have docker access inside the container and outside on the host at
+  the same time.  If we make that regular user configurable so the script
+  `deploy-data` is generic and can work for any organisations, this is tricky
+  for the moment so will have to be handle in another PR.
+
+  So for the moment we have not achieved full non-root user in cronjobs
+  launched by the `scheduler` compoment but the most important part, the part
+  that perform the actual job (rsync or execute custom command using an
+  external docker container) is running as non-root.
+
+  See PR https://github.com/bird-house/birdhouse-deploy-ouranos/pull/18 that
+  make use of this new env var.
+
+  When `deploy-data` is invoking an external script that itself spawn a new
+  `docker run`, then it is up to this external script to ensure the proper
+  non-root user is used by `docker run`.
+  See PR https://github.com/Ouranosinc/pavics-vdb/pull/50 that handle that
+  case.
+
+
 [1.18.12](https://github.com/bird-house/birdhouse-deploy/tree/1.18.12) (2022-05-05)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -3314,4 +3383,3 @@ Prior Versions
 All versions prior to [1.7.0](https://github.com/bird-house/birdhouse-deploy/tree/1.7.0) were not officially tagged.
 Is it strongly recommended employing later versions to ensure better traceability of changes that could impact behavior
 and potential issues on new server instances. 
-
