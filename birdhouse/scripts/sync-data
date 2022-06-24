@@ -51,4 +51,8 @@ for item in $GEOSERVER_DATA_DIR/; do
     $RSYNC_BASE_CMD $SOURCE_HOST:$item $item
 done
 
-$COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm
+if [ ! x"$FORCE_MODE" = xforce ]; then
+    echo "Dry-run mode, not executing '$COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm'"
+else
+    $COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm
+fi
