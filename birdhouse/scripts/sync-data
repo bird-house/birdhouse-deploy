@@ -7,6 +7,9 @@
 #
 # Thredds data also excluded since it is huge.
 #
+# In case of write permission problem, run script fix-write-perm with env var
+# FIX_WRITE_PERM_EXTRA=1.
+#
 # Assume
 # * ssh passwordless to source host is setup properly
 
@@ -47,11 +50,15 @@ set -x
 
 #for item in $GEOSERVER_DATA_DIR/ $JUPYTERHUB_USER_DATA_DIR/ $MAGPIE_PERSIST_DIR/; do
 for item in $GEOSERVER_DATA_DIR/; do
-    # Assume DATA_PERSIST_ROOT is same between both hosts !
     # Useful to run the following commands before sync just in case.
     # Could not put a real command here since it requires sudo.
     #   sudo setfacl -Rdm u:$USER:rwX $item
     #   sudo setfacl -Rm u:$USER:rwX $item
+    # Alternatively can run the script fix-write-perm with env var
+    # FIX_WRITE_PERM_EXTRA=1 which does the same and more so could be slower
+    # than needed.
+
+    # Assume DATA_PERSIST_ROOT is same between both hosts !
     $RSYNC_BASE_CMD $SOURCE_HOST:$item $item
 done
 
