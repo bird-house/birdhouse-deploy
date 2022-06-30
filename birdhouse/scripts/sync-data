@@ -48,6 +48,10 @@ set -x
 #for item in $GEOSERVER_DATA_DIR/ $JUPYTERHUB_USER_DATA_DIR/ $MAGPIE_PERSIST_DIR/; do
 for item in $GEOSERVER_DATA_DIR/; do
     # Assume DATA_PERSIST_ROOT is same between both hosts !
+    # Useful to run the following commands before sync just in case.
+    # Could not put a real command here since it requires sudo.
+    #   sudo setfacl -Rdm u:$USER:rwX $item
+    #   sudo setfacl -Rm u:$USER:rwX $item
     $RSYNC_BASE_CMD $SOURCE_HOST:$item $item
 done
 
