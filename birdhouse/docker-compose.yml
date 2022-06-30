@@ -130,6 +130,7 @@ services:
       GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
       # fix "WARNING: Illegal reflective access by org.geotools.image.ImageWorker" in `docker logs geoserver`
       JAVA_OPTS: --add-exports=java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED
+      MAXIMUM_MEMORY: 8G
     volumes:
       # run deployment/fix-geoserver-data-dir-perm on existing
       # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image
