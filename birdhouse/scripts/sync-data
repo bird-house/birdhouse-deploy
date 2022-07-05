@@ -23,7 +23,8 @@ if [ -f "$COMPOSE_DIR/default.env" ]; then
 fi
 
 if [ -f "$COMPOSE_DIR/env.local" ]; then
-    # Get DATA_PERSIST_ROOT
+    # Get GEOSERVER_DATA_DIR, BASH_IMAGE, JUPYTERHUB_USER_DATA_DIR,
+    # MAGPIE_PERSIST_DIR
     . "${COMPOSE_DIR}/env.local"
 fi
 
@@ -63,7 +64,12 @@ for item in $GEOSERVER_DATA_DIR/; do
 done
 
 if [ ! x"$FORCE_MODE" = xforce ]; then
-    echo "Dry-run mode, not executing '$COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm'"
+    echo "Dry-run mode, not executing '$COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm' and other permission fixup"
 else
     $COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm
+
+    docker run --rm --name fix-jupyter-data-dir-perm \
+        --volume ${JUPYTERHUB_USER_DATA_DIR}:/datadir \
+        $BASH_IMAGE \
+        bash -xc 'chown -R 1000:1000 /datadir'
 fi
