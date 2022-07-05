@@ -72,4 +72,9 @@ else
         --volume ${JUPYTERHUB_USER_DATA_DIR}:/datadir \
         $BASH_IMAGE \
         bash -xc 'chown -R 1000:1000 /datadir'
+
+    docker run --rm --name fix-postgres-magpie-dir-perm \
+        --volume ${JUPYTERHUB_USER_DATA_DIR}:/datadir \
+        $BASH_IMAGE \
+        bash -xc 'chown -R 999:0 /datadir'
 fi
