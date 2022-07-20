@@ -16,6 +16,30 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.19.1](https://github.com/bird-house/birdhouse-deploy/tree/1.19.1) (2022-07-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Various changes to get the new production host up and running
+
+    **Non-breaking changes**
+    - Bootstrap testsuite: only crawl the subset enough to pass canarie-api monitoring: faster when system under test has too much other stuff.
+    - New script: `check-autodeploy-repos`: to ensure autodeploy will trigger normally.
+    - New script: `sync-data`: to pull data from existing production host to a new production host or to a staging host to emulate the production host.
+    - thredds, geoserver, generic_bird: set more appropriate production values, taken from https://github.com/Ouranosinc/birdhouse-deploy/commit/316439e310e915e0a4ef35d25744cab76722fa99
+    - monitoring: fix redundant `network_mode: host` and `ports` binding since host network_mode will already automatically perform port bindings
+
+    **Breaking changes**
+    - None
+
+## Related Issue / Discussion
+
+- https://github.com/bird-house/birdhouse-deploy-ouranos/pull/16
+- https://github.com/Ouranosinc/pavics-vdb/pull/48
+- https://github.com/Ouranosinc/ouranos-ansible/pull/2
+
+
 [1.19.0](https://github.com/bird-house/birdhouse-deploy/tree/1.19.0) (2022-06-08)
 ------------------------------------------------------------------------------------------------------------------
 

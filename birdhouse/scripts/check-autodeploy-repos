@@ -1,0 +1,25 @@
+#!/bin/sh
+# Check Autodeploy repos status.
+# If there are changes or uncommitted, autodeploy will not trigger.
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+COMPOSE_DIR="`dirname "$THIS_DIR"`"
+
+# source default.env, else might have errors sourcing env.local
+if [ -f "$COMPOSE_DIR/default.env" ]; then
+    . "${COMPOSE_DIR}/default.env"
+fi
+
+if [ -f "$COMPOSE_DIR/env.local" ]; then
+    # Get AUTODEPLOY_EXTRA_REPOS
+    . "${COMPOSE_DIR}/env.local"
+fi
+
+
+for r in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
+    echo "=== $r"
+    cd $r
+    git status -v
+    cd -
+done

@@ -3,6 +3,11 @@
 #
 # Run once for this repo and once each time AUTODEPLOY_EXTRA_REPOS changes.
 #
+# Set FIX_WRITE_PERM_EXTRA=1 to also grant write access other data typical
+# dir, useful for staging server to get update from production server.
+#
+# Other data dir can also be given directly as arguments to this script.
+#
 # The 'autodeploy' container spawned by the 'scheduler' container runs as
 # user root.  It writes to all the git checkout in AUTODEPLOY_EXTRA_REPOS
 # and the current birdhouse-deploy checkout as well.  All the new files
@@ -46,7 +51,15 @@ if [ -e "birdhouse/env.local" ]; then
     . birdhouse/env.local
 fi
 
+DEFAULT_EXTRA_DATA_DIR="$GEOSERVER_DATA_DIR/ $JUPYTERHUB_USER_DATA_DIR/ \
+    $MAGPIE_PERSIST_DIR/"
+
+EXTRA_DATA_DIR=""
+if [ -n "$FIX_WRITE_PERM_EXTRA" ]; then
+    EXTRA_DATA_DIR="$DEFAULT_EXTRA_DATA_DIR"
+fi
+
 set -x
 
-sudo setfacl -Rdm u:$USER:rwX $PWD $AUTODEPLOY_EXTRA_REPOS  # for future files
-sudo setfacl -Rm u:$USER:rwX $PWD $AUTODEPLOY_EXTRA_REPOS  # for existing files
+sudo setfacl -Rdm u:$USER:rwX $PWD $AUTODEPLOY_EXTRA_REPOS $EXTRA_DATA_DIR "$@"  # for future files
+sudo setfacl -Rm u:$USER:rwX $PWD $AUTODEPLOY_EXTRA_REPOS $EXTRA_DATA_DIR "$@"  # for existing files
