@@ -19,7 +19,7 @@
 - Various changes to get the new production host up and running
 
     **Non-breaking changes**
-    - Boostrap testsuite: only crawl the subset enough to pass canarie-api monitoring: faster when system under test has too much other stuff.
+    - Bootstrap testsuite: only crawl the subset enough to pass canarie-api monitoring: faster when system under test has too much other stuff.
     - New script: `check-autodeploy-repos`: to ensure autodeploy will trigger normally.
     - New script: `sync-data`: to pull data from existing production host to a new production host or to a staging host to emulate the production host.
     - thredds, geoserver, generic_bird: set more appropriate production values, taken from https://github.com/Ouranosinc/birdhouse-deploy/commit/316439e310e915e0a4ef35d25744cab76722fa99
