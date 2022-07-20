@@ -16,6 +16,36 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.19.2](https://github.com/bird-house/birdhouse-deploy/tree/1.19.2) (2022-07-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Finch: new release for new Xclim
+
+  Finch release notes:
+
+  0.9.2 (2022-07-19)
+  ------------------
+  * Fix Finch unable to startup in the Docker image.
+
+  0.9.1 (2022-07-07)
+  ------------------
+  * Avoid using a broken version of ``libarchive`` in the Docker image.
+
+  0.9.0 (2022-07-06)
+  ------------------
+  * Fix use of ``output_name``, add ``output_format`` to xclim indicators.
+  * Change all outputs to use ``output`` as the main output field name (instead of ``output_netcdf``).
+  * Updated to xclim 0.37:
+
+      - Percentile inputs of xclim indicators have been renamed with generic names, excluding an explicit mention to the target percentile.
+      - In ensemble processes, these percentiles can now be chosen through ``perc_[var]`` inputs. The default values are inherited from earlier versions of xclim.
+  * Average shape process downgraded to be single-threaded, as ESMF seems to have issues with multithreading.
+  * Removed deprecated processes ``subset_ensemble_bbox_BCCAQv2``, ``subset_ensemble_BCCAQv2`` and ``BCCAQv2_heat_wave_frequency_gridpoint``.
+  * Added ``csv_precision`` to all processes allowing CSV output. When given, it controls the number of decimal places in the output.
+
+
 [1.19.1](https://github.com/bird-house/birdhouse-deploy/tree/1.19.1) (2022-07-19)
 ------------------------------------------------------------------------------------------------------------------
 
