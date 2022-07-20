@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.19.1](https://github.com/bird-house/birdhouse-deploy/tree/1.19.1) (2022-07-19)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Various changes to get the new production host up and running
