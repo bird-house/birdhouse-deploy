@@ -257,6 +257,55 @@ to ``bump2version`` to auto-generated the tag in other to apply it directly on `
 after the merge, instead of onto the commits in the PR prior merging.
 
 
+Release Procedure
+-----------------
+
+* Pull/merge latest ``master`` to make sure modifications are applied in
+  CHANGES.md_, in next step, are under the most recent "unreleased" section.
+
+* Update CHANGES.md_, commit, push.
+
+* Open a PR with the new content from CHANGES.md_ as the PR description.  PR
+  description can have more pertinent info, ex: test results, staging server
+  location, other discussion topics, that might or might not be relevant in
+  CHANGES.md_.  Use your judgement.
+
+* Wait for a PR approval.
+
+* Review PR description if something needs to be added or updated after the PR
+  review process.  The goal is for the PR description to capture all the
+  essential informations for someone else not participating in the PR review
+  process to understand it easily.  This "someone else" might even be your
+  future self trying to understand what was going through your mind when you
+  opened this PR :)
+
+* Only when you are ready to merge the PR immediately, you can continue with
+  the following steps to.  Doing the following steps too early and you might
+  lose the "push race" if someone else is also trying to release at the same
+  time.  Also, in the spirit of not losing the "push race", execute all these
+  steps together, do not take a break in the middle.
+
+  * Merge with ``master`` branch, if needed, so next ``bump2version`` step will
+    bump to the proper next version. Might need to review the places where
+    CHANGES.md_ items were inserted following merge to make sure the new ones by
+    this PR are under "unreleased".
+
+  * Run ``bump2version`` with appropriate options, as described in "Tagging
+    policy" section above.  Push.
+
+  * Merge this PR, copying the entire PR description into the merge commit
+    description.  This is so that the page
+    https://github.com/bird-house/birdhouse-deploy/tags will contain relevant
+    info nicely.  That page was previously used as an ad-hoc changelog before
+    CHANGES.md_ was formally introduced.
+
+  * Run ``git tag`` on the commit created the by merge, with the same tag as
+    ``bump2version`` generated.
+
+  * Run ``git push --tags`` to upload the new version.
+
+
 .. _nginx.conf: ./config/proxy/nginx.conf
 .. _default.env: ./default.env
 .. _`.bumpversion.cfg`: ../.bumpversion.cfg
+.. _CHANGES.md: ../CHANGES.md

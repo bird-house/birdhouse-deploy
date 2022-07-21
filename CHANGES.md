@@ -25,6 +25,253 @@
   ![Screenshot 2022-01-25 at 00-25-45 GeoServer Edit Layer](https://user-images.githubusercontent.com/11966697/150916419-fce99147-2903-414b-8b83-551709ef87d6.png)
 
 
+[1.19.2](https://github.com/bird-house/birdhouse-deploy/tree/1.19.2) (2022-07-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Finch: new release for new Xclim
+
+  Finch release notes:
+
+  0.9.2 (2022-07-19)
+  ------------------
+  * Fix Finch unable to startup in the Docker image.
+
+  0.9.1 (2022-07-07)
+  ------------------
+  * Avoid using a broken version of ``libarchive`` in the Docker image.
+
+  0.9.0 (2022-07-06)
+  ------------------
+  * Fix use of ``output_name``, add ``output_format`` to xclim indicators.
+  * Change all outputs to use ``output`` as the main output field name (instead of ``output_netcdf``).
+  * Updated to xclim 0.37:
+
+      - Percentile inputs of xclim indicators have been renamed with generic names, excluding an explicit mention to the target percentile.
+      - In ensemble processes, these percentiles can now be chosen through ``perc_[var]`` inputs. The default values are inherited from earlier versions of xclim.
+  * Average shape process downgraded to be single-threaded, as ESMF seems to have issues with multithreading.
+  * Removed deprecated processes ``subset_ensemble_bbox_BCCAQv2``, ``subset_ensemble_BCCAQv2`` and ``BCCAQv2_heat_wave_frequency_gridpoint``.
+  * Added ``csv_precision`` to all processes allowing CSV output. When given, it controls the number of decimal places in the output.
+
+
+[1.19.1](https://github.com/bird-house/birdhouse-deploy/tree/1.19.1) (2022-07-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Various changes to get the new production host up and running
+
+    **Non-breaking changes**
+    - Bootstrap testsuite: only crawl the subset enough to pass canarie-api monitoring: faster when system under test has too much other stuff.
+    - New script: `check-autodeploy-repos`: to ensure autodeploy will trigger normally.
+    - New script: `sync-data`: to pull data from existing production host to a new production host or to a staging host to emulate the production host.
+    - thredds, geoserver, generic_bird: set more appropriate production values, taken from https://github.com/Ouranosinc/birdhouse-deploy/commit/316439e310e915e0a4ef35d25744cab76722fa99
+    - monitoring: fix redundant `network_mode: host` and `ports` binding since host network_mode will already automatically perform port bindings
+
+    **Breaking changes**
+    - None
+
+## Related Issue / Discussion
+
+- https://github.com/bird-house/birdhouse-deploy-ouranos/pull/16
+- https://github.com/Ouranosinc/pavics-vdb/pull/48
+- https://github.com/Ouranosinc/ouranos-ansible/pull/2
+
+
+[1.19.0](https://github.com/bird-house/birdhouse-deploy/tree/1.19.0) (2022-06-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Magpie/Twitcher: update `magpie` service
+  from [3.21.0](https://github.com/Ouranosinc/Magpie/tree/3.21.0)
+  to [3.26.0](https://github.com/Ouranosinc/Magpie/tree/3.26.0) and
+  bundled `twitcher` from [0.6.2](https://github.com/bird-house/twitcher/tree/v0.6.2)
+  to [0.7.0](https://github.com/bird-house/twitcher/tree/v0.7.0).
+  
+  - Adds [Service Hooks](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks) allowing 
+    Twitcher to apply HTTP pre-request/post-response modifications to requested services and resources in accordance
+    to `MagpieAdapter` implementation and using plugin Python scripts when matched against specific request parameters.
+
+  - Using *Service Hooks*, inject ``X-WPS-Output-Context`` header in Weaver job submission requests through the proxied
+    request by Twitcher and `MagpieAdapter`. This header contains the user ID that indicates to Weaver were to store 
+    job output results, allowing to save them in the corresponding user's workspace directory under `wpsoutputs` path.
+    More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/244.
+
+  - Using *Service Hooks*, filter processes returned by Weaver in JSON response from ``/processes`` endpoint using
+    respective permissions applied onto each ``/processes/{processID}`` for the requesting user. Users will only be able
+    to see processes for which they have read access to retrieve the process description.
+    More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/245.
+
+  - Using *Service Hooks*, automatically apply permissions for the user that successfully deployed a Weaver process 
+    using ``POST /processes`` request, granting it direct access to this process during process listing, process 
+    description request and for submitting job execution of this process.
+    Only this user deploying the process will have access to it until further permissions are added in Magpie to share
+    or publish it with other users, groups and/or publicly. The user must have the necessary permission to deploy a new
+    process in the first place. More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/247.
+
+[1.18.13](https://github.com/bird-house/birdhouse-deploy/tree/1.18.13) (2022-06-07)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- deploy-data: new env var DEPLOY_DATA_RSYNC_USER_GRP to avoid running cronjobs as root
+
+  When `deploy-data` is used by the `scheduler` component, it is run as
+  `root`.  This new env var will force the rsync process to run as a regular user to
+  follow security best practice to avoid running as root when not needed.
+
+  Note that the `git checkout` step done by `deploy-data` is still run as root.
+  This is because `deploy-data` is currently still run as root so it can
+  execute `docker` commands (ex: spawning the `rsync` command above in its own
+  docker container).
+
+  To fix this limitation, the regular user inside the `deploy-data` container
+  need to have docker access inside the container and outside on the host at
+  the same time.  If we make that regular user configurable so the script
+  `deploy-data` is generic and can work for any organisations, this is tricky
+  for the moment so will have to be handle in another PR.
+
+  So for the moment we have not achieved full non-root user in cronjobs
+  launched by the `scheduler` compoment but the most important part, the part
+  that perform the actual job (rsync or execute custom command using an
+  external docker container) is running as non-root.
+
+  See PR https://github.com/bird-house/birdhouse-deploy-ouranos/pull/18 that
+  make use of this new env var.
+
+  When `deploy-data` is invoking an external script that itself spawn a new
+  `docker run`, then it is up to this external script to ensure the proper
+  non-root user is used by `docker run`.
+  See PR https://github.com/Ouranosinc/pavics-vdb/pull/50 that handle that
+  case.
+
+
+[1.18.12](https://github.com/bird-house/birdhouse-deploy/tree/1.18.12) (2022-05-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Jupyter env: new build for new XClim and to get Dask dashboard and Panel server app to work
+
+  Deploy new Jupyter env from PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/105 on PAVICS.
+
+  Detailed changes can be found at https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/105.
+
+  Dask dashboard no manual URL mangling required:
+
+  ![Screenshot from 2022-04-13 22-37-49](https://user-images.githubusercontent.com/11966697/163303916-f781ac23-d10a-4cd6-807c-b10c8703afc3.png)
+
+  "Render with Panel" button works:
+  ![Screenshot from 2022-05-04 15-18-03](https://user-images.githubusercontent.com/11966697/166810160-f6989da4-6e8f-4407-8fd5-4ef71770e1f2.png)
+
+
+  Relevant changes:
+
+  ```diff
+  # new
+  >   - dask-labextension=5.2.0=pyhd8ed1ab_0
+  >   - jupyter-panel-proxy=0.2.0a2=py_0
+  >   - jupyter-server-proxy=3.2.1=pyhd8ed1ab_0
+  
+  # removed, interfere with panel
+  <     - handcalcs==1.4.1
+  
+  <   - xclim=0.34.0=pyhd8ed1ab_0
+  >   - xclim=0.36.0=pyhd8ed1ab_0
+  
+  <   - cf_xarray=0.6.3=pyhd8ed1ab_0
+  >   - cf_xarray=0.7.2=pyhd8ed1ab_0
+  
+  <   - clisops=0.8.0=pyh6c4a22f_0
+  >   - clisops=0.9.0=pyh6c4a22f_0
+  
+  # downgrade by clisops
+  <   - pandas=1.4.1=py38h43a58ef_0
+  >   - pandas=1.3.5=py38h43a58ef_0
+  
+  <   - rioxarray=0.10.3=pyhd8ed1ab_0
+  >   - rioxarray=0.11.1=pyhd8ed1ab_0
+  
+  <   - nc-time-axis=1.4.0=pyhd8ed1ab_0
+  >   - nc-time-axis=1.4.1=pyhd8ed1ab_0
+  
+  <   - roocs-utils=0.5.0=pyh6c4a22f_0
+  >   - roocs-utils=0.6.1=pyh6c4a22f_0
+  
+  <   - panel=0.12.7=pyhd8ed1ab_0
+  >   - panel=0.13.1a2=py_0
+  
+  <   - plotly=5.6.0=pyhd8ed1ab_0
+  >   - plotly=5.7.0=pyhd8ed1ab_0
+  ```
+
+
+[1.18.11](https://github.com/bird-house/birdhouse-deploy/tree/1.18.11) (2022-04-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Finch: new release for dask performance problem
+
+  PR to deploy new Finch releases in https://github.com/bird-house/finch/pull/233 on PAVICS.
+
+  See the Finch PR for more info.
+
+  Finch release notes:
+
+  0.8.3 (2022-04-21)
+  ------------------
+  * Preserve RCP dimension in ensemble processes, even when only RCP is selected.
+  * Pin ``dask`` and ``distributed`` at ``2022.1.0``, see https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/100
+
+
+[1.18.10](https://github.com/bird-house/birdhouse-deploy/tree/1.18.10) (2022-04-07)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Jupyter env: new xlrd, pre-commit, pin dask, distributed, cf_xarray, latest of everything else
+
+  Deploy new Jupyter env from PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/101 on PAVICS.
+
+  Detailed changes can be found at https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/101.
+
+  Relevant changes:
+  ```diff
+  >   - pre-commit=2.17.0=py38h578d9bd_0
+  >   - xlrd=2.0.1=pyhd8ed1ab_3
+  
+  <   - xclim=0.32.1=pyhd8ed1ab_0
+  >   - xclim=0.34.0=pyhd8ed1ab_0
+  
+  <   - cfgrib=0.9.9.1=pyhd8ed1ab_1
+  >   - cfgrib=0.9.10.1=pyhd8ed1ab_0
+  
+  <   - cftime=1.5.1.1=py38h6c62de6_1
+  >   - cftime=1.6.0=py38h3ec907f_0
+  
+  <   - intake-xarray=0.5.0=pyhd8ed1ab_0
+  >   - intake-xarray=0.6.0=pyhd8ed1ab_0
+  
+  <   - pandas=1.3.5=py38h43a58ef_0
+  >   - pandas=1.4.1=py38h43a58ef_0
+  
+  <   - regionmask=0.8.0=pyhd8ed1ab_1
+  >   - regionmask=0.9.0=pyhd8ed1ab_0
+  
+  <   - rioxarray=0.9.1=pyhd8ed1ab_0
+  >   - rioxarray=0.10.3=pyhd8ed1ab_0
+  
+  <   - xarray=0.20.2=pyhd8ed1ab_0
+  >   - xarray=2022.3.0=pyhd8ed1ab_0
+  
+  <   - zarr=2.10.3=pyhd8ed1ab_0
+  >   - zarr=2.11.1=pyhd8ed1ab_0
+  ```
+
+
 [1.18.9](https://github.com/bird-house/birdhouse-deploy/tree/1.18.9) (2022-03-16)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -3199,4 +3446,3 @@ Prior Versions
 All versions prior to [1.7.0](https://github.com/bird-house/birdhouse-deploy/tree/1.7.0) were not officially tagged.
 Is it strongly recommended employing later versions to ensure better traceability of changes that could impact behavior
 and potential issues on new server instances. 
-
