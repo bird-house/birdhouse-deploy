@@ -23,7 +23,8 @@
   ### Breaking changes
   * Docker commands that target `weaver-worker` to start or use `celery` must be adjusted according to how its new CLI
     resolves certain global parameters. Since the [celery-healthcheck](./birdhouse/components/weaver/celery-healthcheck)
-    script uses this CLI, `weaver>=4.15` is required.
+    script uses this CLI, `celery` commands were adjusted to consider those changes. If custom scripts or command
+    overrides are used to call `celery`, similar changes will need to be applied according to employed Weaver version.
     See details in [Weaver 4.15.0 changes](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#4150-2022-04-20).
 
   ### Relevant changes
