@@ -4,7 +4,7 @@ INFO="[INFO]  "
 ERROR="[ERROR] "
 
 echo "${INFO}Starting Celery Healthcheck"
-result=$(celery inspect registered -A pyramid_celery.celery_app --ini "${APP_CONFIG_DIR}/weaver.ini" --timeout 5)
+result=$(celery -A pyramid_celery.celery_app inspect registered --ini "${APP_CONFIG_DIR}/weaver.ini" --timeout 5)
 if [[ -z "${result}" ]]; then
   echo "${ERROR}Empty Celery response."
   exit 1

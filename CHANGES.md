@@ -14,7 +14,36 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Weaver: update `weaver` component default version from [4.12.0](https://github.com/crim-ca/weaver/tree/4.12.0)
+  to [4.20.0](https://github.com/crim-ca/weaver/tree/4.20.0).
+  See [full CHANGELOG](https://github.com/crim-ca/weaver/blob/4.20.0/CHANGES.rst) for details.
+
+  ### Breaking changes
+  * Docker commands that target `weaver-worker` to start or use `celery` must be adjusted according to how its new CLI
+    resolves certain global parameters. Since the [celery-healthcheck](./birdhouse/components/weaver/celery-healthcheck)
+    script uses this CLI, `weaver>=4.15` is required.
+    See details in [Weaver 4.15.0 changes](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#4150-2022-04-20).
+
+  ### Relevant changes
+  * Support OpenAPI-based `schema` field for Process I/O definitions to align with latest *OGC API - Processes* changes.
+  * Support `Prefer` header to define execution mode of jobs according to latest *OGC API - Processes* recommendations.
+  * Support `transmissionMode` to return file-based outputs by HTTP `Link` header references as desired.
+  * Support deployment of new processes using YAML and CWL based request contents directly to remove the need to
+    convert and indirectly embed their definitions in specific JSON schema structures.
+  * Support process revisions allowing users to iteratively update process metadata and their definitions without full
+    un/re-deployment of the complete process for each change. This also allows multiple process revisions to live
+    simultaneously on the instance, which can be described or launched for job executions with specific tagged versions.
+  * Add control query parameters to retrieve outputs in different JSON schema variations according to desired structure.
+  * Add statistics collection following job execution to obtain machine resource usage by the executed process.
+  * Improve handling of Content-Type definitions for reporting inputs, outputs and logs retrieval from job executions.
+  * Fixes related to reporting of job results with different formats and URL references based on requested execution
+    methods and control parameters.
+  * Fixes to resolve pending vulnerabilities or feature integrations by package dependencies (`celery`, `pywps`, etc.).
+  * Fixes related to parsing of WPS-1/2 remote providers URL from a CWL definition using `GetCapabilities` endpoint.
+  * Fixes and addition of multiple Weaver CLI capabilities to employ new features.
+
 
 [1.19.2](https://github.com/bird-house/birdhouse-deploy/tree/1.19.2) (2022-07-20)
 ------------------------------------------------------------------------------------------------------------------
