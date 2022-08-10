@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.20.0](https://github.com/bird-house/birdhouse-deploy/tree/1.20.0) (2022-08-10)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Weaver: update `weaver` component default version from [4.12.0](https://github.com/crim-ca/weaver/tree/4.12.0)
