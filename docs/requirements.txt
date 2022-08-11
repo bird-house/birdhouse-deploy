@@ -1,3 +1,2 @@
 # extra requirements specifically for documentation purposes
-m2r2
-mistune==0.8.4
+sphinx-mdinclude
