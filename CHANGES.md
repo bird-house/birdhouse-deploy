@@ -16,6 +16,20 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.20.1](https://github.com/bird-house/birdhouse-deploy/tree/1.20.1) (2022-08-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- GeoServer: enable metadata-plugin for modifying layer metadata, including bulk modifications
+
+  See plugin documentation at https://docs.geoserver.org/2.19.x/en/user/community/metadata/index.html
+
+  Related to issue https://github.com/Ouranosinc/pavics-sdi/issues/234
+
+  Add new "Metadata" tab in Layer Edit page:
+  ![Screenshot 2022-01-25 at 00-25-45 GeoServer Edit Layer](https://user-images.githubusercontent.com/11966697/150916419-fce99147-2903-414b-8b83-551709ef87d6.png)
+
+
 [1.20.0](https://github.com/bird-house/birdhouse-deploy/tree/1.20.0) (2022-08-10)
 ------------------------------------------------------------------------------------------------------------------
 
