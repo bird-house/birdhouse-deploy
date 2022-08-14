@@ -29,6 +29,8 @@ services:
     environment:
       CANARIE_API_CONFIG_FN: /config/docker_configuration.py
       CANARIE_MONITORING_EXTRA_CONF_DIR: ${CANARIE_MONITORING_EXTRA_CONF_DIR}
+      # https://github.com/bird-house/birdhouse-deploy/issues/198
+      REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
     links:
       - thredds
     entrypoint: /entrypoint
