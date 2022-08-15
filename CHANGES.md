@@ -14,7 +14,14 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+
+- Weaver: update `weaver` component default version to [4.21.0](https://github.com/crim-ca/weaver/tree/4.21.0).
+
+  ### Relevant changes
+  * Minor improvements to facilitate retrieval of XML and JSON Process definition and their seamless execution with 
+    XML or JSON request contents using either WPS or *OGC API - Processes* REST endpoints interchangeably.
+  * Fixes to WPS remote provider parsing registered in Weaver to successfully perform the relevant process executions.
 
 [1.20.1](https://github.com/bird-house/birdhouse-deploy/tree/1.20.1) (2022-08-11)
 ------------------------------------------------------------------------------------------------------------------
