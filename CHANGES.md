@@ -14,7 +14,16 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Cowbird: add new service [Ouranosinc/cowbird](https://github.com/Ouranosinc/cowbird/) to the stack.
+
+  ### Relevant changes
+  * Cowbird can be integrated to the instance using [components/cowbird](./birdhouse/components/cowbird) 
+    when added to in ``EXTRA_CONF_DIRS`` in the ``env.local`` variable definitions.
+  * Offers syncing operations between various other *birds* in order to apply user/group permissions between
+    corresponding files, granting access to them seamlessly through distinct services.
+  * Allows event and callback triggers to sync permissions and volume paths between API endpoints and local storages.
 
 [1.20.1](https://github.com/bird-house/birdhouse-deploy/tree/1.20.1) (2022-08-11)
 ------------------------------------------------------------------------------------------------------------------
