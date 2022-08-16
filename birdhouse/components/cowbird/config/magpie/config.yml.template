@@ -19,7 +19,7 @@ permissions:
     group: administrators
     action: create
 
-# Definitions of all the webhooks urls that will be called when creating or deleting a users.
+# Definitions of all the webhooks urls that will be called when creating or deleting a user.
 webhooks:
   - name: cowbird_create_user
     action: create_user
