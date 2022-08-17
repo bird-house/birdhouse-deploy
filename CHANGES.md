@@ -25,6 +25,9 @@
     corresponding files, granting access to them seamlessly through distinct services.
   * Allows event and callback triggers to sync permissions and volume paths between API endpoints and local storages.
 
+- birdhouse-deploy: fix missing `GEOSERVER_ADMIN_USER` variable templating 
+  from [pavics-compose.sh](./birdhouse/pavics-compose.sh).
+
 [1.20.1](https://github.com/bird-house/birdhouse-deploy/tree/1.20.1) (2022-08-11)
 ------------------------------------------------------------------------------------------------------------------
 
