@@ -10,7 +10,7 @@ x-logging:
 services:
   cowbird:
     image: pavics/cowbird:${COWBIRD_VERSION}-webservice
-    container_name: cowbird-web
+    container_name: cowbird
     environment:
       HOSTNAME: $HOSTNAME
       FORWARDED_ALLOW_IPS: "*"
