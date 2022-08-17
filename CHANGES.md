@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.20.2](https://github.com/bird-house/birdhouse-deploy/tree/1.20.2) (2022-08-17)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes:
 - birdhouse-deploy: fix missing bump of server version reported in ``canarie`` service configuration
 
