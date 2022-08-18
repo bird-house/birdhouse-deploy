@@ -340,10 +340,10 @@ The code of this service is located in |cowbird-repo|_. Its documentation is pro
 Operations Performed by Cowbird
 -------------------------------
 
-- Synchronize `Magpie` user and group permissions between "corresponding files" located under different services.
-  For example, `THREDDS` user-workspace files visualized in the catalog will be accessible by the same user under
-  the corresponding user-workspace under `GeoServer`.
-- Synchronize `Weaver` endpoints to retrieve equivalent definitions under various paths and access to generated WPS
+- Synchronize Magpie user and group permissions between "corresponding files" located under different services.
+  For example, THREDDS user-workspace files visualized in the catalog will be accessible by the same user under
+  the corresponding user-workspace under GeoServer.
+- Synchronize Weaver endpoints to retrieve equivalent definitions under various paths and access to generated WPS
   outputs following a job execution by a given user.
 - Synchronize permissions between API endpoints and local storage files.
 - Synchronize permissions and references based on event triggers and request callbacks.
