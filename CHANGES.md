@@ -25,6 +25,9 @@
     corresponding files, granting access to them seamlessly through distinct services.
   * Allows event and callback triggers to sync permissions and volume paths between API endpoints and local storages.
 
+- Nginx: add missing `X-Forwarded-Host` header to allow `Twitcher` to report the proper server host location when the
+  service to be accessed uses an internal Docker network reference through the service private URL defined in `Magpie`.
+
 - birdhouse-deploy: fix missing `GEOSERVER_ADMIN_USER` variable templating 
   from [pavics-compose.sh](./birdhouse/pavics-compose.sh).
 
