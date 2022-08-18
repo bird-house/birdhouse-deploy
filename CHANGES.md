@@ -16,12 +16,21 @@
 
 ## Changes:
 
-- Weaver: update `weaver` component default version to [4.21.0](https://github.com/crim-ca/weaver/tree/4.21.0).
+- Weaver: update `weaver` component default version to [4.22.0](https://github.com/crim-ca/weaver/tree/4.22.0).
 
   ### Relevant changes
   * Minor improvements to facilitate retrieval of XML and JSON Process definition and their seamless execution with 
     XML or JSON request contents using either WPS or *OGC API - Processes* REST endpoints interchangeably.
   * Fixes to WPS remote provider parsing registered in Weaver to successfully perform the relevant process executions.
+  * Add WPS remote provider retry conditions to handle known problematic cases during process execution (on remote)
+    that can lead to sporadic failures of the monitored job. When possible, retried submission leading to successful
+    execution will result in the monitored job to complete successfully and transparently to the user. Relevant errors
+    and retry attempts are provided in the job logs.
+  * Add WPS remote provider status exception response as XML message from the failed remote execution within the
+    monitored local job logs to help users understand how to resolve any encountered issue on the remote service.
+  * Bump version ``OWSLib==0.26.0`` to fix ``processVersion`` attribute resolution from WPS remote provider definition
+    to populate ``Process.version`` property employed in converted `Process` description to `OGC API - Process` schema
+    (relates to `geopython/OWSLib#794 <https://github.com/geopython/OWSLib/pull/794>`_).
 
 [1.20.1](https://github.com/bird-house/birdhouse-deploy/tree/1.20.1) (2022-08-11)
 ------------------------------------------------------------------------------------------------------------------
