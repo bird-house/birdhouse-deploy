@@ -16,6 +16,61 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.20.3](https://github.com/bird-house/birdhouse-deploy/tree/1.20.3) (2022-08-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+- Canarie-api: fix unable to verify LetsEncrypt SSL certs
+
+  LetsEncrypt older root certificate "DST Root CA X3" expired on September 30,
+  2021, see https://letsencrypt.org/docs/dst-root-ca-x3-expiration-september-2021/
+
+  All the major browsers and OS platform has previously added the new root
+  certificate "ISRG Root X1" ahead of time so the transition to the new
+  root certificate is seemless for all clients.
+
+  Python `requests` package bundle their own copy of known root
+  certificates and is late to add this new root cert "ISRG Root X1".  Had
+  it automatically fallback to the OS copy of the root cert bundle, this
+  would have been seemless.
+
+  The fix is to force `requests` to use the OS copy of the root cert bundle.
+
+  Fix for this error:
+  ```
+  $ docker exec proxy python -c "import requests; requests.request('GET', 'https://lvupavicsmaster.ouranos.ca/geoserver')"
+  Traceback (most recent call last):
+    File "<string>", line 1, in <module>
+    File "/usr/local/lib/python2.7/dist-packages/requests/api.py", line 50, in request
+      response = session.request(method=method, url=url, **kwargs)
+    File "/usr/local/lib/python2.7/dist-packages/requests/sessions.py", line 468, in request
+      resp = self.send(prep, **send_kwargs)
+    File "/usr/local/lib/python2.7/dist-packages/requests/sessions.py", line 576, in send
+      r = adapter.send(request, **kwargs)
+    File "/usr/local/lib/python2.7/dist-packages/requests/adapters.py", line 433, in send
+      raise SSLError(e, request=request)
+  requests.exceptions.SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:661)
+  ```
+
+  Default SSL root cert bundle of `requests`:
+  ```
+  $ docker exec proxy python -c "import requests; print requests.certs.where()"
+  /usr/local/lib/python2.7/dist-packages/requests/cacert.pem
+  ```
+
+  Confirm the fix works:
+  ```
+  $ docker exec -it proxy bash
+  root@37ed3a2a03ae:/opt/local/src/CanarieAPI/canarieapi# REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt python -c "import requests; requests.request('GET', 'https://lvupavicsmaster.ouranos.ca/geoserver')"
+  root@37ed3a2a03ae:/opt/local/src/CanarieAPI/canarieapi#
+
+  $ docker exec proxy env |grep REQ
+  REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+  ```
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/198
+
+
 [1.20.2](https://github.com/bird-house/birdhouse-deploy/tree/1.20.2) (2022-08-17)
 ------------------------------------------------------------------------------------------------------------------
 
