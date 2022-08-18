@@ -5,9 +5,8 @@
 ## See details: https://pavics-cowbird.readthedocs.io/en/latest/configuration.html#file-config-yml
 
 
-# [Required] Definition of managed services by Cowbird.
-# FIXME: rename 'services' section to 'handlers' and refactor (issue https://github.com/Ouranosinc/cowbird/issues/22)
-services:
+# [Required] Definition of managed handlers by Cowbird.
+handlers:
   Magpie:
     active: true
     url: https://${PAVICS_FQDN_PUBLIC}/magpie
