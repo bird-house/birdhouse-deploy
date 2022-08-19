@@ -16,6 +16,26 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.21.0](https://github.com/bird-house/birdhouse-deploy/tree/1.21.0) (2022-08-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Cowbird: add new service [Ouranosinc/cowbird](https://github.com/Ouranosinc/cowbird/) to the stack.
+
+  ### Relevant changes
+  * Cowbird can be integrated to the instance using [components/cowbird](./birdhouse/components/cowbird) 
+    when added to in ``EXTRA_CONF_DIRS`` in the ``env.local`` variable definitions.
+  * Offers syncing operations between various other *birds* in order to apply user/group permissions between
+    corresponding files, granting access to them seamlessly through distinct services.
+  * Allows event and callback triggers to sync permissions and volume paths between API endpoints and local storages.
+
+- Nginx: add missing `X-Forwarded-Host` header to allow `Twitcher` to report the proper server host location when the
+  service to be accessed uses an internal Docker network reference through the service private URL defined in `Magpie`.
+
+- birdhouse-deploy: fix missing `GEOSERVER_ADMIN_USER` variable templating 
+  from [pavics-compose.sh](./birdhouse/pavics-compose.sh).
+
 [1.20.4](https://github.com/bird-house/birdhouse-deploy/tree/1.20.4) (2022-08-19)
 ------------------------------------------------------------------------------------------------------------------
 

@@ -1,0 +1,82 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  cowbird:
+    image: pavics/cowbird:${COWBIRD_VERSION}-webservice
+    container_name: cowbird
+    environment:
+      HOSTNAME: $HOSTNAME
+      FORWARDED_ALLOW_IPS: "*"
+      # SSL verification should be enabled for secured connections
+      COWBIRD_SSL_VERIFY: "true"
+      COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
+      WORKSPACE_DIR: /user_workspaces
+      GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
+      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
+    links:
+      - "${COWBIRD_MONGODB_SERVICE}"
+    networks:
+      - default
+      - "${COWBIRD_MONGODB_SERVICE}"
+    depends_on:
+      - "${COWBIRD_MONGODB_SERVICE}"
+    volumes:
+      - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
+      - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
+      - "${DATA_PERSIST_ROOT}/user_workspaces:/user_workspaces"
+    restart: always
+    logging: *default-logging
+
+  cowbird-worker:
+    image: pavics/cowbird:${COWBIRD_VERSION}-worker
+    container_name: cowbird-worker
+    environment:
+      COWBIRD_SSL_VERIFY: "true"
+      COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
+      WORKSPACE_DIR: /user_workspaces
+      GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
+      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
+    env_file:
+      # user/password for admin session to perform permission sync updates
+      - ./config/postgres-magpie/credentials.env
+    links:
+      - "${COWBIRD_MONGODB_SERVICE}"
+    networks:
+      - default
+      - "${COWBIRD_MONGODB_SERVICE}"
+    depends_on:
+      - "${COWBIRD_MONGODB_SERVICE}"
+    volumes:
+      - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
+      - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
+      # note:
+      #   file 'celeryconfig' must be located directly under the application path and be named exactly like this,
+      #   otherwise 'pyramid_celery' cannot find it (see https://github.com/sontek/pyramid_celery/pull/89)
+      - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/celeryconfig.py
+      - "${DATA_PERSIST_ROOT}/user_workspaces:/user_workspaces"
+    restart: always
+    logging: *default-logging
+
+  # extend proxy with endpoint and config for Cowbird API access
+  proxy:
+    volumes:
+      - ./components/cowbird/conf.extra-service.d:/etc/nginx/conf.extra-service.d/cowbird:ro
+    links:
+      - cowbird
+
+  # extend Magpie permissions to grant access to Cowbird API via secured Twitcher proxy
+  magpie:
+    volumes:
+      # NOTE:
+      #   Although file uses the "config.yml" format, it is very important to pass it as independent/duplicate reference
+      #   provider/permissions config files. This is because 'MAGPIE_CONFIG_PATH' is not used to allow parsing multiple
+      #   config files for each extendable service, using loading of all configuration files found in mount directories.
+      - ./components/cowbird/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/cowbird.yml:ro
+      - ./components/cowbird/config/magpie/config.yml:/opt/local/src/magpie/config/providers/cowbird.yml:ro

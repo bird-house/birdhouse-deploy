@@ -1,0 +1,7 @@
+broker_url = "mongodb://${COWBIRD_MONGODB_HOST}:${COWBIRD_MONGODB_PORT}/jobs"
+result_backend = "mongodb://${COWBIRD_MONGODB_HOST}:${COWBIRD_MONGODB_PORT}"
+mongodb_backend_settings = {
+    "database": "jobs-result",
+    "taskmeta_collection": "celery_tasks",
+}
+result_persistent = False

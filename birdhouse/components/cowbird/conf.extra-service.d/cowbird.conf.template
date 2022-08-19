@@ -1,0 +1,9 @@
+
+    location /cowbird {
+        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/cowbird;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host:$server_port;
+        proxy_buffering off;
+        include /etc/nginx/conf.d/cors.include;
+    }

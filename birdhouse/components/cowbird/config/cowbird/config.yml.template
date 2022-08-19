@@ -1,0 +1,155 @@
+## Combined configuration definition to setup objects at Cowbird startup
+## See documentation 'Configuration' for more details on each section.
+
+## See example: https://github.com/Ouranosinc/cowbird/blob/master/config/config.example.yml
+## See details: https://pavics-cowbird.readthedocs.io/en/latest/configuration.html#file-config-yml
+
+
+# [Required] Definition of managed handlers by Cowbird.
+handlers:
+  Magpie:
+    active: true
+    url: https://${PAVICS_FQDN_PUBLIC}/magpie
+    admin_user: ${MAGPIE_ADMIN_USERNAME}
+    admin_password: ${MAGPIE_ADMIN_PASSWORD}
+  Geoserver:
+    active: true
+    # FIXME: replace by the protected/proxy endpoint once component is made available
+    url: http://${PAVICS_FQDN_PUBLIC}:8765/geoserver
+    workspace_dir: ${WORKSPACE_DIR}
+    admin_user: ${GEOSERVER_ADMIN_USER}
+    admin_password: ${GEOSERVER_ADMIN_PASSWORD}
+  Catalog:
+    active: true
+    url: https://${PAVICS_FQDN_PUBLIC}/twitcher/ows/proxy/catalog
+    workspace_dir: ${WORKSPACE_DIR}
+  Thredds:
+    active: true
+  Nginx:
+    active: true
+  FileSystem:
+    active: true
+    priority: 1
+    workspace_dir: ${WORKSPACE_DIR}
+
+# [Required] This section defines how to synchronize permissions between services when they share resources
+sync_permissions:
+  # Friendly name to identify a sync point (The value is not used by Cowbird so this can be any relevant keyword)
+  user_workspace:
+    # [Required] This section defines a list of services and resources that exists in Magpie.
+    # For more info on the services available in Magpie :
+    #     https://pavics-magpie.readthedocs.io/en/latest/services.html#available-services
+    #     https://pavics-magpie.readthedocs.io/en/latest/autoapi/magpie/services/index.html
+    services: # Contains the different resources that can be synchronized, ordered by service
+      thredds: # Service name, which should also exist in Magpie
+        # Resource key (ex.: thredds_workspace): Custom name to represent a resource path.
+        #
+        # Example of resource that uses variables and a `MULTI_TOKEN`.
+        # Here, with the config below, if we have an input resource path
+        # `/geoserver/workspaces/user_xyz/dir1/dir2/file_abc` that matches with the `geoserver_workspace` resource key,
+        # the `user` variable name would be matched with `user_xyz` and `synced_file`, with `file_abc`.
+        # Also, this key would need to sync permissions with the `thredds_workspace` resource key, considering the
+        # `permissions_mapping` defined below. The `thredds_workspace` would be deduced to the resource path
+        # `/catalog/workspaces/user_xyz/dir1/dir2/subdir/file_abc`.
+        # The types of each segment of this target resource path would be deduced
+        # from the `thredds_workspace` config below.
+        thredds_workspace:
+          - name: catalog
+            type: service
+          - name: workspaces
+            type: directory
+          - name: "{user}"
+            type: directory
+          - name: "**"
+            type: directory
+          - name: subdir
+            type: directory
+          - name: "{synced_file}"
+            type: file
+      geoserver:
+        geoserver_workspace:
+          - name: geoserver
+            type: service
+          - name: workspaces
+            type: workspace
+          - name: "{user}"
+            type: workspace
+          - name: "**"
+            type: workspace
+          - name: "{synced_file}"
+            type: workspace
+    # [Required] This section defines an array of permissions mapping between services
+    # Each item found in the `permissions_mapping` uses the following format :
+    #     resource_key1 : <permissions1> <mapping> resource_key2 : <permissions2>
+    # <permissionsX> is defined as a single permission or a list of permissions :
+    #     `permission | [permission1, permission2, ...]`
+    # <mapping> is defined as a unidirectional or bidirectional arrow : `-> | <- | <->`
+    #
+    # The permissions can either be a single permission or a list of permissions. Each of those permissions can either
+    # use an implicit format (`<name>` or `<name>-match`) or an explicit format (`<name>-<access>-<scope>`).
+    # When using an implicit format, if the access and/or scope are not specified, it will use the default
+    # access `allow` and/or the default scope `recursive`.
+    # For more info on Magpie permissions :
+    #     https://pavics-magpie.readthedocs.io/en/latest/permissions.html#permission-definition-and-modifiers
+    #     https://pavics-magpie.readthedocs.io/en/latest/permissions.html#permissions-representation
+    # See documentation 'Configuration' for more details on the mapping and synchronization features
+    permissions_mapping:
+      # A `read` permission for `thredds_workspace` creates/deletes all specified `geoserver_workspace` permissions.
+      # And a specified `geoserver_workspace` permission creates/deletes a `read` permission on `thredds_workspace`.
+      - "geoserver_workspace : [getCapabilities, getFeature, getFeatureInfo] <-> thredds_workspace : read"
+      # A `createStoredQuery` permission on `geoserver_workspace` creates/deletes
+      # a `write` permission on `thredds_workspace`, and vice versa.
+      - "geoserver_workspace : createStoredQuery <-> thredds_workspace : write"
+  weaver_outputs:
+    services:
+      api:
+        process_description:
+          - name: processes
+            type: route
+          - name: "{processID}"
+            type: route
+        process_job_status:
+          - name: processes
+            type: route
+          - name: "{processID}"
+            type: route
+          - name: jobs
+            type: route
+          - name: "{jobID}"
+            type: route
+        job_status:
+          - name: jobs
+            type: route
+          - name: "{jobID}"
+            type: route
+        job_outputs:
+          - name: jobs
+            type: route
+          - name: "{jobID}"
+            type: route
+          - name: outputs
+            type: route
+        weaver_wps_outputs:
+          - name: wpsoutputs
+            type: route
+          - name: weaver
+            type: route
+          - name: "{jobID}"
+            type: route
+    permissions_mapping:
+      # When user is granted access to an output (either side),
+      # output retrieval is allowed from both endpoints (wps-outputs/weaver).
+      - "weaver_wps_outputs : read <-> job_outputs : read"
+      # When output can be retrieved, access to details about the process and
+      # the job are also provided (to understand what each output represents),
+      # but getting read access to a process description should not grant
+      # access to all possible outputs of every underlying job of that process
+      # (eg: different users running the same process = different job access,
+      # but same process description visible).
+      - "weaver_wps_outputs : read -> job_status : read"
+      # process-prefixed items can be only one-way since wps-outputs does not
+      # encode the 'processID' information ('jobID' directly the top-level dir)
+      - "process_job_status : read -> weaver_wps_outputs : read"
+      - "process_job_status : read -> job_status : read"
+      # different permission (match), otherwise all jobs/outputs become available.
+      - "process_job_status : read -> process_description : read-match"
