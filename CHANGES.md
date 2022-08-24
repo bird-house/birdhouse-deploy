@@ -14,7 +14,9 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- birdhouse-deploy: fix invalid `canarie-api-full-monitoring` endpoints adding double `/` when substituting variables.
 
 [1.21.0](https://github.com/bird-house/birdhouse-deploy/tree/1.21.0) (2022-08-19)
 ------------------------------------------------------------------------------------------------------------------

@@ -7,32 +7,32 @@ SERVICES['node']['monitoring'].update({
     # Flyingpigeon is used for Twitcher monitoring already
     'Catalog-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/catalog?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/catalog?service=WPS&version=1.0.0&request=GetCapabilities'
         },
     },
     'Malleefowl-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/malleefowl?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/malleefowl?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
     'Finch-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
     'Raven-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/raven?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
     'Hummingbird-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
     'ncWMS2-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/ncWMS2/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/ncWMS2/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
         }
     },
 })
