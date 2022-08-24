@@ -110,7 +110,7 @@ handlers = console
 # "level = DEBUG"   logs detailed information about operations/settings (not for production, will leak sensitive data)
 # "level = INFO"    reports useful information, not leaking details about settings
 # "level = WARN"    only potential problems/unexpected results reported, such as when caching is employed
-level = INFO
+level = ${TWITCHER_LOG_LEVEL}
 handlers =
 qualname = twitcher
 
@@ -119,7 +119,7 @@ qualname = twitcher
 # "level = DEBUG"   logs detailed information about operations/settings (not for production, will leak sensitive data)
 # "level = INFO"    reports useful information about operations, not leaking details about settings
 # "level = WARN"    only potential problems are reported such as missing settings in configuration
-level = INFO
+level = ${MAGPIE_LOG_LEVEL}
 handlers =
 qualname = magpie
 
