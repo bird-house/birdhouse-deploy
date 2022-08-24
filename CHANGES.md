@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.22.0](https://github.com/bird-house/birdhouse-deploy/tree/1.22.0) (2022-08-24)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes:
 - Geoserver: Adds `./optional-components/test-geoserver-secured-access`, to test Twitcher-protected access to Geoserver
   
