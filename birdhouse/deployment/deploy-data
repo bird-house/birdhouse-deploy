@@ -14,6 +14,10 @@
 # very few install dependencies (only need docker and git installed locally)
 # so it can runs inside very minimalistic image (the 'docker' Docker image).
 #
+# Setting environment variable DEPLOY_DATA_RSYNC_USER_GRP='user:group' to
+# specify the user to run inside the rsync docker container.  Remember to give
+# that user write permission on the rsync target on disk.
+#
 # Setting environment variable DEPLOY_DATA_LOGFILE='/path/to/logfile.log'
 # will redirect all STDOUT and STDERR to that logfile so this script will be
 # completely silent.
@@ -139,6 +143,10 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
         SRC_DIR_ABS_PATH="`pwd`/$SRC_DIR"
         USER_ID="`id -u`"
         GROUP_ID="`id -g`"
+        RSYNC_USER_GRP="$USER_ID:$GROUP_ID"
+        if [ ! -z "$DEPLOY_DATA_RSYNC_USER_GRP" ]; then
+            RSYNC_USER_GRP="$DEPLOY_DATA_RSYNC_USER_GRP"
+        fi
 
         # Ensure DEST_DIR_PARENT is created using current USER_ID/GROUP_ID for
         # next rsync to have proper write access.
@@ -148,7 +156,7 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
         docker run --rm --name deploy_data_rsync_$DOCKER_RUN_TAG \
             --volume $SRC_DIR_ABS_PATH:$SRC_DIR_ABS_PATH:ro \
             --volume $DEST_DIR_PARENT:$DEST_DIR_PARENT:rw \
-            --user $USER_ID:$GROUP_ID \
+            --user $RSYNC_USER_GRP \
             --entrypoint /usr/bin/rsync \
             $DEPLOY_DATA_RSYNC_IMAGE \
                 --recursive --links --checksum --delete \

@@ -4,7 +4,17 @@ INFO="[INFO]  "
 ERROR="[ERROR] "
 
 echo "${INFO}Starting Celery Healthcheck"
-result=$(celery inspect registered -A pyramid_celery.celery_app --ini "${APP_CONFIG_DIR}/weaver.ini" --timeout 5)
+# detect weaver version to adjust celery CLI parameter order accordingly to expected package dependency
+weaver_version=$(weaver --version | cut -d ' ' -f 2)
+celery_greater=$(python -c "
+from distutils.version import LooseVersion; print(LooseVersion(\"${weaver_version}\") >= LooseVersion(\"4.15.0\"))
+")
+# retrieve the results with the appropriate parameter order in each case
+if [[ "${celery_greater}" = "True" ]]; then
+  result=$(celery -A pyramid_celery.celery_app inspect registered --ini "${APP_CONFIG_DIR}/weaver.ini" --timeout 5)
+else
+  result=$(celery inspect registered -A pyramid_celery.celery_app --ini "${APP_CONFIG_DIR}/weaver.ini" --timeout 5)
+fi
 if [[ -z "${result}" ]]; then
   echo "${ERROR}Empty Celery response."
   exit 1

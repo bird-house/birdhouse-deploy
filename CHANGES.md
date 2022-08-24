@@ -22,6 +22,280 @@
   - New Location (Proxy) : /geoserver-secured
   - Copied current WFS GetCapabilities and DescribeFeatureType permissions to new Provider
 
+[1.21.0](https://github.com/bird-house/birdhouse-deploy/tree/1.21.0) (2022-08-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Cowbird: add new service [Ouranosinc/cowbird](https://github.com/Ouranosinc/cowbird/) to the stack.
+
+  ### Relevant changes
+  * Cowbird can be integrated to the instance using [components/cowbird](./birdhouse/components/cowbird) 
+    when added to in ``EXTRA_CONF_DIRS`` in the ``env.local`` variable definitions.
+  * Offers syncing operations between various other *birds* in order to apply user/group permissions between
+    corresponding files, granting access to them seamlessly through distinct services.
+  * Allows event and callback triggers to sync permissions and volume paths between API endpoints and local storages.
+
+- Nginx: add missing `X-Forwarded-Host` header to allow `Twitcher` to report the proper server host location when the
+  service to be accessed uses an internal Docker network reference through the service private URL defined in `Magpie`.
+
+- birdhouse-deploy: fix missing `GEOSERVER_ADMIN_USER` variable templating 
+  from [pavics-compose.sh](./birdhouse/pavics-compose.sh).
+
+[1.20.4](https://github.com/bird-house/birdhouse-deploy/tree/1.20.4) (2022-08-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Weaver: update `weaver` component default version to [4.22.0](https://github.com/crim-ca/weaver/tree/4.22.0).
+
+  ### Relevant changes
+  * Minor improvements to facilitate retrieval of XML and JSON Process definition and their seamless execution with 
+    XML or JSON request contents using either WPS or *OGC API - Processes* REST endpoints interchangeably.
+  * Fixes to WPS remote provider parsing registered in Weaver to successfully perform the relevant process executions.
+  * Add WPS remote provider retry conditions to handle known problematic cases during process execution (on remote)
+    that can lead to sporadic failures of the monitored job. When possible, retried submission leading to successful
+    execution will result in the monitored job to complete successfully and transparently to the user. Relevant errors
+    and retry attempts are provided in the job logs.
+  * Add WPS remote provider status exception response as XML message from the failed remote execution within the
+    monitored local job logs to help users understand how to resolve any encountered issue on the remote service.
+  * Bump version ``OWSLib==0.26.0`` to fix ``processVersion`` attribute resolution from WPS remote provider definition
+    to populate ``Process.version`` property employed in converted `Process` description to `OGC API - Process` schema
+    (relates to `geopython/OWSLib#794 <https://github.com/geopython/OWSLib/pull/794>`_).
+
+[1.20.3](https://github.com/bird-house/birdhouse-deploy/tree/1.20.3) (2022-08-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+- Canarie-api: fix unable to verify LetsEncrypt SSL certs
+
+  LetsEncrypt older root certificate "DST Root CA X3" expired on September 30,
+  2021, see https://letsencrypt.org/docs/dst-root-ca-x3-expiration-september-2021/
+
+  All the major browsers and OS platform has previously added the new root
+  certificate "ISRG Root X1" ahead of time so the transition to the new
+  root certificate is seemless for all clients.
+
+  Python `requests` package bundle their own copy of known root
+  certificates and is late to add this new root cert "ISRG Root X1".  Had
+  it automatically fallback to the OS copy of the root cert bundle, this
+  would have been seemless.
+
+  The fix is to force `requests` to use the OS copy of the root cert bundle.
+
+  Fix for this error:
+  ```
+  $ docker exec proxy python -c "import requests; requests.request('GET', 'https://lvupavicsmaster.ouranos.ca/geoserver')"
+  Traceback (most recent call last):
+    File "<string>", line 1, in <module>
+    File "/usr/local/lib/python2.7/dist-packages/requests/api.py", line 50, in request
+      response = session.request(method=method, url=url, **kwargs)
+    File "/usr/local/lib/python2.7/dist-packages/requests/sessions.py", line 468, in request
+      resp = self.send(prep, **send_kwargs)
+    File "/usr/local/lib/python2.7/dist-packages/requests/sessions.py", line 576, in send
+      r = adapter.send(request, **kwargs)
+    File "/usr/local/lib/python2.7/dist-packages/requests/adapters.py", line 433, in send
+      raise SSLError(e, request=request)
+  requests.exceptions.SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:661)
+  ```
+
+  Default SSL root cert bundle of `requests`:
+  ```
+  $ docker exec proxy python -c "import requests; print requests.certs.where()"
+  /usr/local/lib/python2.7/dist-packages/requests/cacert.pem
+  ```
+
+  Confirm the fix works:
+  ```
+  $ docker exec -it proxy bash
+  root@37ed3a2a03ae:/opt/local/src/CanarieAPI/canarieapi# REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt python -c "import requests; requests.request('GET', 'https://lvupavicsmaster.ouranos.ca/geoserver')"
+  root@37ed3a2a03ae:/opt/local/src/CanarieAPI/canarieapi#
+
+  $ docker exec proxy env |grep REQ
+  REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+  ```
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/198
+
+
+[1.20.2](https://github.com/bird-house/birdhouse-deploy/tree/1.20.2) (2022-08-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- birdhouse-deploy: fix missing bump of server version reported in ``canarie`` service configuration
+
+[1.20.1](https://github.com/bird-house/birdhouse-deploy/tree/1.20.1) (2022-08-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- GeoServer: enable metadata-plugin for modifying layer metadata, including bulk modifications
+
+  See plugin documentation at https://docs.geoserver.org/2.19.x/en/user/community/metadata/index.html
+
+  Related to issue https://github.com/Ouranosinc/pavics-sdi/issues/234
+
+  Add new "Metadata" tab in Layer Edit page:
+  ![Screenshot 2022-01-25 at 00-25-45 GeoServer Edit Layer](https://user-images.githubusercontent.com/11966697/150916419-fce99147-2903-414b-8b83-551709ef87d6.png)
+
+
+[1.20.0](https://github.com/bird-house/birdhouse-deploy/tree/1.20.0) (2022-08-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: update `weaver` component default version from [4.12.0](https://github.com/crim-ca/weaver/tree/4.12.0)
+  to [4.20.0](https://github.com/crim-ca/weaver/tree/4.20.0).
+  See [full CHANGELOG](https://github.com/crim-ca/weaver/blob/4.20.0/CHANGES.rst) for details.
+
+  ### Breaking changes
+  * Docker commands that target `weaver-worker` to start or use `celery` must be adjusted according to how its new CLI
+    resolves certain global parameters. Since the [celery-healthcheck](./birdhouse/components/weaver/celery-healthcheck)
+    script uses this CLI, `celery` commands were adjusted to consider those changes. If custom scripts or command
+    overrides are used to call `celery`, similar changes will need to be applied according to employed Weaver version.
+    See details in [Weaver 4.15.0 changes](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#4150-2022-04-20).
+
+  ### Relevant changes
+  * Support OpenAPI-based `schema` field for Process I/O definitions to align with latest *OGC API - Processes* changes.
+  * Support `Prefer` header to define execution mode of jobs according to latest *OGC API - Processes* recommendations.
+  * Support `transmissionMode` to return file-based outputs by HTTP `Link` header references as desired.
+  * Support deployment of new processes using YAML and CWL based request contents directly to remove the need to
+    convert and indirectly embed their definitions in specific JSON schema structures.
+  * Support process revisions allowing users to iteratively update process metadata and their definitions without full
+    un/re-deployment of the complete process for each change. This also allows multiple process revisions to live
+    simultaneously on the instance, which can be described or launched for job executions with specific tagged versions.
+  * Add control query parameters to retrieve outputs in different JSON schema variations according to desired structure.
+  * Add statistics collection following job execution to obtain machine resource usage by the executed process.
+  * Improve handling of Content-Type definitions for reporting inputs, outputs and logs retrieval from job executions.
+  * Fixes related to reporting of job results with different formats and URL references based on requested execution
+    methods and control parameters.
+  * Fixes to resolve pending vulnerabilities or feature integrations by package dependencies (`celery`, `pywps`, etc.).
+  * Fixes related to parsing of WPS-1/2 remote providers URL from a CWL definition using `GetCapabilities` endpoint.
+  * Fixes and addition of multiple Weaver CLI capabilities to employ new features.
+
+
+[1.19.2](https://github.com/bird-house/birdhouse-deploy/tree/1.19.2) (2022-07-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Finch: new release for new Xclim
+
+  Finch release notes:
+
+  0.9.2 (2022-07-19)
+  ------------------
+  * Fix Finch unable to startup in the Docker image.
+
+  0.9.1 (2022-07-07)
+  ------------------
+  * Avoid using a broken version of ``libarchive`` in the Docker image.
+
+  0.9.0 (2022-07-06)
+  ------------------
+  * Fix use of ``output_name``, add ``output_format`` to xclim indicators.
+  * Change all outputs to use ``output`` as the main output field name (instead of ``output_netcdf``).
+  * Updated to xclim 0.37:
+
+      - Percentile inputs of xclim indicators have been renamed with generic names, excluding an explicit mention to the target percentile.
+      - In ensemble processes, these percentiles can now be chosen through ``perc_[var]`` inputs. The default values are inherited from earlier versions of xclim.
+  * Average shape process downgraded to be single-threaded, as ESMF seems to have issues with multithreading.
+  * Removed deprecated processes ``subset_ensemble_bbox_BCCAQv2``, ``subset_ensemble_BCCAQv2`` and ``BCCAQv2_heat_wave_frequency_gridpoint``.
+  * Added ``csv_precision`` to all processes allowing CSV output. When given, it controls the number of decimal places in the output.
+
+
+[1.19.1](https://github.com/bird-house/birdhouse-deploy/tree/1.19.1) (2022-07-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Various changes to get the new production host up and running
+
+    **Non-breaking changes**
+    - Bootstrap testsuite: only crawl the subset enough to pass canarie-api monitoring: faster when system under test has too much other stuff.
+    - New script: `check-autodeploy-repos`: to ensure autodeploy will trigger normally.
+    - New script: `sync-data`: to pull data from existing production host to a new production host or to a staging host to emulate the production host.
+    - thredds, geoserver, generic_bird: set more appropriate production values, taken from https://github.com/Ouranosinc/birdhouse-deploy/commit/316439e310e915e0a4ef35d25744cab76722fa99
+    - monitoring: fix redundant `network_mode: host` and `ports` binding since host network_mode will already automatically perform port bindings
+
+    **Breaking changes**
+    - None
+
+## Related Issue / Discussion
+
+- https://github.com/bird-house/birdhouse-deploy-ouranos/pull/16
+- https://github.com/Ouranosinc/pavics-vdb/pull/48
+- https://github.com/Ouranosinc/ouranos-ansible/pull/2
+
+
+[1.19.0](https://github.com/bird-house/birdhouse-deploy/tree/1.19.0) (2022-06-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Magpie/Twitcher: update `magpie` service
+  from [3.21.0](https://github.com/Ouranosinc/Magpie/tree/3.21.0)
+  to [3.26.0](https://github.com/Ouranosinc/Magpie/tree/3.26.0) and
+  bundled `twitcher` from [0.6.2](https://github.com/bird-house/twitcher/tree/v0.6.2)
+  to [0.7.0](https://github.com/bird-house/twitcher/tree/v0.7.0).
+  
+  - Adds [Service Hooks](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks) allowing 
+    Twitcher to apply HTTP pre-request/post-response modifications to requested services and resources in accordance
+    to `MagpieAdapter` implementation and using plugin Python scripts when matched against specific request parameters.
+
+  - Using *Service Hooks*, inject ``X-WPS-Output-Context`` header in Weaver job submission requests through the proxied
+    request by Twitcher and `MagpieAdapter`. This header contains the user ID that indicates to Weaver were to store 
+    job output results, allowing to save them in the corresponding user's workspace directory under `wpsoutputs` path.
+    More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/244.
+
+  - Using *Service Hooks*, filter processes returned by Weaver in JSON response from ``/processes`` endpoint using
+    respective permissions applied onto each ``/processes/{processID}`` for the requesting user. Users will only be able
+    to see processes for which they have read access to retrieve the process description.
+    More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/245.
+
+  - Using *Service Hooks*, automatically apply permissions for the user that successfully deployed a Weaver process 
+    using ``POST /processes`` request, granting it direct access to this process during process listing, process 
+    description request and for submitting job execution of this process.
+    Only this user deploying the process will have access to it until further permissions are added in Magpie to share
+    or publish it with other users, groups and/or publicly. The user must have the necessary permission to deploy a new
+    process in the first place. More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/247.
+
+[1.18.13](https://github.com/bird-house/birdhouse-deploy/tree/1.18.13) (2022-06-07)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- deploy-data: new env var DEPLOY_DATA_RSYNC_USER_GRP to avoid running cronjobs as root
+
+  When `deploy-data` is used by the `scheduler` component, it is run as
+  `root`.  This new env var will force the rsync process to run as a regular user to
+  follow security best practice to avoid running as root when not needed.
+
+  Note that the `git checkout` step done by `deploy-data` is still run as root.
+  This is because `deploy-data` is currently still run as root so it can
+  execute `docker` commands (ex: spawning the `rsync` command above in its own
+  docker container).
+
+  To fix this limitation, the regular user inside the `deploy-data` container
+  need to have docker access inside the container and outside on the host at
+  the same time.  If we make that regular user configurable so the script
+  `deploy-data` is generic and can work for any organisations, this is tricky
+  for the moment so will have to be handle in another PR.
+
+  So for the moment we have not achieved full non-root user in cronjobs
+  launched by the `scheduler` compoment but the most important part, the part
+  that perform the actual job (rsync or execute custom command using an
+  external docker container) is running as non-root.
+
+  See PR https://github.com/bird-house/birdhouse-deploy-ouranos/pull/18 that
+  make use of this new env var.
+
+  When `deploy-data` is invoking an external script that itself spawn a new
+  `docker run`, then it is up to this external script to ensure the proper
+  non-root user is used by `docker run`.
+  See PR https://github.com/Ouranosinc/pavics-vdb/pull/50 that handle that
+  case.
+
+
 [1.18.12](https://github.com/bird-house/birdhouse-deploy/tree/1.18.12) (2022-05-05)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -3320,4 +3594,3 @@ Prior Versions
 All versions prior to [1.7.0](https://github.com/bird-house/birdhouse-deploy/tree/1.7.0) were not officially tagged.
 Is it strongly recommended employing later versions to ensure better traceability of changes that could impact behavior
 and potential issues on new server instances. 
-

@@ -1,0 +1,79 @@
+#!/bin/sh
+# Sync relevant data from another host.
+#
+# Useful to prepare a new replacement host or to keep a staging host up-to-date.
+#
+# Data specific to a host (logs, metrics, tokens, ...) are excluded.
+#
+# Thredds data also excluded since it is huge.
+#
+# In case of write permission problem, run script fix-write-perm with env var
+# FIX_WRITE_PERM_EXTRA=1.
+#
+# Assume
+# * ssh passwordless to source host is setup properly
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+COMPOSE_DIR="`dirname "$THIS_DIR"`"
+
+# source default.env, else might have errors sourcing env.local
+if [ -f "$COMPOSE_DIR/default.env" ]; then
+    . "${COMPOSE_DIR}/default.env"
+fi
+
+if [ -f "$COMPOSE_DIR/env.local" ]; then
+    # Get GEOSERVER_DATA_DIR, BASH_IMAGE, JUPYTERHUB_USER_DATA_DIR,
+    # MAGPIE_PERSIST_DIR
+    . "${COMPOSE_DIR}/env.local"
+fi
+
+
+SOURCE_HOST="$1"; shift
+FORCE_MODE="$1"
+
+if [ -z "$SOURCE_HOST" ]; then
+    echo "ERROR: no source host provided" 1>&2
+    exit 2
+fi
+
+if [ ! x"$FORCE_MODE" = xforce ]; then
+    # Default to dry-run
+    SYNC_DATA_EXTRA_RSYNC_OPTS="$SYNC_DATA_EXTRA_RSYNC_OPTS --dry-run"
+fi
+
+
+RSYNC_BASE_CMD="rsync --recursive --links --hard-links --times \
+    --itemize-changes --human-readable --delete --stats \
+    --progress $SYNC_DATA_EXTRA_RSYNC_OPTS"
+
+set -x
+
+for item in $GEOSERVER_DATA_DIR/ $JUPYTERHUB_USER_DATA_DIR/ $MAGPIE_PERSIST_DIR/; do
+    # Useful to run the following commands before sync just in case.
+    # Could not put a real command here since it requires sudo.
+    #   sudo setfacl -Rdm u:$USER:rwX $item
+    #   sudo setfacl -Rm u:$USER:rwX $item
+    # Alternatively can run the script fix-write-perm with env var
+    # FIX_WRITE_PERM_EXTRA=1 which does the same and more so could be slower
+    # than needed.
+
+    # Assume DATA_PERSIST_ROOT is same between both hosts !
+    $RSYNC_BASE_CMD $SOURCE_HOST:$item $item
+done
+
+if [ ! x"$FORCE_MODE" = xforce ]; then
+    echo "Dry-run mode, not executing '$COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm' and other permission fixup"
+else
+    $COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm
+
+    docker run --rm --name fix-jupyter-data-dir-perm \
+        --volume ${JUPYTERHUB_USER_DATA_DIR}:/datadir \
+        $BASH_IMAGE \
+        bash -xc 'chown -R 1000:1000 /datadir'
+
+    docker run --rm --name fix-postgres-magpie-dir-perm \
+        --volume ${MAGPIE_PERSIST_DIR}:/datadir \
+        $BASH_IMAGE \
+        bash -xc 'chown -R 999:0 /datadir'
+fi

@@ -57,7 +57,8 @@ Vagrant.configure("2") do |config|
     settings['datasets_dirs'].each do |mountpoint|
       srcdir = mountpoint['srcdir']
       destdir = mountpoint['destdir']
-      config.vm.synced_folder srcdir, destdir, mount_options: ["ro"]
+      mount_opts = mountpoint.fetch('mount_opts', "ro")
+      config.vm.synced_folder srcdir, destdir, mount_options: [mount_opts]
     end
   end
 

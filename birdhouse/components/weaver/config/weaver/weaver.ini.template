@@ -31,6 +31,12 @@ weaver.url = https://${PAVICS_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}
 weaver.ssl_verify = true
 weaver.request_options = request_options.yml
 
+# --- Weaver Execution settings ---
+# maximum wait time allowed for Prefer header to run Job/Quote synchronously
+# over this limit, they will automatically fallback to asynchronous execution/estimation
+weaver.exec_sync_max_wait = 20
+weaver.quote_sync_max_wait = 20
+
 # --- Weaver CWL settings ---
 # enforce provided effective user/group identifiers for Application Package execution
 # values must be resolved as integers

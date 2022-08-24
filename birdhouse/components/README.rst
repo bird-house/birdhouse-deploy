@@ -113,21 +113,27 @@ Comparison between the old and new autodeploy mechanism
 Maximum backward-compatibility has been kept with the old install scripts style:
 
 * Still log to the same existing log files under ``/var/log/PAVICS``.
-* Old single ssh deploy key is still compatible, but the new mechanism allows for different ssh deploy keys for each extra
-  repos (again, public repos should use https clone path to avoid dealing with ssh deploy keys in the first place).
+* Old single ssh deploy key is still compatible, but the new mechanism allows for different ssh deploy keys for each
+  extra repos (again, public repos should use https clone path to avoid dealing with ssh deploy keys in the first
+  place).
 * Old install scripts are kept and can still deploy the old way.
 
 Features missing in old install scripts or how the new mechanism improves on the old install scripts:
 
-* Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if triggerdeploy.sh_ (:download:`download <../deployment/triggerdeploy.sh>`)
-  or the deployed ``/etc/cron.hourly/PAVICS-deploy-notebooks`` script changes, they have to be deployed manually.  It's very annoying.  Now they are volume-mount in so are fresh on each run.
+* Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if triggerdeploy.sh_
+  (:download:`download <../deployment/triggerdeploy.sh>`)
+  or the deployed ``/etc/cron.hourly/PAVICS-deploy-notebooks`` script changes, they have to be deployed manually.
+  It's very annoying.  Now they are volume-mount in so are fresh on each run.
 * ``env.local`` now drives absolutely everything, source control that file and we've got a true DevOPS pipeline.
-* Configurable platform and notebook autodeploy frequency.  Previously, this means manually editing the generated cron file, less ideal.
+* Configurable platform and notebook autodeploy frequency.  Previously, this means manually editing the generated cron
+  file, less ideal.
 * Do not need any support on the local host other than ``docker`` and ``docker-compose``.  ``cron/logrotate/git/ssh``
-  versions are all locked-down in the docker images used by the autodeploy.  Recall previously we had to deal with git version too old on some hosts.
+  versions are all locked-down in the docker images used by the autodeploy.  Recall previously we had to deal with git
+  version too old on some hosts.
 * Each cron job run in its own docker image meaning the runtime environment is traceable and reproducible.
-* The newly introduced scheduler component is made extensible so other jobs can added into it as well (ex: backup), via ``env.local``,
-  which should be source controlled, meaning all surrounding maintenance related tasks can also be traceable and reproducible.
+* The newly introduced scheduler component is made extensible so other jobs can added into it as well (ex: backup),
+  via ``env.local``, which should be source controlled, meaning all surrounding maintenance related tasks can also be
+  traceable and reproducible.
 
 
 Monitoring
@@ -246,13 +252,13 @@ Weaver
 
 By enabling this component, the `Weaver`_ service will be integrated into the stack.
 
-This component offers `OGC API - Processes`_ interace to WPS components (a.k.a `WPS-REST bindings` and
+This component offers `OGC API - Processes`_ interface to WPS components (a.k.a `WPS-REST bindings` and
 `WPS-T (Transactional)` support).
-This provides a RESTful JSON interface with asynchronous WPS processes execution over remote instances. 
+This provides a RESTful JSON interface with asynchronous WPS processes execution over remote instances.
 Other WPS components of the birdhouse stack (`finch`_, `flyingpigeon`_, etc.) will also all be registered
-under `Weaver`_ in order to provide a common endpoint to retrieve all available processes, and dispatch 
+under `Weaver`_ in order to provide a common endpoint to retrieve all available processes, and dispatch
 their execution to the corresponding service.
-Finally, `Weaver`_ also adds `Docker` image execution capabilities as a WPS process, allowing deployment 
+Finally, `Weaver`_ also adds `Docker` image execution capabilities as a WPS process, allowing deployment
 and execution of custom applications and workflows.
 
 
@@ -311,3 +317,63 @@ Customizing the Component
 .. _deploy.sh: ../deployment/deploy.sh
 .. _triggerdeploy.sh: ../deployment/triggerdeploy.sh
 .. _monitoring_default.env: monitoring/default.env
+
+
+Cowbird
+=======
+
+Cowbird is a middleware that manages interactions between various *birds* of the `bird-house`_ stack.
+
+It relies on the existence of other services under a common architecture, but applies changes to the resources under
+those services such that the complete ecosystem can seamlessly operate together (see |cowbird-diagram|_).
+
+The code of this service is located in |cowbird-repo|_. Its documentation is provided on |cowbird-rtd|_.
+
+.. _bird-house: https://github.com/bird-house/birdhouse-deploy
+.. |cowbird-diagram| replace:: Components Diagram
+.. _cowbird-diagram: https://github.com/Ouranosinc/cowbird/blob/master/docs/_static/cowbird_components.png
+.. |cowbird-repo| replace:: Ouranosinc/cowbird
+.. _cowbird-repo: https://github.com/Ouranosinc/cowbird
+.. |cowbird-rtd| replace:: ReadTheDocs
+.. _cowbird-rtd: https://pavics-cowbird.readthedocs.io/
+
+Operations Performed by Cowbird
+-------------------------------
+
+- Synchronize Magpie user and group permissions between "corresponding files" located under different services.
+  For example, THREDDS user-workspace files visualized in the catalog will be accessible by the same user under
+  the corresponding user-workspace under GeoServer.
+- Synchronize Weaver endpoints to retrieve equivalent definitions under various paths and access to generated WPS
+  outputs following a job execution by a given user.
+- Synchronize permissions between API endpoints and local storage files.
+- Synchronize permissions and references based on event triggers and request callbacks.
+
+Usage
+-----
+
+Cowbird is intended to work on its own, behind the scene, to apply any required resource synchronization between
+the various services of the platform when changes are detected. Therefore, it does not require any explicit interaction
+from users.
+
+In case the platform maintainer desires to perform manual syncing operations with Cowbird, its REST API should be used.
+It will be accessible under ``https://{PAVICS_FQDN_PUBLIC}/cowbird`` and details of available endpoints will be served
+under ``/cowbird/api``. Note that Magpie administrator credentials will be required to access those endpoints.
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``"./components/cowbird"`` to ``EXTRA_CONF_DIRS``.
+
+Customizing the Component
+-------------------------
+
+Cowbird can be affected by multiple variables defined globally on the
+stack (i.e.: ``env.local``, a copy of `env.local.example`_). It also considers variables of other services such as
+THREDDS, GeoServer, Magpie, etc. in order to perform required interactions between them.
+
+By default, variables defined in |cowbird-default|_ will be used unless overridden in ``env.local``. To apply changes
+define your custom values in ``env.local`` directly.
+
+.. |cowbird-default| replace:: cowbird/default.env
+.. _cowbird-default: ./cowbird/default.env
