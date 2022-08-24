@@ -16,6 +16,17 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.22.0](https://github.com/bird-house/birdhouse-deploy/tree/1.22.0) (2022-08-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Geoserver: Adds `./optional-components/test-geoserver-secured-access`, to test Twitcher-protected access to Geoserver
+  
+  Relevant changes:
+  - New Provider (Magpie) : geoserver-secured
+  - New Location (Proxy) : /geoserver-secured
+  - Copied current WFS GetCapabilities and DescribeFeatureType permissions to new Provider
+
 [1.21.1](https://github.com/bird-house/birdhouse-deploy/tree/1.21.1) (2022-08-24)
 ------------------------------------------------------------------------------------------------------------------
 
