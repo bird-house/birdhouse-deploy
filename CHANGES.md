@@ -17,6 +17,9 @@
 ## Changes
 
 - birdhouse-deploy: fix invalid `canarie-api-full-monitoring` endpoints adding double `/` when substituting variables.
+- birdhouse-deploy: add optional variables `MAGPIE_LOG_LEVEL` and `TWITCHER_LOG_LEVEL` (both `INFO` by default) to 
+  allow instead to customize reported details by instances for debugging purposes. Note that setting `DEBUG` will leak
+  sensible details in their logs and should be reserved only for testing environments.
 
 [1.21.0](https://github.com/bird-house/birdhouse-deploy/tree/1.21.0) (2022-08-19)
 ------------------------------------------------------------------------------------------------------------------
