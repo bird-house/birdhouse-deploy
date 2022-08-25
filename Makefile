@@ -161,14 +161,15 @@ version:	## Display project version
 
 ### Execution Targets ###
 
-override SCRIPT := birdhouse/pavics-compose.sh
+SCRIPT ?= birdhouse/pavics-compose.sh	## Script to run the stack
+SCRIPT := $(call clean_opt,$(SCRIPT))
 
 .PHONY: start
 start:		## Start the stack with current local.env definitions
 	@-$(MSG_I) "Starting $(APP_NAME) stack..."
-	@$(SHELL) birdhouse/pavics-compose.sh up -d
+	@$(SHELL) $(SCRIPT) up -d
 
 .PHONY: start
 start:		## Stop the running stack
 	@-$(MSG_I) "Stopping $(APP_NAME) stack..."
-	@$(SHELL) birdhouse/pavics-compose.sh stop
+	@$(SHELL) $(SCRIPT) stop
