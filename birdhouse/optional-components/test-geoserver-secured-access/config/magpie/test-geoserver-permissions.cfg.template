@@ -1,0 +1,26 @@
+#
+# Parameters:
+#   service:              service name to receive the permission (directly on it if no 'resource' mentioned, must exist)
+#   resource (optional):  tree path of the service's resource (ex: /res1/sub-res2/sub-sub-res3)
+#   user and/or group:    user/group to apply the permission on (user/group must exist)
+#   permission:           name of the permission to be applied (see 'magpie/permissions.py' for supported values)
+#   action:               one of [create, remove] (default: create)
+#
+# Default behaviour:
+#   - create missing resources if supported by the service (and tree automatically resolvable), then apply permissions.
+#   - create missing user/group if required (default user created: (group: anonymous, password: 12345).
+#   - applicable service, user or group is missing, corresponding permissions are ignored and not updated.
+#   - unknown actions are ignored and corresponding permission are not updated, unspecified action resolves to 'create'.
+#   - already satisfied permission configurations are left as is.
+#
+
+permissions:
+  - service: geoserver-secured
+    permission: getcapabilities
+    group: anonymous
+    action: create
+
+  - service: geoserver-secured
+    permission: describefeaturetype
+    group: anonymous
+    action: create
