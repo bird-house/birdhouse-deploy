@@ -17,22 +17,29 @@ Requirements:
 * Install latest docker-ce and docker-compose for the chosen distro (not the
   version from the distro).
 
-To run ``docker-compose`` for PAVICS, the `pavics-compose.sh <pavics-compose.sh>`_ (:download:`download </birdhouse/pavics-compose.sh>`) wrapper script must be used.
-This script will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration files
-".template", and run ``docker-compose`` with all the command line arguments given to `pavics-compose.sh <pavics-compose.sh>`_ (:download:`download </birdhouse/pavics-compose.sh>`).
-See `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`) for more details on what can go into the ``env.local`` file.
+To run ``docker-compose`` for PAVICS, the `pavics-compose.sh <pavics-compose.sh>`_
+(:download:`download </birdhouse/pavics-compose.sh>`) wrapper script must be used.
+This script will source the ``env.local`` file, apply the appropriate variable substitutions
+on all the configuration files ".template", and run ``docker-compose`` with all the command
+line arguments given to `pavics-compose.sh <pavics-compose.sh>`_ (:download:`download </birdhouse/pavics-compose.sh>`).
+See `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`) for more details on
+what can go into the ``env.local`` file.
 
-If the file `env.local` is somewhere else, symlink it here, next to `docker-compose.yml <docker-compose.yml>`_ (:download:`download </birdhouse/docker-compose.yml>`) because many scripts assume this location.
+If the file `env.local` is somewhere else, symlink it here, next to `docker-compose.yml <docker-compose.yml>`_
+(:download:`download </birdhouse/docker-compose.yml>`) because many scripts assume this location.
 
 To follow infrastructure-as-code, it is encouraged to source control the above
 `env.local` file and any override needed to customized this PAVICS deployment
-for your organization.  For an example of possible override, see how the `emu service <optional-components/emu/docker-compose-extra.yml>`_ (:download:`download </birdhouse/optional-components/emu/docker-compose-extra.yml>`)
-(`README <optional-components/README.rst#emu-wps-service-for-testing>`_) can be optionally added to the deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_.
-Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repo.
+for your organization.  For an example of possible override,
+see how the `emu service <optional-components/emu/docker-compose-extra.yml>`_
+(:download:`download </birdhouse/optional-components/emu/docker-compose-extra.yml>`)
+(`README <birdhouse/optional-components/README.rst#emu-wps-service-for-testing>`_) can be optionally added to the
+deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_. Ouranos specific override
+can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repo.
 
 Suggested deployment layout:
 
-.. code-block::
+.. code-block:: text
 
    ├── birdhouse-deploy/  # this repo
    │   ├── birdhouse/
@@ -47,7 +54,8 @@ Suggested deployment layout:
 The automatic deployment is able to handle multiple repos, so will trigger if
 this repo or your private-personalized-config repo changes, giving you
 automated continuous deployment.  See the continuous deployment setup section
-below and the variable ``AUTODEPLOY_EXTRA_REPOS`` in `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`).
+below and the variable ``AUTODEPLOY_EXTRA_REPOS`` in `env.local.example <env.local.example>`_
+(:download:`download </birdhouse/env.local.example>`).
 
 The automatic deployment of the PAVICS platform, of the Jupyter tutorial
 notebooks and of the automatic deployment mechanism itself can all be
@@ -62,15 +70,17 @@ To launch all the containers, use the following command:
 
    ./pavics-compose.sh up -d
 
-If you get a ``'No applicable error code, please check error log'`` error from the WPS processes, please make sure that the WPS databases exists in the
-postgres instance. See `create-wps-pgsql-databases.sh <scripts/create-wps-pgsql-databases.sh>`_ (:download:`download </birdhouse/scripts/create-wps-pgsql-databases.sh>`).
+If you get a ``'No applicable error code, please check error log'`` error from the WPS processes, please
+make sure that the WPS databases exists in the postgres instance.
+See `create-wps-pgsql-databases.sh <scripts/create-wps-pgsql-databases.sh>`_
+(:download:`download </birdhouse/scripts/create-wps-pgsql-databases.sh>`).
 
 
 Note
 ----
 
 * All WPS requests should be completed within ``proxy_read_timeout`` of the
-  Nginx proxy, see `nginx.conf`_ (:download:`download <birdhouse/config/proxy/nginx.conf>`).
+  Nginx proxy, see `nginx.conf`_ (:download:`download <birdhouse/config/proxy/nginx.conf.template>`).
   Any WPS requests that will take longer should use the async mode.
 
   Default value ``PROXY_READ_TIMEOUT_VALUE`` in `default.env`_ (:download:`download <birdhouse/default.env>`).
@@ -84,12 +94,12 @@ Manual steps post deployment
 Create public demo user in Magpie for JupyterHub login
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Use `create-magpie-users <scripts/create-magpie-users>`_ (:download:`download </birdhouse/scripts/create-magpie-users>`) or follow manual
-instructions below.
+Use `create-magpie-users <scripts/create-magpie-users>`_
+(:download:`download </birdhouse/scripts/create-magpie-users>`) or follow manual instructions below.
 
 ``config.yml`` file if using ``create-magpie-users``:
 
-.. code-block::
+.. code-block:: yaml
 
    users:
      - username: < value of JUPYTER_DEMO_USER in `env.local` >
@@ -121,7 +131,8 @@ https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests with pre-configured
 Jenkins at https://github.com/Ouranosinc/jenkins-config.
 
 For that test suite to pass, run the script
-`scripts/bootstrap-instance-for-testsuite <scripts/bootstrap-instance-for-testsuite>`_ (:download:`download </birdhouse/scripts/bootstrap-instance-for-testsuite>`)
+`scripts/bootstrap-instance-for-testsuite <scripts/bootstrap-instance-for-testsuite>`_
+(:download:`download </birdhouse/scripts/bootstrap-instance-for-testsuite>`)
 to prepare your new instance.  Further documentation inside the script.
 
 Optional components
@@ -148,10 +159,12 @@ environment for testing or to have multiple flavors of PAVICS with slightly
 different combinations of the parts all running simultaneously in their
 respective VM, allowing us to see the differences in behavior.
 
-See `vagrant_variables.yml.example </vagrant_variables.yml.example>`_ (:download:`download </vagrant_variables.yml.example>`) for what's
+See `vagrant_variables.yml.example </vagrant_variables.yml.example>`_
+(:download:`download </vagrant_variables.yml.example>`) for what's
 configurable with Vagrant.
 
-If using Centos box, follow `disk-resize <vagrant-utils/disk-resize>`_ (:download:`download </birdhouse/vagrant-utils/disk-resize>`) after
+If using Centos box, follow `disk-resize <vagrant-utils/disk-resize>`_
+(:download:`download </birdhouse/vagrant-utils/disk-resize>`) after
 first ``vagrant up`` failure due to disk full.  Then ``vagrant reload && vagrant
 provision`` to continue.  If using Ubuntu box, no manual steps required,
 everything just works.
@@ -161,7 +174,7 @@ platform and the extension pack, and `Vagrant <https://www.vagrantup.com/downloa
 
 One time setup:
 
-.. code-block::
+.. code-block:: shell
 
    # Clone this repo and checkout the desired branch.
 
@@ -171,7 +184,7 @@ One time setup:
 
 Starting and managing the lifecycle of the VM:
 
-.. code-block::
+.. code-block:: shell
 
    # start everything, this is the only command needed to bring up the entire
    # PAVICS platform
@@ -313,7 +326,7 @@ Release Procedure
   * Run ``git push --tags`` to upload the new version.
 
 
-.. _nginx.conf: ./config/proxy/nginx.conf
-.. _default.env: ./default.env
+.. _nginx.conf: ../birdhouse/config/proxy/nginx.conf.template
+.. _default.env: ../birdhouse/default.env
 .. _`.bumpversion.cfg`: ../.bumpversion.cfg
 .. _CHANGES.md: ../CHANGES.md

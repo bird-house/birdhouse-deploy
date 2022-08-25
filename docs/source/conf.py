@@ -19,8 +19,14 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('../../.'))
+
+DOC_SRC_ROOT = os.path.abspath('.')
+DOC_DIR_ROOT = os.path.abspath('..')
+PROJECT_ROOT = os.path.abspath('../../.')
+sys.path.insert(0, DOC_SRC_ROOT)
+sys.path.insert(0, DOC_DIR_ROOT)
+sys.path.insert(0, PROJECT_ROOT)
+sys.path.append(os.path.abspath(os.path.join(DOC_DIR_ROOT, "_ext")))
 
 # -- General configuration ------------------------------------------------
 
@@ -42,7 +48,46 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx_mdinclude',
+    'doc_redirect',
 ]
+
+md_parse_relative_links = True
+
+# references to RST files in 'docs' dir redirect to corresponding HTML
+# references to RST files in repo root (README/CHANGES) redirect to their equivalent HTML in 'docs' dir
+DOC_REDIRECT_DIRS = [
+    os.path.join(DOC_SRC_ROOT, "birdhouse"),
+]
+
+# files that will be copied over from root repo or linked birdhouse directory
+# under build directory (not copied over with same nested dir structure, directly under '_build/html')
+html_extra_path = [
+    '../../.bumpversion.cfg',
+    'birdhouse/env.local.example',
+    'birdhouse/pavics-compose.sh',
+    'birdhouse/docker-compose.yml',
+    # 'birdhouse/config/proxy/nginx.conf.template',  # FIXME: doesn't work, .template.html auto-generated with it
+]
+
+doc_project_root = PROJECT_ROOT
+
+doc_redirect_code = [".sh", ".yml"]  # those extensions will generate an embedded code instead of redirect
+
+# mapping of missing file link (in generated HTML) -> some new file or link
+#   converted MD files (mdinclude) after HTML conversion with references to RST (or other) keep the original links
+#   redirect the expected (missing) file locations to a generated HTML or symlink simulating the original link
+doc_redirect_map = {
+    "birdhouse/README.rst": "birdhouse/README.html",
+    "birdhouse/components/README.rst": "birdhouse/components/README.html",
+    "birdhouse/optional-components/README.rst": "birdhouse/optional-components/README.html",
+    "CHANGES.md": "changes.html",
+}
+# edge case for '.template' files, 'html_extra_path' does an auto-copy with '.html'
+# generate the links that would be expected without it
+doc_redirect_map.update({
+    file: file.replace("birdhouse/", "") if os.path.splitext(file)[-1] not in doc_redirect_code else file
+    for file in html_extra_path if "birdhouse/" in file
+})
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -78,7 +123,7 @@ release = '1.22.1'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -165,19 +210,11 @@ html_theme = 'alabaster'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['../_static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
-#
-# html_extra_path = []
-html_extra_path = [
-    'birdhouse/README.rst',
-    'birdhouse/env.local.example',
-    'birdhouse/pavics-compose.sh',
-    'birdhouse/docker-compose.yml',
-]
 
 # If not None, a 'Last updated on:' timestamp is inserted at every page
 # bottom, using the given strftime format.

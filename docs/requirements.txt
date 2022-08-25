@@ -1,2 +1,3 @@
 # extra requirements specifically for documentation purposes
 sphinx-mdinclude
+docutils<0.19   # see https://github.com/amyreese/sphinx-mdinclude/issues/8

@@ -36,6 +36,13 @@ Power Analytics and Visualization for Climate Science - Powered by Birdhouse and
 
 For GitHub navigation, see the following README pages:
 
-* `README for general deployment <birdhouse/README.rst>`_
-* `README for extra core components <birdhouse/components/README.rst>`_
-* `README for optional components <birdhouse/optional-components/README.rst>`_
+* |readme_general|_
+* |readme_components|_
+* |readme_optional_components|_
+
+.. |readme_general| replace:: README for general deployment
+.. _readme_general: birdhouse/README.rst
+.. |readme_components| replace:: README for extra core components
+.. _readme_components: birdhouse/components/README.rst
+.. |readme_optional_components| replace:: README for optional components
+.. _readme_optional_components: birdhouse/optional-components/README.rst
