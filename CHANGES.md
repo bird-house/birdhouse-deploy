@@ -14,7 +14,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+
+- birdhouse-deploy: fix bump versioning methodology to auto-update `releaseTime` accordingly.
+  
+  ### Relevant changes
+  * Adds `Makefile` to run basic DevOps maintenance commands on the repository.
+  * Adds `RELEASE.txt` with the active release tag and datetime.
+  * Replace `now:` directives by `utcnow:` to report time properly according to employed ISO format.
+  * Update contribution guidelines regarding methodology to create a new revision.
 
 [1.22.0](https://github.com/bird-house/birdhouse-deploy/tree/1.22.0) (2022-08-24)
 ------------------------------------------------------------------------------------------------------------------
