@@ -1,7 +1,7 @@
 # Generic variables
 override SHELL       := bash
 override APP_NAME    := birdhouse-deploy
-override APP_VERSION := 1.22.1
+override APP_VERSION := 1.22.2
 
 # utility to remove comments after value of an option variable
 override clean_opt = $(shell echo "$(1)" | $(_SED) -r -e "s/[ '$'\t'']+$$//g")
@@ -135,9 +135,9 @@ bump: bump-check bump-install  ## Bump version using <VERSION> specified as inpu
 	@-$(MSG_I) "Updating package version..."
 	@[ "${VERSION}" ] || ( $(MSG_E) "Argument 'VERSION' is not specified to bump version"; exit 1 )
 	@$(SHELL) -c ' \
-		PRE_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -f 2); \
+		PRE_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2); \
 		$(CONDA_CMD) $(BUMP_CMD) $(BUMP_XARGS) --new-version "${VERSION}" patch; \
-		POST_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -f 2); \
+		POST_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2); \
 		echo "Replace $${PRE_RELEASE_TIME} → $${POST_RELEASE_TIME}"; \
 		$(_SED) -i "s/$${PRE_RELEASE_TIME}/$${POST_RELEASE_TIME}/g" $(BUMP_CFG); \
 		git add $(BUMP_CFG); \
