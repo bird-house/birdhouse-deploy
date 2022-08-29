@@ -125,18 +125,80 @@ BUMP_TOOL := bump2version
 BUMP_PATH := $(CONDA_ENV_PATH)/bin/$(BUMP_TOOL)
 BUMP_CMD  := $(BUMP_TOOL) --config-file "$(BUMP_CFG)"
 
+# guess the applicable semantic level update if provided via major|minor|patch targets
+# perform validation to avoid many combination provided simultaneously
+override BUMP_VERSION_INPUT := 1
+override BUMP_VERSION_LEVEL :=
+ifeq ($(filter major, $(MAKECMDGOALS)), major)
+  ifeq ($(BUMP_VERSION_LEVEL),)
+    override BUMP_VERSION_LEVEL := major
+    override BUMP_VERSION_INPUT := 0
+  else
+    $(error "Cannot combine 'major|minor|patch' simultaneously!")
+  endif
+endif
+ifeq ($(filter minor, $(MAKECMDGOALS)), minor)
+  ifeq ($(BUMP_VERSION_LEVEL),)
+    override BUMP_VERSION_LEVEL := minor
+    override BUMP_VERSION_INPUT := 0
+  else
+    $(error "Cannot combine 'major|minor|patch' simultaneously!")
+  endif
+endif
+ifeq ($(filter patch, $(MAKECMDGOALS)), patch)
+  ifeq ($(BUMP_VERSION_LEVEL),)
+    override BUMP_VERSION_LEVEL := patch
+    override BUMP_VERSION_INPUT := 0
+  else
+    $(error "Cannot combine 'major|minor|patch' simultaneously!")
+  endif
+endif
+ifneq ($(VERSION),)
+  ifneq ($(BUMP_VERSION_LEVEL),)
+    $(error "Cannot combine 'major|minor|patch' simultaneously with explicit VERSION input!")
+  endif
+endif
+# when none was provided, use patch to directly apply the explicit 'VERSION' specified as input
+ifeq ($(BUMP_VERSION_LEVEL),)
+  override BUMP_VERSION_LEVEL := --new-version "$(VERSION)" patch
+endif
+
 .PHONY: dry
-dry: $(BUMP_CFG)	## Run 'bump' target without applying changes (dry-run) (call: make VERSION=<x.y.z> bump dry)
+dry: $(BUMP_CFG)	## Run 'bump' without applying changes (dry-run) (call: make VERSION=<MAJOR.MINOR.PATCH> bump dry)
 	@-$(ECHO) > /dev/null
+
+.PHONY: patch
+patch: $(BUMP_CFG)	## Run 'bump' with automatic semantic versioning of the next PATCH number (call: make bump patch)
+	@-$(ECHO) > /dev/null
+
+.PHONY: minor
+minor: $(BUMP_CFG)	## Run 'bump' with automatic semantic versioning of the next MINOR number (call: make bump minor)
+	@-$(ECHO) > /dev/null
+
+.PHONY: major
+major: $(BUMP_CFG)	## Run 'bump' with automatic semantic versioning of the next MAJOR number (call: make bump major)
+	@-$(ECHO) > /dev/null
+
+
+.PHONY: fake-bump
+fake-bump:
+	@[ $(BUMP_VERSION_INPUT) -eq 0 ] || [ "${VERSION}" ] || ( \
+		$(MSG_E) "Argument 'VERSION' is not specified to bump version"; exit 1 \
+	)
+	@$(SHELL) -c ' \
+		echo $(BUMP_CMD) $(BUMP_XARGS) $(BUMP_VERSION_LEVEL); \
+	'
 
 # run bumpversion with replacement of the release time value within its config for auto-update on future revisions
 .PHONY: bump
-bump: bump-check bump-install  ## Bump version using <VERSION> specified as input (call: make VERSION=<x.y.z> bump)
+bump: bump-check bump-install  ## Bump version using specified <VERSION> (call: make VERSION=<MAJOR.MINOR.PATCH> bump)
 	@-$(MSG_I) "Updating package version..."
-	@[ "${VERSION}" ] || ( $(MSG_E) "Argument 'VERSION' is not specified to bump version"; exit 1 )
+	@[ $(BUMP_VERSION_INPUT) -eq 0 ] || [ "${VERSION}" ] || ( \
+		$(MSG_E) "Argument 'VERSION' is not specified to bump version"; exit 1 \
+	)
 	@$(SHELL) -c ' \
 		PRE_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2); \
-		$(CONDA_CMD) $(BUMP_CMD) $(BUMP_XARGS) --new-version "${VERSION}" patch; \
+		$(CONDA_CMD) $(BUMP_CMD) $(BUMP_XARGS) $(BUMP_VERSION_LEVEL); \
 		POST_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2); \
 		echo "Replace $${PRE_RELEASE_TIME} → $${POST_RELEASE_TIME}"; \
 		$(_SED) -i "s/$${PRE_RELEASE_TIME}/$${POST_RELEASE_TIME}/g" $(BUMP_CFG); \
