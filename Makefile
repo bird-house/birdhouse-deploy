@@ -179,16 +179,6 @@ minor: $(BUMP_CFG)	## Run 'bump' with automatic semantic versioning of the next 
 major: $(BUMP_CFG)	## Run 'bump' with automatic semantic versioning of the next MAJOR number (call: make bump major)
 	@-$(ECHO) > /dev/null
 
-
-.PHONY: fake-bump
-fake-bump:
-	@[ $(BUMP_VERSION_INPUT) -eq 0 ] || [ "${VERSION}" ] || ( \
-		$(MSG_E) "Argument 'VERSION' is not specified to bump version"; exit 1 \
-	)
-	@$(SHELL) -c ' \
-		echo $(BUMP_CMD) $(BUMP_XARGS) $(BUMP_VERSION_LEVEL); \
-	'
-
 # run bumpversion with replacement of the release time value within its config for auto-update on future revisions
 .PHONY: bump
 bump: bump-check bump-install  ## Bump version using specified <VERSION> (call: make VERSION=<MAJOR.MINOR.PATCH> bump)
