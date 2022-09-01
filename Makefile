@@ -187,12 +187,12 @@ bump: bump-check bump-install  ## Bump version using specified <VERSION> (call: 
 		$(MSG_E) "Argument 'VERSION' is not specified to bump version"; exit 1 \
 	)
 	@$(SHELL) -c ' \
-		PRE_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2); \
-		$(CONDA_CMD) $(BUMP_CMD) $(BUMP_XARGS) $(BUMP_VERSION_LEVEL); \
-		POST_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2); \
-		echo "Replace $${PRE_RELEASE_TIME} → $${POST_RELEASE_TIME}"; \
-		$(_SED) -i "s/$${PRE_RELEASE_TIME}/$${POST_RELEASE_TIME}/g" $(BUMP_CFG); \
-		git add $(BUMP_CFG); \
+		PRE_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2) && \
+		$(CONDA_CMD) $(BUMP_CMD) $(BUMP_XARGS) $(BUMP_VERSION_LEVEL) && \
+		POST_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2) && \
+		echo "Replace $${PRE_RELEASE_TIME} → $${POST_RELEASE_TIME}" && \
+		$(_SED) -i "s/$${PRE_RELEASE_TIME}/$${POST_RELEASE_TIME}/g" $(BUMP_CFG) && \
+		git add $(BUMP_CFG) && \
 		git commit --amend --no-edit \
 	'
 
