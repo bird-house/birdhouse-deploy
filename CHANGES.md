@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.22.1](https://github.com/bird-house/birdhouse-deploy/tree/1.22.1) (2022-09-01)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes:
 
 - birdhouse-deploy: fix bump versioning methodology to auto-update `releaseTime` accordingly.
