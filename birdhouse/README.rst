@@ -245,6 +245,9 @@ One of the following commands should be used to generate a new version.
     # bump to a specific semantic version
     make VERSION="<MAJOR>.<MINOR>.<PATCH>" bump
 
+    # bump the next semantic version automatically
+    make bump (major|minor|patch)
+
     # test result without applying it
     make VERSION="<MAJOR>.<MINOR>.<PATCH>" bump dry
 
