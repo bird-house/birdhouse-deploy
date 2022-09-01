@@ -221,7 +221,7 @@ start:		## Start the stack with current local.env definitions
 	@-$(MSG_I) "Starting $(APP_NAME) stack..."
 	@$(SHELL) $(SCRIPT) up -d
 
-.PHONY: start
-start:		## Stop the running stack
+.PHONY: stop
+stop:		## Stop the running stack
 	@-$(MSG_I) "Stopping $(APP_NAME) stack..."
 	@$(SHELL) $(SCRIPT) stop
