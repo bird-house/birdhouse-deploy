@@ -32,11 +32,11 @@ server {
     server_name  localhost;
     proxy_buffering off;
 
-        resolver 127.0.0.11;
+    resolver 127.0.0.11;
 
-	ssl    on;
-	ssl_certificate     /etc/nginx/cert.pem;
-	ssl_certificate_key /etc/nginx/cert.pem;
+    ssl    on;
+    ssl_certificate     /etc/nginx/cert.pem;
+    ssl_certificate_key /etc/nginx/cert.pem;
 
     include /etc/nginx/conf.d/all-services.include;
 
@@ -46,4 +46,3 @@ server {
         root   /usr/share/nginx/html;
     }
 }
-

@@ -73,6 +73,9 @@ services:
 
   # extend Magpie permissions to grant access to Cowbird API via secured Twitcher proxy
   magpie:
+    links:
+      # must have link to send webhook requests directly though internal network
+      - cowbird
     volumes:
       # NOTE:
       #   Although file uses the "config.yml" format, it is very important to pass it as independent/duplicate reference

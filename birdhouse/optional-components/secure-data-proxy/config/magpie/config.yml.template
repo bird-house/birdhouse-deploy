@@ -1,0 +1,16 @@
+providers:
+  secure-data-proxy:
+    url: http://proxy:80/
+    title: Secured Data Proxy
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+
+permissions:
+  - service: secure-data-proxy
+    resource: /wpsoutputs/weaver/public
+    type: route
+    permission: read
+    group: anonymous
+    action: create

@@ -218,6 +218,7 @@ def allow_user_deployed_processes(response):
 
             # find the nested resource matching: "weaver/processes/<p_id>"
             children = ru.get_resource_children(service, request.db, limit_depth=2)
+            p_res_create = False
             p_res = None
             for res in children.values():
                 if res["node"].resource_name == "processes":
@@ -228,21 +229,24 @@ def allow_user_deployed_processes(response):
                             break
                     break
             else:
-                # resource 'processes' should already exist, but create it if somehow missing
-                # otherwise, it will be impossible to create '<p_id>' under it
-                resp = ru.create_resource("processes", None, Route.resource_type_name, service.resource_id, request.db)
-                processes_res_id = resp.json["resource"]["resource_id"]
+                p_res_create = True  # must create after in new transaction context
 
             # note:
             #  since this is running within a *response* hook, the request transaction is already handled
             #  define a new transaction to create new resources
             with transaction.manager:
+                session = request.db
+                if p_res_create:
+                    # resource 'processes' should already exist, but create it if somehow missing
+                    # otherwise, it will be impossible to create '<p_id>' under it
+                    resp = ru.create_resource("processes", None, Route.resource_type_name, service.resource_id, session)
+                    processes_res_id = resp.json["resource"]["resource_id"]
 
                 # if '<p_id>' somehow already exists, use it
                 if p_res is None:
-                    resp = ru.create_resource(p_id, None, Route.resource_type_name, processes_res_id, request.db)
+                    resp = ru.create_resource(p_id, None, Route.resource_type_name, processes_res_id, session)
                     p_res_id = resp.json["resource"]["resource_id"]
-                    p_res = ru.ResourceService.by_resource_id(p_res_id, request.db)
+                    p_res = ru.ResourceService.by_resource_id(p_res_id, session)
                 if not p_res:
                     LOGGER.warning(
                         "Failed creation of permissions for user [%s] to access deployed process [%s] in Weaver. "
@@ -254,8 +258,8 @@ def allow_user_deployed_processes(response):
                 # override permissions to undo what could have been previously applied (only if <p_id> already existed)
                 p_desc = PermissionSet(Permission.READ, Access.ALLOW, Scope.RECURSIVE)   # describe proc + jobs statuses
                 p_exec = PermissionSet(Permission.WRITE, Access.ALLOW, Scope.RECURSIVE)  # edit process + execute jobs
-                r_desc = uu.create_user_resource_permission_response(user, p_res, p_desc, request.db, overwrite=True)
-                r_exec = uu.create_user_resource_permission_response(user, p_res, p_exec, request.db, overwrite=True)
+                r_desc = uu.create_user_resource_permission_response(user, p_res, p_desc, session, overwrite=True)
+                r_exec = uu.create_user_resource_permission_response(user, p_res, p_exec, session, overwrite=True)
 
                 # summit transaction results (new resources and permissions)
                 transaction.commit()
