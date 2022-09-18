@@ -141,6 +141,8 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
     DIR_NUM=0
 
     RSYNC_OUTPUT=""
+    RSYNC_OUTPUT_TMP_LOG="/tmp/rsync.log.$GIT_CHECKOUT_NAME"
+    if [ -f "$RSYNC_OUTPUT_TMP_LOG" ]; then rm -v $RSYNC_OUTPUT_TMP_LOG; fi
     for SRC_DIR in $SRC_DIRS; do
         DEST_DIR="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[$DIR_NUM\].dest_dir`"
         ensure_not_empty "$DEST_DIR"
@@ -170,12 +172,12 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
                 --recursive --links --checksum --delete \
                 --itemize-changes --human-readable --verbose \
                 --prune-empty-dirs $RSYNC_EXTRA_OPTS \
-                $SRC_DIR_ABS_PATH/ $DEST_DIR 2>&1 | tee -a /tmp/rsync.log.$GIT_CHECKOUT_NAME
+                $SRC_DIR_ABS_PATH/ $DEST_DIR 2>&1 | tee -a $RSYNC_OUTPUT_TMP_LOG
 
         DIR_NUM=`expr $DIR_NUM + 1`
     done
 
-    RSYNC_OUTPUT="`cat /tmp/rsync.log.$GIT_CHECKOUT_NAME`"
+    RSYNC_OUTPUT="`cat $RSYNC_OUTPUT_TMP_LOG`"
 
     POST_ACTIONS_LENGTH="`yq r $CONFIG_YML --length deploy\[$REPO_NUM\].post_actions`"
     if [ -z "$POST_ACTIONS_LENGTH" ]; then
