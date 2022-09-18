@@ -32,10 +32,13 @@ deploy:
   # post_action, optional, useful for:
   # * post rsync additional file remapping
   # * execute actions after clone, without rsync required
+  # post_action notes:
+  # * Current work dir is the checkout root.
   # * GIT_PREVIOUS_COMMIT_HASH, GIT_NEW_COMMIT_HASH, GIT_DIFF_CONTENT,
-  # RSYNC_OUTPUT can be used to determine file changed since previous run
+  #   RSYNC_OUTPUT can be used to determine file changed since previous run
+  # * On initial clone, GIT_PREVIOUS_COMMIT_HASH, and GIT_DIFF_CONTENT will be empty.
+  # * If no dir_maps is specified, RSYNC_OUTPUT will be empty.
   # post_actions:
-  # Current work dir is the checkout root.
   # - action: ENV_VAR=for_script ENV_VAR2=value2 script/inside/checkout arg1 arg2
   # - action: >-
   #     ANY_DEPLOY_DATA_VAR=${ANY_DEPLOY_DATA_VAR}
