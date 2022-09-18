@@ -32,6 +32,8 @@ deploy:
   # post_action, optional, useful for:
   # * post rsync additional file remapping
   # * execute actions after clone, without rsync required
+  # * GIT_PREVIOUS_COMMIT_HASH, GIT_NEW_COMMIT_HASH, GIT_DIFF_CONTENT,
+  # RSYNC_OUTPUT can be used to determine file changed since previous run
   # post_actions:
   # Current work dir is the checkout root.
   # - action: ENV_VAR=for_script ENV_VAR2=value2 script/inside/checkout arg1 arg2
@@ -55,6 +57,11 @@ deploy:
     # previous canarie sync.  This works because no .txt, .html, .gif in jcasc.
     dest_dir: /tmp/deploy-data-test-deploy/canarie/jcasc
     rsync_extra_opts:
+  post_actions:
+  - action: echo GIT_PREVIOUS_COMMIT_HASH=$GIT_PREVIOUS_COMMIT_HASH
+  - action: echo GIT_NEW_COMMIT_HASH=$GIT_NEW_COMMIT_HASH
+  - action: echo GIT_DIFF_CONTENT=$GIT_DIFF_CONTENT
+  - action: echo RSYNC_OUTPUT=$RSYNC_OUTPUT
 
 - repo_url: https://github.com/Ouranosinc/pavics-sdi
   branch: ebf2e3f584ae424de3b01e4f320a91d8f766ec03
@@ -77,6 +84,11 @@ deploy:
   - source_dir: docs/source
     dest_dir: /tmp/deploy-data-test-deploy/pavics-sdi
     rsync_extra_opts: --include=*/ --include=notebooks/** --exclude=*
+  post_actions:
+  - action: echo GIT_PREVIOUS_COMMIT_HASH=$GIT_PREVIOUS_COMMIT_HASH
+  - action: echo GIT_NEW_COMMIT_HASH=$GIT_NEW_COMMIT_HASH
+  - action: echo GIT_DIFF_CONTENT=$GIT_DIFF_CONTENT
+  - action: echo RSYNC_OUTPUT=$RSYNC_OUTPUT
 
 - repo_url: https://gitlab.com/tlvu/debug-utils
   branch: 2fad34e0daaf1532e38077fb11af7a84eb3978ab
@@ -98,6 +110,16 @@ deploy:
   # show execution result of this sample config file
   - action: /bin/ls -l /tmp/deploy-data-clone-cache
   - action: find /tmp/deploy-data-test-deploy
+  - action: echo GIT_PREVIOUS_COMMIT_HASH=$GIT_PREVIOUS_COMMIT_HASH
+  - action: echo GIT_NEW_COMMIT_HASH=$GIT_NEW_COMMIT_HASH
+  - action: echo GIT_DIFF_CONTENT=$GIT_DIFF_CONTENT
+  - action: echo RSYNC_OUTPUT=$RSYNC_OUTPUT
+
+- repo_url: https://gitlab.com/tlvu/debug-utils
+  # simulate subsequent run in pull mode instead of initial clone
+  branch: 3fc44e57aad82224f79dbeaeb603fa4efe0f5e68
+  checkout_name: debug-utils
+  post_actions:
   - action: echo GIT_PREVIOUS_COMMIT_HASH=$GIT_PREVIOUS_COMMIT_HASH
   - action: echo GIT_NEW_COMMIT_HASH=$GIT_NEW_COMMIT_HASH
   - action: echo GIT_DIFF_CONTENT=$GIT_DIFF_CONTENT
