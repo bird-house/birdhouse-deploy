@@ -132,9 +132,9 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
         git remote -v  # log remote, should match GIT_REPO_URL
         git clean -fdx  # force, recur dir, also clean .gitignore files and untracked files
         git fetch --prune --all || exit 1
-        GIT_DIFF_CONTENT="`git diff $GIT_BRANCH`"
         git checkout --force $GIT_BRANCH  # force checkout to throwaway local changes
         GIT_NEW_COMMIT_HASH="`git rev-parse HEAD`"
+        GIT_DIFF_CONTENT="`git diff $GIT_PREVIOUS_COMMIT_HASH`"
     fi
 
     SRC_DIRS="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[*\].source_dir`"
