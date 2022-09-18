@@ -116,25 +116,25 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
     ensure_not_empty "$GIT_CHECKOUT_NAME"
 
     CLONE_DEST="$CHECKOUT_CACHE/$GIT_CHECKOUT_NAME"
-    GIT_PREVIOUS_VERSION="NONE"
-    GIT_NEW_VERION="NONE"
+    GIT_PREVIOUS_COMMIT_HASH="NONE"
+    GIT_NEW_COMMIT_HASH="NONE"
     GIT_DIFF_CONTENT=""
     if [ ! -d "$CLONE_DEST" ]; then
         echo "checkout repo '$GIT_REPO_URL' on branch '$GIT_BRANCH' to '$CLONE_DEST'"
         git clone $GIT_REPO_URL $CLONE_DEST || exit 1
         cd $CLONE_DEST
         git checkout $GIT_BRANCH
-        GIT_NEW_VERION="`git rev-parse HEAD`"
+        GIT_NEW_COMMIT_HASH="`git rev-parse HEAD`"
     else
         echo "refresh repo '$CLONE_DEST' on branch '$GIT_BRANCH'"
         cd $CLONE_DEST
-        GIT_PREVIOUS_VERSION="`git rev-parse HEAD`"
+        GIT_PREVIOUS_COMMIT_HASH="`git rev-parse HEAD`"
         git remote -v  # log remote, should match GIT_REPO_URL
         git clean -fdx  # force, recur dir, also clean .gitignore files and untracked files
         git fetch --prune --all || exit 1
         GIT_DIFF_CONTENT="`git diff $GIT_BRANCH`"
         git checkout --force $GIT_BRANCH  # force checkout to throwaway local changes
-        GIT_NEW_VERION="`git rev-parse HEAD`"
+        GIT_NEW_COMMIT_HASH="`git rev-parse HEAD`"
     fi
 
     SRC_DIRS="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[*\].source_dir`"

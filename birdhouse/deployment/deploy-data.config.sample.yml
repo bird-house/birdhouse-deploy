@@ -88,8 +88,8 @@ deploy:
       REPO_NUM=${REPO_NUM}
       GIT_REPO_URL=${GIT_REPO_URL}
       ECHOARGS2=var2
-      GIT_PREVIOUS_VERSION="${GIT_PREVIOUS_VERSION}"
-      GIT_NEW_VERSION="${GIT_NEW_VERSION}"
+      GIT_PREVIOUS_COMMIT_HASH="${GIT_PREVIOUS_COMMIT_HASH}"
+      GIT_NEW_COMMIT_HASH="${GIT_NEW_COMMIT_HASH}"
       GIT_DIFF_CONTENT="${GIT_DIFF_CONTENT}"
       RSYNC_OUTPUT="${RSYNC_OUTPUT}"
       sh-utils/echoargs
@@ -98,8 +98,8 @@ deploy:
   # show execution result of this sample config file
   - action: /bin/ls -l /tmp/deploy-data-clone-cache
   - action: find /tmp/deploy-data-test-deploy
-  - action: echo GIT_PREVIOUS_VERSION=$GIT_PREVIOUS_VERSION
-  - action: echo GIT_NEW_VERSION=$GIT_NEW_VERSION
+  - action: echo GIT_PREVIOUS_COMMIT_HASH=$GIT_PREVIOUS_COMMIT_HASH
+  - action: echo GIT_NEW_COMMIT_HASH=$GIT_NEW_COMMIT_HASH
   - action: echo GIT_DIFF_CONTENT=$GIT_DIFF_CONTENT
   - action: echo RSYNC_OUTPUT=$RSYNC_OUTPUT
 
