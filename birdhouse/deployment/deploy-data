@@ -177,7 +177,9 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
         DIR_NUM=`expr $DIR_NUM + 1`
     done
 
-    RSYNC_OUTPUT="`cat $RSYNC_OUTPUT_TMP_LOG`"
+    if [ -f "$RSYNC_OUTPUT_TMP_LOG" ]; then
+        RSYNC_OUTPUT="`cat $RSYNC_OUTPUT_TMP_LOG`"
+    fi
 
     POST_ACTIONS_LENGTH="`yq r $CONFIG_YML --length deploy\[$REPO_NUM\].post_actions`"
     if [ -z "$POST_ACTIONS_LENGTH" ]; then
