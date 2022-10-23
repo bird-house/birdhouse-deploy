@@ -128,6 +128,11 @@ c.Spawner.start_timeout = 120  # default 60
 ## Extra arguments to be passed to the single-user server.
 c.Spawner.args = ["--NotebookApp.terminals_enabled=False"]
 
+c.DockerSpawner.extra_host_config = {
+    # start init pid 1 process to reap defunct processes
+    'init': True,
+    }
+
 c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}     # noqa
 
 ## Force refresh of auth prior to spawn.
