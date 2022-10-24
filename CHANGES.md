@@ -96,7 +96,7 @@
        1327 ?        00:00:00 ps
     ```
 
-    How to reproduce defunct firefox-esr processes:
+    How to reproduce defunct firefox-esr processes (run twice to create defunct processes from first run):
     ```
     import psutil
     import panel as pn
