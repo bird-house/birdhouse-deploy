@@ -16,6 +16,146 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.22.3](https://github.com/bird-house/birdhouse-deploy/tree/1.22.3) (2022-10-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+
+- jupyter env: reap defunct processes with proper pid 1 init process
+
+    Before, process hierarchy:
+
+    ```sh
+    $ docker exec jupyter-lvu ps -efH
+    UID          PID    PPID  C STIME TTY          TIME CMD
+    jenkins       88       0  0 21:01 ?        00:00:00 ps -efH
+    jenkins        1       0  0 18:57 ?        00:00:00 /opt/conda/bin/python /opt/conda/bin/conda run -n birdy /usr/local/bin/start-notebook.sh --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    jenkins        7       1  0 18:57 ?        00:00:00   /bin/bash /tmp/tmpmx46emji
+    jenkins       21       7  0 18:57 ?        00:00:27     /opt/conda/envs/birdy/bin/python3.8 /opt/conda/envs/birdy/bin/jupyterhub-singleuser --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    ```
+
+    Before, reproducible defunct firefox-esr processes:
+    ```sh
+    True
+    [{'pid': 302, 'create_time': 1666550504.76, 'name': 'firefox-esr'}, {'pid': 303, 'create_time': 1666550504.8, 'name': 'firefox-esr'}]
+
+    True
+    [{'pid': 302, 'create_time': 1666550504.76, 'name': 'firefox-esr'}, {'pid': 303, 'create_time': 1666550504.8, 'name': 'firefox-esr'}, {'pid': 692, 'create_time': 1666550867.43, 'name': 'firefox-esr'}, {'pid': 693, 'create_time': 1666550867.45, 'name': 'firefox-esr'}]
+
+    $ docker exec jupyter-lvu ps
+        PID TTY          TIME CMD
+          1 ?        00:00:00 conda
+          7 ?        00:00:00 bash
+         21 ?        00:00:20 jupyterhub-sing
+        296 ?        00:00:00 geckodriver <defunct>
+        302 ?        00:00:00 firefox-esr <defunct>
+        303 ?        00:00:45 firefox-esr <defunct>
+        379 ?        00:00:00 Web Content <defunct>
+        407 ?        00:00:04 WebExtensions <defunct>
+        486 ?        00:00:00 Web Content <defunct>
+        507 ?        00:00:38 file:// Content <defunct>
+        581 ?        00:00:15 python
+        686 ?        00:00:00 geckodriver
+        692 ?        00:00:00 firefox-esr <defunct>
+        693 ?        00:00:34 firefox-esr
+        768 ?        00:00:00 Web Content
+        796 ?        00:00:04 WebExtensions
+        874 ?        00:00:13 file:// Content
+        902 ?        00:00:00 Web Content
+        961 ?        00:00:00 ps
+    ```
+
+    After, process hierarchy:
+
+    ```sh
+    $ docker exec jupyter-lvu2 ps -efH
+    UID          PID    PPID  C STIME TTY          TIME CMD
+    jenkins       49       0  0 21:01 ?        00:00:00 ps -efH
+    jenkins        1       0  0 21:00 ?        00:00:00 /sbin/docker-init -- conda run -n birdy /usr/local/bin/start-notebook.sh --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    jenkins        7       1  0 21:00 ?        00:00:00   /opt/conda/bin/python /opt/conda/bin/conda run -n birdy /usr/local/bin/start-notebook.sh --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    jenkins        8       7  0 21:00 ?        00:00:00     /bin/bash /tmp/tmp6chrvz_j
+    jenkins       22       8  9 21:00 ?        00:00:06       /opt/conda/envs/birdy/bin/python3.8 /opt/conda/envs/birdy/bin/jupyterhub-singleuser --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    ```
+
+    After, unable to reproduce defunct firefox-esr processes:
+    ```sh
+    False
+    []
+
+    True
+    [{'create_time': 1666550929.17, 'pid': 962, 'name': 'firefox-esr'}]
+
+    $ docker exec jupyter-lvu2 ps
+        PID TTY          TIME CMD
+          1 ?        00:00:00 docker-init
+          6 ?        00:00:00 conda
+          7 ?        00:00:00 bash
+         21 ?        00:00:20 jupyterhub-sing
+        928 ?        00:00:11 python
+        955 ?        00:00:00 geckodriver
+        962 ?        00:00:46 firefox-esr
+       1035 ?        00:00:00 Web Content
+       1061 ?        00:00:03 WebExtensions
+       1176 ?        00:00:00 Web Content
+       1223 ?        00:00:21 file:// Content
+       1327 ?        00:00:00 ps
+    ```
+
+    How to reproduce defunct firefox-esr processes (run twice to create defunct processes from first run):
+    ```python
+    import psutil
+    import panel as pn
+    import numpy as np
+    import xarray as xr
+
+    pn.extension()
+
+    def checkIfProcessRunning(processName):
+        '''
+        Check if there is any running process that contains the given name processName.
+        '''
+        #Iterate over the all the running process
+        for proc in psutil.process_iter():
+
+            # Check if process name contains the given name string.
+            if processName.lower() in proc.name().lower():
+                return True
+
+        return False;
+
+    def findProcessIdByName(processName):
+        '''
+        Get a list of all the PIDs of a all the running process whose name contains
+        the given string processName
+        '''
+        listOfProcessObjects = []
+        #Iterate over the all the running process
+        for proc in psutil.process_iter():
+
+           pinfo = proc.as_dict(attrs=['pid', 'name', 'create_time'])
+           # Check if process name contains the given name string.
+           if processName.lower() in pinfo['name'].lower() :
+               listOfProcessObjects.append(pinfo)
+
+        return listOfProcessObjects;
+
+    print(checkIfProcessRunning('firefox-esr'))
+    print(findProcessIdByName('firefox-esr'))
+
+    import hvplot.xarray
+    panel = pn.Column()
+    data = xr.DataArray(np.random.rand(200,400), name='data')
+    app = pn.Column(data.hvplot.quadmesh())
+    app.save('test.html')
+    for ii in range(0,10):
+        data = xr.DataArray(np.random.rand(200,400), name='data')
+        app = pn.Column(data.hvplot.quadmesh())
+        app.save(f"test{ii}.png")
+    print(checkIfProcessRunning('firefox-esr'))
+    print(findProcessIdByName('firefox-esr'))
+    ```
+
+
 [1.22.2](https://github.com/bird-house/birdhouse-deploy/tree/1.22.2) (2022-09-19)
 ------------------------------------------------------------------------------------------------------------------
 

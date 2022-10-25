@@ -17,8 +17,8 @@ SERVICES = {
         'info': {
             'name': 'Node',
             'synopsis': 'Nodes are data, compute and index endpoints accessed through the PAVICS platform or external clients. The Node service is the backend that allows: data storage, harvesting, indexation and discovery of local and federated data; authentication and authorization; server registration and management. Node service is therefore composed of several other services.',
-            'version': '1.22.2',
-            'releaseTime': '2022-09-19T22:12:31Z',
+            'version': '1.22.3',
+            'releaseTime': '2022-10-25T14:38:18Z',
             'institution': 'Ouranos',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
@@ -242,8 +242,8 @@ PLATFORMS = {
         'info': {
             'name': 'PAVICS',
             'synopsis': 'The PAVICS (Power Analytics for Visualization of Climate Science) platform is a collection of climate analysis services served through Open Geospatial Consortium (OGC) protocols. These services include data access, processing and visualization. Both data and algorithms can be accessed either programmatically, through OGC-compliant clients such as QGIS or ArcGIS, or a custom web interface.',
-            'version': '1.22.2',
-            'releaseTime': '2022-09-19T22:12:31Z',
+            'version': '1.22.3',
+            'releaseTime': '2022-10-25T14:38:18Z',
             'institution': 'Ouranos',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
