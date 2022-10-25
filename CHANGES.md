@@ -20,7 +20,7 @@
 
     Before, process hierarchy:
 
-    ```
+    ```sh
     $ docker exec jupyter-lvu ps -efH
     UID          PID    PPID  C STIME TTY          TIME CMD
     jenkins       88       0  0 21:01 ?        00:00:00 ps -efH
@@ -30,7 +30,7 @@
     ```
 
     Before, reproducible defunct firefox-esr processes:
-    ```
+    ```sh
     True
     [{'pid': 302, 'create_time': 1666550504.76, 'name': 'firefox-esr'}, {'pid': 303, 'create_time': 1666550504.8, 'name': 'firefox-esr'}]
 
@@ -62,7 +62,7 @@
 
     After, process hierarchy:
 
-    ```
+    ```sh
     $ docker exec jupyter-lvu2 ps -efH
     UID          PID    PPID  C STIME TTY          TIME CMD
     jenkins       49       0  0 21:01 ?        00:00:00 ps -efH
@@ -73,7 +73,7 @@
     ```
 
     After, unable to reproduce defunct firefox-esr processes:
-    ```
+    ```sh
     False
     []
 
@@ -97,7 +97,7 @@
     ```
 
     How to reproduce defunct firefox-esr processes (run twice to create defunct processes from first run):
-    ```
+    ```python
     import psutil
     import panel as pn
     import numpy as np
