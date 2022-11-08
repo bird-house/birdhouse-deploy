@@ -17,6 +17,18 @@
 # Without this mechanism any file changes in a repo will trigger a deployment,
 # which would cost a full platform restart for no reason.
 #
+# Sample <repo_root>/autodeploy/conditional-trigger content:
+# ====================
+# if [ -n "`echo "$GIT_CHANGED_FILES" | grep pavics-config/`" ]; then
+#     # Only changes under pavics-config/ will need to trigger autodeploy.
+#     echo "trigger autodeploy"
+#     exit 0
+# else
+#     echo "do not need to trigger autodeploy"
+#     exit 1
+# fi
+# ====================
+#
 # One time Setup:
 #
 #   Follow same instructions in deploy.sh.
