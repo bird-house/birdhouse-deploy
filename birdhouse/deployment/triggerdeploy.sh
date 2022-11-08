@@ -124,7 +124,7 @@ should_trigger() {
     if [ "$?" -eq 0 ]; then
         # Execute script only if it exists, script is optional.
         chmod a+x $TMP_SCRIPT
-        $GIT_CHANGED_FILES $TMP_SCRIPT
+        GIT_CHANGED_FILES="$GIT_CHANGED_FILES" $TMP_SCRIPT
         CONDITIONAL_TRIGGER_EXIT_CODE=$?
     fi
     rm $TMP_SCRIPT
