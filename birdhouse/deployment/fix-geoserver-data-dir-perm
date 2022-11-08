@@ -26,8 +26,14 @@ fi
 
 set -x
 
+DATA_DIR="$GEOSERVER_DATA_DIR"
+
+if [ -n "$1" ]; then
+    DATA_DIR="$1"; shift
+fi
+
 docker run --rm --name fix-geoserver-data-dir-perm \
-    --volume ${GEOSERVER_DATA_DIR}:/datadir \
+    --volume ${DATA_DIR}:/datadir \
     --env FIRST_RUN_ONLY \
     $BASH_IMAGE \
     bash -xc 'if [ -z "$FIRST_RUN_ONLY" -o ! -f /datadir/global.xml ]; \
