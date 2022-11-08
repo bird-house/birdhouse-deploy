@@ -14,7 +14,20 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+
+- autodeploy: allow repos to optionally decide if a deploy is required
+
+  Useful when only a subset of file changes in a repo will actually impact deployment.
+
+  Without this mechanism any file changes in a repo will trigger a deployment, which
+  would cost a full platform restart for no reason.
+
+  Var `GIT_CHANGED_FILES` is given to optional script `<repo_root>/autodeploy/conditional-trigger`
+  and only an exit code 0 will trigger deploy.
+
+- fix-geoserver-data-dir-perm: allow overriding data dir to use on another instance of Geoserver
+
 
 [1.22.3](https://github.com/bird-house/birdhouse-deploy/tree/1.22.3) (2022-10-25)
 ------------------------------------------------------------------------------------------------------------------
