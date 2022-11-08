@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.22.4](https://github.com/bird-house/birdhouse-deploy/tree/1.22.4) (2022-11-08)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes:
 
 - autodeploy: allow repos to optionally decide if a deploy is required
