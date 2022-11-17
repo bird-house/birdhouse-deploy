@@ -190,7 +190,7 @@ How to Enable the Component
 Grafana Dashboard
 -----------------
 
-.. image:: grafana-dashboard.png
+.. image:: monitoring/images/grafana-dashboard.png
 
 For host, using Node-exporter to collect metrics:
 
@@ -220,14 +220,14 @@ Useful visualisation features:
 Prometheus Alert Rules
 ----------------------
 
-.. image:: prometheus-alert-rules.png
+.. image:: monitoring/images/prometheus-alert-rules.png
 
 
 AlertManager for Alert Dashboard and Silencing
 ----------------------------------------------
 
-.. image:: alertmanager-dashboard.png
-.. image:: alertmanager-silence-alert.png
+.. image:: monitoring/images/alertmanager-dashboard.png
+.. image:: monitoring/images/alertmanager-silence-alert.png
 
 
 Customizing the Component
@@ -261,6 +261,7 @@ their execution to the corresponding service.
 Finally, `Weaver`_ also adds `Docker` image execution capabilities as a WPS process, allowing deployment
 and execution of custom applications and workflows.
 
+.. image:: weaver/images/component-diagram.png
 
 Usage
 -----
