@@ -261,7 +261,7 @@ their execution to the corresponding service.
 Finally, `Weaver`_ also adds `Docker` image execution capabilities as a WPS process, allowing deployment
 and execution of custom applications and workflows.
 
-.. image:: weaver/images/weaver-component-diagram.svg
+.. image:: weaver/images/component-diagram.png
 
 Usage
 -----
