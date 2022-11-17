@@ -225,7 +225,7 @@ sync_permissions:
     permissions_mapping:
       # When user is granted access to an output (either side),
       # output retrieval is allowed from both endpoints (wps-outputs/weaver).
-      - "weaver_wps_outputs : read <-> job_outputs : read"
+      - "weaver_wps_outputs : read -> job_outputs : read"
       # When output can be retrieved, access to details about the process and
       # the job are also provided (to understand what each output represents),
       # but getting read access to a process description should not grant
@@ -243,4 +243,5 @@ sync_permissions:
       - "weaver_wps_outputs : read <-> thredds_wps_outputs : read"
       # permissions if outputs are shared one-by-one in case of multiple files produced by the process
       - "weaver_wps_output_single : read <-> thredds_wps_output_single : read"
-      - "weaver_wps_output_single : read <-> job_output_single : read"
+      - "weaver_wps_output_single : read -> job_output_single : read"
+      - "thredds_wps_output_single : read -> job_output_single : read"
