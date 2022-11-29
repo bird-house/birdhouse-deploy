@@ -16,6 +16,91 @@
 
 ## Changes:
 
+- new Jupyter env with latest of everything
+
+  PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/106
+
+  - Unpin Shapely (fixes https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/99)
+  - Unpin Dask (fixes https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/100)
+  - Pin `intake-esm` since newer version activated validation of optional fields and broke our notebooks (https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/109)
+  - Mamba is fully usable alongside Conda.  Previously the installation used Mamba but then Mamba is uninstalled because it breaks the jupyter conda plugin
+  - New packages:
+    - performance optimization: flox, pyston
+    - new feature: geopy, streamlit, python-pptx
+    - jupyter plugin: jupyterlab-tabular-data-editor to easily edit `.csv` files
+   - Removed package:
+     - jupyter-panel-proxy, interfere with `panel serve` commands
+  - Relevant changes (alphabetical order):
+  ```diff
+  <   - bokeh=2.4.2=py38h578d9bd_1
+  >   - bokeh=2.4.3=pyhd8ed1ab_3
+  
+  <   - cartopy=0.20.1=py38hf9a4893_1
+  >   - cartopy=0.21.0=py38hf6c3373_3
+  
+  <   - cf_xarray=0.7.2=pyhd8ed1ab_0
+  >   - cf_xarray=0.7.5=pyhd8ed1ab_0
+  
+  <   - cftime=1.6.0=py38h71d37f0_1
+  >   - cftime=1.6.2=py38h26c90d9_1
+  
+  <   - clisops=0.9.0=pyh6c4a22f_0
+  >   - clisops=0.9.3=pyh1a96a4e_0
+  
+  # unpin
+  <   - dask=2022.1.0=pyhd8ed1ab_0
+  >   - dask=2022.11.0=pyhd8ed1ab_0
+  
+  # new
+  >   - flox=0.6.3=pyhd8ed1ab_0
+  
+  <   - fiona=1.8.20=py38hbb147eb_2
+  >   - fiona=1.8.22=py38hc72d8cd_2
+  
+  <   - gdal=3.3.3=py38hcf2042a_0
+  >   - gdal=3.5.3=py38h1f15b03_3
+  
+  <   - geopandas=0.10.2=pyhd8ed1ab_1
+  >   - geopandas=0.12.1=pyhd8ed1ab_1
+  
+  # new
+  >   - geopy=2.3.0=pyhd8ed1ab_0
+  >   - pyston_lite=2.3.4=py38h0a891b7_1
+  >   - python-pptx=0.6.21=pyhd8ed1ab_0
+  
+  <   - ravenpy=0.7.8=pyh8a188c0_0
+  >   - ravenpy=0.9.0=pyha21a80b_0
+  
+  # pip to conda
+  <     - requests-magpie==0.1.1
+  >   - requests-magpie=0.2.0=pyhd8ed1ab_0
+  
+  <   - rioxarray=0.11.1=pyhd8ed1ab_0
+  >   - rioxarray=0.13.1=pyhd8ed1ab_0
+  
+  <   - roocs-utils=0.6.1=pyh6c4a22f_0
+  >   - roocs-utils=0.6.3=pyh1a96a4e_0
+  
+  # unpin
+  <   - shapely=1.7.1=py38hb7fe4a8_5
+  >   - shapely=1.8.5=py38hafd38ec_2
+  
+  # new
+  >   - streamlit=1.15.0=pyhd8ed1ab_0
+  
+  <   - xarray=2022.3.0=pyhd8ed1ab_0
+  >   - xarray=2022.10.0=pyhd8ed1ab_0
+  
+  <   - xclim=0.36.0=pyhd8ed1ab_0
+  >   - xclim=0.39.0=pyhd8ed1ab_0
+  
+  <   - xesmf=0.6.2=pyhd8ed1ab_0
+  >   - xesmf=0.6.3=pyhd8ed1ab_1
+  
+  # new
+  >     - jupyterlab-tabular-data-editor==1.0.0
+  ```
+
 - documentation:
   - Add `Weaver` component diagram to better illustrate its interactions with other *birdhouse* services.
   - Move `monitoring` component images under its respective component directory.
