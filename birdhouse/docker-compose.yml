@@ -429,55 +429,7 @@ services:
       - default
       - jupyterhub_network
     restart: always
-    logging: *default-logging
-
-
-
-
-  stac-app:
-    container_name: stac-app
-    image: ghcr.io/crim-ca/stac-app:main
-    ports:
-      - "8000:8000"
-    depends_on:
-      pgstac:
-        condition: service_healthy
-    environment:
-      - POSTGRES_USER=username
-      - POSTGRES_PASS=password
-      - POSTGRES_DBNAME=postgis
-      - POSTGRES_HOST_READER=pgstac
-      - POSTGRES_HOST_WRITER=pgstac
-      - POSTGRES_PORT=5432
-
-  stac-browser:
-    container_name: stac-browser
-    image: ghcr.io/crim-ca/stac-browser:docker_image_push
-    ports:
-      - "8080:8080"
-
-  pgstac:
-    container_name: stac-db
-    image: ghcr.io/stac-utils/pgstac:v0.6.10
-    environment:
-      - POSTGRES_USER=username
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=postgis
-      - PGUSER=username
-      - PGPASSWORD=password
-      - PGHOST=localhost
-      - PGDATABASE=postgis
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-
-
-      
+    logging: *default-logging      
 
 # need external network so the folder name is not prefixed to network name
 networks:
@@ -495,6 +447,5 @@ volumes:
   thredds_persistence:
     external:
       name: thredds_persistence
-  postgres:
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
