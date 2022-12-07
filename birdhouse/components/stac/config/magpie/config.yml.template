@@ -1,0 +1,18 @@
+providers:
+  stac:
+    url: http://${PAVICS_FQDN}:9000
+    title: stac
+    public: true
+    c4i: false
+    type: api
+    sync_type: project-api
+
+permissions:
+    - service: api
+      resource: /
+      permission:
+        name: read
+        access: allow
+        scope: recursive
+      group: anonymous
+      action: create
