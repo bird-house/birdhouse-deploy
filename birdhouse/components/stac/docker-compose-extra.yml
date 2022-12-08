@@ -11,8 +11,6 @@ services:
   stac:
     container_name: stac
     image: ghcr.io/crim-ca/stac-app:main
-    ports:
-      - "9000:8000"
     depends_on:
       pgstac:
         condition: service_healthy
@@ -56,6 +54,8 @@ services:
       - ./components/stac/conf.extra-service.d:/etc/nginx/conf.extra-service.d/stac:ro
     links:
       - stac
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   # extend Magpie permissions to grant access to STAC API via secured Twitcher proxy
   magpie:

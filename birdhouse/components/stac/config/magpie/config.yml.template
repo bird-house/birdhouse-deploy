@@ -1,18 +1,20 @@
 providers:
+  # definition of STAC service for API access
   stac:
-    url: http://${PAVICS_FQDN}:9000
-    title: stac
+    url: http://stac:8000
+    title: STAC
     public: true
     c4i: false
     type: api
-    sync_type: project-api
+    sync_type: api
 
 permissions:
-    - service: api
-      resource: /
-      permission:
-        name: read
-        access: allow
-        scope: recursive
-      group: anonymous
-      action: create
+  # Administrator permissions over whole service
+  - service: stac
+    permission: read
+    group: anonymous
+    action: create
+  - service: stac
+    permission: write
+    group: anonymous
+    action: create
