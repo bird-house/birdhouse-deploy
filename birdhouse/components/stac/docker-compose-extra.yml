@@ -22,6 +22,9 @@ services:
       - POSTGRES_HOST_WRITER=pgstac
       - POSTGRES_PORT=5432
     logging: *default-logging
+    # TODO : remove, only for debug purposes
+    volumes:
+      - /home/ubuntu/stac-fastapi:/stac-fastapi:ro
 
   stac-browser:
     container_name: stac-browser
