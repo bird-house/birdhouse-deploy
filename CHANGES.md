@@ -16,6 +16,276 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.22.5](https://github.com/bird-house/birdhouse-deploy/tree/1.22.5) (2022-12-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- new Jupyter env with latest of everything
+
+  PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/106
+
+  - Unpin Shapely (fixes https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/99)
+  - Unpin Dask (fixes https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/100)
+  - Pin `intake-esm` since newer version activated validation of optional fields and broke our notebooks (https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/109)
+  - Mamba is fully usable alongside Conda.  Previously the installation used Mamba but then Mamba is uninstalled because it breaks the jupyter conda plugin
+  - New packages:
+    - performance optimization: flox, pyston
+    - new feature: geopy, streamlit, python-pptx
+    - jupyter plugin: jupyterlab-tabular-data-editor to easily edit `.csv` files
+   - Removed package:
+     - jupyter-panel-proxy, interfere with `panel serve` commands
+  - Relevant changes (alphabetical order):
+  ```diff
+  <   - bokeh=2.4.2=py38h578d9bd_1
+  >   - bokeh=2.4.3=pyhd8ed1ab_3
+  
+  <   - cartopy=0.20.1=py38hf9a4893_1
+  >   - cartopy=0.21.0=py38hf6c3373_3
+  
+  <   - cf_xarray=0.7.2=pyhd8ed1ab_0
+  >   - cf_xarray=0.7.5=pyhd8ed1ab_0
+  
+  <   - cftime=1.6.0=py38h71d37f0_1
+  >   - cftime=1.6.2=py38h26c90d9_1
+  
+  <   - clisops=0.9.0=pyh6c4a22f_0
+  >   - clisops=0.9.3=pyh1a96a4e_0
+  
+  # unpin
+  <   - dask=2022.1.0=pyhd8ed1ab_0
+  >   - dask=2022.11.0=pyhd8ed1ab_0
+  
+  # new
+  >   - flox=0.6.3=pyhd8ed1ab_0
+  
+  <   - fiona=1.8.20=py38hbb147eb_2
+  >   - fiona=1.8.22=py38hc72d8cd_2
+  
+  <   - gdal=3.3.3=py38hcf2042a_0
+  >   - gdal=3.5.3=py38h1f15b03_3
+  
+  <   - geopandas=0.10.2=pyhd8ed1ab_1
+  >   - geopandas=0.12.1=pyhd8ed1ab_1
+  
+  # new
+  >   - geopy=2.3.0=pyhd8ed1ab_0
+  >   - pyston_lite=2.3.4=py38h0a891b7_1
+  >   - python-pptx=0.6.21=pyhd8ed1ab_0
+  
+  <   - ravenpy=0.7.8=pyh8a188c0_0
+  >   - ravenpy=0.9.0=pyha21a80b_0
+  
+  # pip to conda
+  <     - requests-magpie==0.1.1
+  >   - requests-magpie=0.2.0=pyhd8ed1ab_0
+  
+  <   - rioxarray=0.11.1=pyhd8ed1ab_0
+  >   - rioxarray=0.13.1=pyhd8ed1ab_0
+  
+  <   - roocs-utils=0.6.1=pyh6c4a22f_0
+  >   - roocs-utils=0.6.3=pyh1a96a4e_0
+  
+  # unpin
+  <   - shapely=1.7.1=py38hb7fe4a8_5
+  >   - shapely=1.8.5=py38hafd38ec_2
+  
+  # new
+  >   - streamlit=1.15.0=pyhd8ed1ab_0
+  
+  <   - xarray=2022.3.0=pyhd8ed1ab_0
+  >   - xarray=2022.10.0=pyhd8ed1ab_0
+  
+  <   - xclim=0.36.0=pyhd8ed1ab_0
+  >   - xclim=0.39.0=pyhd8ed1ab_0
+  
+  <   - xesmf=0.6.2=pyhd8ed1ab_0
+  >   - xesmf=0.6.3=pyhd8ed1ab_1
+  
+  # new
+  >     - jupyterlab-tabular-data-editor==1.0.0
+  ```
+
+- documentation:
+  - Add `Weaver` component diagram to better illustrate its interactions with other *birdhouse* services.
+  - Move `monitoring` component images under its respective component directory.
+
+[1.22.4](https://github.com/bird-house/birdhouse-deploy/tree/1.22.4) (2022-11-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- autodeploy: allow repos to optionally decide if a deploy is required
+
+  Useful when only a subset of file changes in a repo will actually impact deployment.
+
+  Without this mechanism any file changes in a repo will trigger a deployment, which
+  would cost a full platform restart for no reason.
+
+  Var `GIT_CHANGED_FILES` is given to optional script `<repo_root>/autodeploy/conditional-trigger`
+  and only an exit code 0 will trigger deploy.
+
+- fix-geoserver-data-dir-perm: allow overriding data dir to use on another instance of Geoserver
+
+
+[1.22.3](https://github.com/bird-house/birdhouse-deploy/tree/1.22.3) (2022-10-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+
+- jupyter env: reap defunct processes with proper pid 1 init process
+
+    Before, process hierarchy:
+
+    ```sh
+    $ docker exec jupyter-lvu ps -efH
+    UID          PID    PPID  C STIME TTY          TIME CMD
+    jenkins       88       0  0 21:01 ?        00:00:00 ps -efH
+    jenkins        1       0  0 18:57 ?        00:00:00 /opt/conda/bin/python /opt/conda/bin/conda run -n birdy /usr/local/bin/start-notebook.sh --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    jenkins        7       1  0 18:57 ?        00:00:00   /bin/bash /tmp/tmpmx46emji
+    jenkins       21       7  0 18:57 ?        00:00:27     /opt/conda/envs/birdy/bin/python3.8 /opt/conda/envs/birdy/bin/jupyterhub-singleuser --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    ```
+
+    Before, reproducible defunct firefox-esr processes:
+    ```sh
+    True
+    [{'pid': 302, 'create_time': 1666550504.76, 'name': 'firefox-esr'}, {'pid': 303, 'create_time': 1666550504.8, 'name': 'firefox-esr'}]
+
+    True
+    [{'pid': 302, 'create_time': 1666550504.76, 'name': 'firefox-esr'}, {'pid': 303, 'create_time': 1666550504.8, 'name': 'firefox-esr'}, {'pid': 692, 'create_time': 1666550867.43, 'name': 'firefox-esr'}, {'pid': 693, 'create_time': 1666550867.45, 'name': 'firefox-esr'}]
+
+    $ docker exec jupyter-lvu ps
+        PID TTY          TIME CMD
+          1 ?        00:00:00 conda
+          7 ?        00:00:00 bash
+         21 ?        00:00:20 jupyterhub-sing
+        296 ?        00:00:00 geckodriver <defunct>
+        302 ?        00:00:00 firefox-esr <defunct>
+        303 ?        00:00:45 firefox-esr <defunct>
+        379 ?        00:00:00 Web Content <defunct>
+        407 ?        00:00:04 WebExtensions <defunct>
+        486 ?        00:00:00 Web Content <defunct>
+        507 ?        00:00:38 file:// Content <defunct>
+        581 ?        00:00:15 python
+        686 ?        00:00:00 geckodriver
+        692 ?        00:00:00 firefox-esr <defunct>
+        693 ?        00:00:34 firefox-esr
+        768 ?        00:00:00 Web Content
+        796 ?        00:00:04 WebExtensions
+        874 ?        00:00:13 file:// Content
+        902 ?        00:00:00 Web Content
+        961 ?        00:00:00 ps
+    ```
+
+    After, process hierarchy:
+
+    ```sh
+    $ docker exec jupyter-lvu2 ps -efH
+    UID          PID    PPID  C STIME TTY          TIME CMD
+    jenkins       49       0  0 21:01 ?        00:00:00 ps -efH
+    jenkins        1       0  0 21:00 ?        00:00:00 /sbin/docker-init -- conda run -n birdy /usr/local/bin/start-notebook.sh --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    jenkins        7       1  0 21:00 ?        00:00:00   /opt/conda/bin/python /opt/conda/bin/conda run -n birdy /usr/local/bin/start-notebook.sh --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    jenkins        8       7  0 21:00 ?        00:00:00     /bin/bash /tmp/tmp6chrvz_j
+    jenkins       22       8  9 21:00 ?        00:00:06       /opt/conda/envs/birdy/bin/python3.8 /opt/conda/envs/birdy/bin/jupyterhub-singleuser --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    ```
+
+    After, unable to reproduce defunct firefox-esr processes:
+    ```sh
+    False
+    []
+
+    True
+    [{'create_time': 1666550929.17, 'pid': 962, 'name': 'firefox-esr'}]
+
+    $ docker exec jupyter-lvu2 ps
+        PID TTY          TIME CMD
+          1 ?        00:00:00 docker-init
+          6 ?        00:00:00 conda
+          7 ?        00:00:00 bash
+         21 ?        00:00:20 jupyterhub-sing
+        928 ?        00:00:11 python
+        955 ?        00:00:00 geckodriver
+        962 ?        00:00:46 firefox-esr
+       1035 ?        00:00:00 Web Content
+       1061 ?        00:00:03 WebExtensions
+       1176 ?        00:00:00 Web Content
+       1223 ?        00:00:21 file:// Content
+       1327 ?        00:00:00 ps
+    ```
+
+    How to reproduce defunct firefox-esr processes (run twice to create defunct processes from first run):
+    ```python
+    import psutil
+    import panel as pn
+    import numpy as np
+    import xarray as xr
+
+    pn.extension()
+
+    def checkIfProcessRunning(processName):
+        '''
+        Check if there is any running process that contains the given name processName.
+        '''
+        #Iterate over the all the running process
+        for proc in psutil.process_iter():
+
+            # Check if process name contains the given name string.
+            if processName.lower() in proc.name().lower():
+                return True
+
+        return False;
+
+    def findProcessIdByName(processName):
+        '''
+        Get a list of all the PIDs of a all the running process whose name contains
+        the given string processName
+        '''
+        listOfProcessObjects = []
+        #Iterate over the all the running process
+        for proc in psutil.process_iter():
+
+           pinfo = proc.as_dict(attrs=['pid', 'name', 'create_time'])
+           # Check if process name contains the given name string.
+           if processName.lower() in pinfo['name'].lower() :
+               listOfProcessObjects.append(pinfo)
+
+        return listOfProcessObjects;
+
+    print(checkIfProcessRunning('firefox-esr'))
+    print(findProcessIdByName('firefox-esr'))
+
+    import hvplot.xarray
+    panel = pn.Column()
+    data = xr.DataArray(np.random.rand(200,400), name='data')
+    app = pn.Column(data.hvplot.quadmesh())
+    app.save('test.html')
+    for ii in range(0,10):
+        data = xr.DataArray(np.random.rand(200,400), name='data')
+        app = pn.Column(data.hvplot.quadmesh())
+        app.save(f"test{ii}.png")
+    print(checkIfProcessRunning('firefox-esr'))
+    print(findProcessIdByName('firefox-esr'))
+    ```
+
+
+[1.22.2](https://github.com/bird-house/birdhouse-deploy/tree/1.22.2) (2022-09-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- `deploy-data`: allow `post_actions` to vary depending on files changed on subsequent run
+
+  Useful for `post_actions` to know the git version change between the current
+  and the previous run and which files are impacted.
+
+  Actions can perform extra git commands if needed or simply used the
+  provide git diff output and/or rsync output to decide what to do next.
+
+  **Non-breaking changes**
+  - `deploy-data` script: add new vars `GIT_PREVIOUS_COMMIT_HASH`, `GIT_NEW_COMMIT_HASH`, `GIT_CHANGED_FILES`,
+    `RSYNC_OUTPUT`, accessible to `post_actions` scripts.
+
+
 [1.22.1](https://github.com/bird-house/birdhouse-deploy/tree/1.22.1) (2022-09-01)
 ------------------------------------------------------------------------------------------------------------------
 

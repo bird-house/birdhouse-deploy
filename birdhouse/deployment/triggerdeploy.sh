@@ -6,6 +6,29 @@
 # In divergent case (both behind and ahead at the same time), do nothing as
 # well to prevent deploy loop on a dev machine.
 #
+# Repo can optionally choose to only trigger deploy for certain changes only.
+# Var GIT_CHANGED_FILES is given to optional script
+# <repo_root>/autodeploy/conditional-trigger and only an exit code 0 will
+# trigger deploy.
+#
+# Useful when only a subset of file changes in a repo will actually impact
+# deployment.
+#
+# Without this mechanism any file changes in a repo will trigger a deployment,
+# which would cost a full platform restart for no reason.
+#
+# Sample <repo_root>/autodeploy/conditional-trigger content:
+# ====================
+# if [ -n "`echo "$GIT_CHANGED_FILES" | grep pavics-config/`" ]; then
+#     # Only changes under pavics-config/ will need to trigger autodeploy.
+#     echo "trigger autodeploy"
+#     exit 0
+# else
+#     echo "do not need to trigger autodeploy"
+#     exit 1
+# fi
+# ====================
+#
 # One time Setup:
 #
 #   Follow same instructions in deploy.sh.
@@ -83,6 +106,8 @@ should_trigger() {
     TMP_SAVE_FILE="/tmp/triggerdeploy-behindcnt.txt"
     echo "BEHIND_CNT=-1" > $TMP_SAVE_FILE
     echo "AHEAD_CNT=-1" >> $TMP_SAVE_FILE
+    echo "local=" >> $TMP_SAVE_FILE
+    echo "remote=" >> $TMP_SAVE_FILE
     git for-each-ref --format="%(refname:short) %(upstream:short)" refs/heads | \
     while read local remote
     do
@@ -93,17 +118,46 @@ should_trigger() {
         AHEAD_CNT="`git rev-list --left-only --count ${local}...${remote}`"
         echo "BEHIND_CNT=$BEHIND_CNT" >> $TMP_SAVE_FILE
         echo "AHEAD_CNT=$AHEAD_CNT" >> $TMP_SAVE_FILE
+        echo "local=$local" >> $TMP_SAVE_FILE
+        echo "remote=$remote" >> $TMP_SAVE_FILE
         break
     done
     . $TMP_SAVE_FILE
     rm $TMP_SAVE_FILE
 
+    # If should trigger deploy given diff.
+    GIT_CHANGED_FILES="`git diff --name-status $local remotes/$remote`"
+    TMP_SCRIPT="/tmp/repo-conditional-trigger"
+    # get latest version of script on same branch
+    CURRENT_REMOTE_BRANCH="`git rev-parse --abbrev-ref --symbolic-full-name @{upstream}`"
+    # Default to always trigger if checkout is behind to be backward-compatible and safe.
+    CONDITIONAL_TRIGGER_EXIT_CODE=0
+    git show $CURRENT_REMOTE_BRANCH:./autodeploy/conditional-trigger > $TMP_SCRIPT
+    if [ "$?" -eq 0 ]; then
+        # Execute script only if it exists, script is optional.
+        chmod a+x $TMP_SCRIPT
+        GIT_CHANGED_FILES="$GIT_CHANGED_FILES" $TMP_SCRIPT
+        CONDITIONAL_TRIGGER_EXIT_CODE=$?
+    fi
+    rm $TMP_SCRIPT
+
     # trigger deploy if the behind count is greater than zero and ahead count is
     # less than or equal zero
     if [ "$BEHIND_CNT" -gt 0 ]; then
         if [ "$AHEAD_CNT" -le 0 ]; then
-            echo "triggerdeploy: repo '$EXTRA_REPO' is behind will trigger deploy"
-            return 0
+            if [ $CONDITIONAL_TRIGGER_EXIT_CODE -eq 0 ]; then
+                echo "triggerdeploy: repo '$EXTRA_REPO' is behind will trigger deploy"
+                return 0
+            else
+                echo "triggerdeploy: repo '$EXTRA_REPO' is behind but do not need to trigger deploy, just pull if clean checkout"
+                # pull only if clean checkout to avoid overriding important changes
+                if [ -z "`git status -u --porcelain`" ]; then
+                    git pull
+                else
+                    echo "triggerdeploy: WARNING: unclean repo '$EXTRA_REPO', unable to pull" 1>&2
+                fi
+                return 1
+            fi
         else
             echo "triggerdeploy: do nothing, repo '$EXTRA_REPO' is both behind and ahead (divergent), must be a devel repo"
             return 1
