@@ -95,6 +95,13 @@ COMPOSE_DIR="`pwd`"
 [ -f env.local ] && . ./env.local
 
 for adir in ${EXTRA_CONF_DIRS}; do
+  if [ ! -e "$adir" ]; then
+    # Do not exit to not break unattended autodeploy since no human around to
+    # fix immediately.
+    # The new adir with typo will not be active but at least all the existing
+    # will still work.
+    echo "WARNING: EXTRA_CONF_DIRS '$adir' do not exist" 1>&2
+  fi
   COMPONENT_DEFAULT_ENV="$adir/default.env"
   if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
     echo "reading '$COMPONENT_DEFAULT_ENV'"
