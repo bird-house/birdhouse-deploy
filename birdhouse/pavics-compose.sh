@@ -97,7 +97,7 @@ COMPOSE_DIR="`pwd`"
 for i in ${DELAYED_EVAL}; do
   v="`eval "echo \\$$i"`"
   eval 'export $i="`eval "echo $v"`"'
-  echo "$i=`eval "echo \\$$i"`"
+  echo "delayed eval '$i=`eval "echo \\$$i"`'"
 done
 
 for adir in ${EXTRA_CONF_DIRS}; do
