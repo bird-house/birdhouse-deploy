@@ -35,6 +35,8 @@
   All `default.env` files header have been updated with notice about this new
   delayed evaluation feature.
 
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/270.
+
 ## Changes:
 
 - Warn when a dir in `EXTRA_CONF_DIRS` do not exist.
@@ -42,6 +44,8 @@
   Most likely a typo in a new dir.  Just warn and not exit directly to avoid
   leaving the entire platform down during an unattended autodeploy since no
   one around to take immediate action.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/266.
 
 
 [1.22.5](https://github.com/bird-house/birdhouse-deploy/tree/1.22.5) (2022-12-02)
