@@ -94,6 +94,12 @@ COMPOSE_DIR="`pwd`"
 # we don't use usual .env filename, because docker-compose uses it
 [ -f env.local ] && . ./env.local
 
+for i in ${DELAYED_EVAL}; do
+  v="`eval "echo \\$$i"`"
+  eval 'export $i="`eval "echo $v"`"'
+  echo "$i=`eval "echo \\$$i"`"
+done
+
 for adir in ${EXTRA_CONF_DIRS}; do
   COMPONENT_DEFAULT_ENV="$adir/default.env"
   if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
