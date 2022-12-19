@@ -1,7 +1,7 @@
 # Generic variables
 override SHELL       := bash
 override APP_NAME    := birdhouse-deploy
-override APP_VERSION := 1.22.5
+override APP_VERSION := 1.22.6
 
 # utility to remove comments after value of an option variable
 override clean_opt = $(shell echo "$(1)" | $(_SED) -r -e "s/[ '$'\t'']+$$//g")
