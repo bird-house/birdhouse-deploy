@@ -16,6 +16,37 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.22.6](https://github.com/bird-house/birdhouse-deploy/tree/1.22.6) (2022-12-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- new Jupyter env for `urlpath`
+
+  See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/112
+
+  - Adds `urlpath` for https://github.com/Ouranosinc/pavics-sdi/pull/268, fixes https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/110
+  - Relevant changes (alphabetical order):
+  ```diff
+  <   - climpred=2.2.0=pyhd8ed1ab_0
+  >   - climpred=2.3.0=pyhd8ed1ab_0
+
+  <   - dask=2022.11.0=pyhd8ed1ab_0
+  >   - dask=2022.11.1=pyhd8ed1ab_0
+
+  <   - flox=0.6.3=pyhd8ed1ab_0
+  >   - flox=0.6.4=pyhd8ed1ab_0
+
+  <   - h5netcdf=1.0.2=pyhd8ed1ab_0
+  >   - h5netcdf=1.1.0=pyhd8ed1ab_0
+
+  <   - numpy=1.23.4=py38h7042d01_1
+  >   - numpy=1.23.5=py38h7042d01_0
+
+  >   - urlpath=1.2.0=pyhd8ed1ab_0
+  ```
+
+
 [1.22.5](https://github.com/bird-house/birdhouse-deploy/tree/1.22.5) (2022-12-02)
 ------------------------------------------------------------------------------------------------------------------
 
