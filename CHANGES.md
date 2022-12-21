@@ -39,11 +39,11 @@
 
 ## Changes:
 
-- Warn when a dir in `EXTRA_CONF_DIRS` do not exist.
+- Warn when a dir in `EXTRA_CONF_DIRS` does not exist.
 
   Most likely a typo in a new dir.  Just warn and not exit directly to avoid
   leaving the entire platform down during an unattended autodeploy since no
-  one around to take immediate action.
+  one is around to take immediate action.
 
   Fixes https://github.com/bird-house/birdhouse-deploy/issues/266.
 

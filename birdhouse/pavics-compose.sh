@@ -100,7 +100,7 @@ for adir in ${EXTRA_CONF_DIRS}; do
     # fix immediately.
     # The new adir with typo will not be active but at least all the existing
     # will still work.
-    echo "WARNING: EXTRA_CONF_DIRS '$adir' do not exist" 1>&2
+    echo "WARNING: '$adir' in EXTRA_CONF_DIRS does not exist" 1>&2
   fi
   COMPONENT_DEFAULT_ENV="$adir/default.env"
   if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
