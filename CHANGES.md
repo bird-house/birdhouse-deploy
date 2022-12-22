@@ -14,7 +14,14 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes:
+
+- Weaver: fix post script to be compatible with autodeploy
+
+  Autodeploy runs inside its own docker container and `curl` is not available.
+  Therefore Weaver post script should be using `curl` from a docker image
+  instead of locally installed flavor.
+
 
 [1.22.6](https://github.com/bird-house/birdhouse-deploy/tree/1.22.6) (2022-12-19)
 ------------------------------------------------------------------------------------------------------------------
