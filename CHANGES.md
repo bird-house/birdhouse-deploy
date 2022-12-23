@@ -16,6 +16,43 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.22.7](https://github.com/bird-house/birdhouse-deploy/tree/1.22.7) (2022-12-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+
+- Overriding `DATA_PERSIST_ROOT` in `env.local` do not take effect for
+  `JUPYTERHUB_USER_DATA_DIR`, `MAGPIE_PERSIST_DIR`, and `GEOSERVER_DATA_DIR`.
+
+  These 3 vars will have to be delayed evaluated for override in `env.local` to
+  take effect.
+
+  For a variable to be delayed evaluated, it has to be defined using
+  single-quote and be added to the list of `DELAYED_EVAL` in `default.env`.
+
+  If those steps are forgotten in `env.local`, it will still work since
+  `env.local` is the last file to be read.  However those steps should not be
+  forgotten in any `default.env` for all components.
+
+  So the impact or burden is on the developpers to write their `default.env`
+  file properly, not on the users that only modify the `env.local` file.
+
+  All `default.env` files header have been updated with notice about this new
+  delayed evaluation feature.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/270.
+
+## Changes:
+
+- Warn when a dir in `EXTRA_CONF_DIRS` does not exist.
+
+  Most likely a typo in a new dir.  Just warn and not exit directly to avoid
+  leaving the entire platform down during an unattended autodeploy since no
+  one is around to take immediate action.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/266.
+
+
 [1.22.6](https://github.com/bird-house/birdhouse-deploy/tree/1.22.6) (2022-12-19)
 ------------------------------------------------------------------------------------------------------------------
 
