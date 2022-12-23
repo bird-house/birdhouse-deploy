@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.22.7](https://github.com/bird-house/birdhouse-deploy/tree/1.22.7) (2022-12-23)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes:
 
 - Overriding `DATA_PERSIST_ROOT` in `env.local` do not take effect for
