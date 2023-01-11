@@ -1,5 +1,14 @@
 #!/bin/sh
 
+# NOTE, this file is used by the autodeploy mechanism inside a very
+# minimalistic container, therefore:
+#
+# * When making change to this file, should also test that is does not break
+#   the autodeploy.
+#
+# * Try to keep the same behavior/code, inside and outside of the
+#   autodeploy container to catch error early with the autodeploy.
+
 YELLOW=$(tput setaf 3)
 RED=$(tput setaf 1)
 NORMAL=$(tput sgr0)
