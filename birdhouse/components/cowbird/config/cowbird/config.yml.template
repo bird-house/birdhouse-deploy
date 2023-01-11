@@ -9,7 +9,7 @@
 handlers:
   Magpie:
     active: true
-    url: https://${PAVICS_FQDN_PUBLIC}/magpie
+    url: http://magpie:2001
     admin_user: ${MAGPIE_ADMIN_USERNAME}
     admin_password: ${MAGPIE_ADMIN_PASSWORD}
   Geoserver:
