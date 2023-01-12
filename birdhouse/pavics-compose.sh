@@ -1,10 +1,11 @@
 #!/bin/sh
 
-# NOTE, this file and all the pre/post scripts that it executes is used by the
-# autodeploy mechanism inside a very minimalistic container, therefore:
+# NOTE, this file and all the extra component pre/post scripts that it executes
+# is used by the autodeploy mechanism inside a very minimalistic container,
+# therefore:
 #
-# * When making change to this file or any pre/post scripts, should also test
-#   that is does not break the autodeploy.
+# * When making change to this file or any extra component pre/post scripts,
+#   should also test that it does not break the autodeploy.
 #
 # * Try to keep the same behavior/code, inside and outside of the
 #   autodeploy container to catch error early with the autodeploy.
