@@ -28,12 +28,22 @@ class CustomDockerSpawner(DockerSpawner):
             host_dir = join(os.environ['JUPYTERHUB_USER_DATA_DIR'], 'tutorial-notebooks-specific-images')
 
             # Mount a volume with a tutorial-notebook subfolder corresponding to the image name, if it exists
+            # The names are defined in the JUPYTERHUB_IMAGE_SELECTION_NAMES variable.
             image_name = self.user_options.get('image')
             if(os.path.isdir(join(host_dir, image_name))):
                 self.volumes[join(host_dir, image_name)] = {
                     "bind": '/notebook_dir/tutorial-notebooks',
                     "mode": "ro"
                 }
+            else:
+                # Try again, removing any colons and any following text. Useful if the image name contains
+                # the version number, which should not be used in the directory name.
+                image_name = image_name.split(':')[0]
+                if(os.path.isdir(join(host_dir, image_name))):
+                    self.volumes[join(host_dir, image_name)] = {
+                        "bind": '/notebook_dir/tutorial-notebooks',
+                        "mode": "ro"
+                    }
         else:
             # Mount the entire tutorial-notebooks directory
             self.volumes[join(os.environ['JUPYTERHUB_USER_DATA_DIR'], "tutorial-notebooks")] = {

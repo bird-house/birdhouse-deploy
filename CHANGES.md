@@ -14,7 +14,10 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes:
+
+- Fix the Docker Spawner `start` function to support JupyterHub image selection names 
+  that use the `<name>:<version>` format.
 
 [1.22.7](https://github.com/bird-house/birdhouse-deploy/tree/1.22.7) (2022-12-23)
 ------------------------------------------------------------------------------------------------------------------
