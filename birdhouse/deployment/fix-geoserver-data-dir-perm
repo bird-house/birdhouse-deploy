@@ -24,6 +24,8 @@ if [ -e "birdhouse/env.local" ]; then
     . birdhouse/env.local
 fi
 
+process_delayed_eval
+
 set -x
 
 DATA_DIR="$GEOSERVER_DATA_DIR"

@@ -123,11 +123,7 @@ done
 # components.
 [ -f env.local ] && . ./env.local
 
-for i in ${DELAYED_EVAL}; do
-  v="`eval "echo \\$${i}"`"
-  eval 'export ${i}="`eval "echo ${v}"`"'
-  echo "delayed eval '`env |grep ${i}=`'"
-done
+process_delayed_eval
 
 for i in ${VARS}
 do

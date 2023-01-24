@@ -36,6 +36,8 @@ if [ -f "$REPO_ROOT/birdhouse/env.local" ]; then
     . "$REPO_ROOT/birdhouse/env.local"
 fi
 
+process_delayed_eval
+
 set -x
 
 cat $REPO_ROOT/birdhouse/deployment/trigger-deploy-notebook | envsubst '${JUPYTERHUB_USER_DATA_DIR}' | sudo tee $CRON_FILE

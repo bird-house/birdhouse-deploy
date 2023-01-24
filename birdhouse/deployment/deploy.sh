@@ -110,6 +110,8 @@ echo "deploy START_TIME=$START_TIME"
 # Read AUTODEPLOY_EXTRA_REPOS
 . $ENV_LOCAL_FILE
 
+process_delayed_eval
+
 set -x
 
 for adir in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
@@ -134,6 +136,8 @@ set +x  # hide passwd in env.local in logs
 # reload again after default.env since env.local can override default.env
 . $ENV_LOCAL_FILE
 set -x
+
+process_delayed_eval
 
 # stop all to force reload any changed config that are volume-mount into the containers
 ./pavics-compose.sh stop
@@ -176,6 +180,8 @@ set +x  # hide passwd in env.local in logs
 # (ex: JUPYTERHUB_USER_DATA_DIR)
 . $ENV_LOCAL_FILE
 set -x
+
+process_delayed_eval
 
 # restart everything, only changed containers will be destroyed and recreated
 ./pavics-compose.sh up -d

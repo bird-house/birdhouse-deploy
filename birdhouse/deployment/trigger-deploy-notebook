@@ -43,6 +43,9 @@ if [ -e "$COMPOSE_DIR/env.local" ]; then
     . "$COMPOSE_DIR/env.local"  # optional override JUPYTERHUB_USER_DATA_DIR
     set -x
 fi
+if [ -e "$COMPOSE_DIR/default.env" ]; then
+    process_delayed_eval
+fi
 
 NOTEBOOK_DIR_MNT="/notebook_dir"
 TUTORIAL_NOTEBOOKS_DIR="tutorial-notebooks"

@@ -28,6 +28,13 @@
   For legitimate users, not having the terminal is pretty annoying.
   Should not penalize legit users for some rogue users.
 
+## Fixes:
+- Vars in DELAYED_EVAL list are not expanded properly outside of `pavics-compose.sh`
+
+  There are other scripts sourcing `default.env` and `env.local` and all those
+  scripts have to expand the vars in DELAYED_EVAL list to have their actual
+  values.
+
 
 [1.22.8](https://github.com/bird-house/birdhouse-deploy/tree/1.22.8) (2023-01-24)
 ------------------------------------------------------------------------------------------------------------------
