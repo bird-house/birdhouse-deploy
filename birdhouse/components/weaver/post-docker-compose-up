@@ -92,6 +92,16 @@ fi
 echo "  Requested Weaver WPS providers: [${WEAVER_WPS_PROVIDERS}]"
 echo "  Will retry requests at most for ${WEAVER_WPS_PROVIDERS_MAX_TIME}s"
 
+if [ -z "$WEAVER_CURL_IMAGE" ]; then
+    WEAVER_CURL_IMAGE="curlimages/curl:7.87.0"
+fi
+
+# To know when a docker run was started in case it hangs.
+DOCKER_RUN_TAG="`date -Isecond | sed 's/:/_/g' | sed 's/+/p/g'`_$RANDOM"
+curl_cmd() {
+    docker run --rm --name weaver_post_curl_$DOCKER_RUN_TAG $WEAVER_CURL_IMAGE "$@"
+}
+
 start_time="$(date -u +%s)"
 
 # ------ PHASE 1 ------
@@ -102,7 +112,7 @@ printf "%s" "${PREFIX}Wait for response from Magpie to login [${MAGPIE_URL}]."
 while true; do
     # login (output null + cookie-jar '-' redirects output cookie to variable)
     cookie_jar=$( \
-        curl --insecure --silent --location \
+        curl_cmd --insecure --silent --location \
              -m ${REQUEST_TIMEOUT} \
              -o /dev/null \
              -X POST \
@@ -146,7 +156,7 @@ fi
 # validate that Magpie token retrieved is adequate
 printf "Validate Magpie token..."
 resp=$( \
-    curl --insecure --silent --location \
+    curl_cmd --insecure --silent --location \
          -m ${REQUEST_TIMEOUT} \
          -w "\n%{http_code}" \
          -b "${cookie}" \
@@ -174,7 +184,7 @@ fi
 printf "%s" "${PREFIX}Wait for response from Weaver [${WEAVER_URL}]."
 while true; do
     resp=$( \
-        curl --insecure --silent --location \
+        curl_cmd --insecure --silent --location \
              -m ${REQUEST_TIMEOUT} \
              -w "\n%{http_code}" \
              -b "${cookie}" \
@@ -223,7 +233,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
     while true; do
         # request the URL and obtain the body+http code, then split them for verification
         resp=$( \
-            curl --insecure --silent --location \
+            curl_cmd --insecure --silent --location \
                  -m ${REQUEST_TIMEOUT} \
                  -w "\n%{http_code}" \
                  -b "${cookie}" \
@@ -254,7 +264,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
 
     # unregister in case of multiple up/down to regenerate from scratch, don't care if NotFound returned
     echo "${PREFIX}Unregistering any remote WPS provider matching [${prov}]."
-    curl --insecure --silent --location \
+    curl_cmd --insecure --silent --location \
          -m ${REQUEST_TIMEOUT} \
          -w "${PREFIX}Delete [${prov}] response: %{http_code}" -o /dev/null \
          -b "${cookie}" \
@@ -264,7 +274,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
     # register the new provider and validate
     printf "\n%s" "${PREFIX}Registering remote WPS provider [${prov}] on [${prov_url}]... "
     resp=$( \
-        curl --insecure --silent --location \
+        curl_cmd --insecure --silent --location \
              -m ${REQUEST_TIMEOUT} \
              -w "\n%{http_code}" \
              -b "${cookie}" \
