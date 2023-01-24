@@ -15,6 +15,10 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes:
+- Jupyter: allow recursive directory deletion
+
+  This was not possible before since non-empty dir deletion was not possible.
+
 - Jupyter: re-enable terminal for all users
 
   It was disabled to avoid malicious usage but with the monitoring in
