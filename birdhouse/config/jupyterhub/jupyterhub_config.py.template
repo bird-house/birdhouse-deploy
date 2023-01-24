@@ -139,7 +139,7 @@ c.Spawner.start_timeout = 120  # default 60
 c.Spawner.args = [
     # Allow non-empty directory deletion which enable recursive dir deletion.
     # https://jupyter-server.readthedocs.io/en/latest/other/full-config.html
-    "--FileContentsManager.always_delete_dir = True",
+    "--FileContentsManager.always_delete_dir=True",
     ]
 
 c.DockerSpawner.extra_host_config = {
