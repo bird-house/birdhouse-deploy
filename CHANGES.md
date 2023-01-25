@@ -16,6 +16,24 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.22.9](https://github.com/bird-house/birdhouse-deploy/tree/1.22.9) (2023-01-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Jupyter: allow recursive directory deletion
+
+  This was not possible before since non-empty dir deletion was not possible.
+
+- Jupyter: re-enable terminal for all users
+
+  It was disabled to avoid malicious usage but with the monitoring in
+  place and the demo account restricted to limited resources, it's
+  probably safe to try enabling this again.
+
+  For legitimate users, not having the terminal is pretty annoying.
+  Should not penalize legit users for some rogue users.
+
+
 [1.22.8](https://github.com/bird-house/birdhouse-deploy/tree/1.22.8) (2023-01-24)
 ------------------------------------------------------------------------------------------------------------------
 

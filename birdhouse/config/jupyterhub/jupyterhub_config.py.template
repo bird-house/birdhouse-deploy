@@ -136,7 +136,11 @@ c.Spawner.http_timeout = 60  # default 30
 c.Spawner.start_timeout = 120  # default 60
 
 ## Extra arguments to be passed to the single-user server.
-c.Spawner.args = ["--NotebookApp.terminals_enabled=False"]
+c.Spawner.args = [
+    # Allow non-empty directory deletion which enable recursive dir deletion.
+    # https://jupyter-server.readthedocs.io/en/latest/other/full-config.html
+    "--FileContentsManager.always_delete_dir=True",
+    ]
 
 c.DockerSpawner.extra_host_config = {
     # start init pid 1 process to reap defunct processes
