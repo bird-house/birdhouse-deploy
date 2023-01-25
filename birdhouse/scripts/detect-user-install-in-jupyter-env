@@ -18,8 +18,6 @@ if [ -e "$THIS_DIR/../env.local" ]; then
     . $THIS_DIR/../env.local
 fi
 
-process_delayed_eval
-
 set -x
 
 START_TIME="`date -Isecond`"

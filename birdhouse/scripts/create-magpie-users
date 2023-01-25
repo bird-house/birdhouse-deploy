@@ -82,10 +82,6 @@ if [ -f "$COMPOSE_DIR/env.local" ]; then
     . "${COMPOSE_DIR}/env.local"
 fi
 
-if [ -f "$COMPOSE_DIR/default.env" ]; then
-    process_delayed_eval
-fi
-
 ##############################################################################
 # Allow override using same name env var.
 

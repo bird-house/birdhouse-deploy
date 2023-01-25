@@ -64,8 +64,6 @@ else
     echo "WARNING: '$ENV_LOCAL_FILE' not found."
 fi
 
-process_delayed_eval
-
 set -x  # resume logging/tracing
 
 CERT_DOMAIN="$PAVICS_FQDN_PUBLIC"

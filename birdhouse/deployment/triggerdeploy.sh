@@ -178,8 +178,6 @@ triggerdeploy START_TIME=$START_TIME"
 # Read AUTODEPLOY_EXTRA_REPOS
 . $ENV_LOCAL_FILE
 
-process_delayed_eval
-
 set -x
 
 SHOULD_TRIGGER=""

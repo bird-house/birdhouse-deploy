@@ -16,8 +16,6 @@ if [ -e "$COMPOSE_DIR/env.local" ]; then
     . $COMPOSE_DIR/env.local
 fi
 
-process_delayed_eval
-
 PUBLIC_USERNAME="$JUPYTER_DEMO_USER"
 
 BASE_CMD="docker run -it --rm --name migrate_jupyterhub_user_persistence \
