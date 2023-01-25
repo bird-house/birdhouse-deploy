@@ -14,7 +14,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+- Proxy: add `/components` endpoint that provides a JSON list of loaded components by the platform.
+
+  Prior to this functionality, it was impossible to know which potential capabilities, services or behaviors were to be
+  expected by a given DACCS/PAVICS/birdhouse instance. Using this endpoint, nodes can obtain minimal machine-readable
+  details about their supported capabilities, allowing better interoperability.
+  
+  Furthermore, developers maintaining distinct stacks and integrating different features can have a better
+  understanding of behaviors by the various web services when performing requests against a given node.
 
 [1.22.9](https://github.com/bird-house/birdhouse-deploy/tree/1.22.9) (2023-01-25)
 ------------------------------------------------------------------------------------------------------------------
