@@ -1,0 +1,41 @@
+#!/bin/sh
+# Obtain a JSON representation of components enabled on this platform.
+#
+# Expected result should be similar to:
+# {
+#  "components": [
+#    "bird-house/birdhouse-deploy:components/monitoring",
+#    "bird-house/birdhouse-deploy:optional-components/canarie-api-full-monitoring",
+#    "bird-house/birdhouse-deploy:optional-components/all-public-access",
+#    "bird-house/birdhouse-deploy:optional-components/wps-healthchecks",
+#    "bird-house/birdhouse-deploy:optional-components/secure-thredds",
+#    "bird-house/birdhouse-deploy:optional-components/testthredds",
+#    "bird-house/birdhouse-deploy:optional-components/test-weaver",
+#    "bird-house/birdhouse-deploy:components/weaver",
+#    "bird-house/birdhouse-deploy:components/cowbird",
+#    "custom:daccs-env"
+#  ]
+# }
+#
+
+# default value in case of error or missing definitions
+export BIRDHOUSE_DEPLOY_COMPONENTS_JSON='{"components": []}'
+if [ -z "${EXTRA_CONF_DIRS}" ]; then
+  echo "No components in EXTRA_CONF_DIRS. Components JSON list will be empty!"
+  exit 0
+fi
+
+# create a JSON list using the specified components
+# each component that starts by './' gets replaced with the below birdhouse prefix to provide contextual information
+# other component locations are considered 'custom' and marked as such to provide contextual information
+BIRDHOUSE_DEPLOY_COMPONENTS_BASE="bird-house/birdhouse-deploy:"
+BIRDHOUSE_DEPLOY_COMPONENTS_LIST=$( \
+  echo "${EXTRA_CONF_DIRS}" \
+  | sed '/^[[:space:]]*$/d' \
+  | sed -E 's/^\s*([A-Za-z0-0./_-]+)\s*$/"\1",/g' \
+  | sed -E "s|^\"((\./)?(\.\./)+)+(.+)\"|\"custom:\\4\"|g" \
+  | sed -E "s|^\"\./(.*)\"|\"${BIRDHOUSE_DEPLOY_COMPONENTS_BASE}\\1\"|g" \
+  | sed '/^\n*$/d' \
+)
+BIRDHOUSE_DEPLOY_COMPONENTS_LIST="${BIRDHOUSE_DEPLOY_COMPONENTS_LIST%?}"  # remove last comma
+export BIRDHOUSE_DEPLOY_COMPONENTS_JSON="{\"components\": [${BIRDHOUSE_DEPLOY_COMPONENTS_LIST}]}"
