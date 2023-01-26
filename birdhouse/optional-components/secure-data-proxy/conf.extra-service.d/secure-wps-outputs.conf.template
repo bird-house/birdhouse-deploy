@@ -1,7 +1,8 @@
 
     # NOTE: paths must be more explicit than '/wpsoutputs/' to take precedence on the default public location
 
-    location ~ ^/wpsoutputs/weaver/(?!(public))/ {
+    #location ~ ^/wpsoutputs/weaver/(?!(public))/ {
+    location /wpsoutputs/ {
         proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/secure-data-proxy/;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $real_scheme;

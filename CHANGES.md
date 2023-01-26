@@ -14,7 +14,22 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+
+
+## Fixes:
+
+- Remove `nginx` (partially) duplicate `include /etc/nginx/conf.extra[-service].d/*/*.conf;` definitions in the root
+  [nginx.conf.template][nginx.conf.template] and the nested
+  [all-services.include.template][all-services.include.template] configurations.
+  The `[-service]` portion was missing from one of the definitions, leading to invalid references according to the
+  extended configurations provided by components using this feature. The `include` is kept only inside
+  [nginx.conf.template][nginx.conf.template] to allow reuse of the generic server configuration in the new
+  [optional-components/secure-data-proxy][secure-data-proxy] component.
+
+[nginx.conf.template]: birdhouse/config/proxy/nginx.conf.template
+[all-services.include.template]: birdhouse/config/proxy/conf.d/all-services.include.template
+[secure-data-proxy]: birdhouse/optional-components/secure-data-proxy
 
 [1.22.9](https://github.com/bird-house/birdhouse-deploy/tree/1.22.9) (2023-01-25)
 ------------------------------------------------------------------------------------------------------------------
