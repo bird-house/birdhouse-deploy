@@ -36,6 +36,6 @@ http {
     include /etc/nginx/conf.d/*.conf;
 
     # for other extra components to extend Nginx
-    include /etc/nginx/conf.extra-service.d/*/*.conf;
+    include /etc/nginx/conf.extra.d/*/*.conf;
 
 }
