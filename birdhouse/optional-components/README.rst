@@ -151,7 +151,7 @@ By enabling this component, all WPS services and data on THREDDS are completely 
 Once enabled, if you need to revert the change, you have to do it manually by logging into Magpie.
 Just disabling this component will not revert the change.
 Alternatively, you can create a similar file to |magpie-public-perms|_ and replace all desired ``action: create``
-entries by ``action: remove`` to make sure the permissions are removed as startup if they exist.
+entries by ``action: remove`` to make sure the permissions are removed at startup if they exist.
 
 This optional component is required for the test suite at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
@@ -167,6 +167,10 @@ The anonymous user will now have all the permissions described in |magpie-public
 .. _magpie-public-perms: ./all-public-access/all-public-access-magpie-permission.cfg
 .. |magpie-public-perms| replace:: optional-components/all-public-access/all-public-access-magpie-permission.cfg
 .. _env.local.example: ../env.local.example
+
+
+Control secured access to WPS outputs
+--------------------------------------------------------
 
 
 Control secured access to resources example

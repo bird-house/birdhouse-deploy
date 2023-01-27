@@ -1,9 +1,15 @@
 
-    # NOTE: paths must be more explicit than '/wpsoutputs/' to take precedence on the default public location
+    # NOTE:
+    #   The root of the service registered in magpie is 'secure-data-proxy'.
+    #   The 'wpsoutputs' is only one sub-directory in the hierarchy.
+    #   More data volumes, directories and rediction rules can be defined using the same service with similar mechanics.
 
-    #location ~ ^/wpsoutputs/weaver/(?!(public))/ {
+    # NOTE:
+    #   If more data volumes are specied here, their corresponding definitions of direct access publically should
+    #   also be added to 'optinal-components/public-data-proxy'.
+
     location /wpsoutputs/ {
-        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/secure-data-proxy/;
+        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/secure-data-proxy/wpsoutputs/;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $real_scheme;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

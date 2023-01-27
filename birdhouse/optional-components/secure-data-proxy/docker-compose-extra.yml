@@ -1,6 +1,44 @@
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "200k"
+    max-file: "10"
+
 version: "3.4"
 services:
-  magpie:
+
+  proxy:
     volumes:
-    - ./optional-components/secure-data-proxy/config/magpie/permissions.yml:/opt/local/src/magpie/config/providers/secure-data-proxy.yml:ro
-    - ./optional-components/secure-data-proxy/config/magpie/permissions.yml:/opt/local/src/magpie/config/permissions/secure-data-proxy.yml:ro
+      - ./optional-components/secure-data-proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/secure-data-proxy:ro
+    # only to ensure it is (re)started along 'proxy' changes
+    depends_on:
+      - proxy-data
+
+  proxy-data:
+    image: nginx
+    container_name: proxy-data
+    # NOTE: no ports mapping (so secured data is not exposed)
+    # rely on inter-docker networks to resolve 'proxy -> magpie -> proxy-data' after AuthN/AuthZ validation
+    volumes:
+      # same files as 'proxy' service except 'all-services.include' for which we provide
+      # the specific override definition to only map data access under this proxy
+      - ./config/proxy/conf.d/cors.include:/etc/nginx/conf.d/cors.include
+      - ./config/proxy/conf.d/frontend.conf:/etc/nginx/conf.d/frontend.conf
+      - ./config/proxy/conf.d/redirect-to-https.include:/etc/nginx/conf.d/redirect-to-https.include
+      - ./config/proxy/nginx.conf:/etc/nginx/nginx.conf
+      - ${SSL_CERTIFICATE}:/etc/nginx/cert.pem
+      # place override (without other services) were expected when included by 'frontend.conf'
+      - ./optional-components/secure-data-proxy/conf.d/all-services.include:/etc/nginx/conf.d/all-services.include:ro
+      # reuse definitions from 'public-data-proxy' to resolve the same way after AuthN/AuthZ validation and redirection
+      - ./optional-components/public-data-proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/public-data-proxy:ro
+      - wps_outputs:/pavics-data/wps_outputs
+    restart: always
+    logging: *default-logging
+
+  magpie:
+    links:
+      - proxy-data
+    volumes:
+      - ./optional-components/secure-data-proxy/config/magpie/config.yml:/opt/local/src/magpie/config/providers/secure-data-proxy.yml:ro
+      - ./optional-components/secure-data-proxy/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/secure-data-proxy.yml:ro

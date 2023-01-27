@@ -24,7 +24,9 @@ services:
       - ./config/proxy/nginx.conf:/etc/nginx/nginx.conf
       - ./config/canarie-api/docker_configuration.py:/config/docker_configuration.py
       - ${SSL_CERTIFICATE}:/etc/nginx/cert.pem
-      - wps_outputs:/pavics-data/wps_outputs
+      # WARNING: purposely omit outputs volume
+      # see 'optional-components/public-data-proxy' and 'optional-components/secure-data-proxy'
+      # - wps_outputs:/pavics-data/wps_outputs
       - ./config/canarie-api/entrypoint:/entrypoint:ro
     environment:
       CANARIE_API_CONFIG_FN: /config/docker_configuration.py

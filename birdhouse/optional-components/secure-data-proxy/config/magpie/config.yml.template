@@ -1,6 +1,6 @@
 providers:
   secure-data-proxy:
-    url: http://proxy:80/
+    url: http://proxy-data:80
     title: Secured Data Proxy
     public: true
     c4i: false

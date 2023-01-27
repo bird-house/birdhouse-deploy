@@ -1,2 +1,3 @@
+conf.d/all-services.include
 conf.extra-service.d/secure-wps-outputs.conf
 config/magpie/config.yml
