@@ -14,7 +14,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes:
+- CanarieAPI: update to `0.4.4`.
+
+  - Fixes an `AttributeError` raised due to misconfiguration of the Web Application with Flask 2.x definitions
+    (relates to [Ouranosinc/CanarieAPI#10](https://github.com/Ouranosinc/CanarieAPI/pull/10)).
+  - Update the [CanarieAPI configuration](birdhouse/config/canarie-api/docker_configuration.py.template) to use
+    Python 3.x executable code.
 
 [1.22.10](https://github.com/bird-house/birdhouse-deploy/tree/1.22.10) (2023-01-31)
 ------------------------------------------------------------------------------------------------------------------
