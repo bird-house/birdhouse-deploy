@@ -24,6 +24,18 @@
   Furthermore, developers maintaining distinct stacks and integrating different features can have a better
   understanding of behaviors by the various web services when performing requests against a given node.
 
+[1.22.10](https://github.com/bird-house/birdhouse-deploy/tree/1.22.10) (2023-01-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+- Weaver: fixes for running `post-docker-compose-up` operation.
+
+  - When the target `curl` image was not already available on the machine (each time for ephemeral test instances), the 
+    docker pull outputs on the first call would mangle the monitoring messages. An initial pull is done to avoid it.
+
+  - When running on `sh` (as expected by the script's shebang), the utility variable `$RANDOM` is missing.
+    A POSIX portable equivalent is used if `$RANDOM` could not be resolved.
+
 [1.22.9](https://github.com/bird-house/birdhouse-deploy/tree/1.22.9) (2023-01-25)
 ------------------------------------------------------------------------------------------------------------------
 
