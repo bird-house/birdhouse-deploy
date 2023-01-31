@@ -16,10 +16,36 @@
 
 ## Changes:
 
+- secure-data-proxy: add new [`secure-data-proxy`][secure-data-proxy] optional component.
 
-[nginx.conf.template]: birdhouse/config/proxy/nginx.conf.template
-[all-services.include.template]: birdhouse/config/proxy/conf.d/all-services.include.template
+  When enabled, this component will enforce authentication and authorization to be resolved against the `/wpsoutputs`
+  endpoint prior to accessing the results produced by WPS executions. A Magpie service named `secure-data-proxy` is
+  created to define the resource and permission hierarchy of directories and files the users and groups can access.
+  When disabled, the original behavior to provide open access to `/wpsoutputs` is employed.
+
+  A variable named ``SECURE_DATA_PROXY_AUTH_INCLUDE`` is dynamically assigned based on the activation or not of this
+  component. Corresponding validation of optional/mandatory/delayed-eval variables used by this component are also
+  applied dynamically, as well as mounting the necessary ``nginx`` and ``docker-compose`` extended configurations.
+
+## Fixes:
+
+- Magpie/Twitcher: update minimum version `magpie>=3.31.0` to employ `twitcher>=0.8.0` in `MapgieAdatepr`.
+
+  - Resolve an issue where `response.request` references were not set in OWS proxy responses when handled by Twitcher.
+    This caused `MapgieAdatepr` response hooks to fail, which in turn caused failing requests for any non-WPS
+    service that defined any proxy request hook, such as in the case of [`weaver`][weaver-component] component.
+
+  - Adds the Twitcher ``/ows/verify/{service_name}[/{extra_path}`` endpoint employed for validating authorized access
+    to Magpie service/resources, in the same fashion as the protected proxy endpoint, but without performing the proxied
+    request toward the target service. This is mandatory for using the new [`secure-data-proxy`][secure-data-proxy] 
+    optional component, otherwise the proxy endpoint triggers data download twice, once for authorization and another
+    for actually accessing the data.
+
+  See also [Ouranosinc/Magpie#571](https://github.com/Ouranosinc/Magpie/pull/571)
+  and [bird-house/twitcher#118](https://github.com/bird-house/twitcher/pull/118).
+
 [secure-data-proxy]: birdhouse/optional-components/secure-data-proxy
+[weaver-component]: birdhouse/components/weaver
 
 [1.22.9](https://github.com/bird-house/birdhouse-deploy/tree/1.22.9) (2023-01-25)
 ------------------------------------------------------------------------------------------------------------------

@@ -1,8 +1,0 @@
-
-    # NOTE:
-    #   If more data volumes are specied here, their corresponding definitions for secured access should
-    #   also be added to 'optinal-components/secure-data-proxy'.
-
-    location /wpsoutputs/ {
-        alias /pavics-data/wps_outputs/;
-    }

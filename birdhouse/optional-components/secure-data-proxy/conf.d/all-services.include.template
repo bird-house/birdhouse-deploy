@@ -1,3 +1,0 @@
-
-    # for other extra components to extend Nginx
-    include /etc/nginx/conf.extra-service.d/*/*.conf;
