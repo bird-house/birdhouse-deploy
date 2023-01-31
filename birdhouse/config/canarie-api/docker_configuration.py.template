@@ -1,6 +1,7 @@
 # coding: utf-8
 import os
 import logging
+import sys
 
 logger = logging.getLogger("canarie-api-config")
 
@@ -279,15 +280,36 @@ PLATFORMS = {
 }
 
 CANARIE_MONITORING_EXTRA_CONF_DIR = os.environ.get(
-    'CANARIE_MONITORING_EXTRA_CONF_DIR', '/bogus-notexist')
+    'CANARIE_MONITORING_EXTRA_CONF_DIR', '/bogus-notexist'
+)
+
+
+if sys.version_info[0] == "2":
+    exec_file = execfile  # noqa  # python 2.x
+else:
+    def exec_file(filepath, globals=None, locals=None):
+        """
+        Backward compatible ``execfile`` equivalent for Python 3.x.
+
+        See https://stackoverflow.com/a/41658338/5936364.
+        """
+        if globals is None:
+            globals = {}
+        globals.update({
+            "__file__": filepath,
+            "__name__": "__main__",
+        })
+        with open(filepath, 'rb') as file:
+            exec(compile(file.read(), filepath, 'exec'), globals, locals)
+
 
 if os.path.exists(CANARIE_MONITORING_EXTRA_CONF_DIR):
     # alphabetically sorted for reproducible override precedence
     for extra_conf in sorted(os.listdir(CANARIE_MONITORING_EXTRA_CONF_DIR)):
-        extra_conf_full_path = "{CANARIE_MONITORING_EXTRA_CONF_DIR}/{extra_conf}".format(**locals())
+        extra_conf_full_path = "{}/{}".format(CANARIE_MONITORING_EXTRA_CONF_DIR, extra_conf)
         # only handle files ending with .py
         if os.path.isfile(extra_conf_full_path) and extra_conf_full_path.endswith(".py"):
-            logger.info("canarie-api: loading extra config '{extra_conf_full_path}'".format(**locals()))
-            execfile(extra_conf_full_path)
+            logger.info("canarie-api: loading extra config '%s'", extra_conf_full_path)
+            exec_file(extra_conf_full_path, locals=locals())
         else:
-            logger.info("canarie-api: ignoring extra config '{extra_conf_full_path}'".format(**locals()))
+            logger.info("canarie-api: ignoring extra config '%s'", extra_conf_full_path)
