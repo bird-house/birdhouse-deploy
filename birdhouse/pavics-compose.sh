@@ -104,7 +104,7 @@ COMPOSE_DIR="`pwd`"
 # we source local configs, if present
 # we don't use usual .env filename, because docker-compose uses it
 [ -f env.local ] && . ./env.local
-. ./scripts/get-components-json.sh
+. ./scripts/get-components-json.include.sh
 
 for adir in ${EXTRA_CONF_DIRS}; do
   if [ ! -e "$adir" ]; then
