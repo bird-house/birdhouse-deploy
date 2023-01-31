@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.22.10](https://github.com/bird-house/birdhouse-deploy/tree/1.22.10) (2023-01-31)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes:
 - Weaver: fixes for running `post-docker-compose-up` operation.
 
