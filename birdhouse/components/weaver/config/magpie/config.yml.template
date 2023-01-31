@@ -32,6 +32,20 @@ providers:
         path: "/(jobs|execution)"
         method: POST
         target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
+      # apply relevant permissions to allow the user executing a process to retrieve its outputs
+      - type: response
+        path: "/providers/[\\w_-]+/processes/[\\w_-:]+/(jobs|execution)"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_execute_outputs
+      - type: response
+        path: "/processes/[\\w_-:]+/(jobs|execution)"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_execute_outputs
+      - type: response
+        path: "/(jobs|execution)"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_execute_outputs
+      # apply relevant permissions such that the user can access its deployed process
       - type: response
         path: "/processes"
         method: GET

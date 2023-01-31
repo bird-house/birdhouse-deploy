@@ -19,7 +19,8 @@ from magpie.api.management.resource import resource_utils as ru
 from magpie.api.management.user import user_utils as uu
 from magpie.api.requests import get_user, get_service_matchdict_checked
 from magpie.constants import get_constant
-from magpie.models import Route
+from magpie.models import Route, Service
+from magpie.register import magpie_register_permissions_from_config
 from magpie.permissions import Access, Permission, PermissionSet, Scope
 from magpie.utils import get_header, get_logger
 
@@ -54,12 +55,12 @@ def add_x_wps_output_context(request):
             if not is_admin(request):
                 # override disallowed writing to other location
                 # otherwise, up to admin to have written something sensible
-                header = "user-" + str(request.user.id)
+                header = "users/" + str(request.user.id)
     else:
         if request.user is None:
             header = "public"
         else:
-            header = "user-" + str(request.user.id)
+            header = "users/" + str(request.user.id)
     request.headers["X-WPS-Output-Context"] = header
     return request
 
@@ -165,6 +166,43 @@ def filter_allowed_processes(response, context):
             c_len = len(data)
             response.content_length = c_len
             response.headers["Content-Length"] = str(c_len)
+
+    return response
+
+
+def allow_user_execute_outputs(response):
+    # type: (Response) -> Response
+    """
+    Allow the authenticated user executing the process to access the expected output location.
+
+    This ensures that, when ``optional-components/secure-data-proxy`` is enabled, the user will be able to retrieve
+    the result files stored under the ``/wpsoutputs/users/<user-id>`` directory, by applying the corresponding
+    permission if missing.
+    """
+    request = response.request
+    user = request.user
+    if user is None or is_admin(request):
+        return response
+
+    session = request.db
+    service = Service.by_service_name("secure-data-proxy", db_session=session)
+    if not service:  # optional component not enabled, nothing to be set (public access expected)
+        return response
+
+    with transaction.manager:
+        config = {
+            "permissions": [
+                {
+                    "service": service.resource_name,
+                    "resource": f"/wpsoutputs/users/{user.id}",
+                    "type": "route",
+                    "user": user.user_name,
+                    "action": "create",
+                 }
+            ]
+        }
+        magpie_register_permissions_from_config(config, db_session=session)
+        transaction.commit()
 
     return response
 

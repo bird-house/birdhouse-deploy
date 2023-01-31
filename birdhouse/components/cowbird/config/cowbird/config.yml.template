@@ -235,8 +235,11 @@ sync_permissions:
       - "weaver_wps_outputs : read -> job_status : read"
       # process-prefixed items can be only one-way since wps-outputs does not
       # encode the 'processID' information ('jobID' directly the top-level dir)
-      - "process_job_status : read -> weaver_wps_outputs : read"
       - "process_job_status : read -> job_status : read"
+      # NOTE:
+      #   missing 'user_context_dir' information not defined in path of process execution request
+      #   this permission must be set using the magpie/twitcher pre/post request hook to extract the authorized user
+      ###- "process_job_status : read -> weaver_wps_outputs : read"
       # different permission (match), otherwise all jobs/outputs become available.
       - "process_job_status : read -> process_description : read-match"
       # corresponding outputs retrieved under wps-outputs or thredds share access

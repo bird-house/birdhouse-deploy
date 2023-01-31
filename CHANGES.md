@@ -23,9 +23,16 @@
   created to define the resource and permission hierarchy of directories and files the users and groups can access.
   When disabled, the original behavior to provide open access to `/wpsoutputs` is employed.
 
-  A variable named ``SECURE_DATA_PROXY_AUTH_INCLUDE`` is dynamically assigned based on the activation or not of this
+  A variable named `SECURE_DATA_PROXY_AUTH_INCLUDE` is dynamically assigned based on the activation or not of this
   component. Corresponding validation of optional/mandatory/delayed-eval variables used by this component are also
-  applied dynamically, as well as mounting the necessary ``nginx`` and ``docker-compose`` extended configurations.
+  applied dynamically, as well as mounting the necessary `nginx` and `docker-compose` extended configurations.
+
+- Weaver: adjust user-context output directory hooks and permissions for [`secure-data-proxy`][secure-data-proxy].
+
+  When a process defined in Weaver (either a WPS provider or a local definition) is executed by a user that was granted
+  authorization to run a job, the corresponding user-context directory under `/wpsoutputs/users/{user-id}` will be used
+  for storing the execution outputs and will have the appropriate permissions set for that user to grant them access to
+  those outputs.
 
 ## Fixes:
 
