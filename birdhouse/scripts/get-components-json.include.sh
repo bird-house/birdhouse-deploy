@@ -24,11 +24,26 @@ if [ -z "${EXTRA_CONF_DIRS}" ]; then
   exit 0
 fi
 
+# resolve path considering if sourced or executed, and whether from current dir, pavics-compose include or another dir
+BIRDHOUSE_DEPLOY_COMPONENTS_ROOT=$(dirname -- "$(realpath "$0")")
+if [ "$(echo "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" | grep -cE "/birdhouse/?\$" 2>/dev/null)" -eq 1 ]; then
+  BIRDHOUSE_DEPLOY_COMPONENTS_ROOT=.
+else
+  BIRDHOUSE_DEPLOY_COMPONENTS_ROOT="${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}/.."
+fi
+chdir "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}"
+
 # note: no quotes in 'ls' on purpose to expand glob patterns
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN="$( \
-  ls -d1 ./birdhouse/*components/*/ \
-  | sed -E 's|./birdhouse/(.*)/|\1|' \
+  ls -d1 ./*components/*/ \
+  | sed -E "s|\./(.*)/|\1|" \
 )"
+if [ -z "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" ]; then
+  echo "[ERROR]" \
+    "Could not resolve known birdhouse-deploy components." \
+    "Aborting to avoid potentially leaking sensible details."
+  exit 1
+fi
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST_ACTIVE=$( \
   echo "${EXTRA_CONF_DIRS}" \
   | sed '/^[[:space:]]*$/d' \
