@@ -284,23 +284,23 @@ CANARIE_MONITORING_EXTRA_CONF_DIR = os.environ.get(
 )
 
 
-if sys.version_info[0] == "2":
-    exec_file = execfile  # noqa  # python 2.x
-else:
-    def exec_file(filepath, globals=None, locals=None):
-        """
-        Backward compatible ``execfile`` equivalent for Python 3.x.
+def exec_file(filepath, **kwargs):
+    """
+    Backward compatible ``execfile`` equivalent for Python 3.x that allows keyword arguments.
 
-        See https://stackoverflow.com/a/41658338/5936364.
-        """
-        if globals is None:
-            globals = {}
-        globals.update({
+    See https://stackoverflow.com/a/41658338/5936364.
+    """
+    _globals = kwargs.get("globals") or globals()
+    _locals = kwargs.get("locals") or _globals  # as per exec/execfile documentation
+    if sys.version_info[0] == "2":
+        execfile(filepath, _globals, _locals)  # noqa  # python 2.x
+    else:
+        _globals.update({
             "__file__": filepath,
             "__name__": "__main__",
         })
         with open(filepath, 'rb') as file:
-            exec(compile(file.read(), filepath, 'exec'), globals, locals)
+            exec(compile(file.read(), filepath, 'exec'), _globals, _locals)
 
 
 if os.path.exists(CANARIE_MONITORING_EXTRA_CONF_DIR):
