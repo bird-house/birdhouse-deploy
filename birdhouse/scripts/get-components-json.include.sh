@@ -12,8 +12,7 @@
 #    "bird-house/birdhouse-deploy:optional-components/testthredds",
 #    "bird-house/birdhouse-deploy:optional-components/test-weaver",
 #    "bird-house/birdhouse-deploy:components/weaver",
-#    "bird-house/birdhouse-deploy:components/cowbird",
-#    "custom:daccs-env"
+#    "bird-house/birdhouse-deploy:components/cowbird"
 #  ]
 # }
 #
@@ -25,15 +24,24 @@ if [ -z "${EXTRA_CONF_DIRS}" ]; then
   exit 0
 fi
 
+# note: no quotes in 'ls' on purpose to expand glob patterns
+BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN="$( \
+  ls -d1 ./birdhouse/*components/*/ \
+  | sed -E 's|./birdhouse/(.*)/|\1|' \
+)"
+BIRDHOUSE_DEPLOY_COMPONENTS_LIST_ACTIVE=$( \
+  echo "${EXTRA_CONF_DIRS}" \
+  | sed '/^[[:space:]]*$/d' \
+)
+
 # create a JSON list using the specified components
 # each component that starts by './' gets replaced with the below birdhouse prefix to provide contextual information
 # other component locations are considered 'custom' and marked as such to provide contextual information
 BIRDHOUSE_DEPLOY_COMPONENTS_BASE="bird-house/birdhouse-deploy:"
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST=$( \
-  echo "${EXTRA_CONF_DIRS}" \
-  | sed '/^[[:space:]]*$/d' \
-  | sed -E 's/^\s*([A-Za-z0-0./_-]+)\s*$/"\1",/g' \
-  | sed -E "s|^\"((\./)?(\.\./)+)+(.+)\"|\"custom:\\4\"|g" \
+  echo "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_ACTIVE}" \
+  | grep "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" \
+  | sed -E 's|^\s*([A-Za-z0-0./_-]+)\s*$|"\1",|g' \
   | sed -E "s|^\"\./(.*)\"|\"${BIRDHOUSE_DEPLOY_COMPONENTS_BASE}\\1\"|g" \
   | sed '/^\n*$/d' \
 )
