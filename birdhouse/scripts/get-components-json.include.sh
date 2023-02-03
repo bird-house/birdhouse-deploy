@@ -21,7 +21,7 @@
 export BIRDHOUSE_DEPLOY_COMPONENTS_JSON='{"components": []}'
 if [ -z "${EXTRA_CONF_DIRS}" ]; then
   echo "No components in EXTRA_CONF_DIRS. Components JSON list will be empty!"
-  exit 0
+  return
 fi
 
 # resolve path considering if sourced or executed, and whether from current dir, pavics-compose include or another dir
@@ -31,14 +31,11 @@ if [ "$(echo "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" | grep -cE "/birdhouse/?\$" 2
 else
   BIRDHOUSE_DEPLOY_COMPONENTS_ROOT="${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}/.."
 fi
-cd "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" || ( \
-  echo "Error when attempting to move to [${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}]" && \
-  exit 1 \
-)
+cd "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" || true  # ignore error for now, empty list expected of known components after
 
 # note: no quotes in 'ls' on purpose to expand glob patterns
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN="$( \
-  ls -d1 ./*components/*/ \
+  ls -d1 ./*components/*/ 2>/dev/null \
   | sed -E "s|\./(.*)/|\1|" \
 )"
 if [ -z "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" ]; then
@@ -46,7 +43,7 @@ if [ -z "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" ]; then
     "Could not resolve known birdhouse-deploy components." \
     "Aborting to avoid potentially leaking sensible details." \
     "Components will not be reported on the platform's JSON endpoint."
-  exit 0
+  return
 fi
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST_ACTIVE=$( \
   echo "${EXTRA_CONF_DIRS}" \
