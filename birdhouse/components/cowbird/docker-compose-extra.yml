@@ -68,6 +68,7 @@ services:
   proxy:
     volumes:
       - ./components/cowbird/conf.extra-service.d:/etc/nginx/conf.extra-service.d/cowbird:ro
+      - ./components/cowbird/config/canarie-api/cowbird_config.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/cowbird_config.py:ro
     links:
       - cowbird
 

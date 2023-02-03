@@ -77,7 +77,7 @@ services:
     logging: *default-logging
 
   phoenix:
-    image: pavics/pyramid-phoenix:pavics-0.2.3
+    image: ${PHOENIX_DOCKER}:${PHOENIX_VERSION}
     container_name: phoenix
     environment:
       HOSTNAME: $HOSTNAME
@@ -106,7 +106,7 @@ services:
     logging: *default-logging
 
   catalog:
-    image: pavics/pavics-datacatalog:0.6.11
+    image: ${CATALOG_DOCKER}:${CATALOG_VERSION}
     container_name: catalog
     ports:
       - "8086:80"
@@ -150,7 +150,7 @@ services:
       retries: 3
 
   malleefowl:
-    image: pavics/malleefowl:pavics-0.3.5
+    image: pavics/malleefowl:${MALLEEFOWL_VERSION}
     container_name: malleefowl
     environment:
       HOSTNAME: $HOSTNAME
@@ -243,7 +243,7 @@ services:
     logging: *default-logging
 
   solr:
-    image: pavics/solr:5.2.1
+    image: ${SOLR_DOCKER}:${SOLR_VERSION}
     container_name: solr
     ports:
       - "8983:8983"
@@ -398,7 +398,7 @@ services:
     logging: *default-logging
 
   jupyterhub:
-    image: pavics/jupyterhub:1.4.0-20210506
+    image: ${JUPYTERHUB_DOCKER}:${JUPYTERHUB_VERSION}
     container_name: jupyterhub
     hostname: jupyterhub
     ports:

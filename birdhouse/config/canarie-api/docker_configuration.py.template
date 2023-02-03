@@ -3,6 +3,9 @@ import os
 import logging
 import sys
 
+# note: can only be dependencies also available in CanarieAPI docker image
+import requests
+
 logger = logging.getLogger("canarie-api-config")
 
 MY_SERVER_NAME = 'https://${PAVICS_FQDN_PUBLIC}/canarie'
@@ -13,11 +16,77 @@ DATABASE = {
     'log_pid': '/var/run/nginx.pid'
 }
 
+
+def _get_release_time_from_github_tag(repository_reference, tagged_version):
+    # type: (str, str) -> str
+
+    repo = repository_reference.split("github.com/")[-1]
+    url = "https://api.github.com/repos/{}/tags".format(repo)
+    resp = requests.get(url, headers={"Accept": "application/json"})
+    if resp.status_code != 200:
+        raise ValueError("HTT status from tags list: {}".format(resp.status_code))
+
+    for tag_info in resp.json():
+        tag_ver = tag_info.get("name")
+        tag_commit_url = tag_info.get("commit", {}).get("url")
+        if tag_ver == tagged_version or tag_ver == "v" + tagged_version and tag_commit_url:
+            break
+    else:
+        raise ValueError("No matching version in tagged releases.")
+
+    resp = requests.get(tag_commit_url, headers={"Accept": "application/json"})
+    if resp.status_code != 200:
+        raise ValueError("HTTP status from tag info: {}".format(resp.status_code))
+
+    commit = resp.json()["commit"]
+    commit_date = commit["commiter"]["date"]
+    return commit_date
+
+
+def _get_release_time_from_docker_tag(repository_reference, tagged_version):
+    # type: (str, str) -> str
+
+    ns, repo = repository_reference.split("/", 1)
+    url = "https://hub.docker.com/v2/namespaces/{}/repositories/{}/tags/{}".format(ns, repo, tagged_version)
+    resp = requests.get(url, headers={"Accept": "application/json"})
+    if resp.status_code != 200:
+        raise ValueError("HTT status from tags list: {}".format(resp.status_code))
+
+    updated = resp.json()["last_updated"]
+    return updated
+
+
+def get_release_time_from_repo_tag(repository_type, repository_reference, tagged_version):
+    # type: (str, str, str) -> str
+    try:
+        if repository_type == "github":
+            release = _get_release_time_from_github_tag(repository_reference, tagged_version)
+        elif repository_type == "docker":
+            release = _get_release_time_from_docker_tag(repository_reference, tagged_version)
+        else:
+            raise ValueError("Unknown repository parsing type: [{}]".format(repository_type))
+        if release:
+            logger.error("canarie-api: found version [%s] release time [%s] from [%s](%s)",
+                         tagged_version, release, repository_reference, repository_type)
+            return release
+        raise ValueError("no release time value found")
+    except Exception as exc:
+        logger.error("canarie-api: failed retrieving version [%s] release time from [%s](%s)",
+                     tagged_version, repository_reference, repository_type, exc_info=exc)
+    return "unknown"
+
+
+# used more than once, avoid unnecessary requests
+FINCH_VERSION = "${FINCH_VERSION}"
+FINCH_RELEASE_TIME = get_release_time_from_repo_tag("github", "bird-house/finch", FINCH_VERSION)
+
+
 SERVICES = {
-    'node': {
+    'node': {  # partial duplicate of first item from 'PLATFORM' for backward compatibility
         'info': {
             'name': 'Node',
             'synopsis': 'Nodes are data, compute and index endpoints accessed through the PAVICS platform or external clients. The Node service is the backend that allows: data storage, harvesting, indexation and discovery of local and federated data; authentication and authorization; server registration and management. Node service is therefore composed of several other services.',
+            # NOTE: below version and release time auto-managed by 'make VERSION=x.y.z bump', see 'Tagging policy' in 'birdhouse/README.rst'
             'version': '1.22.10',
             'releaseTime': '2023-01-31T16:10:58Z',
             'institution': 'Ouranos',
@@ -32,84 +101,22 @@ SERVICES = {
         },
         'redirect': {
             'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
-            'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/releases',
+            'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/blob/master/CHANGES.md',
             'support': 'https://github.com/bird-house/birdhouse-deploy/issues',
             'source': 'https://github.com/bird-house/birdhouse-deploy',
             'tryme': 'https://${PAVICS_FQDN_PUBLIC}',
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
         },
-        'monitoring': {
-            'Magpie': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/magpie/version'
-                },
-                'response': {
-                    'text': '\{.*"code": 200.*"type": "application/json".*\}'
-                }
-            },
-            'Twitcher': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/flyingpigeon?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-            'Geoserver': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/'
-                }
-            },
-            'Phoenix': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/'
-                }
-            },
-            'Catalog': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8086/pywps?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-            'Malleefowl': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-            'Finch': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8095/wps?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-            'Raven': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8096/wps?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-            'Solr': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8983/solr/birdhouse/select?q=CMIP5&fq=model:MPI-ESM-MR&fq=experiment:rcp45&fq=variable:tasmax&fq=institute:MPI-M&fq=frequency:mon&wt=json'
-                },
-                'response': {
-                    'text': '.*catalog_url\":\".+/testdata/flyingpigeon/cmip5.*/catalog.xml.*'
-                }
-            },
-            'Thredds': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8083${TWITCHER_PROTECTED_PATH}/thredds/catalog.html'
-                }
-            },
-            'Jupyter': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/jupyter/hub/login'
-                },
-            }
-        }
+        'monitoring': {}  # filled in after processing everything, see end of script
     },
     'indices': {
         'info': {
             'name': 'Climate indices',
             'synopsis': 'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, the number of degree-days of cooling, the duration of heatwaves, etc. This returns annual values of the most popular climate indices.',
-            'version': '0.7.1',
+            'version': FINCH_VERSION,
             'institution': 'Ouranos',
-            'releaseTime': '2021-03-25T00:00:00Z',
+            'releaseTime': FINCH_RELEASE_TIME,
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
             'category': 'Data Manipulation',
@@ -206,7 +213,7 @@ SERVICES = {
     'slicer': {
         'info': {
             'name': 'Spatial and temporal data slicer',
-            'synopsis': 'These services allows the subsetting and download of NetCDF over user-defined regions and periods.',
+            'synopsis': 'These services allow the subsetting and download of NetCDF over user-defined regions and periods.',
             'version': '0.7.1',
             'institution': 'Ouranos',
             'releaseTime': '2021-03-25T00:00:00Z',
@@ -235,6 +242,338 @@ SERVICES = {
                 }
             },
         }
+    },
+    'Magpie': {
+        'info': {
+            'name': 'Magpie',
+            'synopsis': 'Magpie is service for AuthN/AuthZ accessible via a REST API. It allows you to manage User/Group/Service/Resource/Permission management and integrates with Twitcher.',
+            'version': "${MAGPIE_VERSION}",
+            'institution': 'Ouranos',
+            'releaseTime': get_release_time_from_repo_tag("github", "Ouranosinc/Magpie", "${MAGPIE_VERSION}"),
+            'researchSubject': 'Security',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'category': 'Security',
+            'tags': ['Security', 'Management', 'Access', 'Policy Decision Point']
+        },
+        'stats': {
+            'method': '.*',
+            'route': "/magpie/.*"
+        },
+        'redirect': {
+            'doc': 'https://pavics-magpie.readthedocs.io/',
+            'releasenotes': 'https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst',
+            'support': 'https://github.com/Ouranosinc/Magpie/issues',
+            'source': 'https://github.com/Ouranosinc/Magpie',
+            'tryme': 'https://${PAVICS_FQDN_PUBLIC}/magpie/',
+            'licence': 'https://github.com/Ouranosinc/Magpie/blob/${MAGPIE_VERSION}/LICENSE',
+            'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+        },
+        "monitoring": {
+            "Magpie": {
+                'request': {
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}/magpie/version'
+                },
+                'response': {
+                    'text': '\{.*"code": 200.*"type": "application/json".*\}'
+                }
+            }
+        }
+    },
+    'Twitcher': {
+        'info': {
+            'name': 'Twitcher',
+            'synopsis': 'Twitcher is a security proxy for OWS services like Web Processing Services (WPS). The proxy service uses OAuth2 access tokens to protect the OWS service access using Magpie permissions.',
+            'version': "${TWITCHER_VERSION}",
+            'institution': 'Ouranos',
+            'releaseTime': get_release_time_from_repo_tag("github", "bird-house/twitcher", "${TWITCHER_VERSION}"),
+            'researchSubject': 'Security',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'category': 'Security',
+            'tags': ['Security', 'Proxy', 'Access', 'Policy Enforcement Point']
+        },
+        'stats': {
+            'method': '.*',
+            'route': "/twitcher/(?!ows).*"
+        },
+        'redirect': {
+            'doc': 'https://twitcher.readthedocs.io/',
+            'releasenotes': 'https://github.com/bird-house/twitcher/blob/master/CHANGES.rst',
+            'support': 'https://github.com/bird-house/twitcher/issues',
+            'source': 'https://github.com/bird-house/twitcher',
+            'tryme': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/',
+            'licence': 'https://github.com/bird-house/twitcher/blob/master/LICENSE.txt',
+            'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+        },
+        "monitoring": {
+            "Twitcher": {
+                'request': {
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/'
+                }
+            }
+        }
+    },
+    'GeoServer': {
+        'info': {
+            'name': 'GeoServer',
+            'synopsis': 'GeoServer is the reference implementation of the Open Geospatial Consortium (OGC) Web Feature Service (WFS) and Web Coverage Service (WCS) standards, as well as a high performance certified compliant Web Map Service (WMS), compliant Catalog Service for the Web (CSW) and implementing Web Processing Service (WPS). GeoServer forms a core component of the Geospatial Web.',
+            'version': "${GEOSERVER_VERSION}",
+            'institution': 'Ouranos',
+            'releaseTime': get_release_time_from_repo_tag("docker", "${GEOSERVER_DOCKER}", "${GEOSERVER_TAGGED}"),
+            'researchSubject': 'Geospatial',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'category': 'Data Catalog',
+            'tags': ['Data', 'Geospatial', 'Catalog', 'OGC', 'WFS', 'WMS', 'WPS']
+        },
+        'stats': {
+            'method': '.*',
+            'route': "/geoserver/.*"
+        },
+        'redirect': {
+            'doc': 'https://docs.geoserver.org/',
+            'releasenotes': 'https://geoserver.org/release/${GEOSERVER_VERSION}/',
+            'support': 'https://github.com/kartoza/docker-geoserver/issues',
+            'source': 'https://github.com/kartoza/docker-geoserver',
+            'tryme': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/',
+            'licence': 'https://github.com/geoserver/geoserver/blob/${GEOSERVER_VERSION}/LICENSE.txt',
+            'provenance': 'https://github.com/kartoza/docker-geoserver'
+        },
+        "monitoring": {
+            "GeoServer": {
+                'request': {
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/'
+                }
+            }
+        }
+    },
+    'Phoenix': {
+        'info': {
+            'name': 'Phoenix',
+            'synopsis': 'Legacy authentication. See Magpie/Twitcher instead.',
+            'version': "${PHOENIX_VERSION}",
+            'institution': 'Ouranos',
+            'releaseTime': get_release_time_from_repo_tag("docker", "${PHOENIX_DOCKER}", "${PHOENIX_VERSION}"),
+            'researchSubject': 'Authentication',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'category': 'Authentication',
+            'tags': ['Authentication', 'Legacy']
+        },
+        'stats': {
+            'method': '.*',
+            'route': '${TWITCHER_PROTECTED_PATH}/geoserver/web/.*'  # FIXME: original value doesn't make sense
+        },
+        'redirect': {
+            'doc': 'http://pyramid-phoenix.readthedocs.io/en/latest/index.html',
+            'releasenotes': 'https://github.com/ouranosinc/pyramid-phoenix/CHANGES.rst',
+            'support': 'https://github.com/ouranosinc/pyramid-phoenix/issues',
+            'source': 'https://github.com/ouranosinc/pyramid-phoenix',
+            'tryme': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/',  # FIXME: original value doesn't make sense
+            'licence': 'https://github.com/ouranosinc/pyramid-phoenix/blob/master/LICENSE.txt',
+            'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+        },
+        "monitoring": {
+            "Phoenix": {
+                'request': {
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/'  # FIXME: original value doesn't make sense
+                }
+            }
+        }
+    },
+    'Catalog': {
+        'info': {
+            'name': 'Catalog',
+            'synopsis': 'Catalog',
+            'version': "${CATALOG_VERSION}",
+            'institution': 'Ouranos',
+            'releaseTime': get_release_time_from_repo_tag("docker", "${CATALOG_DOCKER}", "${CATALOG_VERSION}"),
+            'researchSubject': 'Climate',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'category': 'Catalog',
+            'tags': ['Catalog', 'Data']
+        },
+        'stats': {
+            'method': '.*',
+            'route': 'http://${PAVICS_FQDN}:8086/.*'
+        },
+        'redirect': {
+            'doc': 'http://pyramid-phoenix.readthedocs.io/en/latest/index.html',
+            'releasenotes': 'https://github.com/Ouranosinc/PAVICS-DataCatalog/blob/master/CHANGES.md',
+            'support': 'https://github.com/ouranosinc/PAVICS-DataCatalog/issues',
+            'source': 'https://github.com/ouranosinc/PAVICS-DataCatalog',
+            'tryme': 'http://${PAVICS_FQDN}:8086/pywps?service=WPS&version=1.0.0&request=GetCapabilities',
+            'licence': 'https://ouranosinc.github.io/pavics-sdi/arch/data_catalog.html#credits',
+            'provenance': 'https://ouranosinc.github.io/pavics-sdi/arch/data_catalog.html#pavics-datacatalog'
+        },
+        "monitoring": {
+            "Catalog": {
+                'request': {
+                    'url': 'http://${PAVICS_FQDN}:8086/pywps?service=WPS&version=1.0.0&request=GetCapabilities'
+                }
+            }
+        }
+    },
+    'Malleefowl': {
+        'info': {
+            'name': 'Malleefowl',
+            'synopsis': 'A Web Processing Service for Climate Data Access and Workflows.',
+            'version': "${MALLEEFOWL_VERSION}",
+            'releaseTime': get_release_time_from_repo_tag("github", "Ouranosinc/malleefowl", "${MALLEEFOWL_VERSION}"),
+            'institution': 'Ouranos',
+            'researchSubject': 'Climatology',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'category': 'Resource/Cloud Management',
+            'tags': ['Climatology']
+        },
+        'stats': {
+            'method': '.*',
+            'route': '/malleefowl/.*'
+        },
+        'redirect': {
+            'doc': 'https://malleefowl.readthedocs.io/en/latest/',
+            'releasenotes': 'https://github.com/Ouranosinc/malleefowl/blob/master/CHANGES.rst',
+            'support': 'https://github.com/Ouranosinc/malleefowl/issues',
+            'source': 'https://github.com/Ouranosinc/malleefowl',
+            'tryme': 'https://${PAVICS_FQDN_PUBLIC}/malleefowl/',
+            'licence': '',
+            'provenance': ''
+        },
+        'monitoring': {
+            "Malleefowl": {
+                'request': {
+                    'url': 'http://${PAVICS_FQDN}:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+                }
+            }
+        }
+    },
+    'Finch': {
+        'info': {
+            'name': 'Finch',
+            'synopsis': 'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, the number of degree-days of cooling, the duration of heatwaves, etc. This returns annual values of the most popular climate indices.',
+            'version': FINCH_VERSION,
+            'institution': 'Ouranos',
+            'releaseTime': FINCH_RELEASE_TIME,
+            'researchSubject': 'Climatology',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'category': 'Data Manipulation',
+            'tags': ['Climatology', 'Cloud']
+        },
+        'stats': {
+            'method': '.*',
+            'route': '${TWITCHER_PROTECTED_PATH}/finch.*'
+        },
+        'redirect': {
+            'doc': 'https://finch.readthedocs.io/en/latest/index.html',
+            'releasenotes': 'https://github.com/bird-house/finch/releases',
+            'support': 'https://github.com/bird-house/finch/issues',
+            'source': 'https://github.com/bird-house/finch',
+            'tryme': 'https://ouranosinc.github.io/pavics-sdi/notebooks/climate_indices.html',
+            'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
+            'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+        },
+        'monitoring': {
+            'Finch': {
+                'request': {
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+                }
+            },
+        },
+    },
+    'Solr': {
+        'info': {
+            'name': 'Solr',
+            'synopsis': 'SOLR is a search platform part of the Apache Lucene project. It is used in this project for its faceted search capability. Search queries are relayed from the UI or WPS processes to the SOLR database, which returns a json file with the links to matching files.',
+            'version': "${SOLR_VERSION}",
+            'institution': 'Ouranos',
+            'releaseTime': get_release_time_from_repo_tag("docker", "${SOLR_DOCKER}", "${SOLR_VERSION}"),
+            'researchSubject': 'Climatology',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'category': 'Data Manipulation',
+            'tags': ['Indexation', 'Search']
+        },
+        'stats': {
+            'method': '.*',
+            'route': '/solr/.*'
+        },
+        'redirect': {
+            'doc': 'https://ouranosinc.github.io/pavics-sdi/arch/backend.html#indexation',
+            'releasenotes': 'https://github.com/Ouranosinc/PAVICS/tags',
+            'support': 'https://github.com/Ouranosinc/PAVICS/issues',
+            'source': 'https://github.com/Ouranosinc/PAVICS/tree/master/birdhouse/docker/solr',
+            'tryme': 'http://${PAVICS_FQDN}:8983/solr/',
+            'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
+            'provenance': 'https://ouranosinc.github.io/pavics-sdi/arch/backend.html#indexation'
+        },
+        "monitoring": {
+            'Solr': {
+                'request': {
+                    'url': 'http://${PAVICS_FQDN}:8983/solr/birdhouse/select?q=CMIP5&fq=model:MPI-ESM-MR&fq=experiment:rcp45&fq=variable:tasmax&fq=institute:MPI-M&fq=frequency:mon&wt=json'
+                },
+                'response': {
+                    'text': '.*catalog_url\":\".+/testdata/flyingpigeon/cmip5.*/catalog.xml.*'
+                }
+            },
+        }
+    },
+    'Thredds': {
+        'info': {
+            'name': 'Thredds',
+            'synopsis': 'Climate Data Catalog and Format Renderers',
+            'version': "${THREDDS_VERSION}",
+            'releaseTime': get_release_time_from_repo_tag("docker", "${THREDDS_DOCKER}", "${THREDDS_VERSION}"),
+            'institution': 'Ouranos',
+            'researchSubject': 'Catalog',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'category': 'Catalog',
+            'tags': ['Catalog', 'Climate Data']
+        },
+        'stats': {
+            'method': '.*',
+            'route': '${TWITCHER_PROTECTED_PATH}/thredds/.*'
+        },
+        'redirect': {
+            'doc': 'https://www.unidata.ucar.edu/software/tds/',
+            'releasenotes': 'https://docs.unidata.ucar.edu/tds/current/userguide/upgrade.html',
+            'support': 'https://www.unidata.ucar.edu/software/tds/#help',
+            'source': 'https://github.com/Unidata/tds',
+            'tryme': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds/',
+            'licence': 'https://github.com/Unidata/tds/blob/main/LICENSE',
+            'provenance': 'https://downloads.unidata.ucar.edu/tds/'
+        },
+        'request': {
+            'url': 'http://${PAVICS_FQDN}:8083${TWITCHER_PROTECTED_PATH}/thredds/catalog.html'
+        }
+    },
+    'Jupyter': {
+        'info': {
+            'name': 'Jupyter',
+            'synopsis': 'Jupyter notebooks portal.',
+            'version': "${JUPYTER_VERSION}",
+            'releaseTime': get_release_time_from_repo_tag("docker", "${JUPYTERHUB_DOCKER}", "${JUPYTERHUB_VERSION}"),
+            'institution': 'Ouranos',
+            'researchSubject': 'Any',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'category': 'Research',
+            'tags': ['Development', 'Research', 'Notebooks']
+        },
+        'stats': {
+            'method': '.*',
+            'route': '/jupyter/.*'
+        },
+        'redirect': {
+            'doc': 'https://malleefowl.readthedocs.io/en/latest/',
+            'releasenotes': 'https://github.com/Ouranosinc/jupyterhub/tags',  # no CHANGES file available
+            'support': 'https://github.com/Ouranosinc/jupyterhub/issues',
+            'source': 'https://github.com/Ouranosinc/jupyterhub',
+            'tryme': 'https://${PAVICS_FQDN_PUBLIC}/jupyter/',
+            'licence': 'https://github.com/Ouranosinc/jupyterhub/blob/${JUPYTERHUB_VERSION}/LICENSE',
+            'provenance': ''
+        },
+        "monitoring": {
+            "Jupyter": {
+                'request': {
+                    'url': 'https://${PAVICS_FQDN_PUBLIC}/jupyter/hub/login'
+                },
+            }
+        }
     }
 }
 
@@ -243,6 +582,7 @@ PLATFORMS = {
         'info': {
             'name': 'PAVICS',
             'synopsis': 'The PAVICS (Power Analytics for Visualization of Climate Science) platform is a collection of climate analysis services served through Open Geospatial Consortium (OGC) protocols. These services include data access, processing and visualization. Both data and algorithms can be accessed either programmatically, through OGC-compliant clients such as QGIS or ArcGIS, or a custom web interface.',
+            # NOTE: below version and release time auto-managed by 'make VERSION=x.y.z bump', see 'Tagging policy' in 'birdhouse/README.rst'
             'version': '1.22.10',
             'releaseTime': '2023-01-31T16:10:58Z',
             'institution': 'Ouranos',
@@ -313,3 +653,17 @@ if os.path.exists(CANARIE_MONITORING_EXTRA_CONF_DIR):
             exec_file(extra_conf_full_path, locals=locals())
         else:
             logger.info("canarie-api: ignoring extra config '%s'", extra_conf_full_path)
+
+
+# For  historical reasons, the "node" service was used to contain all "services" of the current "platform".
+# However, those services should instead be listed directly at the root as individual services of the current platform,
+# to directly obtain their status instead of going through the "node" service sub-page. This also allows us to provide
+# the individual links (docs, release, etc.) for the services themselves. The services can also be represented nested
+# under the "Platform" section as well. This "Platform" section could be extended with other known platforms part of a
+# DACCS network. For backward-compatibility, repopulate the "node" service using moved definitions.
+_NODE = SERVICES["node"]["monitoring"]
+_PLATFORM = PLATFORMS["pavics"]["monitoring"]
+for svc_name, svc_config in SERVICES.items():
+    for mon_name, mon_config in svc_config["monitoring"].items():
+        _NODE.setdefault(mon_name, mon_config)
+        _PLATFORM.setdefault(mon_name, mon_config)
