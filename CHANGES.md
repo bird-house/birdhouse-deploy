@@ -22,6 +22,11 @@
   - Update the [CanarieAPI configuration](birdhouse/config/canarie-api/docker_configuration.py.template) to use
     Python 3.x executable code.
 
+  ### Breaking changes
+  - The Docker running `CanarieAPI` is now using Python 3 (since 0.4.x tags).
+    Configurations need to be updated if any specific Python 2 definitions were used.
+    See [2to3](https://docs.python.org/3/library/2to3.html) to help migrate configurations automatically if necessary.
+
 [1.22.10](https://github.com/bird-house/birdhouse-deploy/tree/1.22.10) (2023-01-31)
 ------------------------------------------------------------------------------------------------------------------
 
