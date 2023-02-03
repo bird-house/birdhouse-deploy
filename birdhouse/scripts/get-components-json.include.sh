@@ -42,10 +42,11 @@ BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN="$( \
   | sed -E "s|\./(.*)/|\1|" \
 )"
 if [ -z "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" ]; then
-  echo "[ERROR]" \
+  echo "[WARNING]" \
     "Could not resolve known birdhouse-deploy components." \
-    "Aborting to avoid potentially leaking sensible details."
-  exit 1
+    "Aborting to avoid potentially leaking sensible details." \
+    "Components will not be reported on the platform's JSON endpoint."
+  exit 0
 fi
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST_ACTIVE=$( \
   echo "${EXTRA_CONF_DIRS}" \
