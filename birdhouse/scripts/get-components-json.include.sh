@@ -31,7 +31,10 @@ if [ "$(echo "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" | grep -cE "/birdhouse/?\$" 2
 else
   BIRDHOUSE_DEPLOY_COMPONENTS_ROOT="${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}/.."
 fi
-chdir "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}"
+cd "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" || ( \
+  echo "Error when attempting to move to [${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}]" && \
+  exit 1 \
+)
 
 # note: no quotes in 'ls' on purpose to expand glob patterns
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN="$( \
