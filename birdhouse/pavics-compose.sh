@@ -48,6 +48,8 @@ VARS='
 #   when the value provided explicitly, it will be used instead of guessing it by inferred values from other variables
 OPTIONAL_VARS='
   $PAVICS_FQDN_PUBLIC
+  $SERVER_NAME
+  $SERVER_DESCRIPTION
   $INCLUDE_FOR_PORT_80
   $ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS
   $EXTRA_PYWPS_CONFIG

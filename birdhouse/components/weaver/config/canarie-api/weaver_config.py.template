@@ -24,7 +24,7 @@ SERVICES['Weaver'] = {
         'provenance': 'https://github.com/crim-ca/weaver'
     },
     "monitoring": {
-        "Cowbird": {
+        "Weaver": {
             'request': {
                 'url': 'http://${PAVICS_FQDN_PUBLIC}/weaver/'
             },

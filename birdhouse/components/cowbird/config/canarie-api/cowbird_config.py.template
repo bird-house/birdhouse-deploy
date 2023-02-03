@@ -29,7 +29,7 @@ SERVICES['Cowbird'] = {
                 'url': 'http://cowbird:7000/'
             },
             'response': {
-                'text': '\{.*"message":.*"Cowbird REST API".*\}'
+                'text': '\{.*"title":.*"Cowbird REST API".*\}'
             }
         }
     }
