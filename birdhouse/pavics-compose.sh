@@ -40,6 +40,7 @@ VARS='
   $DATA_PERSIST_ROOT
   $GEOSERVER_ADMIN_USER
   $GEOSERVER_ADMIN_PASSWORD
+  $BIRDHOUSE_DEPLOY_COMPONENTS_JSON
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local
@@ -103,6 +104,7 @@ COMPOSE_DIR="`pwd`"
 # we source local configs, if present
 # we don't use usual .env filename, because docker-compose uses it
 [ -f env.local ] && . ./env.local
+. ./scripts/get-components-json.include.sh
 
 for adir in ${EXTRA_CONF_DIRS}; do
   if [ ! -e "$adir" ]; then
