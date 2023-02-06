@@ -1,11 +1,4 @@
 providers:
-  catalog:
-    url: http://${PAVICS_FQDN}:8086/pywps
-    title: Catalog
-    public: true
-    c4i: false
-    type: wps
-    sync_type: wps
 
   malleefowl:
     url: http://${PAVICS_FQDN}:8091/wps

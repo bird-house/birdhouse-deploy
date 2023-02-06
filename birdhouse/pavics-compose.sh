@@ -159,7 +159,7 @@ TIMEWAIT_REUSE=$(/sbin/sysctl -n  net.ipv4.tcp_tw_reuse)
 if [ ${TIMEWAIT_REUSE} -eq 0 ]
 then
   echo "${YELLOW}Warning:${NORMAL} the sysctl net.ipv4.tcp_tw_reuse is not enabled"
-  echo "         It it suggested to set it to 1, otherwise the pavicscrawler may fail"
+  echo "         It it suggested to set it to 1, otherwise come components may fail"
 fi
 
 if [ -z "$PAVICS_FQDN_PUBLIC" ]; then

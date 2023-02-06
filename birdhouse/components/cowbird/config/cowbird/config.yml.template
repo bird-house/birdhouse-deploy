@@ -19,10 +19,6 @@ handlers:
     workspace_dir: ${WORKSPACE_DIR}
     admin_user: ${GEOSERVER_ADMIN_USER}
     admin_password: ${GEOSERVER_ADMIN_PASSWORD}
-  Catalog:
-    active: true
-    url: https://${PAVICS_FQDN_PUBLIC}/twitcher/ows/proxy/catalog
-    workspace_dir: ${WORKSPACE_DIR}
   Thredds:
     active: true
   Nginx:
