@@ -8,6 +8,11 @@
         proxy_set_header X-Forwarded-Proto $real_scheme;
     }
 
+    location /components/ {
+        default_type application/json;
+        return 200 '${BIRDHOUSE_DEPLOY_COMPONENTS_JSON}';
+    }
+
     location /magpie/ {
         proxy_pass http://${PAVICS_FQDN}:2001/;
         proxy_set_header Host $host;
