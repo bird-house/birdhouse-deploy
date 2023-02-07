@@ -99,7 +99,7 @@ cd $(dirname $(readlink -f $0 || realpath $0))
 # container and manually from the host.
 COMPOSE_DIR="`pwd`"
 
-. $COMPOSE_DIR/read-configs.include.sh
+. "$COMPOSE_DIR/read-configs.include.sh"
 
 read-configs
 

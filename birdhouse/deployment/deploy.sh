@@ -105,7 +105,7 @@ cd $COMPOSE_DIR
 START_TIME="`date -Isecond`"
 echo "deploy START_TIME=$START_TIME"
 
-. $COMPOSE_DIR/read-configs.include.sh
+. "$COMPOSE_DIR/read-configs.include.sh"
 
 # Read AUTODEPLOY_EXTRA_REPOS
 read_basic_configs_only
@@ -164,6 +164,8 @@ done
 cd $COMPOSE_DIR
 
 # reload again after git pull because this file could be changed by the pull
+. "$COMPOSE_DIR/read-configs.include.sh"
+
 # reload again after default.env since env.local can override default.env
 # (ex: JUPYTERHUB_USER_DATA_DIR)
 read_basic_configs_only

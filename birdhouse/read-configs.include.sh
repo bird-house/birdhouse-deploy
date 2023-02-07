@@ -44,6 +44,8 @@ discover_compose_dir() {
 read_default_env() {
     if [ -e "$COMPOSE_DIR/default.env" ]; then
         . "$COMPOSE_DIR/default.env"
+    else
+        echo "WARNING: '$COMPOSE_DIR/default.env' not found" 1>&2
     fi
 }
 
@@ -56,6 +58,8 @@ read_env_local() {
 
     if [ -e "$COMPOSE_DIR/env.local" ]; then
         . "$COMPOSE_DIR/env.local"
+    else
+        echo "WARNING: '$COMPOSE_DIR/env.local' not found" 1>&2
     fi
 
     # restore saved shell options
