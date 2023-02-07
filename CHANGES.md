@@ -54,6 +54,19 @@
 [secure-data-proxy]: birdhouse/optional-components/secure-data-proxy
 [weaver-component]: birdhouse/components/weaver
 
+[1.22.11](https://github.com/bird-house/birdhouse-deploy/tree/1.22.11) (2023-02-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Proxy: add `/components` endpoint that provides a JSON list of loaded components by the platform.
+
+  Prior to this functionality, it was impossible to know which potential capabilities, services or behaviors were to be
+  expected by a given DACCS/PAVICS/birdhouse instance. Using this endpoint, nodes can obtain minimal machine-readable
+  details about their supported capabilities, allowing better interoperability.
+  
+  Furthermore, developers maintaining distinct stacks and integrating different features can have a better
+  understanding of behaviors by the various web services when performing requests against a given node.
+
 [1.22.10](https://github.com/bird-house/birdhouse-deploy/tree/1.22.10) (2023-01-31)
 ------------------------------------------------------------------------------------------------------------------
 
