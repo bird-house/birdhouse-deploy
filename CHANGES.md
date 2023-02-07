@@ -16,6 +16,19 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+## Fixes
+- Vars in DELAYED_EVAL list are not expanded properly outside of `pavics-compose.sh`
+
+  There are other scripts sourcing `default.env` and `env.local` and all those
+  scripts have to expand the vars in DELAYED_EVAL list to have their actual
+  values.
+
+  Centralized all logic about reading configs to avoid mistake and to ease
+  updating logic in the future.  Too many scripts were reading the configs
+  themselves and some are not doing it properly, ex: forgot to hide password
+  when reading `env.local`.
+
+
 [1.22.11](https://github.com/bird-house/birdhouse-deploy/tree/1.22.11) (2023-02-03)
 ------------------------------------------------------------------------------------------------------------------
 
