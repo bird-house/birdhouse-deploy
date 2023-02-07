@@ -72,10 +72,12 @@ THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
-. "$COMPOSE_DIR/read-configs.include.sh"
+if [ -f "$COMPOSE_DIR/read-configs.include.sh" ]; then
+    . "$COMPOSE_DIR/read-configs.include.sh"
 
-# Get MAGPIE_VERSION, PAVICS_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
-read-configs
+    # Get MAGPIE_VERSION, PAVICS_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
+    read-configs
+fi
 
 ##############################################################################
 # Allow override using same name env var.
