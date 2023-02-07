@@ -10,7 +10,7 @@
 # and to call process_delayed_eval() to have fully usable resolved variable
 # values.
 
-# Derive COMPOSE_DIR from the post probable locations.
+# Derive COMPOSE_DIR from the most probable locations.
 # This is NOT meant to be exhautive.
 # Caller of this file can simply set COMPOSE_DIR itself.
 discover_compose_dir() {
