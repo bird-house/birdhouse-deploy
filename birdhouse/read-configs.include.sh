@@ -6,8 +6,9 @@
 # can be called individually.
 #
 # When not using read_configs(), caller is responsible for knowing the proper
-# sequence to read the config files and to call process_delayed_eval() to have
-# fully usable resolved variable values.
+# sequence to read the config files, for hiding password when reading env.local
+# and to call process_delayed_eval() to have fully usable resolved variable
+# values.
 
 # Derive COMPOSE_DIR from the post probable locations.
 # This is NOT meant to be exhautive.
@@ -48,14 +49,28 @@ read_default_env() {
 
 
 read_env_local() {
+    # we don't use usual .env filename, because docker-compose uses it
+
+    saved_shell_options="`set +o`"
+    set +xv  # hide passwd in env.local in logs
+
     if [ -e "$COMPOSE_DIR/env.local" ]; then
         . "$COMPOSE_DIR/env.local"
     fi
+
+    # restore saved shell options
+    eval "$saved_shell_options"
 }
 
 
 read_components_default_env() {
     # EXTRA_CONF_DIRS normally set by env.local so should read_env_local() first.
+
+    # EXTRA_CONF_DIRS relative paths are relative to COMPOSE_DIR.
+    if [ -e "$COMPOSE_DIR" ]; then
+        cd "$COMPOSE_DIR"
+    fi
+
     for adir in ${EXTRA_CONF_DIRS}; do
         if [ ! -e "$adir" ]; then
             # Do not exit to not break unattended autodeploy since no human around to
@@ -70,6 +85,11 @@ read_components_default_env() {
             . "$COMPONENT_DEFAULT_ENV"
         fi
     done
+
+    # Return to previous pwd.
+    if [ -e "$COMPOSE_DIR" ]; then
+        cd -
+    fi
 }
 
 
@@ -93,5 +113,16 @@ read_configs() {
     read_env_local  # for EXTRA_CONF_DIRS
     read_components_default_env  # uses EXTRA_CONF_DIRS
     read_env_local  # again to override components default.env
+    process_delayed_eval
+}
+
+
+# Alternative to main function read_configs() without reading the default.env
+# of various components.  Use only when you know what you are doing.  Else use
+# read_configs() to be safe.
+read_basic_configs_only() {
+    discover_compose_dir
+    read_default_env
+    read_env_local
     process_delayed_eval
 }
