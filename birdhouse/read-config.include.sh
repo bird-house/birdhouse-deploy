@@ -1,11 +1,18 @@
 #!/bin/sh
 # This script is meant to be sourced by all scripts needing to read default.env
 # or env.local.
+#
+# Normally only read_configs() is needed, but for any special needs, each step
+# can be called individually.
+#
+# When not using read_configs(), caller is responsible for knowing the proper
+# sequence to read the config files and to call process_delayed_eval() to have
+# fully usable resolved variable values.
 
 # Derive COMPOSE_DIR from the post probable locations.
-# This is not meant to be exhautive.
+# This is NOT meant to be exhautive.
 # Caller of this file can simply set COMPOSE_DIR itself.
-set_compose_dir() {
+discover_compose_dir() {
     if [ -z "$COMPOSE_DIR" -o ! -e "$COMPOSE_DIR" ]; then
         COMPOSE_DIR="`pwd`"
         if [ -e "./pavics-compose.sh" ]; then
@@ -32,14 +39,59 @@ set_compose_dir() {
     fi
 }
 
+
 read_default_env() {
+    if [ -e "$COMPOSE_DIR/default.env" ]; then
+        . "$COMPOSE_DIR/default.env"
+    fi
 }
 
-read_components_default_env() {
-}
 
 read_env_local() {
+    if [ -e "$COMPOSE_DIR/env.local" ]; then
+        . "$COMPOSE_DIR/env.local"
+    fi
 }
 
+
+read_components_default_env() {
+    # EXTRA_CONF_DIRS normally set by env.local so should read_env_local() first.
+    for adir in ${EXTRA_CONF_DIRS}; do
+        if [ ! -e "$adir" ]; then
+            # Do not exit to not break unattended autodeploy since no human around to
+            # fix immediately.
+            # The new adir with typo will not be active but at least all the existing
+            # will still work.
+            echo "WARNING: '$adir' in EXTRA_CONF_DIRS does not exist" 1>&2
+        fi
+        COMPONENT_DEFAULT_ENV="$adir/default.env"
+        if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
+            echo "reading '$COMPONENT_DEFAULT_ENV'"
+            . "$COMPONENT_DEFAULT_ENV"
+        fi
+    done
+}
+
+
+# All scripts sourcing default.env and env.local and needing to use any vars
+# in DELAYED_EVAL list need to call this function to actually resolve the
+# value of each var in DELAYED_EVAL list.
 process_delayed_eval() {
+    for i in ${DELAYED_EVAL}; do
+        v="`eval "echo \\$${i}"`"
+        eval 'export ${i}="`eval "echo ${v}"`"'
+        echo "delayed eval '`env |grep ${i}=`'"
+    done
+}
+
+
+# Main function to read all config files in appropriate order and call
+# process_delayed_eval() at the appropriate moment.
+read_configs() {
+    discover_compose_dir
+    read_default_env
+    read_env_local  # for EXTRA_CONF_DIRS
+    read_components_default_env  # uses EXTRA_CONF_DIRS
+    read_env_local  # again to override components default.env
+    process_delayed_eval
 }
