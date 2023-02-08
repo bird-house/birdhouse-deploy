@@ -83,14 +83,6 @@ providers:
           - wms
           - ncss
 
-  ncWMS2:
-    url: http://${PAVICS_FQDN}:8080/ncWMS2
-    title: ncWMS2
-    public: true
-    c4i: false
-    type: ncwms
-    sync_type: ncwms
-
   geoserverwms:
     url: http://${PAVICS_FQDN}:8087/geoserver
     title: geoserverwms
