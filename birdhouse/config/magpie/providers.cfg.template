@@ -7,14 +7,6 @@ providers:
     type: wps
     sync_type: wps
 
-  malleefowl:
-    url: http://${PAVICS_FQDN}:8091/wps
-    title: Malleefowl
-    public: true
-    c4i: false
-    type: wps
-    sync_type: wps
-
   lb_flyingpigeon:
     url: http://${PAVICS_FQDN}:58093/wps
     title: Load_Balanced_Flyingpigeon

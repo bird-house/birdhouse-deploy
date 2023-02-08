@@ -10,11 +10,6 @@ SERVICES['node']['monitoring'].update({
             'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/catalog?service=WPS&version=1.0.0&request=GetCapabilities'
         },
     },
-    'Malleefowl-public': {
-        'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/malleefowl?service=WPS&version=1.0.0&request=GetCapabilities'
-        }
-    },
     'Finch-public': {
         'request': {
             'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'

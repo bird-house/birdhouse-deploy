@@ -7,7 +7,6 @@ export PGPASSWORD=${POSTGRES_PASSWORD}
 databases_to_create=(
     flyingpigeon
     hummingbird
-    malleefowl
     catalog
     finch
     raven

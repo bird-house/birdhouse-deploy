@@ -67,11 +67,6 @@ SERVICES = {
                     'url': 'http://${PAVICS_FQDN}:8086/pywps?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
-            'Malleefowl': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
             'Finch': {
                 'request': {
                     'url': 'http://${PAVICS_FQDN}:8095/wps?service=WPS&version=1.0.0&request=GetCapabilities'
