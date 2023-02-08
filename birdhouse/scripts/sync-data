@@ -21,7 +21,7 @@ if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
     . "${COMPOSE_DIR}/read-configs.include.sh"
 
     # Get GEOSERVER_DATA_DIR, BASH_IMAGE, JUPYTERHUB_USER_DATA_DIR, MAGPIE_PERSIST_DIR
-    read-configs
+    read_configs
 fi
 
 SOURCE_HOST="$1"; shift

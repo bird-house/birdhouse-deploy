@@ -32,7 +32,7 @@ fi
 . "$REPO_ROOT/birdhouse/read-configs.include.sh"
 
 # Get JUPYTERHUB_USER_DATA_DIR
-read-configs
+read_configs
 
 set -x
 

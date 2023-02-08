@@ -101,7 +101,7 @@ COMPOSE_DIR="`pwd`"
 
 . "$COMPOSE_DIR/read-configs.include.sh"
 
-read-configs
+read_configs
 
 . ./scripts/get-components-json.include.sh
 

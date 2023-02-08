@@ -27,7 +27,7 @@ if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
     . "${COMPOSE_DIR}/read-configs.include.sh"
 
     # Get POSTGRES_MAGPIE_USERNAME, MAGPIE_DB_NAME.
-    read-configs
+    read_configs
 fi
 
 set -x

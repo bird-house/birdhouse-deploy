@@ -22,7 +22,7 @@ if [ -f "$COMPOSE_DIR/read-configs.include.sh" ]; then
     . "$COMPOSE_DIR/read-configs.include.sh"
 
     # Get PAVICS_FQDN
-    read-configs
+    read_configs
 fi
 
 # Allow override using same name env var.

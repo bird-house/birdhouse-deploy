@@ -11,7 +11,7 @@ COMPOSE_DIR="`dirname "$THIS_DIR"`"
 . "$COMPOSE_DIR/read-configs.include.sh"
 
 # Get JUPYTERHUB_USER_DATA_DIR
-read-configs
+read_configs
 
 PUBLIC_USERNAME="$JUPYTER_DEMO_USER"
 

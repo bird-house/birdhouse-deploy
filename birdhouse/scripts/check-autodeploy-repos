@@ -10,7 +10,7 @@ if [ -f "$COMPOSE_DIR/read-configs.include.sh" ]; then
     . "$COMPOSE_DIR/read-configs.include.sh"
 
     # Get AUTODEPLOY_EXTRA_REPOS
-    read-configs
+    read_configs
 fi
 
 for r in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
