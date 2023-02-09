@@ -17,10 +17,10 @@
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
 ## Fixes
-- Vars in DELAYED_EVAL list are not expanded properly outside of `pavics-compose.sh`
+- Vars in `DELAYED_EVAL` list are not expanded properly outside of `pavics-compose.sh`
 
   There are other scripts sourcing `default.env` and `env.local` and all those
-  scripts have to expand the vars in DELAYED_EVAL list to have their actual
+  scripts have to expand the vars in `DELAYED_EVAL` list to have their actual
   values.
 
   Centralized all logic about reading configs to avoid mistake and to ease

@@ -15,26 +15,27 @@
 # Caller of this file can simply set COMPOSE_DIR itself.
 discover_compose_dir() {
     if [ -z "$COMPOSE_DIR" -o ! -e "$COMPOSE_DIR" ]; then
-        if [ -e "./pavics-compose.sh" ]; then
+        if [ -f "./pavics-compose.sh" ]; then
             # Current dir is COMPOSE_DIR
             COMPOSE_DIR="`realpath .`"
-        elif [ -e "../pavics-compose.sh" ]; then
+        elif [ -f "../pavics-compose.sh" ]; then
             # Parent dir is COMPOSE_DIR
             # Case of all the scripts under deployment/ or scripts/
             COMPOSE_DIR="`realpath ..`"
-        elif [ -e "../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
             # Case of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="`realpath "../birdhouse-deploy/birdhouse"`"
-        elif [ -e "../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
             # Case of subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="`realpath "../../birdhouse-deploy/birdhouse"`"
-        elif [ -e "../../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
             # Case of sub-subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="`realpath "../../../birdhouse-deploy/birdhouse"`"
-        elif [ -e "./birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "./birdhouse/pavics-compose.sh" ]; then
             # Child dir is COMPOSE_DIR
             COMPOSE_DIR="`realpath birdhouse`"
         fi
+        echo "$COMPOSE_DIR"
         export COMPOSE_DIR
     fi
 }
@@ -70,7 +71,7 @@ read_components_default_env() {
     # EXTRA_CONF_DIRS normally set by env.local so should read_env_local() first.
 
     # EXTRA_CONF_DIRS relative paths are relative to COMPOSE_DIR.
-    if [ -e "$COMPOSE_DIR" ]; then
+    if [ -d "$COMPOSE_DIR" ]; then
         cd "$COMPOSE_DIR"
     fi
 
