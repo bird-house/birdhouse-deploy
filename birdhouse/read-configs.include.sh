@@ -30,23 +30,23 @@ discover_compose_dir() {
     if [ -z "$COMPOSE_DIR" ] || [ ! -e "$COMPOSE_DIR" ]; then
         if [ -f "./pavics-compose.sh" ]; then
             # Current dir is COMPOSE_DIR
-            COMPOSE_DIR="`realpath .`"
+            COMPOSE_DIR="$(realpath .)"
         elif [ -f "../pavics-compose.sh" ]; then
             # Parent dir is COMPOSE_DIR
             # Case of all the scripts under deployment/ or scripts/
-            COMPOSE_DIR="`realpath ..`"
+            COMPOSE_DIR="$(realpath ..)"
         elif [ -f "../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
             # Case of sibling checkout at same level as birdhouse-deploy.
-            COMPOSE_DIR="`realpath "../birdhouse-deploy/birdhouse"`"
+            COMPOSE_DIR="$(realpath "../birdhouse-deploy/birdhouse")"
         elif [ -f "../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
             # Case of subdir of sibling checkout at same level as birdhouse-deploy.
-            COMPOSE_DIR="`realpath "../../birdhouse-deploy/birdhouse"`"
+            COMPOSE_DIR="$(realpath "../../birdhouse-deploy/birdhouse")"
         elif [ -f "../../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
             # Case of sub-subdir of sibling checkout at same level as birdhouse-deploy.
-            COMPOSE_DIR="`realpath "../../../birdhouse-deploy/birdhouse"`"
+            COMPOSE_DIR="$(realpath "../../../birdhouse-deploy/birdhouse")"
         elif [ -f "./birdhouse/pavics-compose.sh" ]; then
             # Child dir is COMPOSE_DIR
-            COMPOSE_DIR="`realpath birdhouse`"
+            COMPOSE_DIR="$(realpath birdhouse)"
         fi
         echo "$COMPOSE_DIR"
         export COMPOSE_DIR
@@ -66,7 +66,7 @@ read_default_env() {
 read_env_local() {
     # we don't use usual .env filename, because docker-compose uses it
 
-    saved_shell_options="`set +o`"
+    saved_shell_options="$(set +o)"
     set +xv  # hide passwd in env.local in logs
 
     if [ -e "$COMPOSE_DIR/env.local" ]; then
@@ -115,9 +115,9 @@ read_components_default_env() {
 # value of each var in DELAYED_EVAL list.
 process_delayed_eval() {
     for i in ${DELAYED_EVAL}; do
-        v="`eval "echo \\$${i}"`"
+        v="$(eval "echo \\$${i}")"
         eval 'export ${i}="`eval "echo ${v}"`"'
-        echo "delayed eval '`env |grep ${i}=`'"
+        echo "delayed eval '$(env |grep "${i}=")'"
     done
 }
 
