@@ -115,7 +115,7 @@ read_components_default_env() {
 # value of each var in DELAYED_EVAL list.
 process_delayed_eval() {
     for i in ${DELAYED_EVAL}; do
-        v="$(eval "echo \\$${i}")"
+        v="`eval "echo \\$${i}"`"
         eval 'export ${i}="`eval "echo ${v}"`"'
         echo "delayed eval '$(env |grep "${i}=")'"
     done
