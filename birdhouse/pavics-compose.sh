@@ -88,6 +88,7 @@ OPTIONAL_VARS='
   $AUTODEPLOY_EXTRA_SCHEDULER_JOBS
   $PROXY_READ_TIMEOUT_VALUE
   $PROXY_ROOT_LOCATION
+  $SECURE_DATA_PROXY_AUTH_INCLUDE
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH
