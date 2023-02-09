@@ -100,7 +100,6 @@ cd $(dirname $(readlink -f $0 || realpath $0))
 COMPOSE_DIR="`pwd`"
 
 . "$COMPOSE_DIR/read-configs.include.sh"
-
 read_configs
 
 . ./scripts/get-components-json.include.sh
