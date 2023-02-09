@@ -14,7 +14,7 @@
 # This is NOT meant to be exhautive.
 # Caller of this file can simply set COMPOSE_DIR itself.
 discover_compose_dir() {
-    if [ -z "$COMPOSE_DIR" -o ! -e "$COMPOSE_DIR" ]; then
+    if [ -z "$COMPOSE_DIR" ] || [ ! -e "$COMPOSE_DIR" ]; then
         if [ -f "./pavics-compose.sh" ]; then
             # Current dir is COMPOSE_DIR
             COMPOSE_DIR="`realpath .`"
@@ -91,7 +91,7 @@ read_components_default_env() {
     done
 
     # Return to previous pwd.
-    if [ -e "$COMPOSE_DIR" ]; then
+    if [ -d "$COMPOSE_DIR" ]; then
         cd -
     fi
 }
