@@ -9,6 +9,19 @@
 # sequence to read the config files, for hiding password when reading env.local
 # and to call process_delayed_eval() to have fully usable resolved variable
 # values.
+#
+# USAGE:
+#  # Set variable COMPOSE_DIR to the dir containing pavics-compose.sh and
+#  # docker-compose.yml.
+#
+#  # Source the script providing function read_configs.
+#  # read_configs uses COMPOSE_DIR to find default.env and env.local.
+#  . $COMPOSE_DIR/read-configs.include.sh
+#
+#  # Call function read_configs to read the various config files in the
+#  # appropriate order and process delayed eval vars properly.
+#  read_configs
+
 
 # Derive COMPOSE_DIR from the most probable locations.
 # This is NOT meant to be exhautive.
