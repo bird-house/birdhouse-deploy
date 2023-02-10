@@ -14,7 +14,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes:
+- Scripts: fix [`check-instance-ready`](birdhouse/scripts/check-instance-ready) script.
+  
+  Previously employed `/canarie/node/service/stats` endpoint could be unreliable for some services under the node that
+  produced log collection errors to populate stats. Instead, use `/canarie/node/service/status` that check only if the
+  services are responsive according to configured endpoints under CanarieAPI. This status endpoint is the same one that
+  is employed by the CI test suite to check that the instance is ready before starting notebook tests.
 
 [1.23.0](https://github.com/bird-house/birdhouse-deploy/tree/1.23.0) (2023-02-10)
 ------------------------------------------------------------------------------------------------------------------
