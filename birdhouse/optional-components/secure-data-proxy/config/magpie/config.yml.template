@@ -1,0 +1,29 @@
+providers:
+  secure-data-proxy:
+    # below URL is only used to fill in the required location in Magpie
+    # actual auth validation is performed with Twitcher 'verify' endpoint without accessing this proxied URL
+    url: http://proxy:80
+    title: Secured Data Proxy
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+
+permissions:
+  - service: secure-data-proxy
+    # this location is where weaver saves job wps-outputs when no user
+    # was logged in when executing a publicly accessible process
+    # (see 'components/weaver/config/magpie/weaver_hooks.py')
+    resource: /wpsoutputs/weaver/public
+    type: route
+    permission: read
+    group: anonymous
+    action: create
+
+  - service: secure-data-proxy
+    # this location is a generic directory for demonstration purpose
+    resource: /wpsoutputs/public
+    type: route
+    permission: read
+    group: anonymous
+    action: create
