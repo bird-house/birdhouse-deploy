@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.23.0](https://github.com/bird-house/birdhouse-deploy/tree/1.23.0) (2023-02-10)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes:
 
 - secure-data-proxy: add new [`secure-data-proxy`][secure-data-proxy] optional component.
