@@ -19,7 +19,8 @@ from magpie.api.management.resource import resource_utils as ru
 from magpie.api.management.user import user_utils as uu
 from magpie.api.requests import get_user, get_service_matchdict_checked
 from magpie.constants import get_constant
-from magpie.models import Route
+from magpie.models import Route, Service
+from magpie.register import magpie_register_permissions_from_config
 from magpie.permissions import Access, Permission, PermissionSet, Scope
 from magpie.utils import get_header, get_logger
 
@@ -54,12 +55,12 @@ def add_x_wps_output_context(request):
             if not is_admin(request):
                 # override disallowed writing to other location
                 # otherwise, up to admin to have written something sensible
-                header = "user-" + str(request.user.id)
+                header = "users/" + str(request.user.id)
     else:
         if request.user is None:
             header = "public"
         else:
-            header = "user-" + str(request.user.id)
+            header = "users/" + str(request.user.id)
     request.headers["X-WPS-Output-Context"] = header
     return request
 
@@ -169,6 +170,43 @@ def filter_allowed_processes(response, context):
     return response
 
 
+def allow_user_execute_outputs(response):
+    # type: (Response) -> Response
+    """
+    Allow the authenticated user executing the process to access the expected output location.
+
+    This ensures that, when ``optional-components/secure-data-proxy`` is enabled, the user will be able to retrieve
+    the result files stored under the ``/wpsoutputs/users/<user-id>`` directory, by applying the corresponding
+    permission if missing.
+    """
+    request = response.request
+    user = request.user
+    if user is None or is_admin(request):
+        return response
+
+    session = request.db
+    service = Service.by_service_name("secure-data-proxy", db_session=session)
+    if not service:  # optional component not enabled, nothing to be set (public access expected)
+        return response
+
+    with transaction.manager:
+        config = {
+            "permissions": [
+                {
+                    "service": service.resource_name,
+                    "resource": f"/wpsoutputs/users/{user.id}",
+                    "type": "route",
+                    "user": user.user_name,
+                    "action": "create",
+                 }
+            ]
+        }
+        magpie_register_permissions_from_config(config, db_session=session)
+        transaction.commit()
+
+    return response
+
+
 def allow_user_deployed_processes(response):
     # type: (Response) -> Response
     """
@@ -218,6 +256,7 @@ def allow_user_deployed_processes(response):
 
             # find the nested resource matching: "weaver/processes/<p_id>"
             children = ru.get_resource_children(service, request.db, limit_depth=2)
+            p_res_create = False
             p_res = None
             for res in children.values():
                 if res["node"].resource_name == "processes":
@@ -228,21 +267,24 @@ def allow_user_deployed_processes(response):
                             break
                     break
             else:
-                # resource 'processes' should already exist, but create it if somehow missing
-                # otherwise, it will be impossible to create '<p_id>' under it
-                resp = ru.create_resource("processes", None, Route.resource_type_name, service.resource_id, request.db)
-                processes_res_id = resp.json["resource"]["resource_id"]
+                p_res_create = True  # must create after in new transaction context
 
             # note:
             #  since this is running within a *response* hook, the request transaction is already handled
             #  define a new transaction to create new resources
             with transaction.manager:
+                session = request.db
+                if p_res_create:
+                    # resource 'processes' should already exist, but create it if somehow missing
+                    # otherwise, it will be impossible to create '<p_id>' under it
+                    resp = ru.create_resource("processes", None, Route.resource_type_name, service.resource_id, session)
+                    processes_res_id = resp.json["resource"]["resource_id"]
 
                 # if '<p_id>' somehow already exists, use it
                 if p_res is None:
-                    resp = ru.create_resource(p_id, None, Route.resource_type_name, processes_res_id, request.db)
+                    resp = ru.create_resource(p_id, None, Route.resource_type_name, processes_res_id, session)
                     p_res_id = resp.json["resource"]["resource_id"]
-                    p_res = ru.ResourceService.by_resource_id(p_res_id, request.db)
+                    p_res = ru.ResourceService.by_resource_id(p_res_id, session)
                 if not p_res:
                     LOGGER.warning(
                         "Failed creation of permissions for user [%s] to access deployed process [%s] in Weaver. "
@@ -254,8 +296,8 @@ def allow_user_deployed_processes(response):
                 # override permissions to undo what could have been previously applied (only if <p_id> already existed)
                 p_desc = PermissionSet(Permission.READ, Access.ALLOW, Scope.RECURSIVE)   # describe proc + jobs statuses
                 p_exec = PermissionSet(Permission.WRITE, Access.ALLOW, Scope.RECURSIVE)  # edit process + execute jobs
-                r_desc = uu.create_user_resource_permission_response(user, p_res, p_desc, request.db, overwrite=True)
-                r_exec = uu.create_user_resource_permission_response(user, p_res, p_exec, request.db, overwrite=True)
+                r_desc = uu.create_user_resource_permission_response(user, p_res, p_desc, session, overwrite=True)
+                r_exec = uu.create_user_resource_permission_response(user, p_res, p_exec, session, overwrite=True)
 
                 # summit transaction results (new resources and permissions)
                 transaction.commit()
