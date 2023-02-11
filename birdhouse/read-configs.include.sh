@@ -66,17 +66,19 @@ read_default_env() {
 read_env_local() {
     # we don't use usual .env filename, because docker-compose uses it
 
-    saved_shell_options="$(set +o)"
-    set +xv  # hide passwd in env.local in logs
-
     if [ -e "$COMPOSE_DIR/env.local" ]; then
+        saved_shell_options="$(set +o)"
+        set +xv  # hide passwd in env.local in logs
+
         . "$COMPOSE_DIR/env.local"
+
+        # restore saved shell options
+        eval "$saved_shell_options"
+
     else
         echo "WARNING: '$COMPOSE_DIR/env.local' not found" 1>&2
     fi
 
-    # restore saved shell options
-    eval "$saved_shell_options"
 }
 
 
