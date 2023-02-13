@@ -101,37 +101,10 @@ cd $(dirname $(readlink -f $0 || realpath $0))
 # container and manually from the host.
 COMPOSE_DIR="`pwd`"
 
-. ./default.env
+. "$COMPOSE_DIR/read-configs.include.sh"
+read_configs
 
-# we source local configs, if present
-# we don't use usual .env filename, because docker-compose uses it
-[ -f env.local ] && . ./env.local
 . ./scripts/get-components-json.include.sh
-
-for adir in ${EXTRA_CONF_DIRS}; do
-  if [ ! -e "$adir" ]; then
-    # Do not exit to not break unattended autodeploy since no human around to
-    # fix immediately.
-    # The new adir with typo will not be active but at least all the existing
-    # will still work.
-    echo "WARNING: '$adir' in EXTRA_CONF_DIRS does not exist" 1>&2
-  fi
-  COMPONENT_DEFAULT_ENV="$adir/default.env"
-  if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
-    echo "reading '$COMPONENT_DEFAULT_ENV'"
-    . "$COMPONENT_DEFAULT_ENV"
-  fi
-done
-
-# Re-read env.local to make sure it can override ALL defaults from all
-# components.
-[ -f env.local ] && . ./env.local
-
-for i in ${DELAYED_EVAL}; do
-  v="`eval "echo \\$${i}"`"
-  eval 'export ${i}="`eval "echo ${v}"`"'
-  echo "delayed eval '`env |grep ${i}=`'"
-done
 
 for i in ${VARS}
 do

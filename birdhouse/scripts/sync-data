@@ -17,17 +17,12 @@ THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
-# source default.env, else might have errors sourcing env.local
-if [ -f "$COMPOSE_DIR/default.env" ]; then
-    . "${COMPOSE_DIR}/default.env"
-fi
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
 
-if [ -f "$COMPOSE_DIR/env.local" ]; then
-    # Get GEOSERVER_DATA_DIR, BASH_IMAGE, JUPYTERHUB_USER_DATA_DIR,
-    # MAGPIE_PERSIST_DIR
-    . "${COMPOSE_DIR}/env.local"
+    # Get GEOSERVER_DATA_DIR, BASH_IMAGE, JUPYTERHUB_USER_DATA_DIR, MAGPIE_PERSIST_DIR
+    read_configs
 fi
-
 
 SOURCE_HOST="$1"; shift
 FORCE_MODE="$1"

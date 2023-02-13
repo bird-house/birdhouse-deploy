@@ -8,13 +8,10 @@ THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
-# Default JUPYTERHUB_USER_DATA_DIR
-. $COMPOSE_DIR/default.env
+. "$COMPOSE_DIR/read-configs.include.sh"
 
-if [ -e "$COMPOSE_DIR/env.local" ]; then
-    # Optional override JUPYTERHUB_USER_DATA_DIR
-    . $COMPOSE_DIR/env.local
-fi
+# Get JUPYTERHUB_USER_DATA_DIR
+read_configs
 
 PUBLIC_USERNAME="$JUPYTER_DEMO_USER"
 
