@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# no error if already exist
+# create externally so nothing will delete these data volume automatically
+docker volume create thredds_persistence  # logs, cache
