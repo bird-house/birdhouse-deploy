@@ -105,10 +105,10 @@ cd $COMPOSE_DIR
 START_TIME="`date -Isecond`"
 echo "deploy START_TIME=$START_TIME"
 
-. $COMPOSE_DIR/default.env
+. "$COMPOSE_DIR/read-configs.include.sh"
 
 # Read AUTODEPLOY_EXTRA_REPOS
-. $ENV_LOCAL_FILE
+read_basic_configs_only
 
 set -x
 
@@ -128,12 +128,7 @@ done
 
 cd $COMPOSE_DIR
 
-. ./default.env
-
-set +x  # hide passwd in env.local in logs
-# reload again after default.env since env.local can override default.env
-. $ENV_LOCAL_FILE
-set -x
+read_basic_configs_only
 
 # stop all to force reload any changed config that are volume-mount into the containers
 ./pavics-compose.sh stop
@@ -169,13 +164,11 @@ done
 cd $COMPOSE_DIR
 
 # reload again after git pull because this file could be changed by the pull
-. ./default.env
+. "$COMPOSE_DIR/read-configs.include.sh"
 
-set +x  # hide passwd in env.local in logs
 # reload again after default.env since env.local can override default.env
 # (ex: JUPYTERHUB_USER_DATA_DIR)
-. $ENV_LOCAL_FILE
-set -x
+read_basic_configs_only
 
 # restart everything, only changed containers will be destroyed and recreated
 ./pavics-compose.sh up -d

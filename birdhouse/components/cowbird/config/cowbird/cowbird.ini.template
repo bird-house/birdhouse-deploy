@@ -1,0 +1,101 @@
+# NOTE:
+#   See example: https://github.com/Ouranosinc/cowbird/blob/master/config/cowbird.example.ini
+#   See details: https://pavics-cowbird.readthedocs.io/en/latest/configuration.html#loading-settings.
+
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+[composite:main]
+use = egg:Paste#urlmap
+/ = cowbird_app
+#/api = api_app
+#/cowbird/api = api_app
+
+[app:cowbird_app]
+use = egg:cowbird
+filter-with = urlprefix
+
+pyramid.reload_templates = false
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+pyramid.default_locale_name = en
+pyramid.includes =
+
+## mongodb
+mongo_uri = mongodb://${COWBIRD_MONGODB_HOST}:${COWBIRD_MONGODB_PORT}/cowbird
+
+## cowbird
+# NOTE:
+#   below values are for the external definitions after proxy resolution
+#   internal app access is defined in [server:main] section
+cowbird.port =
+cowbird.url = https://${PAVICS_FQDN_PUBLIC}/cowbird
+
+[app:api_app]
+use = egg:Paste#static
+document_root = %(here)s/ui/swagger
+
+[filter:urlprefix]
+use = egg:PasteDeploy#prefix
+# prefix must be adjusted according to 'cowbird_URL' / 'cowbird.url'
+prefix = /cowbird
+# if the service is behind a reverse-proxy, the public port can be force here
+# (an empty string can be used for the default scheme port)
+#force_port =
+
+###
+# wsgi server configuration
+###
+
+[server:main]
+use = egg:gunicorn#main
+host = 0.0.0.0
+port = 7000
+timeout = 10
+workers = 3
+threads = 4
+
+###
+# celery scheduler config
+# https://pypi.python.org/pypi/pyramid_celery
+###
+[celery]
+use_celeryconfig = True
+
+[loggers]
+keys = root, cowbird, celery
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+formatter = generic
+
+[logger_cowbird]
+level = INFO
+handlers =
+qualname = cowbird
+formatter = generic
+
+[logger_celery]
+level = INFO
+handlers = console
+qualname = celery
+propagate = 0
+
+[handler_console]
+class = StreamHandler
+args = (sys.stdout,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = [%(asctime)s] %(levelname)-10.10s [%(threadName)s][%(name)s] %(message)s

@@ -28,12 +28,22 @@ class CustomDockerSpawner(DockerSpawner):
             host_dir = join(os.environ['JUPYTERHUB_USER_DATA_DIR'], 'tutorial-notebooks-specific-images')
 
             # Mount a volume with a tutorial-notebook subfolder corresponding to the image name, if it exists
+            # The names are defined in the JUPYTERHUB_IMAGE_SELECTION_NAMES variable.
             image_name = self.user_options.get('image')
             if(os.path.isdir(join(host_dir, image_name))):
                 self.volumes[join(host_dir, image_name)] = {
                     "bind": '/notebook_dir/tutorial-notebooks',
                     "mode": "ro"
                 }
+            else:
+                # Try again, removing any colons and any following text. Useful if the image name contains
+                # the version number, which should not be used in the directory name.
+                image_name = image_name.split(':')[0]
+                if(os.path.isdir(join(host_dir, image_name))):
+                    self.volumes[join(host_dir, image_name)] = {
+                        "bind": '/notebook_dir/tutorial-notebooks',
+                        "mode": "ro"
+                    }
         else:
             # Mount the entire tutorial-notebooks directory
             self.volumes[join(os.environ['JUPYTERHUB_USER_DATA_DIR'], "tutorial-notebooks")] = {
@@ -57,7 +67,16 @@ container_home_dir = join(container_workspace_dir, ".home")
 
 c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.environment = {
-    "HOME": container_home_dir
+    "HOME": container_home_dir,
+    # https://docs.bokeh.org/en/latest/docs/user_guide/jupyter.html#jupyterhub
+    # Issue https://github.com/bokeh/bokeh/issues/12090
+    # Post on Panel forum:
+    # https://discourse.holoviz.org/t/how-to-customize-the-display-url-from-panel-serve-for-use-behind-jupyterhub-with-jupyter-server-proxy/3571
+    # Issue about Panel Preview: https://github.com/holoviz/panel/issues/3440
+    "PAVICS_HOST_URL": "https://${PAVICS_FQDN_PUBLIC}",
+    # https://docs.dask.org/en/stable/configuration.html
+    # https://jupyterhub-on-hadoop.readthedocs.io/en/latest/dask.html
+    "DASK_DISTRIBUTED__DASHBOARD__LINK": "https://${PAVICS_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
 }
 
 c.DockerSpawner.volumes = {host_user_data_dir: container_workspace_dir}
@@ -117,7 +136,16 @@ c.Spawner.http_timeout = 60  # default 30
 c.Spawner.start_timeout = 120  # default 60
 
 ## Extra arguments to be passed to the single-user server.
-c.Spawner.args = ["--NotebookApp.terminals_enabled=False"]
+c.Spawner.args = [
+    # Allow non-empty directory deletion which enable recursive dir deletion.
+    # https://jupyter-server.readthedocs.io/en/latest/other/full-config.html
+    "--FileContentsManager.always_delete_dir=True",
+    ]
+
+c.DockerSpawner.extra_host_config = {
+    # start init pid 1 process to reap defunct processes
+    'init': True,
+    }
 
 c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}     # noqa
 

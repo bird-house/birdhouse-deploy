@@ -1,7 +1,7 @@
 SERVICES['node']['monitoring'].update({
     '${GENERIC_BIRD_NAME}-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/${GENERIC_BIRD_NAME}?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${GENERIC_BIRD_NAME}?service=WPS&version=1.0.0&request=GetCapabilities'
         },
     },
     '${GENERIC_BIRD_NAME}': {

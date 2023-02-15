@@ -1,0 +1,38 @@
+providers:
+  # definition of Cowbird service for API access
+  cowbird:
+    url: http://cowbird:7000
+    title: Cowbird
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+
+permissions:
+  # Administrator permissions over whole service
+  - service: cowbird
+    permission: read
+    group: administrators
+    action: create
+  - service: cowbird
+    permission: write
+    group: administrators
+    action: create
+
+# Definitions of all the webhooks urls that will be called when creating or deleting a user.
+webhooks:
+  - name: cowbird_create_user
+    action: create_user
+    method: POST
+    url: http://cowbird:7000/webhooks/users
+    payload:
+      event : "created"
+      user_name : "{{user.name}}"
+      callback_url : "{{callback_url}}"
+  - name: cowbird_remove_user
+    action: delete_user
+    method: POST
+    url: http://cowbird:7000/webhooks/users
+    payload:
+      event : "deleted"
+      user_name : "{{user.name}}"

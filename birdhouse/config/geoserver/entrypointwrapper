@@ -42,6 +42,7 @@ if ! grep "<param-name>cors.allowed.methods</param-name>" $WEB_XML_FILE; then
     diff -C 15 $ORIGINAL_WEB_XML_FILE $WEB_XML_FILE
 fi
 
+
 # chain existing entrypoint
 /scripts/entrypoint.sh
 

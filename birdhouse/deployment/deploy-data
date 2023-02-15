@@ -14,6 +14,10 @@
 # very few install dependencies (only need docker and git installed locally)
 # so it can runs inside very minimalistic image (the 'docker' Docker image).
 #
+# Setting environment variable DEPLOY_DATA_RSYNC_USER_GRP='user:group' to
+# specify the user to run inside the rsync docker container.  Remember to give
+# that user write permission on the rsync target on disk.
+#
 # Setting environment variable DEPLOY_DATA_LOGFILE='/path/to/logfile.log'
 # will redirect all STDOUT and STDERR to that logfile so this script will be
 # completely silent.
@@ -112,23 +116,33 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
     ensure_not_empty "$GIT_CHECKOUT_NAME"
 
     CLONE_DEST="$CHECKOUT_CACHE/$GIT_CHECKOUT_NAME"
+    GIT_PREVIOUS_COMMIT_HASH=""
+    GIT_NEW_COMMIT_HASH=""
+    GIT_CHANGED_FILES=""
     if [ ! -d "$CLONE_DEST" ]; then
         echo "checkout repo '$GIT_REPO_URL' on branch '$GIT_BRANCH' to '$CLONE_DEST'"
         git clone $GIT_REPO_URL $CLONE_DEST || exit 1
         cd $CLONE_DEST
         git checkout $GIT_BRANCH
+        GIT_NEW_COMMIT_HASH="`git rev-parse HEAD`"
     else
         echo "refresh repo '$CLONE_DEST' on branch '$GIT_BRANCH'"
         cd $CLONE_DEST
+        GIT_PREVIOUS_COMMIT_HASH="`git rev-parse HEAD`"
         git remote -v  # log remote, should match GIT_REPO_URL
         git clean -fdx  # force, recur dir, also clean .gitignore files and untracked files
         git fetch --prune --all || exit 1
         git checkout --force $GIT_BRANCH  # force checkout to throwaway local changes
+        GIT_NEW_COMMIT_HASH="`git rev-parse HEAD`"
+        GIT_CHANGED_FILES="`git diff --name-status $GIT_PREVIOUS_COMMIT_HASH`"
     fi
 
     SRC_DIRS="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[*\].source_dir`"
     DIR_NUM=0
 
+    RSYNC_OUTPUT=""
+    RSYNC_OUTPUT_TMP_LOG="/tmp/rsync.log.$GIT_CHECKOUT_NAME"
+    if [ -f "$RSYNC_OUTPUT_TMP_LOG" ]; then rm -v $RSYNC_OUTPUT_TMP_LOG; fi
     for SRC_DIR in $SRC_DIRS; do
         DEST_DIR="`yq r -p v $CONFIG_YML deploy\[$REPO_NUM\].dir_maps\[$DIR_NUM\].dest_dir`"
         ensure_not_empty "$DEST_DIR"
@@ -139,6 +153,10 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
         SRC_DIR_ABS_PATH="`pwd`/$SRC_DIR"
         USER_ID="`id -u`"
         GROUP_ID="`id -g`"
+        RSYNC_USER_GRP="$USER_ID:$GROUP_ID"
+        if [ ! -z "$DEPLOY_DATA_RSYNC_USER_GRP" ]; then
+            RSYNC_USER_GRP="$DEPLOY_DATA_RSYNC_USER_GRP"
+        fi
 
         # Ensure DEST_DIR_PARENT is created using current USER_ID/GROUP_ID for
         # next rsync to have proper write access.
@@ -148,16 +166,20 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
         docker run --rm --name deploy_data_rsync_$DOCKER_RUN_TAG \
             --volume $SRC_DIR_ABS_PATH:$SRC_DIR_ABS_PATH:ro \
             --volume $DEST_DIR_PARENT:$DEST_DIR_PARENT:rw \
-            --user $USER_ID:$GROUP_ID \
+            --user $RSYNC_USER_GRP \
             --entrypoint /usr/bin/rsync \
             $DEPLOY_DATA_RSYNC_IMAGE \
                 --recursive --links --checksum --delete \
                 --itemize-changes --human-readable --verbose \
                 --prune-empty-dirs $RSYNC_EXTRA_OPTS \
-                $SRC_DIR_ABS_PATH/ $DEST_DIR
+                $SRC_DIR_ABS_PATH/ $DEST_DIR 2>&1 | tee -a $RSYNC_OUTPUT_TMP_LOG
 
         DIR_NUM=`expr $DIR_NUM + 1`
     done
+
+    if [ -f "$RSYNC_OUTPUT_TMP_LOG" ]; then
+        RSYNC_OUTPUT="`cat $RSYNC_OUTPUT_TMP_LOG`"
+    fi
 
     POST_ACTIONS_LENGTH="`yq r $CONFIG_YML --length deploy\[$REPO_NUM\].post_actions`"
     if [ -z "$POST_ACTIONS_LENGTH" ]; then

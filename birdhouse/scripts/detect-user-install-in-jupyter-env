@@ -10,13 +10,10 @@
 THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 
-# Default values
-. $THIS_DIR/../default.env
+. "$THIS_DIR/../read-configs.include.sh"
 
-if [ -e "$THIS_DIR/../env.local" ]; then
-    # Override default values
-    . $THIS_DIR/../env.local
-fi
+# Get JUPYTERHUB_USER_DATA_DIR
+read_configs
 
 set -x
 

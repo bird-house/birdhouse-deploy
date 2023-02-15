@@ -31,6 +31,12 @@ weaver.url = https://${PAVICS_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}
 weaver.ssl_verify = true
 weaver.request_options = request_options.yml
 
+# --- Weaver Execution settings ---
+# maximum wait time allowed for Prefer header to run Job/Quote synchronously
+# over this limit, they will automatically fallback to asynchronous execution/estimation
+weaver.exec_sync_max_wait = 20
+weaver.quote_sync_max_wait = 20
+
 # --- Weaver CWL settings ---
 # enforce provided effective user/group identifiers for Application Package execution
 # values must be resolved as integers
@@ -45,6 +51,9 @@ weaver.wps_output = true
 weaver.wps_output_dir = ${WEAVER_WPS_OUTPUTS_DIR}
 weaver.wps_output_url = https://${PAVICS_FQDN_PUBLIC}${WEAVER_WPS_OUTPUTS_PATH}
 weaver.wps_output_path =
+# default output sub-dir if user not specified (just for good measure, otherwise hook should default to it also)
+# see 'components/weaver/config/magpie/weaver_hooks.py:add_x_wps_output_context' that defines it when user is logged in
+weaver.wps_output_context = public
 weaver.wps_workdir = ${WEAVER_WPS_WORKDIR}
 
 # --- Weaver WPS metadata ---

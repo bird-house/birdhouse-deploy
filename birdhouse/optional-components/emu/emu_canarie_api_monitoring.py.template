@@ -1,7 +1,7 @@
 SERVICES['node']['monitoring'].update({
     '${EMU_NAME}-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/${EMU_NAME}?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${EMU_NAME}?service=WPS&version=1.0.0&request=GetCapabilities'
         },
     },
     '${EMU_NAME}': {

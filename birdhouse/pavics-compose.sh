@@ -1,5 +1,15 @@
 #!/bin/sh
 
+# NOTE, this file and all the extra component pre/post scripts that it executes
+# is used by the autodeploy mechanism inside a very minimalistic container,
+# therefore:
+#
+# * When making change to this file or any extra component pre/post scripts,
+#   should also test that it does not break the autodeploy.
+#
+# * Try to keep the same behavior/code, inside and outside of the
+#   autodeploy container to catch error early with the autodeploy.
+
 YELLOW=$(tput setaf 3)
 RED=$(tput setaf 1)
 NORMAL=$(tput sgr0)
@@ -28,7 +38,9 @@ VARS='
   $POSTGRES_MAGPIE_PASSWORD
   $SUPPORT_EMAIL
   $DATA_PERSIST_ROOT
+  $GEOSERVER_ADMIN_USER
   $GEOSERVER_ADMIN_PASSWORD
+  $BIRDHOUSE_DEPLOY_COMPONENTS_JSON
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local
@@ -61,6 +73,9 @@ OPTIONAL_VARS='
   $MAGPIE_SMTP_PORT
   $MAGPIE_SMTP_SSL
   $MAGPIE_SMTP_PASSWORD
+  $MAGPIE_LOG_LEVEL
+  $TWITCHER_LOG_LEVEL
+  $TWITCHER_VERIFY_PATH
   $VERIFY_SSL
   $JUPYTER_DEMO_USER
   $JUPYTER_LOGIN_BANNER_TOP_SECTION
@@ -73,6 +88,7 @@ OPTIONAL_VARS='
   $AUTODEPLOY_EXTRA_SCHEDULER_JOBS
   $PROXY_READ_TIMEOUT_VALUE
   $PROXY_ROOT_LOCATION
+  $SECURE_DATA_PROXY_AUTH_INCLUDE
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH
@@ -85,23 +101,10 @@ cd $(dirname $(readlink -f $0 || realpath $0))
 # container and manually from the host.
 COMPOSE_DIR="`pwd`"
 
-. ./default.env
+. "$COMPOSE_DIR/read-configs.include.sh"
+read_configs
 
-# we source local configs, if present
-# we don't use usual .env filename, because docker-compose uses it
-[ -f env.local ] && . ./env.local
-
-for adir in ${EXTRA_CONF_DIRS}; do
-  COMPONENT_DEFAULT_ENV="$adir/default.env"
-  if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
-    echo "reading '$COMPONENT_DEFAULT_ENV'"
-    . "$COMPONENT_DEFAULT_ENV"
-  fi
-done
-
-# Re-read env.local to make sure it can override ALL defaults from all
-# components.
-[ -f env.local ] && . ./env.local
+. ./scripts/get-components-json.include.sh
 
 for i in ${VARS}
 do

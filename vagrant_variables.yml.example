@@ -21,9 +21,9 @@ domain: ouranos.ca
 # Force a default gateway if networking issue (ex: VM in a different DMZ VLan).
 # default_gateway: 1.2.3.4
 
-# Datasets dirs on the host to be mounted read-only into the VM at the same
-# location, useful to avoid having to copy those gigantic netCDF files to the
-# VM disk.
+# Datasets dirs on the host to be mounted read-only, by default, into the VM
+# at the same location, useful to avoid having to copy those gigantic netCDF
+# files to the VM disk.
 # Can use sshfs if the datasets are really large to avoid having to copy it
 # locally.  Ex:
 #   sshfs -o ro -o allow_other datahost:/mount/DATA /data/datasets
@@ -31,6 +31,7 @@ domain: ouranos.ca
 # - { srcdir: "/data/datasets", destdir: "/data/datasets" }
 # - { srcdir: "/data/datasets-priv", destdir: "/data/datasetsPrivate" }
 # - { srcdir: "C:/data/datasets", destdir: "/data/datasets" }
+# - { srcdir: "/data/geoserver.clone", destdir: "/data/geoserver", mount_opts: "rw" }
 
 # If you want to provide a SSL certificate yourself, name it
 # '/home/vagrant/certkey.pem' and it won't be overriden, see

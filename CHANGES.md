@@ -16,6 +16,938 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.23.1](https://github.com/bird-house/birdhouse-deploy/tree/1.23.1) (2023-02-13)
+------------------------------------------------------------------------------------------------------------------
+
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+## Fixes
+- Vars in `DELAYED_EVAL` list are not expanded properly outside of `pavics-compose.sh`
+
+  There are other scripts sourcing `default.env` and `env.local` and all those
+  scripts have to expand the vars in `DELAYED_EVAL` list to have their actual
+  values.
+
+  Only scripts using the 3 variables in `DELAYED_EVAL` list are broken.
+
+  `DELAYED_EVAL` was previously introduced in PR https://github.com/bird-house/birdhouse-deploy/pull/272.
+
+  **Sample errors**
+
+  `fix-geoserver-data-dir-perm` (called at the end of `pavics-compose.sh`):
+  ```
+  fix GeoServer data dir permission on first run only, when data dir do not exist yet.
+  + DATA_DIR='${DATA_PERSIST_ROOT}/geoserver'
+  + '[' -n  ]
+  + docker run --rm --name fix-geoserver-data-dir-perm --volume '${DATA_PERSIST_ROOT}/geoserver:/datadir' --env FIRST_RUN_ONLY bash:5.1.4 bash -xc 'if [ -z "$FIRST_RUN_ONLY" -o ! -f /datadir/global.xml ]; \
+      then chown -R 1000:10001 /datadir; else echo "No execute."; fi'
+  docker: Error response from daemon: create ${DATA_PERSIST_ROOT}/geoserver: "${DATA_PERSIST_ROOT}/geoserver" includes invalid characters for a local volume name, only "[a-zA-Z0-9][a-zA-Z0-9_.-]" are allowed. If you intended to pass a host directory, use absolute path.
+  ```
+
+  `trigger-deploy-notebook` (broke notebook deploy job):
+  ```
+  + TMP_SCRIPT=/tmp/notebookdeploy/notebookdeploy.XXXXXXIfafFK/deploy-notebook
+  + cat
+  + chmod a+x /tmp/notebookdeploy/notebookdeploy.XXXXXXIfafFK/deploy-notebook
+  + docker run --rm --name deploy_tutorial_notebooks -u root -v /tmp/notebookdeploy/notebookdeploy.XXXXXXIfafFK/deploy-notebook:/deploy-notebook:ro -v /tmp/notebookdeploy/notebookdeploy.XXXXXXIfafFK/tutorial-notebooks:/tutorial-notebooks:ro -v '${DATA_PERSIST_ROOT}/jupyterhub_user_data:/notebook_dir:rw' --entrypoint /deploy-notebook bash:5.1.4
+  docker: Error response from daemon: create ${DATA_PERSIST_ROOT}/jupyterhub_user_data: "${DATA_PERSIST_ROOT}/jupyterhub_user_data" includes invalid characters for a local volume name, only "[a-zA-Z0-9][a-zA-Z0-9_.-]" are allowed. If you intended to pass a host directory, use absolute path.
+  ```
+
+  **Explanation of the fix**
+
+  All scripts have to remember to call function `process_delayed_eval` in order
+  to obtain the real value of each vars in `DELAYED_EVAL` list.
+
+  Centralized all logic about reading configs (config files reading order,
+  remember to call `process_delayed_eval`) to avoid mistake and to ease updating
+  logic in the future.  Too many scripts were reading the configs  themselves and
+  some are not doing it properly, ex: forgot to hide password when reading
+  `env.local`.
+
+  **All scripts should do this going forward**
+
+  ```sh
+  # Set variable COMPOSE_DIR to the dir containing pavics-compose.sh and docker-compose.yml.
+
+  # Source the script providing function read_configs.
+  # read_configs uses COMPOSE_DIR to find default.env and env.local.
+  . $COMPOSE_DIR/read-configs.include.sh
+
+  # Call function read_configs to read the various config files in the appropriate order and process delayed eval vars properly.
+  read_configs
+  ```
+
+[1.23.0](https://github.com/bird-house/birdhouse-deploy/tree/1.23.0) (2023-02-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- secure-data-proxy: add new [`secure-data-proxy`][secure-data-proxy] optional component.
+
+  When enabled, this component will enforce authentication and authorization to be resolved against the `/wpsoutputs`
+  endpoint prior to accessing the results produced by WPS executions. A Magpie service named `secure-data-proxy` is
+  created to define the resource and permission hierarchy of directories and files the users and groups can access.
+  When disabled, the original behavior to provide open access to `/wpsoutputs` is employed.
+
+  A variable named `SECURE_DATA_PROXY_AUTH_INCLUDE` is dynamically assigned based on the activation or not of this
+  component. Corresponding validation of optional/mandatory/delayed-eval variables used by this component are also
+  applied dynamically, as well as mounting the necessary `nginx` and `docker-compose` extended configurations.
+
+- Weaver: adjust user-context output directory hooks and permissions for [`secure-data-proxy`][secure-data-proxy].
+
+  When a process defined in Weaver (either a WPS provider or a local definition) is executed by a user that was granted
+  authorization to run a job, the corresponding user-context directory under `/wpsoutputs/users/{user-id}` will be used
+  for storing the execution outputs and will have the appropriate permissions set for that user to grant them access to
+  those outputs.
+
+## Fixes:
+
+- Magpie/Twitcher: update minimum version `magpie>=3.31.0` to employ `twitcher>=0.8.0` in `MapgieAdatepr`.
+
+  - Resolve an issue where `response.request` references were not set in OWS proxy responses when handled by Twitcher.
+    This caused `MapgieAdatepr` response hooks to fail, which in turn caused failing requests for any non-WPS
+    service that defined any proxy request hook, such as in the case of [`weaver`][weaver-component] component.
+
+  - Adds the Twitcher ``/ows/verify/{service_name}[/{extra_path}`` endpoint employed for validating authorized access
+    to Magpie service/resources, in the same fashion as the protected proxy endpoint, but without performing the proxied
+    request toward the target service. This is mandatory for using the new [`secure-data-proxy`][secure-data-proxy] 
+    optional component, otherwise the proxy endpoint triggers data download twice, once for authorization and another
+    for actually accessing the data.
+
+  See also [Ouranosinc/Magpie#571](https://github.com/Ouranosinc/Magpie/pull/571)
+  and [bird-house/twitcher#118](https://github.com/bird-house/twitcher/pull/118).
+
+[secure-data-proxy]: birdhouse/optional-components/secure-data-proxy
+[weaver-component]: birdhouse/components/weaver
+
+[1.22.11](https://github.com/bird-house/birdhouse-deploy/tree/1.22.11) (2023-02-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Proxy: add `/components` endpoint that provides a JSON list of loaded components by the platform.
+
+  Prior to this functionality, it was impossible to know which potential capabilities, services or behaviors were to be
+  expected by a given DACCS/PAVICS/birdhouse instance. Using this endpoint, nodes can obtain minimal machine-readable
+  details about their supported capabilities, allowing better interoperability.
+  
+  Furthermore, developers maintaining distinct stacks and integrating different features can have a better
+  understanding of behaviors by the various web services when performing requests against a given node.
+
+[1.22.10](https://github.com/bird-house/birdhouse-deploy/tree/1.22.10) (2023-01-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+- Weaver: fixes for running `post-docker-compose-up` operation.
+
+  - When the target `curl` image was not already available on the machine (each time for ephemeral test instances), the 
+    docker pull outputs on the first call would mangle the monitoring messages. An initial pull is done to avoid it.
+
+  - When running on `sh` (as expected by the script's shebang), the utility variable `$RANDOM` is missing.
+    A POSIX portable equivalent is used if `$RANDOM` could not be resolved.
+
+[1.22.9](https://github.com/bird-house/birdhouse-deploy/tree/1.22.9) (2023-01-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Jupyter: allow recursive directory deletion
+
+  This was not possible before since non-empty dir deletion was not possible.
+
+- Jupyter: re-enable terminal for all users
+
+  It was disabled to avoid malicious usage but with the monitoring in
+  place and the demo account restricted to limited resources, it's
+  probably safe to try enabling this again.
+
+  For legitimate users, not having the terminal is pretty annoying.
+  Should not penalize legit users for some rogue users.
+
+
+[1.22.8](https://github.com/bird-house/birdhouse-deploy/tree/1.22.8) (2023-01-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+
+- Weaver: fix post script to be compatible with autodeploy
+
+  Autodeploy runs inside its own docker container and `curl` is not available.
+  Therefore Weaver post script should be using `curl` from a docker image
+  instead of locally installed flavor.
+
+- Jupyter: fix the Docker Spawner `start` function to support JupyterHub image selection names 
+  that use the `<name>:<version>` format.
+
+
+[1.22.7](https://github.com/bird-house/birdhouse-deploy/tree/1.22.7) (2022-12-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+
+- Overriding `DATA_PERSIST_ROOT` in `env.local` do not take effect for
+  `JUPYTERHUB_USER_DATA_DIR`, `MAGPIE_PERSIST_DIR`, and `GEOSERVER_DATA_DIR`.
+
+  These 3 vars will have to be delayed evaluated for override in `env.local` to
+  take effect.
+
+  For a variable to be delayed evaluated, it has to be defined using
+  single-quote and be added to the list of `DELAYED_EVAL` in `default.env`.
+
+  If those steps are forgotten in `env.local`, it will still work since
+  `env.local` is the last file to be read.  However those steps should not be
+  forgotten in any `default.env` for all components.
+
+  So the impact or burden is on the developpers to write their `default.env`
+  file properly, not on the users that only modify the `env.local` file.
+
+  All `default.env` files header have been updated with notice about this new
+  delayed evaluation feature.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/270.
+
+## Changes:
+
+- Warn when a dir in `EXTRA_CONF_DIRS` does not exist.
+
+  Most likely a typo in a new dir.  Just warn and not exit directly to avoid
+  leaving the entire platform down during an unattended autodeploy since no
+  one is around to take immediate action.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/266.
+
+
+[1.22.6](https://github.com/bird-house/birdhouse-deploy/tree/1.22.6) (2022-12-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- new Jupyter env for `urlpath`
+
+  See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/112
+
+  - Adds `urlpath` for https://github.com/Ouranosinc/pavics-sdi/pull/268, fixes https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/110
+  - Relevant changes (alphabetical order):
+  ```diff
+  <   - climpred=2.2.0=pyhd8ed1ab_0
+  >   - climpred=2.3.0=pyhd8ed1ab_0
+
+  <   - dask=2022.11.0=pyhd8ed1ab_0
+  >   - dask=2022.11.1=pyhd8ed1ab_0
+
+  <   - flox=0.6.3=pyhd8ed1ab_0
+  >   - flox=0.6.4=pyhd8ed1ab_0
+
+  <   - h5netcdf=1.0.2=pyhd8ed1ab_0
+  >   - h5netcdf=1.1.0=pyhd8ed1ab_0
+
+  <   - numpy=1.23.4=py38h7042d01_1
+  >   - numpy=1.23.5=py38h7042d01_0
+
+  >   - urlpath=1.2.0=pyhd8ed1ab_0
+  ```
+
+
+[1.22.5](https://github.com/bird-house/birdhouse-deploy/tree/1.22.5) (2022-12-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- new Jupyter env with latest of everything
+
+  PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/106
+
+  - Unpin Shapely (fixes https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/99)
+  - Unpin Dask (fixes https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/100)
+  - Pin `intake-esm` since newer version activated validation of optional fields and broke our notebooks (https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/109)
+  - Mamba is fully usable alongside Conda.  Previously the installation used Mamba but then Mamba is uninstalled because it breaks the jupyter conda plugin
+  - New packages:
+    - performance optimization: flox, pyston
+    - new feature: geopy, streamlit, python-pptx
+    - jupyter plugin: jupyterlab-tabular-data-editor to easily edit `.csv` files
+   - Removed package:
+     - jupyter-panel-proxy, interfere with `panel serve` commands
+  - Relevant changes (alphabetical order):
+  ```diff
+  <   - bokeh=2.4.2=py38h578d9bd_1
+  >   - bokeh=2.4.3=pyhd8ed1ab_3
+  
+  <   - cartopy=0.20.1=py38hf9a4893_1
+  >   - cartopy=0.21.0=py38hf6c3373_3
+  
+  <   - cf_xarray=0.7.2=pyhd8ed1ab_0
+  >   - cf_xarray=0.7.5=pyhd8ed1ab_0
+  
+  <   - cftime=1.6.0=py38h71d37f0_1
+  >   - cftime=1.6.2=py38h26c90d9_1
+  
+  <   - clisops=0.9.0=pyh6c4a22f_0
+  >   - clisops=0.9.3=pyh1a96a4e_0
+  
+  # unpin
+  <   - dask=2022.1.0=pyhd8ed1ab_0
+  >   - dask=2022.11.0=pyhd8ed1ab_0
+  
+  # new
+  >   - flox=0.6.3=pyhd8ed1ab_0
+  
+  <   - fiona=1.8.20=py38hbb147eb_2
+  >   - fiona=1.8.22=py38hc72d8cd_2
+  
+  <   - gdal=3.3.3=py38hcf2042a_0
+  >   - gdal=3.5.3=py38h1f15b03_3
+  
+  <   - geopandas=0.10.2=pyhd8ed1ab_1
+  >   - geopandas=0.12.1=pyhd8ed1ab_1
+  
+  # new
+  >   - geopy=2.3.0=pyhd8ed1ab_0
+  >   - pyston_lite=2.3.4=py38h0a891b7_1
+  >   - python-pptx=0.6.21=pyhd8ed1ab_0
+  
+  <   - ravenpy=0.7.8=pyh8a188c0_0
+  >   - ravenpy=0.9.0=pyha21a80b_0
+  
+  # pip to conda
+  <     - requests-magpie==0.1.1
+  >   - requests-magpie=0.2.0=pyhd8ed1ab_0
+  
+  <   - rioxarray=0.11.1=pyhd8ed1ab_0
+  >   - rioxarray=0.13.1=pyhd8ed1ab_0
+  
+  <   - roocs-utils=0.6.1=pyh6c4a22f_0
+  >   - roocs-utils=0.6.3=pyh1a96a4e_0
+  
+  # unpin
+  <   - shapely=1.7.1=py38hb7fe4a8_5
+  >   - shapely=1.8.5=py38hafd38ec_2
+  
+  # new
+  >   - streamlit=1.15.0=pyhd8ed1ab_0
+  
+  <   - xarray=2022.3.0=pyhd8ed1ab_0
+  >   - xarray=2022.10.0=pyhd8ed1ab_0
+  
+  <   - xclim=0.36.0=pyhd8ed1ab_0
+  >   - xclim=0.39.0=pyhd8ed1ab_0
+  
+  <   - xesmf=0.6.2=pyhd8ed1ab_0
+  >   - xesmf=0.6.3=pyhd8ed1ab_1
+  
+  # new
+  >     - jupyterlab-tabular-data-editor==1.0.0
+  ```
+
+- documentation:
+  - Add `Weaver` component diagram to better illustrate its interactions with other *birdhouse* services.
+  - Move `monitoring` component images under its respective component directory.
+
+[1.22.4](https://github.com/bird-house/birdhouse-deploy/tree/1.22.4) (2022-11-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- autodeploy: allow repos to optionally decide if a deploy is required
+
+  Useful when only a subset of file changes in a repo will actually impact deployment.
+
+  Without this mechanism any file changes in a repo will trigger a deployment, which
+  would cost a full platform restart for no reason.
+
+  Var `GIT_CHANGED_FILES` is given to optional script `<repo_root>/autodeploy/conditional-trigger`
+  and only an exit code 0 will trigger deploy.
+
+- fix-geoserver-data-dir-perm: allow overriding data dir to use on another instance of Geoserver
+
+
+[1.22.3](https://github.com/bird-house/birdhouse-deploy/tree/1.22.3) (2022-10-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+
+- jupyter env: reap defunct processes with proper pid 1 init process
+
+    Before, process hierarchy:
+
+    ```sh
+    $ docker exec jupyter-lvu ps -efH
+    UID          PID    PPID  C STIME TTY          TIME CMD
+    jenkins       88       0  0 21:01 ?        00:00:00 ps -efH
+    jenkins        1       0  0 18:57 ?        00:00:00 /opt/conda/bin/python /opt/conda/bin/conda run -n birdy /usr/local/bin/start-notebook.sh --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    jenkins        7       1  0 18:57 ?        00:00:00   /bin/bash /tmp/tmpmx46emji
+    jenkins       21       7  0 18:57 ?        00:00:27     /opt/conda/envs/birdy/bin/python3.8 /opt/conda/envs/birdy/bin/jupyterhub-singleuser --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    ```
+
+    Before, reproducible defunct firefox-esr processes:
+    ```sh
+    True
+    [{'pid': 302, 'create_time': 1666550504.76, 'name': 'firefox-esr'}, {'pid': 303, 'create_time': 1666550504.8, 'name': 'firefox-esr'}]
+
+    True
+    [{'pid': 302, 'create_time': 1666550504.76, 'name': 'firefox-esr'}, {'pid': 303, 'create_time': 1666550504.8, 'name': 'firefox-esr'}, {'pid': 692, 'create_time': 1666550867.43, 'name': 'firefox-esr'}, {'pid': 693, 'create_time': 1666550867.45, 'name': 'firefox-esr'}]
+
+    $ docker exec jupyter-lvu ps
+        PID TTY          TIME CMD
+          1 ?        00:00:00 conda
+          7 ?        00:00:00 bash
+         21 ?        00:00:20 jupyterhub-sing
+        296 ?        00:00:00 geckodriver <defunct>
+        302 ?        00:00:00 firefox-esr <defunct>
+        303 ?        00:00:45 firefox-esr <defunct>
+        379 ?        00:00:00 Web Content <defunct>
+        407 ?        00:00:04 WebExtensions <defunct>
+        486 ?        00:00:00 Web Content <defunct>
+        507 ?        00:00:38 file:// Content <defunct>
+        581 ?        00:00:15 python
+        686 ?        00:00:00 geckodriver
+        692 ?        00:00:00 firefox-esr <defunct>
+        693 ?        00:00:34 firefox-esr
+        768 ?        00:00:00 Web Content
+        796 ?        00:00:04 WebExtensions
+        874 ?        00:00:13 file:// Content
+        902 ?        00:00:00 Web Content
+        961 ?        00:00:00 ps
+    ```
+
+    After, process hierarchy:
+
+    ```sh
+    $ docker exec jupyter-lvu2 ps -efH
+    UID          PID    PPID  C STIME TTY          TIME CMD
+    jenkins       49       0  0 21:01 ?        00:00:00 ps -efH
+    jenkins        1       0  0 21:00 ?        00:00:00 /sbin/docker-init -- conda run -n birdy /usr/local/bin/start-notebook.sh --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    jenkins        7       1  0 21:00 ?        00:00:00   /opt/conda/bin/python /opt/conda/bin/conda run -n birdy /usr/local/bin/start-notebook.sh --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    jenkins        8       7  0 21:00 ?        00:00:00     /bin/bash /tmp/tmp6chrvz_j
+    jenkins       22       8  9 21:00 ?        00:00:06       /opt/conda/envs/birdy/bin/python3.8 /opt/conda/envs/birdy/bin/jupyterhub-singleuser --ip=0.0.0.0 --port=8888 --notebook-dir=/notebook_dir --SingleUserNotebookApp.default_url=/lab --debug --disable-user-config --NotebookApp.terminals_enabled=False --NotebookApp.shutdown_no_activity_timeout=345600 --MappingKernelManager.cull_idle_timeout=86400 --MappingKernelManager.cull_connected=True
+    ```
+
+    After, unable to reproduce defunct firefox-esr processes:
+    ```sh
+    False
+    []
+
+    True
+    [{'create_time': 1666550929.17, 'pid': 962, 'name': 'firefox-esr'}]
+
+    $ docker exec jupyter-lvu2 ps
+        PID TTY          TIME CMD
+          1 ?        00:00:00 docker-init
+          6 ?        00:00:00 conda
+          7 ?        00:00:00 bash
+         21 ?        00:00:20 jupyterhub-sing
+        928 ?        00:00:11 python
+        955 ?        00:00:00 geckodriver
+        962 ?        00:00:46 firefox-esr
+       1035 ?        00:00:00 Web Content
+       1061 ?        00:00:03 WebExtensions
+       1176 ?        00:00:00 Web Content
+       1223 ?        00:00:21 file:// Content
+       1327 ?        00:00:00 ps
+    ```
+
+    How to reproduce defunct firefox-esr processes (run twice to create defunct processes from first run):
+    ```python
+    import psutil
+    import panel as pn
+    import numpy as np
+    import xarray as xr
+
+    pn.extension()
+
+    def checkIfProcessRunning(processName):
+        '''
+        Check if there is any running process that contains the given name processName.
+        '''
+        #Iterate over the all the running process
+        for proc in psutil.process_iter():
+
+            # Check if process name contains the given name string.
+            if processName.lower() in proc.name().lower():
+                return True
+
+        return False;
+
+    def findProcessIdByName(processName):
+        '''
+        Get a list of all the PIDs of a all the running process whose name contains
+        the given string processName
+        '''
+        listOfProcessObjects = []
+        #Iterate over the all the running process
+        for proc in psutil.process_iter():
+
+           pinfo = proc.as_dict(attrs=['pid', 'name', 'create_time'])
+           # Check if process name contains the given name string.
+           if processName.lower() in pinfo['name'].lower() :
+               listOfProcessObjects.append(pinfo)
+
+        return listOfProcessObjects;
+
+    print(checkIfProcessRunning('firefox-esr'))
+    print(findProcessIdByName('firefox-esr'))
+
+    import hvplot.xarray
+    panel = pn.Column()
+    data = xr.DataArray(np.random.rand(200,400), name='data')
+    app = pn.Column(data.hvplot.quadmesh())
+    app.save('test.html')
+    for ii in range(0,10):
+        data = xr.DataArray(np.random.rand(200,400), name='data')
+        app = pn.Column(data.hvplot.quadmesh())
+        app.save(f"test{ii}.png")
+    print(checkIfProcessRunning('firefox-esr'))
+    print(findProcessIdByName('firefox-esr'))
+    ```
+
+
+[1.22.2](https://github.com/bird-house/birdhouse-deploy/tree/1.22.2) (2022-09-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- `deploy-data`: allow `post_actions` to vary depending on files changed on subsequent run
+
+  Useful for `post_actions` to know the git version change between the current
+  and the previous run and which files are impacted.
+
+  Actions can perform extra git commands if needed or simply used the
+  provide git diff output and/or rsync output to decide what to do next.
+
+  **Non-breaking changes**
+  - `deploy-data` script: add new vars `GIT_PREVIOUS_COMMIT_HASH`, `GIT_NEW_COMMIT_HASH`, `GIT_CHANGED_FILES`,
+    `RSYNC_OUTPUT`, accessible to `post_actions` scripts.
+
+
+[1.22.1](https://github.com/bird-house/birdhouse-deploy/tree/1.22.1) (2022-09-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- birdhouse-deploy: fix bump versioning methodology to auto-update `releaseTime` accordingly.
+  
+  ### Relevant changes
+  * Adds `Makefile` to run basic DevOps maintenance commands on the repository.
+  * Adds `RELEASE.txt` with the active release tag and datetime.
+  * Replace `now:` directives by `utcnow:` to report time properly according to employed ISO format.
+  * Update contribution guidelines regarding methodology to create a new revision.
+
+[1.22.0](https://github.com/bird-house/birdhouse-deploy/tree/1.22.0) (2022-08-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Geoserver: Adds `./optional-components/test-geoserver-secured-access`, to test Twitcher-protected access to Geoserver
+  
+  Relevant changes:
+  - New Provider (Magpie) : geoserver-secured
+  - New Location (Proxy) : /geoserver-secured
+  - Copied current WFS GetCapabilities and DescribeFeatureType permissions to new Provider
+
+[1.21.1](https://github.com/bird-house/birdhouse-deploy/tree/1.21.1) (2022-08-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- birdhouse-deploy: fix invalid `canarie-api-full-monitoring` endpoints adding double `/` when substituting variables.
+- birdhouse-deploy: add optional variables `MAGPIE_LOG_LEVEL` and `TWITCHER_LOG_LEVEL` (both `INFO` by default) to 
+  allow instead to customize reported details by instances for debugging purposes. Note that setting `DEBUG` will leak
+  sensible details in their logs and should be reserved only for testing environments.
+
+[1.21.0](https://github.com/bird-house/birdhouse-deploy/tree/1.21.0) (2022-08-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Cowbird: add new service [Ouranosinc/cowbird](https://github.com/Ouranosinc/cowbird/) to the stack.
+
+  ### Relevant changes
+  * Cowbird can be integrated to the instance using [components/cowbird](./birdhouse/components/cowbird) 
+    when added to in ``EXTRA_CONF_DIRS`` in the ``env.local`` variable definitions.
+  * Offers syncing operations between various other *birds* in order to apply user/group permissions between
+    corresponding files, granting access to them seamlessly through distinct services.
+  * Allows event and callback triggers to sync permissions and volume paths between API endpoints and local storages.
+
+- Nginx: add missing `X-Forwarded-Host` header to allow `Twitcher` to report the proper server host location when the
+  service to be accessed uses an internal Docker network reference through the service private URL defined in `Magpie`.
+
+- birdhouse-deploy: fix missing `GEOSERVER_ADMIN_USER` variable templating 
+  from [pavics-compose.sh](./birdhouse/pavics-compose.sh).
+
+[1.20.4](https://github.com/bird-house/birdhouse-deploy/tree/1.20.4) (2022-08-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Weaver: update `weaver` component default version to [4.22.0](https://github.com/crim-ca/weaver/tree/4.22.0).
+
+  ### Relevant changes
+  * Minor improvements to facilitate retrieval of XML and JSON Process definition and their seamless execution with 
+    XML or JSON request contents using either WPS or *OGC API - Processes* REST endpoints interchangeably.
+  * Fixes to WPS remote provider parsing registered in Weaver to successfully perform the relevant process executions.
+  * Add WPS remote provider retry conditions to handle known problematic cases during process execution (on remote)
+    that can lead to sporadic failures of the monitored job. When possible, retried submission leading to successful
+    execution will result in the monitored job to complete successfully and transparently to the user. Relevant errors
+    and retry attempts are provided in the job logs.
+  * Add WPS remote provider status exception response as XML message from the failed remote execution within the
+    monitored local job logs to help users understand how to resolve any encountered issue on the remote service.
+  * Bump version ``OWSLib==0.26.0`` to fix ``processVersion`` attribute resolution from WPS remote provider definition
+    to populate ``Process.version`` property employed in converted `Process` description to `OGC API - Process` schema
+    (relates to `geopython/OWSLib#794 <https://github.com/geopython/OWSLib/pull/794>`_).
+
+[1.20.3](https://github.com/bird-house/birdhouse-deploy/tree/1.20.3) (2022-08-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+- Canarie-api: fix unable to verify LetsEncrypt SSL certs
+
+  LetsEncrypt older root certificate "DST Root CA X3" expired on September 30,
+  2021, see https://letsencrypt.org/docs/dst-root-ca-x3-expiration-september-2021/
+
+  All the major browsers and OS platform has previously added the new root
+  certificate "ISRG Root X1" ahead of time so the transition to the new
+  root certificate is seemless for all clients.
+
+  Python `requests` package bundle their own copy of known root
+  certificates and is late to add this new root cert "ISRG Root X1".  Had
+  it automatically fallback to the OS copy of the root cert bundle, this
+  would have been seemless.
+
+  The fix is to force `requests` to use the OS copy of the root cert bundle.
+
+  Fix for this error:
+  ```
+  $ docker exec proxy python -c "import requests; requests.request('GET', 'https://lvupavicsmaster.ouranos.ca/geoserver')"
+  Traceback (most recent call last):
+    File "<string>", line 1, in <module>
+    File "/usr/local/lib/python2.7/dist-packages/requests/api.py", line 50, in request
+      response = session.request(method=method, url=url, **kwargs)
+    File "/usr/local/lib/python2.7/dist-packages/requests/sessions.py", line 468, in request
+      resp = self.send(prep, **send_kwargs)
+    File "/usr/local/lib/python2.7/dist-packages/requests/sessions.py", line 576, in send
+      r = adapter.send(request, **kwargs)
+    File "/usr/local/lib/python2.7/dist-packages/requests/adapters.py", line 433, in send
+      raise SSLError(e, request=request)
+  requests.exceptions.SSLError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:661)
+  ```
+
+  Default SSL root cert bundle of `requests`:
+  ```
+  $ docker exec proxy python -c "import requests; print requests.certs.where()"
+  /usr/local/lib/python2.7/dist-packages/requests/cacert.pem
+  ```
+
+  Confirm the fix works:
+  ```
+  $ docker exec -it proxy bash
+  root@37ed3a2a03ae:/opt/local/src/CanarieAPI/canarieapi# REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt python -c "import requests; requests.request('GET', 'https://lvupavicsmaster.ouranos.ca/geoserver')"
+  root@37ed3a2a03ae:/opt/local/src/CanarieAPI/canarieapi#
+
+  $ docker exec proxy env |grep REQ
+  REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+  ```
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/198
+
+
+[1.20.2](https://github.com/bird-house/birdhouse-deploy/tree/1.20.2) (2022-08-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- birdhouse-deploy: fix missing bump of server version reported in ``canarie`` service configuration
+
+[1.20.1](https://github.com/bird-house/birdhouse-deploy/tree/1.20.1) (2022-08-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- GeoServer: enable metadata-plugin for modifying layer metadata, including bulk modifications
+
+  See plugin documentation at https://docs.geoserver.org/2.19.x/en/user/community/metadata/index.html
+
+  Related to issue https://github.com/Ouranosinc/pavics-sdi/issues/234
+
+  Add new "Metadata" tab in Layer Edit page:
+  ![Screenshot 2022-01-25 at 00-25-45 GeoServer Edit Layer](https://user-images.githubusercontent.com/11966697/150916419-fce99147-2903-414b-8b83-551709ef87d6.png)
+
+
+[1.20.0](https://github.com/bird-house/birdhouse-deploy/tree/1.20.0) (2022-08-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: update `weaver` component default version from [4.12.0](https://github.com/crim-ca/weaver/tree/4.12.0)
+  to [4.20.0](https://github.com/crim-ca/weaver/tree/4.20.0).
+  See [full CHANGELOG](https://github.com/crim-ca/weaver/blob/4.20.0/CHANGES.rst) for details.
+
+  ### Breaking changes
+  * Docker commands that target `weaver-worker` to start or use `celery` must be adjusted according to how its new CLI
+    resolves certain global parameters. Since the [celery-healthcheck](./birdhouse/components/weaver/celery-healthcheck)
+    script uses this CLI, `celery` commands were adjusted to consider those changes. If custom scripts or command
+    overrides are used to call `celery`, similar changes will need to be applied according to employed Weaver version.
+    See details in [Weaver 4.15.0 changes](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#4150-2022-04-20).
+
+  ### Relevant changes
+  * Support OpenAPI-based `schema` field for Process I/O definitions to align with latest *OGC API - Processes* changes.
+  * Support `Prefer` header to define execution mode of jobs according to latest *OGC API - Processes* recommendations.
+  * Support `transmissionMode` to return file-based outputs by HTTP `Link` header references as desired.
+  * Support deployment of new processes using YAML and CWL based request contents directly to remove the need to
+    convert and indirectly embed their definitions in specific JSON schema structures.
+  * Support process revisions allowing users to iteratively update process metadata and their definitions without full
+    un/re-deployment of the complete process for each change. This also allows multiple process revisions to live
+    simultaneously on the instance, which can be described or launched for job executions with specific tagged versions.
+  * Add control query parameters to retrieve outputs in different JSON schema variations according to desired structure.
+  * Add statistics collection following job execution to obtain machine resource usage by the executed process.
+  * Improve handling of Content-Type definitions for reporting inputs, outputs and logs retrieval from job executions.
+  * Fixes related to reporting of job results with different formats and URL references based on requested execution
+    methods and control parameters.
+  * Fixes to resolve pending vulnerabilities or feature integrations by package dependencies (`celery`, `pywps`, etc.).
+  * Fixes related to parsing of WPS-1/2 remote providers URL from a CWL definition using `GetCapabilities` endpoint.
+  * Fixes and addition of multiple Weaver CLI capabilities to employ new features.
+
+
+[1.19.2](https://github.com/bird-house/birdhouse-deploy/tree/1.19.2) (2022-07-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Finch: new release for new Xclim
+
+  Finch release notes:
+
+  0.9.2 (2022-07-19)
+  ------------------
+  * Fix Finch unable to startup in the Docker image.
+
+  0.9.1 (2022-07-07)
+  ------------------
+  * Avoid using a broken version of ``libarchive`` in the Docker image.
+
+  0.9.0 (2022-07-06)
+  ------------------
+  * Fix use of ``output_name``, add ``output_format`` to xclim indicators.
+  * Change all outputs to use ``output`` as the main output field name (instead of ``output_netcdf``).
+  * Updated to xclim 0.37:
+
+      - Percentile inputs of xclim indicators have been renamed with generic names, excluding an explicit mention to the target percentile.
+      - In ensemble processes, these percentiles can now be chosen through ``perc_[var]`` inputs. The default values are inherited from earlier versions of xclim.
+  * Average shape process downgraded to be single-threaded, as ESMF seems to have issues with multithreading.
+  * Removed deprecated processes ``subset_ensemble_bbox_BCCAQv2``, ``subset_ensemble_BCCAQv2`` and ``BCCAQv2_heat_wave_frequency_gridpoint``.
+  * Added ``csv_precision`` to all processes allowing CSV output. When given, it controls the number of decimal places in the output.
+
+
+[1.19.1](https://github.com/bird-house/birdhouse-deploy/tree/1.19.1) (2022-07-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Various changes to get the new production host up and running
+
+    **Non-breaking changes**
+    - Bootstrap testsuite: only crawl the subset enough to pass canarie-api monitoring: faster when system under test has too much other stuff.
+    - New script: `check-autodeploy-repos`: to ensure autodeploy will trigger normally.
+    - New script: `sync-data`: to pull data from existing production host to a new production host or to a staging host to emulate the production host.
+    - thredds, geoserver, generic_bird: set more appropriate production values, taken from https://github.com/Ouranosinc/birdhouse-deploy/commit/316439e310e915e0a4ef35d25744cab76722fa99
+    - monitoring: fix redundant `network_mode: host` and `ports` binding since host network_mode will already automatically perform port bindings
+
+    **Breaking changes**
+    - None
+
+## Related Issue / Discussion
+
+- https://github.com/bird-house/birdhouse-deploy-ouranos/pull/16
+- https://github.com/Ouranosinc/pavics-vdb/pull/48
+- https://github.com/Ouranosinc/ouranos-ansible/pull/2
+
+
+[1.19.0](https://github.com/bird-house/birdhouse-deploy/tree/1.19.0) (2022-06-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Magpie/Twitcher: update `magpie` service
+  from [3.21.0](https://github.com/Ouranosinc/Magpie/tree/3.21.0)
+  to [3.26.0](https://github.com/Ouranosinc/Magpie/tree/3.26.0) and
+  bundled `twitcher` from [0.6.2](https://github.com/bird-house/twitcher/tree/v0.6.2)
+  to [0.7.0](https://github.com/bird-house/twitcher/tree/v0.7.0).
+  
+  - Adds [Service Hooks](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks) allowing 
+    Twitcher to apply HTTP pre-request/post-response modifications to requested services and resources in accordance
+    to `MagpieAdapter` implementation and using plugin Python scripts when matched against specific request parameters.
+
+  - Using *Service Hooks*, inject ``X-WPS-Output-Context`` header in Weaver job submission requests through the proxied
+    request by Twitcher and `MagpieAdapter`. This header contains the user ID that indicates to Weaver were to store 
+    job output results, allowing to save them in the corresponding user's workspace directory under `wpsoutputs` path.
+    More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/244.
+
+  - Using *Service Hooks*, filter processes returned by Weaver in JSON response from ``/processes`` endpoint using
+    respective permissions applied onto each ``/processes/{processID}`` for the requesting user. Users will only be able
+    to see processes for which they have read access to retrieve the process description.
+    More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/245.
+
+  - Using *Service Hooks*, automatically apply permissions for the user that successfully deployed a Weaver process 
+    using ``POST /processes`` request, granting it direct access to this process during process listing, process 
+    description request and for submitting job execution of this process.
+    Only this user deploying the process will have access to it until further permissions are added in Magpie to share
+    or publish it with other users, groups and/or publicly. The user must have the necessary permission to deploy a new
+    process in the first place. More details found in PR https://github.com/bird-house/birdhouse-deploy/pull/247.
+
+[1.18.13](https://github.com/bird-house/birdhouse-deploy/tree/1.18.13) (2022-06-07)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- deploy-data: new env var DEPLOY_DATA_RSYNC_USER_GRP to avoid running cronjobs as root
+
+  When `deploy-data` is used by the `scheduler` component, it is run as
+  `root`.  This new env var will force the rsync process to run as a regular user to
+  follow security best practice to avoid running as root when not needed.
+
+  Note that the `git checkout` step done by `deploy-data` is still run as root.
+  This is because `deploy-data` is currently still run as root so it can
+  execute `docker` commands (ex: spawning the `rsync` command above in its own
+  docker container).
+
+  To fix this limitation, the regular user inside the `deploy-data` container
+  need to have docker access inside the container and outside on the host at
+  the same time.  If we make that regular user configurable so the script
+  `deploy-data` is generic and can work for any organisations, this is tricky
+  for the moment so will have to be handle in another PR.
+
+  So for the moment we have not achieved full non-root user in cronjobs
+  launched by the `scheduler` compoment but the most important part, the part
+  that perform the actual job (rsync or execute custom command using an
+  external docker container) is running as non-root.
+
+  See PR https://github.com/bird-house/birdhouse-deploy-ouranos/pull/18 that
+  make use of this new env var.
+
+  When `deploy-data` is invoking an external script that itself spawn a new
+  `docker run`, then it is up to this external script to ensure the proper
+  non-root user is used by `docker run`.
+  See PR https://github.com/Ouranosinc/pavics-vdb/pull/50 that handle that
+  case.
+
+
+[1.18.12](https://github.com/bird-house/birdhouse-deploy/tree/1.18.12) (2022-05-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Jupyter env: new build for new XClim and to get Dask dashboard and Panel server app to work
+
+  Deploy new Jupyter env from PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/105 on PAVICS.
+
+  Detailed changes can be found at https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/105.
+
+  Dask dashboard no manual URL mangling required:
+
+  ![Screenshot from 2022-04-13 22-37-49](https://user-images.githubusercontent.com/11966697/163303916-f781ac23-d10a-4cd6-807c-b10c8703afc3.png)
+
+  "Render with Panel" button works:
+  ![Screenshot from 2022-05-04 15-18-03](https://user-images.githubusercontent.com/11966697/166810160-f6989da4-6e8f-4407-8fd5-4ef71770e1f2.png)
+
+
+  Relevant changes:
+
+  ```diff
+  # new
+  >   - dask-labextension=5.2.0=pyhd8ed1ab_0
+  >   - jupyter-panel-proxy=0.2.0a2=py_0
+  >   - jupyter-server-proxy=3.2.1=pyhd8ed1ab_0
+  
+  # removed, interfere with panel
+  <     - handcalcs==1.4.1
+  
+  <   - xclim=0.34.0=pyhd8ed1ab_0
+  >   - xclim=0.36.0=pyhd8ed1ab_0
+  
+  <   - cf_xarray=0.6.3=pyhd8ed1ab_0
+  >   - cf_xarray=0.7.2=pyhd8ed1ab_0
+  
+  <   - clisops=0.8.0=pyh6c4a22f_0
+  >   - clisops=0.9.0=pyh6c4a22f_0
+  
+  # downgrade by clisops
+  <   - pandas=1.4.1=py38h43a58ef_0
+  >   - pandas=1.3.5=py38h43a58ef_0
+  
+  <   - rioxarray=0.10.3=pyhd8ed1ab_0
+  >   - rioxarray=0.11.1=pyhd8ed1ab_0
+  
+  <   - nc-time-axis=1.4.0=pyhd8ed1ab_0
+  >   - nc-time-axis=1.4.1=pyhd8ed1ab_0
+  
+  <   - roocs-utils=0.5.0=pyh6c4a22f_0
+  >   - roocs-utils=0.6.1=pyh6c4a22f_0
+  
+  <   - panel=0.12.7=pyhd8ed1ab_0
+  >   - panel=0.13.1a2=py_0
+  
+  <   - plotly=5.6.0=pyhd8ed1ab_0
+  >   - plotly=5.7.0=pyhd8ed1ab_0
+  ```
+
+
+[1.18.11](https://github.com/bird-house/birdhouse-deploy/tree/1.18.11) (2022-04-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Finch: new release for dask performance problem
+
+  PR to deploy new Finch releases in https://github.com/bird-house/finch/pull/233 on PAVICS.
+
+  See the Finch PR for more info.
+
+  Finch release notes:
+
+  0.8.3 (2022-04-21)
+  ------------------
+  * Preserve RCP dimension in ensemble processes, even when only RCP is selected.
+  * Pin ``dask`` and ``distributed`` at ``2022.1.0``, see https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/issues/100
+
+
+[1.18.10](https://github.com/bird-house/birdhouse-deploy/tree/1.18.10) (2022-04-07)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Jupyter env: new xlrd, pre-commit, pin dask, distributed, cf_xarray, latest of everything else
+
+  Deploy new Jupyter env from PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/101 on PAVICS.
+
+  Detailed changes can be found at https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/101.
+
+  Relevant changes:
+  ```diff
+  >   - pre-commit=2.17.0=py38h578d9bd_0
+  >   - xlrd=2.0.1=pyhd8ed1ab_3
+  
+  <   - xclim=0.32.1=pyhd8ed1ab_0
+  >   - xclim=0.34.0=pyhd8ed1ab_0
+  
+  <   - cfgrib=0.9.9.1=pyhd8ed1ab_1
+  >   - cfgrib=0.9.10.1=pyhd8ed1ab_0
+  
+  <   - cftime=1.5.1.1=py38h6c62de6_1
+  >   - cftime=1.6.0=py38h3ec907f_0
+  
+  <   - intake-xarray=0.5.0=pyhd8ed1ab_0
+  >   - intake-xarray=0.6.0=pyhd8ed1ab_0
+  
+  <   - pandas=1.3.5=py38h43a58ef_0
+  >   - pandas=1.4.1=py38h43a58ef_0
+  
+  <   - regionmask=0.8.0=pyhd8ed1ab_1
+  >   - regionmask=0.9.0=pyhd8ed1ab_0
+  
+  <   - rioxarray=0.9.1=pyhd8ed1ab_0
+  >   - rioxarray=0.10.3=pyhd8ed1ab_0
+  
+  <   - xarray=0.20.2=pyhd8ed1ab_0
+  >   - xarray=2022.3.0=pyhd8ed1ab_0
+  
+  <   - zarr=2.10.3=pyhd8ed1ab_0
+  >   - zarr=2.11.1=pyhd8ed1ab_0
+  ```
+
+
 [1.18.9](https://github.com/bird-house/birdhouse-deploy/tree/1.18.9) (2022-03-16)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -3190,4 +4122,3 @@ Prior Versions
 All versions prior to [1.7.0](https://github.com/bird-house/birdhouse-deploy/tree/1.7.0) were not officially tagged.
 Is it strongly recommended employing later versions to ensure better traceability of changes that could impact behavior
 and potential issues on new server instances. 
-
