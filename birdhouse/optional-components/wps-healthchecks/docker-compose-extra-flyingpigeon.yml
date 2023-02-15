@@ -1,0 +1,15 @@
+version: "3.4"
+services:
+  flyingpigeon:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import requests; \
+           assert requests.get('http://localhost:8093?service=WPS&request=GetCapabilities').status_code == 200",
+        ]
+      interval: 60s
+      timeout: 5s
+      retries: 2

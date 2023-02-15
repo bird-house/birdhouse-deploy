@@ -19,8 +19,8 @@
 
 # default value in case of error or missing definitions
 export BIRDHOUSE_DEPLOY_COMPONENTS_JSON='{"components": []}'
-if [ -z "${EXTRA_CONF_DIRS}" ]; then
-  echo "No components in EXTRA_CONF_DIRS. Components JSON list will be empty!"
+if [ -z "${ALL_CONF_DIRS}" ]; then
+  echo "No components in DEFAULT_CONF_DIRS and EXTRA_CONF_DIRS. Components JSON list will be empty!"
   return
 fi
 
@@ -35,7 +35,7 @@ cd "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" || true  # ignore error for now, empty 
 
 # note: no quotes in 'ls' on purpose to expand glob patterns
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN="$( \
-  ls -d1 ./*components/*/ 2>/dev/null \
+  ls -d1 ./*components/*/ ./config/*/ 2>/dev/null \
   | sed -E "s|\./(.*)/|\1|" \
 )"
 if [ -z "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" ]; then
@@ -46,7 +46,7 @@ if [ -z "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" ]; then
   return
 fi
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST_ACTIVE=$( \
-  echo "${EXTRA_CONF_DIRS}" \
+  echo "${ALL_CONF_DIRS}" \
   | sed '/^[[:space:]]*$/d' \
 )
 

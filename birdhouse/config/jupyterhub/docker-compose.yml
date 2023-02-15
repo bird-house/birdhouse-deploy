@@ -1,0 +1,55 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  jupyterhub:
+    image: pavics/jupyterhub:1.4.0-20210506
+    container_name: jupyterhub
+    hostname: jupyterhub
+    ports:
+      - "8800:8000"
+    environment:
+      DOCKER_NOTEBOOK_IMAGES: ${DOCKER_NOTEBOOK_IMAGES}
+      JUPYTERHUB_IMAGE_SELECTION_NAMES: ${JUPYTERHUB_IMAGE_SELECTION_NAMES}
+      DOCKER_NETWORK_NAME: jupyterhub_network
+      JUPYTERHUB_USER_DATA_DIR: ${JUPYTERHUB_USER_DATA_DIR}
+      WORKSPACE_DIR: ${JUPYTERHUB_USER_DATA_DIR}
+      JUPYTERHUB_ADMIN_USERS: ${JUPYTERHUB_ADMIN_USERS}
+      JUPYTER_DEMO_USER: ${JUPYTER_DEMO_USER}
+      JUPYTER_DEMO_USER_MEM_LIMIT: ${JUPYTER_DEMO_USER_MEM_LIMIT}
+      JUPYTER_DEMO_USER_CPU_LIMIT: ${JUPYTER_DEMO_USER_CPU_LIMIT}
+      JUPYTER_GOOGLE_DRIVE_SETTINGS: ${JUPYTER_GOOGLE_DRIVE_SETTINGS}
+      JUPYTERHUB_README: ${JUPYTERHUB_README}
+      MOUNT_IMAGE_SPECIFIC_NOTEBOOKS: ${MOUNT_IMAGE_SPECIFIC_NOTEBOOKS}
+    volumes:
+      - ./config/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
+      - ./config/jupyterhub/custom_templates:/custom_templates:ro
+      - ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}
+      - jupyterhub_data_persistence:/persist:rw
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    links:
+      - magpie
+    networks:
+    # ensure Hub and Notebook servers are on the same network 'jupyterhub_network'
+    # the Hub and the rest of the stack are on network 'default'
+      - default
+      - jupyterhub_network
+    restart: always
+    logging: *default-logging
+
+# need external network so the folder name is not prefixed to network name
+networks:
+  jupyterhub_network:
+    external:
+      name: "jupyterhub_network"
+
+volumes:
+  jupyterhub_data_persistence:
+    external:
+      name: jupyterhub_data_persistence

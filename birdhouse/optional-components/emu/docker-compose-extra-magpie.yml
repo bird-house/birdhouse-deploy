@@ -1,0 +1,6 @@
+version: "3.4"
+services:
+  magpie:
+    volumes:
+    - ./optional-components/emu/emu-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/emu-magpie-permission.cfg:ro
+    - ./optional-components/emu/emu-magpie-provider.cfg:/opt/local/src/magpie/config/providers/emu-magpie-provider.cfg:ro

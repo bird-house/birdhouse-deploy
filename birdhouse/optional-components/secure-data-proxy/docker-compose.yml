@@ -1,13 +1,5 @@
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "200k"
-    max-file: "10"
-
 version: "3.4"
 services:
-
   proxy:
     volumes:
       - ./optional-components/secure-data-proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/secure-data-proxy:ro

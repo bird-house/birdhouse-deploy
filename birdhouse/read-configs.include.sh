@@ -81,29 +81,47 @@ read_env_local() {
 
 }
 
+source_conf_files() {
+  dirs=$1
+  conf_locations=$2
+  for adir in ${dirs}; do
+      if echo "$ALL_CONF_DIRS" | grep -qE "^\s*$adir\s*$"; then
+          continue
+      fi
+      if [ -e "$adir" ]; then
+          ALL_CONF_DIRS="$ALL_CONF_DIRS
+            $adir
+          "
+      else
+          # Do not exit to not break unattended autodeploy since no human around to
+          # fix immediately.
+          # The new adir with typo will not be active but at least all the existing
+          # will still work.
+          echo "WARNING: '$adir' in $conf_locations does not exist" 1>&2
+      fi
+      COMPONENT_DEFAULT_ENV="$adir/default.env"
+      if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
+          echo "reading '$COMPONENT_DEFAULT_ENV'"
+          . "$COMPONENT_DEFAULT_ENV"
+      fi
+  done
+}
 
 read_components_default_env() {
-    # EXTRA_CONF_DIRS normally set by env.local so should read_env_local() first.
+    # EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS normally set by env.local so should read_env_local() first.
 
-    # EXTRA_CONF_DIRS relative paths are relative to COMPOSE_DIR.
+    # EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS relative paths are relative to COMPOSE_DIR.
     if [ -d "$COMPOSE_DIR" ]; then
         cd "$COMPOSE_DIR"
     fi
-
-    for adir in ${EXTRA_CONF_DIRS}; do
-        if [ ! -e "$adir" ]; then
-            # Do not exit to not break unattended autodeploy since no human around to
-            # fix immediately.
-            # The new adir with typo will not be active but at least all the existing
-            # will still work.
-            echo "WARNING: '$adir' in EXTRA_CONF_DIRS does not exist" 1>&2
-        fi
-        COMPONENT_DEFAULT_ENV="$adir/default.env"
-        if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
-            echo "reading '$COMPONENT_DEFAULT_ENV'"
-            . "$COMPONENT_DEFAULT_ENV"
-        fi
-    done
+    requested_conf_dirs="
+      $DEFAULT_CONF_DIRS
+      $EXTRA_CONF_DIRS
+    "
+    ALL_CONF_DIRS=''
+    COMPONENT_DEPENDENCIES=''
+    source_conf_files "$requested_conf_dirs" 'EXTRA_CONF_DIRS or DEFAULT_CONF_DIRS'
+    source_conf_files "$COMPONENT_DEPENDENCIES" 'COMPONENT_DEPENDENCIES'
 
     # Return to previous pwd.
     if [ -d "$COMPOSE_DIR" ]; then
@@ -129,8 +147,8 @@ process_delayed_eval() {
 read_configs() {
     discover_compose_dir
     read_default_env
-    read_env_local  # for EXTRA_CONF_DIRS
-    read_components_default_env  # uses EXTRA_CONF_DIRS
+    read_env_local  # for EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS
+    read_components_default_env  # uses EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
     read_env_local  # again to override components default.env
     process_delayed_eval
 }
