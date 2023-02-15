@@ -1,0 +1,5 @@
+SERVICES['node']['monitoring']['Malleefowl'] = {
+    'request': {
+        'url': 'http://${PAVICS_FQDN}:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+    }
+}

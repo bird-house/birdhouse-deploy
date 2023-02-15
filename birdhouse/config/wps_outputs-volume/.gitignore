@@ -1,0 +1,2 @@
+conf.extra-service.d/wps_outputs-volume.conf
+wps_outputs-volume_canarie_api_monitoring.py

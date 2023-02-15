@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  magpie:
+    volumes:
+    - ./config/finch/finch-magpie-provider.cfg:/opt/local/src/magpie/config/providers/finch-magpie-provider.cfg:ro

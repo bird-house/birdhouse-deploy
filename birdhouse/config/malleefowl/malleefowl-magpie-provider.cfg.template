@@ -1,0 +1,8 @@
+providers:
+  malleefowl:
+    url: http://${PAVICS_FQDN}:8091/wps
+    title: Malleefowl
+    public: true
+    c4i: false
+    type: wps
+    sync_type: wps

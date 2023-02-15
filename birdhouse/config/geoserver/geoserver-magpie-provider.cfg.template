@@ -1,0 +1,16 @@
+providers:
+  geoserverwms:
+    url: http://${PAVICS_FQDN}:8087/geoserver
+    title: geoserverwms
+    public: true
+    c4i: false
+    type: geoserverwms
+    sync_type: geoserverwms
+
+  geoserver:
+    url: http://${PAVICS_FQDN}:8087/geoserver
+    title: geoserver
+    public: true
+    c4i: false
+    type: wfs
+    sync_type: wfs

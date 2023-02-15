@@ -1,0 +1,3 @@
+geoserver_canarie_api_monitoring.py
+conf.extra-service.d/geoserver.conf
+geoserver-magpie-provider.cfg

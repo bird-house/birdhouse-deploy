@@ -1,1 +1,3 @@
 frontend.env
+conf.extra-service.d/frontend.conf
+frontend_canarie_api_monitoring.py

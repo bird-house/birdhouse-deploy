@@ -1,0 +1,9 @@
+# We can only monitor twitcher if there is an endpoint that it is protecting that we can try to access
+# If there is at least one other service that provides a route protected by twitcher, monitor that route;
+# otherwise do nothing.
+if '${WPS_FOR_TWITCHER_MONITORING}':
+    SERVICES['node']['monitoring'].update({'Twitcher': {
+        'request': {
+            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WPS_FOR_TWITCHER_MONITORING}?service=WPS&version=1.0.0&request=GetCapabilities'
+        }
+    }})

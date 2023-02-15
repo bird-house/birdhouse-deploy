@@ -1,0 +1,7 @@
+SERVICES['node']['monitoring']['Jupyter'] = {
+    'request': {
+        'url': 'https://${PAVICS_FQDN_PUBLIC}/jupyter/hub/login'
+    }
+}
+CANARIE_STATS_ROUTES.append('jupyter')
+

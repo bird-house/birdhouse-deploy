@@ -1,1 +1,3 @@
 jupyterhub_config.py
+conf.extra-service.d/jupyterhub.conf
+jupyterhub_canarie_api_monitoring.py

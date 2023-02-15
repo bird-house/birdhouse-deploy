@@ -1,0 +1,6 @@
+SERVICES['node']['monitoring'].update({'Geoserver': {
+    'request': {
+        'url': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/'
+    }
+}})
+CANARIE_STATS_ROUTES.append('geoserver')
