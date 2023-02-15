@@ -1,0 +1,6 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+    - ./config/magpie/magpie_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/magpie_canarie_api_monitoring.py:ro
+    - ./config/magpie/conf.extra-service.d:/etc/nginx/conf.extra-service.d/magpie:ro

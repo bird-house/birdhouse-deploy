@@ -1,1 +1,3 @@
 twitcher.ini
+twitcher_canarie_api_monitoring.py
+conf.extra-service.d/twitcher.conf

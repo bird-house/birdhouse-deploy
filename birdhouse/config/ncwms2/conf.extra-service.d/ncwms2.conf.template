@@ -1,0 +1,7 @@
+    location /ncWMS2/ {
+    #    proxy_pass http://${PAVICS_FQDN}:8080;
+    #     proxy_set_header Host $host;
+    #     proxy_set_header X-Forwarded-Proto $real_scheme;
+    #    include /etc/nginx/conf.d/cors.include;
+        return 302 ${TWITCHER_PROTECTED_PATH}$request_uri;
+    }

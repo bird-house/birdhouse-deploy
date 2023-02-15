@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+    - ./config/canarie-api/conf.extra-service.d:/etc/nginx/conf.extra-service.d/canarie-api:ro

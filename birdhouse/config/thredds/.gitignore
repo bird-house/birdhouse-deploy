@@ -1,2 +1,4 @@
 catalog.xml
 threddsConfig.xml
+conf.extra-service.d/thredds.conf
+thredds_canarie_api_monitoring.py

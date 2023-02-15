@@ -1,0 +1,16 @@
+providers:
+  lb_flyingpigeon:
+    url: http://${PAVICS_FQDN}:58093/wps
+    title: Load_Balanced_Flyingpigeon
+    public: true
+    c4i: false
+    type: wps
+    sync_type: wps
+
+  flyingpigeon:
+    url: http://${PAVICS_FQDN}:8093/wps
+    title: Flyingpigeon
+    public: true
+    c4i: false
+    type: wps
+    sync_type: wps
