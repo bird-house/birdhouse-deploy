@@ -14,7 +14,28 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+- Vagrant: fix mismatch docker-compose version with autodeploy resulting in containers being recreated
+
+  Normally a `./pavics-compose.sh up -d` after an autodeploy has run, should
+  only create any new containers, not recreating all the existing containers.
+
+  This is because docker-compose v2 seems to be incompatible with old v1.  This
+  is the last v1 version still compatible with the docker-compose in the
+  autodeploy.
+
+  This old docker-compose v1 seems to work just fine with latest docker cli.
+
+  This is the quickest way to get Vagrant boxes up and running without causing
+  backward incompatible changes to existing production deployment.
+
+  If we update the docker-compose inside autodeploy to v2, this will force all
+  existing deployment to also update their installed docker-compose.
+
+  A more long term solution would be to always run `./pavics-compose.sh` using
+  the docker-compose image from autodeploy so the version will always match and
+  any docker-compose version update will be transparent.
+
 
 [1.23.1](https://github.com/bird-house/birdhouse-deploy/tree/1.23.1) (2023-02-13)
 ------------------------------------------------------------------------------------------------------------------
