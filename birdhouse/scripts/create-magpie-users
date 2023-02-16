@@ -72,14 +72,11 @@ THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
-# must retrieve MAGPIE_VERSION from 'default.env' or 'env.local'
-if [ -f "$COMPOSE_DIR/default.env" ]; then
-    . "${COMPOSE_DIR}/default.env"
-fi
+if [ -f "$COMPOSE_DIR/read-configs.include.sh" ]; then
+    . "$COMPOSE_DIR/read-configs.include.sh"
 
-if [ -f "$COMPOSE_DIR/env.local" ]; then
-    # Get PAVICS_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
-    . "${COMPOSE_DIR}/env.local"
+    # Get MAGPIE_VERSION, PAVICS_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
+    read_configs
 fi
 
 ##############################################################################

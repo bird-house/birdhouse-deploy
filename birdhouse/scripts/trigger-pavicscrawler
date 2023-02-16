@@ -18,9 +18,11 @@ THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
-if [ -f "$COMPOSE_DIR/env.local" ]; then
+if [ -f "$COMPOSE_DIR/read-configs.include.sh" ]; then
+    . "$COMPOSE_DIR/read-configs.include.sh"
+
     # Get PAVICS_FQDN
-    . $COMPOSE_DIR/env.local
+    read_configs
 fi
 
 # Allow override using same name env var.

@@ -87,8 +87,8 @@ SERVICES = {
             'name': 'Node',
             'synopsis': 'Nodes are data, compute and index endpoints accessed through the PAVICS platform or external clients. The Node service is the backend that allows: data storage, harvesting, indexation and discovery of local and federated data; authentication and authorization; server registration and management. Node service is therefore composed of several other services.',
             # NOTE: below version and release time auto-managed by 'make VERSION=x.y.z bump', see 'Tagging policy' in 'birdhouse/README.rst'
-            'version': '1.23.0',
-            'releaseTime': '2023-02-10T16:31:08Z',
+            'version': '1.23.1',
+            'releaseTime': '2023-02-13T18:31:02Z',
             'institution': 'Ouranos',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
@@ -587,8 +587,8 @@ PLATFORMS = {
             'name': '${SERVER_NAME}',
             'synopsis': """${SERVER_DESCRIPTION}""".replace("\n", " ").strip(),
             # NOTE: below version and release time auto-managed by 'make VERSION=x.y.z bump', see 'Tagging policy' in 'birdhouse/README.rst'
-            'version': '1.23.0',
-            'releaseTime': '2023-02-10T16:31:08Z',
+            'version': '1.23.1',
+            'releaseTime': '2023-02-13T18:31:02Z',
             'institution': 'Ouranos',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',

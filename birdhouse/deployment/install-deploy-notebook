@@ -29,12 +29,10 @@ if [ ! -e "$REPO_ROOT/birdhouse/deployment/trigger-deploy-notebook" ]; then
     exit 2
 fi
 
-. "$REPO_ROOT/birdhouse/default.env"
+. "$REPO_ROOT/birdhouse/read-configs.include.sh"
 
-if [ -f "$REPO_ROOT/birdhouse/env.local" ]; then
-    # allow override of JUPYTERHUB_USER_DATA_DIR
-    . "$REPO_ROOT/birdhouse/env.local"
-fi
+# Get JUPYTERHUB_USER_DATA_DIR
+read_configs
 
 set -x
 
