@@ -1,7 +1,6 @@
 # coding: utf-8
 import os
 import logging
-import sys
 
 # note: can only be dependencies also available in CanarieAPI docker image
 import requests
@@ -17,14 +16,12 @@ DATABASE = {
 }
 
 
-def _get_release_time_from_github_tag(repository_reference, tagged_version):
-    # type: (str, str) -> str
-
+def _get_release_time_from_github_tag(repository_reference: str, tagged_version: str) -> str:
     repo = repository_reference.split("github.com/")[-1]
-    url = "https://api.github.com/repos/{}/tags".format(repo)
+    url = f"https://api.github.com/repos/{repo}/tags"
     resp = requests.get(url, headers={"Accept": "application/json"})
     if resp.status_code != 200:
-        raise ValueError("HTTP status from tags list: {}".format(resp.status_code))
+        raise ValueError(f"HTTP status from tags list: {resp.status_code} from [{url}]")
 
     for tag_info in resp.json():
         tag_ver = tag_info.get("name")
@@ -36,35 +33,32 @@ def _get_release_time_from_github_tag(repository_reference, tagged_version):
 
     resp = requests.get(tag_commit_url, headers={"Accept": "application/json"})
     if resp.status_code != 200:
-        raise ValueError("HTTP status from tag info: {}".format(resp.status_code))
+        raise ValueError(f"HTTP status from tag info: {resp.status_code} from [{tag_commit_url}]")
 
     commit = resp.json()["commit"]
     commit_date = commit["commiter"]["date"]
     return commit_date
 
 
-def _get_release_time_from_docker_tag(repository_reference, tagged_version):
-    # type: (str, str) -> str
-
+def _get_release_time_from_docker_tag(repository_reference: str, tagged_version: str) -> str:
     ns, repo = repository_reference.split("/", 1)
-    url = "https://hub.docker.com/v2/namespaces/{}/repositories/{}/tags/{}".format(ns, repo, tagged_version)
+    url = f"https://hub.docker.com/v2/namespaces/{ns}/repositories/{repo}/tags/{tagged_version}"
     resp = requests.get(url, headers={"Accept": "application/json"})
     if resp.status_code != 200:
-        raise ValueError("HTTP status from tags list: {}".format(resp.status_code))
+        raise ValueError(f"HTTP status from tags list: {resp.status_code} from [{url}]")
 
     updated = resp.json()["last_updated"]
     return updated
 
 
-def get_release_time_from_repo_tag(repository_type, repository_reference, tagged_version):
-    # type: (str, str, str) -> str
+def get_release_time_from_repo_tag(repository_type: str, repository_reference: str, tagged_version: str) -> str:
     try:
         if repository_type == "github":
             release = _get_release_time_from_github_tag(repository_reference, tagged_version)
         elif repository_type == "docker":
             release = _get_release_time_from_docker_tag(repository_reference, tagged_version)
         else:
-            raise ValueError("Unknown repository parsing type: [{}]".format(repository_type))
+            raise ValueError(f"Unknown repository parsing type: [{repository_type}]")
         if release:
             logger.error("canarie-api: found version [%s] release time [%s] from [%s: %s]",
                          tagged_version, release, repository_type, repository_reference)
@@ -636,21 +630,18 @@ def exec_file(filepath, **kwargs):
     """
     _globals = kwargs.get("globals") or globals()
     _locals = kwargs.get("locals") or _globals  # as per exec/execfile documentation
-    if sys.version_info[0] == "2":
-        execfile(filepath, _globals, _locals)  # noqa  # python 2.x
-    else:
-        _globals.update({
-            "__file__": filepath,
-            "__name__": "__main__",
-        })
-        with open(filepath, 'rb') as file:
-            exec(compile(file.read(), filepath, 'exec'), _globals, _locals)
+    _globals.update({
+        "__file__": filepath,
+        "__name__": "__main__",
+    })
+    with open(filepath, 'rb') as file:
+        exec(compile(file.read(), filepath, "exec"), _globals, _locals)
 
 
 if os.path.exists(CANARIE_MONITORING_EXTRA_CONF_DIR):
     # alphabetically sorted for reproducible override precedence
     for extra_conf in sorted(os.listdir(CANARIE_MONITORING_EXTRA_CONF_DIR)):
-        extra_conf_full_path = "{}/{}".format(CANARIE_MONITORING_EXTRA_CONF_DIR, extra_conf)
+        extra_conf_full_path = f"{CANARIE_MONITORING_EXTRA_CONF_DIR}/{extra_conf}"
         # only handle files ending with .py
         if os.path.isfile(extra_conf_full_path) and extra_conf_full_path.endswith(".py"):
             logger.info("canarie-api: loading extra config '%s'", extra_conf_full_path)
