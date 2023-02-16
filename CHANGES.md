@@ -14,6 +14,42 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Fixes
+- The default stack was not configurable. This meant that if someone wanted to deploy a 
+  subset of the default stack there was no good way of configuring birdhouse-deploy to run
+  this subset only. 
+
+  Previously, additional components could be added to the stack (ex: weaver, cowbird, etc.)
+  by adding them to the `EXTRA_CONF_DIRS` variable. This change extends this functionality
+  to all components. 
+
+  For backwards compatibility, all components that were in the original default stack are now
+  listed in the `DEFAULT_CONF_DIRS` variable (in `birdhouse/default.env`). To run a subset of the
+  original stack, update `DEFAULT_CONF_DIRS` to only include the configuration directories for
+  the desired components.
+
+  The components that will be added to the stack are only those whose configuration directory
+  is listed in either `DEFAULT_CONF_DIRS` or `EXTRA_CONF_DIRS`. Note that some components are
+  dependent on others to run and will automatically add the other components to the stack as 
+  a dependency. For example, twitcher requires magpie so if you only specify twitcher, magpie
+  will be added to the stack as well. To inspect component dependencies, look at the 
+  `COMPONENT_DEPENDENCIES` environment variable that is extended in some `default.env` files.
+  For example, `birdhouse/config/twitcher/default.env` contains:
+
+  ```shell
+  COMPONENT_DEPENDENCIES="
+    $COMPONENT_DEPENDENCIES
+    ./config/magpie
+  ```
+
+  Components can also have optional dependencies. These are additional configuration options to
+  run if both components are deployed in the stack at the same time. These are defined in the
+  `docker-compose-extra-*.yml` files where the `*` refers to another component that _could be_
+  deployed. For example, `birdhouse/config/raven/docker-compose-extra-magpie.yml` contains
+  additional configuration settings for the raven docker service that only apply if magpie is
+  also deployed. This relaxes some dependencies between components and allows more flexibility
+  when choosing what parts of the stack to deploy.
+
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
 [1.23.1](https://github.com/bird-house/birdhouse-deploy/tree/1.23.1) (2023-02-13)
