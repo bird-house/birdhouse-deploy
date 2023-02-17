@@ -4,7 +4,7 @@ settings=YAML.load_file(config_file)
 
 Vagrant.configure("2") do |config|
   config.vagrant.plugins = ["vagrant-disksize", "vagrant-vbguest"]
-  config.vm.box = settings.fetch('box', "ubuntu/bionic64")
+  config.vm.box = settings.fetch('box', "ubuntu/jammy64")
   config.vm.define settings['hostname']
   config.vm.hostname = settings['hostname']
   # thin provisioning, won't take 100G upfront
@@ -42,6 +42,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :shell, path: "birdhouse/vagrant-utils/provision.sh", env: {"VM_HOSTNAME" => settings['hostname'],
                                                                                   "VM_DOMAIN" => settings['domain'],
+                                                                                  "VM_DEFAULT_GATEWAY" => settings.fetch('default_gateway',''),
                                                                                   "LETSENCRYPT_EMAIL" => settings['letsencrypt_email'],
                                                                                   "KITENAME" => settings.fetch('kitename',''),
                                                                                   "KITESECRET" => settings.fetch('kitesecret',''),
