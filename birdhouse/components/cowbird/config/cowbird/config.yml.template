@@ -50,12 +50,16 @@ sync_permissions:
         # the `user` variable name would be matched with `user_xyz` and `synced_file`, with `file_abc`.
         # Also, this key would need to sync permissions with the `thredds_workspace` resource key, considering the
         # `permissions_mapping` defined below. The `thredds_workspace` would be deduced to the resource path
-        # `/catalog/workspaces/user_xyz/dir1/dir2/subdir/file_abc`.
+        # `/thredds/catalog/workspaces/user_xyz/dir1/dir2/subdir/file_abc`.
         # The types of each segment of this target resource path would be deduced
         # from the `thredds_workspace` config below.
         thredds_workspace:
-          - name: catalog
+          - name: thredds
             type: service
+          # not a resource in Magpie
+          # 'catalog' is the file/view format specifier for the rest of the path
+          # - name: catalog
+          #  type: directory
           - name: workspaces
             type: directory
           - name: "{user}"
@@ -102,13 +106,17 @@ sync_permissions:
       - "geoserver_workspace : createStoredQuery <-> thredds_workspace : write"
   weaver_outputs:
     services:
-      api:
+      weaver:
         process_description:
+          - name: weaver
+            type: service
           - name: processes
             type: route
           - name: "{processID}"
             type: route
         process_job_status:
+          - name: weaver
+            type: service
           - name: processes
             type: route
           - name: "{processID}"
@@ -118,28 +126,106 @@ sync_permissions:
           - name: "{jobID}"
             type: route
         job_status:
+          - name: weaver
+            type: service
           - name: jobs
             type: route
           - name: "{jobID}"
             type: route
         job_outputs:
+          - name: weaver
+            type: service
           - name: jobs
             type: route
           - name: "{jobID}"
             type: route
           - name: outputs
             type: route
+        job_output_single:
+          - name: weaver
+            type: service
+          - name: jobs
+            type: route
+          - name: "{jobID}"
+            type: route
+          - name: outputs
+            type: route
+          - name: "{outputID}"
+            type: route
+      # see 'optional-components/secure-data-proxy' for more details on protected WPS-outputs
+      wps_outputs:
+        # /wpsoutputs/weaver/{public|<user-id>}/{job-id}
         weaver_wps_outputs:
+          - name: secure-data-proxy
+            type: service
           - name: wpsoutputs
             type: route
           - name: weaver
             type: route
+          - name: "{user_context_dir}"
+            type: route
           - name: "{jobID}"
             type: route
+        # /wpsoutputs/weaver/{public|<user-id>}/{job-id}/{output-file}
+        weaver_wps_output_single:
+          - name: secure-data-proxy
+            type: service
+          - name: wpsoutputs
+            type: route
+          - name: weaver
+            type: route
+          - name: "{user_context_dir}"
+            type: route
+          - name: "{jobID}"
+            type: route
+          - name: "{outputID}"
+            type: route
+      thredds:
+        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/catalog.html
+        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/{public|<user-id>}/catalog.html
+        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/{public|<user-id>}/{job-id}/catalog.html
+        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/{public|<user-id>}/{job-id}/{output-file}
+        # note: paths start after ows-proxy portion extracted when Twitcher/Magpie resolve between each other
+        thredds_wps_outputs:
+          - name: thredds
+            type: service
+          # not a resource in Magpie
+          # 'catalog' is the file/view format specifier for the rest of the path
+          # - name: catalog
+          #  type: directory
+          - name: birdhouse
+            type: directory
+          - name: wps_outputs
+            type: directory
+          - name: weaver
+            type: directory
+          - name: "{user_context_dir}"
+            type: directory
+          - name: "{jobID}"
+            type: directory
+        thredds_wps_output_single:
+          - name: thredds
+            type: service
+          # not a resource in Magpie
+          # 'catalog' is the file/view format specifier for the rest of the path
+          # - name: catalog
+          #  type: directory
+          - name: birdhouse
+            type: directory
+          - name: wps_outputs
+            type: directory
+          - name: weaver
+            type: directory
+          - name: "{user_context_dir}"
+            type: directory
+          - name: "{jobID}"
+            type: directory
+          - name: "{outputID}"
+            type: file
     permissions_mapping:
       # When user is granted access to an output (either side),
       # output retrieval is allowed from both endpoints (wps-outputs/weaver).
-      - "weaver_wps_outputs : read <-> job_outputs : read"
+      - "weaver_wps_outputs : read -> job_outputs : read"
       # When output can be retrieved, access to details about the process and
       # the job are also provided (to understand what each output represents),
       # but getting read access to a process description should not grant
@@ -149,7 +235,16 @@ sync_permissions:
       - "weaver_wps_outputs : read -> job_status : read"
       # process-prefixed items can be only one-way since wps-outputs does not
       # encode the 'processID' information ('jobID' directly the top-level dir)
-      - "process_job_status : read -> weaver_wps_outputs : read"
       - "process_job_status : read -> job_status : read"
+      # NOTE:
+      #   missing 'user_context_dir' information not defined in path of process execution request
+      #   this permission must be set using the magpie/twitcher pre/post request hook to extract the authorized user
+      ###- "process_job_status : read -> weaver_wps_outputs : read"
       # different permission (match), otherwise all jobs/outputs become available.
       - "process_job_status : read -> process_description : read-match"
+      # corresponding outputs retrieved under wps-outputs or thredds share access
+      - "weaver_wps_outputs : read <-> thredds_wps_outputs : read"
+      # permissions if outputs are shared one-by-one in case of multiple files produced by the process
+      - "weaver_wps_output_single : read <-> thredds_wps_output_single : read"
+      - "weaver_wps_output_single : read -> job_output_single : read"
+      - "thredds_wps_output_single : read -> job_output_single : read"
