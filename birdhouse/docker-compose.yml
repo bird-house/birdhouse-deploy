@@ -9,7 +9,7 @@ x-logging:
 
 services:
   proxy:
-    image: pavics/canarieapi:0.4.4
+    image: pavics/canarieapi:0.5.0
     container_name: proxy
     ports:
       - "80:80"

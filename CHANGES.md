@@ -15,7 +15,7 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Fixes:
-- CanarieAPI: update to `0.4.4`.
+- CanarieAPI: update to `0.5.0`.
 
   - Fixes an `AttributeError` raised due to misconfiguration of the Web Application with Flask 2.x definitions
     (relates to [Ouranosinc/CanarieAPI#10](https://github.com/Ouranosinc/CanarieAPI/pull/10)).
@@ -30,6 +30,10 @@
 - Weaver: update CanarieAPI monitoring definitions
   - Move monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
   - Add monitoring of private endpoint by default when using Weaver component.
+
+- Cowbird: update CanarieAPI monitoring definitions
+  - Add monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
+  - Add public Magpie permission on Cowbird entrypoint only to allow its monitoring.
 
 [canarie-monitor]: birdhouse/optional-components/canarie-api-full-monitoring
 

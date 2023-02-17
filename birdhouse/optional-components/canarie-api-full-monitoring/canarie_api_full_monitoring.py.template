@@ -39,7 +39,7 @@ _BIRDS = {
         }
     },
 }
-for bird_public, bird_public_cfg in _BIRDS:
+for bird_public, bird_public_cfg in _BIRDS.items():
     bird_private = bird_public.split("-public")[0]
     if bird_private in SERVICES:
         SERVICES[bird_private]["monitoring"][bird_public] = bird_public_cfg
@@ -51,8 +51,14 @@ for bird_public, bird_public_cfg in _BIRDS:
 # about the conditional loading of this config in 'proxy' service.
 if "Weaver" in SERVICES:
     weaver_cfg = copy.deepcopy(SERVICES["Weaver"]["monitoring"]["Weaver"])
-    weaver_cfg["url"] = "https://${PAVICS_FQDN_PUBLIC}/weaver/"
+    weaver_cfg["request"]["url"] = "https://${PAVICS_FQDN_PUBLIC}/weaver/"
     SERVICES["Weaver"]["monitoring"]["Weaver-public"] = weaver_cfg
 
+# See notes in 'components/cowbird/docker-compose-extra.yml'
+# about the conditional loading of this config in 'proxy' service.
+if "Cowbird" in SERVICES:
+    cowbird_cfg = copy.deepcopy(SERVICES["Cowbird"]["monitoring"]["Cowbird"])
+    cowbird_cfg["request"]["url"] = "https://${PAVICS_FQDN_PUBLIC}/cowbird/"
+    SERVICES["Cowbird"]["monitoring"]["Cowbird-public"] = cowbird_cfg
 
 # vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python
