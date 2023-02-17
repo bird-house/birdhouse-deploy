@@ -222,6 +222,11 @@ do
       docker exec ${postgres_id} /postgres-setup.sh
     fi
 
+    # because server.outputpath in wps.cfg do not create the dir
+    for bird in finch flyingpigeon raven; do
+      docker exec $bird mkdir -p /data/wpsoutputs/$bird
+    done
+
     for adir in ${EXTRA_CONF_DIRS}; do
       COMPONENT_POST_COMPOSE_UP="$adir/post-docker-compose-up"
       if [ -x "$COMPONENT_POST_COMPOSE_UP" ]; then
