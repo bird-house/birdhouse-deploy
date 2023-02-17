@@ -16,6 +16,30 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.23.2](https://github.com/bird-house/birdhouse-deploy/tree/1.23.2) (2023-02-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Fix birds not creating their wps output under each bird name
+
+  Before this fix, finch, raven, flyingpigeon were dumping their output directly
+  under `https://PAVICS_HOST/wpsoutputs/`.
+
+  With this fix, it will be under each bird name, ex:
+  `https://PAVICS_HOST/wpsoutputs/finch/` which is cleaner and follows what
+  malleefowl and hummingbird already does.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/11.
+  Fixes https://crim-ca.atlassian.net/browse/DAC-398
+
+  Requires PR https://github.com/Ouranosinc/pavics-sdi/pull/280,
+  https://github.com/bird-house/finch/pull/273 and
+  https://github.com/Ouranosinc/raven/pull/459.
+
+  If `optional-components/secure-data-proxy` is enabled, might need some
+  additional permissions for each bird in
+  https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/optional-components/secure-data-proxy/config/magpie/config.yml.template.
+
 [1.23.1](https://github.com/bird-house/birdhouse-deploy/tree/1.23.1) (2023-02-13)
 ------------------------------------------------------------------------------------------------------------------
 
