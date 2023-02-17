@@ -172,7 +172,8 @@ SERVICES = {
         'monitoring': {
             'Raven': {
                 'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven?service=WPS&version=1.0.0&request=GetCapabilities'
+                    # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
+                    'url': 'http://${PAVICS_FQDN}:8096/wps?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
         }
@@ -236,9 +237,10 @@ SERVICES = {
             'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
         },
         'monitoring': {
-            'Flyingpigeon': {
+            'Finch': {
                 'request': {
-                     'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+                     # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
+                     'url': 'http://${PAVICS_FQDN}:8095/?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
         }
@@ -345,6 +347,7 @@ SERVICES = {
             }
         }
     },
+    # FIXME: remove (https://github.com/bird-house/birdhouse-deploy/issues/214)
     'Phoenix': {
         'info': {
             'name': 'Phoenix',
@@ -366,14 +369,15 @@ SERVICES = {
             'releasenotes': 'https://github.com/ouranosinc/pyramid-phoenix/CHANGES.rst',
             'support': 'https://github.com/ouranosinc/pyramid-phoenix/issues',
             'source': 'https://github.com/ouranosinc/pyramid-phoenix',
-            'tryme': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/',  # FIXME: original value doesn't make sense
+            'tryme': 'http://${PAVICS_FQDN}:8443/',
             'licence': 'https://github.com/ouranosinc/pyramid-phoenix/blob/master/LICENSE.txt',
             'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
         },
         "monitoring": {
             "Phoenix": {
                 'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/'  # FIXME: original value doesn't make sense
+                    # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
+                    'url': 'http://${PAVICS_FQDN}:8443/'
                 }
             }
         }
@@ -406,6 +410,7 @@ SERVICES = {
         "monitoring": {
             "Catalog": {
                 'request': {
+                    # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
                     'url': 'http://${PAVICS_FQDN}:8086/pywps?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             }
@@ -439,6 +444,7 @@ SERVICES = {
         'monitoring': {
             "Malleefowl": {
                 'request': {
+                    # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
                     'url': 'http://${PAVICS_FQDN}:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             }
@@ -472,11 +478,13 @@ SERVICES = {
         'monitoring': {
             'Finch': {
                 'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+                    # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
+                    'url': 'http://${PAVICS_FQDN}:8095/wps?service=WPS&version=1.0.0&request=GetCapabilities'
                 }
             },
         },
     },
+    # FIXME: remove (https://github.com/bird-house/birdhouse-deploy/issues/214)
     'Solr': {
         'info': {
             'name': 'Solr',
@@ -505,6 +513,7 @@ SERVICES = {
         "monitoring": {
             'Solr': {
                 'request': {
+                    # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
                     'url': 'http://${PAVICS_FQDN}:8983/solr/birdhouse/select?q=CMIP5&fq=model:MPI-ESM-MR&fq=experiment:rcp45&fq=variable:tasmax&fq=institute:MPI-M&fq=frequency:mon&wt=json'
                 },
                 'response': {
@@ -541,6 +550,7 @@ SERVICES = {
         "monitoring": {
             "Thredds": {
                 'request': {
+                    # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
                     'url': 'http://${PAVICS_FQDN}:8083${TWITCHER_PROTECTED_PATH}/thredds/catalog.html'
                 }
             }
