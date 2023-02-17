@@ -26,6 +26,7 @@ services:
       - ${SSL_CERTIFICATE}:/etc/nginx/cert.pem
       - wps_outputs:/pavics-data/wps_outputs
       - ./config/canarie-api/entrypoint:/entrypoint:ro
+      - /tmp/canarieapi-config-cache:/tmp/canarieapi-config-cache
     environment:
       CANARIE_API_CONFIG_FN: /config/docker_configuration.py
       CANARIE_MONITORING_EXTRA_CONF_DIR: ${CANARIE_MONITORING_EXTRA_CONF_DIR}

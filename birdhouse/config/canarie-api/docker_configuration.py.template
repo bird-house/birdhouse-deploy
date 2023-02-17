@@ -1,4 +1,5 @@
 # coding: utf-8
+import datetime
 import os
 import logging
 
@@ -16,10 +17,28 @@ DATABASE = {
 }
 
 
+# below is to avoid rate-limiting as much as possible on multiple reboots
+REQUEST_CACHE = "/tmp/canarieapi-config-cache"
+if os.path.isdir(REQUEST_CACHE):
+    import requests_cache  # see entrypoint script
+    SESSION = requests_cache.CachedSession(
+        "canarieapi-config-cache",
+        use_temp=True,
+        backend="filesystem",
+        expire_after=datetime.timedelta(hours=1),
+        cache_control=True,
+        stale_if_error=True,
+        allowable_codes=[200],
+        allowable_methods=["GET"],
+    )
+else:
+    SESSION = requests.Session()
+
+
 def _get_release_time_from_github_tag(repository_reference: str, tagged_version: str) -> str:
     repo = repository_reference.split("github.com/")[-1]
     url = f"https://api.github.com/repos/{repo}/tags"
-    resp = requests.get(url, headers={"Accept": "application/json"})
+    resp = SESSION.get(url, headers={"Accept": "application/json"})
     if resp.status_code != 200:
         raise ValueError(
             f"HTTP status from tags list: {resp.status_code} from [{url}] with detail:\n{resp.text!s}"
@@ -33,21 +52,21 @@ def _get_release_time_from_github_tag(repository_reference: str, tagged_version:
     else:
         raise ValueError(f"No matching version in tagged releases under [{url}].")
 
-    resp = requests.get(tag_commit_url, headers={"Accept": "application/json"})
+    resp = SESSION.get(tag_commit_url, headers={"Accept": "application/json"})
     if resp.status_code != 200:
         raise ValueError(
             f"HTTP status from tag info: {resp.status_code} from [{tag_commit_url}] with detail:\n{resp.text!s}"
         )
 
     commit = resp.json()["commit"]
-    commit_date = commit["commiter"]["date"]
+    commit_date = commit["committer"]["date"]
     return commit_date
 
 
 def _get_release_time_from_docker_tag(repository_reference: str, tagged_version: str) -> str:
     ns, repo = repository_reference.split("/", 1)
     url = f"https://hub.docker.com/v2/namespaces/{ns}/repositories/{repo}/tags/{tagged_version}"
-    resp = requests.get(url, headers={"Accept": "application/json"})
+    resp = SESSION.get(url, headers={"Accept": "application/json"})
     if resp.status_code != 200:
         raise ValueError(
             f"HTTP status from tag info: {resp.status_code} from [{url}] with detail:\n{resp.text!s}"
