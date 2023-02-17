@@ -670,3 +670,6 @@ for svc_name, svc_config in SERVICES.items():
     for mon_name, mon_config in svc_config["monitoring"].items():
         _NODE.setdefault(mon_name, mon_config)
         _PLATFORM.setdefault(mon_name, mon_config)
+
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python

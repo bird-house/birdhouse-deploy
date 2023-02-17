@@ -27,6 +27,12 @@
     Configurations need to be updated if any specific Python 2 definitions were used.
     See [2to3](https://docs.python.org/3/library/2to3.html) to help migrate configurations automatically if necessary.
 
+- Weaver: update CanarieAPI monitoring definitions
+  - Move monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
+  - Add monitoring of private endpoint by default when using Weaver component.
+
+[canarie-monitor]: birdhouse/optional-components/canarie-api-full-monitoring
+
 [1.23.1](https://github.com/bird-house/birdhouse-deploy/tree/1.23.1) (2023-02-13)
 ------------------------------------------------------------------------------------------------------------------
 
