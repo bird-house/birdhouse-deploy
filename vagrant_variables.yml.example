@@ -74,5 +74,7 @@ domain: ouranos.ca
 # cpus: 2
 # disksize: '100GB'
 # box: 'ubuntu/bionic64'  # no manual steps required
+# box: 'ubuntu/focal64'  # no manual steps required
+# box: 'ubuntu/jammy64'  # no manual steps required
 # box: 'centos/7'  # will require manual 'vagrant-utils/disk-resize' inside box
 # box: 'rockylinux/8'  # will require manual 'vagrant-utils/disk-resize' inside box

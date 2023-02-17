@@ -57,6 +57,9 @@ if ! grep centos /etc/os-release && ! grep rocky /etc/os-release; then
       sudo apt-get install --yes --quiet docker-ce
     fi
 
+    # For 'route' command to set default gateway.
+    sudo apt install net-tools
+
 else
 
     sudo yum install -y yum-utils
