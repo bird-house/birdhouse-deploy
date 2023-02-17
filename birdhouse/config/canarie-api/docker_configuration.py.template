@@ -27,7 +27,7 @@ if os.path.isdir(REQUEST_CACHE):
         "canarieapi-config-cache",
         use_temp=True,
         backend="filesystem",
-        expire_after=datetime.timedelta(hours=1),
+        expire_after=datetime.timedelta(days=1),
         cache_control=True,
         stale_if_error=True,
         allowable_codes=[200],

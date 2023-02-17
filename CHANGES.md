@@ -15,12 +15,15 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Fixes:
-- CanarieAPI: update to `0.5.0`.
+- CanarieAPI: update to `0.5.1`.
 
   - Fixes an `AttributeError` raised due to misconfiguration of the Web Application with Flask 2.x definitions
     (relates to [Ouranosinc/CanarieAPI#10](https://github.com/Ouranosinc/CanarieAPI/pull/10)).
   - Update the [CanarieAPI configuration](birdhouse/config/canarie-api/docker_configuration.py.template) to use
     Python 3.x executable code.
+  - Skip over `0.4.x` and `0.5.1` versions to avoid issue related to `cron` job monitoring and log parser command
+    failures in order to collect configured service statistics and statuses
+    (see also [Ouranosinc/CanarieAPI#14](https://github.com/Ouranosinc/CanarieAPI/pull/14)).
 
   ### Breaking changes
   - The Docker running `CanarieAPI` is now using Python 3 (since 0.4.x tags).
