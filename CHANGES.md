@@ -36,6 +36,12 @@
   the docker-compose image from autodeploy so the version will always match and
   any docker-compose version update will be transparent.
 
+- Vagrant: ubuntu version after bionic is missing net-tools package pre-installed
+
+  net-tools package is required to have the route command to set the default
+  gateway.  Without the default gateway set, the VM will not be visible outside
+  of its own subnet.
+
 
 [1.23.1](https://github.com/bird-house/birdhouse-deploy/tree/1.23.1) (2023-02-13)
 ------------------------------------------------------------------------------------------------------------------
