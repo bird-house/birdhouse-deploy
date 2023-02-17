@@ -17,7 +17,9 @@ DATABASE = {
 }
 
 
-# below is to avoid rate-limiting as much as possible on multiple reboots
+# Below is to avoid rate-limiting as much as possible on multiple runs.
+# Because the logparser and monitoring must load the application context and configuration,
+# the requests performed to retrieve version numbers and release times occurs on every cron interval.
 REQUEST_CACHE = "/tmp/canarieapi-config-cache"
 if os.path.isdir(REQUEST_CACHE):
     import requests_cache  # see entrypoint script
