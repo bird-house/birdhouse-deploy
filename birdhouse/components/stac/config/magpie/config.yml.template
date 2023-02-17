@@ -1,7 +1,7 @@
 providers:
   # definition of STAC service for API access
   stac:
-    url: http://stac:8000
+    url: http://stac:8000/stac
     title: STAC
     public: true
     c4i: false

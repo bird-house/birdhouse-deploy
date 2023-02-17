@@ -12,8 +12,7 @@ services:
     container_name: stac
     image: ghcr.io/crim-ca/stac-app:main
     depends_on:
-      pgstac:
-        condition: service_healthy
+      - pgstac
     environment:
       - POSTGRES_USER=username
       - POSTGRES_PASS=password
@@ -21,6 +20,7 @@ services:
       - POSTGRES_HOST_READER=pgstac
       - POSTGRES_HOST_WRITER=pgstac
       - POSTGRES_PORT=5432
+      - ROUTER_PREFIX=/stac
     logging: *default-logging
     # TODO : remove, only for debug purposes
     volumes:
