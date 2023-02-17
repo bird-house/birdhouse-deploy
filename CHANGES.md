@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.23.3](https://github.com/bird-house/birdhouse-deploy/tree/1.23.3) (2023-02-17)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 - Vagrant: fix mismatch docker-compose version with autodeploy resulting in containers being recreated
 
