@@ -40,6 +40,62 @@
 
 [canarie-monitor]: birdhouse/optional-components/canarie-api-full-monitoring
 
+[1.23.3](https://github.com/bird-house/birdhouse-deploy/tree/1.23.3) (2023-02-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Vagrant: fix mismatch docker-compose version with autodeploy resulting in containers being recreated
+
+  Normally a `./pavics-compose.sh up -d` after an autodeploy has run, should
+  only create any new containers, not recreating all the existing containers.
+
+  This is because docker-compose v2 seems to be incompatible with old v1.  This
+  is the last v1 version still compatible with the docker-compose in the
+  autodeploy.
+
+  This old docker-compose v1 seems to work just fine with latest docker cli.
+
+  This is the quickest way to get Vagrant boxes up and running without causing
+  backward incompatible changes to existing production deployment.
+
+  If we update the docker-compose inside autodeploy to v2, this will force all
+  existing deployment to also update their installed docker-compose.
+
+  A more long term solution would be to always run `./pavics-compose.sh` using
+  the docker-compose image from autodeploy so the version will always match and
+  any docker-compose version update will be transparent.
+
+- Vagrant: ubuntu version after bionic is missing net-tools package pre-installed
+
+  net-tools package is required to have the route command to set the default
+  gateway.  Without the default gateway set, the VM will not be visible outside
+  of its own subnet.
+
+
+[1.23.2](https://github.com/bird-house/birdhouse-deploy/tree/1.23.2) (2023-02-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Fix birds not creating their wps output under each bird name
+
+  Before this fix, finch, raven, flyingpigeon were dumping their output directly
+  under `https://PAVICS_HOST/wpsoutputs/`.
+
+  With this fix, it will be under each bird name, ex:
+  `https://PAVICS_HOST/wpsoutputs/finch/` which is cleaner and follows what
+  malleefowl and hummingbird already does.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/11.
+  Fixes https://crim-ca.atlassian.net/browse/DAC-398
+
+  Requires PR https://github.com/Ouranosinc/pavics-sdi/pull/280,
+  https://github.com/bird-house/finch/pull/273 and
+  https://github.com/Ouranosinc/raven/pull/459.
+
+  If `optional-components/secure-data-proxy` is enabled, might need some
+  additional permissions for each bird in
+  https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/optional-components/secure-data-proxy/config/magpie/config.yml.template.
+
 [1.23.1](https://github.com/bird-house/birdhouse-deploy/tree/1.23.1) (2023-02-13)
 ------------------------------------------------------------------------------------------------------------------
 

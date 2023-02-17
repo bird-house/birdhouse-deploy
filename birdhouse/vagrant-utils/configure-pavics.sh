@@ -53,6 +53,12 @@ fi
 if [ ! -f "$SSL_CERTIFICATE" ]; then
     . ./env.local
     if [ -n "$LETSENCRYPT_EMAIL" ]; then
+
+        if [ -n "$VM_DEFAULT_GATEWAY" ]; then
+            # Make VM visible for LetsEncrypt.
+            sudo route add default gw "$VM_DEFAULT_GATEWAY"
+        fi
+
         FORCE_CERTBOT_E2E=1 FORCE_CERTBOT_E2E_NO_START_PROXY=1 \
             deployment/certbotwrapper
     else
