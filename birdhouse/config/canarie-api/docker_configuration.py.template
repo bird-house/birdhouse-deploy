@@ -3,8 +3,10 @@ import datetime
 import os
 import logging
 
-# note: can only be dependencies also available in CanarieAPI docker image
-import requests
+# note:
+#   Can only be dependencies also available in CanarieAPI docker image.
+#   Otherwise, they must be installed after the fact with the entrypoint script.
+import requests_cache  # see entrypoint script
 
 logger = logging.getLogger("canarie-api-config")
 
@@ -21,20 +23,17 @@ DATABASE = {
 # Because the logparser and monitoring must load the application context and configuration,
 # the requests performed to retrieve version numbers and release times occurs on every cron interval.
 REQUEST_CACHE = "/tmp/canarieapi-config-cache"
-if os.path.isdir(REQUEST_CACHE):
-    import requests_cache  # see entrypoint script
-    SESSION = requests_cache.CachedSession(
-        "canarieapi-config-cache",
-        use_temp=True,
-        backend="filesystem",
-        expire_after=datetime.timedelta(days=1),
-        cache_control=True,
-        stale_if_error=True,
-        allowable_codes=[200],
-        allowable_methods=["GET"],
-    )
-else:
-    SESSION = requests.Session()
+os.makedirs(REQUEST_CACHE, exist_ok=True)
+SESSION = requests_cache.CachedSession(
+    "canarieapi-config-cache",
+    use_temp=True,
+    backend="filesystem",
+    expire_after=datetime.timedelta(days=1),
+    cache_control=True,
+    stale_if_error=True,
+    allowable_codes=[200],
+    allowable_methods=["GET"],
+)
 
 
 def _get_release_time_from_github_tag(repository_reference: str, tagged_version: str) -> str:
@@ -106,8 +105,15 @@ SERVICES = {
     'node': {  # partial duplicate of first item from 'PLATFORM' for backward compatibility
         'info': {
             'name': 'Node',
-            'synopsis': 'Nodes are data, compute and index endpoints accessed through the PAVICS platform or external clients. The Node service is the backend that allows: data storage, harvesting, indexation and discovery of local and federated data; authentication and authorization; server registration and management. Node service is therefore composed of several other services.',
-            # NOTE: below version and release time auto-managed by 'make VERSION=x.y.z bump', see 'Tagging policy' in 'birdhouse/README.rst'
+            'synopsis': (
+                'Nodes are data, compute and index endpoints accessed through the platform or external clients. '
+                'The Node service is the backend that allows: data storage, harvesting, indexation and discovery of '
+                'local and federated data; authentication and authorization; server registration and management. '
+                'Node service is therefore composed of several other services.'
+            ),
+            # NOTE:
+            #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
+            #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
             'version': '1.23.3',
             'releaseTime': '2023-02-17T03:03:02Z',
             'institution': 'Ouranos',
@@ -134,7 +140,11 @@ SERVICES = {
     'indices': {
         'info': {
             'name': 'Climate indices',
-            'synopsis': 'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, the number of degree-days of cooling, the duration of heatwaves, etc. This returns annual values of the most popular climate indices.',
+            'synopsis': (
+                'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, '
+                'the number of degree-days of cooling, the duration of heatwaves, etc. '
+                'This returns annual values of the most popular climate indices.'
+            ),
             'version': FINCH_VERSION,
             'institution': 'Ouranos',
             'releaseTime': FINCH_RELEASE_TIME,
@@ -167,8 +177,10 @@ SERVICES = {
     'raven': {
         'info': {
             'name': 'Hydrological modeling and analysis',
-            'synopsis': ('A suite of WPS processes to calibrate and run hydrological models, including geographical'
-            'information retrieval and processing as well as time series analysis.'),
+            'synopsis': (
+                'A suite of WPS processes to calibrate and run hydrological models, '
+                'including geographical information retrieval and processing as well as time series analysis.'
+            ),
             'version': '0.11.1',
             'institution': 'Ouranos',
             'releaseTime': '2021-02-01T00:00:00Z',
@@ -202,7 +214,10 @@ SERVICES = {
     'renderer': {
         'info': {
             'name': 'High-resolution spatial gridded data renderer',
-            'synopsis': 'This service renders gridded data on the server and sends images to the client for display within mapping applications using Open Geospatial Consortium (OGC) Web Mappping Service (WMS) standard.',
+            'synopsis': (
+                'This service renders gridded data on the server and sends images to the client for display within '
+                'mapping applications using Open Geospatial Consortium (OGC) Web Mappping Service (WMS) standard.'
+            ),
             'version': '4.6.15',
             'institution': 'Unidata',
             'releaseTime': '2020-06-16T00:00:00Z',
@@ -269,7 +284,11 @@ SERVICES = {
     'Magpie': {
         'info': {
             'name': 'Magpie',
-            'synopsis': 'Magpie is service for AuthN/AuthZ accessible via a REST API. It allows you to manage User/Group/Service/Resource/Permission management and integrates with Twitcher.',
+            'synopsis': (
+                'Magpie is service for AuthN/AuthZ accessible via a REST API. '
+                'It allows you to manage User/Group/Service/Resource/Permission management '
+                'and integrates with Twitcher.'
+            ),
             'version': "${MAGPIE_VERSION}",
             'institution': 'Ouranos',
             'releaseTime': get_release_time_from_repo_tag("github", "Ouranosinc/Magpie", "${MAGPIE_VERSION}"),
@@ -297,7 +316,7 @@ SERVICES = {
                     'url': 'https://${PAVICS_FQDN_PUBLIC}/magpie/version'
                 },
                 'response': {
-                    'text': '\{.*"code": 200.*"type": "application/json".*\}'
+                    'text': r'\{.*"code": 200.*"type": "application/json".*\}'
                 }
             }
         }
@@ -305,7 +324,11 @@ SERVICES = {
     'Twitcher': {
         'info': {
             'name': 'Twitcher',
-            'synopsis': 'Twitcher is a security proxy for OWS services like Web Processing Services (WPS). The proxy service uses OAuth2 access tokens to protect the OWS service access using Magpie permissions.',
+            'synopsis': (
+                'Twitcher is a security proxy for OWS services like Web Processing Services (WPS). '
+                'The proxy service uses OAuth2 access tokens to protect the OWS service access using '
+                'Magpie permissions.'
+            ),
             'version': "${TWITCHER_VERSION}",
             'institution': 'Ouranos',
             'releaseTime': get_release_time_from_repo_tag("github", "bird-house/twitcher", "${TWITCHER_VERSION}"),
@@ -338,7 +361,12 @@ SERVICES = {
     'GeoServer': {
         'info': {
             'name': 'GeoServer',
-            'synopsis': 'GeoServer is the reference implementation of the Open Geospatial Consortium (OGC) Web Feature Service (WFS) and Web Coverage Service (WCS) standards, as well as a high performance certified compliant Web Map Service (WMS), compliant Catalog Service for the Web (CSW) and implementing Web Processing Service (WPS). GeoServer forms a core component of the Geospatial Web.',
+            'synopsis': (
+                'GeoServer is the reference implementation of the Open Geospatial Consortium (OGC) '
+                'Web Feature Service (WFS) and Web Coverage Service (WCS) standards, as well as a high performance '
+                'certified compliant Web Map Service (WMS), compliant Catalog Service for the Web (CSW) and '
+                'implementing Web Processing Service (WPS). GeoServer forms a core component of the Geospatial Web.'
+            ),
             'version': "${GEOSERVER_VERSION}",
             'institution': 'Ouranos',
             'releaseTime': get_release_time_from_repo_tag("docker", "${GEOSERVER_DOCKER}", "${GEOSERVER_TAGGED}"),
@@ -474,7 +502,11 @@ SERVICES = {
     'Finch': {
         'info': {
             'name': 'Finch',
-            'synopsis': 'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, the number of degree-days of cooling, the duration of heatwaves, etc. This returns annual values of the most popular climate indices.',
+            'synopsis': (
+                'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, '
+                'the number of degree-days of cooling, the duration of heatwaves, etc. This returns annual values of '
+                'the most popular climate indices.'
+            ),
             'version': FINCH_VERSION,
             'institution': 'Ouranos',
             'releaseTime': FINCH_RELEASE_TIME,
@@ -509,7 +541,12 @@ SERVICES = {
     'Solr': {
         'info': {
             'name': 'Solr',
-            'synopsis': 'SOLR is a search platform part of the Apache Lucene project. It is used in this project for its faceted search capability. Search queries are relayed from the UI or WPS processes to the SOLR database, which returns a json file with the links to matching files.',
+            'synopsis': (
+                'SOLR is a search platform part of the Apache Lucene project. '
+                'It is used in this project for its faceted search capability. '
+                'Search queries are relayed from the UI or WPS processes to the SOLR database, '
+                'which returns a json file with the links to matching files.'
+            ),
             'version': "${SOLR_VERSION}",
             'institution': 'Ouranos',
             'releaseTime': get_release_time_from_repo_tag("docker", "${SOLR_DOCKER}", "${SOLR_VERSION}"),
@@ -617,7 +654,9 @@ PLATFORMS = {
         'info': {
             'name': '${SERVER_NAME}',
             'synopsis': """${SERVER_DESCRIPTION}""".replace("\n", " ").strip(),
-            # NOTE: below version and release time auto-managed by 'make VERSION=x.y.z bump', see 'Tagging policy' in 'birdhouse/README.rst'
+            # NOTE:
+            #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
+            #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
             'version': '1.23.3',
             'releaseTime': '2023-02-17T03:03:02Z',
             'institution': 'Ouranos',
@@ -700,7 +739,7 @@ for svc_name, svc_config in SERVICES.items():
         continue
     for mon_name, mon_config in svc_config["monitoring"].items():
         _NODE.setdefault(mon_name, mon_config)
-        _PLATFORM.setdefault(mon_name, mon_config)
+        _PLATFORM.setdefault(mon_name, mon_config)  # type: ignore
 
 
 # vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python
