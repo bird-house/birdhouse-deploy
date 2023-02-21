@@ -120,8 +120,12 @@ read_components_default_env() {
     "
     ALL_CONF_DIRS=''
     COMPONENT_DEPENDENCIES=''
+    current_dependencies=$COMPONENT_DEPENDENCIES
     source_conf_files "$requested_conf_dirs" 'EXTRA_CONF_DIRS or DEFAULT_CONF_DIRS'
-    source_conf_files "$COMPONENT_DEPENDENCIES" 'COMPONENT_DEPENDENCIES'
+    while [ "$current_dependencies" != "$COMPONENT_DEPENDENCIES" ]; do
+      current_dependencies=$COMPONENT_DEPENDENCIES
+      source_conf_files "$COMPONENT_DEPENDENCIES" 'COMPONENT_DEPENDENCIES'
+    done
 
     # Return to previous pwd.
     if [ -d "$COMPOSE_DIR" ]; then
