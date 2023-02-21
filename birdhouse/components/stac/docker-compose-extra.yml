@@ -13,6 +13,7 @@ services:
     image: ghcr.io/crim-ca/stac-app:main
     depends_on:
       - pgstac
+    # TODO : define creds in env files
     environment:
       - POSTGRES_USER=username
       - POSTGRES_PASS=password
