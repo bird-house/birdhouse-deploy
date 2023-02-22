@@ -30,8 +30,7 @@ services:
   stac-browser:
     container_name: stac-browser
     image: ghcr.io/crim-ca/stac-browser:docker_image_push
-    # ports:
-    #   - "8080:8080"
+    entrypoint: "/bin/sh -c 'npm run build -- --pathPrefix=/stac-browser/ && serve -s dist -l 8080'"
 
   pgstac:
     container_name: stac-db
