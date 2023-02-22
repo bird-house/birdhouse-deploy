@@ -430,7 +430,7 @@ services:
       - default
       - jupyterhub_network
     restart: always
-    logging: *default-logging      
+    logging: *default-logging
 
 # need external network so the folder name is not prefixed to network name
 networks:
