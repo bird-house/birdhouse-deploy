@@ -26,6 +26,8 @@ services:
     # TODO : remove, only for debug purposes
     volumes:
       - /home/ubuntu/stac-fastapi:/stac-fastapi:ro
+    entrypoint: ""
+    command: "uvicorn stac_app:app --root-path '' --reload --host 0.0.0.0 --port 8000"
 
   stac-browser:
     container_name: stac-browser
