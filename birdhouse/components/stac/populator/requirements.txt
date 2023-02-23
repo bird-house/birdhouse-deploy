@@ -1,4 +1,7 @@
 requests
 pystac
-git+https://github.com//crim-ca/stac-generator#egg=stac-generator
-
+pyyaml
+git+https://github.com/crim-ca/stac-generator@fix_header_extract#egg=stac-generator
+siphon
+shapely
+boto3
