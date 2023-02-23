@@ -120,12 +120,13 @@ for adir in $ALL_CONF_DIRS; do
 done
 CONFIGURED_COMPONENTS=$(PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} config --services)
 for adir in $ALL_CONF_DIRS; do
-  for extra_compose in "$adir"/docker-compose-extra-*.yml; do
-    service_name=$(basename "$extra_compose")
-    service_name=${service_name#docker-compose-extra-}
-    service_name=${service_name#.yml}
-    if echo "$CONFIGURED_COMPONENTS" | grep " $service_name "; then
-      COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $extra_compose"
+  for conf_dir in "$adir"/config/*; do
+    service_name=$(basename "$conf_dir")
+    extra_compose="$conf_dir/docker-compose-extra.yml"
+    if [ -f "$extra_compose" ]; then
+      if echo "$CONFIGURED_COMPONENTS" | grep "$service_name"; then
+        COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $extra_compose"
+      fi
     fi
   done
 done
