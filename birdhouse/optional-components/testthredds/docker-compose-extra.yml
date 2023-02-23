@@ -1,12 +1,5 @@
 version: "3.4"
 services:
-  proxy:
-    volumes:
-    - ./optional-components/testthredds/conf.extra-service.d:/etc/nginx/conf.extra-service.d/testthredds:ro
-    - ./optional-components/testthredds/testthredds_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/testthredds_canarie_api_monitoring.py:ro
-    links:
-    - testthredds
-
   testthredds:
     image: ${TESTTHREDDS_IMAGE}
     container_name: testthredds
