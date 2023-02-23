@@ -14,7 +14,24 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+- Adds [STAC](https://github.com/crim-ca/stac-app) to the stack (optional) when ``./components/stac`` 
+  is added to ``EXTRA_CONF_DIRS``. For more details, refer to 
+  [Weaver Component](https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/components/README.rst#STAC)
+  Following happens when enabled:
+    
+  * Service ``stac`` (API) gets added with endpoints ``/twitcher/ows/proxy/stac`` and ``/stac``.
+    
+  * STAC catalog can be explored via the ``stac-browser`` component, available under ``/stac-browser``.
+      
+  * Image ``crim-ca/stac-app`` is a STAC implementation based on ``stac-utils/stac-fastapi``.
+
+  * Image ``crim-ca/stac-browser`` is a fork of ``radiantearth/stac-browser``.
+      
+  * Adds `Magpie` permissions and service for `stac` endpoints.
+  
+  * Adds ``stac-populator`` to populates STAC catalog with sample collection items, using 
+    [CEDA STAC Generator](https://github.com/cedadev/stac-generator), used in sample 
+    [CMIP Dataset Ingestion Workflows](https://github.com/cedadev/stac-generator-example/tree/master/conf).
 
 [1.23.1](https://github.com/bird-house/birdhouse-deploy/tree/1.23.1) (2023-02-13)
 ------------------------------------------------------------------------------------------------------------------
