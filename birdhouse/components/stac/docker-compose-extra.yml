@@ -18,8 +18,8 @@ services:
       - POSTGRES_USER=username
       - POSTGRES_PASS=password
       - POSTGRES_DBNAME=postgis
-      - POSTGRES_HOST_READER=pgstac
-      - POSTGRES_HOST_WRITER=pgstac
+      - POSTGRES_HOST_READER=stac-db
+      - POSTGRES_HOST_WRITER=stac-db
       - POSTGRES_PORT=5432
       - ROUTER_PREFIX=/stac
     logging: *default-logging
@@ -31,7 +31,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - STAC_ASSET_GENERATOR_TIMEOUT=15
-      - STAC_HOST=${PAVICS_FQDN}/stac
+      - STAC_HOST=http://stac:8000/stac
     volumes:
       - ./components/stac/populator:/populator:ro
     command: >
