@@ -22,6 +22,7 @@ services:
       - POSTGRES_PORT=5432
       - ROUTER_PREFIX=/stac
     logging: *default-logging
+    restart: always
 
   # populates STAC catalog with sample collection items
   stac-populator:
