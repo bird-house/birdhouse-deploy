@@ -12,7 +12,7 @@ services:
     container_name: stac
     image: ghcr.io/crim-ca/stac-app:main
     depends_on:
-      - pgstac
+      - stac-db
     # TODO : define creds in env files
     environment:
       - POSTGRES_USER=username
@@ -57,7 +57,7 @@ services:
       - PGHOST=localhost
       - PGDATABASE=postgis
     volumes:
-      - pgstac:/var/lib/postgresql/data
+      - stac-db:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 10s
@@ -82,4 +82,4 @@ services:
       - ./components/stac/config/magpie/config.yml:/opt/local/src/magpie/config/providers/stac.yml:ro
 
 volumes:
-  pgstac:
+  stac-db:
