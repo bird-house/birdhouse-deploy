@@ -1,0 +1,3 @@
+
+git+https://github.com//crim-ca/stac-generator#egg=stac-generator
+

@@ -27,6 +27,19 @@ services:
     volumes:
       - /home/ubuntu/stac-fastapi:/stac-fastapi:ro
 
+  stac-populator:
+    build:
+      context: ./populator
+      dockerfile: Dockerfile
+    environment:
+      - name=value
+    volumes:
+      - ./populator:/populator
+    command: >
+      bash -c "./scripts/wait-for-it.sh stac:8000 -t 60 && /populator/populate.sh"
+    depends_on:
+      - stac
+
   stac-browser:
     container_name: stac-browser
     image: ghcr.io/crim-ca/stac-browser:docker_image_push
