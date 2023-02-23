@@ -29,16 +29,16 @@ services:
 
   stac-populator:
     build:
-      context: ./populator
+      context: ./components/stac/populator
       dockerfile: Dockerfile
     environment:
       - name=value
     volumes:
-      - ./populator:/populator
+      - ./components/stac/populator:/populator:ro
     command: >
-      bash -c "./scripts/wait-for-it.sh stac:8000 -t 60 && /populator/populate.sh"
-    depends_on:
-      - stac
+      bash -c "cd /populator && ./populate.sh"
+    # depends_on:
+    #   - stac
 
   stac-browser:
     container_name: stac-browser

@@ -3,11 +3,11 @@ set -e
 
 ASSET_GENERATOR_TIMEOUT=20
 
-eval "$(conda shell.bash hook)"
-conda activate ceda-workflow-3.9-1
+# eval "$(conda shell.bash hook)"
+# conda activate ceda-workflow-3.9-1
 
 # create collections
-python3 collection_processor.py collections.yaml
+python3 ./collection_processor.py collections.yaml
 
 cd ~/projects/stac-generator-example
 
