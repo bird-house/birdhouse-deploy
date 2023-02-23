@@ -32,7 +32,8 @@ services:
       context: ./components/stac/populator
       dockerfile: Dockerfile
     environment:
-      - name=value
+      - STAC_ASSET_GENERATOR_TIMEOUT=15
+      - STAC_HOST=https://host-140-133.rdext.crim.ca/stac
     volumes:
       - ./components/stac/populator:/populator:ro
     command: >

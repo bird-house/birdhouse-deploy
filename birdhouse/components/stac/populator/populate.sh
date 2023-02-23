@@ -1,9 +1,20 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -e
 
-BASE_PATH=""
-STAC_ASSET_GENERATOR_TIMEOUT=10
-STAC_HOST=https://host-140-133.rdext.crim.ca/stac
+if [[ -z "${BASE_PATH}" ]]; then
+  echo "[INFO] BASE_PATH environment variable not set. Using ''"
+  BASE_PATH=""
+fi
+
+if [[ -z "${STAC_ASSET_GENERATOR_TIMEOUT}" ]]; then
+  echo "[INFO] STAC_ASSET_GENERATOR_TIMEOUT environment variable not set. Using '30'"
+  STAC_ASSET_GENERATOR_TIMEOUT="30"
+fi
+
+if [[ -z "${STAC_HOST}" ]]; then
+  echo "[INFO] STAC_HOST environment variable not set. Using '127.0.0.1'"
+  STAC_HOST="127.0.0.1"
+fi
 
 cd $BASE_PATH/populator
 
