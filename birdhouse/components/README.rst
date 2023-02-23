@@ -389,7 +389,7 @@ information.
 Usage
 -----
 
-The STAC API can be browsed via the [STAC browser]() component. By default, the browser will point to the STAC API 
+The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API 
 exposed by the current stack instance.
 
 STAC API comes pre-loaded with sample data ingested by the ``stac-populator`` component. On stack initialization, 
