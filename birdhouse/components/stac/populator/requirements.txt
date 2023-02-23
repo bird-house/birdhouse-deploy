@@ -5,3 +5,5 @@ git+https://github.com/crim-ca/stac-generator@fix_header_extract#egg=stac-genera
 siphon
 shapely
 boto3
+fsspec
+xarray
