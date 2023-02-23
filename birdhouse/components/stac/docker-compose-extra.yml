@@ -13,10 +13,9 @@ services:
     image: ghcr.io/crim-ca/stac-app:main
     depends_on:
       - stac-db
-    # TODO : define creds in env files
     environment:
-      - POSTGRES_USER=username
-      - POSTGRES_PASS=password
+      - POSTGRES_USER=${POSTGRES_PAVICS_USERNAME}
+      - POSTGRES_PASS=${POSTGRES_PAVICS_PASSWORD}
       - POSTGRES_DBNAME=postgis
       - POSTGRES_HOST_READER=stac-db
       - POSTGRES_HOST_WRITER=stac-db
@@ -50,11 +49,11 @@ services:
     container_name: stac-db
     image: ghcr.io/stac-utils/pgstac:v0.6.10
     environment:
-      - POSTGRES_USER=username
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=${POSTGRES_PAVICS_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PAVICS_PASSWORD}
       - POSTGRES_DB=postgis
-      - PGUSER=username
-      - PGPASSWORD=password
+      - PGUSER=${POSTGRES_PAVICS_USERNAME}
+      - PGPASSWORD=${POSTGRES_PAVICS_PASSWORD}
       - PGHOST=localhost
       - PGDATABASE=postgis
     volumes:
