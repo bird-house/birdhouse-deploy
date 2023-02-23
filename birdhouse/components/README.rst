@@ -378,3 +378,25 @@ define your custom values in ``env.local`` directly.
 
 .. |cowbird-default| replace:: cowbird/default.env
 .. _cowbird-default: ./cowbird/default.env
+
+
+STAC
+=======
+
+STAC is the common name of the REST API that implements the STAC specification, common representation of geospatial 
+information.
+
+Usage
+-----
+
+The STAC API can be browsed via the [STAC browser]() component. By default, the browser will point to the STAC API 
+exposed by the current stack instance.
+
+STAC API comes pre-loaded with sample data ingested by the ``stac-populator`` component. On stack initialization, 
+STAC item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds.
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``"./components/stac"`` to ``EXTRA_CONF_DIRS``.
