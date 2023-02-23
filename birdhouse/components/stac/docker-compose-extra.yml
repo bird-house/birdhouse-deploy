@@ -35,7 +35,7 @@ services:
     volumes:
       - ./components/stac/populator:/populator:ro
     command: >
-      bash -c "cd /populator && ./populate.sh"
+      bash -c "cd /populator && ./wait-for-it.sh stac:8000 -t 30 && ./populate.sh"
     depends_on:
       - stac
 
