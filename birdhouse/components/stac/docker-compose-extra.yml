@@ -23,23 +23,21 @@ services:
       - POSTGRES_PORT=5432
       - ROUTER_PREFIX=/stac
     logging: *default-logging
-    # TODO : remove, only for debug purposes
-    volumes:
-      - /home/ubuntu/stac-fastapi:/stac-fastapi:ro
 
   stac-populator:
+    container_name: stac-populator
     build:
       context: ./components/stac/populator
       dockerfile: Dockerfile
     environment:
       - STAC_ASSET_GENERATOR_TIMEOUT=15
-      - STAC_HOST=https://host-140-133.rdext.crim.ca/stac
+      - STAC_HOST=${PAVICS_FQDN}/stac
     volumes:
       - ./components/stac/populator:/populator:ro
     command: >
       bash -c "cd /populator && ./populate.sh"
-    # depends_on:
-    #   - stac
+    depends_on:
+      - stac
 
   stac-browser:
     container_name: stac-browser
@@ -47,7 +45,7 @@ services:
     # TODO : specify --catalogUrl=/stac/, seems not to work with items
     entrypoint: "/bin/sh -c 'npm run build -- --pathPrefix=/stac-browser/ && serve -s dist -l 8080'"
 
-  pgstac:
+  stac-db:
     container_name: stac-db
     image: ghcr.io/stac-utils/pgstac:v0.6.10
     environment:
