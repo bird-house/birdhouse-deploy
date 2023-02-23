@@ -42,7 +42,9 @@ services:
   stac-browser:
     container_name: stac-browser
     image: ghcr.io/crim-ca/stac-browser:docker_image_push
-    entrypoint: "/bin/sh -c 'npm run build -- --catalogUrl=https://${PAVICS_FQDN}/stac/ --pathPrefix=/stac-browser/ && serve -s dist -l 8080'"
+    environment:
+      - CATALOG_URL=https://${PAVICS_FQDN}/stac/
+      - ROOT_PATH=/stac-browser/
 
   stac-db:
     container_name: stac-db
