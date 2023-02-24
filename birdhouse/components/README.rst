@@ -395,6 +395,13 @@ exposed by the current stack instance.
 STAC API comes pre-loaded with sample data ingested by the ``stac-populator`` component. On stack initialization, 
 STAC item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds.
 
+Here is a sample search query using a CLI:
+
+```
+pip install pystac-client
+stac-client search $PAVIS_FQDN/stac -c c604ffb6d610adbb9a6b4787db7b8fd7 -q "variable_id=txgt_32" "scenario=ssp585"
+```
+
 How to Enable the Component
 ---------------------------
 
