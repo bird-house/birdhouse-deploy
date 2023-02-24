@@ -16,7 +16,7 @@
 
 - Adds [STAC](https://github.com/crim-ca/stac-app) to the stack (optional) when ``./components/stac`` 
   is added to ``EXTRA_CONF_DIRS``. For more details, refer to 
-  [Weaver Component](https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/components/README.rst#STAC)
+  [STAC Component](https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/components/README.rst#STAC)
   Following happens when enabled:
     
   * Service ``stac`` (API) gets added with endpoints ``/twitcher/ows/proxy/stac`` and ``/stac``.
