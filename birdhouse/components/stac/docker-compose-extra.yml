@@ -23,14 +23,6 @@ services:
       - ROUTER_PREFIX=/stac
     logging: *default-logging
     restart: always
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "--fail",
-          "http://stac:8000/stac",
-        ]
 
   # populates STAC catalog with sample collection items
   stac-populator:
