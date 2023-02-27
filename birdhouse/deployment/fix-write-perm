@@ -43,13 +43,10 @@ THIS_DIR="`dirname "$THIS_FILE"`"
 # Go to repo root.
 cd $THIS_DIR/../..
 
-# Default values
-. birdhouse/default.env
+. birdhouse/read-configs.include.sh
 
-if [ -e "birdhouse/env.local" ]; then
-    # Override default values
-    . birdhouse/env.local
-fi
+# Get GEOSERVER_DATA_DIR, JUPYTERHUB_USER_DATA_DIR, MAGPIE_PERSIST_DIR
+read_configs
 
 DEFAULT_EXTRA_DATA_DIR="$GEOSERVER_DATA_DIR/ $JUPYTERHUB_USER_DATA_DIR/ \
     $MAGPIE_PERSIST_DIR/"

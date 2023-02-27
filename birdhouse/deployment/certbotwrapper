@@ -50,21 +50,10 @@ THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 SAVED_PWD="`pwd`"
 
-# Default values
-. $THIS_DIR/../default.env
+. "$THIS_DIR/../read-configs.include.sh"
 
-ENV_LOCAL_FILE="$THIS_DIR/../env.local"
-
-set +x  # hide password in env.local
-
-if [ -e "$ENV_LOCAL_FILE" ]; then
-    # Override default values
-    . "$ENV_LOCAL_FILE"
-else
-    echo "WARNING: '$ENV_LOCAL_FILE' not found."
-fi
-
-set -x  # resume logging/tracing
+# Get PAVICS_FQDN_PUBLIC, PAVICS_FQDN, SUPPORT_EMAIL, SSL_CERTIFICATE.
+read_configs
 
 CERT_DOMAIN="$PAVICS_FQDN_PUBLIC"
 if [ -z "$CERT_DOMAIN" ]; then

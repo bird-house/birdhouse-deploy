@@ -16,6 +16,224 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.23.3](https://github.com/bird-house/birdhouse-deploy/tree/1.23.3) (2023-02-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Vagrant: fix mismatch docker-compose version with autodeploy resulting in containers being recreated
+
+  Normally a `./pavics-compose.sh up -d` after an autodeploy has run, should
+  only create any new containers, not recreating all the existing containers.
+
+  This is because docker-compose v2 seems to be incompatible with old v1.  This
+  is the last v1 version still compatible with the docker-compose in the
+  autodeploy.
+
+  This old docker-compose v1 seems to work just fine with latest docker cli.
+
+  This is the quickest way to get Vagrant boxes up and running without causing
+  backward incompatible changes to existing production deployment.
+
+  If we update the docker-compose inside autodeploy to v2, this will force all
+  existing deployment to also update their installed docker-compose.
+
+  A more long term solution would be to always run `./pavics-compose.sh` using
+  the docker-compose image from autodeploy so the version will always match and
+  any docker-compose version update will be transparent.
+
+- Vagrant: ubuntu version after bionic is missing net-tools package pre-installed
+
+  net-tools package is required to have the route command to set the default
+  gateway.  Without the default gateway set, the VM will not be visible outside
+  of its own subnet.
+
+
+[1.23.2](https://github.com/bird-house/birdhouse-deploy/tree/1.23.2) (2023-02-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Fix birds not creating their wps output under each bird name
+
+  Before this fix, finch, raven, flyingpigeon were dumping their output directly
+  under `https://PAVICS_HOST/wpsoutputs/`.
+
+  With this fix, it will be under each bird name, ex:
+  `https://PAVICS_HOST/wpsoutputs/finch/` which is cleaner and follows what
+  malleefowl and hummingbird already does.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/11.
+  Fixes https://crim-ca.atlassian.net/browse/DAC-398
+
+  Requires PR https://github.com/Ouranosinc/pavics-sdi/pull/280,
+  https://github.com/bird-house/finch/pull/273 and
+  https://github.com/Ouranosinc/raven/pull/459.
+
+  If `optional-components/secure-data-proxy` is enabled, might need some
+  additional permissions for each bird in
+  https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/optional-components/secure-data-proxy/config/magpie/config.yml.template.
+
+[1.23.1](https://github.com/bird-house/birdhouse-deploy/tree/1.23.1) (2023-02-13)
+------------------------------------------------------------------------------------------------------------------
+
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+## Fixes
+- Vars in `DELAYED_EVAL` list are not expanded properly outside of `pavics-compose.sh`
+
+  There are other scripts sourcing `default.env` and `env.local` and all those
+  scripts have to expand the vars in `DELAYED_EVAL` list to have their actual
+  values.
+
+  Only scripts using the 3 variables in `DELAYED_EVAL` list are broken.
+
+  `DELAYED_EVAL` was previously introduced in PR https://github.com/bird-house/birdhouse-deploy/pull/272.
+
+  **Sample errors**
+
+  `fix-geoserver-data-dir-perm` (called at the end of `pavics-compose.sh`):
+  ```
+  fix GeoServer data dir permission on first run only, when data dir do not exist yet.
+  + DATA_DIR='${DATA_PERSIST_ROOT}/geoserver'
+  + '[' -n  ]
+  + docker run --rm --name fix-geoserver-data-dir-perm --volume '${DATA_PERSIST_ROOT}/geoserver:/datadir' --env FIRST_RUN_ONLY bash:5.1.4 bash -xc 'if [ -z "$FIRST_RUN_ONLY" -o ! -f /datadir/global.xml ]; \
+      then chown -R 1000:10001 /datadir; else echo "No execute."; fi'
+  docker: Error response from daemon: create ${DATA_PERSIST_ROOT}/geoserver: "${DATA_PERSIST_ROOT}/geoserver" includes invalid characters for a local volume name, only "[a-zA-Z0-9][a-zA-Z0-9_.-]" are allowed. If you intended to pass a host directory, use absolute path.
+  ```
+
+  `trigger-deploy-notebook` (broke notebook deploy job):
+  ```
+  + TMP_SCRIPT=/tmp/notebookdeploy/notebookdeploy.XXXXXXIfafFK/deploy-notebook
+  + cat
+  + chmod a+x /tmp/notebookdeploy/notebookdeploy.XXXXXXIfafFK/deploy-notebook
+  + docker run --rm --name deploy_tutorial_notebooks -u root -v /tmp/notebookdeploy/notebookdeploy.XXXXXXIfafFK/deploy-notebook:/deploy-notebook:ro -v /tmp/notebookdeploy/notebookdeploy.XXXXXXIfafFK/tutorial-notebooks:/tutorial-notebooks:ro -v '${DATA_PERSIST_ROOT}/jupyterhub_user_data:/notebook_dir:rw' --entrypoint /deploy-notebook bash:5.1.4
+  docker: Error response from daemon: create ${DATA_PERSIST_ROOT}/jupyterhub_user_data: "${DATA_PERSIST_ROOT}/jupyterhub_user_data" includes invalid characters for a local volume name, only "[a-zA-Z0-9][a-zA-Z0-9_.-]" are allowed. If you intended to pass a host directory, use absolute path.
+  ```
+
+  **Explanation of the fix**
+
+  All scripts have to remember to call function `process_delayed_eval` in order
+  to obtain the real value of each vars in `DELAYED_EVAL` list.
+
+  Centralized all logic about reading configs (config files reading order,
+  remember to call `process_delayed_eval`) to avoid mistake and to ease updating
+  logic in the future.  Too many scripts were reading the configs  themselves and
+  some are not doing it properly, ex: forgot to hide password when reading
+  `env.local`.
+
+  **All scripts should do this going forward**
+
+  ```sh
+  # Set variable COMPOSE_DIR to the dir containing pavics-compose.sh and docker-compose.yml.
+
+  # Source the script providing function read_configs.
+  # read_configs uses COMPOSE_DIR to find default.env and env.local.
+  . $COMPOSE_DIR/read-configs.include.sh
+
+  # Call function read_configs to read the various config files in the appropriate order and process delayed eval vars properly.
+  read_configs
+  ```
+
+[1.23.0](https://github.com/bird-house/birdhouse-deploy/tree/1.23.0) (2023-02-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- secure-data-proxy: add new [`secure-data-proxy`][secure-data-proxy] optional component.
+
+  When enabled, this component will enforce authentication and authorization to be resolved against the `/wpsoutputs`
+  endpoint prior to accessing the results produced by WPS executions. A Magpie service named `secure-data-proxy` is
+  created to define the resource and permission hierarchy of directories and files the users and groups can access.
+  When disabled, the original behavior to provide open access to `/wpsoutputs` is employed.
+
+  A variable named `SECURE_DATA_PROXY_AUTH_INCLUDE` is dynamically assigned based on the activation or not of this
+  component. Corresponding validation of optional/mandatory/delayed-eval variables used by this component are also
+  applied dynamically, as well as mounting the necessary `nginx` and `docker-compose` extended configurations.
+
+- Weaver: adjust user-context output directory hooks and permissions for [`secure-data-proxy`][secure-data-proxy].
+
+  When a process defined in Weaver (either a WPS provider or a local definition) is executed by a user that was granted
+  authorization to run a job, the corresponding user-context directory under `/wpsoutputs/users/{user-id}` will be used
+  for storing the execution outputs and will have the appropriate permissions set for that user to grant them access to
+  those outputs.
+
+## Fixes:
+
+- Magpie/Twitcher: update minimum version `magpie>=3.31.0` to employ `twitcher>=0.8.0` in `MapgieAdatepr`.
+
+  - Resolve an issue where `response.request` references were not set in OWS proxy responses when handled by Twitcher.
+    This caused `MapgieAdatepr` response hooks to fail, which in turn caused failing requests for any non-WPS
+    service that defined any proxy request hook, such as in the case of [`weaver`][weaver-component] component.
+
+  - Adds the Twitcher ``/ows/verify/{service_name}[/{extra_path}`` endpoint employed for validating authorized access
+    to Magpie service/resources, in the same fashion as the protected proxy endpoint, but without performing the proxied
+    request toward the target service. This is mandatory for using the new [`secure-data-proxy`][secure-data-proxy] 
+    optional component, otherwise the proxy endpoint triggers data download twice, once for authorization and another
+    for actually accessing the data.
+
+  See also [Ouranosinc/Magpie#571](https://github.com/Ouranosinc/Magpie/pull/571)
+  and [bird-house/twitcher#118](https://github.com/bird-house/twitcher/pull/118).
+
+[secure-data-proxy]: birdhouse/optional-components/secure-data-proxy
+[weaver-component]: birdhouse/components/weaver
+
+[1.22.11](https://github.com/bird-house/birdhouse-deploy/tree/1.22.11) (2023-02-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Proxy: add `/components` endpoint that provides a JSON list of loaded components by the platform.
+
+  Prior to this functionality, it was impossible to know which potential capabilities, services or behaviors were to be
+  expected by a given DACCS/PAVICS/birdhouse instance. Using this endpoint, nodes can obtain minimal machine-readable
+  details about their supported capabilities, allowing better interoperability.
+  
+  Furthermore, developers maintaining distinct stacks and integrating different features can have a better
+  understanding of behaviors by the various web services when performing requests against a given node.
+
+[1.22.10](https://github.com/bird-house/birdhouse-deploy/tree/1.22.10) (2023-01-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+- Weaver: fixes for running `post-docker-compose-up` operation.
+
+  - When the target `curl` image was not already available on the machine (each time for ephemeral test instances), the 
+    docker pull outputs on the first call would mangle the monitoring messages. An initial pull is done to avoid it.
+
+  - When running on `sh` (as expected by the script's shebang), the utility variable `$RANDOM` is missing.
+    A POSIX portable equivalent is used if `$RANDOM` could not be resolved.
+
+[1.22.9](https://github.com/bird-house/birdhouse-deploy/tree/1.22.9) (2023-01-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+- Jupyter: allow recursive directory deletion
+
+  This was not possible before since non-empty dir deletion was not possible.
+
+- Jupyter: re-enable terminal for all users
+
+  It was disabled to avoid malicious usage but with the monitoring in
+  place and the demo account restricted to limited resources, it's
+  probably safe to try enabling this again.
+
+  For legitimate users, not having the terminal is pretty annoying.
+  Should not penalize legit users for some rogue users.
+
+
+[1.22.8](https://github.com/bird-house/birdhouse-deploy/tree/1.22.8) (2023-01-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes:
+
+- Weaver: fix post script to be compatible with autodeploy
+
+  Autodeploy runs inside its own docker container and `curl` is not available.
+  Therefore Weaver post script should be using `curl` from a docker image
+  instead of locally installed flavor.
+
+- Jupyter: fix the Docker Spawner `start` function to support JupyterHub image selection names 
+  that use the `<name>:<version>` format.
+
+
 [1.22.7](https://github.com/bird-house/birdhouse-deploy/tree/1.22.7) (2022-12-23)
 ------------------------------------------------------------------------------------------------------------------
 

@@ -1,0 +1,15 @@
+
+    location = /secure-data-auth {
+        internal;
+        # note: using 'TWITCHER_VERIFY_PATH' path to avoid performing the request via 'proxy' endpoint
+        # This ensures that the data access is validated for the user, but does not trigger its access/download twice.
+        # Also, avoids getting an error as 'secure-data-proxy' private URL in Magpie doesn't resolve to a valid path.
+        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_VERIFY_PATH}/secure-data-proxy$request_uri;
+        proxy_pass_request_body off;
+        proxy_set_header Host $host;
+        proxy_set_header Content-Length "";
+        proxy_set_header X-Original-URI $request_uri;
+        proxy_set_header X-Forwarded-Proto $real_scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host:$server_port;
+    }

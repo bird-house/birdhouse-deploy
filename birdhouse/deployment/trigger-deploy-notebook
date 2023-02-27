@@ -35,13 +35,12 @@ set -x
 if [ -z "$COMPOSE_DIR" ]; then
     COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 fi
-if [ -e "$COMPOSE_DIR/default.env" ]; then
-    . "$COMPOSE_DIR/default.env"  # default JUPYTERHUB_USER_DATA_DIR
-fi
-if [ -e "$COMPOSE_DIR/env.local" ]; then
-    set +x  # do not leak password in logs
-    . "$COMPOSE_DIR/env.local"  # optional override JUPYTERHUB_USER_DATA_DIR
-    set -x
+
+if [ -f "$COMPOSE_DIR/read-configs.include.sh" ]; then
+    . "$COMPOSE_DIR/read-configs.include.sh"
+
+    # Get JUPYTERHUB_USER_DATA_DIR
+    read_configs
 fi
 
 NOTEBOOK_DIR_MNT="/notebook_dir"

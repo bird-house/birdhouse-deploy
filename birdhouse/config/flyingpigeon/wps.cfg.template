@@ -1,6 +1,6 @@
 [server]
-outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs
-outputpath = /data/wpsoutputs
+outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs/flyingpigeon
+outputpath = /data/wpsoutputs/flyingpigeon
 maxsingleinputsize = 2097152000.0
 
 [logging]

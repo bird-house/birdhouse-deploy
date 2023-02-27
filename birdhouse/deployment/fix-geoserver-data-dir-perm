@@ -14,15 +14,11 @@ THIS_DIR="`dirname "$THIS_FILE"`"
 # Go to repo root.
 cd $THIS_DIR/../..
 
-# Default values
+. birdhouse/read-configs.include.sh
+
 # Get BASH_IMAGE
 # Get GEOSERVER_DATA_DIR
-. birdhouse/default.env
-
-if [ -e "birdhouse/env.local" ]; then
-    # Override default values
-    . birdhouse/env.local
-fi
+read_configs
 
 set -x
 
