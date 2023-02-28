@@ -17,7 +17,7 @@ services:
       # SSL verification should be enabled for secured connections
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
-      WORKSPACE_DIR: /user_workspaces
+      WORKSPACE_DIR: /${USER_WORKSPACES}
       GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
       GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
     links:
@@ -30,7 +30,7 @@ services:
     volumes:
       - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
       - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
-      - "${DATA_PERSIST_ROOT}/user_workspaces:/user_workspaces"
+      - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
     restart: always
     logging: *default-logging
 
@@ -40,7 +40,7 @@ services:
     environment:
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
-      WORKSPACE_DIR: /user_workspaces
+      WORKSPACE_DIR: /${USER_WORKSPACES}
       GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
       GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
     env_file:
@@ -60,7 +60,7 @@ services:
       #   file 'celeryconfig' must be located directly under the application path and be named exactly like this,
       #   otherwise 'pyramid_celery' cannot find it (see https://github.com/sontek/pyramid_celery/pull/89)
       - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/celeryconfig.py
-      - "${DATA_PERSIST_ROOT}/user_workspaces:/user_workspaces"
+      - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
     restart: always
     logging: *default-logging
 
