@@ -1,4 +1,4 @@
-SERVICES['node']['monitoring'].update('Thredds': {
+SERVICES['node']['monitoring'].update({'Thredds': {
                 'request': {
                     'url': 'http://${PAVICS_FQDN}:8083${TWITCHER_PROTECTED_PATH}/thredds/catalog.html'
                 }

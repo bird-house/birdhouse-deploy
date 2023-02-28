@@ -124,7 +124,7 @@ for adir in $ALL_CONF_DIRS; do
     service_name=$(basename "$conf_dir")
     extra_compose="$conf_dir/docker-compose-extra.yml"
     if [ -f "$extra_compose" ]; then
-      if echo "$CONFIGURED_COMPONENTS" | grep "$service_name"; then
+      if echo "$CONFIGURED_COMPONENTS" | grep -q "$service_name"; then
         COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $extra_compose"
       fi
     fi
