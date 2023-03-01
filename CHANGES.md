@@ -14,7 +14,14 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+
+- Cowbird: Updated Cowbird config for user workspaces and for working callbacks to Magpie.
+
+  The config for user workspaces was updated to ensure Cowbird uses the same workspace as the original workspace used 
+  by JupyterLab. Cowbird can now take care of creating/deleting the user's workspace upon a user creation/deletion in 
+  Magpie. This feature remains backward compatible with the original script that was creating the workspace upon 
+  starting JupyterLab.
 
 [1.23.3](https://github.com/bird-house/birdhouse-deploy/tree/1.23.3) (2023-02-17)
 ------------------------------------------------------------------------------------------------------------------
