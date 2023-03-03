@@ -76,8 +76,6 @@ services:
     links:
       # must have link to send webhook requests directly through internal network
       - cowbird
-    environment:
-      MAGPIE_WEBHOOKS_CONFIG_PATH: "/opt/local/src/magpie/config/webhooks"
     volumes:
       # NOTE:
       #   Although the file uses the combined "config.yml" format, it is very important to pass it as independent and
