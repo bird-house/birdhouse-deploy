@@ -149,7 +149,7 @@ while [ $# -gt 0 ]
 do
   if [ x"$1" = x"up" ]; then
     # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
-    PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose restart proxy
+    PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} restart proxy
 
     # run postgres post-startup setup script
     postgres_id=$(PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres)
