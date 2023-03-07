@@ -18,10 +18,10 @@
 
 - Cowbird: Updated Cowbird config for user workspaces and for working callbacks to Magpie.
 
-  The config for user workspaces was updated to ensure Cowbird uses the same workspace as the original workspace used 
-  by JupyterLab. Cowbird can now take care of creating/deleting the user's workspace upon a user creation/deletion in 
-  Magpie. This feature remains backward compatible with the original script that was creating the workspace upon 
-  starting JupyterLab.
+  When enabling Cowbird, the config will now use a different working directory, which corresponds to the user workspaces
+  created with Cowbird. These workspaces will use symlinks to the Jupyterhub data directories.
+
+- JupyterHub: Updated config to support Cowbird, which uses a different working directory.
 
 [1.23.3](https://github.com/bird-house/birdhouse-deploy/tree/1.23.3) (2023-02-17)
 ------------------------------------------------------------------------------------------------------------------
