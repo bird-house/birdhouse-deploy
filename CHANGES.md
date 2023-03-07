@@ -14,8 +14,6 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
-
 - Zenodo: A configuration file for [Zenodo](https://zenodo.org/) was added to the source code, listing all contributing authors on the *birdhouse-deploy* repository.
 
 [1.23.3](https://github.com/bird-house/birdhouse-deploy/tree/1.23.3) (2023-02-17)
