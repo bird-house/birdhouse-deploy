@@ -18,6 +18,7 @@ services:
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
       WORKSPACE_DIR: /${USER_WORKSPACES}
+      JUPYTERHUB_USER_DATA_DIR: ${JUPYTERHUB_USER_DATA_DIR}
       GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
       GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
     links:
@@ -31,6 +32,7 @@ services:
       - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
       - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
       - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
+      - ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}
     restart: always
     logging: *default-logging
 
@@ -41,6 +43,7 @@ services:
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
       WORKSPACE_DIR: /${USER_WORKSPACES}
+      JUPYTERHUB_USER_DATA_DIR: ${JUPYTERHUB_USER_DATA_DIR}
       GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
       GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
     env_file:
@@ -61,6 +64,7 @@ services:
       #   otherwise 'pyramid_celery' cannot find it (see https://github.com/sontek/pyramid_celery/pull/89)
       - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/celeryconfig.py
       - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
+      - ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}
     restart: always
     logging: *default-logging
 
@@ -85,3 +89,9 @@ services:
       - ./components/cowbird/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/cowbird.yml:ro
       - ./components/cowbird/config/magpie/config.yml:/opt/local/src/magpie/config/providers/cowbird.yml:ro
       - ./components/cowbird/config/magpie/config.yml:/opt/local/src/magpie/config/webhooks/cowbird.yml:ro
+
+  jupyterhub:
+    environment:
+      WORKSPACE_DIR: /${USER_WORKSPACES}
+    volumes:
+      - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
