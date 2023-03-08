@@ -43,8 +43,8 @@
 
   Components can also have optional dependencies. These are additional configuration options to
   run if both components are deployed in the stack at the same time. These are defined in the
-  `docker-compose-extra-*.yml` files where the `*` refers to another component that _could be_
-  deployed. For example, `birdhouse/config/raven/docker-compose-extra-magpie.yml` contains
+  `config/*/docker-compose-extra.yml` files where the `*` refers to another component that _could be_
+  deployed. For example, `birdhouse/config/raven/config/magpie/docker-compose-extra.yml` contains
   additional configuration settings for the raven docker service that only apply if magpie is
   also deployed. This relaxes some dependencies between components and allows more flexibility
   when choosing what parts of the stack to deploy.

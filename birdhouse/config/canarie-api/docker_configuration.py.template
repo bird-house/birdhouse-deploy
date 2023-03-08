@@ -89,4 +89,4 @@ if os.path.exists(CANARIE_MONITORING_EXTRA_CONF_DIR):
             logger.info("canarie-api: ignoring extra config '{extra_conf_full_path}'".format(**locals()))
 
 if CANARIE_STATS_ROUTES:
-    SERVICES['node']['stats']['route'] = '/(' + '|'.join(CANARIE_STATS_ROUTES) + ')/.*'
+    SERVICES['node']['stats']['route'] = '/(' + '|'.join(route.strip('/') for r in CANARIE_STATS_ROUTES) + ')/.*'

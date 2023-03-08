@@ -217,7 +217,7 @@ SCRIPT ?= birdhouse/pavics-compose.sh	## Script to run the stack
 SCRIPT := $(call clean_opt,$(SCRIPT))
 
 .PHONY: start
-start:		## Start the stack with current local.env definitions
+start:		## Start the stack with current env.local definitions
 	@-$(MSG_I) "Starting $(APP_NAME) stack..."
 	@$(SHELL) $(SCRIPT) up -d
 
