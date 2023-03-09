@@ -23,6 +23,8 @@
 
 - JupyterHub: Updated config to support Cowbird, which uses a different working directory.
 
+- Updated eo and nlp images to latest version in the `env.local.example` config.
+
 [1.23.3](https://github.com/bird-house/birdhouse-deploy/tree/1.23.3) (2023-02-17)
 ------------------------------------------------------------------------------------------------------------------
 
