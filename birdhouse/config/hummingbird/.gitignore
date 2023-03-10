@@ -1,2 +1,5 @@
 custom.cfg
-hummingbird-magpie-provider.cfg
+config/**/*
+!config/**/
+!config/**/*.template
+!config/*/docker-compose-extra.yml

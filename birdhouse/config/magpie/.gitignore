@@ -2,4 +2,9 @@ magpie.ini
 permissions.cfg
 providers.cfg
 magpie_canarie_api_monitoring.py
-conf.extra-service.d/magpie.conf
+postgres-credentials.env
+docker-entrypoint-initdb.d/create-db.sql
+config/**/*
+!config/**/
+!config/**/*.template
+!config/*/docker-compose-extra.yml

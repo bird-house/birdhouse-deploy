@@ -1,4 +1,5 @@
 catalog.cfg
-catalog-magpie-provider.cfg
-catalog-magpie-permission.cfg
-catalog_canarie_api_monitoring.py
+config/**/*
+!config/**/
+!config/**/*.template
+!config/*/docker-compose-extra.yml

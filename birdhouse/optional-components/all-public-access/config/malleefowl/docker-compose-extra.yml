@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  magpie:
+    volumes:
+      - ./optional-components/all-public-access/config/malleefowl/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/all-public-access-malleefowl-permissions.cfg:ro

@@ -2,5 +2,5 @@ version: "3.4"
 services:
   magpie:
     volumes:
-    - ./config/catalog/catalog-magpie-provider.cfg:/opt/local/src/magpie/config/providers/catalog-magpie-provider.cfg:ro
-    - ./config/catalog/catalog-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/catalog-magpie-permission.cfg:ro
+    - ./config/catalog/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/catalog-providers.cfg:ro
+    - ./config/catalog/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/catalog-permissions.cfg:ro

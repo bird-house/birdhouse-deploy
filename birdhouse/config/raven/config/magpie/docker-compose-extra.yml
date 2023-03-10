@@ -2,4 +2,4 @@ version: "3.4"
 services:
   magpie:
     volumes:
-    - ./config/raven/raven-magpie-provider.cfg:/opt/local/src/magpie/config/providers/raven-magpie-provider.cfg:ro
+    - ./config/raven/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/raven-providers.cfg:ro

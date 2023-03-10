@@ -1,1 +1,4 @@
-conf.extra-service.d/portainer.conf
+config/**/*
+!config/**/
+!config/**/*.template
+!config/*/docker-compose-extra.yml

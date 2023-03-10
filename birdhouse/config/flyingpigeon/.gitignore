@@ -1,3 +1,5 @@
 wps.cfg
-flyingpigeon-magpie-provider.cfg
-flyingpigeon-magpie-permission.cfg
+config/**/*
+!config/**/
+!config/**/*.template
+!config/*/docker-compose-extra.yml

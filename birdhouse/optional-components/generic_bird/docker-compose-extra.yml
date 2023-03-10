@@ -9,7 +9,6 @@ services:
       - "${GENERIC_BIRD_PORT}:${GENERIC_BIRD_INTERNAL_PORT}"
     volumes:
       - ./optional-components/generic_bird/wps.cfg:/wps.cfg:ro
-      - wps_outputs:/data/wpsoutputs
       - /tmp
     links:
       - postgres_generic_bird

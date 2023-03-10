@@ -20,7 +20,6 @@ services:
     volumes:
       - ./config/finch/wps.cfg:/wps.cfg
       # - data:/opt/birdhouse/var/lib
-      - wps_outputs:/data/wpsoutputs
       - /tmp
     restart: always
     logging: *default-logging

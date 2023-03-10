@@ -2,5 +2,5 @@ version: "3.4"
 services:
   magpie:
     volumes:
-    - ./optional-components/generic_bird/generic_bird-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/generic_bird-magpie-permission.cfg:ro
-    - ./optional-components/generic_bird/generic_bird-magpie-provider.cfg:/opt/local/src/magpie/config/providers/generic_bird-magpie-provider.cfg:ro
+    - ./optional-components/generic_bird/config/proxy/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/generic_bird-permissions.cfg:ro
+    - ./optional-components/generic_bird/config/proxy/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/generic_bird-providers.cfg:ro

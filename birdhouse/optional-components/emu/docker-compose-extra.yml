@@ -12,12 +12,3 @@ services:
       - ${EMU_WPS_OUTPUTS_VOL}:/data/wpsoutputs
       - /tmp
     restart: always
-
-  magpie:
-    volumes:
-    - ./optional-components/emu/emu-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/emu-magpie-permission.cfg:ro
-    - ./optional-components/emu/emu-magpie-provider.cfg:/opt/local/src/magpie/config/providers/emu-magpie-provider.cfg:ro
-
-  proxy:
-    volumes:
-    - ./optional-components/emu/emu_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/emu_canarie_api_monitoring.py:ro

@@ -2,4 +2,4 @@ version: "3.4"
 services:
   proxy:
     volumes:
-    - ./config/portainer/conf.extra-service.d:/etc/nginx/conf.extra-service.d/portainer:ro
+    - ./config/portainer/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/portainer:ro

@@ -1,3 +1,6 @@
 geoserver_canarie_api_monitoring.py
-conf.extra-service.d/geoserver.conf
 geoserver-magpie-provider.cfg
+config/**/*
+!config/**/
+!config/**/*.template
+!config/*/docker-compose-extra.yml

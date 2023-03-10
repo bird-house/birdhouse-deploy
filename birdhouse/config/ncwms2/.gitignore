@@ -1,3 +1,6 @@
 custom.cfg
-conf.extra-service.d/ncwms2.conf
 ncwms2-magpie-provider.cfg
+config/**/*
+!config/**/
+!config/**/*.template
+!config/*/docker-compose-extra.yml

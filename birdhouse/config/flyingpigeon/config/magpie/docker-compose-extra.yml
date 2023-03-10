@@ -2,5 +2,5 @@ version: "3.4"
 services:
   magpie:
     volumes:
-      - ./config/flyingpigeon/flyingpigeon-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/flyingpigeon-magpie-permission.cfg:ro
-      - ./config/flyingpigeon/flyingpigeon-magpie-provider.cfg:/opt/local/src/magpie/config/providers/flyingpigeon-magpie-provider.cfg:ro
+    - ./config/flyingpigeon/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/flyingpigeon-providers.cfg:ro
+    - ./config/flyingpigeon/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/flyingpigeon-permissions.cfg:ro

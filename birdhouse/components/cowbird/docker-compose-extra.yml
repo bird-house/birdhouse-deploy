@@ -48,7 +48,7 @@ services:
       GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
     env_file:
       # user/password for admin session to perform permission sync updates
-      - ./config/postgres-magpie/credentials.env
+      - ./config/magpie/postgres-credentials.env
     links:
       - "${COWBIRD_MONGODB_SERVICE}"
     networks:

@@ -23,8 +23,6 @@ services:
       - "48097:9001"
     volumes:
       - ./config/hummingbird/custom.cfg:/opt/birdhouse/src/hummingbird/custom.cfg
-      - data:/opt/birdhouse/var/lib
-      - wps_outputs:/opt/birdhouse/var/lib/pywps/outputs
     depends_on:
       - postgres
     restart: always
