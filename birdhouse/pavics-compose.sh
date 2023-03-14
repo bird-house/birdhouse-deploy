@@ -122,7 +122,7 @@ CONFIGURED_COMPONENTS=''
 for adir in $ALL_CONF_DIRS; do
   CONFIGURED_COMPONENTS="
     $CONFIGURED_COMPONENTS
-    $(basname $adir)"
+    $(basename $adir)"
 done
 
 for adir in $ALL_CONF_DIRS; do
