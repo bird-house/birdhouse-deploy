@@ -1,0 +1,3 @@
+#!/bin/sh
+
+docker exec raven mkdir -p /data/wpsoutputs/raven
