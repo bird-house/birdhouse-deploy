@@ -118,7 +118,13 @@ for adir in $ALL_CONF_DIRS; do
     COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $adir/docker-compose-extra.yml"
   fi
 done
-CONFIGURED_COMPONENTS=$(PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} config --services)
+CONFIGURED_COMPONENTS=''
+for adir in $ALL_CONF_DIRS; do
+  CONFIGURED_COMPONENTS="
+    $CONFIGURED_COMPONENTS
+    $(basname $adir)"
+done
+
 for adir in $ALL_CONF_DIRS; do
   for conf_dir in "$adir"/config/*; do
     service_name=$(basename "$conf_dir")
