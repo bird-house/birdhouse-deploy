@@ -1,3 +1,0 @@
-#!/bin/sh
-
-docker exec hummingbird mkdir -p /data/wpsoutputs/hummingbird

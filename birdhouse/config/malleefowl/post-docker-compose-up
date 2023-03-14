@@ -1,3 +1,0 @@
-#!/bin/sh
-
-docker exec malleefowl mkdir -p /data/wpsoutputs/malleefowl
