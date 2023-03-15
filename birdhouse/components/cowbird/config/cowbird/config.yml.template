@@ -9,7 +9,7 @@
 handlers:
   Magpie:
     active: true
-    url: https://${PAVICS_FQDN_PUBLIC}/magpie
+    url: http://magpie:2001
     admin_user: ${MAGPIE_ADMIN_USERNAME}
     admin_password: ${MAGPIE_ADMIN_PASSWORD}
   Geoserver:
@@ -31,6 +31,7 @@ handlers:
     active: true
     priority: 1
     workspace_dir: ${WORKSPACE_DIR}
+    jupyterhub_user_data_dir: ${JUPYTERHUB_USER_DATA_DIR}
 
 # [Required] This section defines how to synchronize permissions between services when they share resources
 sync_permissions:
