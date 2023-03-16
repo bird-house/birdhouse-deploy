@@ -31,7 +31,6 @@ VARS='
 OPTIONAL_VARS='
   $PAVICS_FQDN_PUBLIC
   $EXTRA_PYWPS_CONFIG
-  $VERIFY_SSL
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH
@@ -77,13 +76,6 @@ fi
 if [ -z "$PAVICS_FQDN_PUBLIC" ]; then
   # default value before instantiating template configs
   export PAVICS_FQDN_PUBLIC="$PAVICS_FQDN"
-fi
-
-# TODO: move this to pre-docker-compose-up for proxy
-if [ x"$ALLOW_UNSECURE_HTTP" = x"True" ]; then
-  export INCLUDE_FOR_PORT_80="include /etc/nginx/conf.d/all-services.include;"
-else
-  export INCLUDE_FOR_PORT_80="include /etc/nginx/conf.d/redirect-to-https.include;"
 fi
 
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""

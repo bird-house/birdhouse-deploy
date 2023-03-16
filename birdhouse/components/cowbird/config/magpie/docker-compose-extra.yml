@@ -15,3 +15,7 @@ services:
       - ./components/cowbird/config/magpie/config.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/cowbird.yml:ro
       - ./components/cowbird/config/magpie/config.yml:${MAGPIE_PROVIDERS_CONFIG_PATH}/cowbird.yml:ro
       - ./components/cowbird/config/magpie/config.yml:${MAGPIE_WEBHOOKS_CONFIG_PATH}/cowbird.yml:ro
+  cowbird-worker:
+    env_file:
+      # user/password for admin session to perform permission sync updates
+      - ./config/magpie/postgres-credentials.env

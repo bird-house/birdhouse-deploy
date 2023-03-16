@@ -18,8 +18,6 @@ services:
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
       WORKSPACE_DIR: /${USER_WORKSPACES}
-      GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
-      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
     links:
       - "${COWBIRD_MONGODB_SERVICE}"
     networks:
@@ -41,11 +39,6 @@ services:
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
       WORKSPACE_DIR: /${USER_WORKSPACES}
-      GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
-      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
-    env_file:
-      # user/password for admin session to perform permission sync updates
-      - ./config/magpie/postgres-credentials.env
     links:
       - "${COWBIRD_MONGODB_SERVICE}"
     networks:

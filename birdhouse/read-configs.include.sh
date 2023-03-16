@@ -81,11 +81,16 @@ read_env_local() {
 
 }
 
+# Adds all directories in $1 to the ALL_CONF_DIRS variable (if they are not
+# already present) and sources the default.env file found at each directory.
+# $1 should be a list of directory paths delimited by whitespace.
+# $2 is a description of the config files being passed in $1 (used for error messaging only)
 source_conf_files() {
   dirs=$1
   conf_locations=$2
   for adir in ${dirs}; do
       if echo "$ALL_CONF_DIRS" | grep -qE "^\s*$adir\s*$"; then
+          # ignore directories that are already in ALL_CONF_DIRS
           continue
       fi
       if [ -e "$adir" ]; then
@@ -123,6 +128,8 @@ read_components_default_env() {
     current_dependencies=$COMPONENT_DEPENDENCIES
     source_conf_files "$requested_conf_dirs" 'EXTRA_CONF_DIRS or DEFAULT_CONF_DIRS'
     while [ "$current_dependencies" != "$COMPONENT_DEPENDENCIES" ]; do
+      # if additional component dependencies are added by sourcing configuration files, then
+      # source the new dependencies as well.
       current_dependencies=$COMPONENT_DEPENDENCIES
       source_conf_files "$COMPONENT_DEPENDENCIES" 'COMPONENT_DEPENDENCIES'
     done
@@ -139,6 +146,10 @@ read_components_default_env() {
 # value of each var in DELAYED_EVAL list.
 process_delayed_eval() {
     for i in ${DELAYED_EVAL}; do
+        if echo "$DELAYED_EVAL" | grep -qE "^\s*$i\s*$"; then
+          # only eval each variable once (in case it was added to the list multiple times)
+          continue
+        fi
         v="`eval "echo \\$${i}"`"
         eval 'export ${i}="`eval "echo ${v}"`"'
         echo "delayed eval '$(env |grep "${i}=")'"

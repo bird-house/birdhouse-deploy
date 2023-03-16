@@ -16,7 +16,6 @@ services:
       - "48080:9001"
     volumes:
       - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
-      - wps_outputs:/pavics-data/wps_outputs
       - ./config/ncwms2/custom.cfg:/opt/birdhouse/custom.cfg
       - ./config/ncwms2/server.xml:/opt/birdhouse/eggs/birdhousebuilder.recipe.tomcat-0.2.9-py2.7.egg/birdhousebuilder/recipe/tomcat/server.xml
     restart: always
