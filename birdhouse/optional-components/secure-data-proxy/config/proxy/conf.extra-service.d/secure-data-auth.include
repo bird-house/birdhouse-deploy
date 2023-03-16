@@ -1,5 +1,3 @@
-
-
     # this should be included within a 'location {}' block to verify 'secure-data-proxy'
     # magpie service authorization prior to accessing the corresponding data
     auth_request /secure-data-auth;

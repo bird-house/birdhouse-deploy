@@ -145,14 +145,18 @@ read_components_default_env() {
 # in DELAYED_EVAL list need to call this function to actually resolve the
 # value of each var in DELAYED_EVAL list.
 process_delayed_eval() {
+    ALREADY_EVALED=''
     for i in ${DELAYED_EVAL}; do
-        if echo "$DELAYED_EVAL" | grep -qE "^\s*$i\s*$"; then
+        if echo "ALREADY_EVALED" | grep -qE "^\s*$i\s*$"; then
           # only eval each variable once (in case it was added to the list multiple times)
           continue
         fi
         v="`eval "echo \\$${i}"`"
         eval 'export ${i}="`eval "echo ${v}"`"'
         echo "delayed eval '$(env |grep "${i}=")'"
+        ALREADY_EVALED="
+          $ALREADY_EVALED
+          $i"
     done
 }
 
