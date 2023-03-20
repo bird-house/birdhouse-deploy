@@ -126,6 +126,8 @@ read_components_default_env() {
     ALL_CONF_DIRS=''
     COMPONENT_DEPENDENCIES=''
     current_dependencies=$COMPONENT_DEPENDENCIES
+    # Note: source_conf_files may update COMPONENT_DEPENDENCIES when sourcing the default.env
+    # files in each component's directory.
     source_conf_files "$requested_conf_dirs" 'EXTRA_CONF_DIRS or DEFAULT_CONF_DIRS'
     while [ "$current_dependencies" != "$COMPONENT_DEPENDENCIES" ]; do
       # if additional component dependencies are added by sourcing configuration files, then
