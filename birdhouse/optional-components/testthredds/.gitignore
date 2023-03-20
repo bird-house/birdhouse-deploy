@@ -1,4 +1,5 @@
 catalog.xml
+threddsConfig.xml
 config/proxy/conf.extra-service.d/testthredds-service.conf
 config/proxy/canarie_api_monitoring.py
 
