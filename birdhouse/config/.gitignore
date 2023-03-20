@@ -1,3 +1,2 @@
 # Old paths. Keep these so that old config files remain uncommittable after updates.
-config/postgres-magpie/proxy/conf.extra-service.d/wps_outputs-volume.conf
-config/postgres-magpie/config/proxy/canarie_api_monitoring.py
+postgres-magpie/
