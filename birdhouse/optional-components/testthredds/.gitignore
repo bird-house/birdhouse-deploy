@@ -1,5 +1,6 @@
 catalog.xml
-config/**/*
-!config/**/
-!config/**/*.template
-!config/*/docker-compose-extra.yml
+config/proxy/conf.extra-service.d/testthredds-service.conf
+config/proxy/canarie_api_monitoring.py
+
+# Old paths. Keep these so that old config files remain uncommittable after updates.
+testthredds_canarie_api_monitoring.py

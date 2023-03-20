@@ -1,5 +1,2 @@
+config/magpie/providers.cfg
 custom.cfg
-config/**/*
-!config/**/
-!config/**/*.template
-!config/*/docker-compose-extra.yml

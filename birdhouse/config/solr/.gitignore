@@ -1,4 +1,1 @@
-config/**/*
-!config/**/
-!config/**/*.template
-!config/*/docker-compose-extra.yml
+config/proxy/canarie_api_monitoring.py
