@@ -149,7 +149,7 @@ read_components_default_env() {
 process_delayed_eval() {
     ALREADY_EVALED=''
     for i in ${DELAYED_EVAL}; do
-        if echo "ALREADY_EVALED" | grep -qE "^\s*$i\s*$"; then
+        if echo "$ALREADY_EVALED" | grep -qE "^\s*$i\s*$"; then
           # only eval each variable once (in case it was added to the list multiple times)
           continue
         fi
