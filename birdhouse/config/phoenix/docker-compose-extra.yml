@@ -30,7 +30,6 @@ services:
       - default
       - mongodb
     depends_on:
-      - malleefowl
       - flyingpigeon
       - proxy
     restart: always

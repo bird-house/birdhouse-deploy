@@ -152,12 +152,6 @@ permissions:
     permission: read
     group: anonymous
     action: create
-  # malleefowl
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/malleefowl
-    permission: read
-    group: anonymous
-    action: create
   # raven
   - service: ${WEAVER_MANAGER_NAME}
     resource: /providers/raven
