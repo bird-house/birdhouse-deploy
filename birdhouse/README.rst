@@ -220,7 +220,7 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
 
 #. MINOR version when we add new components or update existing components
    that also require change to other existing components (ex: new Magpie that
-   also force Twitcher and/or Frontend update) or the change to the existing
+   also forces a Twitcher update) or the change to the existing
    component is a major one (ex: major refactoring of Twitcher, big merge
    with corresponding upstream component from birdhouse project).
 
