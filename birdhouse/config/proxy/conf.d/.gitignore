@@ -5,4 +5,3 @@ all-services.include
 lb_catalog.conf
 lb_emu.conf
 lb_flyingpigeon.conf
-lb_ncops.conf
