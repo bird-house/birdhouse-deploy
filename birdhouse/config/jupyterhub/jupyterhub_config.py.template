@@ -177,7 +177,7 @@ c.Authenticator.refresh_pre_spawn = True
 #
 # For security reasons, block user with known hardcoded public password or
 # non real Jupyter users.
-blocked_users = {'authtest', '${CATALOG_USERNAME}', 'anonymous'}
+blocked_users = {'authtest', 'anonymous'}
 c.Authenticator.blacklist = blocked_users  # v0.9+
 c.Authenticator.blocked_users = blocked_users  # v1.2+
 

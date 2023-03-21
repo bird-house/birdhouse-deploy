@@ -32,7 +32,6 @@ services:
     depends_on:
       - malleefowl
       - flyingpigeon
-      - catalog
       - proxy
     restart: always
     logging: *default-logging
