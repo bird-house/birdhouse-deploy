@@ -149,6 +149,13 @@ do
     # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
     PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} restart proxy
 
+    # run postgres post-startup setup script
+    # Note: this must run before the post-docker-compose-up scripts since some may expect postgres databases to exist
+    postgres_id=$(PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres)
+    if [ ! -z "$postgres_id" ]; then
+      docker exec ${postgres_id} /postgres-setup.sh
+    fi
+
     for adir in $ALL_CONF_DIRS; do
       COMPONENT_POST_COMPOSE_UP="$adir/post-docker-compose-up"
       if [ -x "$COMPONENT_POST_COMPOSE_UP" ]; then
