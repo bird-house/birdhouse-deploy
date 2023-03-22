@@ -13,6 +13,11 @@
 
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
+
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.24.0](https://github.com/bird-house/birdhouse-deploy/tree/1.24.0) (2023-03-22)
+------------------------------------------------------------------------------------------------------------------
 ## Fixes
 - The default stack was not configurable. This meant that if someone wanted to deploy a 
   subset of the default stack there was no good way of configuring birdhouse-deploy to run
