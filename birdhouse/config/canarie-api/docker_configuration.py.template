@@ -27,7 +27,7 @@ SERVICES = {
         },
         'stats': {
             'method': '.*',
-            'route': '(?!)'
+            'route': '(?!)' # this will be set by CANARIE_STATS_ROUTES (see below)
         },
         'redirect': {
             'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
@@ -56,7 +56,7 @@ PLATFORMS = {
         },
         'stats': {
             'method': '.*',
-            'route': '(?!)'
+            'route': '(?!)' # this can be set by individual components (eg: the legacy project-api component)
         },
         'redirect': {
             'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
