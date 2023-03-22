@@ -1,0 +1,6 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+    - ./config/project-api/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/project-api:ro
+    - ./config/project-api/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/project-api_canarie_api_monitoring.py:ro

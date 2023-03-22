@@ -1,0 +1,5 @@
+SERVICES['node']['monitoring']['Phoenix'] = {
+    'request': {
+        'url': 'https://${PAVICS_FQDN}:8443/'
+    }
+}

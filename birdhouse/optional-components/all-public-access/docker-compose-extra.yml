@@ -1,6 +1,0 @@
-version: "3.4"
-services:
-  magpie:
-    volumes:
-    - ./optional-components/all-public-access/all-public-access-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/all-public-access-magpie-permission.cfg:ro
-

@@ -17,8 +17,8 @@ SERVICES = {
         'info': {
             'name': 'Node',
             'synopsis': 'Nodes are data, compute and index endpoints accessed through the PAVICS platform or external clients. The Node service is the backend that allows: data storage, harvesting, indexation and discovery of local and federated data; authentication and authorization; server registration and management. Node service is therefore composed of several other services.',
-            'version': '1.23.3',
-            'releaseTime': '2023-02-17T03:03:02Z',
+            'version': '1.24.0',
+            'releaseTime': '2023-03-22T13:47:30Z',
             'institution': 'Ouranos',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
@@ -27,7 +27,7 @@ SERVICES = {
         },
         'stats': {
             'method': '.*',
-            'route': '/(magpie|geoserver|thredds|wpsoutputs|jupyter)/.*'
+            'route': '(?!)' # this will be set by CANARIE_STATS_ROUTES (see below)
         },
         'redirect': {
             'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
@@ -38,202 +38,7 @@ SERVICES = {
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
         },
-        'monitoring': {
-            'Magpie': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/magpie/version'
-                },
-                'response': {
-                    'text': '\{.*"code": 200.*"type": "application/json".*\}'
-                }
-            },
-            'Twitcher': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/flyingpigeon?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-            'Geoserver': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/'
-                }
-            },
-            'Phoenix': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/'
-                }
-            },
-            'Catalog': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8086/pywps?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-            'Malleefowl': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-            'Finch': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8095/wps?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-            'Raven': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8096/wps?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-            'Solr': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8983/solr/birdhouse/select?q=CMIP5&fq=model:MPI-ESM-MR&fq=experiment:rcp45&fq=variable:tasmax&fq=institute:MPI-M&fq=frequency:mon&wt=json'
-                },
-                'response': {
-                    'text': '.*catalog_url\":\".+/testdata/flyingpigeon/cmip5.*/catalog.xml.*'
-                }
-            },
-            'Thredds': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8083${TWITCHER_PROTECTED_PATH}/thredds/catalog.html'
-                }
-            },
-            'Jupyter': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/jupyter/hub/login'
-                },
-            }
-        }
-    },
-    'indices': {
-        'info': {
-            'name': 'Climate indices',
-            'synopsis': 'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, the number of degree-days of cooling, the duration of heatwaves, etc. This returns annual values of the most popular climate indices.',
-            'version': '0.7.1',
-            'institution': 'Ouranos',
-            'releaseTime': '2021-03-25T00:00:00Z',
-            'researchSubject': 'Climatology',
-            'supportEmail': '${SUPPORT_EMAIL}',
-            'category': 'Data Manipulation',
-            'tags': ['Climatology', 'Cloud']
-        },
-        'stats': {
-            'method': '.*',
-            'route': '${TWITCHER_PROTECTED_PATH}/finch.*'
-        },
-        'redirect': {
-            'doc': 'https://finch.readthedocs.io/en/latest/index.html',
-            'releasenotes': 'https://github.com/bird-house/finch/releases',
-            'support': 'https://github.com/bird-house/finch/issues',
-            'source': 'https://github.com/bird-house/finch',
-            'tryme': 'https://ouranosinc.github.io/pavics-sdi/notebooks/climate_indices.html',
-            'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
-            'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
-        },
-        'monitoring': {
-            'Finch': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-        }
-    },
-    'raven': {
-        'info': {
-            'name': 'Hydrological modeling and analysis',
-            'synopsis': ('A suite of WPS processes to calibrate and run hydrological models, including geographical'
-            'information retrieval and processing as well as time series analysis.'),
-            'version': '0.11.1',
-            'institution': 'Ouranos',
-            'releaseTime': '2021-02-01T00:00:00Z',
-            'researchSubject': 'Hydrology',
-            'supportEmail': '${SUPPORT_EMAIL}',
-            'category': 'Data Manipulation',
-            'tags': ['Hydrology']
-        },
-        'stats': {
-            'method': '.*',
-            'route': '${TWITCHER_PROTECTED_PATH}/raven.*'
-        },
-        'redirect': {
-            'doc': 'https://pavics-raven.readthedocs.io/en/latest/',
-            'releasenotes': 'https://github.com/Ouranosinc/raven/releases',
-            'support': 'https://github.com/Ouranosinc/raven/issues',
-            'source': 'https://github.com/Ouranosinc/raven',
-            'tryme': 'https://pavics-raven.readthedocs.io/en/latest/notebooks/index.html',
-            'licence': 'https://github.com/Ouranosinc/raven/blob/master/LICENSE.txt',
-            'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
-        },
-        'monitoring': {
-            'Raven': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-        }
-    },
-    'renderer': {
-        'info': {
-            'name': 'High-resolution spatial gridded data renderer',
-            'synopsis': 'This service renders gridded data on the server and sends images to the client for display within mapping applications using Open Geospatial Consortium (OGC) Web Mappping Service (WMS) standard.',
-            'version': '4.6.15',
-            'institution': 'Unidata',
-            'releaseTime': '2020-06-16T00:00:00Z',
-            'researchSubject': 'Climatology',
-            'supportEmail': '${SUPPORT_EMAIL}',
-            'category': 'Data Manipulation',
-            'tags': ['Climatology']
-        },
-        'stats': {
-            'method': '.*',
-            'route': '/thredds/.*'
-        },
-        'redirect': {
-            'doc': 'https://ouranosinc.github.io/pavics-sdi/arch/frontend.html#gridded-data-rendering',
-            'releasenotes': 'https://github.com/Unidata/tds/releases',
-            'support': 'https://github.com/Ouranosinc/pavics-sdi/issues',
-            'source': 'https://github.com/Unidata/tds',
-            'tryme': 'https://ouranosinc.github.io/pavics-sdi/notebooks/rendering.html',
-            'licence': 'https://github.com/Unidata/tds/blob/master/LICENSE',
-            'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
-        },
-        'monitoring': {
-            'ncWMS': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds/wms/birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc?service=WMS&version=1.3.0&request=GetCapabilities'
-                }
-            },
-        }
-    },
-    'slicer': {
-        'info': {
-            'name': 'Spatial and temporal data slicer',
-            'synopsis': 'These services allows the subsetting and download of NetCDF over user-defined regions and periods.',
-            'version': '0.7.1',
-            'institution': 'Ouranos',
-            'releaseTime': '2021-03-25T00:00:00Z',
-            'researchSubject': 'Climatology',
-            'supportEmail': '${SUPPORT_EMAIL}',
-            'category': 'Data Manipulation',
-            'tags': ['Climatology', 'Cloud']
-        },
-        'stats': {
-            'method': '.*',
-            'route': '${TWITCHER_PROTECTED_PATH}/finch.*'
-        },
-        'redirect': {
-            'doc': 'https://finch.readthedocs.io/en/latest/index.html',
-            'releasenotes': 'https://github.com/bird-house/finch/releases',
-            'support': 'https://github.com/bird-house/finch/issues',
-            'source': 'https://github.com/bird-house/finch',
-            'tryme': 'https://pavics-sdi.readthedocs.io/en/latest/notebooks/regridding.html',
-            'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
-            'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
-        },
-        'monitoring': {
-            'Flyingpigeon': {
-                'request': {
-                     'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
-                }
-            },
-        }
+        'monitoring': {}
     }
 }
 
@@ -242,8 +47,8 @@ PLATFORMS = {
         'info': {
             'name': 'PAVICS',
             'synopsis': 'The PAVICS (Power Analytics for Visualization of Climate Science) platform is a collection of climate analysis services served through Open Geospatial Consortium (OGC) protocols. These services include data access, processing and visualization. Both data and algorithms can be accessed either programmatically, through OGC-compliant clients such as QGIS or ArcGIS, or a custom web interface.',
-            'version': '1.23.3',
-            'releaseTime': '2023-02-17T03:03:02Z',
+            'version': '1.24.0',
+            'releaseTime': '2023-03-22T13:47:30Z',
             'institution': 'Ouranos',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
@@ -251,7 +56,7 @@ PLATFORMS = {
         },
         'stats': {
             'method': '.*',
-            'route': '/project-api/.*'
+            'route': '(?!)' # this can be set by individual components (eg: the legacy project-api component)
         },
         'redirect': {
             'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
@@ -263,23 +68,14 @@ PLATFORMS = {
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html',
             'factsheet': 'http://www.canarie.ca/software/pavics'
         },
-        'monitoring': {
-            'Frontend': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}'
-                }
-            },
-            'Project': {
-                'request': {
-                    'url': 'https://${PAVICS_FQDN_PUBLIC}/project-api/explorer/'
-                }
-            },
-        }
+        'monitoring': {}
     }
 }
 
 CANARIE_MONITORING_EXTRA_CONF_DIR = os.environ.get(
     'CANARIE_MONITORING_EXTRA_CONF_DIR', '/bogus-notexist')
+
+CANARIE_STATS_ROUTES=[]
 
 if os.path.exists(CANARIE_MONITORING_EXTRA_CONF_DIR):
     # alphabetically sorted for reproducible override precedence
@@ -291,3 +87,6 @@ if os.path.exists(CANARIE_MONITORING_EXTRA_CONF_DIR):
             execfile(extra_conf_full_path)
         else:
             logger.info("canarie-api: ignoring extra config '{extra_conf_full_path}'".format(**locals()))
+
+if CANARIE_STATS_ROUTES:
+    SERVICES['node']['stats']['route'] = '/(' + '|'.join(r.strip('/') for r in CANARIE_STATS_ROUTES) + ')/.*'

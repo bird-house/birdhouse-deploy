@@ -1,1 +1,7 @@
 custom.cfg
+config/proxy/conf.extra-service.d/ncwms2.conf
+config/magpie/providers.cfg
+
+# Old paths. Keep these so that old config files remain uncommittable after updates.
+ncwms2-magpie-provider.cfg
+

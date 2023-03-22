@@ -9,7 +9,6 @@ services:
       - ./components/scheduler/config.yml:/opt/crontab/config.yml:ro
     environment:
       COMPOSE_DIR: ${PWD}
-      JUPYTERHUB_USER_DATA_DIR: ${JUPYTERHUB_USER_DATA_DIR}
       AUTODEPLOY_DEPLOY_KEY_ROOT_DIR: ${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}
     restart: always
 

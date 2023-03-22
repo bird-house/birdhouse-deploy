@@ -1,0 +1,6 @@
+version: "3.4"
+
+services:
+  hummingbird:
+    volumes:
+      - data:/opt/birdhouse/var/lib

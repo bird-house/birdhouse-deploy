@@ -1,0 +1,9 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+      - ./optional-components/canarie-api-full-monitoring/config/proxy/canarie_api_full_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/canarie_api_full_monitoring.py:ro
+      - ./optional-components/canarie-api-full-monitoring/config/proxy/a_demo_override_precedence.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/a_demo_override_precedence.py:ro
+      - ./optional-components/canarie-api-full-monitoring/config/proxy/z_demo_only_py_file_are_loaded.wrongsuffix:${CANARIE_MONITORING_EXTRA_CONF_DIR}/z_demo_only_py_file_are_loaded.wrongsuffix:ro
+
+# vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2

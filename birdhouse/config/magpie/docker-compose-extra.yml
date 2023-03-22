@@ -1,0 +1,53 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  magpie:
+    image: pavics/magpie:${MAGPIE_VERSION}
+    container_name: magpie
+    ports:
+      - "2001:2001"
+    environment:
+      TWITCHER_PROTECTED_URL: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}
+      # target directories to allow loading multiple config files of corresponding category
+      # each compose override should volume mount its files inside the matching directories
+      # (note: DO NOT use 'MAGPIE_CONFIG_PATH' that would disable multi-config loading capability)
+      MAGPIE_PROVIDERS_CONFIG_PATH: "${MAGPIE_PROVIDERS_CONFIG_PATH}"
+      MAGPIE_PERMISSIONS_CONFIG_PATH: "${MAGPIE_PERMISSIONS_CONFIG_PATH}"
+      MAGPIE_WEBHOOKS_CONFIG_PATH: "${MAGPIE_WEBHOOKS_CONFIG_PATH}"
+      MAGPIE_POSTGRES_HOST: postgres-magpie
+      MAGPIE_PORT: 2001
+      FORWARDED_ALLOW_IPS: "*"
+    env_file:
+      - ./config/magpie/postgres-credentials.env
+    depends_on:
+      - postgres-magpie
+    links:
+      - postgres-magpie
+    volumes:
+      - ./config/magpie/postgres-credentials.env:/opt/local/src/magpie/env/postgres.env
+      - ./config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/providers.cfg
+      - ./config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/permissions.cfg
+      - ./config/magpie/magpie.ini:/opt/local/src/magpie/config/magpie.ini
+    restart: always
+    logging: *default-logging
+
+  postgres-magpie:
+    image: postgres:9.6
+    container_name: postgres-magpie
+    # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
+    env_file:
+      - ./config/magpie/postgres-credentials.env
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ${MAGPIE_PERSIST_DIR}:/var/lib/postgresql/data/pgdata
+      - ./config/magpie/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    restart: always
+    logging: *default-logging

@@ -1,0 +1,35 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  proxy:
+    image: pavics/canarieapi:0.3.5
+    container_name: proxy
+    ports:
+      - "80:80"
+      - "443:${PROXY_SECURE_PORT}"
+      - "58094:8094"
+      - "58093:8093"
+      - "58091:8091"
+      - "58079:8079"
+      - "58086:8086"
+    volumes:
+      - ./config/proxy/conf.d:/etc/nginx/conf.d
+      - ./config/proxy/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/canarie-api/docker_configuration.py:/config/docker_configuration.py
+      - ${SSL_CERTIFICATE}:/etc/nginx/cert.pem
+      - ./config/canarie-api/entrypoint:/entrypoint:ro
+    environment:
+      CANARIE_API_CONFIG_FN: /config/docker_configuration.py
+      CANARIE_MONITORING_EXTRA_CONF_DIR: ${CANARIE_MONITORING_EXTRA_CONF_DIR}
+      # https://github.com/bird-house/birdhouse-deploy/issues/198
+      REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
+    entrypoint: /entrypoint
+    restart: always
+    logging: *default-logging

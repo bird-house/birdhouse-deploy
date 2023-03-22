@@ -1,0 +1,38 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  phoenix:
+    image: pavics/pyramid-phoenix:pavics-0.2.3
+    container_name: phoenix
+    environment:
+      HOSTNAME: $HOSTNAME
+      HTTP_PORT: 8081
+      HTTPS_PORT: 8443
+      OUTPUT_PORT: 38443
+    ports:
+      - "8081:8081"
+      - "8443:8443"
+      - "38443:38443"
+      - "9001:9001"
+    volumes:
+      - ./config/phoenix/custom.cfg:/opt/birdhouse/src/phoenix/custom.cfg
+      - ${SSL_CERTIFICATE}:/opt/birdhouse/etc/nginx/cert.pem
+    links:
+      - mongodb
+    networks:
+      - default
+      - mongodb
+    depends_on:
+      - malleefowl
+      - flyingpigeon
+      - catalog
+      - proxy
+    restart: always
+    logging: *default-logging

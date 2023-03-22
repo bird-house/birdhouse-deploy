@@ -1,0 +1,20 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  solr:
+    image: pavics/solr:5.2.1
+    container_name: solr
+    ports:
+      - "8983:8983"
+      - "48983:9001"
+    volumes:
+      - ${DATA_PERSIST_ROOT}/solr:/data
+    restart: always
+    logging: *default-logging

@@ -81,28 +81,59 @@ read_env_local() {
 
 }
 
+# Adds all directories in $1 to the ALL_CONF_DIRS variable (if they are not
+# already present) and sources the default.env file found at each directory.
+# $1 should be a list of directory paths delimited by whitespace.
+# $2 is a description of the config files being passed in $1 (used for error messaging only)
+source_conf_files() {
+  dirs=$1
+  conf_locations=$2
+  for adir in ${dirs}; do
+      if echo "$ALL_CONF_DIRS" | grep -qE "^\s*$adir\s*$"; then
+          # ignore directories that are already in ALL_CONF_DIRS
+          continue
+      fi
+      if [ -e "$adir" ]; then
+          ALL_CONF_DIRS="$ALL_CONF_DIRS
+            $adir
+          "
+      else
+          # Do not exit to not break unattended autodeploy since no human around to
+          # fix immediately.
+          # The new adir with typo will not be active but at least all the existing
+          # will still work.
+          echo "WARNING: '$adir' in $conf_locations does not exist" 1>&2
+      fi
+      COMPONENT_DEFAULT_ENV="$adir/default.env"
+      if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
+          echo "reading '$COMPONENT_DEFAULT_ENV'"
+          . "$COMPONENT_DEFAULT_ENV"
+      fi
+  done
+}
 
 read_components_default_env() {
-    # EXTRA_CONF_DIRS normally set by env.local so should read_env_local() first.
+    # EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS normally set by env.local so should read_env_local() first.
 
-    # EXTRA_CONF_DIRS relative paths are relative to COMPOSE_DIR.
+    # EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS relative paths are relative to COMPOSE_DIR.
     if [ -d "$COMPOSE_DIR" ]; then
         cd "$COMPOSE_DIR"
     fi
-
-    for adir in ${EXTRA_CONF_DIRS}; do
-        if [ ! -e "$adir" ]; then
-            # Do not exit to not break unattended autodeploy since no human around to
-            # fix immediately.
-            # The new adir with typo will not be active but at least all the existing
-            # will still work.
-            echo "WARNING: '$adir' in EXTRA_CONF_DIRS does not exist" 1>&2
-        fi
-        COMPONENT_DEFAULT_ENV="$adir/default.env"
-        if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
-            echo "reading '$COMPONENT_DEFAULT_ENV'"
-            . "$COMPONENT_DEFAULT_ENV"
-        fi
+    requested_conf_dirs="
+      $DEFAULT_CONF_DIRS
+      $EXTRA_CONF_DIRS
+    "
+    ALL_CONF_DIRS=''
+    COMPONENT_DEPENDENCIES=''
+    current_dependencies=$COMPONENT_DEPENDENCIES
+    # Note: source_conf_files may update COMPONENT_DEPENDENCIES when sourcing the default.env
+    # files in each component's directory.
+    source_conf_files "$requested_conf_dirs" 'EXTRA_CONF_DIRS or DEFAULT_CONF_DIRS'
+    while [ "$current_dependencies" != "$COMPONENT_DEPENDENCIES" ]; do
+      # if additional component dependencies are added by sourcing configuration files, then
+      # source the new dependencies as well.
+      current_dependencies=$COMPONENT_DEPENDENCIES
+      source_conf_files "$COMPONENT_DEPENDENCIES" 'COMPONENT_DEPENDENCIES'
     done
 
     # Return to previous pwd.
@@ -116,10 +147,18 @@ read_components_default_env() {
 # in DELAYED_EVAL list need to call this function to actually resolve the
 # value of each var in DELAYED_EVAL list.
 process_delayed_eval() {
+    ALREADY_EVALED=''
     for i in ${DELAYED_EVAL}; do
+        if echo "$ALREADY_EVALED" | grep -qE "^\s*$i\s*$"; then
+          # only eval each variable once (in case it was added to the list multiple times)
+          continue
+        fi
         v="`eval "echo \\$${i}"`"
         eval 'export ${i}="`eval "echo ${v}"`"'
         echo "delayed eval '$(env |grep "${i}=")'"
+        ALREADY_EVALED="
+          $ALREADY_EVALED
+          $i"
     done
 }
 
@@ -129,8 +168,8 @@ process_delayed_eval() {
 read_configs() {
     discover_compose_dir
     read_default_env
-    read_env_local  # for EXTRA_CONF_DIRS
-    read_components_default_env  # uses EXTRA_CONF_DIRS
+    read_env_local  # for EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS
+    read_components_default_env  # uses EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
     read_env_local  # again to override components default.env
     process_delayed_eval
 }

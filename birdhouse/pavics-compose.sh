@@ -20,27 +20,8 @@ NORMAL=$(tput sgr0)
 VARS='
   $PAVICS_FQDN
   $DOC_URL
-  $MAGPIE_SECRET
-  $MAGPIE_ADMIN_USERNAME
-  $MAGPIE_ADMIN_PASSWORD
-  $TWITCHER_PROTECTED_PATH
-  $PHOENIX_PASSWORD
-  $PHOENIX_PASSWORD_HASH
-  $TOMCAT_NCWMS_PASSWORD
-  $CMIP5_THREDDS_ROOT
-  $JUPYTERHUB_ADMIN_USERS
-  $CATALOG_USERNAME
-  $CATALOG_PASSWORD
-  $CATALOG_THREDDS_SERVICE
-  $POSTGRES_PAVICS_USERNAME
-  $POSTGRES_PAVICS_PASSWORD
-  $POSTGRES_MAGPIE_USERNAME
-  $POSTGRES_MAGPIE_PASSWORD
   $SUPPORT_EMAIL
   $DATA_PERSIST_ROOT
-  $GEOSERVER_ADMIN_USER
-  $GEOSERVER_ADMIN_PASSWORD
-  $BIRDHOUSE_DEPLOY_COMPONENTS_JSON
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local
@@ -49,46 +30,7 @@ VARS='
 #   when the value provided explicitly, it will be used instead of guessing it by inferred values from other variables
 OPTIONAL_VARS='
   $PAVICS_FQDN_PUBLIC
-  $INCLUDE_FOR_PORT_80
-  $ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS
   $EXTRA_PYWPS_CONFIG
-  $THREDDS_ORGANIZATION
-  $GITHUB_CLIENT_ID
-  $GITHUB_CLIENT_SECRET
-  $MAGPIE_DB_NAME
-  $MAGPIE_USER_REGISTRATION_ENABLED
-  $MAGPIE_USER_REGISTRATION_SUBMISSION_EMAIL_TEMPLATE
-  $MAGPIE_USER_REGISTRATION_APPROVAL_ENABLED
-  $MAGPIE_USER_REGISTRATION_APPROVAL_EMAIL_RECIPIENT
-  $MAGPIE_USER_REGISTRATION_APPROVAL_EMAIL_TEMPLATE
-  $MAGPIE_USER_REGISTRATION_APPROVED_EMAIL_TEMPLATE
-  $MAGPIE_USER_REGISTRATION_DECLINED_EMAIL_TEMPLATE
-  $MAGPIE_USER_REGISTRATION_NOTIFY_ENABLED
-  $MAGPIE_USER_REGISTRATION_NOTIFY_EMAIL_RECIPIENT
-  $MAGPIE_USER_REGISTRATION_NOTIFY_EMAIL_TEMPLATE
-  $MAGPIE_GROUP_TERMS_SUBMISSION_EMAIL_TEMPLATE
-  $MAGPIE_GROUP_TERMS_APPROVED_EMAIL_TEMPLATE
-  $MAGPIE_SMTP_FROM
-  $MAGPIE_SMTP_HOST
-  $MAGPIE_SMTP_PORT
-  $MAGPIE_SMTP_SSL
-  $MAGPIE_SMTP_PASSWORD
-  $MAGPIE_LOG_LEVEL
-  $TWITCHER_LOG_LEVEL
-  $TWITCHER_VERIFY_PATH
-  $VERIFY_SSL
-  $JUPYTER_DEMO_USER
-  $JUPYTER_LOGIN_BANNER_TOP_SECTION
-  $JUPYTER_LOGIN_BANNER_BOTTOM_SECTION
-  $JUPYTER_LOGIN_TERMS_URL
-  $JUPYTERHUB_CONFIG_OVERRIDE
-  $AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
-  $AUTODEPLOY_PLATFORM_FREQUENCY
-  $AUTODEPLOY_NOTEBOOK_FREQUENCY
-  $AUTODEPLOY_EXTRA_SCHEDULER_JOBS
-  $PROXY_READ_TIMEOUT_VALUE
-  $PROXY_ROOT_LOCATION
-  $SECURE_DATA_PROXY_AUTH_INCLUDE
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH
@@ -102,7 +44,7 @@ cd $(dirname $(readlink -f $0 || realpath $0))
 COMPOSE_DIR="`pwd`"
 
 . "$COMPOSE_DIR/read-configs.include.sh"
-read_configs
+read_configs # this sets ALL_CONF_DIRS
 
 . ./scripts/get-components-json.include.sh
 
@@ -115,12 +57,6 @@ do
     exit 1
   fi
 done
-
-if [ ! -f docker-compose.yml ]
-then
-  echo "Error, this script must be ran from the folder containing the docker-compose.yml file"
-  exit 1
-fi
 
 ## check fails when root access is required to access this file.. workaround possible by going through docker daemon... but
 # will add delay
@@ -142,12 +78,6 @@ if [ -z "$PAVICS_FQDN_PUBLIC" ]; then
   export PAVICS_FQDN_PUBLIC="$PAVICS_FQDN"
 fi
 
-if [ x"$ALLOW_UNSECURE_HTTP" = x"True" ]; then
-  export INCLUDE_FOR_PORT_80="include /etc/nginx/conf.d/all-services.include;"
-else
-  export INCLUDE_FOR_PORT_80="include /etc/nginx/conf.d/redirect-to-https.include;"
-fi
-
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""
 for adir in $AUTODEPLOY_EXTRA_REPOS; do
   # 4 spaces in front of '--volume' is important
@@ -157,7 +87,7 @@ done
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
-find ./config ./components ./optional-components $EXTRA_CONF_DIRS -name '*.template' |
+find $ALL_CONF_DIRS -name '*.template' |
   while read FILE
   do
     DEST=${FILE%.template}
@@ -165,35 +95,38 @@ find ./config ./components ./optional-components $EXTRA_CONF_DIRS -name '*.templ
   done
 
 if [ x"$1" = x"up" ]; then
-  # this is external in docker-compose.yml so have to create here
-  # no error if already exist, just an error message
-  docker network create jupyterhub_network
-
-  # no error if already exist
-  # create externally so nothing will delete these data volume automatically
-  docker volume create jupyterhub_data_persistence  # jupyterhub db and cookie secret
-  docker volume create thredds_persistence  # logs, cache
-
-  if [ ! -f "$GEOSERVER_DATA_DIR/global.xml" ]; then
-    echo "fix GeoServer data dir permission on first run only, when data dir do not exist yet."
-    FIRST_RUN_ONLY=1 $COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm
-  fi
-
-  for adir in ${EXTRA_CONF_DIRS}; do
+  for adir in $ALL_CONF_DIRS; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
     if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
       echo "executing '$COMPONENT_PRE_COMPOSE_UP'"
       sh -x "$COMPONENT_PRE_COMPOSE_UP"
     fi
   done
-
 fi
 
 COMPOSE_CONF_LIST="-f docker-compose.yml"
-for adir in ${EXTRA_CONF_DIRS}; do
+for adir in $ALL_CONF_DIRS; do
   if [ -f "$adir/docker-compose-extra.yml" ]; then
     COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $adir/docker-compose-extra.yml"
   fi
+done
+CONFIGURED_COMPONENTS=''
+for adir in $ALL_CONF_DIRS; do
+  CONFIGURED_COMPONENTS="
+    $CONFIGURED_COMPONENTS
+    $(basename $adir)"
+done
+
+for adir in $ALL_CONF_DIRS; do
+  for conf_dir in "$adir"/config/*; do
+    service_name=$(basename "$conf_dir")
+    extra_compose="$conf_dir/docker-compose-extra.yml"
+    if [ -f "$extra_compose" ]; then
+      if echo "$CONFIGURED_COMPONENTS" | grep -q "$service_name"; then
+        COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $extra_compose"
+      fi
+    fi
+  done
 done
 echo "COMPOSE_CONF_LIST=${COMPOSE_CONF_LIST}"
 
@@ -214,20 +147,16 @@ while [ $# -gt 0 ]
 do
   if [ x"$1" = x"up" ]; then
     # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
-    PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose restart proxy
+    PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} restart proxy
 
     # run postgres post-startup setup script
+    # Note: this must run before the post-docker-compose-up scripts since some may expect postgres databases to exist
     postgres_id=$(PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres)
     if [ ! -z "$postgres_id" ]; then
       docker exec ${postgres_id} /postgres-setup.sh
     fi
 
-    # because server.outputpath in wps.cfg do not create the dir
-    for bird in finch flyingpigeon raven; do
-      docker exec $bird mkdir -p /data/wpsoutputs/$bird
-    done
-
-    for adir in ${EXTRA_CONF_DIRS}; do
+    for adir in $ALL_CONF_DIRS; do
       COMPONENT_POST_COMPOSE_UP="$adir/post-docker-compose-up"
       if [ -x "$COMPONENT_POST_COMPOSE_UP" ]; then
         echo "executing '$COMPONENT_POST_COMPOSE_UP'"

@@ -1,0 +1,9 @@
+SERVICES['node']['monitoring'].update({'Magpie': {
+    'request': {
+        'url': 'https://${PAVICS_FQDN_PUBLIC}/magpie/version'
+    },
+    'response': {
+        'text': '\{.*"code": 200.*"type": "application/json".*\}'
+    }
+}})
+CANARIE_STATS_ROUTES.append('magpie')

@@ -1,3 +1,10 @@
 magpie.ini
 permissions.cfg
 providers.cfg
+postgres-credentials.env
+docker-entrypoint-initdb.d/create-db.sql
+config/proxy/conf.extra-service.d/magpie.conf
+config/proxy/canarie_api_monitoring.py
+
+# Old paths. Keep these so that old config files remain uncommittable after updates.
+magpie_canarie_api_monitoring.py

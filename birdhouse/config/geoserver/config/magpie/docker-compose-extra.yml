@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  magpie:
+    volumes:
+    - ./config/geoserver/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/geoserver-providers.cfg:ro

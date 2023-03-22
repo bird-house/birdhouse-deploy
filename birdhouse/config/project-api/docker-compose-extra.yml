@@ -1,0 +1,23 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  project-api:
+    image: pavics/pavics-project-api:0.9.0
+    container_name: project-api
+    environment:
+      POSTGRES_HOST: postgres
+    ports:
+      - "3005:3005"
+    links:
+      - postgres
+    env_file:
+      - ./config/postgres/credentials.env
+    restart: always
+    logging: *default-logging

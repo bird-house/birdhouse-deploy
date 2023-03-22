@@ -1,0 +1,14 @@
+version: "3.4"
+services:
+  raven:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "http://localhost:9099?service=WPS&request=GetCapabilities",
+        ]
+      interval: 60s
+      timeout: 5s
+      retries: 2

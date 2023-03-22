@@ -1,0 +1,6 @@
+version: "3.4"
+
+services:
+  malleefowl:
+    volumes:
+      - data:/opt/birdhouse/var/lib

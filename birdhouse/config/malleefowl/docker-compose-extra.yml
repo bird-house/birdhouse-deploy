@@ -1,0 +1,31 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  malleefowl:
+    image: pavics/malleefowl:pavics-0.3.5
+    container_name: malleefowl
+    environment:
+      HOSTNAME: $HOSTNAME
+      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+      HTTP_PORT: 8091
+      HTTPS_PORT: 28091
+      OUTPUT_PORT: 38091
+    ports:
+      - "8091:8091"
+      - "28091:28091"
+      - "38091:38091"
+      - "48091:9001"
+    volumes:
+      - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
+      - ./config/malleefowl/custom.cfg:/opt/birdhouse/src/malleefowl/custom.cfg
+    depends_on:
+      - postgres
+    restart: always
+    logging: *default-logging

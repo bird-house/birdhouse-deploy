@@ -1,0 +1,37 @@
+#!/bin/sh -x
+
+CONF_FILE="/usr/local/tomcat/conf/server.xml"
+
+if ! grep ' relaxedQueryChars=' $CONF_FILE; then
+    # allow angle bracket in query params, ex:
+    # https://boreas.ouranos.ca/twitcher/ows/proxy/thredds/dodsC/birdhouse/testdata/tasmax_day_BCCAQv2+ANUSPLIN300_BNU-ESM_historical+rcp85_r1i1p1_19500101-21001231.nc.ascii?tasmax[0:1:0][0:1:0][0:1:0]
+    cp -v $CONF_FILE ${CONF_FILE}.bak.relaxedQueryChars.$$
+    sed -i 's/<Connector /<Connector relaxedQueryChars="[,]" /g' $CONF_FILE
+fi
+
+if ! grep " scheme=\"https\" proxyName=\"${PAVICS_FQDN_PUBLIC}\" proxyPort=\"443\" " $CONF_FILE; then
+    # force https because Thredds do not seems to handle X-Forwarded-Proto correctly
+    cp -v $CONF_FILE ${CONF_FILE}.bak.scheme.$$
+    sed -i "s/<Connector /<Connector scheme=\"https\" proxyName=\"${PAVICS_FQDN_PUBLIC}\" proxyPort=\"443\" /g" $CONF_FILE
+fi
+
+
+# change displayed context-root to under twitcher
+# https://www.unidata.ucar.edu/software/tds/v4.6/reference/TomcatBehindProxyServer.html
+WEBAPPS_ROOT="/usr/local/tomcat/webapps"
+EXISTING_CONTEXT_ROOT="thredds"
+if [ -z "$WANTED_CONTEXT_ROOT" ]; then
+    WANTED_CONTEXT_ROOT="twitcher/ows/proxy/thredds"
+fi
+if [ -z "$WANTED_CONTEXT_ROOT_WARFILE_NAME" ]; then
+    WANTED_CONTEXT_ROOT_WARFILE_NAME="twitcher#ows#proxy#thredds"
+fi
+
+if [ -d "$WEBAPPS_ROOT/$EXISTING_CONTEXT_ROOT" ]; then
+    mv "$WEBAPPS_ROOT/$EXISTING_CONTEXT_ROOT" "$WEBAPPS_ROOT/$WANTED_CONTEXT_ROOT_WARFILE_NAME"
+    sed -i "s@<param-value>$EXISTING_CONTEXT_ROOT</param-value>@<param-value>$WANTED_CONTEXT_ROOT</param-value>@g" "$WEBAPPS_ROOT/$WANTED_CONTEXT_ROOT_WARFILE_NAME/WEB-INF/web.xml"
+fi
+
+
+# chain existing entrypoint
+/entrypoint.sh catalina.sh run

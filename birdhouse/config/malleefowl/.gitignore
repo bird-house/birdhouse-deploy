@@ -1,1 +1,6 @@
 custom.cfg
+config/proxy/canarie_api_monitoring.py
+config/magpie/providers.cfg
+
+# Old paths. Keep these so that old config files remain uncommittable after updates.
+malleefowl_canarie_api_monitoring.py

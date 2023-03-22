@@ -1,0 +1,6 @@
+version: "3.4"
+
+services:
+  scheduler:
+    environment:
+      JUPYTERHUB_USER_DATA_DIR: ${JUPYTERHUB_USER_DATA_DIR}
