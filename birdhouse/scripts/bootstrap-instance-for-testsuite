@@ -1,0 +1,26 @@
+#!/bin/sh
+# Bootstrap fresh new PAVICS instance to run testsuite at
+# https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
+#
+# This is a stable interface for test automation shielding it from knowing the
+# intimate details of how to bootstrap a fresh new instance.
+#
+# Assume PAVICS instance is already fully up (`./pavics-compose.sh up -d` has
+# been called).
+#
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+
+set -x
+# Populate test .nc file on Thredds.
+# Need to open temporary Thredds "testdata/secure/" on PAVICS production to anonymous group.
+# Need write-access to DATASET_ROOT (/data/datasets/).
+$THIS_DIR/bootstrap-testdata
+
+# Create test user.
+# Need "optional-components/secure-thredds" activated to pre-create group thredds-secure-authtest-group.
+$THIS_DIR/create-magpie-authtest-user
+
+# Check if instance properly provisionned for testsuite.
+$THIS_DIR/check-instance-ready
