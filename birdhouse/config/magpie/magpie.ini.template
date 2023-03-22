@@ -30,7 +30,7 @@ pyramid.includes = pyramid_tm ziggurat_foundations.ext.pyramid.sign_in ziggurat_
 magpie.port = 2001
 magpie.url = https://${PAVICS_FQDN}/magpie
 magpie.max_restart = 5
-magpie.push_phoenix = false
+magpie.push_phoenix = true
 # This secret should be the same in Twitcher !
 magpie.secret = ${MAGPIE_SECRET}
 magpie.admin_user = ${MAGPIE_ADMIN_USERNAME}
