@@ -14,7 +14,16 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes:
+- The default stack contained components that were unmaintained and no longer used. This
+  removes the following components from the stack:
+  
+  - frontend
+  - project-api
+  - catalog
+  - solr
+  - ncwms2
+  - ncops
 
 [1.24.0](https://github.com/bird-house/birdhouse-deploy/tree/1.24.0) (2023-03-22)
 ------------------------------------------------------------------------------------------------------------------
