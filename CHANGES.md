@@ -14,6 +14,8 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Changes:
+
 - Cowbird: Updated Cowbird config for user workspaces and for working callbacks to Magpie.
 
   When enabling Cowbird, the config will now mount a different working directory with JupyterHub, which 
@@ -45,6 +47,7 @@
 - Updated eo and nlp images to latest version in the `env.local.example` config.
 
 ## Fixes:
+
 - CanarieAPI: update to `0.5.1`.
 
   - Fixes an `AttributeError` raised due to misconfiguration of the Web Application with Flask 2.x definitions
