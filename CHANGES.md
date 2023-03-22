@@ -14,6 +14,36 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+- Cowbird: Updated Cowbird config for user workspaces and for working callbacks to Magpie.
+
+  When enabling Cowbird, the config will now mount a different working directory with JupyterHub, which 
+  corresponds to the user workspaces created with Cowbird. These workspaces will use symlinks to the Jupyterhub 
+  data directories.
+
+  For example, we have the original directory, which is still mounted by default by JupyterHub, which contains 
+  the user's notebooks :
+![image](https://user-images.githubusercontent.com/36516122/223465560-ea4a7d6f-807d-49ae-8500-49a6e6ed677a.png)
+
+  If Cowbird is enabled, JupyterHub mounts Cowbird's workspace instead, which has a symlink to the other dir :
+![image](https://user-images.githubusercontent.com/36516122/223465960-ce81e829-b703-4374-b059-685b0e684a57.png)
+
+  Cowbird's workspace can also contain other files related to other services.
+  Cowbird's workspace directory is defined by the added environment variable `USER_WORKSPACES`.
+
+- JupyterHub: Updated config to support Cowbird, which uses a different working directory.
+
+  JupyterHub now mounts the variable `WORKSPACE_DIR` when starting a JupyterLab instance. It will refer to the 
+  original JupyterHub data directory by default, and if Cowbird is activated, it will be overridden to refer 
+  to Cowbird's workspace instead.
+
+  In JupyterHub with Cowbird enabled, the `writable-workspace` is the Cowbird user's workspace :
+![image](https://user-images.githubusercontent.com/36516122/223800065-0e0ab578-4e67-4d21-8d7c-552c87ceea41.png)
+
+  When we open the notebooks dir, it displays the files found at the symlink's source :
+![image](https://user-images.githubusercontent.com/36516122/223800540-769d50a2-4ce8-480f-b75d-c6d4e29dead1.png)
+
+- Updated eo and nlp images to latest version in the `env.local.example` config.
+
 ## Fixes:
 - CanarieAPI: update to `0.5.1`.
 

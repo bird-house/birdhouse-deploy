@@ -61,7 +61,6 @@ c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
 
 notebook_dir = '/notebook_dir'
 jupyterhub_data_dir = os.environ['JUPYTERHUB_USER_DATA_DIR']
-host_user_data_dir = join(jupyterhub_data_dir, "{username}")
 container_workspace_dir = join(notebook_dir, "writable-workspace")
 container_home_dir = join(container_workspace_dir, ".home")
 
@@ -79,7 +78,16 @@ c.DockerSpawner.environment = {
     "DASK_DISTRIBUTED__DASHBOARD__LINK": "https://${PAVICS_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
 }
 
+host_user_data_dir = join(os.environ['WORKSPACE_DIR'], "{username}")
 c.DockerSpawner.volumes = {host_user_data_dir: container_workspace_dir}
+
+# Case for the cowbird setup, where the workspace_dir contains a symlink to the jupyterhub dir.
+# The jupyterhub dir must also be mounted in this case.
+if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
+    c.DockerSpawner.volumes[join(jupyterhub_data_dir, "{username}")] = {
+        "bind": join(jupyterhub_data_dir, "{username}"),
+        "mode": "rw"
+    }
 
 container_gdrive_settings_path = join(container_home_dir, ".jupyter/lab/user-settings/@jupyterlab/google-drive/drive.jupyterlab-settings")
 host_gdrive_settings_path = os.environ['JUPYTER_GOOGLE_DRIVE_SETTINGS']
@@ -99,12 +107,21 @@ if readme != "":
 
 def create_dir_hook(spawner):
     username = spawner.user.name
-    user_dir = join(jupyterhub_data_dir, username)
+    jupyterhub_user_dir = join(jupyterhub_data_dir, username)
 
-    if not os.path.exists(user_dir):
-        os.mkdir(user_dir, 0o755)
+    if not os.path.exists(jupyterhub_user_dir):
+        os.mkdir(jupyterhub_user_dir, 0o755)
 
-    subprocess.call(["chown", "-R", "1000:1000", user_dir])
+    subprocess.call(["chown", "-R", "1000:1000", jupyterhub_user_dir])
+
+    if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
+        # Case for cowbird setup. The workspace directory should also have the user's ownership,
+        # to have working volume mounts with the DockerSpawner.
+        workspace_user_dir = join(os.environ['WORKSPACE_DIR'], username)
+        if not os.path.exists(workspace_user_dir):
+            raise FileNotFoundError(f"The user {username}'s workspace doesn't exist in the workspace directory, "
+                                    "but should have been created by Cowbird already.")
+        subprocess.call(["chown", "1000:1000", workspace_user_dir])
 
     if username == os.environ['JUPYTER_DEMO_USER']:
         # Restrict resources for the public demo user
