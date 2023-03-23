@@ -1,0 +1,5 @@
+PLATFORMS['pavics']['monitoring']['Frontend'] = {
+    'request': {
+        'url': 'https://${PAVICS_FQDN_PUBLIC}'
+    }
+}

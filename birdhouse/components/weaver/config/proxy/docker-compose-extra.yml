@@ -1,0 +1,20 @@
+version: "3.4"
+
+services:
+  # extend proxy configuration with weaver endpoints
+  proxy:
+    volumes:
+      - ./components/weaver/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/weaver:ro
+      - ./components/weaver/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/weaver_canarie_api_monitoring.py:ro
+      # NOTE:
+      #   Prefix '0_' to the mounted file name to ensure it is loaded first by 'birdhouse/config/canarie-api/docker_configuration.py'
+      #   This ensures that the alphabetical loading order it defines will first load the default configs, then will load
+      #   the weaver config, and then all python configuration within 'optional-components/canarie-api-full-monitoring'.
+      #   It is important to load Weaver before, as the full monitoring need to know if 'Weaver' service is added to the
+      #   stack in order to apply the corresponding public endpoint conditionally.
+      - ./components/weaver/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/0_weaver_config.py:ro
+      # because of mounting path naming restrictions (see note in 'worker' definition),
+      # we must add the custom path on top of named 'wps_outputs' volume of other birds for the proxy to expose results
+      - ${WEAVER_WPS_OUTPUTS_DIR}:/pavics-data/wps_outputs/weaver:ro
+    links:
+      - weaver

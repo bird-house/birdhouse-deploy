@@ -1,0 +1,2 @@
+config/proxy/conf.extra-service.d/project-api.conf
+config/proxy/canarie_api_monitoring.py

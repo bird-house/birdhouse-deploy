@@ -1,0 +1,37 @@
+SERVICES['Twitcher'] = {
+    'info': {
+        'name': 'Twitcher',
+        'synopsis': (
+            'Twitcher is a security proxy for OWS services like Web Processing Services (WPS). '
+            'The proxy service uses OAuth2 access tokens to protect the OWS service access using '
+            'Magpie permissions.'
+        ),
+        'version': "${TWITCHER_VERSION}",
+        'institution': 'Ouranos',
+        'releaseTime': get_release_time_from_repo_tag("github", "bird-house/twitcher", "${TWITCHER_VERSION}"),
+        'researchSubject': 'Security',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Security',
+        'tags': ['Security', 'Proxy', 'Access', 'Policy Enforcement Point']
+    },
+    'stats': {
+        'method': '.*',
+        'route': "/twitcher/(?!ows).*"
+    },
+    'redirect': {
+        'doc': 'https://twitcher.readthedocs.io/',
+        'releasenotes': 'https://github.com/bird-house/twitcher/blob/master/CHANGES.rst',
+        'support': 'https://github.com/bird-house/twitcher/issues',
+        'source': 'https://github.com/bird-house/twitcher',
+        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/',
+        'licence': 'https://github.com/bird-house/twitcher/blob/master/LICENSE.txt',
+        'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+    },
+    "monitoring": {
+        "Twitcher": {
+            'request': {
+                'url': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/'
+            }
+        }
+    }
+}

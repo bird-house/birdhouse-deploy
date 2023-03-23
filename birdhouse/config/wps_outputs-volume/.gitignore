@@ -1,0 +1,2 @@
+config/proxy/conf.extra-service.d/wps_outputs-volume.conf
+config/proxy/canarie_api_monitoring.py

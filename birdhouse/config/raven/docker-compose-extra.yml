@@ -1,0 +1,22 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  raven:
+    image: pavics/raven:0.14.2
+    container_name: raven
+    ports:
+      - "8096:9099"
+    environment:
+      PYWPS_CFG: /wps.cfg
+    volumes:
+      - ./config/raven/wps.cfg:/wps.cfg
+      - /tmp
+    restart: always
+    logging: *default-logging

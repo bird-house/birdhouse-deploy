@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+    - ./config/ncwms2/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/ncwms2:ro

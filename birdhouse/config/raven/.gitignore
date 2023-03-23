@@ -1,1 +1,3 @@
+config/proxy/canarie_api_monitoring.py
+config/magpie/providers.cfg
 wps.cfg

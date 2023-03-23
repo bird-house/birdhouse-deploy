@@ -2,7 +2,7 @@ version: "3.4"
 services:
   magpie:
     volumes:
-      - ./optional-components/test-weaver/config/magpie/test-weaver-permissions.yml:/opt/local/src/magpie/config/permissions/test-weaver-permissions.yml:ro
+      - ./optional-components/test-weaver/config/magpie/test-weaver-permissions.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/test-weaver-permissions.yml:ro
 
   # NOTE:
   #   This optional component must be loaded AFTER main 'weaver' component to override the files in exact destinations.

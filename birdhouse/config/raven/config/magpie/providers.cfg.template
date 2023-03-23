@@ -1,0 +1,9 @@
+providers:
+  raven:
+    url: http://${PAVICS_FQDN}:8096/wps
+    title: Raven
+    public: true
+    c4i: false
+    type: wps
+    sync_type: wps
+

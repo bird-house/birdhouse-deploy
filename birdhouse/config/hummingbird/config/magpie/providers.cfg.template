@@ -1,0 +1,8 @@
+providers:
+  hummingbird:
+    url: http://${PAVICS_FQDN}:8097/wps
+    title: Hummingbird
+    public: true
+    c4i: false
+    type: wps
+    sync_type: wps
