@@ -129,7 +129,7 @@ SERVICES = {
             'tryme': 'https://${PAVICS_FQDN_PUBLIC}',
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
-        }
+        },
         'monitoring': {}  # filled in after processing everything, see end of script
     }
 }
