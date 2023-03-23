@@ -1,0 +1,24 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  postgres:
+    image: postgres:9.6
+    container_name: postgres
+    # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
+    volumes:
+      - ${DATA_PERSIST_ROOT}/frontend_persist:/var/lib/postgresql/data/pgdata
+      - ./config/postgres/postgres-setup.sh:/postgres-setup.sh
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DATABASES_TO_CREATE: ${POSTGRES_DATABASES_TO_CREATE}
+    env_file:
+      - ./config/postgres/credentials.env
+    restart: always
+    logging: *default-logging

@@ -1,1 +1,3 @@
 twitcher.ini
+config/proxy/conf.extra-service.d/twitcher.conf
+config/proxy/canarie_api_monitoring.py

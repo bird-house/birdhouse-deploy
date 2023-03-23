@@ -1,0 +1,25 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  finch:
+    image: ${FINCH_IMAGE}
+    container_name: finch
+    environment:
+      HOSTNAME: $HOSTNAME
+      HTTP_PORT: 5000
+      PYWPS_CFG: /wps.cfg
+    ports:
+      - "8095:5000"
+    volumes:
+      - ./config/finch/wps.cfg:/wps.cfg
+      # - data:/opt/birdhouse/var/lib
+      - /tmp
+    restart: always
+    logging: *default-logging

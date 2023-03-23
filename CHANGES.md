@@ -14,6 +14,71 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Fixes:
+
+- CanarieAPI: update to `0.6.0`.
+
+  - Fixes an `AttributeError` raised due to misconfiguration of the Web Application with Flask 2.x definitions
+    (relates to [Ouranosinc/CanarieAPI#10](https://github.com/Ouranosinc/CanarieAPI/pull/10)).
+  - Update the [CanarieAPI configuration](birdhouse/config/canarie-api/docker_configuration.py.template) to use
+    Python 3.x executable code.
+  - Skip over `0.4.x` and `0.5.1` versions to avoid issue related to `cron` job monitoring and log parser command
+    failures in order to collect configured service statistics and statuses
+    (see also [Ouranosinc/CanarieAPI#14](https://github.com/Ouranosinc/CanarieAPI/pull/14)).
+
+  ### Breaking changes
+  - The Docker running `CanarieAPI` is now using Python 3 (since 0.4.x tags).
+    Configurations need to be updated if any specific Python 2 definitions were used.
+    See [2to3](https://docs.python.org/3/library/2to3.html) to help migrate configurations automatically if necessary.
+
+- Weaver: update CanarieAPI monitoring definitions
+  - Move monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
+  - Add monitoring of private endpoint by default when using Weaver component.
+
+- Cowbird: update CanarieAPI monitoring definitions
+  - Add monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
+  - Add public Magpie permission on Cowbird entrypoint only to allow its monitoring.
+
+[canarie-monitor]: birdhouse/optional-components/canarie-api-full-monitoring
+
+[1.24.0](https://github.com/bird-house/birdhouse-deploy/tree/1.24.0) (2023-03-22)
+------------------------------------------------------------------------------------------------------------------
+## Fixes
+- The default stack was not configurable. This meant that if someone wanted to deploy a 
+  subset of the default stack there was no good way of configuring birdhouse-deploy to run
+  this subset only. 
+
+  Previously, additional components could be added to the stack (ex: weaver, cowbird, etc.)
+  by adding them to the `EXTRA_CONF_DIRS` variable. This change extends this functionality
+  to all components. 
+
+  For backwards compatibility, all components that were in the original default stack are now
+  listed in the `DEFAULT_CONF_DIRS` variable (in `birdhouse/default.env`). To run a subset of the
+  original stack, update `DEFAULT_CONF_DIRS` to only include the configuration directories for
+  the desired components.
+
+  The components that will be added to the stack are only those whose configuration directory
+  is listed in either `DEFAULT_CONF_DIRS` or `EXTRA_CONF_DIRS`. Note that some components are
+  dependent on others to run and will automatically add the other components to the stack as 
+  a dependency. For example, twitcher requires magpie so if you only specify twitcher, magpie
+  will be added to the stack as well. To inspect component dependencies, look at the 
+  `COMPONENT_DEPENDENCIES` environment variable that is extended in some `default.env` files.
+  For example, `birdhouse/config/twitcher/default.env` contains:
+
+  ```shell
+  COMPONENT_DEPENDENCIES="
+    $COMPONENT_DEPENDENCIES
+    ./config/magpie
+  ```
+
+  Components can also have optional dependencies. These are additional configuration options to
+  run if both components are deployed in the stack at the same time. These are defined in the
+  `config/*/docker-compose-extra.yml` files where the `*` refers to another component that _could be_
+  deployed. For example, `birdhouse/config/raven/config/magpie/docker-compose-extra.yml` contains
+  additional configuration settings for the raven docker service that only apply if magpie is
+  also deployed. This relaxes some dependencies between components and allows more flexibility
+  when choosing what parts of the stack to deploy.
+
 ## Changes:
 
 - Cowbird: Updated Cowbird config for user workspaces and for working callbacks to Magpie.
@@ -45,33 +110,6 @@
 ![image](https://user-images.githubusercontent.com/36516122/223800540-769d50a2-4ce8-480f-b75d-c6d4e29dead1.png)
 
 - Updated eo and nlp images to latest version in the `env.local.example` config.
-
-## Fixes:
-
-- CanarieAPI: update to `0.5.1`.
-
-  - Fixes an `AttributeError` raised due to misconfiguration of the Web Application with Flask 2.x definitions
-    (relates to [Ouranosinc/CanarieAPI#10](https://github.com/Ouranosinc/CanarieAPI/pull/10)).
-  - Update the [CanarieAPI configuration](birdhouse/config/canarie-api/docker_configuration.py.template) to use
-    Python 3.x executable code.
-  - Skip over `0.4.x` and `0.5.1` versions to avoid issue related to `cron` job monitoring and log parser command
-    failures in order to collect configured service statistics and statuses
-    (see also [Ouranosinc/CanarieAPI#14](https://github.com/Ouranosinc/CanarieAPI/pull/14)).
-
-  ### Breaking changes
-  - The Docker running `CanarieAPI` is now using Python 3 (since 0.4.x tags).
-    Configurations need to be updated if any specific Python 2 definitions were used.
-    See [2to3](https://docs.python.org/3/library/2to3.html) to help migrate configurations automatically if necessary.
-
-- Weaver: update CanarieAPI monitoring definitions
-  - Move monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
-  - Add monitoring of private endpoint by default when using Weaver component.
-
-- Cowbird: update CanarieAPI monitoring definitions
-  - Add monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
-  - Add public Magpie permission on Cowbird entrypoint only to allow its monitoring.
-
-[canarie-monitor]: birdhouse/optional-components/canarie-api-full-monitoring
 
 [1.23.3](https://github.com/bird-house/birdhouse-deploy/tree/1.23.3) (2023-02-17)
 ------------------------------------------------------------------------------------------------------------------

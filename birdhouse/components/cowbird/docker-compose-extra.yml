@@ -18,9 +18,6 @@ services:
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
       WORKSPACE_DIR: /${USER_WORKSPACES}
-      JUPYTERHUB_USER_DATA_DIR: ${JUPYTERHUB_USER_DATA_DIR}
-      GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
-      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
     links:
       - "${COWBIRD_MONGODB_SERVICE}"
     networks:
@@ -32,7 +29,6 @@ services:
       - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
       - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
       - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
-      - ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}
     restart: always
     logging: *default-logging
 
@@ -43,12 +39,6 @@ services:
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
       WORKSPACE_DIR: /${USER_WORKSPACES}
-      JUPYTERHUB_USER_DATA_DIR: ${JUPYTERHUB_USER_DATA_DIR}
-      GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
-      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
-    env_file:
-      # user/password for admin session to perform permission sync updates
-      - ./config/postgres-magpie/credentials.env
     links:
       - "${COWBIRD_MONGODB_SERVICE}"
     networks:
@@ -64,41 +54,5 @@ services:
       #   otherwise 'pyramid_celery' cannot find it (see https://github.com/sontek/pyramid_celery/pull/89)
       - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/celeryconfig.py
       - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
-      - ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}
     restart: always
     logging: *default-logging
-
-  # extend proxy with endpoint and config for Cowbird API access
-  proxy:
-    volumes:
-      - ./components/cowbird/conf.extra-service.d:/etc/nginx/conf.extra-service.d/cowbird:ro
-      # NOTE:
-      #   Prefix '0_' to the mounted file name to ensure it is loaded first by 'birdhouse/config/canarie-api/docker_configuration.py'
-      #   This ensures that the alphabetical loading order it defines will first load the default configs, then will load
-      #   the Cowbird config, and then all python configuration within 'optional-components/canarie-api-full-monitoring'.
-      #   It is important to load Cowbird before, as the full monitoring need to know if 'Cowbird' service is added to the
-      #   stack in order to apply the corresponding public endpoint conditionally.
-      - ./components/cowbird/config/canarie-api/cowbird_config.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/0_cowbird_config.py:ro
-    links:
-      - cowbird
-
-  # extend Magpie permissions to grant access to Cowbird API via secured Twitcher proxy
-  magpie:
-    links:
-      # must have link to send webhook requests directly through internal network
-      - cowbird
-    volumes:
-      # NOTE:
-      #   Although the file uses the combined "config.yml" format, it is very important to pass it as independent and
-      #   duplicate references for providers/permissions/webhooks config files. This is because 'MAGPIE_CONFIG_PATH' is
-      #   not used to allow parsing additive per-component config files for each extendable service, using loading of
-      #   all configuration files found in mounted directories.
-      - ./components/cowbird/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/cowbird.yml:ro
-      - ./components/cowbird/config/magpie/config.yml:/opt/local/src/magpie/config/providers/cowbird.yml:ro
-      - ./components/cowbird/config/magpie/config.yml:/opt/local/src/magpie/config/webhooks/cowbird.yml:ro
-
-  jupyterhub:
-    environment:
-      WORKSPACE_DIR: ${DATA_PERSIST_ROOT}/${USER_WORKSPACES}
-    volumes:
-      - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:${DATA_PERSIST_ROOT}/${USER_WORKSPACES}"

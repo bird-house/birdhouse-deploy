@@ -1,0 +1,6 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+    - ./config/jupyterhub/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/jupyterhub_canarie_api_monitoring.py:ro
+    - ./config/jupyterhub/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/jupyterhub:ro

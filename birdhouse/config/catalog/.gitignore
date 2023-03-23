@@ -1,1 +1,4 @@
 catalog.cfg
+config/magpie/permissions.cfg
+config/magpie/providers.cfg
+config/proxy/canarie_api_monitoring.py

@@ -1,1 +1,2 @@
 docker_configuration.py
+conf.extra-service.d/canarie-api.conf

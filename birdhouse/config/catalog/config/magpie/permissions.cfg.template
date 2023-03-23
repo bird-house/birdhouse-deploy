@@ -1,0 +1,5 @@
+permissions:
+  - service: ${CATALOG_THREDDS_SERVICE}
+    permission: read
+    user: ${CATALOG_USERNAME}
+    action: create

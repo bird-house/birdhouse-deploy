@@ -1,0 +1,14 @@
+version: "3.4"
+services:
+  malleefowl:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "http://localhost:8091/wps?service=WPS&request=GetCapabilities",
+        ]
+      interval: 60s
+      timeout: 5s
+      retries: 2
