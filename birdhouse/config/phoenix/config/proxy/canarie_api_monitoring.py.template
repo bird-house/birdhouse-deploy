@@ -19,7 +19,7 @@ SERVICES['Phoenix'] = {
         'releasenotes': 'https://github.com/ouranosinc/pyramid-phoenix/CHANGES.rst',
         'support': 'https://github.com/ouranosinc/pyramid-phoenix/issues',
         'source': 'https://github.com/ouranosinc/pyramid-phoenix',
-        'tryme': 'http://${PAVICS_FQDN}:8443/',
+        'tryme': 'https://${PAVICS_FQDN}:8443/',
         'licence': 'https://github.com/ouranosinc/pyramid-phoenix/blob/master/LICENSE.txt',
         'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
     },
@@ -27,7 +27,7 @@ SERVICES['Phoenix'] = {
         "Phoenix": {
             'request': {
                 # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
-                'url': 'http://${PAVICS_FQDN}:8443/'
+                'url': 'https://${PAVICS_FQDN}:8443/'
             }
         }
     }
