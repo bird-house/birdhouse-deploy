@@ -14,7 +14,16 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Pre commit hooks for automated code style cleanup
+
+  Adds a configuration file for pre-commit hooks that can be optionally enabled by developers to enforce code style
+  policies.
+
+  At the moment, three hooks have been added:
+    - check-yaml: checks yaml files are parseable
+    - end-of-file-fixer: ensures that non-empty files end with a newline
+    - trailing-whitespace: removes trailing whitespace
 
 [1.24.0](https://github.com/bird-house/birdhouse-deploy/tree/1.24.0) (2023-03-22)
 ------------------------------------------------------------------------------------------------------------------
