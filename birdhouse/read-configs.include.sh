@@ -107,7 +107,9 @@ source_conf_files() {
       COMPONENT_DEFAULT_ENV="$adir/default.env"
       if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
           echo "reading '$COMPONENT_DEFAULT_ENV'"
+          COMPONENT_DEPENDENCIES=''
           . "$COMPONENT_DEFAULT_ENV"
+          source_conf_files "$COMPONENT_DEPENDENCIES" "a dependency of $adir"
       fi
   done
 }
@@ -119,22 +121,9 @@ read_components_default_env() {
     if [ -d "$COMPOSE_DIR" ]; then
         cd "$COMPOSE_DIR"
     fi
-    requested_conf_dirs="
-      $DEFAULT_CONF_DIRS
-      $EXTRA_CONF_DIRS
-    "
-    ALL_CONF_DIRS=''
-    COMPONENT_DEPENDENCIES=''
-    current_dependencies=$COMPONENT_DEPENDENCIES
-    # Note: source_conf_files may update COMPONENT_DEPENDENCIES when sourcing the default.env
-    # files in each component's directory.
-    source_conf_files "$requested_conf_dirs" 'EXTRA_CONF_DIRS or DEFAULT_CONF_DIRS'
-    while [ "$current_dependencies" != "$COMPONENT_DEPENDENCIES" ]; do
-      # if additional component dependencies are added by sourcing configuration files, then
-      # source the new dependencies as well.
-      current_dependencies=$COMPONENT_DEPENDENCIES
-      source_conf_files "$COMPONENT_DEPENDENCIES" 'COMPONENT_DEPENDENCIES'
-    done
+
+    source_conf_files "$DEFAULT_CONF_DIRS" 'DEFAULT_CONF_DIRS'
+    source_conf_files "$EXTRA_CONF_DIRS" 'EXTRA_CONF_DIRS'
 
     # Return to previous pwd.
     if [ -d "$COMPOSE_DIR" ]; then
