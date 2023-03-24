@@ -107,7 +107,6 @@ source_conf_files() {
       COMPONENT_DEFAULT_ENV="$adir/default.env"
       if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
           echo "reading '$COMPONENT_DEFAULT_ENV'"
-          COMPONENT_DEPENDENCIES=''
           . "$COMPONENT_DEFAULT_ENV"
           source_conf_files "$COMPONENT_DEPENDENCIES" "a dependency of $adir"
       fi
