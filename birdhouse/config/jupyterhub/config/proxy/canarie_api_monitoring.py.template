@@ -4,4 +4,3 @@ SERVICES['node']['monitoring']['Jupyter'] = {
     }
 }
 CANARIE_STATS_ROUTES.append('jupyter')
-

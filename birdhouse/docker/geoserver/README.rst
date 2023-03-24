@@ -14,7 +14,7 @@ https://github.com/kartoza/docker-geoserver/blob/a71a2aa79315783283a33436f101857
 
 .. code-block:: shell
 
-   docker build --build-arg -t pavics/geoserver . 
+   docker build --build-arg -t pavics/geoserver .
    docker run --name "postgis" -d -t pavics/postgis:9.4-2.1
    docker run --name "geoserver" --link postgis:postgis -p <host port>:8080 -v <host path to the geoserver datadir>:/opt/geoserver/data_dir -d -t pavics/geoserver
    docker run --name "geoserver" --link postgis:postgis -p 8080:8080 -v /data/geoserver_data:/opt/geoserver/data_dir -d -t pavics/geoserver

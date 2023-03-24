@@ -2,8 +2,8 @@
 FROM tomcat:8.0-jre8
 MAINTAINER Tim Sutton<tim@linfiniti.com>
 
-# docker build --build-arg -t kartoza/geoserver . 
-# docker run --name "postgis" -d -t kartoza/postgis:9.4-2.1 
+# docker build --build-arg -t kartoza/geoserver .
+# docker run --name "postgis" -d -t kartoza/postgis:9.4-2.1
 # docker run --name "geoserver" --link postgis:postgis -p 8080:8080 -d -t kartoza/geoserver
 # docker run  --link postgis:postgis -p 8081:8080 -v /data/geoserver_data:/opt/geoserver/data_dir -d -t kartoza/geoserver
 
@@ -25,7 +25,7 @@ RUN apt-get -y update
 
 WORKDIR /tmp
 RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4/zlib-1.2.8.tar.gz   && tar -xvf zlib-1.2.8.tar.gz
-RUN cd zlib-1.2.8 && ./configure --prefix=/usr/local && make install -j9 && ldconfig 
+RUN cd zlib-1.2.8 && ./configure --prefix=/usr/local && make install -j9 && ldconfig
 WORKDIR /tmp
 RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4/hdf5-1.8.13.tar.gz && tar -xvf hdf5-1.8.13.tar.gz
 RUN cd hdf5-1.8.13 && ./configure --prefix=/usr/local -enable-threadsafe && make install -j9 && ldconfig

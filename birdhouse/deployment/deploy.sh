@@ -25,12 +25,12 @@
 # * make sure your git remote uses ssh, and not https, like documented at:
 #   https://help.github.com/en/github/using-git/changing-a-remotes-url#switching-remote-urls-from-https-to-ssh
 #   running `git remote -v` should show this format: git@github.com:USERNAME/REPOSITORY.git
-#   if https is used, fetching from the remote in the deployment script will not 
+#   if https is used, fetching from the remote in the deployment script will not
 #   work because git will prompt for the username and password.
 #
 # In the case of a *public* repository, make sure your git remote url is using https, and not ssh
-# because configuring an ssh key is not required and the connection will be refused if it's not correctly configured. 
-# 
+# because configuring an ssh key is not required and the connection will be refused if it's not correctly configured.
+#
 # Usage:
 #
 #   Just run this script pointing to the checkout repo and optionally the env.local file.

@@ -8,7 +8,7 @@ DATA_DIR=~/geoserver_data
 if [ ! -d $DATA_DIR ]
 then
     mkdir -p $DATA_DIR
-fi 
+fi
 
 docker run --name="geoserver-postgis" -t -d kartoza/postgis
 

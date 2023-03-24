@@ -6,4 +6,3 @@ providers:
     c4i: false
     type: geoserver
     sync_type: geoserver
-

@@ -33,7 +33,7 @@ then
     echo -n "$db: "
     $0 $db $2
   done
-  
+
   exit
 fi
 

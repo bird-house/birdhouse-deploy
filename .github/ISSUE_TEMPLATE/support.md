@@ -15,7 +15,7 @@ assignees: tlvu, MatProv
 
 ## References
 
-<!-- 
+<!--
   Additional screenshots or links to help identify the issue?
 -->
 
@@ -25,6 +25,6 @@ assignees: tlvu, MatProv
 | Information           | Value
 | --------------------- | --------------------------------------------------------------
 | Server/Platform URL   | <!-- e.g: https://pavics.ouranos.ca -->
-| Version Tag/Commit    | <!-- 1.2.3 --> 
+| Version Tag/Commit    | <!-- 1.2.3 -->
 | Related issues/PR     | <!-- #<issue> #<pr> -->
 | Related components    | <!-- thredds, magpie, monitoring, etc. -->

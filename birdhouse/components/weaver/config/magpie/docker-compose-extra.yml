@@ -10,4 +10,3 @@ services:
       #   config files for each extendable service, using loading of all configuration files found in mount directories.
       - ./components/weaver/config/magpie/config.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/weaver-permissions.yml:ro
       - ./components/weaver/config/magpie/config.yml:${MAGPIE_PROVIDERS_CONFIG_PATH}/weaver-providers.yml:ro
-

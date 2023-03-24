@@ -1,6 +1,6 @@
 [buildout]
 extends=profiles/docker.cfg
-parts += pytest 
+parts += pytest
 
 [settings]
 esgf-search-url = http://136.172.30.96/esg-search
