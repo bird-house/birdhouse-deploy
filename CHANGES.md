@@ -14,7 +14,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+- Cowbird: Resolve `celery` tasks not properly registered for dispatching from the API to the worker service.
+
+  When calling the `https://${PAVICS_FDQN_PUBLIC}/cowbird/version` endpoint, a task is submitted to `cowbird-worker`
+  to validate that it is responsive and in sync with `cowbird`. The instance was reporting an error indicating that
+  `celery` tasks were not properly detected.
+
+  To facilitate detection of this kind of problem, better error log reporting was added to the `/version` endpoint
+  under [`cowbird==1.1.1`](https://github.com/Ouranosinc/cowbird/tree/1.1.0).
 
 [1.24.0](https://github.com/bird-house/birdhouse-deploy/tree/1.24.0) (2023-03-22)
 ------------------------------------------------------------------------------------------------------------------
