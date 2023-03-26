@@ -63,6 +63,14 @@
   - ./config/wps_outputs-volume (loaded as a dependency of generic_bird)
   - ./components/cowbird
 
+## Changes
+- Add tests to ensure override capabilities are preserved which allows all default
+  behaviors of the platform can be customized.
+
+  See [birdhouse/README.rst](birdhouse/README.rst) for instruction to run the
+  tests.
+
+
 [1.24.0](https://github.com/bird-house/birdhouse-deploy/tree/1.24.0) (2023-03-22)
 ------------------------------------------------------------------------------------------------------------------
 ## Fixes

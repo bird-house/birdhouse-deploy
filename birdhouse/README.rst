@@ -202,6 +202,19 @@ Starting and managing the lifecycle of the VM:
    vagrant provision
 
 
+Framework tests
+---------------
+
+Core features of the platform has tests to prevent regressions.
+
+To run the tests:
+
+.. code-block::
+
+    cd birdhouse/tests
+    ./bash_unit test_*
+
+
 Tagging policy
 --------------
 
