@@ -172,3 +172,32 @@ read_basic_configs_only() {
     read_env_local
     process_delayed_eval
 }
+
+
+# Generate COMPOSE_CONF_LIST from ALL_CONF_DIRS.
+gen_compose_conf_list() {
+    COMPOSE_CONF_LIST="-f docker-compose.yml"
+    for adir in $ALL_CONF_DIRS; do
+      if [ -f "$adir/docker-compose-extra.yml" ]; then
+        COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $adir/docker-compose-extra.yml"
+      fi
+    done
+    CONFIGURED_COMPONENTS=''
+    for adir in $ALL_CONF_DIRS; do
+      CONFIGURED_COMPONENTS="
+        $CONFIGURED_COMPONENTS
+        $(basename $adir)"
+    done
+
+    for adir in $ALL_CONF_DIRS; do
+      for conf_dir in "$adir"/config/*; do
+        service_name=$(basename "$conf_dir")
+        extra_compose="$conf_dir/docker-compose-extra.yml"
+        if [ -f "$extra_compose" ]; then
+          if echo "$CONFIGURED_COMPONENTS" | grep -q "$service_name"; then
+            COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $extra_compose"
+          fi
+        fi
+      done
+    done
+}
