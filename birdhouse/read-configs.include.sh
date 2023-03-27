@@ -88,29 +88,38 @@ read_env_local() {
 source_conf_files() {
   dirs=$1
   conf_locations=$2
+  _old_adir=$adir # a posix-compliant way to make this a local variable'
   for adir in ${dirs}; do
       if echo "$ALL_CONF_DIRS" | grep -qE "^\s*$adir\s*$"; then
           # ignore directories that are already in ALL_CONF_DIRS
           continue
       fi
-      if [ -e "$adir" ]; then
-          ALL_CONF_DIRS="$ALL_CONF_DIRS
-            $adir
-          "
-      else
+      if [ ! -e "$adir" ]; then
           # Do not exit to not break unattended autodeploy since no human around to
           # fix immediately.
           # The new adir with typo will not be active but at least all the existing
           # will still work.
           echo "WARNING: '$adir' in $conf_locations does not exist" 1>&2
       fi
+      _OLD_COMPONENT_DEFAULT_ENV=$COMPONENT_DEFAULT_ENV # a posix-compliant way to make this a local variable
       COMPONENT_DEFAULT_ENV="$adir/default.env"
       if [ -f "$COMPONENT_DEFAULT_ENV" ]; then
+          # Source config settings of dependencies first if they haven't been sourced previously.
+          # Note that this will also define the order that docker-compose-extra.yml files will be loaded.
+          source_conf_files "$(. "$COMPONENT_DEFAULT_ENV" && echo "$COMPONENT_DEPENDENCIES")" "a dependency of $adir"
           echo "reading '$COMPONENT_DEFAULT_ENV'"
           . "$COMPONENT_DEFAULT_ENV"
-          source_conf_files "$COMPONENT_DEPENDENCIES" "a dependency of $adir"
       fi
+      if echo "$ALL_CONF_DIRS" | grep -qE "^\s*$adir\s*$"; then
+          # check again in case a dependency has already added this to the ALL_CONF_DIRS variable
+          continue
+      fi
+      ALL_CONF_DIRS="$ALL_CONF_DIRS
+        $adir
+      "
+      COMPONENT_DEFAULT_ENV=$_OLD_COMPONENT_DEFAULT_ENV
   done
+  adir=$_old_adir
 }
 
 read_components_default_env() {

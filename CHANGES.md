@@ -56,12 +56,43 @@
   
   the load order is:
 
-  - ./config/twitcher
   - ./config/magpie (loaded as a dependency of twitcher, not loaded a second time after project-api)
-  - ./config/project-api 
-  - ./optional-components/generic_bird
+  - ./config/twitcher
+  - ./config/project-api
   - ./config/wps_outputs-volume (loaded as a dependency of generic_bird)
+  - ./optional-components/generic_bird
   - ./components/cowbird
+
+  This load order also applies to the order that docker-compose-extra.yml files are specified. If a component also
+  includes an override file for another component (eg: ./config/finch/config/proxy/docker-compose-extra.yml overrides 
+  ./config/proxy/docker-compose-extra.yml), the following additional load order rules apply:
+
+  - if the component that is being overridden has already been loaded, the override file is loaded immediately
+  - otherwise, the override files will be loaded immediately after the component that is being overridden has been loaded
+
+  For example, with the following files in place:
+
+    ```shell
+  # env.local
+  DEFAULT_CONF_DIRS="
+    ./config/finch
+    ./config/proxy
+  "
+  ```
+  ```yaml
+  # config/proxy/docker-compose-extra.yml
+    ...
+  # config/finch/docker-compose-extra.yml
+    ...
+  # config/finch/config/proxy/docker-compose-extra.yml
+    ...
+  ```
+
+  the docker compose files will be loaded in the following order: 
+
+  - config/finch/docker-compose-extra.yml
+  - config/proxy/docker-compose-extra.yml
+  - config/finch/config/proxy/docker-compose-extra.yml
 
 [1.24.0](https://github.com/bird-house/birdhouse-deploy/tree/1.24.0) (2023-03-22)
 ------------------------------------------------------------------------------------------------------------------
