@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.24.1](https://github.com/bird-house/birdhouse-deploy/tree/1.24.1) (2023-03-27)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 - Cowbird: Resolve `celery` tasks not properly registered for dispatching from the API to the worker service.
 
