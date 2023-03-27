@@ -17,6 +17,7 @@ services:
       # SSL verification should be enabled for secured connections
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
+      COWBIRD_INI_FILE_PATH: /opt/local/src/cowbird/config/cowbird.ini
       WORKSPACE_DIR: /${USER_WORKSPACES}
     links:
       - "${COWBIRD_MONGODB_SERVICE}"
@@ -28,6 +29,8 @@ services:
     volumes:
       - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
       - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
+      # even if not running tasks here, they must be registered to send them off to the right place!
+      - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
       - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
     restart: always
     logging: *default-logging
@@ -38,6 +41,7 @@ services:
     environment:
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
+      COWBIRD_INI_FILE_PATH: /opt/local/src/cowbird/config/cowbird.ini
       WORKSPACE_DIR: /${USER_WORKSPACES}
     links:
       - "${COWBIRD_MONGODB_SERVICE}"
@@ -46,13 +50,11 @@ services:
       - "${COWBIRD_MONGODB_SERVICE}"
     depends_on:
       - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird  # if not started first, sometimes celery misbehaves and will not pick jobs in queue
     volumes:
       - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
       - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
-      # note:
-      #   file 'celeryconfig' must be located directly under the application path and be named exactly like this,
-      #   otherwise 'pyramid_celery' cannot find it (see https://github.com/sontek/pyramid_celery/pull/89)
-      - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/celeryconfig.py
+      - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
       - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
     restart: always
     logging: *default-logging
