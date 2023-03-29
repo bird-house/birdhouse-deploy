@@ -124,7 +124,6 @@ source_conf_files() {
       ALL_CONF_DIRS="$ALL_CONF_DIRS
         $adir
       "
-      echo $adir ':stack:' "$_adir_stack" ':allconf:' "$ALL_CONF_DIRS" 1>&2
       # pop current adir from the stack once we're done with it
       _adir_stack="$(printf '%b' "$_adir_stack" | sed '$d')"
   done

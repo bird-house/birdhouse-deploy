@@ -202,7 +202,6 @@ class TestCreateComposeConfList:
             check=True,
             universal_newlines=True,
         )
-        print(proc.stderr)
         if proc.returncode:
             raise subprocess.SubprocessError(
                 f"'{command}' failed with return code: {proc.returncode}\nError:\n{proc.stderr}"
