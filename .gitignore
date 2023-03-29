@@ -23,3 +23,9 @@ ubuntu-bionic-18.04-cloudimg-console.log
 ## Python temp files
 **/__pycache__
 **/*.py[cod]
+
+## Virtual environments
+venv/
+
+## Testing
+.pytest_cache/

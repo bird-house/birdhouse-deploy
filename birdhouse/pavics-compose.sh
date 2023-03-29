@@ -104,33 +104,7 @@ if [ x"$1" = x"up" ]; then
   done
 fi
 
-COMPOSE_CONF_LIST="-f docker-compose.yml"
-COMPONENT_OVERRIDES=''
-LOADED_COMPONENTS=''
-for adir in $ALL_CONF_DIRS; do
-  service_name=$(basename "$adir")
-  if [ -f "$adir/docker-compose-extra.yml" ]; then
-    COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $adir/docker-compose-extra.yml"
-    LOADED_COMPONENTS="${LOADED_COMPONENTS}\n${service_name}"
-  fi
-
-  # If previously loaded components specified overrides for the component that was just loaded, load those overrides now
-  previous_overrides=$(printf '%b' "${COMPONENT_OVERRIDES}" | grep "^$service_name " | sed "s/^${service_name}//g" | tr '\n' ' ')
-  COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} ${previous_overrides}"
-  # Load overrides for other components unless the component to be overridden hasn't been loaded yet. If the component
-  # hasn't been loaded yet, store a reference to it so that it can be added in as soon as the component is loaded.
-  for conf_dir in "$adir"/config/*; do
-    override_service_name=$(basename "$conf_dir")
-    extra_compose="$conf_dir/docker-compose-extra.yml"
-    if [ -f "$extra_compose" ]; then
-      if printf '%b' "${LOADED_COMPONENTS}" | grep -q "^$override_service_name$"; then
-        COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $extra_compose"
-      else
-        COMPONENT_OVERRIDES="${COMPONENT_OVERRIDES}\n${override_service_name} -f ${extra_compose}"
-      fi
-    fi
-  done
-done
+create_compose_conf_list # this sets COMPOSE_CONF_LIST
 echo "COMPOSE_CONF_LIST=${COMPOSE_CONF_LIST}"
 
 # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script

@@ -94,6 +94,12 @@
   - config/proxy/docker-compose-extra.yml
   - config/finch/config/proxy/docker-compose-extra.yml
 
+- Add tests to ensure override capabilities are preserved which allows all default
+  behaviors of the platform can be customized.
+
+  See [birdhouse/README.rst](birdhouse/README.rst) for instruction to run the
+  tests.
+
 [1.24.1](https://github.com/bird-house/birdhouse-deploy/tree/1.24.1) (2023-03-27)
 ------------------------------------------------------------------------------------------------------------------
 
