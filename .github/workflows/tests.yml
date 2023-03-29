@@ -15,7 +15,7 @@ jobs:
           cache: 'pip'
       - name: Install python test dependencies
         run: |
-          pip install -r ./birdhouse/tests/requirements.txt
+          pip install -r ./tests/requirements.txt
       - name: Test with pytest
         run: |
-          pytest ./birdhouse/tests/
+          pytest ./tests/
