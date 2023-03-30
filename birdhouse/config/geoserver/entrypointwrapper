@@ -1,20 +1,6 @@
 #!/bin/sh -x
 
-CONF_FILE="/usr/local/tomcat/conf/server.xml"
-
-# Configure proxy support as per
-# https://tomcat.apache.org/tomcat-8.0-doc/config/http.html#Proxy_Support
-# This config automate manual step to set proxy base url in Geoserver UI:
-# https://docs.geoserver.org/2.9.3/user/configuration/globalsettings.html#proxy-base-url
-if ! grep " scheme=\"https\" proxyName=\"${PAVICS_FQDN_PUBLIC}\" proxyPort=\"443\" " $CONF_FILE; then
-    ORIGINAL_FILE="${CONF_FILE}.bak.proxy.$$"
-    cp -v $CONF_FILE $ORIGINAL_FILE
-    sed -i "s/<Connector /<Connector scheme=\"https\" proxyName=\"${PAVICS_FQDN_PUBLIC}\" proxyPort=\"443\" /g" $CONF_FILE
-    diff -u $ORIGINAL_FILE $CONF_FILE
-fi
-
-
-WEB_XML_FILE="/usr/local/tomcat/conf/web.xml"
+WEB_XML_FILE="/build_data/web.xml"
 
 # Enable Cross-Origin Resource Sharing (CORS) to allow JavaScript applications
 # outside of your own domain, or web browsers, to use GeoServer.
@@ -36,7 +22,8 @@ if ! grep "<param-name>cors.allowed.methods</param-name>" $WEB_XML_FILE; then
             <param-value>GET,POST,HEAD,OPTIONS,PUT</param-value>\
         </init-param>@' $WEB_XML_FILE
 
-    sed -i 's@<param-value>If-Modified-Since,Range,Origin</param-value>@<param-value>Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,Authentication</param-value>@' $WEB_XML_FILE
+    # Just missing 'Authentication', wonder what would break.
+    #sed -i 's@<param-value>If-Modified-Since,Range,Origin</param-value>@<param-value>Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,Authentication</param-value>@' $WEB_XML_FILE
 
     # for logging
     diff -C 15 $ORIGINAL_WEB_XML_FILE $WEB_XML_FILE
