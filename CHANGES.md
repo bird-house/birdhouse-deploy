@@ -14,7 +14,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+- Geoserver: update to latest version 2.22.2 to get vulnerability fix
+
+  For vulnerability in jai-ext-1.1.21, see https://nvd.nist.gov/vuln/detail/CVE-2022-24816.
+
+  Changed to use the CORS default config from the image instead of our own.
+  Both are quite similar so if we can use the default config, future upgrade
+  will be simpler.
+
 
 [1.24.1](https://github.com/bird-house/birdhouse-deploy/tree/1.24.1) (2023-03-27)
 ------------------------------------------------------------------------------------------------------------------
@@ -32,7 +40,9 @@
 [1.24.0](https://github.com/bird-house/birdhouse-deploy/tree/1.24.0) (2023-03-22)
 ------------------------------------------------------------------------------------------------------------------
 ## Fixes
-- The default stack was not configurable. This meant that if someone wanted to deploy a 
+- Make all components pluggable
+
+  The default stack was not configurable. This meant that if someone wanted to deploy a
   subset of the default stack there was no good way of configuring birdhouse-deploy to run
   this subset only. 
 
