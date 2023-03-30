@@ -17,7 +17,9 @@
 ## Fixes
 - Geoserver: update to latest version 2.22.2 to get vulnerability fix
 
-  For vulnerability in jai-ext-1.1.21, see https://nvd.nist.gov/vuln/detail/CVE-2022-24816.
+  For vulnerability in `jt-jiffle` < 1.1.22, see
+  https://nvd.nist.gov/vuln/detail/CVE-2022-24816, and
+  https://github.com/geosolutions-it/jai-ext/security/advisories/GHSA-v92f-jx6p-73rx.
 
   Changed to use the CORS default config from the image instead of our own.
   Both are quite similar so if we can use the default config, future upgrade
