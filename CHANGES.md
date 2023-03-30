@@ -25,6 +25,56 @@
   Both are quite similar so if we can use the default config, future upgrade
   will be simpler.
 
+  New Geoserver version will have `jt-jiffle` 1.1.24.  The old one had version 1.1.20.
+  ```
+  $ docker run -it --rm --entrypoint bash pavics/geoserver:2.22.2-kartoza-build20230226-r5-allow-change-context-root-and-fix-missing-stable-plugins
+
+  | |/ /__ _ _ __| |_ ___ ______ _  |  _ \  ___   ___| | _____ _ __   / ___| ___  ___/ ___|  ___ _ ____   _____ _ __
+  | ' // _` | '__| __/ _ \_  / _` | | | | |/ _ \ / __| |/ / _ \ '__| | |  _ / _ \/ _ \___ \ / _ \ '__\ \ / / _ \ '__|
+  | . \ (_| | |  | || (_) / / (_| | | |_| | (_) | (__|   <  __/ |    | |_| |  __/ (_) |__) |  __/ |   \ V /  __/ |
+  |_|\_\__,_|_|   \__\___/___\__,_| |____/ \___/ \___|_|\_\___|_|     \____|\___|\___/____/ \___|_|    \_/ \___|_|
+
+  root@c3787dccea2d:/geoserver# find / -iname '**jt-jiffle**'
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/jt-jiffle-language-1.1.24.jar
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/jt-jiffle-op-1.1.24.jar
+  root@c3787dccea2d:/geoserver#
+  ```
+
+  Used our own custom build image because the original kartoza image is missing 2 plugins that we use, see https://github.com/kartoza/docker-geoserver/issues/508.
+
+  CORS config difference:
+  ```diff
+  --- web.xml.old 2023-03-22 16:10:20.000000000 -0400
+  +++ web.xml.new 2023-03-22 16:10:06.000000000 -0400
+
+       <filter>
+           <filter-name>CorsFilter</filter-name>
+           <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+           <init-param>
+  -            <param-name>cors.allowed.methods</param-name>
+  -            <param-value>GET,POST,HEAD,OPTIONS,PUT</param-value>
+  -        </init-param>
+  -        <init-param>
+               <param-name>cors.allowed.origins</param-name>
+               <param-value>*</param-value>
+           </init-param>
+           <init-param>
+               <param-name>cors.allowed.headers</param-name>
+  -            <param-value>Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,Authentication</param-value>
+  +            <param-value>Content-Type,X-Requested-With,accept,Access-Control-Request-Method,Access-Control-Request-Headers,If-Modified-Since,Range,Origin,Authorization</param-value>
+  +        </init-param>
+  +        <init-param>
+  +            <param-name>cors.exposed.headers</param-name>
+  +            <param-value>Access-Control-Allow-Origin,Access-Control-Allow-Credentials</param-value>
+           </init-param>
+       </filter>
+  ```
+  Missing `cors.allowed.methods`, new `cors.exposed.headers`.
+
+  For `cors.allowed.headers`, missing `Authentication`, new `If-Modified-Since,Range`.
+
+  Hopefully everything still works with the new CORS config and future upgrade will be simpler.
+
 
 [1.24.1](https://github.com/bird-house/birdhouse-deploy/tree/1.24.1) (2023-03-27)
 ------------------------------------------------------------------------------------------------------------------
