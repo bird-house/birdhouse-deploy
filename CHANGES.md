@@ -40,7 +40,7 @@
   root@c3787dccea2d:/geoserver#
   ```
 
-  Used our own custom build image because the original kartoza image is missing 2 plugins that we use, see https://github.com/kartoza/docker-geoserver/issues/508.
+  Used our own custom build image because the original kartoza image is missing 2 plugins that we use, see https://github.com/kartoza/docker-geoserver/issues/508 and to avoid excessively slow startup due to https://github.com/kartoza/docker-geoserver/issues/515.
 
   CORS config difference:
   ```diff
@@ -74,6 +74,11 @@
   For `cors.allowed.headers`, missing `Authentication`, new `If-Modified-Since,Range`.
 
   Hopefully everything still works with the new CORS config and future upgrade will be simpler.
+
+  Tested with the following notebooks, hopefully CORS changes are effectively tested there:
+  * https://github.com/Ouranosinc/pavics-sdi/blob/f4aecf64889f0c8503ea67b59b6558ae18407cf6/docs/source/notebooks/WFS_example.ipynb
+  * https://github.com/Ouranosinc/pavics-sdi/blob/f4aecf64889f0c8503ea67b59b6558ae18407cf6/docs/source/notebooks/regridding.ipynb
+  * https://github.com/bird-house/finch/blob/877312d325d4de5c3efcb4f1f75fbe5cd22660d6/docs/source/notebooks/subset.ipynb
 
 
 [1.24.1](https://github.com/bird-house/birdhouse-deploy/tree/1.24.1) (2023-03-27)
