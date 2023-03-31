@@ -21,9 +21,9 @@
   https://nvd.nist.gov/vuln/detail/CVE-2022-24816, and
   https://github.com/geosolutions-it/jai-ext/security/advisories/GHSA-v92f-jx6p-73rx.
 
-  Changed to use the CORS default config from the image instead of our own.
-  Both are quite similar so if we can use the default config, future upgrade
-  will be simpler.
+  Changed to use the CORS (Cross-Origin Resource Sharing) default config from
+  the image instead of our own.  Both are quite similar so if we can use the
+  default config, future upgrade will be simpler.
 
   New Geoserver version will have `jt-jiffle` 1.1.24.  The old one had version 1.1.20.
   ```
@@ -79,6 +79,9 @@
   * https://github.com/Ouranosinc/pavics-sdi/blob/f4aecf64889f0c8503ea67b59b6558ae18407cf6/docs/source/notebooks/WFS_example.ipynb
   * https://github.com/Ouranosinc/pavics-sdi/blob/f4aecf64889f0c8503ea67b59b6558ae18407cf6/docs/source/notebooks/regridding.ipynb
   * https://github.com/bird-house/finch/blob/877312d325d4de5c3efcb4f1f75fbe5cd22660d6/docs/source/notebooks/subset.ipynb
+  * https://github.com/Ouranosinc/raven/blob/0be6d77d71bcaf4546de97b13bafc6724068a73d/docs/source/notebooks/01_Getting_watershed_boundaries.ipynb
+    with `RAVEN_GEO_URL` pointing to another Geoserver (also from this PR) to
+    test CORS (Cross-Origin Resource Sharing)
 
 ## Changes
 - Raven: allow to customize the Geoserver it will use
