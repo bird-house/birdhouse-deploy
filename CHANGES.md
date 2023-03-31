@@ -80,6 +80,14 @@
   * https://github.com/Ouranosinc/pavics-sdi/blob/f4aecf64889f0c8503ea67b59b6558ae18407cf6/docs/source/notebooks/regridding.ipynb
   * https://github.com/bird-house/finch/blob/877312d325d4de5c3efcb4f1f75fbe5cd22660d6/docs/source/notebooks/subset.ipynb
 
+## Changes
+- Raven: allow to customize the Geoserver it will use
+
+  Useful to test the local Geoserver or to have your own Geoserver with your
+  own data.  Default to PAVICS Geoserver.
+
+  Set `RAVEN_GEO_URL` in `env.local` to something like `https://host/geoserver/`.
+
 
 [1.24.1](https://github.com/bird-house/birdhouse-deploy/tree/1.24.1) (2023-03-27)
 ------------------------------------------------------------------------------------------------------------------
