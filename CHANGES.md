@@ -88,6 +88,13 @@
 
   Set `RAVEN_GEO_URL` in `env.local` to something like `https://host/geoserver/`.
 
+- env.local.example: change default Geoserver admin user from 'admin' to 'admingeo'
+
+  This only impacts new deployment when `env.local.example` is instanciated
+  to `env.local`.
+
+  This is to avoid confusion with the admin user of Magpie, which is also 'admin'.
+
 
 [1.24.1](https://github.com/bird-house/birdhouse-deploy/tree/1.24.1) (2023-03-27)
 ------------------------------------------------------------------------------------------------------------------
