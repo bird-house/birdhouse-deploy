@@ -14,7 +14,24 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Jupyter: new image to add esgf-pyclient and xncml to fix Jenkins failure
+
+  See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/118 for more details.
+
+  - Adds `esgf-pyclient` for esgf-dap.ipynb (https://github.com/Ouranosinc/pavics-sdi/pull/269)
+  - Adds `xncml` for gen_catalog refactoring (https://github.com/Ouranosinc/pavics-vdb/pull/46)
+  - Fixes annoying harmless error `ERROR 1: PROJ: proj_create_from_database: Open of /opt/conda/envs/birdy/share/proj failed`
+  - Relevant changes (alphabetical order):
+  ```diff
+  >   - esgf-pyclient=0.3.1=pyh1a96a4e_2
+
+  <   - gdal=3.5.3=py38h1f15b03_4
+  >   - gdal=3.6.0=py38h58634bd_13
+
+  >     - xncml==0.2
+  ```
+
 
 [1.25.0](https://github.com/bird-house/birdhouse-deploy/tree/1.25.0) (2023-04-01)
 ------------------------------------------------------------------------------------------------------------------
