@@ -8,3 +8,4 @@ services:
     environment:
       CANARIE_API_CONFIG_FN: /config/docker_configuration.py
       CANARIE_MONITORING_EXTRA_CONF_DIR: ${CANARIE_MONITORING_EXTRA_CONF_DIR}
+    entrypoint: /entrypoint

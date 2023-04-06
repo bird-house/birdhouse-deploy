@@ -26,6 +26,5 @@ services:
     environment:
       # https://github.com/bird-house/birdhouse-deploy/issues/198
       REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
-    entrypoint: /entrypoint
     restart: always
     logging: *default-logging
