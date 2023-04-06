@@ -3,6 +3,5 @@ services:
   proxy:
     volumes:
     - ./optional-components/testthredds/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/testthredds:ro
-    - ./optional-components/testthredds/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/testthredds_canarie_api_monitoring.py:ro
     links:
     - testthredds

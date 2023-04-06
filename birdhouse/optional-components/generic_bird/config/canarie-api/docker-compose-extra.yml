@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+    - ./optional-components/generic_bird/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/generic_bird_canarie_api_monitoring.py:ro

@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+    - ./config/wps_outputs-volume/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/wps_outputs-volume_canarie_api_monitoring.py:ro
