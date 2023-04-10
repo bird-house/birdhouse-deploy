@@ -14,7 +14,25 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Canarie-api should not be a mandatory component.
+
+  Canarie-api is currently deployed in the same container as the nginx reverse proxy
+  service meaning that it is not possible to deploy nginx without including canarie-api.
+
+  This means that it is currently not possible to run this deployment without canarie-api
+  or use a different monitoring application. This change fully separates the configuration
+  for canarie-api and nginx so that a user can choose to run nginx with or without canarie-api.
+
+  Canarie-api has been kept on the DEFAULT_CONF_DIRS list so that canarie-api is included by
+  default, for backwards-compatibility. In order to run nginx without canarie-api, remove the
+  `./conf/canarie-api` line from the DEFAULT_CONF_DIRS environment variable. 
+  
+  A user can also choose a specific version of the nginx docker image to use by specifying 
+  the PROXY_IMAGE environment variable (default is "nginx"). Note that if canarie-api is used
+  (by including the `./conf/canarie-api` line in DEFAULT_CONF_DIRS), then the PROXY_IMAGE 
+  variable will be ignored.
 
 [1.25.0](https://github.com/bird-house/birdhouse-deploy/tree/1.25.0) (2023-04-01)
 ------------------------------------------------------------------------------------------------------------------
