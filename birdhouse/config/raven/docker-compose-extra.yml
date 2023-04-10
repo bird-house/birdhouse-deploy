@@ -15,6 +15,7 @@ services:
       - "8096:9099"
     environment:
       PYWPS_CFG: /wps.cfg
+      GEO_URL: "${RAVEN_GEO_URL}"
     volumes:
       - ./config/raven/wps.cfg:/wps.cfg
       - /tmp

@@ -14,8 +14,6 @@ services:
     ports:
       - "8087:8080"
     environment:
-      # for custom entrypoint
-      PAVICS_FQDN_PUBLIC: ${PAVICS_FQDN_PUBLIC}
       STABLE_EXTENSIONS: ${GEOSERVER_STABLE_EXTENSIONS}
       COMMUNITY_EXTENSIONS: ${GEOSERVER_COMMUNITY_EXTENSIONS}
       GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
@@ -23,14 +21,15 @@ services:
       # fix "WARNING: Illegal reflective access by org.geotools.image.ImageWorker" in `docker logs geoserver`
       JAVA_OPTS: --add-exports=java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED
       MAXIMUM_MEMORY: 8G
+      # https://github.com/kartoza/docker-geoserver#proxy-base-url
+      HTTP_PROXY_NAME: ${PAVICS_FQDN_PUBLIC}
+      HTTP_SCHEME: https
     volumes:
       # run deployment/fix-geoserver-data-dir-perm on existing
       # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image
       - ${GEOSERVER_DATA_DIR}:/opt/geoserver/data_dir
-      - ./config/geoserver/entrypointwrapper:/entrypointwrapper:ro
     links:
       - postgis
-    entrypoint: /entrypointwrapper
     restart: always
     logging: *default-logging
     healthcheck:
