@@ -14,7 +14,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Update Thredds docker image to 4.6.20
+
+  The previous docker image version for thredds (4.6.18) is no longer hosted in the docker repository.
+
+  This updates to the most recent supported version 4.
 
 [1.25.1](https://github.com/bird-house/birdhouse-deploy/tree/1.25.1) (2023-04-11)
 ------------------------------------------------------------------------------------------------------------------
