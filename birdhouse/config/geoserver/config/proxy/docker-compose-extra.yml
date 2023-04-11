@@ -2,5 +2,4 @@ version: "3.4"
 services:
   proxy:
     volumes:
-    - ./config/geoserver/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/geoserver_canarie_api_monitoring.py:ro
     - ./config/geoserver/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/geoserver:ro

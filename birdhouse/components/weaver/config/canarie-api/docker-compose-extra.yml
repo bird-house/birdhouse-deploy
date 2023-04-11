@@ -1,0 +1,7 @@
+version: "3.4"
+
+services:
+  # extend proxy configuration with weaver endpoints
+  proxy:
+    volumes:
+      - ./components/weaver/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/weaver_canarie_api_monitoring.py:ro

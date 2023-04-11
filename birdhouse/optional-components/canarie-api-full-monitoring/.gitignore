@@ -1,4 +1,5 @@
-config/proxy/canarie_api_full_monitoring.py
+config/canarie-api/canarie_api_full_monitoring.py
 
 # Old paths. Keep these so that old config files remain uncommittable after updates.
 canarie_api_full_monitoring.py
+config/proxy/canarie_api_full_monitoring.py

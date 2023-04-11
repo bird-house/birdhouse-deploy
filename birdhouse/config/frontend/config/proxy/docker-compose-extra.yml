@@ -3,4 +3,3 @@ services:
   proxy:
     volumes:
     - ./config/frontend/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/frontend:ro
-    - ./config/frontend/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/frontend_canarie_api_monitoring.py:ro

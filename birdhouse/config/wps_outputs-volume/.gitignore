@@ -1,2 +1,5 @@
 config/proxy/conf.extra-service.d/wps_outputs-volume.conf
+config/canarie-api/canarie_api_monitoring.py
+
+# Old paths. Keep these so that old config files remain uncommittable after updates.
 config/proxy/canarie_api_monitoring.py

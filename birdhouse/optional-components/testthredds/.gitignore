@@ -1,8 +1,9 @@
 catalog.xml
 threddsConfig.xml
 config/proxy/conf.extra-service.d/testthredds-service.conf
-config/proxy/canarie_api_monitoring.py
+config/canarie-api/canarie_api_monitoring.py
 
 # Old paths. Keep these so that old config files remain uncommittable after updates.
 testthredds_canarie_api_monitoring.py
 conf.extra-service.d/
+config/proxy/canarie_api_monitoring.py
