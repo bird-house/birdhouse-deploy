@@ -1,5 +1,0 @@
-version: "3.4"
-services:
-  proxy:
-    volumes:
-    - ./config/catalog/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/catalog_canarie_api_monitoring.py:ro

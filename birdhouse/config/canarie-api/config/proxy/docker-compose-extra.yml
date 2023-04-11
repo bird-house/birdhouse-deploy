@@ -2,4 +2,10 @@ version: "3.4"
 services:
   proxy:
     volumes:
-    - ./config/canarie-api/conf.extra-service.d:/etc/nginx/conf.extra-service.d/canarie-api:ro
+      - ./config/canarie-api/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/canarie-api:ro
+      - ./config/canarie-api/docker_configuration.py:/config/docker_configuration.py
+      - ./config/canarie-api/entrypoint:/entrypoint:ro
+    environment:
+      CANARIE_API_CONFIG_FN: /config/docker_configuration.py
+      CANARIE_MONITORING_EXTRA_CONF_DIR: ${CANARIE_MONITORING_EXTRA_CONF_DIR}
+    entrypoint: /entrypoint

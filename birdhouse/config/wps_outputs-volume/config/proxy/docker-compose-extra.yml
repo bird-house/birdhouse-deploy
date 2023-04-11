@@ -2,6 +2,5 @@ version: "3.4"
 services:
   proxy:
     volumes:
-    - ./config/wps_outputs-volume/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/wps_outputs-volume_canarie_api_monitoring.py:ro
     - ./config/wps_outputs-volume/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/wps_outputs-volume:ro
     - wps_outputs:/pavics-data/wps_outputs
