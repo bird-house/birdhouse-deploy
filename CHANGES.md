@@ -16,11 +16,30 @@
 
 ## Fixes
 
-- Update Thredds docker image to 4.6.20
+- Fix disapearing Thredds docker image
 
-  The previous docker image version for thredds (4.6.18) is no longer hosted in the docker repository.
+  The current docker image version for thredds (4.6.18) is no longer hosted in the
+  [Unidata docker repository](https://hub.docker.com/r/unidata/thredds-docker/tags).
 
-  This updates to the most recent supported version 4.
+  Pushed the same image from Ouranos production to PAVICS DockerHub, restoring
+  the missing Thredds image.
+
+  Discovered that Unidata is also not keeping their tag immutable, like Kartoza Geoserver image.
+
+  So Ouranos tag has the approximate month of Unidata re-release of 4.6.18.
+
+  On our production server:
+  ```
+  $ docker images |grep thredds|grep 4.6.18
+  unidata/thredds-docker              4.6.18              25997a1b2893   15 months ago   5.63GB
+  ```
+
+  On our staging server:
+  ```
+  $ docker images |grep thredds | grep 4.6.18
+  unidata/thredds-docker              4.6.18              09103737360a   16 months ago   5.62GB
+  ```
+
 
 [1.25.1](https://github.com/bird-house/birdhouse-deploy/tree/1.25.1) (2023-04-11)
 ------------------------------------------------------------------------------------------------------------------
