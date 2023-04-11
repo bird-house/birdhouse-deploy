@@ -190,9 +190,10 @@ create_compose_conf_list() {
   LOADED_COMPONENTS=''
   for adir in $ALL_CONF_DIRS; do
     service_name=$(basename "$adir")
+    LOADED_COMPONENTS="${LOADED_COMPONENTS}\n${service_name}"
+
     if [ -f "$adir/docker-compose-extra.yml" ]; then
       COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $adir/docker-compose-extra.yml"
-      LOADED_COMPONENTS="${LOADED_COMPONENTS}\n${service_name}"
     fi
 
     # If previously loaded components specified overrides for the component that was just loaded, load those overrides now

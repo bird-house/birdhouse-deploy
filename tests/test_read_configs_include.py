@@ -41,8 +41,8 @@ class TestReadConfigs:
     test_func: str = " read_components_default_env"
 
     default_all_conf_order: list[str] = [
-        "./config/canarie-api",
         "./config/proxy",
+        "./config/canarie-api",
         "./config/postgres",
         "./config/wps_outputs-volume",
         "./config/data-volume",
@@ -135,31 +135,34 @@ class TestCreateComposeConfList:
         "./config/canarie-api/config/proxy/docker-compose-extra.yml",
         "./config/postgres/docker-compose-extra.yml",
         "./config/wps_outputs-volume/docker-compose-extra.yml",
+        "./config/wps_outputs-volume/config/canarie-api/docker-compose-extra.yml",
         "./config/wps_outputs-volume/config/proxy/docker-compose-extra.yml",
         "./config/data-volume/docker-compose-extra.yml",
         "./config/malleefowl/docker-compose-extra.yml",
+        "./config/malleefowl/config/canarie-api/docker-compose-extra.yml",
         "./config/malleefowl/config/data-volume/docker-compose-extra.yml",
-        "./config/malleefowl/config/proxy/docker-compose-extra.yml",
         "./config/malleefowl/config/wps_outputs-volume/docker-compose-extra.yml",
         "./config/flyingpigeon/docker-compose-extra.yml",
         "./config/flyingpigeon/config/wps_outputs-volume/docker-compose-extra.yml",
         "./config/catalog/docker-compose-extra.yml",
-        "./config/catalog/config/proxy/docker-compose-extra.yml",
+        "./config/catalog/config/canarie-api/docker-compose-extra.yml",
         "./config/mongodb/docker-compose-extra.yml",
         "./config/phoenix/docker-compose-extra.yml",
-        "./config/phoenix/config/proxy/docker-compose-extra.yml",
+        "./config/phoenix/config/canarie-api/docker-compose-extra.yml",
         "./config/geoserver/docker-compose-extra.yml",
+        "./config/geoserver/config/canarie-api/docker-compose-extra.yml",
         "./config/geoserver/config/proxy/docker-compose-extra.yml",
         "./config/finch/docker-compose-extra.yml",
-        "./config/finch/config/proxy/docker-compose-extra.yml",
+        "./config/finch/config/canarie-api/docker-compose-extra.yml",
         "./config/finch/config/wps_outputs-volume/docker-compose-extra.yml",
         "./config/raven/docker-compose-extra.yml",
-        "./config/raven/config/proxy/docker-compose-extra.yml",
+        "./config/raven/config/canarie-api/docker-compose-extra.yml",
         "./config/raven/config/wps_outputs-volume/docker-compose-extra.yml",
         "./config/hummingbird/docker-compose-extra.yml",
         "./config/hummingbird/config/data-volume/docker-compose-extra.yml",
         "./config/hummingbird/config/wps_outputs-volume/docker-compose-extra.yml",
         "./config/thredds/docker-compose-extra.yml",
+        "./config/thredds/config/canarie-api/docker-compose-extra.yml",
         "./config/thredds/config/proxy/docker-compose-extra.yml",
         "./config/portainer/docker-compose-extra.yml",
         "./config/portainer/config/proxy/docker-compose-extra.yml",
@@ -171,10 +174,13 @@ class TestCreateComposeConfList:
         "./config/finch/config/magpie/docker-compose-extra.yml",
         "./config/raven/config/magpie/docker-compose-extra.yml",
         "./config/hummingbird/config/magpie/docker-compose-extra.yml",
+        "./config/magpie/config/canarie-api/docker-compose-extra.yml",
         "./config/magpie/config/proxy/docker-compose-extra.yml",
         "./config/twitcher/docker-compose-extra.yml",
+        "./config/twitcher/config/canarie-api/docker-compose-extra.yml",
         "./config/twitcher/config/proxy/docker-compose-extra.yml",
         "./config/jupyterhub/docker-compose-extra.yml",
+        "./config/jupyterhub/config/canarie-api/docker-compose-extra.yml",
         "./config/jupyterhub/config/magpie/docker-compose-extra.yml",
         "./config/jupyterhub/config/proxy/docker-compose-extra.yml",
         "./config/ncwms2/docker-compose-extra.yml",
@@ -182,11 +188,13 @@ class TestCreateComposeConfList:
         "./config/ncwms2/config/proxy/docker-compose-extra.yml",
         "./config/ncwms2/config/wps_outputs-volume/docker-compose-extra.yml",
         "./config/frontend/docker-compose-extra.yml",
+        "./config/frontend/config/canarie-api/docker-compose-extra.yml",
         "./config/frontend/config/proxy/docker-compose-extra.yml",
         "./config/project-api/docker-compose-extra.yml",
+        "./config/project-api/config/canarie-api/docker-compose-extra.yml",
         "./config/project-api/config/proxy/docker-compose-extra.yml",
         "./config/solr/docker-compose-extra.yml",
-        "./config/solr/config/proxy/docker-compose-extra.yml",
+        "./config/solr/config/canarie-api/docker-compose-extra.yml",
     ]
 
     def run_func(self, include_file: str, local_env: dict, command_suffix: str = "") -> subprocess.CompletedProcess:
@@ -239,13 +247,13 @@ class TestCreateComposeConfList:
     def test_compose_overrides(self, read_config_include_file):
         """Test that COMPOSE_CONF_LIST is set correctly when there are overrides"""
         proc = self.run_func(
-            read_config_include_file, {"ALL_CONF_DIRS": "./config/finch ./config/proxy"}, 'echo "$COMPOSE_CONF_LIST"'
+            read_config_include_file, {"ALL_CONF_DIRS": "./config/finch ./config/magpie"}, 'echo "$COMPOSE_CONF_LIST"'
         )
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == [
             "docker-compose.yml",
             "./config/finch/docker-compose-extra.yml",
-            "./config/proxy/docker-compose-extra.yml",
-            "./config/finch/config/proxy/docker-compose-extra.yml",
+            "./config/magpie/docker-compose-extra.yml",
+            "./config/finch/config/magpie/docker-compose-extra.yml",
         ]
 
     def test_default_all_conf_dirs(self, read_config_include_file):
