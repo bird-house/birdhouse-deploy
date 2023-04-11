@@ -14,6 +14,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.25.1](https://github.com/bird-house/birdhouse-deploy/tree/1.25.1) (2023-04-11)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Canarie-api should not be a mandatory component.
