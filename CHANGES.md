@@ -16,6 +16,17 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.25.3](https://github.com/bird-house/birdhouse-deploy/tree/1.25.3) (2023-04-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Canarie-api: add old config file into historical gitignore
+
+  In order to maintain backwards compatibility, old files that are no longer present in the code should be 
+  kept in the gitignore files. This adds back one file to the relevant .gitignore file that no longer exists under 
+  `conf.extra-service.d/canarie-api.conf`.
+
 [1.25.2](https://github.com/bird-house/birdhouse-deploy/tree/1.25.2) (2023-04-12)
 ------------------------------------------------------------------------------------------------------------------
 
