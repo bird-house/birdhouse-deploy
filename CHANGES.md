@@ -1,3 +1,4 @@
+
 # Changes
 
 [//]: # (NOTES:)
@@ -38,6 +39,127 @@
   ```
   $ docker images |grep thredds | grep 4.6.18
   unidata/thredds-docker              4.6.18              09103737360a   16 months ago   5.62GB
+  ```
+
+
+[1.25.4](https://github.com/bird-house/birdhouse-deploy/tree/1.25.4) (2023-04-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Enforce the load order of components defined in env.local
+  
+  Extra components defined in the `EXTRA_CONF_DIRS` variables were being loaded before the dependant components
+  defined in the `COMPONENT_DEPENDENCIES` variables in each default.env file. This meant that if an extra component
+  was meant to override some setting defined in a dependant component, the setting would not be overridden by the
+  extra component. 
+
+  This change enforces the following load order rules:
+
+  - components defined in `DEFAULT_CONF_DIRS` are loaded before those in `EXTRA_CONF_DIRS`
+  - components are loaded in the order they appear in either `DEFAULT_CONF_DIRS` or `EXTRA_CONF_DIRS`
+  - components that appear in `COMPONENT_DEPENDENCIES` variable are immediately loaded unless they have already been
+    loaded
+
+  For example, with the following files in place:
+
+  ```shell
+  # env.local
+  DEFAULT_CONF_DIRS="
+    ./config/twitcher
+    ./config/project-api
+    ./config/magpie
+  "
+  EXTRA_CONF_DIRS="
+    ./optional-components/generic_bird
+    ./components/cowbird
+  "
+  
+  # config/twitcher/default.env
+  COMPONENT_DEPENDENCIES="
+    ./config/magpie
+  "
+  # optional-components/generic_bird/default.env
+  COMPONENT_DEPENDENCIES="
+    ./config/wps_outputs-volume
+  "
+  ```
+  
+  the load order is:
+
+  - ./config/magpie (loaded as a dependency of twitcher, not loaded a second time after project-api)
+  - ./config/twitcher
+  - ./config/project-api
+  - ./config/wps_outputs-volume (loaded as a dependency of generic_bird)
+  - ./optional-components/generic_bird
+  - ./components/cowbird
+
+  This load order also applies to the order that docker-compose-extra.yml files are specified. If a component also
+  includes an override file for another component (eg: ./config/finch/config/proxy/docker-compose-extra.yml overrides 
+  ./config/proxy/docker-compose-extra.yml), the following additional load order rules apply:
+
+  - if the component that is being overridden has already been loaded, the override file is loaded immediately
+  - otherwise, the override files will be loaded immediately after the component that is being overridden has been loaded
+
+  For example, with the following files in place:
+
+    ```shell
+  # env.local
+  DEFAULT_CONF_DIRS="
+    ./config/finch
+    ./config/proxy
+  "
+  ```
+  ```yaml
+  # config/proxy/docker-compose-extra.yml
+    ...
+  # config/finch/docker-compose-extra.yml
+    ...
+  # config/finch/config/proxy/docker-compose-extra.yml
+    ...
+  ```
+
+  the docker compose files will be loaded in the following order: 
+
+  - config/finch/docker-compose-extra.yml
+  - config/proxy/docker-compose-extra.yml
+  - config/finch/config/proxy/docker-compose-extra.yml
+
+- Add tests to ensure override capabilities are preserved which allows all default
+  behaviors of the platform can be customized.
+
+  See [birdhouse/README.rst](birdhouse/README.rst) for instruction to run the
+  tests.
+
+[1.25.3](https://github.com/bird-house/birdhouse-deploy/tree/1.25.3) (2023-04-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Canarie-api: add old config file into historical gitignore
+
+  In order to maintain backwards compatibility, old files that are no longer present in the code should be 
+  kept in the gitignore files. This adds back one file to the relevant .gitignore file that no longer exists under 
+  `conf.extra-service.d/canarie-api.conf`.
+
+[1.25.2](https://github.com/bird-house/birdhouse-deploy/tree/1.25.2) (2023-04-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter: new image to add esgf-pyclient and xncml to fix Jenkins failure
+
+  See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/118 for more details.
+
+  - Adds `esgf-pyclient` for esgf-dap.ipynb (https://github.com/Ouranosinc/pavics-sdi/pull/269)
+  - Adds `xncml` for gen_catalog refactoring (https://github.com/Ouranosinc/pavics-vdb/pull/46)
+  - Fixes annoying harmless error `ERROR 1: PROJ: proj_create_from_database: Open of /opt/conda/envs/birdy/share/proj failed`
+  - Relevant changes (alphabetical order):
+  ```diff
+  >   - esgf-pyclient=0.3.1=pyh1a96a4e_2
+
+  <   - gdal=3.5.3=py38h1f15b03_4
+  >   - gdal=3.6.0=py38h58634bd_13
+
+  >     - xncml==0.2
   ```
 
 
