@@ -127,6 +127,11 @@ class TestReadConfigs:
             "./optional-components/test-weaver",
         ]
 
+    def test_non_project_components_included(self, read_config_include_file) -> None:
+        """Test that extra components can be included"""
+        extra = {"EXTRA_CONF_DIRS": '"./blah/other-random-component"'}
+        proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"')
+        assert split_and_strip(get_command_stdout(proc))[-1] == "./blah/other-random-component"
 
 class TestCreateComposeConfList:
     default_conf_list_order: list[str] = [

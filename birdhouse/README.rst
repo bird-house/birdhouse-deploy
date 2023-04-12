@@ -209,7 +209,7 @@ Core features of the platform has tests to prevent regressions.
 
 To run the tests:
 
-.. code-block::
+.. code-block:: shell
     python3 -m pip install -r tests/requirements.txt
     pytest tests/
 
