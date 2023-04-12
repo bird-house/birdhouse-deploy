@@ -106,30 +106,7 @@ if [ x"$1" = x"up" ]; then
   done
 fi
 
-COMPOSE_CONF_LIST="-f docker-compose.yml"
-for adir in $ALL_CONF_DIRS; do
-  if [ -f "$adir/docker-compose-extra.yml" ]; then
-    COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $adir/docker-compose-extra.yml"
-  fi
-done
-CONFIGURED_COMPONENTS=''
-for adir in $ALL_CONF_DIRS; do
-  CONFIGURED_COMPONENTS="
-    $CONFIGURED_COMPONENTS
-    $(basename $adir)"
-done
-
-for adir in $ALL_CONF_DIRS; do
-  for conf_dir in "$adir"/config/*; do
-    service_name=$(basename "$conf_dir")
-    extra_compose="$conf_dir/docker-compose-extra.yml"
-    if [ -f "$extra_compose" ]; then
-      if echo "$CONFIGURED_COMPONENTS" | grep -q "$service_name"; then
-        COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $extra_compose"
-      fi
-    fi
-  done
-done
+create_compose_conf_list # this sets COMPOSE_CONF_LIST
 echo "COMPOSE_CONF_LIST=${COMPOSE_CONF_LIST}"
 
 # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
