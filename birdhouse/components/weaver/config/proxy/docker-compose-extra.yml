@@ -5,7 +5,6 @@ services:
   proxy:
     volumes:
       - ./components/weaver/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/weaver:ro
-      - ./components/weaver/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/weaver_canarie_api_monitoring.py:ro
       # because of mounting path naming restrictions (see note in 'worker' definition),
       # we must add the custom path on top of named 'wps_outputs' volume of other birds for the proxy to expose results
       - ${WEAVER_WPS_OUTPUTS_DIR}:/pavics-data/wps_outputs/weaver:ro

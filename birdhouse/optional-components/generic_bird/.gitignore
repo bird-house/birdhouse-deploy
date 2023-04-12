@@ -1,6 +1,6 @@
 wps.cfg
 postgres/credentials.env
-config/proxy/canarie_api_monitoring.py
+config/canarie-api/canarie_api_monitoring.py
 config/magpie/providers.cfg
 config/magpie/permissions.cfg
 
@@ -8,3 +8,4 @@ config/magpie/permissions.cfg
 generic_bird-magpie-permission.cfg
 generic_bird-magpie-provider.cfg
 generic_bird_canarie_api_monitoring.py
+config/proxy/canarie_api_monitoring.py

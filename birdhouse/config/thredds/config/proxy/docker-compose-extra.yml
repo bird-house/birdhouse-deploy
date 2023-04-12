@@ -2,7 +2,6 @@ version: "3.4"
 services:
   proxy:
     volumes:
-    - ./config/thredds/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/thredds_canarie_api_monitoring.py:ro
     - ./config/thredds/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/thredds:ro
     links:
       - thredds
