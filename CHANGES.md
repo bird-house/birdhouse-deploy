@@ -1,3 +1,4 @@
+
 # Changes
 
 [//]: # (NOTES:)
@@ -15,6 +16,94 @@
 ------------------------------------------------------------------------------------------------------------------
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.25.4](https://github.com/bird-house/birdhouse-deploy/tree/1.25.4) (2023-04-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Enforce the load order of components defined in env.local
+  
+  Extra components defined in the `EXTRA_CONF_DIRS` variables were being loaded before the dependant components
+  defined in the `COMPONENT_DEPENDENCIES` variables in each default.env file. This meant that if an extra component
+  was meant to override some setting defined in a dependant component, the setting would not be overridden by the
+  extra component. 
+
+  This change enforces the following load order rules:
+
+  - components defined in `DEFAULT_CONF_DIRS` are loaded before those in `EXTRA_CONF_DIRS`
+  - components are loaded in the order they appear in either `DEFAULT_CONF_DIRS` or `EXTRA_CONF_DIRS`
+  - components that appear in `COMPONENT_DEPENDENCIES` variable are immediately loaded unless they have already been
+    loaded
+
+  For example, with the following files in place:
+
+  ```shell
+  # env.local
+  DEFAULT_CONF_DIRS="
+    ./config/twitcher
+    ./config/project-api
+    ./config/magpie
+  "
+  EXTRA_CONF_DIRS="
+    ./optional-components/generic_bird
+    ./components/cowbird
+  "
+  
+  # config/twitcher/default.env
+  COMPONENT_DEPENDENCIES="
+    ./config/magpie
+  "
+  # optional-components/generic_bird/default.env
+  COMPONENT_DEPENDENCIES="
+    ./config/wps_outputs-volume
+  "
+  ```
+  
+  the load order is:
+
+  - ./config/magpie (loaded as a dependency of twitcher, not loaded a second time after project-api)
+  - ./config/twitcher
+  - ./config/project-api
+  - ./config/wps_outputs-volume (loaded as a dependency of generic_bird)
+  - ./optional-components/generic_bird
+  - ./components/cowbird
+
+  This load order also applies to the order that docker-compose-extra.yml files are specified. If a component also
+  includes an override file for another component (eg: ./config/finch/config/proxy/docker-compose-extra.yml overrides 
+  ./config/proxy/docker-compose-extra.yml), the following additional load order rules apply:
+
+  - if the component that is being overridden has already been loaded, the override file is loaded immediately
+  - otherwise, the override files will be loaded immediately after the component that is being overridden has been loaded
+
+  For example, with the following files in place:
+
+    ```shell
+  # env.local
+  DEFAULT_CONF_DIRS="
+    ./config/finch
+    ./config/proxy
+  "
+  ```
+  ```yaml
+  # config/proxy/docker-compose-extra.yml
+    ...
+  # config/finch/docker-compose-extra.yml
+    ...
+  # config/finch/config/proxy/docker-compose-extra.yml
+    ...
+  ```
+
+  the docker compose files will be loaded in the following order: 
+
+  - config/finch/docker-compose-extra.yml
+  - config/proxy/docker-compose-extra.yml
+  - config/finch/config/proxy/docker-compose-extra.yml
+
+- Add tests to ensure override capabilities are preserved which allows all default
+  behaviors of the platform can be customized.
+
+  See [birdhouse/README.rst](birdhouse/README.rst) for instruction to run the
+  tests.
 
 [1.25.3](https://github.com/bird-house/birdhouse-deploy/tree/1.25.3) (2023-04-12)
 ------------------------------------------------------------------------------------------------------------------
