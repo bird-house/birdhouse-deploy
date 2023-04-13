@@ -66,6 +66,18 @@ If you get a ``'No applicable error code, please check error log'`` error from t
 postgres instance. See `create-wps-pgsql-databases.sh <scripts/create-wps-pgsql-databases.sh>`_ (:download:`download </birdhouse/scripts/create-wps-pgsql-databases.sh>`).
 
 
+Production deployment hardware recommendations
+----------------------------------------------
+
+RAM: at least 128 GB, Thredds 32+ GB, Geoserver 8+ GB, leaving spaces for other components and all the various Jupyter users
+
+CPU: at least 48 cores for parallel computations
+
+Disk: at least 100 TB, depending how much data is hosted on Thredds and Geoserver and storage for the various Jupyter users
+
+In general, the more users, the more cpu cores and memory needed.  The more data, more memory and bigger and faster disks needed.
+
+
 Note
 ----
 
