@@ -6,7 +6,7 @@ Docker instructions
 
 Requirements:
 
-* Centos 7 or Ubuntu Bionic (18.04), other distros untested.
+* Centos 7, RockyLinux 8, Ubuntu 18.04, 20.04, 22.04, other distros untested.
 
 * Hostname of Docker host must exist on the network.  Must use bridge
   networking if Docker host is a Virtual Machine.
