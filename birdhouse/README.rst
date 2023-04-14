@@ -4,7 +4,8 @@
 Docker instructions
 -------------------
 
-Requirements:
+Requirements
+^^^^^^^^^^^^
 
 * Centos 7, RockyLinux 8, Ubuntu 18.04, 20.04, 22.04, other distros untested.
 
@@ -16,6 +17,38 @@ Requirements:
 
 * Install latest docker-ce and docker-compose for the chosen distro (not the
   version from the distro).
+  
+* Have a real SSL Certificate, self-signed SSL Certificate do not work properly.
+  Let's Encrypt offers free SSL Certificate.
+
+* If using Let's Encrypt, port 80 and 443 and hostname should be accessible publicly over the internet.
+
+Quick-start
+^^^^^^^^^^^
+
+.. code-block:: shell
+
+  # Assuming Docker already installed, networking, hostname, firewall, open ports configured properly.
+
+  git clone https://github.com/bird-house/birdhouse-deploy.git
+  cd birdhouse-deploy/birdhouse
+  cp env.local.example env.local
+  
+  $EDITOR env.local
+  # Set the following variables at the minimun:
+  #SSL_CERTIFICATE='/path/to/cert.pem'
+  #PAVICS_FQDN='<full qualified hostname of the current host>'
+  # Only needed if using LetsEncrypt SSL certificate
+  #SUPPORT_EMAIL='a real email to receivez LetsEncrypt renewal notification'
+
+  # Get the SSL Cert from LetsEncrypt, written to path of var SSL_CERTIFICATE.
+  FORCE_CERTBOT_E2E=1 FORCE_CERTBOT_E2E_NO_START_PROXY=1 deployment/certbotwrapper
+
+  # Start the full stack.
+  ./pavics-compose.sh up -d
+
+Further explanations
+^^^^^^^^^^^^^^^^^^^^
 
 To run ``docker-compose`` for PAVICS, the `pavics-compose.sh <pavics-compose.sh>`_ (:download:`download </birdhouse/pavics-compose.sh>`) wrapper script must be used.
 This script will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration files
