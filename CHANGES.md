@@ -17,6 +17,19 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+## Changes
+
+- Various documentation updates
+
+  * Update list of OS tested
+  * Framework tests code block not rendering properly
+  * [Add a few sentences on the required hardware to run the platform](https://github.com/bird-house/birdhouse-deploy/issues/312)
+  * [Add license](https://github.com/bird-house/birdhouse-deploy/issues/309)
+  * [Document how to change MAGPIE_ADMIN_PASSWORD](https://github.com/bird-house/birdhouse-deploy/issues/57)
+  * [Document assumption EXTRA_CONF_DIRS assume relative path to docker-compose.yml](https://github.com/bird-house/birdhouse-deploy/issues/53)
+  * [Document how to get LetsEncrypt SSL cert if not using Vagrant that automate the whole thing](https://github.com/bird-house/birdhouse-deploy/issues/55)
+  * [Document config for self-signed SSL](https://github.com/bird-house/birdhouse-deploy/issues/52)
+
 [1.25.5](https://github.com/bird-house/birdhouse-deploy/tree/1.25.5) (2023-04-12)
 ------------------------------------------------------------------------------------------------------------------
 
