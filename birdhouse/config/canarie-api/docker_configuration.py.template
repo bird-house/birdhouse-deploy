@@ -29,7 +29,7 @@ SESSION = requests_cache.CachedSession(
     use_temp=True,
     backend="filesystem",
     expire_after=datetime.timedelta(days=1),
-    cache_control=True,
+    cache_control=False,  # prefer our request cache options, not ones provided by responses
     stale_if_error=True,
     allowable_codes=[200],
     allowable_methods=["GET"],
