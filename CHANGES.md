@@ -29,6 +29,7 @@
   * [Document assumption EXTRA_CONF_DIRS assume relative path to docker-compose.yml](https://github.com/bird-house/birdhouse-deploy/issues/53)
   * [Document how to get LetsEncrypt SSL cert if not using Vagrant that automate the whole thing](https://github.com/bird-house/birdhouse-deploy/issues/55)
   * [Document config for self-signed SSL](https://github.com/bird-house/birdhouse-deploy/issues/52)
+  * Update the "Release Instructions" in the README to use `make bump <major|minor|patch>` command instead of directly calling `bump2version` to harmonize with the section "Tagging policy" right above.
 
 [1.25.5](https://github.com/bird-house/birdhouse-deploy/tree/1.25.5) (2023-04-12)
 ------------------------------------------------------------------------------------------------------------------
