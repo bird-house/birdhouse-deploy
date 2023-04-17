@@ -17,7 +17,7 @@
 
 ## Fixes:
 
-- CanarieAPI: update to `0.7.0`.
+- CanarieAPI: update to `0.7.1`.
 
   - Fixes an `AttributeError` raised due to misconfiguration of the Web Application with Flask 2.x definitions
     (relates to [Ouranosinc/CanarieAPI#10](https://github.com/Ouranosinc/CanarieAPI/pull/10)).
