@@ -351,12 +351,12 @@ Release Procedure
   time.  Also, in the spirit of not losing the "push race", execute all these
   steps together, do not take a break in the middle.
 
-  * Merge with ``master`` branch, if needed, so next ``bump2version`` step will
+  * Merge with ``master`` branch, if needed, so next ``make bump <major|minor|patch>`` step will
     bump to the proper next version. Might need to review the places where
     CHANGES.md_ items were inserted following merge to make sure the new ones by
     this PR are under "unreleased".
 
-  * Run ``bump2version`` with appropriate options, as described in "Tagging
+  * Run ``make bump <major|minor|patch>`` with appropriate options, as described in "Tagging
     policy" section above.  Push.
 
   * Merge this PR, copying the entire PR description into the merge commit
@@ -366,7 +366,7 @@ Release Procedure
     CHANGES.md_ was formally introduced.
 
   * Run ``git tag`` on the commit created the by merge, with the same tag as
-    ``bump2version`` generated.
+    ``make bump <major|minor|patch>`` generated.
 
   * Run ``git push --tags`` to upload the new version.
 
