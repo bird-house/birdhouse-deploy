@@ -7,7 +7,7 @@ Docker instructions
 Requirements
 ^^^^^^^^^^^^
 
-* Centos 7, RockyLinux 8, Ubuntu 18.04, 20.04, 22.04, other distros untested.
+* Centos 7, RockyLinux 8, Ubuntu 18.04, 20.04, 22.04, known to work.
 
 * Hostname of Docker host must exist on the network.  Must use bridge
   networking if Docker host is a Virtual Machine.
@@ -21,7 +21,10 @@ Requirements
 * Have a real SSL Certificate, self-signed SSL Certificate do not work properly.
   Let's Encrypt offers free SSL Certificate.
 
-* If using Let's Encrypt, port 80 and 443 and hostname should be accessible publicly over the internet.
+* If using Let's Encrypt, port 80 and 443 and hostname should be accessible publicly
+  over the internet before requesting a certificate with Let's Encrypt. Let's Encrypt
+  will need to access your hostname at port 80 and 443 in order to verify and provide
+  the SSL certificate.
 
 Quick-start
 ^^^^^^^^^^^
