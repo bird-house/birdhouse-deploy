@@ -15,7 +15,7 @@ SERVICES['Catalog'] = {
         'route': 'http://${PAVICS_FQDN}:8086/.*'
     },
     'redirect': {
-        'doc': 'http://pyramid-phoenix.readthedocs.io/en/latest/index.html',
+        'doc': 'https://ouranosinc.github.io/pavics-sdi/arch/data_catalog.html#pavics-datacatalog',
         'releasenotes': 'https://github.com/Ouranosinc/PAVICS-DataCatalog/blob/master/CHANGES.md',
         'support': 'https://github.com/ouranosinc/PAVICS-DataCatalog/issues',
         'source': 'https://github.com/ouranosinc/PAVICS-DataCatalog',
