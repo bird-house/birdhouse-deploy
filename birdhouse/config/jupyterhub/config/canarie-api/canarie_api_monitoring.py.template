@@ -15,7 +15,7 @@ SERVICES['Jupyter'] = {
         'route': '/jupyter/.*'
     },
     'redirect': {
-        'doc': 'https://malleefowl.readthedocs.io/en/latest/',
+        'doc': 'https://jupyter.org/hub',
         'releasenotes': 'https://github.com/Ouranosinc/jupyterhub/tags',  # no CHANGES file available
         'support': 'https://github.com/Ouranosinc/jupyterhub/issues',
         'source': 'https://github.com/Ouranosinc/jupyterhub',
