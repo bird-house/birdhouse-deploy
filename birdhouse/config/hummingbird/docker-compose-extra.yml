@@ -9,7 +9,7 @@ x-logging:
 
 services:
   hummingbird:
-    image: pavics/hummingbird:0.5_dev
+    image: pavics/hummingbird:${HUMMINGBIRD_VERSION}
     container_name: hummingbird
     environment:
       HOSTNAME: $HOSTNAME

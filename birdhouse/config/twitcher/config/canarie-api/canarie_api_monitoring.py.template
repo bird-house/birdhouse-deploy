@@ -1,3 +1,22 @@
+
+def get_twitcher_magpie_adapter_version() -> str:
+    dockerfile_url = "https://raw.githubusercontent.com/Ouranosinc/Magpie/${MAGPIE_VERSION}/Dockerfile.adapter"
+    resp = SESSION.get(dockerfile_url)
+    if resp.status_code != 200:
+        raise ValueError(
+            f"HTTP status: {resp.status_code} from [{dockerfile_url}] with detail:\n{resp.text!s}"
+        )
+    tag_line = [line for line in resp.text.splitlines() if line.startswith("FROM birdhouse/twitcher")]
+    if not tag_line:
+        raise ValueError(f"Could not locate Twitcher version from [{dockerfile_url}]")
+    tag_version = tag_line[0].split(":v", 1)[-1].strip()
+    if not tag_version:
+        raise ValueError(f"Could not locate Twitcher version from [{dockerfile_url}]")
+    return tag_version
+
+
+TWITCHER_VERSION = get_twitcher_magpie_adapter_version()
+TWITCHER_RELEASE = get_release_time_from_repo_tag("github", "bird-house/twitcher", TWITCHER_VERSION),
 SERVICES['Twitcher'] = {
     'info': {
         'name': 'Twitcher',
@@ -6,9 +25,9 @@ SERVICES['Twitcher'] = {
             'The proxy service uses OAuth2 access tokens to protect the OWS service access using '
             'Magpie permissions.'
         ),
-        'version': "${TWITCHER_VERSION}",
+        'version': TWITCHER_VERSION,
         'institution': 'Ouranos',
-        'releaseTime': get_release_time_from_repo_tag("github", "bird-house/twitcher", "${TWITCHER_VERSION}"),
+        'releaseTime': TWITCHER_RELEASE,
         'researchSubject': 'Security',
         'supportEmail': '${SUPPORT_EMAIL}',
         'category': 'Security',
