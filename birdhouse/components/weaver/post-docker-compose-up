@@ -325,8 +325,10 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
             echo "${WARN}Will retry after ${WEAVER_WPS_PROVIDERS_RETRY_AFTER}s..."
             sleep ${WEAVER_WPS_PROVIDERS_RETRY_AFTER}
             retry=$((retry+1))
+        else
+            echo "OK!"  # displayed on same line after first registration printf
+            break
         fi
-        echo "OK!"  # displayed on same line after first registration printf
     done
 done
 echo "${PREFIX}All Weaver remote WPS providers registered successfully!"
