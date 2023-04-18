@@ -31,9 +31,24 @@
 - CanarieAPI: update to `0.7.1`.
 
   - The server node now provides a generic ``server`` configuration for the current ``platform`` definition.
+  - Added multiple missing docuementation references for all the services included within `CanarieAPI` configurations.
   - With new `CanarieAPI` version, a slightly improved UI with more service details are provided for the active server:
 
 ![image](https://user-images.githubusercontent.com/19194484/232822454-e39c0111-54dc-4f9b-adf6-5ea6e59d67e3.png)
+
+- Add optional variables witht defaults to define reference Docker image version tags.
+
+  Following optional variables are defined by default. These are used as reference in the respective Docker compose
+  service definition of these components, as well as in their `CanarieAPI` configuration to retrieve the release time
+  of the tag, and refer to relevant URL references as needed.
+
+  - `CATALOG_VERSION`
+  - `FINCH_VERSION`
+  - `FLYINGPIGEON_VERSION`
+  - `GEOSERVER_VERSION`
+  - `HUMMINGBIRD_VERSION`
+  - `MALLEEFOWL_VERSION`
+  - `RAVEN_VERSION`
 
 ## Fixes:
 

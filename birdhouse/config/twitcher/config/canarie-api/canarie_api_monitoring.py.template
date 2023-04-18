@@ -16,6 +16,7 @@ def get_twitcher_magpie_adapter_version() -> str:
 
 
 TWITCHER_VERSION = get_twitcher_magpie_adapter_version()
+TWITCHER_RELEASE = get_release_time_from_repo_tag("github", "bird-house/twitcher", TWITCHER_VERSION),
 SERVICES['Twitcher'] = {
     'info': {
         'name': 'Twitcher',
@@ -26,7 +27,7 @@ SERVICES['Twitcher'] = {
         ),
         'version': TWITCHER_VERSION,
         'institution': 'Ouranos',
-        'releaseTime': get_release_time_from_repo_tag("github", "bird-house/twitcher", TWITCHER_VERSION),
+        'releaseTime': TWITCHER_RELEASE,
         'researchSubject': 'Security',
         'supportEmail': '${SUPPORT_EMAIL}',
         'category': 'Security',
