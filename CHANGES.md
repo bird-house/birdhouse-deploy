@@ -15,22 +15,35 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+
+## Breaking changes
+
+- CanarieAPI: update to `0.7.1`.
+
+  - The Docker running `CanarieAPI` is now using Python 3 (since `0.4.x` tags).
+    Configurations need to be updated if any specific Python 2 definitions were used.
+    See [2to3](https://docs.python.org/3/library/2to3.html) to help migrate configurations automatically if necessary.
+  - Update the [CanarieAPI configuration](birdhouse/config/canarie-api/docker_configuration.py.template) to use
+    Python 3.x executable code.
+
+## Changes
+
+- CanarieAPI: update to `0.7.1`.
+
+  - The server node now provides a generic ``server`` configuration for the current ``platform`` definition.
+  - With new `CanarieAPI` version, a slightly improved UI with more service details are provided for the active server:
+
+![image](https://user-images.githubusercontent.com/19194484/232822454-e39c0111-54dc-4f9b-adf6-5ea6e59d67e3.png)
+
 ## Fixes:
 
 - CanarieAPI: update to `0.7.1`.
 
   - Fixes an `AttributeError` raised due to misconfiguration of the Web Application with Flask 2.x definitions
     (relates to [Ouranosinc/CanarieAPI#10](https://github.com/Ouranosinc/CanarieAPI/pull/10)).
-  - Update the [CanarieAPI configuration](birdhouse/config/canarie-api/docker_configuration.py.template) to use
-    Python 3.x executable code.
   - Skip over `0.4.x`, `0.5.x`, `0.6.x`  versions to avoid issue related to `cron` job monitoring and log parser
     command failures in order to collect configured service statistics and statuses
     (see also [Ouranosinc/CanarieAPI#14](https://github.com/Ouranosinc/CanarieAPI/pull/14)).
-
-  ### Breaking changes
-  - The Docker running `CanarieAPI` is now using Python 3 (since `0.4.x` tags).
-    Configurations need to be updated if any specific Python 2 definitions were used.
-    See [2to3](https://docs.python.org/3/library/2to3.html) to help migrate configurations automatically if necessary.
 
 - Weaver: update CanarieAPI monitoring definitions
   - Move monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
