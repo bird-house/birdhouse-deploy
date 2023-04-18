@@ -178,7 +178,7 @@ if [ -z "${cookie}" ]; then
 fi
 
 # validate that Magpie token retrieved is adequate
-printf "Validate Magpie token..."
+printf "%s" "${PREFIX}Validate Magpie token..."
 resp=$( \
     curl_cmd --insecure --silent --location \
          -m ${REQUEST_TIMEOUT} \
