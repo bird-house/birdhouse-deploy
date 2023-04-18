@@ -115,7 +115,7 @@ if [ -z "$WEAVER_CURL_IMAGE" ]; then
 fi
 
 # POSIX portable RNG if RANDOM does not exist on the current shell
-RANDOM_NUMBER=${RANDOM:-$(tr -dc 0-9 < /dev/urandom | (head -c 5 ; dd of=/dev/null))}
+RANDOM_NUMBER=${RANDOM:-$(tr -dc 0-9 < /dev/urandom 2>/dev/null | head -c 5)}
 
 # To know when a docker run was started in case it hangs.
 DOCKER_RUN_TAG="weaver_post_curl_$(date -Isecond | sed 's/:/_/g' | sed 's/+/p/g')_${RANDOM_NUMBER}"
