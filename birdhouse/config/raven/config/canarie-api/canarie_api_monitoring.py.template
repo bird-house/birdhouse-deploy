@@ -1,5 +1,5 @@
 RAVEN_VERSION = "${RAVEN_VERSION}"
-RAVEN_RELEASE = get_release_time_from_repo_tag("github", "Ouranosinc/raven", RAVEN_VERSION),
+RAVEN_RELEASE = get_release_time_from_repo_tag("github", "Ouranosinc/raven", RAVEN_VERSION)
 
 SERVICES['raven'] = {
     'info': {
