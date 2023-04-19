@@ -1,2 +1,3 @@
+config/canarie-api/canarie_api_monitoring.py
 config/magpie/providers.cfg
 custom.cfg
