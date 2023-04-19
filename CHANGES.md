@@ -36,7 +36,7 @@
   from many external repos reading the config vars and they can have the need
   to specifically access the public hostname.
 
-  Bonus, we now have a sample use of `DELAYED_EVAL` list, right in the base `default.env`.
+  Bonus, we now have a sample use of `DELAYED_EVAL` list, right in the main `default.env`.
 
 ## Changes
 
