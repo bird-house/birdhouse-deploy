@@ -133,6 +133,23 @@ class TestReadConfigs:
         proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"')
         assert split_and_strip(get_command_stdout(proc))[-1] == "./blah/other-random-component"
 
+    def test_delayed_eval_default_value(self, read_config_include_file) -> None:
+        """Test delayed eval when value not set in env.local"""
+        extra = {"PAVICS_FQDN": '"fqdn.example.com"'}
+        proc = self.run_func(read_config_include_file, extra, 'echo "$PAVICS_FQDN_PUBLIC"')
+        # By default, PAVICS_FQDN_PUBLIC has same value as PAVICS_FQDN.
+        assert split_and_strip(get_command_stdout(proc))[-1] == "fqdn.example.com"
+
+    def test_delayed_eval_custom_value(self, read_config_include_file) -> None:
+        """Test delayed eval when value is set in env.local"""
+        extra = {"PAVICS_FQDN": '"fqdn.example.com"',
+                 "PAVICS_FQDN_PUBLIC": '"public.example.com"',
+                 }
+        proc = self.run_func(read_config_include_file, extra, 'echo "$PAVICS_FQDN_PUBLIC"')
+        # If PAVICS_FQDN_PUBLIC is set in env.local, that value should be effective.
+        assert split_and_strip(get_command_stdout(proc))[-1] == "public.example.com"
+
+
 class TestCreateComposeConfList:
     default_conf_list_order: list[str] = [
         "docker-compose.yml",
