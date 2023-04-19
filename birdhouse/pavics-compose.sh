@@ -105,7 +105,8 @@ if [ x"$1" = x"up" ]; then
 fi
 
 create_compose_conf_list # this sets COMPOSE_CONF_LIST
-echo "COMPOSE_CONF_LIST=${COMPOSE_CONF_LIST}"
+echo "COMPOSE_CONF_LIST="
+echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
 
 # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
 PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} $*
