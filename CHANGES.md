@@ -19,6 +19,16 @@
 
 ## Changes
 
+- `pavics-compose` output rendering
+
+  Prints the activated compose file list line-by-line such that it can be more easily readable. 
+
+  Before the change, the output was as follows:
+  ![image](https://user-images.githubusercontent.com/19194484/233111255-ef31b36f-7bb9-4856-80b7-9aa5b17ae167.png)
+
+  After the change, the output is more easily readable:
+  ![image](https://user-images.githubusercontent.com/19194484/233113601-8955a9cb-3da1-4f5a-9a36-4c8653b5606a.png)
+
 - Various documentation updates
 
   * Update list of OS tested
