@@ -1,5 +1,5 @@
 HUMMINGBIRD_VERSION = "${HUMMINGBIRD_VERSION}"
-HUMMINGBIRD_RELEASE = get_release_time_from_repo_tag("github", "birdhouse/hummingbird", HUMMINGBIRD_VERSION),
+HUMMINGBIRD_RELEASE = get_release_time_from_repo_tag("github", "bird-house/hummingbird", HUMMINGBIRD_VERSION),
 
 SERVICES['hummingbird'] = {
     'info': {

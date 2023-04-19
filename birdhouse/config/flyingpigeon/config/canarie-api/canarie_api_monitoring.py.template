@@ -1,5 +1,5 @@
 FLYINGPIGEON_VERSION = "${FLYINGPIGEON_VERSION}"
-FLYINGPIGEON_RELEASE = get_release_time_from_repo_tag("github", "birdhouse/flyingpigeon", FLYINGPIGEON_VERSION),
+FLYINGPIGEON_RELEASE = get_release_time_from_repo_tag("github", "bird-house/flyingpigeon", FLYINGPIGEON_VERSION),
 
 SERVICES['flyingpigeon'] = {
     'info': {
