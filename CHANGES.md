@@ -17,6 +17,20 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.25.7](https://github.com/bird-house/birdhouse-deploy/tree/1.25.7) (2023-04-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix flaky WPS provider responses (i.e.: other WPS birds) causing failure during their registration in `weaver`.
+
+  In some cases, the WPS birds would not respond properly when starting the stack, either because they are still
+  initiating or due to other temporary failures such as services being restarted until healthy. This fix introduces 
+  a retry mechanism to attempt WPS registration in `weaver` up to `WEAVER_WPS_PROVIDERS_RETRY_COUNT=5` times 
+  (1 initial attempt + 5 retries), and with `WEAVER_WPS_PROVIDERS_RETRY_AFTER=5` second intervals between each retry.
+  If the maximum number of retries for any WPS provider or the `WEAVER_WPS_PROVIDERS_MAX_TIME` across all registrations
+  are reached, the operation is aborted.
+
 [1.25.6](https://github.com/bird-house/birdhouse-deploy/tree/1.25.6) (2023-04-20)
 ------------------------------------------------------------------------------------------------------------------
 
