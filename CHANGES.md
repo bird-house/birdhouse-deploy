@@ -17,6 +17,9 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.25.6](https://github.com/bird-house/birdhouse-deploy/tree/1.25.6) (2023-04-20)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 - Config var `PAVICS_FQDN_PUBLIC` not usable in component `default.env` and external scripts
 
