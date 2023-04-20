@@ -73,11 +73,6 @@ then
   echo "         It it suggested to set it to 1, otherwise the pavicscrawler may fail"
 fi
 
-if [ -z "$PAVICS_FQDN_PUBLIC" ]; then
-  # default value before instantiating template configs
-  export PAVICS_FQDN_PUBLIC="$PAVICS_FQDN"
-fi
-
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""
 for adir in $AUTODEPLOY_EXTRA_REPOS; do
   # 4 spaces in front of '--volume' is important
