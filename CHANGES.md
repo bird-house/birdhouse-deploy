@@ -17,6 +17,30 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.25.6](https://github.com/bird-house/birdhouse-deploy/tree/1.25.6) (2023-04-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Config var `PAVICS_FQDN_PUBLIC` not usable in component `default.env` and external scripts
+
+  Currently, `PAVICS_FQDN_PUBLIC` is only usable in `.template` files, in
+  `docker-compose-extra.yml` files and in component pre/post compose scripts
+  because they are handled by `pavics-compose.sh`.
+
+  It was good enough but now with delayed eval feature, we can do better.
+  `PAVICS_FQDN_PUBLIC` can be as accessible as the other `PAVICS_FQDN` var.
+
+  Both vars allow a host to have a different public and internal hostname.
+  Some scripts, `certbotwrapper` for example, prefer the public hostname than
+  the internal hostname when they are different because Let's Encrypt only
+  knows about the public hostname.
+
+  With the pluggable nature of this stack, we can have many external scripts
+  from many external repos reading the config vars and they can have the need
+  to specifically access the public hostname.
+
+  Bonus, we now have a sample use of `DELAYED_EVAL` list, right in the main `default.env`.
+
 ## Changes
 
 - `pavics-compose` output rendering

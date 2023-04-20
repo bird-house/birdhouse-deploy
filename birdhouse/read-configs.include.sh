@@ -56,6 +56,9 @@ discover_compose_dir() {
 
 read_default_env() {
     if [ -e "$COMPOSE_DIR/default.env" ]; then
+        # Ensure DELAYED_EVAL is properly initialized before being appended to.
+        DELAYED_EVAL=''
+
         . "$COMPOSE_DIR/default.env"
     else
         echo "WARNING: '$COMPOSE_DIR/default.env' not found" 1>&2
