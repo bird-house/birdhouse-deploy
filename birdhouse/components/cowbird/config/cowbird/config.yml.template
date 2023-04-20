@@ -107,7 +107,7 @@ sync_permissions:
       - "geoserver_workspace : createStoredQuery <-> thredds_workspace : write"
   weaver_outputs:
     services:
-      weaver:
+      api:
         process_description:
           - name: weaver
             type: service
@@ -153,8 +153,7 @@ sync_permissions:
             type: route
           - name: "{outputID}"
             type: route
-      # see 'optional-components/secure-data-proxy' for more details on protected WPS-outputs
-      wps_outputs:
+        # see 'optional-components/secure-data-proxy' for more details on protected WPS-outputs
         # /wpsoutputs/weaver/{public|<user-id>}/{job-id}
         weaver_wps_outputs:
           - name: secure-data-proxy
