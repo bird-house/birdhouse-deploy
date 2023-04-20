@@ -9,7 +9,7 @@ x-logging:
 
 services:
   jupyterhub:
-    image: pavics/jupyterhub:1.4.0-20210506
+    image: ${JUPYTERHUB_DOCKER}:${JUPYTERHUB_VERSION}
     container_name: jupyterhub
     hostname: jupyterhub
     ports:

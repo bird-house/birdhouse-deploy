@@ -9,7 +9,7 @@ x-logging:
 
 services:
   phoenix:
-    image: pavics/pyramid-phoenix:pavics-0.2.3
+    image: ${PHOENIX_DOCKER}:${PHOENIX_VERSION}
     container_name: phoenix
     environment:
       HOSTNAME: $HOSTNAME

@@ -1,0 +1,39 @@
+HUMMINGBIRD_VERSION = "${HUMMINGBIRD_VERSION}"
+HUMMINGBIRD_RELEASE = get_release_time_from_repo_tag("docker", "pavics/hummingbird", HUMMINGBIRD_VERSION)
+
+SERVICES['hummingbird'] = {
+    'info': {
+        'name': 'Climatology compliance checker.',
+        'synopsis': (
+            'A Web Processing Service for compliance checks used in the climate science community.'
+        ),
+        'version': HUMMINGBIRD_VERSION,
+        'institution': 'bird-house',
+        'releaseTime': HUMMINGBIRD_RELEASE,
+        'researchSubject': 'Climatology',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Processing',
+        'tags': ['Climatology', 'Checker', 'Compliance', 'CF-conventions', 'WPS', 'OGC'],
+    },
+    'stats': {
+        'method': '.*',
+        'route': '${TWITCHER_PROTECTED_PATH}/hummingbird.*'
+    },
+    'redirect': {
+        'doc': 'https://hummingbird.readthedocs.io/',
+        'releasenotes': 'https://github.com/bird-house/hummingbird/blob/master/CHANGES.rst',
+        'support': 'https://github.com/bird-house/hummingbird/issues',
+        'source': 'https://github.com/bird-house/hummingbird',
+        'tryme': 'http://${PAVICS_FQDN}:8097/wps?service=WPS&version=1.0.0&request=GetCapabilities',
+        'licence': 'https://github.com/bird-house/hummingbird/blob/master/LICENSE.txt',
+        'provenance': 'https://github.com/bird-house/hummingbird'
+    },
+    'monitoring': {
+        'Hummingbird': {
+            'request': {
+                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
+                'url': 'http://${PAVICS_FQDN}:8097/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+            }
+        },
+    }
+}

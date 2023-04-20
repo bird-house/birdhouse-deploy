@@ -1,15 +1,18 @@
-SERVICES['node']['monitoring']['Finch'] = {
-    'request': {
-        'url': 'http://${PAVICS_FQDN}:8095/wps?service=WPS&version=1.0.0&request=GetCapabilities'
-    }
-}
+# used more than once, avoid unnecessary requests
+FINCH_VERSION = "${FINCH_VERSION}"
+FINCH_RELEASE_TIME = get_release_time_from_repo_tag("github", "bird-house/finch", FINCH_VERSION)
+
 SERVICES['indices'] = {
     'info': {
         'name': 'Climate indices',
-        'synopsis': 'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, the number of degree-days of cooling, the duration of heatwaves, etc. This returns annual values of the most popular climate indices.',
-        'version': '0.7.1',
+        'synopsis': (
+            'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, '
+            'the number of degree-days of cooling, the duration of heatwaves, etc. '
+            'This returns annual values of the most popular climate indices.'
+        ),
+        'version': FINCH_VERSION,
         'institution': 'Ouranos',
-        'releaseTime': '2021-03-25T00:00:00Z',
+        'releaseTime': FINCH_RELEASE_TIME,
         'researchSubject': 'Climatology',
         'supportEmail': '${SUPPORT_EMAIL}',
         'category': 'Data Manipulation',
@@ -39,7 +42,7 @@ SERVICES['indices'] = {
 SERVICES['slicer'] = {
     'info': {
         'name': 'Spatial and temporal data slicer',
-        'synopsis': 'These services allows the subsetting and download of NetCDF over user-defined regions and periods.',
+        'synopsis': 'These services allow the subsetting and download of NetCDF over user-defined regions and periods.',
         'version': '0.7.1',
         'institution': 'Ouranos',
         'releaseTime': '2021-03-25T00:00:00Z',
@@ -64,8 +67,48 @@ SERVICES['slicer'] = {
     'monitoring': {
         'Finch': {
             'request': {
-                 'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
+                'url': 'http://${PAVICS_FQDN}:8095/?service=WPS&version=1.0.0&request=GetCapabilities'
             }
         },
     }
+}
+
+SERVICES['Finch'] = {
+    'info': {
+        'name': 'Finch',
+        'synopsis': (
+            'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, '
+            'the number of degree-days of cooling, the duration of heatwaves, etc. This returns annual values of '
+            'the most popular climate indices.'
+        ),
+        'version': FINCH_VERSION,
+        'institution': 'Ouranos',
+        'releaseTime': FINCH_RELEASE_TIME,
+        'researchSubject': 'Climatology',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Data Manipulation',
+        'tags': ['Climatology', 'Cloud']
+    },
+    'stats': {
+        'method': '.*',
+        'route': '${TWITCHER_PROTECTED_PATH}/finch.*'
+    },
+    'redirect': {
+        'doc': 'https://finch.readthedocs.io/en/latest/index.html',
+        'releasenotes': 'https://github.com/bird-house/finch/releases',
+        'support': 'https://github.com/bird-house/finch/issues',
+        'source': 'https://github.com/bird-house/finch',
+        'tryme': 'https://ouranosinc.github.io/pavics-sdi/notebooks/climate_indices.html',
+        'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
+        'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+    },
+    'monitoring': {
+        'Finch': {
+            'request': {
+                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
+                'url': 'http://${PAVICS_FQDN}:8095/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+            }
+        },
+    },
 }

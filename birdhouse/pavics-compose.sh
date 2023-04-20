@@ -31,6 +31,8 @@ VARS='
 OPTIONAL_VARS='
   $PAVICS_FQDN_PUBLIC
   $EXTRA_PYWPS_CONFIG
+  $SERVER_NAME
+  $SERVER_DESCRIPTION
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH

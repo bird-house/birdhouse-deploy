@@ -1,7 +1,35 @@
-SERVICES['node']['monitoring']['Jupyter'] = {
-    'request': {
-        'url': 'https://${PAVICS_FQDN_PUBLIC}/jupyter/hub/login'
+SERVICES['Jupyter'] = {
+    'info': {
+        'name': 'Jupyter',
+        'synopsis': 'Jupyter notebooks portal.',
+        'version': "${JUPYTER_VERSION}",
+        'releaseTime': get_release_time_from_repo_tag("docker", "${JUPYTERHUB_DOCKER}", "${JUPYTERHUB_VERSION}"),
+        'institution': 'Ouranos',
+        'researchSubject': 'Any',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Research',
+        'tags': ['Development', 'Research', 'Notebooks']
+    },
+    'stats': {
+        'method': '.*',
+        'route': '/jupyter/.*'
+    },
+    'redirect': {
+        'doc': 'https://jupyter.org/hub',
+        'releasenotes': 'https://github.com/Ouranosinc/jupyterhub/tags',  # no CHANGES file available
+        'support': 'https://github.com/Ouranosinc/jupyterhub/issues',
+        'source': 'https://github.com/Ouranosinc/jupyterhub',
+        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/jupyter/',
+        'licence': 'https://github.com/Ouranosinc/jupyterhub/blob/${JUPYTERHUB_VERSION}/LICENSE',
+        'provenance': ''
+    },
+    "monitoring": {
+        "Jupyter": {
+            'request': {
+                'url': 'https://${PAVICS_FQDN_PUBLIC}/jupyter/hub/login'
+            },
+        }
     }
 }
-CANARIE_STATS_ROUTES.append('jupyter')
 
+CANARIE_STATS_ROUTES.append('jupyter')

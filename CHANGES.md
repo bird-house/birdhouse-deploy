@@ -17,6 +17,64 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.26.0](https://github.com/bird-house/birdhouse-deploy/tree/1.26.0) (2023-04-20)
+------------------------------------------------------------------------------------------------------------------
+
+
+## Breaking changes
+
+- CanarieAPI: update to `0.7.1`.
+
+  - The Docker running `CanarieAPI` is now using Python 3 (since `0.4.x` tags).
+    Configurations need to be updated if any specific Python 2 definitions were used.
+    See [2to3](https://docs.python.org/3/library/2to3.html) to help migrate configurations automatically if necessary.
+  - Update the [CanarieAPI configuration](birdhouse/config/canarie-api/docker_configuration.py.template) to use
+    Python 3.x executable code.
+
+## Changes
+
+- CanarieAPI: update to `0.7.1`.
+
+  - The server node now provides a generic ``server`` configuration for the current ``platform`` definition.
+  - Added multiple missing docuementation references for all the services included within `CanarieAPI` configurations.
+  - With new `CanarieAPI` version, a slightly improved UI with more service details are provided for the active server:
+
+![image](https://user-images.githubusercontent.com/19194484/232822454-e39c0111-54dc-4f9b-adf6-5ea6e59d67e3.png)
+
+- Add optional variables witht defaults to define reference Docker image version tags.
+
+  Following optional variables are defined by default. These are used as reference in the respective Docker compose
+  service definition of these components, as well as in their `CanarieAPI` configuration to retrieve the release time
+  of the tag, and refer to relevant URL references as needed.
+
+  - `CATALOG_VERSION`
+  - `FINCH_VERSION`
+  - `FLYINGPIGEON_VERSION`
+  - `GEOSERVER_VERSION`
+  - `HUMMINGBIRD_VERSION`
+  - `MALLEEFOWL_VERSION`
+  - `RAVEN_VERSION`
+
+## Fixes:
+
+- CanarieAPI: update to `0.7.1`.
+
+  - Fixes an `AttributeError` raised due to misconfiguration of the Web Application with Flask 2.x definitions
+    (relates to [Ouranosinc/CanarieAPI#10](https://github.com/Ouranosinc/CanarieAPI/pull/10)).
+  - Skip over `0.4.x`, `0.5.x`, `0.6.x`  versions to avoid issue related to `cron` job monitoring and log parser
+    command failures in order to collect configured service statistics and statuses
+    (see also [Ouranosinc/CanarieAPI#14](https://github.com/Ouranosinc/CanarieAPI/pull/14)).
+
+- Weaver: update CanarieAPI monitoring definitions
+  - Move monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
+  - Add monitoring of private endpoint by default when using Weaver component.
+
+- Cowbird: update CanarieAPI monitoring definitions
+  - Add monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
+  - Add public Magpie permission on Cowbird entrypoint only to allow its monitoring.
+
+[canarie-monitor]: birdhouse/optional-components/canarie-api-full-monitoring
+
 [1.25.7](https://github.com/bird-house/birdhouse-deploy/tree/1.25.7) (2023-04-20)
 ------------------------------------------------------------------------------------------------------------------
 

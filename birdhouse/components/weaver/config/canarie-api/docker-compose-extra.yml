@@ -4,4 +4,11 @@ services:
   # extend proxy configuration with weaver endpoints
   proxy:
     volumes:
+      # NOTE:
+      #   Prefix '0_' to the mounted file name to ensure it is loaded first by 'birdhouse/config/canarie-api/docker_configuration.py'
+      #   This ensures that the alphabetical loading order it defines will first load the default configs, then will load
+      #   the weaver config, and then all python configuration within 'optional-components/canarie-api-full-monitoring'.
+      #   It is important to load Weaver before, as the full monitoring need to know if 'Weaver' service is added to the
+      #   stack in order to apply the corresponding public endpoint conditionally.
+      - ./components/weaver/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/0_weaver_config.py:ro
       - ./components/weaver/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/weaver_canarie_api_monitoring.py:ro

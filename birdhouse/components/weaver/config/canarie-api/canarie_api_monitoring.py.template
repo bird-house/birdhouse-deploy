@@ -1,9 +1,38 @@
-SERVICES['node']['monitoring'].update({
-    'Weaver': {
-        'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}/weaver'
-        },
+SERVICES['Weaver'] = {
+    'info': {
+        'name': 'Weaver',
+        'synopsis': 'Weaver is an OGC-API flavored Execution Management Service (EMS) that allows the execution of workflows chaining various applications and Web Processing Services (WPS) inputs and outputs. Remote execution is deferred by the EMS to one or many Application, Deployment and Execution Service (ADES) or remote service providers, and employs Common Workflow Language (CWL) configurations to define an OGC Application Package deployed for each process.',
+        'version': "${WEAVER_VERSION}",
+        'institution': 'CRIM',
+        'releaseTime': get_release_time_from_repo_tag("github", "crim-ca/weaver", "${WEAVER_VERSION}"),
+        'researchSubject': 'Any',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Processing',
+        'tags': ['Workflow', 'Processes', 'Deployment', 'Distribution', 'EMS', 'ADES', 'CWL', 'OGC']
     },
-})
+    'stats': {
+        'method': '.*',
+        'route': "/weaver/.*"
+    },
+    'redirect': {
+        'doc': 'https://pavics-weaver.readthedocs.io/',
+        'releasenotes': 'https://github.com/crim-ca/weaver/blob/master/CHANGES.rst',
+        'support': 'https://github.com/crim-ca/weaver/issues',
+        'source': 'https://github.com/crim-ca/weaver',
+        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/weaver/',
+        'licence': 'https://github.com/crim-ca/weaver/blob/${WEAVER_VERSION}/LICENSE.txt',
+        'provenance': 'https://github.com/crim-ca/weaver'
+    },
+    "monitoring": {
+        "Weaver": {
+            'request': {
+                'url': 'http://weaver:4001/'
+            },
+            'response': {
+                'text': '\{.*"message":.*"Weaver Information".*\}'
+            }
+        }
+    }
+}
 
 # vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python

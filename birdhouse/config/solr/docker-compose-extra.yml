@@ -9,7 +9,7 @@ x-logging:
 
 services:
   solr:
-    image: pavics/solr:5.2.1
+    image: ${SOLR_DOCKER}:${SOLR_VERSION}
     container_name: solr
     ports:
       - "8983:8983"

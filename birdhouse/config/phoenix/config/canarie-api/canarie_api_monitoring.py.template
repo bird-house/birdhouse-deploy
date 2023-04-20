@@ -1,5 +1,34 @@
-SERVICES['node']['monitoring']['Phoenix'] = {
-    'request': {
-        'url': 'https://${PAVICS_FQDN}:8443/'
+SERVICES['Phoenix'] = {
+    'info': {
+        'name': 'Phoenix',
+        'synopsis': 'Legacy authentication. See Magpie/Twitcher instead.',
+        'version': "${PHOENIX_VERSION}",
+        'institution': 'Ouranos',
+        'releaseTime': get_release_time_from_repo_tag("docker", "${PHOENIX_DOCKER}", "${PHOENIX_VERSION}"),
+        'researchSubject': 'Authentication',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Authentication',
+        'tags': ['Authentication', 'Legacy']
+    },
+    'stats': {
+        'method': '.*',
+        'route': '${TWITCHER_PROTECTED_PATH}/geoserver/web/.*'  # FIXME: original value doesn't make sense
+    },
+    'redirect': {
+        'doc': 'http://pyramid-phoenix.readthedocs.io/en/latest/index.html',
+        'releasenotes': 'https://github.com/ouranosinc/pyramid-phoenix/CHANGES.rst',
+        'support': 'https://github.com/ouranosinc/pyramid-phoenix/issues',
+        'source': 'https://github.com/ouranosinc/pyramid-phoenix',
+        'tryme': 'https://${PAVICS_FQDN}:8443/',
+        'licence': 'https://github.com/ouranosinc/pyramid-phoenix/blob/master/LICENSE.txt',
+        'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+    },
+    "monitoring": {
+        "Phoenix": {
+            'request': {
+                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
+                'url': 'https://${PAVICS_FQDN}:8443/'
+            }
+        }
     }
 }

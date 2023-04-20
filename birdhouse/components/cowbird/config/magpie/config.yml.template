@@ -18,6 +18,17 @@ permissions:
     permission: write
     group: administrators
     action: create
+  # Allow validating/monitoring the service entrypoint and its version
+  # Everything else should remain admin-protected since it manages other user/group permissions.
+  - service: cowbird
+    permission: read-match
+    group: anonymous
+    action: create
+  - service: cowbird
+    resource: /version
+    permission: read-match
+    group: anonymous
+    action: create
 
 # Definitions of all the webhooks urls that will be called when creating or deleting a user.
 webhooks:

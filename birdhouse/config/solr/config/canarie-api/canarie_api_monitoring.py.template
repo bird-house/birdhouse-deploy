@@ -1,8 +1,39 @@
-SERVICES['node']['monitoring']['Solr'] = {
-    'request': {
-        'url': 'http://${PAVICS_FQDN}:8983/solr/birdhouse/select?q=CMIP5&fq=model:MPI-ESM-MR&fq=experiment:rcp45&fq=variable:tasmax&fq=institute:MPI-M&fq=frequency:mon&wt=json'
+SERVICES['Solr'] = {
+    'info': {
+        'name': 'Solr',
+        'synopsis': (
+            'SOLR is a search platform part of the Apache Lucene project. '
+            'It is used in this project for its faceted search capability. '
+            'Search queries are relayed from the UI or WPS processes to the SOLR database, '
+            'which returns a json file with the links to matching files.'
+        ),
+        'version': "${SOLR_VERSION}",
+        'institution': 'Ouranos',
+        'releaseTime': get_release_time_from_repo_tag("docker", "${SOLR_DOCKER}", "${SOLR_VERSION}"),
+        'researchSubject': 'Climatology',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Data Manipulation',
+        'tags': ['Indexation', 'Search']
     },
-    'response': {
-        'text': '.*catalog_url\":\".+/testdata/flyingpigeon/cmip5.*/catalog.xml.*'
+    'stats': {
+        'method': '.*',
+        'route': '/solr/.*'
+    },
+    'redirect': {
+        'doc': 'https://ouranosinc.github.io/pavics-sdi/arch/backend.html#indexation',
+        'releasenotes': 'https://github.com/Ouranosinc/PAVICS/tags',
+        'support': 'https://github.com/Ouranosinc/PAVICS/issues',
+        'source': 'https://github.com/Ouranosinc/PAVICS/tree/master/birdhouse/docker/solr',
+        'tryme': 'http://${PAVICS_FQDN}:8983/solr/',
+        'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
+        'provenance': 'https://ouranosinc.github.io/pavics-sdi/arch/backend.html#indexation'
+    },
+    "monitoring": {
+        'Solr': {
+            'request': {
+                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
+                'url': 'http://${PAVICS_FQDN}:8983/solr/birdhouse/select'
+            }
+        },
     }
 }
