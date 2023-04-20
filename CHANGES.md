@@ -70,6 +70,44 @@
 
 [canarie-monitor]: birdhouse/optional-components/canarie-api-full-monitoring
 
+[1.25.7](https://github.com/bird-house/birdhouse-deploy/tree/1.25.7) (2023-04-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix flaky WPS provider responses (i.e.: other WPS birds) causing failure during their registration in `weaver`.
+
+  In some cases, the WPS birds would not respond properly when starting the stack, either because they are still
+  initiating or due to other temporary failures such as services being restarted until healthy. This fix introduces 
+  a retry mechanism to attempt WPS registration in `weaver` up to `WEAVER_WPS_PROVIDERS_RETRY_COUNT=5` times 
+  (1 initial attempt + 5 retries), and with `WEAVER_WPS_PROVIDERS_RETRY_AFTER=5` second intervals between each retry.
+  If the maximum number of retries for any WPS provider or the `WEAVER_WPS_PROVIDERS_MAX_TIME` across all registrations
+  are reached, the operation is aborted.
+
+[1.25.6](https://github.com/bird-house/birdhouse-deploy/tree/1.25.6) (2023-04-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Config var `PAVICS_FQDN_PUBLIC` not usable in component `default.env` and external scripts
+
+  Currently, `PAVICS_FQDN_PUBLIC` is only usable in `.template` files, in
+  `docker-compose-extra.yml` files and in component pre/post compose scripts
+  because they are handled by `pavics-compose.sh`.
+
+  It was good enough but now with delayed eval feature, we can do better.
+  `PAVICS_FQDN_PUBLIC` can be as accessible as the other `PAVICS_FQDN` var.
+
+  Both vars allow a host to have a different public and internal hostname.
+  Some scripts, `certbotwrapper` for example, prefer the public hostname than
+  the internal hostname when they are different because Let's Encrypt only
+  knows about the public hostname.
+
+  With the pluggable nature of this stack, we can have many external scripts
+  from many external repos reading the config vars and they can have the need
+  to specifically access the public hostname.
+
+  Bonus, we now have a sample use of `DELAYED_EVAL` list, right in the main `default.env`.
+
 ## Changes
 
 - `pavics-compose` output rendering
