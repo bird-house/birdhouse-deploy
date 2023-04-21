@@ -41,8 +41,8 @@ sync_permissions:
     # For more info on the services available in Magpie :
     #     https://pavics-magpie.readthedocs.io/en/latest/services.html#available-services
     #     https://pavics-magpie.readthedocs.io/en/latest/autoapi/magpie/services/index.html
-    services: # Contains the different resources that can be synchronized, ordered by service
-      thredds: # Service name, which should also exist in Magpie
+    services: # Contains the different resources that can be synchronized, ordered by service type
+      thredds: # Service type, which should also exist in Magpie
         # Resource key (ex.: thredds_workspace): Custom name to represent a resource path.
         #
         # Example of resource that uses variables and a `MULTI_TOKEN`.
