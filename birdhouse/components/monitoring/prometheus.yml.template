@@ -1,5 +1,5 @@
 # https://prometheus.io/docs/prometheus/latest/configuration/configuration/
-# http://PAVICS_FQDN:9090/config
+# http://PAVICS_FQDN/prometheus/config
 global:
   scrape_interval:     60s
   evaluation_interval: 30s
@@ -10,7 +10,7 @@ scrape_configs:
   honor_labels: true
   static_configs:
   - targets:
-    - ${PAVICS_FQDN}:9999
+    - "http://cadvisor:8080"
 
 - job_name: node-exporter
   honor_labels: true
@@ -26,4 +26,4 @@ alerting:
   - scheme: http
     static_configs:
     - targets:
-      - "${PAVICS_FQDN}:9093"
+      - "http://alertmanager:9093"

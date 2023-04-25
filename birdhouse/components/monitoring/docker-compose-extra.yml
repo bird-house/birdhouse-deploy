@@ -11,8 +11,6 @@ services:
       - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker:/var/lib/docker:ro
-    ports:
-      - 9999:8080
     devices:
       - /dev/kmsg
     restart: always
@@ -38,8 +36,6 @@ services:
       - ./components/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./components/monitoring/prometheus.rules:/etc/prometheus/prometheus.rules:ro
       - prometheus_persistence:/prometheus:rw
-    ports:
-      - 9090:9090
     command:
       # restore original CMD from image
       - --config.file=/etc/prometheus/prometheus.yml
@@ -65,8 +61,6 @@ services:
       - grafana_persistence:/var/lib/grafana:rw
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
-    ports:
-      - 3001:3000
     restart: always
 
   # https://github.com/prometheus/alertmanager
@@ -86,9 +80,7 @@ services:
       # enable debug logging
       - --log.level=debug
       # wrong default was http://container-hash:9093/
-      - --web.external-url=http://${PAVICS_FQDN}:9093/
-    ports:
-      - 9093:9093
+      - --web.external-url=http://${PAVICS_FQDN}/alertmanager
     restart: always
 
 volumes:

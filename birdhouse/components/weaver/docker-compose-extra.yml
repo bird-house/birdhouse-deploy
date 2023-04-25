@@ -17,8 +17,6 @@ services:
     #   This is needed because simply adding 'depends_on' only ensures that containers are 'running', but startup of
     #   WPS applications themselves are not necessarily completed. Successful HTTP responses ensure they are 'ready'.
     image: pavics/weaver:${WEAVER_VERSION}-manager
-    ports:
-      - "4001:4001"
     environment:
       HOSTNAME: ${PAVICS_FQDN}
       FORWARDED_ALLOW_IPS: "*"
