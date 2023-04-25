@@ -1,0 +1,8 @@
+providers:
+  thredds:
+    url: http://thredds:8080/${TWITCHER_PROTECTED_PATH}/thredds/
+    title: Thredds
+    public: true
+    c4i: false
+    type: wps
+    sync_type: api

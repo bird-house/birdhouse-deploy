@@ -1,0 +1,48 @@
+providers:
+  grafana:
+    url: http://grafana:3000
+    title: Grafana
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+  prometheus:
+    url: http://prometheus:9090
+    title: Prometheus
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+  alertmanager:
+    url: http://alertmanager:9093
+    title: AlertManager
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+
+permissions:
+  - service: grafana
+    permission: read
+    group: administrators
+    action: create
+  - service: grafana
+    permission: write
+    group: administrators
+    action: create
+  - service: prometheus
+    permission: read
+    group: administrators
+    action: create
+  - service: prometheus
+    permission: write
+    group: administrators
+    action: create
+  - service: alertmanager
+    permission: read
+    group: administrators
+    action: create
+  - service: alertmanager
+    permission: write
+    group: administrators
+    action: create
