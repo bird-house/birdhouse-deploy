@@ -1,3 +1,4 @@
+
 # Changes
 
 [//]: # (NOTES:)
@@ -15,6 +16,473 @@
 ------------------------------------------------------------------------------------------------------------------
 
 - Zenodo: A configuration file for [Zenodo](https://zenodo.org/) was added to the source code, listing all contributing authors on the *birdhouse-deploy* repository.
+
+[1.26.0](https://github.com/bird-house/birdhouse-deploy/tree/1.26.0) (2023-04-20)
+------------------------------------------------------------------------------------------------------------------
+
+
+## Breaking changes
+
+- CanarieAPI: update to `0.7.1`.
+
+  - The Docker running `CanarieAPI` is now using Python 3 (since `0.4.x` tags).
+    Configurations need to be updated if any specific Python 2 definitions were used.
+    See [2to3](https://docs.python.org/3/library/2to3.html) to help migrate configurations automatically if necessary.
+  - Update the [CanarieAPI configuration](birdhouse/config/canarie-api/docker_configuration.py.template) to use
+    Python 3.x executable code.
+
+## Changes
+
+- CanarieAPI: update to `0.7.1`.
+
+  - The server node now provides a generic ``server`` configuration for the current ``platform`` definition.
+  - Added multiple missing docuementation references for all the services included within `CanarieAPI` configurations.
+  - With new `CanarieAPI` version, a slightly improved UI with more service details are provided for the active server:
+
+![image](https://user-images.githubusercontent.com/19194484/232822454-e39c0111-54dc-4f9b-adf6-5ea6e59d67e3.png)
+
+- Add optional variables witht defaults to define reference Docker image version tags.
+
+  Following optional variables are defined by default. These are used as reference in the respective Docker compose
+  service definition of these components, as well as in their `CanarieAPI` configuration to retrieve the release time
+  of the tag, and refer to relevant URL references as needed.
+
+  - `CATALOG_VERSION`
+  - `FINCH_VERSION`
+  - `FLYINGPIGEON_VERSION`
+  - `GEOSERVER_VERSION`
+  - `HUMMINGBIRD_VERSION`
+  - `MALLEEFOWL_VERSION`
+  - `RAVEN_VERSION`
+
+## Fixes:
+
+- CanarieAPI: update to `0.7.1`.
+
+  - Fixes an `AttributeError` raised due to misconfiguration of the Web Application with Flask 2.x definitions
+    (relates to [Ouranosinc/CanarieAPI#10](https://github.com/Ouranosinc/CanarieAPI/pull/10)).
+  - Skip over `0.4.x`, `0.5.x`, `0.6.x`  versions to avoid issue related to `cron` job monitoring and log parser
+    command failures in order to collect configured service statistics and statuses
+    (see also [Ouranosinc/CanarieAPI#14](https://github.com/Ouranosinc/CanarieAPI/pull/14)).
+
+- Weaver: update CanarieAPI monitoring definitions
+  - Move monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
+  - Add monitoring of private endpoint by default when using Weaver component.
+
+- Cowbird: update CanarieAPI monitoring definitions
+  - Add monitoring of public endpoint under [optional-components/canarie-api-full-monitoring][canarie-monitor].
+  - Add public Magpie permission on Cowbird entrypoint only to allow its monitoring.
+
+[canarie-monitor]: birdhouse/optional-components/canarie-api-full-monitoring
+
+[1.25.7](https://github.com/bird-house/birdhouse-deploy/tree/1.25.7) (2023-04-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix flaky WPS provider responses (i.e.: other WPS birds) causing failure during their registration in `weaver`.
+
+  In some cases, the WPS birds would not respond properly when starting the stack, either because they are still
+  initiating or due to other temporary failures such as services being restarted until healthy. This fix introduces 
+  a retry mechanism to attempt WPS registration in `weaver` up to `WEAVER_WPS_PROVIDERS_RETRY_COUNT=5` times 
+  (1 initial attempt + 5 retries), and with `WEAVER_WPS_PROVIDERS_RETRY_AFTER=5` second intervals between each retry.
+  If the maximum number of retries for any WPS provider or the `WEAVER_WPS_PROVIDERS_MAX_TIME` across all registrations
+  are reached, the operation is aborted.
+
+[1.25.6](https://github.com/bird-house/birdhouse-deploy/tree/1.25.6) (2023-04-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Config var `PAVICS_FQDN_PUBLIC` not usable in component `default.env` and external scripts
+
+  Currently, `PAVICS_FQDN_PUBLIC` is only usable in `.template` files, in
+  `docker-compose-extra.yml` files and in component pre/post compose scripts
+  because they are handled by `pavics-compose.sh`.
+
+  It was good enough but now with delayed eval feature, we can do better.
+  `PAVICS_FQDN_PUBLIC` can be as accessible as the other `PAVICS_FQDN` var.
+
+  Both vars allow a host to have a different public and internal hostname.
+  Some scripts, `certbotwrapper` for example, prefer the public hostname than
+  the internal hostname when they are different because Let's Encrypt only
+  knows about the public hostname.
+
+  With the pluggable nature of this stack, we can have many external scripts
+  from many external repos reading the config vars and they can have the need
+  to specifically access the public hostname.
+
+  Bonus, we now have a sample use of `DELAYED_EVAL` list, right in the main `default.env`.
+
+## Changes
+
+- `pavics-compose` output rendering
+
+  Prints the activated compose file list line-by-line such that it can be more easily readable. 
+
+  Before the change, the output was as follows:
+  ![image](https://user-images.githubusercontent.com/19194484/233111255-ef31b36f-7bb9-4856-80b7-9aa5b17ae167.png)
+
+  After the change, the output is more easily readable:
+  ![image](https://user-images.githubusercontent.com/19194484/233113601-8955a9cb-3da1-4f5a-9a36-4c8653b5606a.png)
+
+- Various documentation updates
+
+  * Update list of OS tested
+  * Framework tests code block not rendering properly
+  * [Add a few sentences on the required hardware to run the platform](https://github.com/bird-house/birdhouse-deploy/issues/312)
+  * [Add license](https://github.com/bird-house/birdhouse-deploy/issues/309)
+  * [Document how to change MAGPIE_ADMIN_PASSWORD](https://github.com/bird-house/birdhouse-deploy/issues/57)
+  * [Document assumption EXTRA_CONF_DIRS assume relative path to docker-compose.yml](https://github.com/bird-house/birdhouse-deploy/issues/53)
+  * [Document how to get LetsEncrypt SSL cert if not using Vagrant that automate the whole thing](https://github.com/bird-house/birdhouse-deploy/issues/55)
+  * [Document config for self-signed SSL](https://github.com/bird-house/birdhouse-deploy/issues/52)
+  * Update the "Release Instructions" in the README to use `make bump <major|minor|patch>` command instead of directly calling `bump2version` to harmonize with the section "Tagging policy" right above.
+
+[1.25.5](https://github.com/bird-house/birdhouse-deploy/tree/1.25.5) (2023-04-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix disapearing Thredds docker image
+
+  The current docker image version for thredds (4.6.18) is no longer hosted in the
+  [Unidata docker repository](https://hub.docker.com/r/unidata/thredds-docker/tags).
+
+  Pushed the same image from Ouranos production to PAVICS DockerHub, restoring
+  the missing Thredds image.
+
+  Discovered that Unidata is also not keeping their tag immutable, like Kartoza Geoserver image.
+
+  So Ouranos tag has the approximate month of Unidata re-release of 4.6.18.
+
+  On our production server:
+  ```
+  $ docker images |grep thredds|grep 4.6.18
+  unidata/thredds-docker              4.6.18              25997a1b2893   15 months ago   5.63GB
+  ```
+
+  On our staging server:
+  ```
+  $ docker images |grep thredds | grep 4.6.18
+  unidata/thredds-docker              4.6.18              09103737360a   16 months ago   5.62GB
+  ```
+
+
+[1.25.4](https://github.com/bird-house/birdhouse-deploy/tree/1.25.4) (2023-04-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Enforce the load order of components defined in env.local
+  
+  Extra components defined in the `EXTRA_CONF_DIRS` variables were being loaded before the dependant components
+  defined in the `COMPONENT_DEPENDENCIES` variables in each default.env file. This meant that if an extra component
+  was meant to override some setting defined in a dependant component, the setting would not be overridden by the
+  extra component. 
+
+  This change enforces the following load order rules:
+
+  - components defined in `DEFAULT_CONF_DIRS` are loaded before those in `EXTRA_CONF_DIRS`
+  - components are loaded in the order they appear in either `DEFAULT_CONF_DIRS` or `EXTRA_CONF_DIRS`
+  - components that appear in `COMPONENT_DEPENDENCIES` variable are immediately loaded unless they have already been
+    loaded
+
+  For example, with the following files in place:
+
+  ```shell
+  # env.local
+  DEFAULT_CONF_DIRS="
+    ./config/twitcher
+    ./config/project-api
+    ./config/magpie
+  "
+  EXTRA_CONF_DIRS="
+    ./optional-components/generic_bird
+    ./components/cowbird
+  "
+  
+  # config/twitcher/default.env
+  COMPONENT_DEPENDENCIES="
+    ./config/magpie
+  "
+  # optional-components/generic_bird/default.env
+  COMPONENT_DEPENDENCIES="
+    ./config/wps_outputs-volume
+  "
+  ```
+  
+  the load order is:
+
+  - ./config/magpie (loaded as a dependency of twitcher, not loaded a second time after project-api)
+  - ./config/twitcher
+  - ./config/project-api
+  - ./config/wps_outputs-volume (loaded as a dependency of generic_bird)
+  - ./optional-components/generic_bird
+  - ./components/cowbird
+
+  This load order also applies to the order that docker-compose-extra.yml files are specified. If a component also
+  includes an override file for another component (eg: ./config/finch/config/proxy/docker-compose-extra.yml overrides 
+  ./config/proxy/docker-compose-extra.yml), the following additional load order rules apply:
+
+  - if the component that is being overridden has already been loaded, the override file is loaded immediately
+  - otherwise, the override files will be loaded immediately after the component that is being overridden has been loaded
+
+  For example, with the following files in place:
+
+    ```shell
+  # env.local
+  DEFAULT_CONF_DIRS="
+    ./config/finch
+    ./config/proxy
+  "
+  ```
+  ```yaml
+  # config/proxy/docker-compose-extra.yml
+    ...
+  # config/finch/docker-compose-extra.yml
+    ...
+  # config/finch/config/proxy/docker-compose-extra.yml
+    ...
+  ```
+
+  the docker compose files will be loaded in the following order: 
+
+  - config/finch/docker-compose-extra.yml
+  - config/proxy/docker-compose-extra.yml
+  - config/finch/config/proxy/docker-compose-extra.yml
+
+- Add tests to ensure override capabilities are preserved which allows all default
+  behaviors of the platform can be customized.
+
+  See [birdhouse/README.rst](birdhouse/README.rst) for instruction to run the
+  tests.
+
+[1.25.3](https://github.com/bird-house/birdhouse-deploy/tree/1.25.3) (2023-04-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Canarie-api: add old config file into historical gitignore
+
+  In order to maintain backwards compatibility, old files that are no longer present in the code should be 
+  kept in the gitignore files. This adds back one file to the relevant .gitignore file that no longer exists under 
+  `conf.extra-service.d/canarie-api.conf`.
+
+[1.25.2](https://github.com/bird-house/birdhouse-deploy/tree/1.25.2) (2023-04-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter: new image to add esgf-pyclient and xncml to fix Jenkins failure
+
+  See PR https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/118 for more details.
+
+  - Adds `esgf-pyclient` for esgf-dap.ipynb (https://github.com/Ouranosinc/pavics-sdi/pull/269)
+  - Adds `xncml` for gen_catalog refactoring (https://github.com/Ouranosinc/pavics-vdb/pull/46)
+  - Fixes annoying harmless error `ERROR 1: PROJ: proj_create_from_database: Open of /opt/conda/envs/birdy/share/proj failed`
+  - Relevant changes (alphabetical order):
+  ```diff
+  >   - esgf-pyclient=0.3.1=pyh1a96a4e_2
+
+  <   - gdal=3.5.3=py38h1f15b03_4
+  >   - gdal=3.6.0=py38h58634bd_13
+
+  >     - xncml==0.2
+  ```
+
+
+[1.25.1](https://github.com/bird-house/birdhouse-deploy/tree/1.25.1) (2023-04-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Canarie-api should not be a mandatory component.
+
+  Canarie-api is currently deployed in the same container as the nginx reverse proxy
+  service meaning that it is not possible to deploy nginx without including canarie-api.
+
+  This means that it is currently not possible to run this deployment without canarie-api
+  or use a different monitoring application. This change fully separates the configuration
+  for canarie-api and nginx so that a user can choose to run nginx with or without canarie-api.
+
+  Canarie-api has been kept on the DEFAULT_CONF_DIRS list so that canarie-api is included by
+  default, for backwards-compatibility. In order to run nginx without canarie-api, remove the
+  `./conf/canarie-api` line from the DEFAULT_CONF_DIRS environment variable. 
+  
+  A user can also choose a specific version of the nginx docker image to use by specifying 
+  the PROXY_IMAGE environment variable (default is "nginx"). Note that if canarie-api is used
+  (by including the `./conf/canarie-api` line in DEFAULT_CONF_DIRS), then the PROXY_IMAGE 
+  variable will be ignored.
+
+[1.25.0](https://github.com/bird-house/birdhouse-deploy/tree/1.25.0) (2023-04-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Geoserver: update to latest version 2.22.2 to get vulnerability fix
+
+  For vulnerability in `jt-jiffle` < 1.1.22, see
+  https://nvd.nist.gov/vuln/detail/CVE-2022-24816, and
+  https://github.com/geosolutions-it/jai-ext/security/advisories/GHSA-v92f-jx6p-73rx.
+
+  Changed to use the CORS (Cross-Origin Resource Sharing) default config from
+  the image instead of our own.  Both are quite similar so if we can use the
+  default config, future upgrade will be simpler.
+
+  New Geoserver version will have `jt-jiffle` 1.1.24.  The old one had version 1.1.20.
+  ```
+  $ docker run -it --rm --entrypoint bash pavics/geoserver:2.22.2-kartoza-build20230226-r5-allow-change-context-root-and-fix-missing-stable-plugins
+
+  | |/ /__ _ _ __| |_ ___ ______ _  |  _ \  ___   ___| | _____ _ __   / ___| ___  ___/ ___|  ___ _ ____   _____ _ __
+  | ' // _` | '__| __/ _ \_  / _` | | | | |/ _ \ / __| |/ / _ \ '__| | |  _ / _ \/ _ \___ \ / _ \ '__\ \ / / _ \ '__|
+  | . \ (_| | |  | || (_) / / (_| | | |_| | (_) | (__|   <  __/ |    | |_| |  __/ (_) |__) |  __/ |   \ V /  __/ |
+  |_|\_\__,_|_|   \__\___/___\__,_| |____/ \___/ \___|_|\_\___|_|     \____|\___|\___/____/ \___|_|    \_/ \___|_|
+
+  root@c3787dccea2d:/geoserver# find / -iname '**jt-jiffle**'
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/jt-jiffle-language-1.1.24.jar
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/jt-jiffle-op-1.1.24.jar
+  root@c3787dccea2d:/geoserver#
+  ```
+
+  Used our own custom build image because the original kartoza image is missing 2 plugins that we use, see https://github.com/kartoza/docker-geoserver/issues/508 and to avoid excessively slow startup due to https://github.com/kartoza/docker-geoserver/issues/515.
+
+  CORS config difference:
+  ```diff
+  --- web.xml.old 2023-03-22 16:10:20.000000000 -0400
+  +++ web.xml.new 2023-03-22 16:10:06.000000000 -0400
+
+       <filter>
+           <filter-name>CorsFilter</filter-name>
+           <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+           <init-param>
+  -            <param-name>cors.allowed.methods</param-name>
+  -            <param-value>GET,POST,HEAD,OPTIONS,PUT</param-value>
+  -        </init-param>
+  -        <init-param>
+               <param-name>cors.allowed.origins</param-name>
+               <param-value>*</param-value>
+           </init-param>
+           <init-param>
+               <param-name>cors.allowed.headers</param-name>
+  -            <param-value>Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization,Authentication</param-value>
+  +            <param-value>Content-Type,X-Requested-With,accept,Access-Control-Request-Method,Access-Control-Request-Headers,If-Modified-Since,Range,Origin,Authorization</param-value>
+  +        </init-param>
+  +        <init-param>
+  +            <param-name>cors.exposed.headers</param-name>
+  +            <param-value>Access-Control-Allow-Origin,Access-Control-Allow-Credentials</param-value>
+           </init-param>
+       </filter>
+  ```
+  Missing `cors.allowed.methods`, new `cors.exposed.headers`.
+
+  For `cors.allowed.headers`, missing `Authentication`, new `If-Modified-Since,Range`.
+
+  Hopefully everything still works with the new CORS config and future upgrade will be simpler.
+
+  Tested with the following notebooks, hopefully CORS changes are effectively tested there:
+  * https://github.com/Ouranosinc/pavics-sdi/blob/f4aecf64889f0c8503ea67b59b6558ae18407cf6/docs/source/notebooks/WFS_example.ipynb
+  * https://github.com/Ouranosinc/pavics-sdi/blob/f4aecf64889f0c8503ea67b59b6558ae18407cf6/docs/source/notebooks/regridding.ipynb
+  * https://github.com/bird-house/finch/blob/877312d325d4de5c3efcb4f1f75fbe5cd22660d6/docs/source/notebooks/subset.ipynb
+  * https://github.com/Ouranosinc/raven/blob/0be6d77d71bcaf4546de97b13bafc6724068a73d/docs/source/notebooks/01_Getting_watershed_boundaries.ipynb
+    with `RAVEN_GEO_URL` pointing to another Geoserver (also from this PR) to
+    test CORS (Cross-Origin Resource Sharing)
+
+## Changes
+- Raven: allow to customize the Geoserver it will use
+
+  Useful to test the local Geoserver or to have your own Geoserver with your
+  own data.  Default to PAVICS Geoserver.
+
+  Set `RAVEN_GEO_URL` in `env.local` to something like `https://host/geoserver/`.
+
+- env.local.example: change default Geoserver admin user from 'admin' to 'admingeo'
+
+  This only impacts new deployment when `env.local.example` is instanciated
+  to `env.local`.
+
+  This is to avoid confusion with the admin user of Magpie, which is also 'admin'.
+
+
+[1.24.1](https://github.com/bird-house/birdhouse-deploy/tree/1.24.1) (2023-03-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Cowbird: Resolve `celery` tasks not properly registered for dispatching from the API to the worker service.
+
+  When calling the `https://${PAVICS_FDQN_PUBLIC}/cowbird/version` endpoint, a task is submitted to `cowbird-worker`
+  to validate that it is responsive and in sync with `cowbird`. The instance was reporting an error indicating that
+  `celery` tasks were not properly detected.
+
+  To facilitate detection of this kind of problem, better error log reporting was added to the `/version` endpoint
+  under [`cowbird==1.1.1`](https://github.com/Ouranosinc/cowbird/tree/1.1.0).
+
+[1.24.0](https://github.com/bird-house/birdhouse-deploy/tree/1.24.0) (2023-03-22)
+------------------------------------------------------------------------------------------------------------------
+## Fixes
+- Make all components pluggable
+
+  The default stack was not configurable. This meant that if someone wanted to deploy a
+  subset of the default stack there was no good way of configuring birdhouse-deploy to run
+  this subset only. 
+
+  Previously, additional components could be added to the stack (ex: weaver, cowbird, etc.)
+  by adding them to the `EXTRA_CONF_DIRS` variable. This change extends this functionality
+  to all components. 
+
+  For backwards compatibility, all components that were in the original default stack are now
+  listed in the `DEFAULT_CONF_DIRS` variable (in `birdhouse/default.env`). To run a subset of the
+  original stack, update `DEFAULT_CONF_DIRS` to only include the configuration directories for
+  the desired components.
+
+  The components that will be added to the stack are only those whose configuration directory
+  is listed in either `DEFAULT_CONF_DIRS` or `EXTRA_CONF_DIRS`. Note that some components are
+  dependent on others to run and will automatically add the other components to the stack as 
+  a dependency. For example, twitcher requires magpie so if you only specify twitcher, magpie
+  will be added to the stack as well. To inspect component dependencies, look at the 
+  `COMPONENT_DEPENDENCIES` environment variable that is extended in some `default.env` files.
+  For example, `birdhouse/config/twitcher/default.env` contains:
+
+  ```shell
+  COMPONENT_DEPENDENCIES="
+    $COMPONENT_DEPENDENCIES
+    ./config/magpie
+  ```
+
+  Components can also have optional dependencies. These are additional configuration options to
+  run if both components are deployed in the stack at the same time. These are defined in the
+  `config/*/docker-compose-extra.yml` files where the `*` refers to another component that _could be_
+  deployed. For example, `birdhouse/config/raven/config/magpie/docker-compose-extra.yml` contains
+  additional configuration settings for the raven docker service that only apply if magpie is
+  also deployed. This relaxes some dependencies between components and allows more flexibility
+  when choosing what parts of the stack to deploy.
+
+## Changes:
+
+- Cowbird: Updated Cowbird config for user workspaces and for working callbacks to Magpie.
+
+  When enabling Cowbird, the config will now mount a different working directory with JupyterHub, which 
+  corresponds to the user workspaces created with Cowbird. These workspaces will use symlinks to the Jupyterhub 
+  data directories.
+
+  For example, we have the original directory, which is still mounted by default by JupyterHub, which contains 
+  the user's notebooks :
+![image](https://user-images.githubusercontent.com/36516122/223465560-ea4a7d6f-807d-49ae-8500-49a6e6ed677a.png)
+
+  If Cowbird is enabled, JupyterHub mounts Cowbird's workspace instead, which has a symlink to the other dir :
+![image](https://user-images.githubusercontent.com/36516122/223465960-ce81e829-b703-4374-b059-685b0e684a57.png)
+
+  Cowbird's workspace can also contain other files related to other services.
+  Cowbird's workspace directory is defined by the added environment variable `USER_WORKSPACES`.
+
+- JupyterHub: Updated config to support Cowbird, which uses a different working directory.
+
+  JupyterHub now mounts the variable `WORKSPACE_DIR` when starting a JupyterLab instance. It will refer to the 
+  original JupyterHub data directory by default, and if Cowbird is activated, it will be overridden to refer 
+  to Cowbird's workspace instead.
+
+  In JupyterHub with Cowbird enabled, the `writable-workspace` is the Cowbird user's workspace :
+![image](https://user-images.githubusercontent.com/36516122/223800065-0e0ab578-4e67-4d21-8d7c-552c87ceea41.png)
+
+  When we open the notebooks dir, it displays the files found at the symlink's source :
+![image](https://user-images.githubusercontent.com/36516122/223800540-769d50a2-4ce8-480f-b75d-c6d4e29dead1.png)
+
+- Updated eo and nlp images to latest version in the `env.local.example` config.
 
 [1.23.3](https://github.com/bird-house/birdhouse-deploy/tree/1.23.3) (2023-02-17)
 ------------------------------------------------------------------------------------------------------------------

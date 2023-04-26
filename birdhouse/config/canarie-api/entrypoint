@@ -5,5 +5,12 @@
 # remove if cause problem with newer version of canarieapi
 touch /etc/cron.d/canarieapi-cron
 
+pip install requests-cache
+
 # chain existing cmd
-exec /bin/sh -c "env >> /etc/environment &&     cron &&     nginx &&     gunicorn -b 0.0.0.0:2000 --workers 1 --log-level=DEBUG --timeout 30 -k gevent wsgi"
+exec /bin/sh -c "\
+  env >> /etc/environment && \
+  cron && \
+  nginx && \
+  gunicorn -b 0.0.0.0:2000 --workers 1 --log-level=DEBUG --timeout 30 -k gevent canarieapi.wsgi \
+"

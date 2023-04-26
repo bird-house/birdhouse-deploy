@@ -20,13 +20,3 @@ permissions:
     permission: read
     group: anonymous
     action: create
-
-  - service: flyingpigeon
-    permission: getcapabilities
-    group: administrators
-    action: create
-
-  - service: ${CATALOG_THREDDS_SERVICE}
-    permission: read
-    user: ${CATALOG_USERNAME}
-    action: create

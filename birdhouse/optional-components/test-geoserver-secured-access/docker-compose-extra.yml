@@ -2,8 +2,8 @@ version: "3.4"
 services:
   magpie:
     volumes:
-      - ./optional-components/test-geoserver-secured-access/config/magpie/test-geoserver-permissions.cfg:/opt/local/src/magpie/config/permissions/test-geoserver-permissions.cfg:ro
-      - ./optional-components/test-geoserver-secured-access/config/magpie/test-geoserver-providers.cfg:/opt/local/src/magpie/config/providers/test-geoserver-providers.cfg:ro
+      - ./optional-components/test-geoserver-secured-access/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/test-geoserver-permissions.cfg:ro
+      - ./optional-components/test-geoserver-secured-access/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/test-geoserver-providers.cfg:ro
 
   proxy:
     volumes:

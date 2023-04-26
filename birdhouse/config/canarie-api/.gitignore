@@ -1,1 +1,6 @@
 docker_configuration.py
+config/canarie-api/conf.extra-service.d/canarie-api.conf
+
+# Old paths. Keep these so that old config files remain uncommittable after updates.
+config/proxy/conf.extra-service.d/canarie-api.conf
+conf.extra-service.d/canarie-api.conf

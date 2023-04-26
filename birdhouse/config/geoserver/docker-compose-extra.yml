@@ -1,0 +1,45 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  geoserver:
+    image: ${GEOSERVER_IMAGE}
+    container_name: geoserver
+    ports:
+      - "8087:8080"
+    environment:
+      STABLE_EXTENSIONS: ${GEOSERVER_STABLE_EXTENSIONS}
+      COMMUNITY_EXTENSIONS: ${GEOSERVER_COMMUNITY_EXTENSIONS}
+      GEOSERVER_ADMIN_USER: ${GEOSERVER_ADMIN_USER}
+      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD}
+      # fix "WARNING: Illegal reflective access by org.geotools.image.ImageWorker" in `docker logs geoserver`
+      JAVA_OPTS: --add-exports=java.desktop/com.sun.imageio.plugins.jpeg=ALL-UNNAMED
+      MAXIMUM_MEMORY: 8G
+      # https://github.com/kartoza/docker-geoserver#proxy-base-url
+      HTTP_PROXY_NAME: ${PAVICS_FQDN_PUBLIC}
+      HTTP_SCHEME: https
+    volumes:
+      # run deployment/fix-geoserver-data-dir-perm on existing
+      # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image
+      - ${GEOSERVER_DATA_DIR}:/opt/geoserver/data_dir
+    links:
+      - postgis
+    restart: always
+    logging: *default-logging
+    healthcheck:
+      test: curl --fail --silent http://localhost:8080/ || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+  postgis:
+    image: pavics/postgis:2.2
+    container_name: postgis
+    restart: always
+    logging: *default-logging

@@ -1,0 +1,6 @@
+
+    location /frontend/ {
+        proxy_pass http://${PAVICS_FQDN}:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $real_scheme;
+    }

@@ -1,2 +1,5 @@
-conf.extra-service.d/secure-data-auth.conf
+config/proxy/conf.extra-service.d/secure-data-auth.conf
 config/magpie/config.yml
+
+# Old paths. Keep these so that old config files remain uncommittable after updates.
+conf.extra-service.d/secure-data-auth.conf

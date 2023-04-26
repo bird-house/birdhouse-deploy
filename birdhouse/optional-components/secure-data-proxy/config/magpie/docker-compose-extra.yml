@@ -1,0 +1,6 @@
+version: "3.4"
+services:
+  magpie:
+    volumes:
+      - ./optional-components/secure-data-proxy/config/magpie/config.yml:${MAGPIE_PROVIDERS_CONFIG_PATH}/secure-data-proxy.yml:ro
+      - ./optional-components/secure-data-proxy/config/magpie/config.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/secure-data-proxy.yml:ro

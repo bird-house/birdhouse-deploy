@@ -1,2 +1,6 @@
+providers.cfg
+permissions.cfg
+
+# Old paths. Keep these so that old config files remain uncommittable after updates.
 test-geoserver-providers.cfg
 test-geoserver-permissions.cfg
