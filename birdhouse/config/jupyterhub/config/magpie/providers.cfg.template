@@ -1,0 +1,15 @@
+providers:
+  jupyterhub:
+    url: http://jupyterhub:8000/jupyter
+    title: Jupyter
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+    hooks:
+      - type: request
+        path: .*
+        target: /opt/birdhouse/src/magpie/hooks/jupyterhub_hooks.py:add_x_remote_user
+      - type: response
+        path: .*
+        target: /opt/birdhouse/src/magpie/hooks/jupyterhub_hooks.py:pass_through_cookie
