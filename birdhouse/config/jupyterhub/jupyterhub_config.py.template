@@ -9,14 +9,13 @@ c = get_config()  # noqa  # can be called directy without import because injecte
 
 c.JupyterHub.bind_url = 'http://:8000/jupyter'
 
-c.JupyterHub.subdomain_host = "${PAVICS_FQDN}"
-
 ## Whether to shutdown single-user servers when the Hub shuts down.
 c.JupyterHub.cleanup_servers = False
 
 c.JupyterHub.hub_ip = 'jupyterhub'
 
 c.JupyterHub.authenticator_class = 'jupyterhub_magpie_authenticator.MagpieAuthenticator'
+c.MagpieAuthenticator.magpie_url = "http://magpie:2001"
 
 c.JupyterHub.cookie_secret_file = '/persist/jupyterhub_cookie_secret'
 c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
