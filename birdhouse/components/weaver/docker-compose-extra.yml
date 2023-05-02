@@ -1,5 +1,3 @@
-version: "3.4"
-
 x-logging:
   &default-logging
   driver: "json-file"
@@ -23,8 +21,6 @@ services:
     #env_file:
     #  - ./config/mongodb/credentials.env
     depends_on:
-      - weaver-mongodb
-    links:
       - weaver-mongodb
     networks:
       - default

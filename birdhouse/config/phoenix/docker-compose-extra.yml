@@ -1,5 +1,3 @@
-version: "3.4"
-
 x-logging:
   &default-logging
   driver: "json-file"
@@ -24,8 +22,6 @@ services:
     volumes:
       - ./config/phoenix/custom.cfg:/opt/birdhouse/src/phoenix/custom.cfg
       - ${SSL_CERTIFICATE}:/opt/birdhouse/etc/nginx/cert.pem
-    links:
-      - mongodb
     networks:
       - default
       - mongodb

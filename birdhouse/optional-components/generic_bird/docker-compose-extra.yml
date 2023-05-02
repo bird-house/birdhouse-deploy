@@ -1,4 +1,3 @@
-version: "3.4"
 services:
   generic_bird:
     image: ${GENERIC_BIRD_IMAGE}
@@ -8,8 +7,6 @@ services:
     volumes:
       - ./optional-components/generic_bird/wps.cfg:/wps.cfg:ro
       - /tmp
-    links:
-      - postgres_generic_bird
     restart: always
 
   postgres_generic_bird:

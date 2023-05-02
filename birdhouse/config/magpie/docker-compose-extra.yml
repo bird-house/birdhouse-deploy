@@ -1,5 +1,3 @@
-version: "3.4"
-
 x-logging:
   &default-logging
   driver: "json-file"
@@ -25,8 +23,6 @@ services:
     env_file:
       - ./config/magpie/postgres-credentials.env
     depends_on:
-      - postgres-magpie
-    links:
       - postgres-magpie
     volumes:
       - ./config/magpie/postgres-credentials.env:/opt/local/src/magpie/env/postgres.env

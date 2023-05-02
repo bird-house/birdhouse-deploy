@@ -1,5 +1,3 @@
-version: "3.4"
-
 services:
   # extend magpie configuration with setup of weaver service and initial permissions
   magpie:

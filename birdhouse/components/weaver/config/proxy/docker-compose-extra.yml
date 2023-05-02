@@ -1,5 +1,3 @@
-version: "3.4"
-
 services:
   # extend proxy configuration with weaver endpoints
   proxy:
@@ -8,5 +6,3 @@ services:
       # because of mounting path naming restrictions (see note in 'worker' definition),
       # we must add the custom path on top of named 'wps_outputs' volume of other birds for the proxy to expose results
       - ${WEAVER_WPS_OUTPUTS_DIR}:/pavics-data/wps_outputs/weaver:ro
-    links:
-      - weaver

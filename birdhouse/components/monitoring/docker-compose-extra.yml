@@ -1,5 +1,3 @@
-version: "3.4"
-
 services:
   # https://github.com/google/cadvisor/blob/master/docs/running.md
   # Collect per container metrics.
