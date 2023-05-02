@@ -40,10 +40,10 @@ services:
 # need external network so the folder name is not prefixed to network name
 networks:
   jupyterhub_network:
-    external:
-      name: "jupyterhub_network"
+    external: true
+    name: "jupyterhub_network"
 
 volumes:
   jupyterhub_data_persistence:
-    external:
-      name: jupyterhub_data_persistence
+    external: true
+    name: jupyterhub_data_persistence

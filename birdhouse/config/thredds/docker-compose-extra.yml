@@ -38,5 +38,5 @@ services:
 
 volumes:
   thredds_persistence:
-    external:
-      name: thredds_persistence
+    external: true
+    name: thredds_persistence
