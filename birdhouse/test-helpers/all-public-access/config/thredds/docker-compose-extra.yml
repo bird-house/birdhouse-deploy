@@ -1,0 +1,4 @@
+services:
+  magpie:
+    volumes:
+      - ./test-helpers/all-public-access/config/thredds/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/all-public-access-thredds-permissions.cfg:ro

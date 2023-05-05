@@ -1,4 +1,0 @@
-services:
-  magpie:
-    volumes:
-    - ./config/thredds/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/thredds-providers.cfg:ro

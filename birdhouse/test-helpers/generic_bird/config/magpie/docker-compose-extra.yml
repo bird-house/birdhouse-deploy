@@ -1,0 +1,5 @@
+services:
+  magpie:
+    volumes:
+    - ./test-helpers/generic_bird/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/generic_bird-permissions.cfg:ro
+    - ./test-helpers/generic_bird/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/generic_bird-providers.cfg:ro

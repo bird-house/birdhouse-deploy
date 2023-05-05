@@ -1,4 +1,0 @@
-services:
-  proxy:
-    volumes:
-    - ./config/twitcher/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/twitcher:ro

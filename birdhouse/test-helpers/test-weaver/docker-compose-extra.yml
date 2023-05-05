@@ -1,0 +1,13 @@
+services:
+  magpie:
+    volumes:
+      - ./test-helpers/test-weaver/config/magpie/test-weaver-permissions.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/test-weaver-permissions.yml:ro
+
+  # NOTE:
+  #   This optional component must be loaded AFTER main 'weaver' component to override the files in exact destinations.
+  weaver:
+    volumes:
+      - ./test-helpers/test-weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
+  weaver-worker:
+    volumes:
+      - ./test-helpers/test-weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro

@@ -1,0 +1,183 @@
+## see reference example for details:
+# https://github.com/Ouranosinc/Magpie/blob/master/config/config.yml
+
+providers:
+  # definition of Weaver service
+  ${WEAVER_MANAGER_NAME}:
+    url: http://weaver:4001
+    title: Weaver (${WEAVER_CONFIG})
+    public: true
+    c4i: false
+    type: api   # FIXME: 'ades' when https://github.com/Ouranosinc/Magpie/issues/360 implemented
+    sync_type: api
+    # hook locations should be relative to mounted Twitcher location as they are run within that container
+    # see following for hooks details:
+    # - https://github.com/Ouranosinc/Magpie/blob/master/config/providers.cfg
+    # - https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks
+    hooks:
+      # when a job is created in weaver, apply the header that will nest output results under user's context directory
+      # see also:
+      # - https://pavics-weaver.readthedocs.io/en/latest/processes.html?highlight=x-wps-output-context#outputs-location
+      # each path below are equivalents, but with more or less specific reference to the requested service/process
+      # for job execution, 2 endpoints exist for older and newer OGC API - Processes specification
+      - type: request
+        path: "/providers/[\\w_-]+/processes/[\\w:_-]+/(jobs|execution)"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
+      - type: request
+        path: "/processes/[\\w:_-]+/(jobs|execution)"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
+      - type: request
+        path: "/(jobs|execution)"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
+      # apply relevant permissions to allow the user executing a process to retrieve its outputs
+      - type: response
+        path: "/providers/[\\w_-]+/processes/[\\w:_-]+/(jobs|execution)"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_execute_outputs
+      - type: response
+        path: "/processes/[\\w:_-]+/(jobs|execution)"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_execute_outputs
+      - type: response
+        path: "/(jobs|execution)"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_execute_outputs
+      # apply relevant permissions such that the user can access its deployed process
+      - type: response
+        path: "/processes"
+        method: GET
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:filter_allowed_processes
+      - type: response
+        path: "/processes"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_deployed_processes
+
+  # FIXME: remove when https://github.com/Ouranosinc/Magpie/issues/360 implemented, see 'default.env'
+  ${WEAVER_WPS_NAME}:
+    url: http://weaver:4001/wps
+    title: Weaver (WPS)
+    public: true
+    c4i: false
+    type: wps
+    sync_type: wps
+
+permissions:
+  # Administrator permissions over whole service
+  - service: ${WEAVER_MANAGER_NAME}
+    permission: read
+    group: administrators
+    action: create
+  - service: ${WEAVER_MANAGER_NAME}
+    permission: write
+    group: administrators
+    action: create
+
+  # Entrypoint
+  - service: ${WEAVER_MANAGER_NAME}
+    permission: read-match
+    group: anonymous
+    action: create
+
+  # OpenAPI JSON schema
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /json
+    permission: read
+    group: anonymous
+    action: create
+
+  # OpenAPI Swagger
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /api
+    permission: read
+    group: anonymous
+    action: create
+
+  # Version details
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /versions
+    permission: read
+    group: anonymous
+    action: create
+
+  # OGC-API conformance
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /conformance
+    permission: read
+    group: anonymous
+    action: create
+
+  # Process deployment (write) and listing (read)
+  # use 'read-match' to allow only listing, and not describe underlying processes (require 'read' on them individually)
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /processes    # GET is processes listing, POST is deploy: only allow view by anonymous
+    permission: read-match  # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
+    group: anonymous
+    action: create
+
+  # convenience group that should be allowed deployment of Application Packages provided as OGC-API REST-JSON WPS
+  # NOTE: all users member of this group will be allowed to deploy/undeploy **any** app in Weaver
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /processes
+    permission: write
+    group: app_producers
+    action: create
+
+  # Providers listing
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers
+    permission: read-match
+    group: anonymous
+    action: create
+
+  # Provider processes listing
+  # (each provider in './services/weaver/config/weaver/wps_processes.yml.template')
+  # catalog
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/catalog
+    permission: read
+    group: anonymous
+    action: create
+  # finch
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/finch
+    permission: read
+    group: anonymous
+    action: create
+  # flyingpigeon
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/flyingpigeon
+    permission: read
+    group: anonymous
+    action: create
+  # hummingbird
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/hummingbird
+    permission: read
+    group: anonymous
+    action: create
+  # malleefowl
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/malleefowl
+    permission: read
+    group: anonymous
+    action: create
+  # raven
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/raven
+    permission: read
+    group: anonymous
+    action: create
+
+  # FIXME: remove when https://github.com/Ouranosinc/Magpie/issues/360 implemented
+  # for the moment, align WPS processes to allow public GetCapabilities and DescribeProcess like REST endpoint does
+  - service: ${WEAVER_WPS_NAME}
+    permission: getcapabilities
+    group: anonymous
+    action: create
+  - service: ${WEAVER_WPS_NAME}
+    permission: describeprocess
+    group: anonymous
+    action: create

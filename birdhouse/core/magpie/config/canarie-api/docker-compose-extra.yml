@@ -1,0 +1,4 @@
+services:
+  proxy:
+    volumes:
+    - ./core/magpie/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/magpie_canarie_api_monitoring.py:ro

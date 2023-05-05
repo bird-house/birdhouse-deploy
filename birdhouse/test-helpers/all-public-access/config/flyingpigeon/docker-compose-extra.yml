@@ -1,0 +1,4 @@
+services:
+  magpie:
+    volumes:
+      - ./test-helpers/all-public-access/config/flyingpigeon/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/all-public-access-flyingpigeon-permissions.cfg:ro

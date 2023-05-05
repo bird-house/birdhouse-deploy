@@ -1,0 +1,11 @@
+services:
+  emu:
+    image: ${EMU_IMAGE}
+    container_name: emu
+    environment:
+      - PYWPS_CFG=/wps.cfg
+    volumes:
+      - ./test-helpers/emu/wps.cfg:/wps.cfg
+      - ${EMU_WPS_OUTPUTS_VOL}:/data/wpsoutputs
+      - /tmp
+    restart: always

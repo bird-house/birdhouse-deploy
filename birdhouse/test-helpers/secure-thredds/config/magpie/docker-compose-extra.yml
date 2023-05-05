@@ -1,0 +1,4 @@
+services:
+  magpie:
+    volumes:
+    - ./extensions/secure-thredds/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/secure-thredds-permissions.cfg:ro

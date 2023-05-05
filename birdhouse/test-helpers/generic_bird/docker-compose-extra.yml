@@ -1,0 +1,25 @@
+services:
+  generic_bird:
+    image: ${GENERIC_BIRD_IMAGE}
+    container_name: generic_bird
+    environment:
+      PYWPS_CFG: /wps.cfg
+    volumes:
+      - ./test-helpers/generic_bird/wps.cfg:/wps.cfg:ro
+      - /tmp
+    restart: always
+
+  postgres_generic_bird:
+    image: ${GENERIC_BIRD_POSTGRES_IMAGE}
+    container_name: postgres_generic_bird
+    volumes:
+      - postgres_generic_bird:/var/lib/postgresql/data/pgdata
+      - ./test-helpers/generic_bird/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    env_file:
+      - ./config/postgres/credentials.env
+    restart: always
+
+volumes:
+  postgres_generic_bird: {}

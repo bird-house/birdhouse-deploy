@@ -1,0 +1,4 @@
+services:
+  proxy:
+    volumes:
+      - ./core/monitoring/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/monitoring:ro
