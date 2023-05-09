@@ -1,6 +1,4 @@
 magpie.ini
-permissions.cfg
-providers.cfg
 postgres-credentials.env
 docker-entrypoint-initdb.d/create-db.sql
 config/proxy/conf.extra-service.d/magpie.conf
