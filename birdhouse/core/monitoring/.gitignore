@@ -3,3 +3,4 @@ grafana_datasources.yml
 grafana_dashboards.yml
 alertmanager.yml
 prometheus.rules
+config/proxy/conf.extra-service.d/monitoring.conf
