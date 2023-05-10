@@ -2,7 +2,7 @@
         ${PROXY_ROOT_LOCATION}
     }
 
-    location /components/ {
+    location /components {
         default_type application/json;
         return 200 '${BIRDHOUSE_DEPLOY_COMPONENTS_JSON}';
     }

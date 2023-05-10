@@ -41,7 +41,7 @@ BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN="$( \
 if [ -z "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" ]; then
   echo "[WARNING]" \
     "Could not resolve known birdhouse-deploy components." \
-    "Aborting to avoid potentially leaking sensible details." \
+    "Aborting to avoid potentially leaking sensitive details." \
     "Components will not be reported on the platform's JSON endpoint."
   return
 fi

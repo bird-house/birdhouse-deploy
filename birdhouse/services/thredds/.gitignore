@@ -2,4 +2,4 @@ catalog.xml
 threddsConfig.xml
 config/proxy/conf.extra-service.d/thredds.conf
 config/canarie-api/canarie_api_monitoring.py
-conifg/magpie/providers.cfg
+config/magpie/providers.cfg
