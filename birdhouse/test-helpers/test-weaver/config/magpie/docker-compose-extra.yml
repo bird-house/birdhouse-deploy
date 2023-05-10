@@ -1,0 +1,4 @@
+services:
+  magpie:
+    volumes:
+      - ./test-helpers/test-weaver/config/magpie/test-weaver-permissions.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/test-weaver-permissions.yml:ro
