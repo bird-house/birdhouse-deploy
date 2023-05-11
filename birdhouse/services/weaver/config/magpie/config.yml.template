@@ -78,43 +78,43 @@ permissions:
   # Entrypoint
   - service: ${WEAVER_MANAGER_NAME}
     permission: read-match
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   # OpenAPI JSON schema
   - service: ${WEAVER_MANAGER_NAME}
     resource: /json
     permission: read
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   # OpenAPI Swagger
   - service: ${WEAVER_MANAGER_NAME}
     resource: /api
     permission: read
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   # Version details
   - service: ${WEAVER_MANAGER_NAME}
     resource: /versions
     permission: read
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   # OGC-API conformance
   - service: ${WEAVER_MANAGER_NAME}
     resource: /conformance
     permission: read
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   # Process deployment (write) and listing (read)
   # use 'read-match' to allow only listing, and not describe underlying processes (require 'read' on them individually)
   - service: ${WEAVER_MANAGER_NAME}
-    resource: /processes    # GET is processes listing, POST is deploy: only allow view by anonymous
+    resource: /processes    # GET is processes listing, POST is deploy: only allow view by users
     permission: read-match  # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   # convenience group that should be allowed deployment of Application Packages provided as OGC-API REST-JSON WPS
@@ -129,55 +129,16 @@ permissions:
   - service: ${WEAVER_MANAGER_NAME}
     resource: /providers
     permission: read-match
-    group: anonymous
-    action: create
-
-  # Provider processes listing
-  # (each provider in './services/weaver/config/weaver/wps_processes.yml.template')
-  # catalog
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/catalog
-    permission: read
-    group: anonymous
-    action: create
-  # finch
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/finch
-    permission: read
-    group: anonymous
-    action: create
-  # flyingpigeon
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/flyingpigeon
-    permission: read
-    group: anonymous
-    action: create
-  # hummingbird
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/hummingbird
-    permission: read
-    group: anonymous
-    action: create
-  # malleefowl
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/malleefowl
-    permission: read
-    group: anonymous
-    action: create
-  # raven
-  - service: ${WEAVER_MANAGER_NAME}
-    resource: /providers/raven
-    permission: read
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   # FIXME: remove when https://github.com/Ouranosinc/Magpie/issues/360 implemented
   # for the moment, align WPS processes to allow public GetCapabilities and DescribeProcess like REST endpoint does
   - service: ${WEAVER_WPS_NAME}
     permission: getcapabilities
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
   - service: ${WEAVER_WPS_NAME}
     permission: describeprocess
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create

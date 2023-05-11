@@ -1,0 +1,4 @@
+services:
+  magpie:
+    volumes:
+    - ./services/finch/config/weaver/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/weaver-finch-permissions.cfg:ro

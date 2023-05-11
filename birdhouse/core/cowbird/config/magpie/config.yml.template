@@ -22,12 +22,12 @@ permissions:
   # Everything else should remain admin-protected since it manages other user/group permissions.
   - service: cowbird
     permission: read-match
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
   - service: cowbird
     resource: /version
     permission: read-match
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
 # Definitions of all the webhooks urls that will be called when creating or deleting a user.

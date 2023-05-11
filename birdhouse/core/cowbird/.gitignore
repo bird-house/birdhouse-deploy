@@ -3,3 +3,4 @@ config/cowbird/config.yml
 config/cowbird/cowbird.ini
 config/proxy/conf.extra-service.d/cowbird.conf
 config/canarie-api/canarie_api_monitoring.py
+config/magpie/config.yml

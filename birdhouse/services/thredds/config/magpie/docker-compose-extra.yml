@@ -2,3 +2,4 @@ services:
   magpie:
     volumes:
     - ./services/thredds/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/thredds-providers.cfg:ro
+    - ./services/thredds/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/thredds-permissions.cfg:ro

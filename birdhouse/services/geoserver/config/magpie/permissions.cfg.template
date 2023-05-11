@@ -1,0 +1,90 @@
+permissions:
+    - service: geoserver
+      permission: CreateStoredQuery
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: DescribeFeatureType
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: DescribeLayer
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: DescribeProcess
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: DescribeStoredQueries
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: DropStoredQuery
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: Execute
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: GetCapabilities
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: GetFeature
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: GetFeatureInfo
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: GetFeatureWithLock
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: GetGmlObject
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: GetLegendGraphic
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: GetMap
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: GetPropertyValue
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: ListStoredQueries
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: LockFeature
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create
+
+    - service: geoserver
+      permission: Transaction
+      group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+      action: create

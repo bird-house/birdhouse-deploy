@@ -1,0 +1,15 @@
+permissions:
+  - service: raven
+    permission: getcapabilities
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+    action: create
+
+  - service: raven
+    permission: describeprocess
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+    action: create
+
+  - service: raven
+    permission: execute
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+    action: create

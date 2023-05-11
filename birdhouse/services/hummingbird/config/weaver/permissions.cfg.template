@@ -1,0 +1,11 @@
+permissions:
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /providers/hummingbird
+    permission: read
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+    action: create
+  # administrators need access to getcapabilities in order to register this bird as a wps provider
+  - service: hummingbird
+    permission: getcapabilities
+    group: administrators
+    action: create

@@ -13,11 +13,11 @@ permissions:
   - service: secure-data-proxy
     # this location is where weaver saves job wps-outputs when no user
     # was logged in when executing a publicly accessible process
-    # (see 'components/weaver/config/magpie/weaver_hooks.py')
+    # (see 'services/weaver/config/magpie/weaver_hooks.py')
     resource: /wpsoutputs/weaver/public
     type: route
     permission: read
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   - service: secure-data-proxy
@@ -25,5 +25,5 @@ permissions:
     resource: /wpsoutputs/public
     type: route
     permission: read
-    group: anonymous
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create

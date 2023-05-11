@@ -1,0 +1,10 @@
+permissions:
+  - service: thredds
+    permission: read
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+    action: create
+
+  - service: thredds
+    permission: browse
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+    action: create

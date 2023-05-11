@@ -2,3 +2,4 @@ services:
   magpie:
     volumes:
     - ./services/geoserver/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/geoserver-providers.cfg:ro
+    - ./services/geoserver/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/geoserver-permissions.cfg:ro

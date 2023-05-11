@@ -1,0 +1,4 @@
+services:
+  magpie:
+    volumes:
+    - ./services/hummingbird/config/weaver/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/weaver-hummingbird-permissions.cfg:ro

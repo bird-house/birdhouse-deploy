@@ -1,0 +1,4 @@
+services:
+  magpie:
+    volumes:
+    - ./services/flyingpigeon/config/weaver/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/weaver-flyingpigeon-permissions.cfg:ro

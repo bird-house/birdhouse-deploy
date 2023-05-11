@@ -1,0 +1,4 @@
+services:
+  magpie:
+    volumes:
+    - ./services/raven/config/weaver/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/weaver-raven-permissions.cfg:ro
