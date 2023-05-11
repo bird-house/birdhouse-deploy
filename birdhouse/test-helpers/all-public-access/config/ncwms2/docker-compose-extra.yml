@@ -1,4 +1,0 @@
-services:
-  magpie:
-    volumes:
-      - ./test-helpers/all-public-access/config/ncwms2/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/all-public-access-ncwms2-permissions.cfg:ro
