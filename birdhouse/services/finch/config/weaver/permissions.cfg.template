@@ -4,8 +4,3 @@ permissions:
     permission: read
     group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
-  # administrators need access to getcapabilities in order to register this bird as a wps provider
-  - service: finch
-    permission: getcapabilities
-    group: administrators
-    action: create

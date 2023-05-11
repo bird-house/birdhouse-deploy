@@ -33,6 +33,7 @@ OPTIONAL_VARS='
   $EXTRA_PYWPS_CONFIG
   $SERVER_NAME
   $SERVER_DESCRIPTION
+  $BIRDHOUSE_DEFAULT_DOCKER_NETWORK
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH

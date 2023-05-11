@@ -2,3 +2,10 @@ services:
   magpie:
     volumes:
     - ./services/flyingpigeon/config/weaver/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/weaver-flyingpigeon-permissions.cfg:ro
+  flyingpigeon:
+    networks:
+      default:
+        aliases:
+          # weaver requires the hostname to have a top-level-domain
+          # (see https://github.com/Pylons/colander/blob/2.0/src/colander/__init__.py#L696)
+          - "flyingpigeon.weaver"

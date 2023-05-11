@@ -39,10 +39,6 @@ How to Enable the Component
 
   - Add ``"./services/weaver"`` to ``EXTRA_CONF_DIRS``.
 
-  - Component ``birdhouse/optional-components/all-public-access`` should also be enabled to ensure that `Weaver`_
-    can request ``GetCapabilities`` of every WPS provider to be registered. Publicly inaccessible services will not
-    succeed registration and will not provide the WPS-REST interface.
-
 
 Customizing the Component
 -------------------------

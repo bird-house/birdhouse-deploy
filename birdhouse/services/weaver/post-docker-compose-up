@@ -22,8 +22,9 @@
 # Parameters:
 #
 #   WEAVER_WPS_PROVIDERS:
-#       list of provider names (comma or space delimited), all are assumed to be available at
-#       "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/<provider-name>"
+#       list of provider definitions (comma or space delimited), provider definitions contain two (colon delimited)
+#       fields that define the name and url of the provider. ex: 'finch:http://finch:5000'.
+#       these urls must be accessible without authentication from the weaver manager.
 #   WEAVER_WPS_PROVIDERS_MAX_TIME:
 #       limit script execution up to a maximum of this number of seconds
 #   WEAVER_WPS_PROVIDERS_RETRY_COUNT:
@@ -121,6 +122,10 @@ RANDOM_NUMBER=${RANDOM:-$(tr -dc 0-9 < /dev/urandom 2>/dev/null | head -c 5)}
 DOCKER_RUN_TAG="weaver_post_curl_$(date -Isecond | sed 's/:/_/g' | sed 's/+/p/g')_${RANDOM_NUMBER}"
 curl_cmd() {
     docker run --rm --name "${DOCKER_RUN_TAG}" "${WEAVER_CURL_IMAGE}" "$@"
+}
+curl_in_network_cmd() {
+    docker run --rm --network "${BIRDHOUSE_DEFAULT_DOCKER_NETWORK}" --name "${DOCKER_RUN_TAG}" \
+           "${WEAVER_CURL_IMAGE}" "$@"
 }
 
 # pull image if missing to avoid mangling output messages on first call
@@ -242,11 +247,16 @@ done
 echo "${PREFIX}Using URL: [${WEAVER_URL}]"
 start_time="$(date -u +%s)"
 ret=1
-for prov in ${WEAVER_WPS_PROVIDERS}; do
-    if [ -z "${prov}" ]; then
+for prov_definition in ${WEAVER_WPS_PROVIDERS}; do
+    if [ -z "${prov_definition}" ]; then
         continue
     fi
-    prov_url="https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${prov}"
+    prov="$(echo "${prov_definition}" | cut -d':' -f 1)"
+    prov_url="$(echo "${prov_definition}" | cut -d':' -f 2-)"
+    if [ -z "$prov_url" ]; then
+      printf "%s" "${PREFIX}No url specified in provider definition [${prov_definition}]."
+      continue
+    fi
     prov_cap="${prov_url}?service=WPS&request=GetCapabilities"
 
     # wait for WPS provider to respond
@@ -254,7 +264,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
     while true; do
         # request the URL and obtain the body+http code, then split them for verification
         resp=$( \
-            curl_cmd --insecure --silent --location \
+            curl_in_network_cmd --insecure --silent --location \
                  -m ${REQUEST_TIMEOUT} \
                  -w "\n%{http_code}" \
                  -b "${cookie}" \
