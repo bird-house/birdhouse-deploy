@@ -8,7 +8,7 @@ localhost:
 # Weaver self-reference, but using the exposed endpoint on the birdhouse instance
 public:
     netloc: "${PAVICS_FQDN_PUBLIC}"
-    ades: "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
+    ades: "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/weaver"
 
 # Weaver self-reference with specifically 'opensearch' parameters as process input.
 # Since none are available in the stack, there is no collection ID.

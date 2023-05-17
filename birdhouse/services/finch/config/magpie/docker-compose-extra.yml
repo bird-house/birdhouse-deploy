@@ -1,5 +1,0 @@
-services:
-  magpie:
-    volumes:
-    - ./services/finch/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/finch-providers.cfg:ro
-    - ./services/finch/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/finch-permissions.cfg:ro

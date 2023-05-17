@@ -3,7 +3,7 @@
 
 providers:
   # definition of Weaver service
-  ${WEAVER_MANAGER_NAME}:
+  weaver:
     url: http://weaver:4001
     title: Weaver (${WEAVER_CONFIG})
     public: true
@@ -66,44 +66,44 @@ providers:
 
 permissions:
   # Administrator permissions over whole service
-  - service: ${WEAVER_MANAGER_NAME}
+  - service: weaver
     permission: read
     group: administrators
     action: create
-  - service: ${WEAVER_MANAGER_NAME}
+  - service: weaver
     permission: write
     group: administrators
     action: create
 
   # Entrypoint
-  - service: ${WEAVER_MANAGER_NAME}
+  - service: weaver
     permission: read-match
     group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   # OpenAPI JSON schema
-  - service: ${WEAVER_MANAGER_NAME}
+  - service: weaver
     resource: /json
     permission: read
     group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   # OpenAPI Swagger
-  - service: ${WEAVER_MANAGER_NAME}
+  - service: weaver
     resource: /api
     permission: read
     group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   # Version details
-  - service: ${WEAVER_MANAGER_NAME}
+  - service: weaver
     resource: /versions
     permission: read
     group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
     action: create
 
   # OGC-API conformance
-  - service: ${WEAVER_MANAGER_NAME}
+  - service: weaver
     resource: /conformance
     permission: read
     group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
@@ -111,7 +111,7 @@ permissions:
 
   # Process deployment (write) and listing (read)
   # use 'read-match' to allow only listing, and not describe underlying processes (require 'read' on them individually)
-  - service: ${WEAVER_MANAGER_NAME}
+  - service: weaver
     resource: /processes    # GET is processes listing, POST is deploy: only allow view by users
     permission: read-match  # under '/processes/...', JSON 'DescribeProcess', POST job submit, GET results, etc.
     group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
@@ -119,14 +119,14 @@ permissions:
 
   # convenience group that should be allowed deployment of Application Packages provided as OGC-API REST-JSON WPS
   # NOTE: all users member of this group will be allowed to deploy/undeploy **any** app in Weaver
-  - service: ${WEAVER_MANAGER_NAME}
+  - service: weaver
     resource: /processes
     permission: write
     group: app_producers
     action: create
 
   # Providers listing
-  - service: ${WEAVER_MANAGER_NAME}
+  - service: weaver
     resource: /providers
     permission: read-match
     group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}

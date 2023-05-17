@@ -1,5 +1,5 @@
 permissions:
-  - service: ${WEAVER_MANAGER_NAME}
+  - service: weaver
     resource: /providers/raven
     permission: read
     group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}

@@ -1,5 +1,0 @@
-services:
-  magpie:
-    volumes:
-    - ./services/hummingbird/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/hummingbird-providers.cfg:ro
-    - ./services/hummingbird/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/hummingbird-permissions.cfg:ro

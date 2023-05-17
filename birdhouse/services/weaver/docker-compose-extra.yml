@@ -8,7 +8,7 @@ x-logging:
 services:
   # Image 'weaver' is the API side of the application
   weaver:
-    container_name: ${WEAVER_MANAGER_NAME}
+    container_name: weaver
     # NOTE: Override the usual Weaver-Manager image by one that is built inline with extra dependency to 'dockerize'
     #   The 'dockerize' CLI utility allows to wait until each WPS GetCapabilities responds correctly, such that once
     #   Weaver is started, they will all be able to request them and register the providers correctly.
@@ -39,7 +39,7 @@ services:
   # Image 'worker' is the job runner of Weaver, possibly spawning Docker applications according to process definition
   weaver-worker:
     image: pavics/weaver:${WEAVER_VERSION}-worker
-    container_name: ${WEAVER_WORKER_NAME}
+    container_name: weaver-worker
     environment:
       DOCKER_HOST: "tcp://docker-proxy:2375"
     #env_file:
