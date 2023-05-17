@@ -44,18 +44,22 @@ cd $(dirname $(readlink -f $0 || realpath $0))
 # Setup COMPOSE_DIR for sourcing env.local.
 # Prevent un-expected difference when this script is run inside autodeploy
 # container and manually from the host.
-COMPOSE_DIR="`pwd`"
+COMPOSE_DIR="$(pwd)"
+
+# Used to access RELEASE.txt file at project root to determine the release version
+BIRDHOUSE_DEPLOY_ROOT="$(dirname "${COMPOSE_DIR}")"
 
 . "$COMPOSE_DIR/read-configs.include.sh"
 read_configs # this sets ALL_CONF_DIRS
 
 . ./scripts/get-components-json.include.sh
 . ./scripts/get-services-json.include.sh
+. ./scripts/get-version.include.sh
 
 for i in ${VARS}
 do
   v="${i}"
-  if [ -z "`eval "echo ${v}"`" ]
+  if [ -z "$(eval "echo ${v}")" ]
   then
     echo "${RED}Error${NORMAL}: Required variable $v is not set. Check env.local file."
     exit 1
