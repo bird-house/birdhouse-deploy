@@ -1,0 +1,6 @@
+{
+    "name": "jupyterhub",
+    "url": "https://${PAVICS_FQDN_PUBLIC}/jupyter",
+    "type": "jupyterhub",
+    "documentation": "https://jupyter.org/hub"
+}

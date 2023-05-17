@@ -7,6 +7,11 @@
         return 200 '${BIRDHOUSE_DEPLOY_COMPONENTS_JSON}';
     }
 
+    location /services {
+        default_type application/json;
+        return 200 '${BIRDHOUSE_DEPLOY_SERVICES_JSON}';
+    }
+
     location /doc {
         return 302 ${DOC_URL};
     }

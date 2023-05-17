@@ -1,0 +1,6 @@
+{
+    "name": "geoserver",
+    "url": "https://${PAVICS_FQDN_PUBLIC}/geoserver",
+    "type": "geoserver",
+    "documentation": "https://docs.geoserver.org/"
+}

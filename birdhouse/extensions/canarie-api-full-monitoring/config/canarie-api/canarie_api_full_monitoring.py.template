@@ -19,17 +19,17 @@ _BIRDS = {
     },
     'Finch-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}/weaver/providers/finch?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
     'Raven-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}/weaver/providers/raven?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
     'Hummingbird-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${PAVICS_FQDN_PUBLIC}/weaver/providers/hummingbird?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
     # FIXME: remove (https://github.com/bird-house/birdhouse-deploy/issues/214)
