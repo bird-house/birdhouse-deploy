@@ -2,5 +2,6 @@
     "name": "finch",
     "url": "https://${PAVICS_FQDN_PUBLIC}/weaver/providers/finch",
     "type": "wps",
-    "documentation": "https://finch.readthedocs.io"
+    "documentation": "https://finch.readthedocs.io",
+    "description": "A Web Processing Service for Climate Indicators."
 }
