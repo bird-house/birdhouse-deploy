@@ -1,0 +1,6 @@
+{
+    "name": "hummingbird",
+    "url": "https://${PAVICS_FQDN_PUBLIC}/weaver/providers/hummingbird",
+    "type": "wps",
+    "documentation": "https://birdhouse-hummingbird.readthedocs.io"
+}

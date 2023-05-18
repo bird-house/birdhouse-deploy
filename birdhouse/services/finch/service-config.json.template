@@ -1,0 +1,6 @@
+{
+    "name": "finch",
+    "url": "https://${PAVICS_FQDN_PUBLIC}/weaver/providers/finch",
+    "type": "wps",
+    "documentation": "https://finch.readthedocs.io"
+}

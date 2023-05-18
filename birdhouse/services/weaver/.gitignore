@@ -5,3 +5,4 @@ config/weaver/wps_processes.yml
 config/weaver/weaver.ini
 config/proxy/conf.extra-service.d/weaver.conf
 config/canarie-api/canarie_api_monitoring.py
+service-config.json

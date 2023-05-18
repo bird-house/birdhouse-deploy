@@ -2,3 +2,4 @@ config/canarie-api/canarie_api_monitoring.py
 custom.cfg
 config/magpie/permissions.cfg
 config/weaver/permissions.cfg
+service-config.json

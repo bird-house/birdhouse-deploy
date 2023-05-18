@@ -1,0 +1,6 @@
+{
+    "name": "flyingpigeon",
+    "url": "https://${PAVICS_FQDN_PUBLIC}/weaver/providers/flyingpigeon",
+    "type": "wps",
+    "documentation": "https://flyingpigeon.readthedocs.io"
+}

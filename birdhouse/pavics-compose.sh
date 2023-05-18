@@ -39,7 +39,7 @@ OPTIONAL_VARS='
 # we switch to the real directory of the script, so it still works when used from $PATH
 # tip: ln -s /path/to/pavics-compose.sh ~/bin/
 # Setup PWD for sourcing env.local.
-cd $(dirname $(readlink -f $0 || realpath $0))
+cd "$(dirname "$(readlink -f "$0" || realpath "$0")")" || exit 1
 
 # Setup COMPOSE_DIR for sourcing env.local.
 # Prevent un-expected difference when this script is run inside autodeploy
@@ -47,6 +47,7 @@ cd $(dirname $(readlink -f $0 || realpath $0))
 COMPOSE_DIR="$(pwd)"
 
 # Used to access RELEASE.txt file at project root to determine the release version
+# shellcheck disable=SC2034
 BIRDHOUSE_DEPLOY_ROOT="$(dirname "${COMPOSE_DIR}")"
 
 . "$COMPOSE_DIR/read-configs.include.sh"
@@ -65,14 +66,6 @@ do
     exit 1
   fi
 done
-
-## check fails when root access is required to access this file.. workaround possible by going through docker daemon... but
-# will add delay
-# if [ ! -f $SSL_CERTIFICATE ]
-# then
-#   echo "Error, SSL certificate file $SSL_CERTIFICATE is missing"
-#   exit 1
-# fi
 
 TIMEWAIT_REUSE=$(/sbin/sysctl -n  net.ipv4.tcp_tw_reuse)
 if [ ${TIMEWAIT_REUSE} -eq 0 ]
