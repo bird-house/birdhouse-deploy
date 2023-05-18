@@ -1,3 +1,10 @@
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
 services:
   # https://github.com/google/cadvisor/blob/master/docs/running.md
   # Collect per container metrics.
@@ -12,6 +19,7 @@ services:
     devices:
       - /dev/kmsg
     restart: always
+    logging: *default-logging
 
   # https://github.com/prometheus/node_exporter
   # Collect system-wide metrics.
@@ -24,6 +32,7 @@ services:
     pid: "host"
     command: --path.rootfs=/host
     restart: always
+    logging: *default-logging
 
   # https://prometheus.io/docs/prometheus/latest/installation
   # Monitor and store collected metrics.
@@ -45,6 +54,7 @@ services:
       # wrong default was http://container-hash:9090/
       - --web.external-url=http://${PAVICS_FQDN}:9090/
     restart: always
+    logging: *default-logging
 
   # https://grafana.com/docs/grafana/latest/installation/docker/
   # https://grafana.com/docs/grafana/latest/installation/configure-docker/
@@ -60,6 +70,7 @@ services:
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
     restart: always
+    logging: *default-logging
 
   # https://github.com/prometheus/alertmanager
   # https://prometheus.io/docs/alerting/latest/overview/
@@ -80,6 +91,7 @@ services:
       # wrong default was http://container-hash:9093/
       - --web.external-url=http://${PAVICS_FQDN}/alertmanager
     restart: always
+    logging: *default-logging
 
 volumes:
   prometheus_persistence:

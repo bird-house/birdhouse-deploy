@@ -1,0 +1,11 @@
+services:
+  magpie:
+    volumes:
+      - ./test-helpers/emu/config/weaver/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/weaver-emu-permissions.cfg:ro
+  emu:
+    networks:
+      default:
+        aliases:
+          # weaver requires the hostname to have a top-level-domain
+          # (see https://github.com/Pylons/colander/blob/2.0/src/colander/__init__.py#L696)
+          - "emu.weaver"

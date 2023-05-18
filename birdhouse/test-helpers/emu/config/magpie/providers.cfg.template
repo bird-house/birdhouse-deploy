@@ -1,8 +1,0 @@
-providers:
-  ${EMU_NAME}:
-    url: http://emu:${EMU_INTERNAL_PORT}/wps
-    title: ${EMU_NAME}
-    public: true
-    c4i: false
-    type: wps
-    sync_type: wps

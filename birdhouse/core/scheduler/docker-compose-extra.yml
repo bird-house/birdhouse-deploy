@@ -1,3 +1,10 @@
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
 services:
   scheduler:
     image: pavics/crontab:0.6-rc2
@@ -9,5 +16,6 @@ services:
       COMPOSE_DIR: ${PWD}
       AUTODEPLOY_DEPLOY_KEY_ROOT_DIR: ${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}
     restart: always
+    logging: *default-logging
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2

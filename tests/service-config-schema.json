@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "required": [
+    "url",
+    "name",
+    "type",
+    "documentation",
+    "description"
+  ],
+  "properties": {
+    "href": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https?://"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "documentation": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https?://"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

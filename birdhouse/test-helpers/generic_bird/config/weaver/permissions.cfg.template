@@ -1,0 +1,6 @@
+permissions:
+  - service: weaver
+    resource: /providers/generic_bird
+    permission: read
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+    action: create

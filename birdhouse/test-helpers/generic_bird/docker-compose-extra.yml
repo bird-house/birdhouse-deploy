@@ -1,3 +1,10 @@
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
 services:
   generic_bird:
     image: ${GENERIC_BIRD_IMAGE}
@@ -8,6 +15,7 @@ services:
       - ./test-helpers/generic_bird/wps.cfg:/wps.cfg:ro
       - /tmp
     restart: always
+    logging: *default-logging
 
   postgres_generic_bird:
     image: ${GENERIC_BIRD_POSTGRES_IMAGE}
@@ -20,6 +28,7 @@ services:
     env_file:
       - ./config/postgres/credentials.env
     restart: always
+    logging: *default-logging
 
 volumes:
   postgres_generic_bird: {}

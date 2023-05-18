@@ -1,3 +1,10 @@
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
 services:
   testthredds:
     image: ${TESTTHREDDS_IMAGE}
@@ -31,6 +38,7 @@ services:
           "--fail",
           "http://localhost:${TESTTHREDDS_INTERNAL_PORT}/${TESTTHREDDS_CONTEXT_ROOT}/catalog.html",
         ]
+    logging: *default-logging
 
 volumes:
   testthredds_persistence: {}

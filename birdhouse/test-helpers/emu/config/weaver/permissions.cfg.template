@@ -1,0 +1,6 @@
+permissions:
+  - service: weaver
+    resource: /providers/emu
+    permission: read
+    group: ${MAGPIE_DEFAULT_PERMISSION_GROUP}
+    action: create
