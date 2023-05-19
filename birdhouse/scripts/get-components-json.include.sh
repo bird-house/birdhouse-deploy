@@ -34,7 +34,7 @@ cd "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" || true  # ignore error for now, empty 
 
 # note: no quotes in 'ls' on purpose to expand glob patterns
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN="$( \
-  ls -d1 ./*components/*/ ./config/*/ 2>/dev/null \
+  ls -d1 ./services/*/ ./core/*/ ./extensions/*/ ./data/*/ ./test-helpers/*/ 2>/dev/null \
   | sed -E "s|\./(.*)/|\1|" \
 )"
 if [ -z "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" ]; then
