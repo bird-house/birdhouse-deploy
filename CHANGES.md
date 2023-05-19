@@ -15,7 +15,77 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Breaking changes
+
+- Reorganize and update the entire birdhouse stack.
+  
+  - Moves all components to the following directories under birdhouse/ subdirectory:
+    
+    - core/: required components and those that do not have user facing endpoints
+    - services/: optional components that provide user facing services
+    - extensions/: optional configurations that modify services
+    - data/: database and mounted volume definitions that are used by services
+    - test-helpers/: services and extensions intended only to test the stack (i.e. not for production)
+
+  - Deprecates the following services by moving them to the services/.deprecated/ directory. These services are no 
+    longer maintained but are kept for historical reasons. These services will no longer work with the current stack
+    and will require significant changes if they need to be added back to the stack in the future.
+
+    - catalog
+    - frontend
+    - malleefowl
+    - ncops
+    - ncwms2
+    - phoenix
+    - portainer
+    - project-api
+    - solr
+
+  - Access to all routes now goes through twitcher by default. This ensures that all services are protected behind the
+    authorization proxy by default. The only exception is jupyterhub which accesses magpie directly to authorize users.
+    This includes WPS outputs which previously were only protected through twitcher if the secure-data-proxy component
+    was enabled.
+
+  - Docker compose no longer exposes any container ports outside the default network except for ports 80 and 443
+    from the proxy container. This ensures that ports that are not intended for external access are not exposed to the 
+    wider internet even if firewall rules are not set correctly.
+
+  - Docker compose files previously were locked to version 3.4. Docker compose documentation currently recommends not
+    specifying a version number so that the most recent syntax can be used if available. The version numbers were 
+    removed from all docker-compose.yml and docker-compose-extra.yml files.
+
+  - Docker compose was being invoked with the `docker-compose` command instead of using the `docker compose` subcommand.
+    This meant that docker compose version 1 was being used (has since been deprecated). This updates the stack to use
+    docker compose version 2+.
+
+  - By default, all services authorized through twitcher/magpie were blocked for all users. A more reasonable default is
+    to allow anonymous access by default to allow users with no login credentials try out the stack with limited 
+    allocated resources. This can be disabled by changing the MAGPIE_DEFAULT_PERMISSION_GROUP environment variable from
+    "anonymous". This will give default access to whichever group is indicated by MAGPIE_DEFAULT_PERMISSION_GROUP 
+    instead.
+
+  - Previously, WPS services could be access directly or through weaver. This meant that there were two endpoints that
+    provided the same service and also required that access permissions be synchronized between both. This redundancy
+    was unnecessary and so WPS are now only available through weaver. This also ensures that the outputs of WPS will 
+    be organized by username (see services/weaver/config/twitcher/weaver_hooks.py:add_x_wps_output_context) which
+    simplifies permission management of WPS outputs.
+
+  - A new endpoint "/services" is added that provides a json string describing each of the user facing services 
+    currently enabled on the stack. This is a static string and serves a different purpose than the endpoints served
+    by canarie-api (monitoring status). This endpoint is meant to be polled by the node registry scripts (in 
+    development) to provide information about what services are meant to be available without having to poll other 
+    endpoints directly.
+
+  - A new endpoint "/version" is added that provides a string containing the current version number of the stack
+    (e.g. "1.26.0"). This endpoint is meant to be polled by the node registry scripts (in development).
+
+  - The documentation and comments previously contained references to PAVICS explicitly. This is not desirable since 
+    this stack could be used to deploy a stack that is not called "PAVICS". All explicit references to "PAVICS" have
+    been changed to "Birdhouse".
+
+  - Added some additional deployment tests that can be used to ensure that the components of this stack are configured
+    correctly. This should ensure that any future changes will not break the deployment mechanisms used here.
+
 
 [1.26.0](https://github.com/bird-house/birdhouse-deploy/tree/1.26.0) (2023-04-20)
 ------------------------------------------------------------------------------------------------------------------
