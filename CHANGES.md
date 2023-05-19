@@ -86,6 +86,18 @@
   - Added some additional deployment tests that can be used to ensure that the components of this stack are configured
     correctly. This should ensure that any future changes will not break the deployment mechanisms used here.
 
+## Changes
+
+- Licence: update copyright line with year and ownership
+
+
+[1.26.1](https://github.com/bird-house/birdhouse-deploy/tree/1.26.1) (2023-04-26)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Zenodo: A configuration file for [Zenodo](https://zenodo.org/) was added to the source code, listing all contributing authors on the *birdhouse-deploy* repository.
+
 
 [1.26.0](https://github.com/bird-house/birdhouse-deploy/tree/1.26.0) (2023-04-20)
 ------------------------------------------------------------------------------------------------------------------
