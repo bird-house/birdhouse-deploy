@@ -11,7 +11,7 @@
 # values.
 #
 # USAGE:
-#  # Set variable COMPOSE_DIR to the dir containing pavics-compose.sh and
+#  # Set variable COMPOSE_DIR to the dir containing birdhouse-compose.sh and
 #  # docker-compose.yml.
 #
 #  # Source the script providing function read_configs.
@@ -28,23 +28,23 @@
 # Caller of this file can simply set COMPOSE_DIR itself.
 discover_compose_dir() {
     if [ -z "$COMPOSE_DIR" ] || [ ! -e "$COMPOSE_DIR" ]; then
-        if [ -f "./pavics-compose.sh" ]; then
+        if [ -f "./birdhouse-compose.sh" ]; then
             # Current dir is COMPOSE_DIR
             COMPOSE_DIR="$(realpath .)"
-        elif [ -f "../pavics-compose.sh" ]; then
+        elif [ -f "../birdhouse-compose.sh" ]; then
             # Parent dir is COMPOSE_DIR
             # Case of all the scripts under deployment/ or scripts/
             COMPOSE_DIR="$(realpath ..)"
-        elif [ -f "../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../birdhouse-deploy/birdhouse/birdhouse-compose.sh" ]; then
             # Case of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../birdhouse-deploy/birdhouse")"
-        elif [ -f "../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../../birdhouse-deploy/birdhouse/birdhouse-compose.sh" ]; then
             # Case of subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../../birdhouse-deploy/birdhouse")"
-        elif [ -f "../../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../../../birdhouse-deploy/birdhouse/birdhouse-compose.sh" ]; then
             # Case of sub-subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../../../birdhouse-deploy/birdhouse")"
-        elif [ -f "./birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "./birdhouse/birdhouse-compose.sh" ]; then
             # Child dir is COMPOSE_DIR
             COMPOSE_DIR="$(realpath birdhouse)"
         fi

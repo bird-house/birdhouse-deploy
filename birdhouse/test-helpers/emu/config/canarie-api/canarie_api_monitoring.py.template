@@ -1,7 +1,7 @@
 SERVICES['node']['monitoring'].update({
     'emu-public': {
         'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/emu?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/emu?service=WPS&version=1.0.0&request=GetCapabilities'
         },
     },
     'emu': {

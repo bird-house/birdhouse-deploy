@@ -29,10 +29,8 @@ for a full-fledged production platform.
 .. end-badges
 
 
-PAVICS
+Birdhouse
 ------
-
-Power Analytics and Visualization for Climate Science - Powered by Birdhouse and other ESGF software
 
 For GitHub navigation, see the following README pages:
 

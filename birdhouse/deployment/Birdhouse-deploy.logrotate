@@ -1,4 +1,4 @@
-/var/log/PAVICS/*.log {
+/var/log/Birdhouse/*.log {
     # keep at least 6 weeks' worth of logs (do not rotate
     # until the file is > 500k)
     rotate 6

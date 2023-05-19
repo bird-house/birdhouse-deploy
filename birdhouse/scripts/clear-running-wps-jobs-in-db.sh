@@ -10,7 +10,7 @@ shift
 
 POSTGRES_USER="$1"
 if [ -z "$POSTGRES_USER" ]; then
-    POSTGRES_USER=pavics
+    POSTGRES_USER=birdhouse
 else
     shift
 fi

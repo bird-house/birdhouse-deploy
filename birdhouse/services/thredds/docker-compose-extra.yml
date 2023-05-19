@@ -14,12 +14,12 @@ services:
     environment:
       # for reconstructing proper URL back to user when Thredds behind proxy
       # because Twitcher eats the "Host" http header set by Nginx
-      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+      BIRDHOUSE_FQDN_PUBLIC: $BIRDHOUSE_FQDN_PUBLIC
     volumes:
       - thredds_persistence:/usr/local/tomcat/content/thredds
-      - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
-      - ${DATA_PERSIST_ROOT}/ncml:/pavics-ncml
-      - wps_outputs:/pavics-data/wps_outputs
+      - ${DATA_PERSIST_ROOT}/datasets:/birdhouse-data
+      - ${DATA_PERSIST_ROOT}/ncml:/birdhouse-ncml
+      - wps_outputs:/birdhouse-data/wps_outputs
       - ./services/thredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
       - ./services/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
       - ./services/thredds/wmsConfig.xml:/usr/local/tomcat/content/thredds/wmsConfig.xml:ro

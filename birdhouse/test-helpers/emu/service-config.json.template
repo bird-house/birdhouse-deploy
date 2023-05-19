@@ -1,6 +1,6 @@
 {
     "name": "emu",
-    "url": "https://${PAVICS_FQDN_PUBLIC}/weaver/providers/emu",
+    "url": "https://${BIRDHOUSE_FQDN_PUBLIC}/weaver/providers/emu",
     "type": "wps",
     "documentation": "https://emu.readthedocs.io/",
     "description": "WPS processes for testing and demos."

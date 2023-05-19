@@ -18,9 +18,9 @@ How to enable Emu in ``env.local`` (a copy from env.local.example_
   Default values are in `optional-components/emu/default.env <emu/default.env>`_
   (:download:`download </birdhouse/optional-components/emu/default.env>`).
 
-Emu service will be available at ``http://PAVICS_FQDN:EMU_PORT/wps`` or
-``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/EMU_NAME`` where
-``PAVICS_FQDN``\ , ``PAVICS_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
+Emu service will be available at ``http://BIRDHOUSE_FQDN:EMU_PORT/wps`` or
+``https://BIRDHOUSE_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/EMU_NAME`` where
+``BIRDHOUSE_FQDN``\ , ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
 in your ``env.local``.
 
 Magpie will be automatically configured to give complete public anonymous

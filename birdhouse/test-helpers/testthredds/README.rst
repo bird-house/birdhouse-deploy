@@ -11,9 +11,9 @@ How to enable in ``env.local`` (a copy from env.local.example_ (:download:`downl
   customizations.  Default values are in: `optional-components/testthredds/default.env <testthredds/default.env>`_ (:download:`download </birdhouse/optional-components/testthredds/default.env>`).
 
 Test THREDDS service will be available at
-``http://PAVICS_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT`` or
-``https://PAVICS_FQDN_PUBLIC/TESTTHREDDS_CONTEXT_ROOT`` where ``PAVICS_FQDN`` and
-``PAVICS_FQDN_PUBLIC`` are defined in your ``env.local``.
+``http://BIRDHOUSE_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT`` or
+``https://BIRDHOUSE_FQDN_PUBLIC/TESTTHREDDS_CONTEXT_ROOT`` where ``BIRDHOUSE_FQDN`` and
+``BIRDHOUSE_FQDN_PUBLIC`` are defined in your ``env.local``.
 
 Use same docker image as regular THREDDS by default but can be customized.
 

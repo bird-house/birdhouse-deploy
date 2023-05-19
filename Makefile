@@ -213,7 +213,7 @@ version:	## Display project version
 
 ### Execution Targets ###
 
-SCRIPT ?= birdhouse/pavics-compose.sh	## Script to run the stack
+SCRIPT ?= birdhouse/birdhouse-compose.sh	## Script to run the stack
 SCRIPT := $(call clean_opt,$(SCRIPT))
 
 .PHONY: start

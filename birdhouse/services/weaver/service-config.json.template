@@ -1,6 +1,6 @@
 {
     "name": "weaver",
-    "url": "https://${PAVICS_FQDN_PUBLIC}/weaver",
+    "url": "https://${BIRDHOUSE_FQDN_PUBLIC}/weaver",
     "type": "ems",
     "documentation": "https://pavics-weaver.readthedocs.io",
     "description": "An OGC-API flavored Execution Management Service"

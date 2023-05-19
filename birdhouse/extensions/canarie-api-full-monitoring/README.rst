@@ -1,7 +1,7 @@
 Monitor all components in CANARIE node, both public and internal url
 --------------------------------------------------------------------
 
-So that the url ``https://<PAVICS_FQDN>/canarie/node/service/stats`` also return
+So that the url ``https://<BIRDHOUSE_FQDN>/canarie/node/service/stats`` also return
 what the end user really see (a component might work but is not accessible to
 the end user).
 

@@ -3,7 +3,7 @@ docker-geoserver
 
 A simple docker container that runs Geoserver influenced by this docker
 recipe: https://github.com/eliotjordan/docker-geoserver/blob/master/Dockerfile
-and modified for the PAVICS Project.
+and modified for the Birdhouse Project.
 
 The actual Geoserver is 2.9.3.
 The geoserver data directory rest on the host and must be mapped on /opt/geoserver/data_dir (container)

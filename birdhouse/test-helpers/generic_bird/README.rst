@@ -14,9 +14,9 @@ How to enable in ``env.local`` (a copy from env.local.example_ (:download:`downl
   Default values are in `optional-components/generic_bird/default.env <generic_bird/default.env>`_
   (:download:`download </birdhouse/optional-components/generic_bird/default.env>`).
 
-The WPS service will be available at ``http://PAVICS_FQDN:GENERIC_BIRD_PORT/wps``
-or ``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME`` where
-``PAVICS_FQDN``\ , ``PAVICS_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
+The WPS service will be available at ``http://BIRDHOUSE_FQDN:GENERIC_BIRD_PORT/wps``
+or ``https://BIRDHOUSE_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME`` where
+``BIRDHOUSE_FQDN``\ , ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
 in your ``env.local``.
 
 Use same docker image as regular Finch by default but can be customized.

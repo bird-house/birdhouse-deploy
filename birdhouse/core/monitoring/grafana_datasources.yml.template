@@ -5,7 +5,7 @@ datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    uid: local_pavics_prometheus
-    url: http://${PAVICS_FQDN}:9090
+    uid: local_birdhouse_prometheus
+    url: http://${BIRDHOUSE_FQDN}:9090
     isDefault: true
     editable: false

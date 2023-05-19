@@ -1,4 +1,4 @@
 services:
   ncwms2:
     volumes:
-      - wps_outputs:/pavics-data/wps_outputs
+      - wps_outputs:/birdhouse-data/wps_outputs

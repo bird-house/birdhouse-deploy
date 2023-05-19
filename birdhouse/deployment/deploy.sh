@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to automate local deployment process.
 #
-# Log to "/var/log/PAVICS/autodeploy.log" if AUTODEPLOY_SILENT is not empty.
+# Log to "/var/log/Birdhouse/autodeploy.log" if AUTODEPLOY_SILENT is not empty.
 #
 # Still have to ssh to target machine but at least this single script
 # takes care of all the common steps for a standard deployment (see corner
@@ -54,7 +54,7 @@
 #   docker-compose.yml file.
 
 if [ ! -z "$AUTODEPLOY_SILENT" ]; then
-    LOG_FILE="/var/log/PAVICS/autodeploy.log"
+    LOG_FILE="/var/log/Birdhouse/autodeploy.log"
     exec >>$LOG_FILE 2>&1
 fi
 
@@ -66,7 +66,7 @@ COMPOSE_DIR="$1"
 ENV_LOCAL_FILE="$2"
 
 if [ -z "$COMPOSE_DIR" ]; then
-    echo "ERROR: please provide path to PAVICS docker-compose dir." 1>&2
+    echo "ERROR: please provide path to Birdhouse docker-compose dir." 1>&2
     usage
     exit 2
 else
@@ -83,8 +83,8 @@ COMPOSE_DIR="`realpath "$COMPOSE_DIR"`"
 REPO_ROOT="`realpath "$COMPOSE_DIR/.."`"
 
 if [ ! -f "$COMPOSE_DIR/docker-compose.yml" -o \
-     ! -f "$COMPOSE_DIR/pavics-compose.sh" ]; then
-    echo "ERROR: missing docker-compose.yml or pavics-compose.sh file in '$COMPOSE_DIR'" 1>&2
+     ! -f "$COMPOSE_DIR/birdhouse-compose.sh" ]; then
+    echo "ERROR: missing docker-compose.yml or birdhouse-compose.sh file in '$COMPOSE_DIR'" 1>&2
     exit 2
 fi
 
@@ -131,7 +131,7 @@ cd $COMPOSE_DIR
 read_basic_configs_only
 
 # stop all to force reload any changed config that are volume-mount into the containers
-./pavics-compose.sh stop
+./birdhouse-compose.sh stop
 
 for adir in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
     if [ -d "$adir" ]; then
@@ -171,7 +171,7 @@ cd $COMPOSE_DIR
 read_basic_configs_only
 
 # restart everything, only changed containers will be destroyed and recreated
-./pavics-compose.sh up -d
+./birdhouse-compose.sh up -d
 
 set +x
 

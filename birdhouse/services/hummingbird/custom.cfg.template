@@ -5,4 +5,4 @@ extends = profiles/docker.cfg
 enable-https = true
 https-port = 443
 https-output-port = 443
-database=postgresql://${POSTGRES_PAVICS_USERNAME}:${POSTGRES_PAVICS_PASSWORD}@postgres/hummingbird
+database=postgresql://${POSTGRES_BIRDHOUSE_USERNAME}:${POSTGRES_BIRDHOUSE_PASSWORD}@postgres/hummingbird

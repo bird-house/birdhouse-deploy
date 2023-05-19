@@ -10,7 +10,7 @@ import requests_cache  # see entrypoint script
 
 logger = logging.getLogger("canarie-api-config")
 
-MY_SERVER_NAME = 'https://${PAVICS_FQDN_PUBLIC}/canarie'
+MY_SERVER_NAME = 'https://${BIRDHOUSE_FQDN_PUBLIC}/canarie'
 
 DATABASE = {
     'filename': '/opt/local/src/CanarieAPI/stats.db',
@@ -126,7 +126,7 @@ SERVICES = {
             'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/blob/master/CHANGES.md',
             'support': 'https://github.com/bird-house/birdhouse-deploy/issues',
             'source': 'https://github.com/bird-house/birdhouse-deploy',
-            'tryme': 'https://${PAVICS_FQDN_PUBLIC}',
+            'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}',
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
         },
@@ -137,8 +137,8 @@ SERVICES = {
 PLATFORMS = {
     'server': {
         'info': {
-            'name': '${SERVER_NAME}',
-            'synopsis': """${SERVER_DESCRIPTION}""".replace("\n", " ").strip(),
+            'name': '${CANARIE_SERVER_NAME}',
+            'synopsis': """${CANARIE_SERVER_DESCRIPTION}""".replace("\n", " ").strip(),
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.

@@ -93,14 +93,14 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Fixes
-- Config var `PAVICS_FQDN_PUBLIC` not usable in component `default.env` and external scripts
+- Config var `BIRDHOUSE_FQDN_PUBLIC` not usable in component `default.env` and external scripts
 
-  Currently, `PAVICS_FQDN_PUBLIC` is only usable in `.template` files, in
+  Currently, `BIRDHOUSE_FQDN_PUBLIC` is only usable in `.template` files, in
   `docker-compose-extra.yml` files and in component pre/post compose scripts
   because they are handled by `pavics-compose.sh`.
 
   It was good enough but now with delayed eval feature, we can do better.
-  `PAVICS_FQDN_PUBLIC` can be as accessible as the other `PAVICS_FQDN` var.
+  `BIRDHOUSE_FQDN_PUBLIC` can be as accessible as the other `BIRDHOUSE_FQDN` var.
 
   Both vars allow a host to have a different public and internal hostname.
   Some scripts, `certbotwrapper` for example, prefer the public hostname than
@@ -4425,7 +4425,7 @@ Deployed to https://medus.ouranos.ca/jupyter/ for acceptance testing.
   * Documentation: update README and list relevant configuration variables in `env.local` for this new `./component/scheduler`.
 
 
-  Migrating to this new mechanism requires manual deletion of all the artifacts created by the old install scripts: `sudo rm /etc/cron.d/PAVICS-deploy /etc/cron.hourly/PAVICS-deploy-notebooks /etc/logrotate.d/PAVICS-deploy /usr/local/sbin/triggerdeploy.sh`.  Both can not co-exist at the same time.
+  Migrating to this new mechanism requires manual deletion of all the artifacts created by the old install scripts: `sudo rm /etc/cron.d/PAVICS-deploy /etc/cron.hourly/PAVICS-deploy-notebooks /etc/logrotate.d/Birdhouse-deploy /usr/local/sbin/triggerdeploy.sh`.  Both can not co-exist at the same time.
 
   Maximum backward-compatibility has been kept with the old existing install scripts style:
   * Still log to the same existing log files under `/var/log/PAVICS`.

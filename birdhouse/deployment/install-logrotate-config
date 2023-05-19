@@ -4,11 +4,11 @@
 # Will deploy:
 #
 # * logrotate config for various automation scripts output
-#   (/etc/logrotate.d/PAVICS-deploy)
+#   (/etc/logrotate.d/Birdhouse-deploy)
 #
 
 usage() {
-    echo "USAGE: $0 pavics-checkout owner-pavics-checkout"
+    echo "USAGE: $0 birdhouse-checkout owner-birdhouse-checkout"
 }
 
 if [ -z "$1" ]; then
@@ -17,11 +17,11 @@ if [ -z "$1" ]; then
     exit 2
 fi
 
-REPO_ROOT="`realpath "$1"`"; shift  # path to PAVICS checkout
-REPO_OWNER="$1"; shift  #  user owning (have write access) the PAVICS checkout
+REPO_ROOT="`realpath "$1"`"; shift  # path to Birdhouse checkout
+REPO_OWNER="$1"; shift  #  user owning (have write access) the Birdhouse checkout
 
-if [ ! -e "$REPO_ROOT/birdhouse/deployment/PAVICS-deploy.logrotate" ]; then
-    echo "ERROR: bad/wrong pavics-checkout '$REPO_ROOT' " 1>&2
+if [ ! -e "$REPO_ROOT/birdhouse/deployment/Birdhouse-deploy.logrotate" ]; then
+    echo "ERROR: bad/wrong birdhouse-checkout '$REPO_ROOT' " 1>&2
     usage
     exit 2
 fi
@@ -29,10 +29,10 @@ fi
 
 set -x
 
-sudo mkdir -p /var/log/PAVICS
-sudo chown $REPO_OWNER /var/log/PAVICS
+sudo mkdir -p /var/log/Birdhouse
+sudo chown $REPO_OWNER /var/log/Birdhouse
 
-LOGROTATE_FILE="/etc/logrotate.d/PAVICS-deploy"
-sudo cp -v $REPO_ROOT/birdhouse/deployment/PAVICS-deploy.logrotate $LOGROTATE_FILE
+LOGROTATE_FILE="/etc/logrotate.d/Birdhouse-deploy"
+sudo cp -v $REPO_ROOT/birdhouse/deployment/Birdhouse-deploy.logrotate $LOGROTATE_FILE
 sudo chown root:root $LOGROTATE_FILE
 sudo chmod 644 $LOGROTATE_FILE

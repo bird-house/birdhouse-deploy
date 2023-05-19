@@ -35,7 +35,7 @@ the various services of the platform when changes are detected. Therefore, it do
 from users.
 
 In case the platform maintainer desires to perform manual syncing operations with Cowbird, its REST API should be used.
-It will be accessible under ``https://{PAVICS_FQDN_PUBLIC}/cowbird`` and details of available endpoints will be served
+It will be accessible under ``https://{BIRDHOUSE_FQDN_PUBLIC}/cowbird`` and details of available endpoints will be served
 under ``/cowbird/api``. Note that Magpie administrator credentials will be required to access those endpoints.
 
 How to Enable the Component

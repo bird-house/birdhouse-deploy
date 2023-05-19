@@ -52,7 +52,7 @@ services:
       # https://prometheus.io/docs/prometheus/latest/storage/
       - --storage.tsdb.retention.time=90d
       # wrong default was http://container-hash:9090/
-      - --web.external-url=http://${PAVICS_FQDN}:9090/
+      - --web.external-url=http://${BIRDHOUSE_FQDN}:9090/
     restart: always
     logging: *default-logging
 
@@ -89,7 +89,7 @@ services:
       # enable debug logging
       - --log.level=debug
       # wrong default was http://container-hash:9093/
-      - --web.external-url=http://${PAVICS_FQDN}/alertmanager
+      - --web.external-url=http://${BIRDHOUSE_FQDN}/alertmanager
     restart: always
     logging: *default-logging
 

@@ -2,11 +2,11 @@ Scheduler
 =========
 
 This component provides automated unattended continuous deployment for the
-"PAVICS stack" (all the git repos in var ``AUTODEPLOY_EXTRA_REPOS``), for the
+"Birdhouse stack" (all the git repos in var ``AUTODEPLOY_EXTRA_REPOS``), for the
 tutorial notebooks on the Jupyter environment and for the automated deployment
 itself.
 
-It can also be used to schedule other tasks on the PAVICS physical host.
+It can also be used to schedule other tasks on the Birdhouse physical host.
 
 Everything is dockerized, the deployment runs inside a container that will
 update all other containers.
@@ -20,12 +20,12 @@ The trigger for the deployment is new code change on the server on the current
 branch (PR merged, push). New code change locally will not trigger deployment
 so local development workflow is also supported.
 
-Multiple remote repos are supported so the "PAVICS stack" can be made of
+Multiple remote repos are supported so the "Birdhouse stack" can be made of
 multiple checkouts for modularity and extensibility.  The autodeploy will
 trigger if any of the checkouts (configured in ``AUTODEPLOY_EXTRA_REPOS``) is
 not up-to-date with its remote repo.
 
-A suggested "PAVICS stack" is made of at least 2 repos, this repo and another
+A suggested "Birdhouse stack" is made of at least 2 repos, this repo and another
 private repo containing the source controlled ``env.local`` file and any other
 docker-compose override for true infrastructure-as-code.
 
@@ -38,11 +38,11 @@ Usage
 
 Given the unattended nature, there is no UI.  Logs are used to keep trace.
 
-- ``/var/log/PAVICS/autodeploy.log`` is for the PAVICS deployment.
+- ``/var/log/Birdhouse/autodeploy.log`` is for the Birdhouse deployment.
 
-- ``/var/log/PAVICS/notebookdeploy.log`` is for the tutorial notebooks deployment.
+- ``/var/log/Birdhouse/notebookdeploy.log`` is for the tutorial notebooks deployment.
 
-- logrotate is enabled for ``/var/log/PAVICS/*.log`` to avoid filling up the
+- logrotate is enabled for ``/var/log/Birdhouse/*.log`` to avoid filling up the
   disk.  Any new ``.log`` files in that folder will get logrotate for free.
 
 
@@ -70,12 +70,12 @@ Configure logrotate for all following automations to prevent disk full::
 
   deployment/install-logrotate-config .. $USER
 
-To enable continuous deployment of PAVICS::
+To enable continuous deployment of Birdhouse::
 
   deployment/install-automated-deployment.sh .. $USER [daily|5-mins]
   # read the script for more options/details
 
-If you want to manually force a deployment of PAVICS (note this might not use
+If you want to manually force a deployment of Birdhouse (note this might not use
 latest version of deploy.sh_ script (:download:`download <../deployment/deploy.sh>`)::
 
   deployment/deploy.sh .
@@ -89,14 +89,14 @@ To enable continuous deployment of tutorial Jupyter notebooks::
 To trigger tutorial Jupyter notebooks deploy manually::
 
   # configure logrotate before because this script will log to
-  # /var/log/PAVICS/notebookdeploy.log
+  # /var/log/Birdhouse/notebookdeploy.log
 
   deployment/trigger-deploy-notebook
   # read the script for more details
 
 Migrating to the new mechanism requires manual deletion of all the artifacts
-created by the old install scripts: ``sudo rm /etc/cron.d/PAVICS-deploy
-/etc/cron.hourly/PAVICS-deploy-notebooks /etc/logrotate.d/PAVICS-deploy
+created by the old install scripts: ``sudo rm /etc/cron.d/Birdhouse-deploy
+/etc/cron.hourly/Birdhouse-deploy-notebooks /etc/logrotate.d/Birdhouse-deploy
 /usr/local/sbin/triggerdeploy.sh``.  Both can not co-exist at the same time.
 
 
@@ -105,7 +105,7 @@ Comparison between the old and new autodeploy mechanism
 
 Maximum backward-compatibility has been kept with the old install scripts style:
 
-* Still log to the same existing log files under ``/var/log/PAVICS``.
+* Still log to the same existing log files under ``/var/log/Birdhouse``.
 * Old single ssh deploy key is still compatible, but the new mechanism allows for different ssh deploy keys for each
   extra repos (again, public repos should use https clone path to avoid dealing with ssh deploy keys in the first
   place).
@@ -115,7 +115,7 @@ Features missing in old install scripts or how the new mechanism improves on the
 
 * Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if triggerdeploy.sh_
   (:download:`download <../deployment/triggerdeploy.sh>`)
-  or the deployed ``/etc/cron.hourly/PAVICS-deploy-notebooks`` script changes, they have to be deployed manually.
+  or the deployed ``/etc/cron.hourly/Birdhouse-deploy-notebooks`` script changes, they have to be deployed manually.
   It's very annoying.  Now they are volume-mount in so are fresh on each run.
 * ``env.local`` now drives absolutely everything, source control that file and we've got a true DevOPS pipeline.
 * Configurable platform and notebook autodeploy frequency.  Previously, this means manually editing the generated cron

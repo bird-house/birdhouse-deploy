@@ -8,11 +8,11 @@
 # Same notebooks as tested by Jenkins and same notebooks as the Binder
 # https://mybinder.org/v2/gh/Ouranosinc/PAVICS-e2e-workflow-tests/master.
 #
-# This is meant to be run on the same host running PAVICS.
+# This is meant to be run on the same host running Birdhouse.
 #
-# Logs to /var/log/PAVICS/notebookdeploy.log, re-use existing logrotate.
+# Logs to /var/log/Birdhouse/notebookdeploy.log, re-use existing logrotate.
 
-LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
+LOG_FILE="/var/log/Birdhouse/notebookdeploy.log"
 exec >>$LOG_FILE 2>&1
 
 cleanup_on_exit() {

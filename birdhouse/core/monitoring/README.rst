@@ -1,7 +1,7 @@
 Monitoring
 ==========
 
-This component provides monitoring and alerting for the PAVICS physical host and containers.
+This component provides monitoring and alerting for the Birdhouse physical host and containers.
 
 Prometheus stack is used:
 
@@ -15,9 +15,9 @@ Prometheus stack is used:
 Usage
 -----
 
-- Grafana to view metric graphs: http://PAVICS_FQDN:3001/d/pf6xQMWGz/docker-and-system-monitoring
-- Prometheus alert rules: http://PAVICS_FQDN:9090/rules
-- AlertManager to manage alerts: http://PAVICS_FQDN:9093
+- Grafana to view metric graphs: http://BIRDHOUSE_FQDN:3001/d/pf6xQMWGz/docker-and-system-monitoring
+- Prometheus alert rules: http://BIRDHOUSE_FQDN:9090/rules
+- AlertManager to manage alerts: http://BIRDHOUSE_FQDN:9093
 
 The paths above are purposely not behind the proxy to not expose them publicly,
 assuming only ports 80 and 443 are publicly exposed on the internet.  All other

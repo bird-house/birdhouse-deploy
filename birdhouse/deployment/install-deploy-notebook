@@ -11,7 +11,7 @@
 CRON_FILE="/etc/cron.hourly/PAVICS-deploy-notebooks"
 
 usage() {
-    echo "USAGE: $0 pavics-checkout"
+    echo "USAGE: $0 birdhouse-checkout"
 }
 
 if [ -z "$1" ]; then
@@ -21,10 +21,10 @@ if [ -z "$1" ]; then
 fi
 
 
-REPO_ROOT="`realpath "$1"`"; shift  # path to PAVICS checkout
+REPO_ROOT="`realpath "$1"`"; shift  # path to Birdhouse checkout
 
 if [ ! -e "$REPO_ROOT/birdhouse/deployment/trigger-deploy-notebook" ]; then
-    echo "ERROR: bad/wrong pavics-checkout '$REPO_ROOT' " 1>&2
+    echo "ERROR: bad/wrong birdhouse-checkout '$REPO_ROOT' " 1>&2
     usage
     exit 2
 fi

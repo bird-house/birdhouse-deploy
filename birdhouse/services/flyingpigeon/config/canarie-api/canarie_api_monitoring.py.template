@@ -24,14 +24,14 @@ SERVICES['flyingpigeon'] = {
         'releasenotes': 'https://github.com/bird-house/flyingpigeon/blob/master/CHANGES.rst',
         'support': 'https://github.com/bird-house/flyingpigeon/issues',
         'source': 'https://github.com/bird-house/flyingpigeon',
-        'tryme': 'https://${PAVICS_FQDN}/weaver/providers/flyingpigeon/wps?service=WPS&version=1.0.0&request=GetCapabilities',
+        'tryme': 'https://${BIRDHOUSE_FQDN}/weaver/providers/flyingpigeon/wps?service=WPS&version=1.0.0&request=GetCapabilities',
         'licence': 'https://github.com/bird-house/flyingpigeon/blob/master/LICENSE.txt',
         'provenance': 'https://github.com/bird-house/flyingpigeon'
     },
     'monitoring': {
         'Flyingpigeon': {
             'request': {
-                'url': 'https://${PAVICS_FQDN_PUBLIC}/weaver/providers/flyingpigeon/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+                'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}/weaver/providers/flyingpigeon/wps?service=WPS&version=1.0.0&request=GetCapabilities'
             }
         },
     }

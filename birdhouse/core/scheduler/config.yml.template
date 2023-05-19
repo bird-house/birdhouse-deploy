@@ -1,13 +1,13 @@
 ---
 - name: logrotate
-  comment: Rotate log files under /var/log/PAVICS
+  comment: Rotate log files under /var/log/Birdhouse
   schedule: '@daily'
   command: bash -c 'cp /etc/logrotate.conf.orig /etc/logrotate.conf && chown root:root /etc/logrotate.conf && chmod 644 /etc/logrotate.conf && /usr/sbin/logrotate -v /etc/logrotate.conf'
   dockerargs: >-
     --rm --name logrotate
-    --volume /var/log/PAVICS:/var/log/PAVICS:rw
+    --volume /var/log/Birdhouse:/var/log/Birdhouse:rw
     --volume ${DATA_PERSIST_ROOT}/logrotate:/var/lib:rw
-    --volume ${COMPOSE_DIR}/deployment/PAVICS-deploy.logrotate:/etc/logrotate.conf.orig:ro
+    --volume ${COMPOSE_DIR}/deployment/Birdhouse-deploy.logrotate:/etc/logrotate.conf.orig:ro
   image: 'stakater/logrotate:3.13.0'
 
 - name: notebookdeploy
@@ -17,7 +17,7 @@
   dockerargs: >-
     --rm --name notebookdeploy
     --volume /var/run/docker.sock:/var/run/docker.sock:ro
-    --volume /var/log/PAVICS:/var/log/PAVICS:rw
+    --volume /var/log/Birdhouse:/var/log/Birdhouse:rw
     --volume ${COMPOSE_DIR}:${COMPOSE_DIR}:ro
     --volume ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}:rw
     --volume /tmp/notebookdeploy:/tmp/notebookdeploy:rw
@@ -27,13 +27,13 @@
   image: 'docker:19.03.6-git'
 
 - name: autodeploy
-  comment: Auto-deploy entire PAVICS platform
+  comment: Auto-deploy entire Birdhouse platform
   schedule: '${AUTODEPLOY_PLATFORM_FREQUENCY}'
   command: '${COMPOSE_DIR}/deployment/triggerdeploy.sh ${COMPOSE_DIR}'
   dockerargs: >-
     --rm --name autodeploy${AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES}
     --volume /var/run/docker.sock:/var/run/docker.sock:ro
-    --volume /var/log/PAVICS:/var/log/PAVICS:rw
+    --volume /var/log/Birdhouse:/var/log/Birdhouse:rw
     --volume ${COMPOSE_DIR}/..:${COMPOSE_DIR}/..:rw
     --volume ${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:ro
     --volume ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}:rw

@@ -1,15 +1,15 @@
 
     location /grafana {
-        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/grafana;
+        proxy_pass https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/grafana;
         proxy_set_header Host $host;
     }
 
     location /prometheus {
-        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/prometheus;
+        proxy_pass https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/prometheus;
         proxy_set_header Host $host;
     }
 
     location /alertmanager {
-        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/alertmanager;
+        proxy_pass https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/alertmanager;
         proxy_set_header Host $host;
     }

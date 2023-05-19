@@ -17,17 +17,17 @@ and execution of custom applications and workflows.
 Usage
 -----
 
-Once this component is enabled, `Weaver`_ will be accessible at ``https://<PAVICS_FQDN_PUBLIC>/weaver`` endpoint,
-where ``PAVICS_FQDN_PUBLIC`` is defined in your ``env.local`` file.
+Once this component is enabled, `Weaver`_ will be accessible at ``https://<BIRDHOUSE_FQDN_PUBLIC>/weaver`` endpoint,
+where ``BIRDHOUSE_FQDN_PUBLIC`` is defined in your ``env.local`` file.
 
 Full process listing (across WPS providers) should be available using request:
 
 .. code-block::
 
-    GET https://<PAVICS_FQDN_PUBLIC>/weaver/processes?providers=true
+    GET https://<BIRDHOUSE_FQDN_PUBLIC>/weaver/processes?providers=true
 
 Please refer to the `Weaver OpenAPI`_ for complete description of available requests.
-This description will also be accessible via ``https://<PAVICS_FQDN_PUBLIC>/weaver/api`` once the instance is started.
+This description will also be accessible via ``https://<BIRDHOUSE_FQDN_PUBLIC>/weaver/api`` once the instance is started.
 
 For any specific details about `Weaver`_ configuration parameters, functionalities or questions, please refer to its
 `documentation <https://pavics-weaver.readthedocs.io/en/latest/>`_.

@@ -1,6 +1,6 @@
 providers:
   catalog:
-    url: http://${PAVICS_FQDN}:8086/pywps
+    url: http://${BIRDHOUSE_FQDN}:8086/pywps
     title: Catalog
     public: true
     c4i: false
@@ -8,7 +8,7 @@ providers:
     sync_type: wps
 
   ${CATALOG_THREDDS_SERVICE}:
-    url: http://${PAVICS_FQDN}:8083/twitcher/ows/proxy/thredds
+    url: http://${BIRDHOUSE_FQDN}:8083/twitcher/ows/proxy/thredds
     title: Thredds
     public: true
     c4i: false

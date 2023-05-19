@@ -19,7 +19,7 @@ SERVICES['Weaver'] = {
         'releasenotes': 'https://github.com/crim-ca/weaver/blob/master/CHANGES.rst',
         'support': 'https://github.com/crim-ca/weaver/issues',
         'source': 'https://github.com/crim-ca/weaver',
-        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/weaver/',
+        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/weaver/',
         'licence': 'https://github.com/crim-ca/weaver/blob/${WEAVER_VERSION}/LICENSE.txt',
         'provenance': 'https://github.com/crim-ca/weaver'
     },

@@ -8,7 +8,7 @@ from string import Template
 import jsonschema
 
 COMPONENT_LOCATIONS = ('core', 'data', 'services', 'extensions', 'test-helpers')
-TEMPLATE_SUBSTITUTIONS = {'PAVICS_FQDN_PUBLIC': os.environ.get('PAVICS_FQDN_PUBLIC', 'example.com')}
+TEMPLATE_SUBSTITUTIONS = {'BIRDHOUSE_FQDN_PUBLIC': os.environ.get('BIRDHOUSE_FQDN_PUBLIC', 'example.com')}
 
 
 @pytest.fixture(scope="module")

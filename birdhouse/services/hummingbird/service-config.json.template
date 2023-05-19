@@ -1,6 +1,6 @@
 {
     "name": "hummingbird",
-    "url": "https://${PAVICS_FQDN_PUBLIC}/weaver/providers/hummingbird",
+    "url": "https://${BIRDHOUSE_FQDN_PUBLIC}/weaver/providers/hummingbird",
     "type": "wps",
     "documentation": "https://birdhouse-hummingbird.readthedocs.io",
     "description": "A WPS for metadata compliance checks used in the climate science community."

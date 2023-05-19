@@ -1,6 +1,6 @@
 {
     "name": "raven",
-    "url": "https://${PAVICS_FQDN_PUBLIC}/weaver/providers/raven",
+    "url": "https://${BIRDHOUSE_FQDN_PUBLIC}/weaver/providers/raven",
     "type": "wps",
     "documentation": "https://pavics-raven.readthedocs.io",
     "description": "A WPS providing hydrological modeling and analysis services."
