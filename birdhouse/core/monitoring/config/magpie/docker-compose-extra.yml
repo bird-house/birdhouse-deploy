@@ -1,4 +1,6 @@
 services:
   magpie:
     volumes:
+      - ./core/monitoring/config/magpie/config.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/monitoring.yml:ro
+      - ./core/monitoring/config/magpie/config.yml:${MAGPIE_PROVIDERS_CONFIG_PATH}/monitoring.yml:ro
       - ./core/monitoring/config/magpie/config.yml:${MAGPIE_WEBHOOKS_CONFIG_PATH}/monitoring.yml:ro
