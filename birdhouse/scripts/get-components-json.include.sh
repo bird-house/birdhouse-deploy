@@ -6,7 +6,6 @@
 #  "components": [
 #    "bird-house/birdhouse-deploy:components/monitoring",
 #    "bird-house/birdhouse-deploy:optional-components/canarie-api-full-monitoring",
-#    "bird-house/birdhouse-deploy:optional-components/all-public-access",
 #    "bird-house/birdhouse-deploy:optional-components/wps-healthchecks",
 #    "bird-house/birdhouse-deploy:optional-components/secure-thredds",
 #    "bird-house/birdhouse-deploy:optional-components/testthredds",

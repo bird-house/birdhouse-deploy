@@ -172,11 +172,6 @@ For that test suite to pass, run the script
 `scripts/bootstrap-instance-for-testsuite <scripts/bootstrap-instance-for-testsuite>`_ (:download:`download </birdhouse/scripts/bootstrap-instance-for-testsuite>`)
 to prepare your new instance.  Further documentation inside the script.
 
-Optional components
-`all-public-access <./optional-components#give-public-access-to-all-resources-for-testing-purposes>`_
-and `secure-thredds <./optional-components/#control-secured-access-to-resources-example>`_
-also need to be enabled in ``env.local`` using ``EXTRA_CONF_DIRS`` variable.
-
 ESGF login is also needed for
 https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebooks/esgf-dap.ipynb
 part of test suite.  ESGF credentials can be given to Jenkins via
