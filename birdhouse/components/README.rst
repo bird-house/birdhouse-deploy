@@ -381,7 +381,7 @@ define your custom values in ``env.local`` directly.
 
 
 STAC
-=======
+====
 
 `STAC`_ is the common name of the REST API that implements the STAC specification, common representation of geospatial 
 information.
@@ -399,11 +399,6 @@ define the following in the ``env.local`` file::
 
   export PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
 
-STAC API comes pre-loaded with sample data ingested by the ``stac-populator`` component. On stack initialization, 
-STAC item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds in order to populate the catalog 
-with sample data. Change this timeout as needed, as there are no impact on the stack boot, except time required to feed 
-the catalog.
-
 Here is a sample search query using a CLI::
 
   pip install pystac-client
@@ -413,4 +408,4 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``"./components/stac"`` to ``EXTRA_CONF_DIRS``.
+- Add ``"./optional-components/stac"`` to ``EXTRA_CONF_DIRS``.

@@ -1,9 +1,0 @@
-requests
-pystac
-pyyaml
-git+https://github.com/crim-ca/stac-generator#egg=stac-generator
-siphon
-shapely
-boto3
-fsspec
-xarray

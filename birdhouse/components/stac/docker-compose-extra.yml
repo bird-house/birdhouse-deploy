@@ -24,22 +24,6 @@ services:
     logging: *default-logging
     restart: always
 
-  # populates STAC catalog with sample collection items
-  stac-populator:
-    container_name: stac-populator
-    build:
-      context: ./components/stac/populator
-      dockerfile: Dockerfile
-    environment:
-      - STAC_ASSET_GENERATOR_TIMEOUT=15
-      - STAC_HOST=http://stac:8000/stac
-    volumes:
-      - ./components/stac/populator:/populator:ro
-    command: >
-      bash -c "cd /populator && ./wait-for-it.sh stac:8000 -t 30 && ./populate.sh"
-    depends_on:
-      - stac
-
   stac-browser:
     container_name: stac-browser
     image: ghcr.io/crim-ca/stac-browser:docker_image_push
