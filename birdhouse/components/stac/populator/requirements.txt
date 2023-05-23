@@ -1,7 +1,7 @@
 requests
 pystac
 pyyaml
-git+https://github.com/crim-ca/stac-generator@fix_header_extract#egg=stac-generator
+git+https://github.com/crim-ca/stac-generator#egg=stac-generator
 siphon
 shapely
 boto3

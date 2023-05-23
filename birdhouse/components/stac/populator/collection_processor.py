@@ -8,7 +8,8 @@ Create a STAC collection or update its summaries based on its queryables.
 __author__ = "Mathieu Provencher"
 __date__ = "20 Apr 2022"
 __copyright__ = "Copyright 2022 Computer Research Institute of Montreal"
-__license__ = "BSD - see LICENSE file in top-level package directory"
+__license__ = "MIT"
+__holder__ = "Computer Research Institute of Montreal (CRIM)"
 __contact__ = "mathieu.provencher@crim.ca"
 
 import requests

@@ -395,21 +395,19 @@ The STAC API can be browsed via the ``stac-browser`` component. By default, the 
 exposed by the current stack instance. Once this component is enabled, STAC API will be accessible at 
 ``https://<PAVICS_FQDN_PUBLIC>/stac`` endpoint and the STAC browser will be available at 
 ``https://<PAVICS_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint, 
-define the following in the `env.local` file:
+define the following in the ``env.local`` file::
 
-```
-export PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
-```
+  export PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
 
 STAC API comes pre-loaded with sample data ingested by the ``stac-populator`` component. On stack initialization, 
-STAC item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds.
+STAC item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds in order to populate the catalog 
+with sample data. Change this timeout as needed, as there are no impact on the stack boot, except time required to feed 
+the catalog.
 
-Here is a sample search query using a CLI:
+Here is a sample search query using a CLI::
 
-```
-pip install pystac-client
-stac-client search $PAVIS_FQDN/stac -c c604ffb6d610adbb9a6b4787db7b8fd7 -q "variable_id=txgt_32" "scenario=ssp585"
-```
+  pip install pystac-client
+  stac-client search $PAVIS_FQDN/stac -c c604ffb6d610adbb9a6b4787db7b8fd7 -q "variable_id=txgt_32" "scenario=ssp585"
 
 How to Enable the Component
 ---------------------------
