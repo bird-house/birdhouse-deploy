@@ -9,7 +9,7 @@ x-logging:
 
 services:
   raven:
-    image: pavics/raven:0.14.2
+    image: pavics/raven:${RAVEN_VERSION}
     container_name: raven
     ports:
       - "8096:9099"

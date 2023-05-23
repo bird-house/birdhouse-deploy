@@ -1,13 +1,10 @@
-SERVICES['node']['monitoring'].update({'Thredds': {
-                'request': {
-                    'url': 'http://${PAVICS_FQDN}:8083${TWITCHER_PROTECTED_PATH}/thredds/catalog.html'
-                }
-            }})
-
 SERVICES['renderer'] = {
     'info': {
         'name': 'High-resolution spatial gridded data renderer',
-        'synopsis': 'This service renders gridded data on the server and sends images to the client for display within mapping applications using Open Geospatial Consortium (OGC) Web Mappping Service (WMS) standard.',
+        'synopsis': (
+            'This service renders gridded data on the server and sends images to the client for display within '
+            'mapping applications using Open Geospatial Consortium (OGC) Web Mappping Service (WMS) standard.'
+        ),
         'version': '4.6.15',
         'institution': 'Unidata',
         'releaseTime': '2020-06-16T00:00:00Z',
@@ -35,6 +32,41 @@ SERVICES['renderer'] = {
                 'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds/wms/birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc?service=WMS&version=1.3.0&request=GetCapabilities'
             }
         },
+    }
+}
+
+SERVICES['Thredds'] = {
+    'info': {
+        'name': 'Thredds',
+        'synopsis': 'Climate Data Catalog and Format Renderers',
+        'version': "${THREDDS_VERSION}",
+        'releaseTime': get_release_time_from_repo_tag("docker", "${THREDDS_DOCKER}", "${THREDDS_VERSION}"),
+        'institution': 'Ouranos',
+        'researchSubject': 'Catalog',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Catalog',
+        'tags': ['Catalog', 'Climate Data']
+    },
+    'stats': {
+        'method': '.*',
+        'route': '${TWITCHER_PROTECTED_PATH}/thredds/.*'
+    },
+    'redirect': {
+        'doc': 'https://www.unidata.ucar.edu/software/tds/',
+        'releasenotes': 'https://docs.unidata.ucar.edu/tds/current/userguide/upgrade.html',
+        'support': 'https://www.unidata.ucar.edu/software/tds/#help',
+        'source': 'https://github.com/Unidata/tds',
+        'tryme': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds/',
+        'licence': 'https://github.com/Unidata/tds/blob/main/LICENSE',
+        'provenance': 'https://downloads.unidata.ucar.edu/tds/'
+    },
+    "monitoring": {
+        "Thredds": {
+            'request': {
+                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
+                'url': 'http://${PAVICS_FQDN}:8083${TWITCHER_PROTECTED_PATH}/thredds/catalog.html'
+            }
+        }
     }
 }
 

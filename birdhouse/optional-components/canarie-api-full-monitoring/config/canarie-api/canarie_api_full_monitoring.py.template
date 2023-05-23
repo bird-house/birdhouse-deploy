@@ -1,4 +1,6 @@
-SERVICES['node']['monitoring'].update({
+import copy
+
+_BIRDS = {
     'Thredds-public': {
         'request': {
             'url': 'https://${PAVICS_FQDN_PUBLIC}/thredds/catalog.html',
@@ -30,11 +32,33 @@ SERVICES['node']['monitoring'].update({
             'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
+    # FIXME: remove (https://github.com/bird-house/birdhouse-deploy/issues/214)
     'ncWMS2-public': {
         'request': {
             'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/ncWMS2/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
         }
     },
-})
+}
+for bird_public, bird_public_cfg in _BIRDS.items():
+    bird_private = bird_public.split("-public")[0]
+    if bird_private in SERVICES:
+        SERVICES[bird_private]["monitoring"][bird_public] = bird_public_cfg
+    elif "node" in SERVICES:
+        SERVICES["node"]["monitoring"][bird_public] = bird_public_cfg
+
+
+# See notes in 'components/weaver/docker-compose-extra.yml'
+# about the conditional loading of this config in 'proxy' service.
+if "Weaver" in SERVICES:
+    weaver_cfg = copy.deepcopy(SERVICES["Weaver"]["monitoring"]["Weaver"])
+    weaver_cfg["request"]["url"] = "https://${PAVICS_FQDN_PUBLIC}/weaver/"
+    SERVICES["Weaver"]["monitoring"]["Weaver-public"] = weaver_cfg
+
+# See notes in 'components/cowbird/docker-compose-extra.yml'
+# about the conditional loading of this config in 'proxy' service.
+if "Cowbird" in SERVICES:
+    cowbird_cfg = copy.deepcopy(SERVICES["Cowbird"]["monitoring"]["Cowbird"])
+    cowbird_cfg["request"]["url"] = "https://${PAVICS_FQDN_PUBLIC}/cowbird/"
+    SERVICES["Cowbird"]["monitoring"]["Cowbird-public"] = cowbird_cfg
 
 # vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python

@@ -1,6 +1,40 @@
-SERVICES['node']['monitoring'].update({'Geoserver': {
-    'request': {
-        'url': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/'
+SERVICES['GeoServer'] = {
+    'info': {
+        'name': 'GeoServer',
+        'synopsis': (
+            'GeoServer is the reference implementation of the Open Geospatial Consortium (OGC) '
+            'Web Feature Service (WFS) and Web Coverage Service (WCS) standards, as well as a high performance '
+            'certified compliant Web Map Service (WMS), compliant Catalog Service for the Web (CSW) and '
+            'implementing Web Processing Service (WPS). GeoServer forms a core component of the Geospatial Web.'
+        ),
+        'version': "${GEOSERVER_VERSION}",
+        'institution': 'Ouranos',
+        'releaseTime': get_release_time_from_repo_tag("docker", "${GEOSERVER_DOCKER}", "${GEOSERVER_TAGGED}"),
+        'researchSubject': 'Geospatial',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Data Catalog',
+        'tags': ['Data', 'Geospatial', 'Catalog', 'OGC', 'WFS', 'WMS', 'WPS']
+    },
+    'stats': {
+        'method': '.*',
+        'route': "/geoserver/.*"
+    },
+    'redirect': {
+        'doc': 'https://docs.geoserver.org/',
+        'releasenotes': 'https://geoserver.org/release/${GEOSERVER_VERSION}/',
+        'support': 'https://github.com/kartoza/docker-geoserver/issues',
+        'source': 'https://github.com/kartoza/docker-geoserver',
+        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/',
+        'licence': 'https://github.com/geoserver/geoserver/blob/${GEOSERVER_VERSION}/LICENSE.txt',
+        'provenance': 'https://github.com/kartoza/docker-geoserver'
+    },
+    "monitoring": {
+        "GeoServer": {
+            'request': {
+                'url': 'https://${PAVICS_FQDN_PUBLIC}/geoserver/web/'
+            }
+        }
     }
-}})
+}
+
 CANARIE_STATS_ROUTES.append('geoserver')

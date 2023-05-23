@@ -9,7 +9,7 @@ x-logging:
 
 services:
   catalog:
-    image: pavics/pavics-datacatalog:0.6.11
+    image: ${CATALOG_DOCKER}:${CATALOG_VERSION}
     container_name: catalog
     ports:
       - "8086:80"

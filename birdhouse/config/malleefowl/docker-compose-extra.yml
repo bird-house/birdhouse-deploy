@@ -9,7 +9,7 @@ x-logging:
 
 services:
   malleefowl:
-    image: pavics/malleefowl:pavics-0.3.5
+    image: pavics/malleefowl:${MALLEEFOWL_VERSION}
     container_name: malleefowl
     environment:
       HOSTNAME: $HOSTNAME

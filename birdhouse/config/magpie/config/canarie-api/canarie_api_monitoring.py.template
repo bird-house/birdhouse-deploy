@@ -1,9 +1,42 @@
-SERVICES['node']['monitoring'].update({'Magpie': {
-    'request': {
-        'url': 'https://${PAVICS_FQDN_PUBLIC}/magpie/version'
+SERVICES['Magpie'] = {
+    'info': {
+        'name': 'Magpie',
+        'synopsis': (
+            'Magpie is service for AuthN/AuthZ accessible via a REST API. '
+            'It allows you to manage User/Group/Service/Resource/Permission management '
+            'and integrates with Twitcher.'
+        ),
+        'version': "${MAGPIE_VERSION}",
+        'institution': 'Ouranos',
+        'releaseTime': get_release_time_from_repo_tag("github", "Ouranosinc/Magpie", "${MAGPIE_VERSION}"),
+        'researchSubject': 'Security',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Security',
+        'tags': ['Security', 'Management', 'Access', 'Policy Decision Point']
     },
-    'response': {
-        'text': '\{.*"code": 200.*"type": "application/json".*\}'
+    'stats': {
+        'method': '.*',
+        'route': "/magpie/.*"
+    },
+    'redirect': {
+        'doc': 'https://pavics-magpie.readthedocs.io/',
+        'releasenotes': 'https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst',
+        'support': 'https://github.com/Ouranosinc/Magpie/issues',
+        'source': 'https://github.com/Ouranosinc/Magpie',
+        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/magpie/',
+        'licence': 'https://github.com/Ouranosinc/Magpie/blob/${MAGPIE_VERSION}/LICENSE',
+        'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+    },
+    "monitoring": {
+        "Magpie": {
+            'request': {
+                'url': 'https://${PAVICS_FQDN_PUBLIC}/magpie/version'
+            },
+            'response': {
+                'text': r'\{.*"code": 200.*"type": "application/json".*\}'
+            }
+        }
     }
-}})
+}
+
 CANARIE_STATS_ROUTES.append('magpie')

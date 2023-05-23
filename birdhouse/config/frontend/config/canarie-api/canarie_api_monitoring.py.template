@@ -1,4 +1,4 @@
-PLATFORMS['pavics']['monitoring']['Frontend'] = {
+PLATFORMS['server']['monitoring']['Frontend'] = {
     'request': {
         'url': 'https://${PAVICS_FQDN_PUBLIC}'
     }

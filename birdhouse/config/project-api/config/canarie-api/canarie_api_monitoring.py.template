@@ -1,6 +1,6 @@
-PLATFORMS['pavics']['monitoring']['Project'] = {
+PLATFORMS['server']['monitoring']['Project'] = {
     'request': {
         'url': 'https://${PAVICS_FQDN_PUBLIC}/project-api/explorer/'
     }
 }
-PLATFORMS['pavics']['stats']['route'] = '/project-api/.*'
+PLATFORMS['server']['stats']['route'] = '/project-api/.*'

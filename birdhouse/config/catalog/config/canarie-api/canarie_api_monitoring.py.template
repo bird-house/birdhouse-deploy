@@ -1,5 +1,34 @@
-SERVICES['node']['monitoring']['Catalog'] = {
-    'request': {
-        'url': 'http://${PAVICS_FQDN}:8086/pywps?service=WPS&version=1.0.0&request=GetCapabilities'
+SERVICES['Catalog'] = {
+    'info': {
+        'name': 'Catalog',
+        'synopsis': 'Catalog',
+        'version': "${CATALOG_VERSION}",
+        'institution': 'Ouranos',
+        'releaseTime': get_release_time_from_repo_tag("docker", "${CATALOG_DOCKER}", "${CATALOG_VERSION}"),
+        'researchSubject': 'Climate',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Catalog',
+        'tags': ['Catalog', 'Data']
+    },
+    'stats': {
+        'method': '.*',
+        'route': 'http://${PAVICS_FQDN}:8086/.*'
+    },
+    'redirect': {
+        'doc': 'https://ouranosinc.github.io/pavics-sdi/arch/data_catalog.html#pavics-datacatalog',
+        'releasenotes': 'https://github.com/Ouranosinc/PAVICS-DataCatalog/blob/master/CHANGES.md',
+        'support': 'https://github.com/ouranosinc/PAVICS-DataCatalog/issues',
+        'source': 'https://github.com/ouranosinc/PAVICS-DataCatalog',
+        'tryme': 'http://${PAVICS_FQDN}:8086/pywps?service=WPS&version=1.0.0&request=GetCapabilities',
+        'licence': 'https://ouranosinc.github.io/pavics-sdi/arch/data_catalog.html#credits',
+        'provenance': 'https://ouranosinc.github.io/pavics-sdi/arch/data_catalog.html#pavics-datacatalog'
+    },
+    "monitoring": {
+        "Catalog": {
+            'request': {
+                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
+                'url': 'http://${PAVICS_FQDN}:8086/pywps?service=WPS&version=1.0.0&request=GetCapabilities'
+            }
+        }
     }
 }

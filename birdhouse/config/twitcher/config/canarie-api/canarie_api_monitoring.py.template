@@ -1,9 +1,56 @@
-# We can only monitor twitcher if there is an endpoint that it is protecting that we can try to access
-# If there is at least one other service that provides a route protected by twitcher, monitor that route;
-# otherwise do nothing.
-if '${WPS_FOR_TWITCHER_MONITORING}':
-    SERVICES['node']['monitoring'].update({'Twitcher': {
-        'request': {
-            'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WPS_FOR_TWITCHER_MONITORING}?service=WPS&version=1.0.0&request=GetCapabilities'
+
+def get_twitcher_magpie_adapter_version() -> str:
+    dockerfile_url = "https://raw.githubusercontent.com/Ouranosinc/Magpie/${MAGPIE_VERSION}/Dockerfile.adapter"
+    resp = SESSION.get(dockerfile_url)
+    if resp.status_code != 200:
+        raise ValueError(
+            f"HTTP status: {resp.status_code} from [{dockerfile_url}] with detail:\n{resp.text!s}"
+        )
+    tag_line = [line for line in resp.text.splitlines() if line.startswith("FROM birdhouse/twitcher")]
+    if not tag_line:
+        raise ValueError(f"Could not locate Twitcher version from [{dockerfile_url}]")
+    tag_version = tag_line[0].split(":v", 1)[-1].strip()
+    if not tag_version:
+        raise ValueError(f"Could not locate Twitcher version from [{dockerfile_url}]")
+    return tag_version
+
+
+TWITCHER_VERSION = get_twitcher_magpie_adapter_version()
+TWITCHER_RELEASE = get_release_time_from_repo_tag("github", "bird-house/twitcher", TWITCHER_VERSION)
+SERVICES['Twitcher'] = {
+    'info': {
+        'name': 'Twitcher',
+        'synopsis': (
+            'Twitcher is a security proxy for OWS services like Web Processing Services (WPS). '
+            'The proxy service uses OAuth2 access tokens to protect the OWS service access using '
+            'Magpie permissions.'
+        ),
+        'version': TWITCHER_VERSION,
+        'institution': 'Ouranos',
+        'releaseTime': TWITCHER_RELEASE,
+        'researchSubject': 'Security',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Security',
+        'tags': ['Security', 'Proxy', 'Access', 'Policy Enforcement Point']
+    },
+    'stats': {
+        'method': '.*',
+        'route': "/twitcher/(?!ows).*"
+    },
+    'redirect': {
+        'doc': 'https://twitcher.readthedocs.io/',
+        'releasenotes': 'https://github.com/bird-house/twitcher/blob/master/CHANGES.rst',
+        'support': 'https://github.com/bird-house/twitcher/issues',
+        'source': 'https://github.com/bird-house/twitcher',
+        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/',
+        'licence': 'https://github.com/bird-house/twitcher/blob/master/LICENSE.txt',
+        'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+    },
+    "monitoring": {
+        "Twitcher": {
+            'request': {
+                'url': 'https://${PAVICS_FQDN_PUBLIC}/twitcher/'
+            }
         }
-    }})
+    }
+}
