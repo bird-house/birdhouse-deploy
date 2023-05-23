@@ -383,14 +383,23 @@ define your custom values in ``env.local`` directly.
 STAC
 =======
 
-STAC is the common name of the REST API that implements the STAC specification, common representation of geospatial 
+`STAC`_ is the common name of the REST API that implements the STAC specification, common representation of geospatial 
 information.
+
+.. _STAC: https://stacspec.org/en
 
 Usage
 -----
 
 The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API 
-exposed by the current stack instance.
+exposed by the current stack instance. Once this component is enabled, STAC API will be accessible at 
+``https://<PAVICS_FQDN_PUBLIC>/stac`` endpoint and the STAC browser will be available at 
+``https://<PAVICS_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint, 
+define the following in the `env.local` file:
+
+```
+export PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
+```
 
 STAC API comes pre-loaded with sample data ingested by the ``stac-populator`` component. On stack initialization, 
 STAC item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds.

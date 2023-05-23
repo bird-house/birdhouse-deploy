@@ -34,7 +34,7 @@
       
   * Adds `Magpie` permissions and service for `stac` endpoints.
   
-  * Adds ``stac-populator`` to populates STAC catalog with sample collection items, using 
+  * Adds ``stac-populator`` to populate STAC catalog with sample collection items, using 
     [CEDA STAC Generator](https://github.com/cedadev/stac-generator), used in sample 
     [CMIP Dataset Ingestion Workflows](https://github.com/cedadev/stac-generator-example/tree/master/conf).
 
