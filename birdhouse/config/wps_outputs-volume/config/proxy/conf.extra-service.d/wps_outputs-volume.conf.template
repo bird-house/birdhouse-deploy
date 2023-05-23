@@ -1,0 +1,5 @@
+    location /wpsoutputs/ {
+        ${SECURE_DATA_PROXY_AUTH_INCLUDE}
+
+        alias /pavics-data/wps_outputs/;
+    }

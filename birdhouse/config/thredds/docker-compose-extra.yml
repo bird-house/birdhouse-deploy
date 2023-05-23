@@ -1,0 +1,46 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  thredds:
+    image: ${THREDDS_IMAGE}
+    container_name: thredds
+    ports:
+      - "8083:8080"
+    env_file:
+      - ./config/thredds/thredds.env
+    environment:
+      # for reconstructing proper URL back to user when Thredds behind proxy
+      # because Twitcher eats the "Host" http header set by Nginx
+      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+    volumes:
+      - thredds_persistence:/usr/local/tomcat/content/thredds
+      - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
+      - ${DATA_PERSIST_ROOT}/ncml:/pavics-ncml
+      - wps_outputs:/pavics-data/wps_outputs
+      - ./config/thredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
+      - ./config/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
+      - ./config/thredds/wmsConfig.xml:/usr/local/tomcat/content/thredds/wmsConfig.xml:ro
+      - ./config/thredds/entrypointwrapper:/entrypointwrapper:ro
+    entrypoint: /entrypointwrapper
+    restart: always
+    logging: *default-logging
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "http://localhost:8080${TWITCHER_PROTECTED_PATH}/thredds/catalog.html",
+        ]
+
+volumes:
+  thredds_persistence:
+    external:
+      name: thredds_persistence

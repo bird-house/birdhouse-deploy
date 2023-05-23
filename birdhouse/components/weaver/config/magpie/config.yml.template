@@ -21,11 +21,11 @@ providers:
       # each path below are equivalents, but with more or less specific reference to the requested service/process
       # for job execution, 2 endpoints exist for older and newer OGC API - Processes specification
       - type: request
-        path: "/providers/[\\w_-]+/processes/[\\w_-:]+/(jobs|execution)"
+        path: "/providers/[\\w_-]+/processes/[\\w:_-]+/(jobs|execution)"
         method: POST
         target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
       - type: request
-        path: "/processes/[\\w_-:]+/(jobs|execution)"
+        path: "/processes/[\\w:_-]+/(jobs|execution)"
         method: POST
         target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
       - type: request
@@ -34,11 +34,11 @@ providers:
         target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
       # apply relevant permissions to allow the user executing a process to retrieve its outputs
       - type: response
-        path: "/providers/[\\w_-]+/processes/[\\w_-:]+/(jobs|execution)"
+        path: "/providers/[\\w_-]+/processes/[\\w:_-]+/(jobs|execution)"
         method: POST
         target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_execute_outputs
       - type: response
-        path: "/processes/[\\w_-:]+/(jobs|execution)"
+        path: "/processes/[\\w:_-]+/(jobs|execution)"
         method: POST
         target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_execute_outputs
       - type: response

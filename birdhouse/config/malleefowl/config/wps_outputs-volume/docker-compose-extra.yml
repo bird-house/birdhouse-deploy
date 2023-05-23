@@ -1,0 +1,6 @@
+version: "3.4"
+
+services:
+  malleefowl:
+    volumes:
+      - wps_outputs:/opt/birdhouse/var/lib/pywps/outputs

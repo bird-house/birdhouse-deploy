@@ -1,6 +1,6 @@
 [server]
-outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs
-outputpath = /data/wpsoutputs
+outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs/raven
+outputpath = /data/wpsoutputs/raven
 
 # default 3mb, fix "Broken pipe" between the proxy and the wps service
 maxrequestsize = 100mb

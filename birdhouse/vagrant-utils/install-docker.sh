@@ -57,6 +57,9 @@ if ! grep centos /etc/os-release && ! grep rocky /etc/os-release; then
       sudo apt-get install --yes --quiet docker-ce
     fi
 
+    # For 'route' command to set default gateway.
+    sudo apt install net-tools
+
 else
 
     sudo yum install -y yum-utils
@@ -93,8 +96,13 @@ fi
 echo 'export PATH="$PATH:/usr/local/bin"' | sudo tee /etc/profile.d/usr_local_path.sh
 
 # install docker-compose, from https://gist.github.com/wdullaer/f1af16bd7e970389bad3
-LATEST_COMPOSE_VERSION="`git ls-remote https://github.com/docker/compose | grep refs/tags | grep -oP "v[0-9]+\.[0-9]\.[0-9]+$"|tail -1`"
+#LATEST_COMPOSE_VERSION="`git ls-remote https://github.com/docker/compose | grep refs/tags | grep -oP "v[0-9]+\.[0-9]\.[0-9]+$"|tail -1`"
 # LATEST_COMPOSE_VERSION=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)  # need jq :(
+
+# Pin docker-compose to a specific version to match autodeploy version of
+# docker-compose.  Otherwise, alternating between the different versions will
+# keep recreating all the containers for no reasons.
+LATEST_COMPOSE_VERSION="1.26.2"
 sudo curl -L "https://github.com/docker/compose/releases/download/$LATEST_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 # docker-compose v2 removed the completion file, see https://github.com/docker/compose/issues/8550

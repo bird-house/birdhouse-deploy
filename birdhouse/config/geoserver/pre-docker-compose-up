@@ -1,0 +1,10 @@
+#!/bin/sh
+
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+COMPOSE_DIR="$THIS_DIR/../.."
+
+if [ ! -f "${GEOSERVER_DATA_DIR}/global.xml" ]; then
+  echo "fix GeoServer data dir permission on first run only, when data dir do not exist yet."
+  FIRST_RUN_ONLY=1 "$COMPOSE_DIR"/deployment/fix-geoserver-data-dir-perm
+fi

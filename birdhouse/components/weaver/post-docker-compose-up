@@ -25,7 +25,11 @@
 #       list of provider names (comma or space delimited), all are assumed to be available at
 #       "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/<provider-name>"
 #   WEAVER_WPS_PROVIDERS_MAX_TIME:
-#       limit script execution up to maximum this number of seconds
+#       limit script execution up to a maximum of this number of seconds
+#   WEAVER_WPS_PROVIDERS_RETRY_COUNT:
+#       number of permitted retries to register a given WPS provider
+#   WEAVER_WPS_PROVIDERS_RETRY_AFTER:
+#       number of seconds between each retry request as needed
 #
 # Following configurations are expected to be inherited from bird-house/weaver-component env.local/default.env:
 #   - MAGPIE_ADMIN_USERNAME
@@ -62,13 +66,6 @@ reset_state() {
   set +vx; eval "${old_state}"
 }
 
-echo "Running: $0"
-
-MAGPIE_URL="https://${PAVICS_FQDN_PUBLIC}/magpie"
-WEAVER_URL="https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
-WEAVER_WPS_PROVIDERS_MAX_TIME=${WEAVER_WPS_PROVIDERS_MAX_TIME:-120}
-REQUEST_TIMEOUT=2
-
 # logging
 if [ ! -z "$TERM" ]; then
     YELLOW=${YELLOW:-$(tput setaf 3)}
@@ -81,26 +78,47 @@ else
 fi
 PREFIX="[Weaver] "
 ERROR="${PREFIX}${RED}ERROR${NORMAL}: "
-WARNING="${PREFIX}${YELLOW}WARNING${NORMAL}: "
+WARN="${PREFIX}${YELLOW}WARNING${NORMAL}: "
+
+echo "${PREFIX}Running: $0"
+
+MAGPIE_URL="https://${PAVICS_FQDN_PUBLIC}/magpie"
+WEAVER_URL="https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
+WEAVER_WPS_PROVIDERS_MAX_TIME=${WEAVER_WPS_PROVIDERS_MAX_TIME:-120}
+WEAVER_WPS_PROVIDERS_RETRY_AFTER=${WEAVER_WPS_PROVIDERS_RETRY_AFTER:-5}
+WEAVER_WPS_PROVIDERS_RETRY_COUNT=${WEAVER_WPS_PROVIDERS_RETRY_COUNT:-5}
+# double echo and no quotes used on purpose to remove empty/extra newlines/spaces
+WEAVER_WPS_PROVIDERS=$(echo $(echo "${WEAVER_WPS_PROVIDERS}" | tr ',' ' '))
+REQUEST_TIMEOUT=2
 
 if [ -z "${WEAVER_WPS_PROVIDERS}" ]; then
-    echo "${WARNING}Nothing specified in WEAVER_WPS_PROVIDERS to register WPS remote providers."
+    echo "${WARN}Nothing specified in WEAVER_WPS_PROVIDERS to register WPS remote providers."
     reset_state
     exit 0
 fi
 
-echo "  Requested Weaver WPS providers: [${WEAVER_WPS_PROVIDERS}]"
-echo "  Will retry requests at most for ${WEAVER_WPS_PROVIDERS_MAX_TIME}s"
+if [ "${WEAVER_WPS_PROVIDERS_RETRY_COUNT}" -lt 0 ]; then
+    WEAVER_WPS_PROVIDERS_RETRY_AFTER=0
+    WEAVER_WPS_PROVIDERS_RETRY_COUNT=0
+fi
+if [ "${WEAVER_WPS_PROVIDERS_RETRY_AFTER}" -lt 0 ]; then
+    WEAVER_WPS_PROVIDERS_RETRY_AFTER=0
+fi
+
+echo "${PREFIX}Requested Weaver WPS providers: [${WEAVER_WPS_PROVIDERS}]"
+echo "${PREFIX}Will retry requests at most for ${WEAVER_WPS_PROVIDERS_MAX_TIME}s"
+echo "${PREFIX}Will retry registration of each provider up to ${WEAVER_WPS_PROVIDERS_RETRY_COUNT} times"
+echo "${PREFIX}Will retry registration of each provider with ${WEAVER_WPS_PROVIDERS_RETRY_AFTER}s intervals"
 
 if [ -z "$WEAVER_CURL_IMAGE" ]; then
     WEAVER_CURL_IMAGE="curlimages/curl:7.87.0"
 fi
 
 # POSIX portable RNG if RANDOM does not exist on the current shell
-RANDOM_NUMBER=${RANDOM:-$(tr -dc 0-9 < /dev/urandom | head -c 5)}
+RANDOM_NUMBER=${RANDOM:-$(tr -dc 0-9 < /dev/urandom 2>/dev/null | head -c 5)}
 
 # To know when a docker run was started in case it hangs.
-DOCKER_RUN_TAG="weaver_post_curl_`date -Isecond | sed 's/:/_/g' | sed 's/+/p/g'`_${RANDOM_NUMBER}"
+DOCKER_RUN_TAG="weaver_post_curl_$(date -Isecond | sed 's/:/_/g' | sed 's/+/p/g')_${RANDOM_NUMBER}"
 curl_cmd() {
     docker run --rm --name "${DOCKER_RUN_TAG}" "${WEAVER_CURL_IMAGE}" "$@"
 }
@@ -160,7 +178,7 @@ if [ -z "${cookie}" ]; then
 fi
 
 # validate that Magpie token retrieved is adequate
-printf "Validate Magpie token..."
+printf "%s" "${PREFIX}Validate Magpie token..."
 resp=$( \
     curl_cmd --insecure --silent --location \
          -m ${REQUEST_TIMEOUT} \
@@ -220,9 +238,6 @@ while true; do
     printf "."
 done
 
-# parse providers
-WEAVER_WPS_PROVIDERS="$(echo "${WEAVER_WPS_PROVIDERS}" | tr ',' ' ')"
-
 # move on to actual registration of WPS providers
 echo "${PREFIX}Using URL: [${WEAVER_URL}]"
 start_time="$(date -u +%s)"
@@ -268,37 +283,53 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
         printf "."
     done
 
-    # unregister in case of multiple up/down to regenerate from scratch, don't care if NotFound returned
-    echo "${PREFIX}Unregistering any remote WPS provider matching [${prov}]."
-    curl_cmd --insecure --silent --location \
-         -m ${REQUEST_TIMEOUT} \
-         -w "${PREFIX}Delete [${prov}] response: %{http_code}" -o /dev/null \
-         -b "${cookie}" \
-         -X DELETE \
-         "${WEAVER_URL}/providers/${prov}"
-
-    # register the new provider and validate
-    printf "\n%s" "${PREFIX}Registering remote WPS provider [${prov}] on [${prov_url}]... "
-    resp=$( \
+    retry=0
+    retry_msg=""
+    total=${WEAVER_WPS_PROVIDERS_RETRY_COUNT}
+    while true; do
+        if [ ${retry} -ne 0 ]; then
+          retry_msg=" (retry: ${retry}/${total})"
+        fi
+        # unregister in case of multiple up/down to regenerate from scratch, don't care if NotFound returned
+        echo "${PREFIX}Unregistering any remote WPS provider matching [${prov}]${retry_msg}."
         curl_cmd --insecure --silent --location \
              -m ${REQUEST_TIMEOUT} \
-             -w "\n%{http_code}" \
+             -w "${PREFIX}Delete [${prov}] response: %{http_code}${retry_msg}" -o /dev/null \
              -b "${cookie}" \
-             -H "Content-Type: application/json" \
-             -X POST \
-             -d "{\"id\": \"${prov}\", \"url\": \"${prov_url}\"}" \
-             "${WEAVER_URL}/providers" \
-    )
-    ret=$?
-    code=$(echo "${resp}" | tail -n -1)
-    body=$(echo "${resp}" | head -n -1)
-    if [ ${ret} -ne 0 ] || [ "${code}" -ne 201 ]; then
-        printf "\n%s\n" "${ERROR}Failed registration of remote WPS provider [${prov}] on [${prov_url}]."
-        printf "Error:\n%s\n" "${body}"
-        reset_state
-        exit 23
-    fi
-    echo "OK!"
+             -X DELETE \
+             "${WEAVER_URL}/providers/${prov}"
+
+        # register the new provider and validate
+        printf "\n%s" "${PREFIX}Registering remote WPS provider [${prov}] on [${prov_url}]${retry_msg}... "
+        resp=$( \
+            curl_cmd --insecure --silent --location \
+                 -m ${REQUEST_TIMEOUT} \
+                 -w "\n%{http_code}" \
+                 -b "${cookie}" \
+                 -H "Content-Type: application/json" \
+                 -X POST \
+                 -d "{\"id\": \"${prov}\", \"url\": \"${prov_url}\"}" \
+                 "${WEAVER_URL}/providers" \
+        )
+        ret=$?
+        code=$(echo "${resp}" | tail -n -1)
+        body=$(echo "${resp}" | head -n -1)
+        if [ ${ret} -ne 0 ] || [ "${code}" -ne 201 ]; then
+            printf "\n%s\n" "${WARN}Failed registration of remote WPS provider [${prov}] on [${prov_url}]${retry_msg}."
+            printf "Error:\n%s\n" "${body}"
+            if [ ${retry} -gt ${total} ]; then
+              echo "${ERROR}Maximum retry attempts ${total} reached for WPS provider [${prov}]. Aborting."
+              reset_state
+              exit 23
+            fi
+            echo "${WARN}Will retry after ${WEAVER_WPS_PROVIDERS_RETRY_AFTER}s..."
+            sleep ${WEAVER_WPS_PROVIDERS_RETRY_AFTER}
+            retry=$((retry+1))
+        else
+            echo "OK!"  # displayed on same line after first registration printf
+            break
+        fi
+    done
 done
 echo "${PREFIX}All Weaver remote WPS providers registered successfully!"
 
@@ -317,10 +348,10 @@ ${PAVICS_COMPOSE} exec weaver-worker bash "${CELERY_HEALTHCHECK}" | tee "${PAVIC
 ret_worker=$?
 out_worker=$(cat "${PAVICS_LOG_DIR}/weaver-worker.log" | tail -n 1 | grep -c "ERROR")
 if [ ${ret_weaver} -ne 0 ] || [ ${ret_worker} -ne 0 ] || [ "${out_weaver}" -ne 0 ] || [ "${out_worker}" -ne 0 ]; then
-  echo "Weaver WebApp and/or Worker Celery tasks were not ready. Restarting both..."
+  echo "${PREFIX}Weaver WebApp and/or Worker Celery tasks were not ready. Restarting both..."
   ${PAVICS_COMPOSE} restart weaver weaver-worker
 else
-  echo "Weaver WebApp and/or Worker Celery tasks are both ready."
+  echo "${PREFIX}Weaver WebApp and/or Worker Celery tasks are both ready."
 fi
 
 reset_state

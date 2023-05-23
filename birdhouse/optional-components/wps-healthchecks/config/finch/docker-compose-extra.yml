@@ -1,0 +1,14 @@
+version: "3.4"
+services:
+  finch:
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "http://localhost:5000?service=WPS&request=GetCapabilities",
+        ]
+      interval: 60s
+      timeout: 5s
+      retries: 2

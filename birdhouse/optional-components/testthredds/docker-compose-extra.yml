@@ -1,19 +1,12 @@
 version: "3.4"
 services:
-  proxy:
-    volumes:
-    - ./optional-components/testthredds/conf.extra-service.d:/etc/nginx/conf.extra-service.d/testthredds:ro
-    - ./optional-components/testthredds/testthredds_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/testthredds_canarie_api_monitoring.py:ro
-    links:
-    - testthredds
-
   testthredds:
     image: ${TESTTHREDDS_IMAGE}
     container_name: testthredds
     ports:
       - "${TESTTHREDDS_PORT}:${TESTTHREDDS_INTERNAL_PORT}"
     env_file:
-      - ./config/thredds/thredds.env
+      - ./optional-components/testthredds/thredds.env
     environment:
       # for reconstructing proper URL back to user when Thredds behind proxy
       # because Twitcher eats the "Host" http header set by Nginx
@@ -28,9 +21,9 @@ services:
       - testwps_outputs:/testwps_outputs:ro
       - wps_outputs:/pavics-data/wps_outputs:ro
       - ./optional-components/testthredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
-      - ./config/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
-      - ./config/thredds/wmsConfig.xml:/usr/local/tomcat/content/thredds/wmsConfig.xml:ro
-      - ./config/thredds/entrypointwrapper:/entrypointwrapper:ro
+      - ./optional-components/testthredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
+      - ./optional-components/testthredds/wmsConfig.xml:/usr/local/tomcat/content/thredds/wmsConfig.xml:ro
+      - ./optional-components/testthredds/entrypointwrapper:/entrypointwrapper:ro
     entrypoint: /entrypointwrapper
     restart: always
     healthcheck:

@@ -1,0 +1,6 @@
+version: "3.4"
+
+services:
+  finch:
+    volumes:
+      - wps_outputs:/data/wpsoutputs

@@ -4,9 +4,10 @@
 Docker instructions
 -------------------
 
-Requirements:
+Requirements
+^^^^^^^^^^^^
 
-* Centos 7 or Ubuntu Bionic (18.04), other distros untested.
+* Centos 7, RockyLinux 8, Ubuntu 18.04, 20.04, 22.04, known to work.
 
 * Hostname of Docker host must exist on the network.  Must use bridge
   networking if Docker host is a Virtual Machine.
@@ -16,6 +17,41 @@ Requirements:
 
 * Install latest docker-ce and docker-compose for the chosen distro (not the
   version from the distro).
+  
+* Have a real SSL Certificate, self-signed SSL Certificate do not work properly.
+  Let's Encrypt offers free SSL Certificate.
+
+* If using Let's Encrypt, port 80 and 443 and hostname should be accessible publicly
+  over the internet before requesting a certificate with Let's Encrypt. Let's Encrypt
+  will need to access your hostname at port 80 and 443 in order to verify and provide
+  the SSL certificate.
+
+Quick-start
+^^^^^^^^^^^
+
+.. code-block:: shell
+
+  # Assuming Docker already installed, networking, hostname, firewall, open ports configured properly.
+
+  git clone https://github.com/bird-house/birdhouse-deploy.git
+  cd birdhouse-deploy/birdhouse
+  cp env.local.example env.local
+  
+  $EDITOR env.local
+  # Set the following variables at the minimun:
+  #SSL_CERTIFICATE='/path/to/cert.pem'
+  #PAVICS_FQDN='<full qualified hostname of the current host>'
+  # Only needed if using LetsEncrypt SSL certificate
+  #SUPPORT_EMAIL='a real email to receivez LetsEncrypt renewal notification'
+
+  # Get the SSL Cert from LetsEncrypt, written to path of var SSL_CERTIFICATE.
+  FORCE_CERTBOT_E2E=1 FORCE_CERTBOT_E2E_NO_START_PROXY=1 deployment/certbotwrapper
+
+  # Start the full stack.
+  ./pavics-compose.sh up -d
+
+Further explanations
+^^^^^^^^^^^^^^^^^^^^
 
 To run ``docker-compose`` for PAVICS, the `pavics-compose.sh <pavics-compose.sh>`_ (:download:`download </birdhouse/pavics-compose.sh>`) wrapper script must be used.
 This script will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration files
@@ -64,6 +100,18 @@ To launch all the containers, use the following command:
 
 If you get a ``'No applicable error code, please check error log'`` error from the WPS processes, please make sure that the WPS databases exists in the
 postgres instance. See `create-wps-pgsql-databases.sh <scripts/create-wps-pgsql-databases.sh>`_ (:download:`download </birdhouse/scripts/create-wps-pgsql-databases.sh>`).
+
+
+Production deployment hardware recommendations
+----------------------------------------------
+
+RAM: at least 128 GB, Thredds 32+ GB, Geoserver 8+ GB, leaving spaces for other components and all the various Jupyter users
+
+CPU: at least 48 cores for parallel computations
+
+Disk: at least 100 TB, depending how much data is hosted on Thredds and Geoserver and storage for the various Jupyter users
+
+In general, the more users, the more cpu cores and memory needed.  The more data, more memory and bigger and faster disks needed.
 
 
 Note
@@ -202,6 +250,19 @@ Starting and managing the lifecycle of the VM:
    vagrant provision
 
 
+Framework tests
+---------------
+
+Core features of the platform has tests to prevent regressions.
+
+To run the tests:
+
+.. code-block:: shell
+
+    python3 -m pip install -r tests/requirements.txt
+    pytest tests/
+
+
 Tagging policy
 --------------
 
@@ -293,12 +354,12 @@ Release Procedure
   time.  Also, in the spirit of not losing the "push race", execute all these
   steps together, do not take a break in the middle.
 
-  * Merge with ``master`` branch, if needed, so next ``bump2version`` step will
+  * Merge with ``master`` branch, if needed, so next ``make bump <major|minor|patch>`` step will
     bump to the proper next version. Might need to review the places where
     CHANGES.md_ items were inserted following merge to make sure the new ones by
     this PR are under "unreleased".
 
-  * Run ``bump2version`` with appropriate options, as described in "Tagging
+  * Run ``make bump <major|minor|patch>`` with appropriate options, as described in "Tagging
     policy" section above.  Push.
 
   * Merge this PR, copying the entire PR description into the merge commit
@@ -308,7 +369,7 @@ Release Procedure
     CHANGES.md_ was formally introduced.
 
   * Run ``git tag`` on the commit created the by merge, with the same tag as
-    ``bump2version`` generated.
+    ``make bump <major|minor|patch>`` generated.
 
   * Run ``git push --tags`` to upload the new version.
 
