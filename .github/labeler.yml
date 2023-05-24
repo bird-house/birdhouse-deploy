@@ -4,7 +4,7 @@
 #   Since this repository is in itself an automation process to deploy a server instance,
 #   we refer here to CI as the 'meta' configuration files for managing the code and integrations with the repository,
 #   not configurations related to the deployment process itself.
-ci:
+ci/operations:
   - .*  # all '.<something>' files
   - .github/**/*
   - docs/Makefile
@@ -17,3 +17,33 @@ documentation:
   - docs/**/*
   - CONTRIBUTING.rst
   - README.rst
+
+component/weaver:
+  - birdhouse/components/weaver/**/*
+  - birdhouse/**/weaver/**/*
+
+component/cowbird:
+  - birdhouse/components/cowbird/**/*
+  - birdhouse/**/cowbird/**/*
+
+component/magpie:
+  - birdhouse/config/magpie/**/*
+  - birdhouse/**/magpie/**/*
+
+component/twitcher:
+  - birdhouse/config/twitcher/**/*
+  - birdhouse/**/twitcher/**/*
+
+component/THREDDS:
+  - birdhouse/config/thredds/**/*
+  - birdhouse/**/thredds/**/*
+
+feature/WPS:
+  - birdhouse/config/finch/**/*
+  - birdhouse/config/flyingpigeon/**/*
+  - birdhouse/config/hummingbird/**/*
+  - birdhouse/config/malleefowl/**/*
+  - birdhouse/config/raven/**/*
+  - birdhouse/config/wps_output-volume/**/*
+  - birdhouse/components/weaver/**/*
+  - birdhouse/**/*wps*/**/*
