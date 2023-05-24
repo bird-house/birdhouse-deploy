@@ -1,0 +1,7 @@
+{
+    "name": "jupyterhub",
+    "url": "https://${PAVICS_FQDN_PUBLIC}/jupyter",
+    "type": "jupyterhub",
+    "documentation": "https://jupyter.org/hub",
+    "description": "An interactive development environment use to create and share documents that contain live code."
+}

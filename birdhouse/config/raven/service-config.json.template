@@ -1,0 +1,7 @@
+{
+    "name": "raven",
+    "url": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven",
+    "type": "wps",
+    "documentation": "https://pavics-raven.readthedocs.io",
+    "description": "A WPS providing hydrological modeling and analysis services."
+}

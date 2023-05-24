@@ -1,0 +1,7 @@
+{
+    "name": "flyingpigeon",
+    "url": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/flyingpigeon",
+    "type": "wps",
+    "documentation": "https://flyingpigeon.readthedocs.io",
+    "description": "WPS for climate model data, indices and extreme events."
+}
