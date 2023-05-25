@@ -9,6 +9,14 @@ ci/operations:
   - .github/**/*
   - docs/Makefile
   - Dockerfile*
+  - docker/**/*
+  - tests/**/*
+
+ci/deployment:
+  - deployment/**/*
+  - scripts/**/*
+  - templates/**/*
+  - vagrant-utils/**/*
 
 documentation:
   - "*.rst"
@@ -19,31 +27,33 @@ documentation:
   - README.rst
 
 component/weaver:
-  - birdhouse/components/weaver/**/*
   - birdhouse/**/weaver/**/*
 
 component/cowbird:
-  - birdhouse/components/cowbird/**/*
   - birdhouse/**/cowbird/**/*
 
 component/magpie:
-  - birdhouse/config/magpie/**/*
   - birdhouse/**/magpie/**/*
 
 component/twitcher:
-  - birdhouse/config/twitcher/**/*
   - birdhouse/**/twitcher/**/*
 
 component/THREDDS:
-  - birdhouse/config/thredds/**/*
   - birdhouse/**/thredds/**/*
 
+component/geoserver:
+  - birdhouse/**/geoserver/**/*
+  - docker/geoserver/**/*
+
+component/jupyterhub:
+  - birdhouse/**/jupyterhub/**/*
+
 feature/WPS:
-  - birdhouse/config/finch/**/*
-  - birdhouse/config/flyingpigeon/**/*
-  - birdhouse/config/hummingbird/**/*
-  - birdhouse/config/malleefowl/**/*
-  - birdhouse/config/raven/**/*
-  - birdhouse/config/wps_output-volume/**/*
-  - birdhouse/components/weaver/**/*
+  - birdhouse/**/finch/**/*
+  - birdhouse/**/flyingpigeon/**/*
+  - birdhouse/**/hummingbird/**/*
+  - birdhouse/**/malleefowl/**/*
+  - birdhouse/**/raven/**/*
+  - birdhouse/**/weaver/**/*
+  - birdhouse/**/wps_output-volume/**/*
   - birdhouse/**/*wps*/**/*
