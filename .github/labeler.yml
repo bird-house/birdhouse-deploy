@@ -59,3 +59,8 @@ feature/WPS:
   - birdhouse/**/weaver/**/*
   - birdhouse/**/wps_output-volume/**/*
   - birdhouse/**/*wps*/**/*
+
+feature/node-registry:
+  - birdhouse/**/service-config.json.template
+  - birdhouse/scripts/get-version.include.sh
+  - birdhouse/scripts/get-services-json.include.sh
