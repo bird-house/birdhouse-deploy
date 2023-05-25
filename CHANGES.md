@@ -16,6 +16,9 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
+- Update Zenodo config
+  *  Add Misha to creators
+  *  Add birdhouse community
 
 - Licence: update copyright line with year and ownership
 
