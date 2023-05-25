@@ -9,14 +9,14 @@ ci/operations:
   - .github/**/*
   - docs/Makefile
   - Dockerfile*
-  - docker/**/*
+  - birdhouse/docker/**/*
   - tests/**/*
 
 ci/deployment:
-  - deployment/**/*
-  - scripts/**/*
-  - templates/**/*
-  - vagrant-utils/**/*
+  - birdhouse/deployment/**/*
+  - birdhouse/scripts/**/*
+  - birdhouse/templates/**/*
+  - birdhouse/vagrant-utils/**/*
   - birdhouse/**/*.include.sh
   - birdhouse/pavics-compose.sh
 
