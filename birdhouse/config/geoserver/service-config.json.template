@@ -1,7 +1,7 @@
 {
     "name": "geoserver",
     "url": "https://${PAVICS_FQDN_PUBLIC}/geoserver",
-    "type": "geoserver",
+    "type": ["geoserver"],
     "documentation": "https://docs.geoserver.org/",
     "description": "GeoServer is a server that allows users to view and edit geospatial data."
 }

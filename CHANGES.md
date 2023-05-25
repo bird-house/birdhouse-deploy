@@ -17,13 +17,15 @@
 
 ## Changes
 
-- A new endpoint "/services" is added that provides a json string describing each of the user facing services currently 
+- A new endpoint `/services` is added that provides a JSON string describing each of the user facing services currently 
   enabled on the stack. This is a static string and serves a different purpose than the endpoints served by canarie-api
-  (monitoring status). This endpoint is meant to be polled by the node registry scripts (in development) to provide 
-  information about what services are meant to be available without having to poll other endpoints directly.
+  (monitoring status). This endpoint is meant to be polled by the node registry scripts 
+  (https://github.com/DACCS-Climate/DACCS-node-registry) to provide information about what services are meant to be 
+  available without having to poll other endpoints directly.
 
-- A new endpoint "/version" is added that provides a string containing the current version number of the stack 
-  (e.g. "1.26.0"). This endpoint is meant to be polled by the node registry scripts (in development).
+- A new endpoint `/version` is added that provides a string containing the current version number of the stack 
+  (e.g. "1.26.0"). This endpoint is meant to be polled by the node registry scripts 
+  (https://github.com/DACCS-Climate/DACCS-node-registry).
 
 - Licence: update copyright line with year and ownership
 

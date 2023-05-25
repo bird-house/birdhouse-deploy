@@ -1,7 +1,7 @@
 {
     "name": "thredds",
     "url": "https://${PAVICS_FQDN_PUBLIC}/thredds",
-    "type": "thredds",
+    "type": ["thredds"],
     "documentation": "https://www.unidata.ucar.edu/software/tds/",
     "description": "A server that provides catalog, metadata, and data access services for scientific data."
 }

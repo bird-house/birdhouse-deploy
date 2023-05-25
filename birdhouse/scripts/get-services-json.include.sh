@@ -7,7 +7,7 @@ if [ -z "${ALL_CONF_DIRS}" ]; then
   return
 fi
 
-for adir in $(echo "$ALL_CONF_DIRS" | grep -v " ./core\| ./data"); do
+for adir in ${ALL_CONF_DIRS}; do
   [ -f "${adir}/service-config.json" ] || continue
   SERVICES="${SERVICES}$([ -n "${SERVICES}" ] && echo ',') $(cat "${adir}/service-config.json")"
 done
