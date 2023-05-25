@@ -17,6 +17,8 @@ ci/deployment:
   - scripts/**/*
   - templates/**/*
   - vagrant-utils/**/*
+  - birdhouse/**/*.include.sh
+  - birdhouse/pavics-compose.sh
 
 documentation:
   - "*.rst"
