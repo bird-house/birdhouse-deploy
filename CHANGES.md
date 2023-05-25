@@ -15,7 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.26.2](https://github.com/bird-house/birdhouse-deploy/tree/1.26.2) (2023-05-25)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
+- Update Zenodo config
+  *  Add Misha to creators
+  *  Add birdhouse community
 
 - Licence: update copyright line with year and ownership
 
