@@ -11,6 +11,8 @@ services:
   hummingbird:
     image: pavics/hummingbird:${HUMMINGBIRD_VERSION}
     container_name: hummingbird
+    environment:
+      HOSTNAME: $HOSTNAME
     volumes:
       - ./config/hummingbird/custom.cfg:/opt/birdhouse/src/hummingbird/custom.cfg
     depends_on:
