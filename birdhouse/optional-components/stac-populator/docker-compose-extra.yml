@@ -16,6 +16,6 @@ services:
       - STAC_ASSET_GENERATOR_TIMEOUT=30
       - STAC_HOST=http://stac:8000/stac
     command: >
-      bash -c "cd /populator && ./wait-for-it.sh stac:8000 -t 30 && ./populate.sh"
+      bash -c "./wait-for-it.sh stac:8000 -t 30 && cd /populator && ./populate.sh"
     depends_on:
       - stac
