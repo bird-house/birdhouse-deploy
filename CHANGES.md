@@ -34,9 +34,9 @@
       
   * Adds `Magpie` permissions and service for `stac` endpoints.
   
-  * Use [stac-populator](https://github.com/crim-ca/stac-populator) to populate STAC catalog with sample collection 
-    items via [CEDA STAC Generator](https://github.com/cedadev/stac-generator), employed in sample 
-    [CMIP Dataset Ingestion Workflows](https://github.com/cedadev/stac-generator-example/tree/master/conf).
+- Adds [stac-populator](https://github.com/crim-ca/stac-populator) to populate STAC catalog with sample collection 
+  items via [CEDA STAC Generator](https://github.com/cedadev/stac-generator), employed in sample 
+  [CMIP Dataset Ingestion Workflows](https://github.com/cedadev/stac-generator-example/tree/master/conf).
 
 
 [1.26.1](https://github.com/bird-house/birdhouse-deploy/tree/1.26.1) (2023-04-26)
