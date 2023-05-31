@@ -307,4 +307,4 @@ except time required to feed the catalog.
 To enable this optional-component:
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``"./components/stac-populate"`` to ``EXTRA_CONF_DIRS``.
+- Add ``"./optional-components/stac-populator"`` to ``EXTRA_CONF_DIRS``.
