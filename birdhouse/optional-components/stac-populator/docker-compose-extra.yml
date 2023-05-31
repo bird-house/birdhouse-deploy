@@ -11,7 +11,7 @@ services:
   # populates STAC catalog with sample collection items
   stac-populator:
     container_name: stac-populator
-    image: ghcr.io/crim-ca/stac-populator:latest
+    image: ghcr.io/crim-ca/stac-populator:master
     environment:
       - STAC_ASSET_GENERATOR_TIMEOUT=30
       - STAC_HOST=http://stac:8000/stac
