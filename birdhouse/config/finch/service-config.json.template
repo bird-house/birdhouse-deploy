@@ -1,7 +1,7 @@
 {
     "name": "finch",
     "url": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch",
-    "type": ["wps"],
+    "type": ["service-wps"],
     "documentation": "https://finch.readthedocs.io",
     "description": "A Web Processing Service for Climate Indicators."
 }

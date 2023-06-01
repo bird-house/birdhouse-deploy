@@ -1,7 +1,7 @@
 {
     "name": "hummingbird",
     "url": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird",
-    "type": ["wps"],
+    "type": ["service-wps"],
     "documentation": "https://birdhouse-hummingbird.readthedocs.io",
     "description": "A WPS for metadata compliance checks used in the climate science community."
 }
