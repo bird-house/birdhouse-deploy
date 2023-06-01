@@ -15,7 +15,17 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+- Notebook autodeploy: unable to read the `env.local`
+
+  When `env.local` is a symlink we need to volume-mount the destination of the
+  symlink so it resolves inside the notebook autodeploy container.
+
+  This will allow notebook autodeploy config variable to be set in `env.local`.
+
+  Also had someone changed the value of `JUPYTERHUB_USER_DATA_DIR` in `env.local`,
+  it would not have worked without this fix.
+
 
 [1.26.2](https://github.com/bird-house/birdhouse-deploy/tree/1.26.2) (2023-05-25)
 ------------------------------------------------------------------------------------------------------------------
