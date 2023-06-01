@@ -135,6 +135,122 @@ Features missing in old install scripts or how the new mechanism improves on the
   via ``env.local``, which should be source controlled, meaning all surrounding maintenance related tasks can also be
   traceable and reproducible.
 
+How to test platform autodeploy is not broken by a PR
+-----------------------------------------------------
+
+There are 2 tests that need to be performed:
+
+* Can autodeploy deploy the PR from ``master`` branch, the stable reference point
+
+  * This could fail if some changes, in the PR, are compatible with autodeploy, example ``./pavics-compose.sh`` calls some binaries that do not exist in the autodeploy docker image.
+
+* Can autodeploy be triggered again successfully, after PR is live
+
+  * This could fail if PR renamed some files and forgot to add to ``.gitignore`` the old file names.  Then old file names will appears as new uncommitted files and autodeploy will halt because it expects a clean working directory.
+
+Here is a sample setup to test autodeploy:
+
+* Have 2 checkout directories.  One is for starting the stack using ``./pavics-compose.sh``, the other one is to push new bogus change to trigger the autodeploy.
+
+.. code-block:: shell
+
+  # this one for running pavics-compose.sh
+  git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy
+  
+  # this one for triggering autodeploy
+  git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy-trigger
+
+* Set ``AUTODEPLOY_PLATFORM_FREQUENCY`` in ``env.local`` to a very frequent value so you do not wait too long for autodeploy to trigger.
+
+.. code-block:: shell
+
+  # go to the main checkout
+  cd birdhouse-deploy/birdhouse
+  
+  # ensure the scheduler component is enabled, otherwise autodeploy will not work
+  echo 'export EXTRA_CONF_DIRS="$EXTRA_CONF_DIRS ./components/scheduler" >> env.local
+  
+  # set AUTODEPLOY_PLATFORM_FREQUENCY
+  echo 'export AUTODEPLOY_PLATFORM_FREQUENCY="@every 5m"' >> env.local
+  
+  # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
+  ./pavics-compose.sh stop scheduler && ./pavics-compose.sh rm -vf scheduler && ./pavics-compose.sh up -d
+  
+* Create a ``test`` branch so you can add bogus commits without affecting your real PR.  Setup your main checkout to track that test branch so it new changes to trigger.
+
+.. code-block:: shell
+
+  # go to the main checkout
+  cd birdhouse-deploy/birdhouse
+  
+  # initially create the test branch from master
+  git checkout master
+  git pull
+  git checkout -b test
+  git push -u test
+  
+  # ensure your runnings code is at "master" and is working correctly
+  # if you do not have a working baseline, you will not know if the breakage is due to autodeploy or your code
+  ./pavics-compose.sh up -d
+  
+* Test scenario 1, from ``master`` to your PR
+
+.. code-block:: shell
+
+  # go to the other checkout to trigger autodeploy
+  cd birdhouse-deploy-trigger/birdhouse
+
+  # set branch test to the same commit as your PR, this will trigger autodeploy from master to your PR
+  git pull
+  git checkout test
+  git reset --hard YOUR_PR_BRANCH
+  git push
+  
+  # follow logs, check for errors
+  tail -f /var/log/PAVICS/autodeploy.log
+  
+  # do spot checks, run Jenkins on your deployment if needed
+  
+* Test scenario 2, from your PR and later
+
+.. code-block:: shell
+
+  # go to the other checkout to trigger autodeploy
+  cd birdhouse-deploy-trigger/birdhouse
+
+  # add any bogus commit to trigger autodeploy again
+  echo >> README.rst
+  git ci -am "trigger autodeploy"
+  git push
+
+  # follow logs, check for errors
+  tail -f /var/log/PAVICS/autodeploy.log
+
+* Test done, clean up the bogus ``test`` branch and optionally relax AUTODEPLOY_PLATFORM_FREQUENCY
+
+.. code-block:: shell
+
+  # go to the other checkout to trigger autodeploy
+  cd birdhouse-deploy-trigger/birdhouse
+
+  # go to master so we can delete the test branch
+  git checkout master
+  git push origin --delete test
+  git branch -D test
+
+  # go to the main checkout
+  cd birdhouse-deploy/birdhouse
+
+  # go to YOUR_PR_BRANCH so we can delete the test branch
+  git checkout YOUR_PR_BRANCH
+  git push origin --delete test
+  git branch -D test
+  
+  # edit env.local and change AUTODEPLOY_PLATFORM_FREQUENCY to something less frequent to save your cpu
+
+  # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
+  ./pavics-compose.sh stop scheduler && ./pavics-compose.sh rm -vf scheduler && ./pavics-compose.sh up -d
+  
 
 Monitoring
 ==========
