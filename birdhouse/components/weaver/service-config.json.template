@@ -1,7 +1,7 @@
 {
     "name": "weaver",
     "url": "https://${PAVICS_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}",
-    "type": ["service-ogcapi"],
+    "type": ["service-ogcapi_processes"],
     "documentation": "https://pavics-weaver.readthedocs.io",
     "description": "An OGC-API flavored Execution Management Service"
 }
