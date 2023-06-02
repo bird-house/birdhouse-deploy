@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Move canarie-api configuration for cowbird from proxy to canarie-api config directory
+  - The canarie-api configuration for cowbird was being loaded whenever the proxy component was enabled instead
+    of when the canarie-api component was enabled. Since these components can now be enabled separately, the
+    configuration has to be moved to ensure that canarie-api configuration files aren't unintentionally mounted
+    to a container that is just running an nginx proxy.
 
 [1.26.2](https://github.com/bird-house/birdhouse-deploy/tree/1.26.2) (2023-05-25)
 ------------------------------------------------------------------------------------------------------------------
