@@ -1,6 +1,8 @@
+from traitlets import Unicode
 from jupyterhub.handlers import BaseHandler
 from jupyterhub.auth import Authenticator
 from tornado import gen, web
+import requests
 
 # TODO: add this to
 #  github.com/Ouranosinc/jupyterhub/blob/master/jupyterhub_magpie_authenticator/jupyterhub_magpie_authenticator.py
@@ -10,9 +12,12 @@ from tornado import gen, web
 class MagpieLoginHandler(BaseHandler):
 
     def get(self):
-        header_name = self.authenticator.header_name
-        remote_user = self.request.headers.get(header_name, "")
-        if remote_user == "":
+        cookies = {key: morsel.coded_value for key, morsel in self.request.cookies.items()}
+
+        response = requests.get(self.authenticator.magpie_url.rstrip("/") + '/users/current', cookies=cookies)
+        remote_user = response.json().get("user", {}).get("user_name")
+
+        if not remote_user or remote_user in self.authenticator.blocked_users:
             raise web.HTTPError(401)
 
         user = self.user_from_username(remote_user)
@@ -25,7 +30,11 @@ class MagpieAuthenticator(Authenticator):
     """
     Accept the authenticated username from the X-REMOTE-USER HTTP header.
     """
-    header_name = 'X-REMOTE-USER'  # header set by twitcher
+    magpie_url = Unicode(
+        default_value="https://www.example.com/magpie",
+        config=True,
+        help="Magpie endpoint to signin to"
+    )
     auto_login = True
 
     def get_handlers(self, app):
