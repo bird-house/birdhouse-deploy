@@ -9,8 +9,6 @@ c = get_config()  # noqa  # can be called directy without import because injecte
 
 c.JupyterHub.bind_url = 'http://:8000/jupyter'
 
-c.JupyterHub.subdomain_host = "${PAVICS_FQDN}"
-
 ## Whether to shutdown single-user servers when the Hub shuts down.
 c.JupyterHub.cleanup_servers = False
 
