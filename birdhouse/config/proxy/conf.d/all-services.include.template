@@ -14,7 +14,7 @@
 
     location /version {
         default_type text/plain;
-        return 200 '${BIRDHOUSE_VERSION}';
+        return 200 '${BIRDHOUSE_VERSION_JSON}';
     }
 
     location /doc {
