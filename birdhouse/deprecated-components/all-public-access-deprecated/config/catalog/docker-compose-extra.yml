@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  magpie:
+    volumes:
+      - ./deprecated-components/all-public-access-deprecated/config/catalog/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/all-public-access-catalog-permissions.cfg:ro

@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+      - ./deprecated-components/canarie-api-full-monitoring-deprecated/config/canarie-api/canarie_api_full_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/canarie_api_full_monitoring-deprecated.py:ro
