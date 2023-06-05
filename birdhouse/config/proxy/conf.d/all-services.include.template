@@ -13,7 +13,7 @@
     }
 
     location /version {
-        default_type text/plain;
+        default_type application/json;
         return 200 '${BIRDHOUSE_VERSION_JSON}';
     }
 
