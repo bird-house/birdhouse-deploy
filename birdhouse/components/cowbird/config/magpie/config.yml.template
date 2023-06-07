@@ -54,6 +54,7 @@ webhooks:
     payload:
       event : "created"
       service_name: "{{service.name}}"
+      service_type: "{{service.type}}"
       resource_id: "{{resource.id}}"
       resource_full_name: "{{resource.name}}"
       name: "{{permission.name}}"
@@ -67,6 +68,7 @@ webhooks:
     payload:
       event : "deleted"
       service_name: "{{service.name}}"
+      service_type: "{{service.type}}"
       resource_id: "{{resource.id}}"
       resource_full_name: "{{resource.name}}"
       name: "{{permission.name}}"
