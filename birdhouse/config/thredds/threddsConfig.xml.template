@@ -6,7 +6,7 @@ https://www.unidata.ucar.edu/software/tds/current/reference/ThreddsConfigXMLFile
 <threddsConfig>
   <serverInformation>
     <name>${THREDDS_ORGANIZATION} Thredds Data Server</name>
-    <logoUrl>/twitcher/ows/proxy/thredds/threddsIcon.gif</logoUrl>
+    <logoUrl>/thredds/threddsIcon.gif</logoUrl>
     <logoAltText>TDS</logoAltText>
 
     <abstract>Scientific Climate Data</abstract>
