@@ -18,6 +18,8 @@
 ## Changes
 
 - Add Magpie webhook definitions for permission creation and deletion cases to be processed by Cowbird.
+- Add `USER_WORKSPACE_UID` and `USER_WORKSPACE_GID` env variables to manage ownership of the user workspaces used by
+  Cowbird, JupyterHub and others.
 - Licence: update copyright line with year and ownership
 
 ## Fixes
