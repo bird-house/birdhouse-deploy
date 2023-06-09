@@ -37,7 +37,7 @@ services:
           "CMD",
           "curl",
           "--fail",
-          "http://localhost:8080/thredds/catalog.html",
+          "http://localhost:8080${THREDDS_CONTEXT_ROOT}/catalog.html",
         ]
 
 volumes:

@@ -15,7 +15,7 @@ SERVICES['renderer'] = {
     },
     'stats': {
         'method': '.*',
-        'route': '/thredds/.*'
+        'route': '${THREDDS_CONTEXT_ROOT}/.*'
     },
     'redirect': {
         'doc': 'https://ouranosinc.github.io/pavics-sdi/arch/frontend.html#gridded-data-rendering',
@@ -29,7 +29,7 @@ SERVICES['renderer'] = {
     'monitoring': {
         'ncWMS': {
             'request': {
-                'url': 'https://${PAVICS_FQDN_PUBLIC}/thredds/wms/birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+                'url': 'https://${PAVICS_FQDN_PUBLIC}${THREDDS_CONTEXT_ROOT}/wms/birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc?service=WMS&version=1.3.0&request=GetCapabilities'
             }
         },
     }
@@ -49,14 +49,14 @@ SERVICES['Thredds'] = {
     },
     'stats': {
         'method': '.*',
-        'route': '/thredds/.*'
+        'route': '${THREDDS_CONTEXT_ROOT}/.*'
     },
     'redirect': {
         'doc': 'https://www.unidata.ucar.edu/software/tds/',
         'releasenotes': 'https://docs.unidata.ucar.edu/tds/current/userguide/upgrade.html',
         'support': 'https://www.unidata.ucar.edu/software/tds/#help',
         'source': 'https://github.com/Unidata/tds',
-        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/thredds/',
+        'tryme': 'https://${PAVICS_FQDN_PUBLIC}${THREDDS_CONTEXT_ROOT}/',
         'licence': 'https://github.com/Unidata/tds/blob/main/LICENSE',
         'provenance': 'https://downloads.unidata.ucar.edu/tds/'
     },
@@ -64,7 +64,7 @@ SERVICES['Thredds'] = {
         "Thredds": {
             'request': {
                 # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
-                'url': 'http://${PAVICS_FQDN}:8083/thredds/catalog.html'
+                'url': 'http://${PAVICS_FQDN}:8083${THREDDS_CONTEXT_ROOT}/catalog.html'
             }
         }
     }
