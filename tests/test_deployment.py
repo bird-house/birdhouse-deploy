@@ -5,12 +5,13 @@ import json
 from string import Template
 
 import jsonschema
+import requests
 
 COMPONENT_LOCATIONS = ("components", "optional-components", "config")
 TEMPLATE_SUBSTITUTIONS = {
     "PAVICS_FQDN_PUBLIC": os.environ.get("PAVICS_FQDN_PUBLIC", "example.com"),
     "WEAVER_MANAGER_NAME": os.environ.get("WEAVER_MANAGER_NAME", "weaver"),
-    "TWITCHER_PROTECTED_PATH": os.environ.get("TWITCHER_PROTECTED_PATH", "/twitcher/ows/proxy")
+    "TWITCHER_PROTECTED_PATH": os.environ.get("TWITCHER_PROTECTED_PATH", "/twitcher/ows/proxy"),
 }
 
 
@@ -25,9 +26,13 @@ def component_paths(root_dir):
 
 
 @pytest.fixture(scope="module")
-def services_config_schema(request):
-    with open(os.path.join(os.path.dirname(request.fspath), "service-config-schema.json")) as f:
-        return json.load(f)
+def services_config_schema():
+    branch = os.environ.get("DACCS_NODE_REGISTRY_BRANCH", "main")
+    schema = {
+        "$ref": "https://raw.githubusercontent.com/DACCS-Climate/DACCS-node-registry"
+        f"/{branch}/node_registry.schema.json#service"
+    }
+    return schema
 
 
 class TestDockerCompose:
@@ -57,4 +62,12 @@ class TestDockerCompose:
                     jsonschema.validate(instance=service_config, schema=services_config_schema)
                 except jsonschema.exceptions.ValidationError as e:
                     invalid_schemas.append(f"{os.path.basename(path)} contains invalid service configuration: {e}")
+                except jsonschema.exceptions.RefResolutionError as e:
+                    if os.environ.get("DACCS_SKIP_ONLINE_TESTS"):
+                        pytest.skip("This test requires an internet connection, skipping")
+                    else:
+                        pytest.fail(
+                            f"This test requires an internet connection. To skip this test instead set the"
+                            " DACCS_SKIP_ONLINE_TESTS environment variable failing with error: \n{e}"
+                        )
         assert not invalid_schemas, "\n".join(invalid_schemas)

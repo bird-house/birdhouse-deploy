@@ -1,7 +1,25 @@
 {
-    "name": "thredds",
-    "url": "https://${PAVICS_FQDN_PUBLIC}/thredds",
-    "type": ["data", "catalog"],
-    "documentation": "https://www.unidata.ucar.edu/software/tds/",
-    "description": "A server that provides catalog, metadata, and data access services for scientific data."
+  "name": "thredds",
+  "keywords": [
+    "data",
+    "catalog"
+  ],
+  "description": "A server that provides catalog, metadata, and data access services for scientific data.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "application/json",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/thredds/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://www.unidata.ucar.edu/software/tds/"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/xml",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/thredds/catalog.xml"
+    }
+  ]
 }

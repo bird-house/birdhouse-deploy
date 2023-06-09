@@ -1,7 +1,24 @@
 {
-    "name": "finch",
-    "url": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch",
-    "type": ["service-wps"],
-    "documentation": "https://finch.readthedocs.io",
-    "description": "A Web Processing Service for Climate Indicators."
+  "name": "finch",
+  "keywords": [
+    "service-wps"
+  ],
+  "description": "A Web Processing Service for Climate Indicators.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/xml",
+      "href": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&request=GetCapabilities"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://finch.readthedocs.io"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/xml",
+      "href": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&request=GetCapabilities"
+    }
+  ]
 }
