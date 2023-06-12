@@ -3,5 +3,6 @@ services:
   proxy:
     volumes:
     - ./config/thredds/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/thredds:ro
+    - ./config/thredds/config/proxy/conf.extra-service.d.bypasstwitcher:/etc/nginx/conf.extra-service.d/_1_thredds_bypass_twitcher:ro
     links:
       - thredds
