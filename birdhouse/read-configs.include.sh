@@ -54,6 +54,20 @@ discover_compose_dir() {
 }
 
 
+discover_env_local() {
+    if [ -z "$BIRDHOUSE_LOCAL_ENV" ]; then
+        BIRDHOUSE_LOCAL_ENV="$COMPOSE_DIR/env.local"
+    fi
+
+    # env.local can be a symlink to the private config repo where the real
+    # env.local file is source controlled.
+    # Docker volume-mount will need the real dir of the file for symlink to
+    # resolve inside the container.
+    BIRDHOUSE_LOCAL_ENV_REAL_PATH="$(realpath "$BIRDHOUSE_LOCAL_ENV")"
+    BIRDHOUSE_LOCAL_ENV_REAL_DIR="$(dirname "$BIRDHOUSE_LOCAL_ENV_REAL_PATH")"
+}
+
+
 read_default_env() {
     if [ -e "$COMPOSE_DIR/default.env" ]; then
         # Ensure DELAYED_EVAL is properly initialized before being appended to.
@@ -69,7 +83,7 @@ read_default_env() {
 read_env_local() {
     # we don't use usual .env filename, because docker-compose uses it
 
-    echo "Using local environment file at: ${BIRDHOUSE_LOCAL_ENV:="$COMPOSE_DIR/env.local"}"
+    echo "Using local environment file at: ${BIRDHOUSE_LOCAL_ENV}"
 
     if [ -e "$BIRDHOUSE_LOCAL_ENV" ]; then
         saved_shell_options="$(set +o)"
@@ -228,10 +242,11 @@ create_compose_conf_list() {
 # process_delayed_eval() at the appropriate moment.
 read_configs() {
     discover_compose_dir
+    discover_env_local
     read_default_env
-    read_env_local  # for EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS
+    read_env_local  # for EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, need discover_env_local
     read_components_default_env  # uses EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
-    read_env_local  # again to override components default.env
+    read_env_local  # again to override components default.env, need discover_env_local
     process_delayed_eval
 }
 
@@ -241,7 +256,8 @@ read_configs() {
 # read_configs() to be safe.
 read_basic_configs_only() {
     discover_compose_dir
+    discover_env_local
     read_default_env
-    read_env_local
+    read_env_local  # need discover_env_local
     process_delayed_eval
 }
