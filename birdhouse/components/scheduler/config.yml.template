@@ -23,7 +23,7 @@
     --volume /tmp/notebookdeploy:/tmp/notebookdeploy:rw
     --env COMPOSE_DIR=${COMPOSE_DIR}
     --env TMP_BASE_DIR=/tmp/notebookdeploy
-    --env JUPYTERHUB_USER_DATA_DIR=${JUPYTERHUB_USER_DATA_DIR}
+    --env JUPYTERHUB_USER_DATA_DIR=${JUPYTERHUB_USER_DATA_DIR}${AUTODEPLOY_NOTEBOOK_EXTRA_DOCKER_ARGS}
   image: 'docker:19.03.6-git'
 
 - name: autodeploy
@@ -40,7 +40,7 @@
     --env COMPOSE_DIR=${COMPOSE_DIR}
     --env AUTODEPLOY_DEPLOY_KEY_ROOT_DIR=${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}
     --env JUPYTERHUB_USER_DATA_DIR=${JUPYTERHUB_USER_DATA_DIR}
-    --env AUTODEPLOY_SILENT=true
+    --env AUTODEPLOY_SILENT=true${AUTODEPLOY_PLATFORM_EXTRA_DOCKER_ARGS}
   image: 'pavics/docker-compose-git:docker-18.09.7-compose-1.25.1'
 
 ${AUTODEPLOY_EXTRA_SCHEDULER_JOBS}
