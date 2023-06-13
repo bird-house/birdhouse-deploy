@@ -20,6 +20,16 @@
   Move unused and unmaintained components to a separate [`deprecated-components/`](birdhouse/deprecated-components)
   subdirectory and remove them from the `DEFAULT_CONF_DIRS` list if required.
 
+[1.26.4](https://github.com/bird-house/birdhouse-deploy/tree/1.26.4) (2023-06-06)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new version with latest RavenPy
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/119 for more
+  details.
+
+
 [1.26.3](https://github.com/bird-house/birdhouse-deploy/tree/1.26.3) (2023-06-01)
 ------------------------------------------------------------------------------------------------------------------
 
