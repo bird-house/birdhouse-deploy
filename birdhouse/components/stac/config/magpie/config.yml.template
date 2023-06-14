@@ -9,12 +9,11 @@ providers:
     sync_type: api
 
 permissions:
-  # Administrator permissions over whole service
   - service: stac
     permission: read
     group: anonymous
     action: create
   - service: stac
     permission: write
-    group: anonymous
+    group: stac-admin
     action: create
