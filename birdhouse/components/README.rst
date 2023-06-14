@@ -156,7 +156,7 @@ Here is a sample setup to test autodeploy:
 
   # this one for running pavics-compose.sh
   git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy
-  
+
   # this one for triggering autodeploy
   git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy-trigger
 
@@ -166,33 +166,33 @@ Here is a sample setup to test autodeploy:
 
   # go to the main checkout
   cd birdhouse-deploy/birdhouse
-  
+
   # ensure the scheduler component is enabled, otherwise autodeploy will not work
   echo 'export EXTRA_CONF_DIRS="$EXTRA_CONF_DIRS ./components/scheduler" >> env.local
-  
+
   # set AUTODEPLOY_PLATFORM_FREQUENCY
   echo 'export AUTODEPLOY_PLATFORM_FREQUENCY="@every 5m"' >> env.local
-  
+
   # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
   ./pavics-compose.sh stop scheduler && ./pavics-compose.sh rm -vf scheduler && ./pavics-compose.sh up -d
-  
+
 * Create a ``test`` branch so you can add bogus commits without affecting your real PR.  Set up your main checkout (birdhouse-deploy) to track that test branch so it will detect new changes on the test branch and trigger the autodeploy.
 
 .. code-block:: shell
 
   # go to the main checkout
   cd birdhouse-deploy/birdhouse
-  
+
   # initially create the test branch from master
   git checkout master
   git pull
   git checkout -b test
   git push -u test
-  
+
   # ensure your runnings code is at "master" and is working correctly
   # if you do not have a working baseline, you will not know if the breakage is due to autodeploy or your code
   ./pavics-compose.sh up -d
-  
+
 * Test scenario 1, from ``master`` to your PR
 
 .. code-block:: shell
@@ -205,15 +205,15 @@ Here is a sample setup to test autodeploy:
   git checkout test
   git reset --hard YOUR_PR_BRANCH
   git push
-  
+
   # now that the remote "test" branch differs from the local "test" branch in the birdhouse-deploy repo,
   # the autodeploy mechanism will detect that the remote branch has changed and attempt to update the local branch
-  
+
   # follow logs, check for errors
   tail -f /var/log/PAVICS/autodeploy.log
-  
+
   # do spot checks, run Jenkins on your deployment if needed
-  
+
 * Test scenario 2, from your PR to later changes
 
 .. code-block:: shell
@@ -251,15 +251,15 @@ Here is a sample setup to test autodeploy:
   # go to YOUR_PR_BRANCH so we can delete the test branch
   git checkout YOUR_PR_BRANCH
   git branch -D test
-  
+
   # edit env.local and change AUTODEPLOY_PLATFORM_FREQUENCY to something less frequent to save your cpu
   # do not remove the scheduler component from the stack yet or the next command will fail
 
   # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
   ./pavics-compose.sh stop scheduler && ./pavics-compose.sh rm -vf scheduler && ./pavics-compose.sh up -d
-  
+
   # optionally edit env.local to remove the scheduler component from the stack
-  
+
 
 Monitoring
 ==========
