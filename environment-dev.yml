@@ -1,0 +1,10 @@
+# conda env create -f environment-dev.yml
+name: birdhouse-deploy
+channels:
+  - conda-forge  # for bump2version
+dependencies:
+  - make
+  - bump2version
+  - pytest
+  - jsonschema
+  - requests

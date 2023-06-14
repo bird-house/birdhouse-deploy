@@ -18,6 +18,8 @@
 ## Changes
 - Autodeploy: document test procedure
 
+- Dev environment: add Conda `environment-dev.yml` to easily install all the dev tools required
+
 
 [1.26.4](https://github.com/bird-house/birdhouse-deploy/tree/1.26.4) (2023-06-06)
 ------------------------------------------------------------------------------------------------------------------
