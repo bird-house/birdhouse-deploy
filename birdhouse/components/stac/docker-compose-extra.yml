@@ -57,15 +57,5 @@ services:
     links:
       - stac
 
-  # extend Magpie permissions to grant access to STAC API via secured Twitcher proxy
-  magpie:
-    volumes:
-      # NOTE:
-      #   Although file uses the "config.yml" format, it is very important to pass it as independent/duplicate reference
-      #   provider/permissions config files. This is because 'MAGPIE_CONFIG_PATH' is not used to allow parsing multiple
-      #   config files for each extendable service, using loading of all configuration files found in mount directories.
-      - ./components/stac/config/magpie/config.yml:/opt/local/src/magpie/config/permissions/stac.yml:ro
-      - ./components/stac/config/magpie/config.yml:/opt/local/src/magpie/config/providers/stac.yml:ro
-
 volumes:
   stac-db:
