@@ -30,7 +30,10 @@
       
   * Image ``crim-ca/stac-app`` is a STAC implementation based on ``stac-utils/stac-fastapi``.
 
-  * Image ``crim-ca/stac-browser`` is a fork of ``radiantearth/stac-browser``.
+  * Image ``crim-ca/stac-browser`` is a fork of ``radiantearth/stac-browser`` in order to have the capacity to build 
+  the Docker container. The image reference will change when the 
+  [stac-browser PR related to Dockerfile](https://github.com/bird-house/birdhouse-deploy/issues/346) will have been 
+  merged.
       
   * Adds `Magpie` permissions and service for `stac` endpoints.
   
