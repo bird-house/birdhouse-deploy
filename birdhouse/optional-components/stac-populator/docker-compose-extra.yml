@@ -13,9 +13,9 @@ services:
     container_name: stac-populator
     image: ghcr.io/crim-ca/stac-populator:master
     environment:
-      - STAC_ASSET_GENERATOR_TIMEOUT=30
+      - STAC_ASSET_GENERATOR_TIMEOUT=${STAC_ASSET_GENERATOR_TIMEOUT}
       - STAC_HOST=${PAVICS_FQDN_PUBLIC}/stac
     command: >
-      bash -c "./wait-for-it.sh stac:8000 -t 30 && ./populate.sh"
+      bash -c "./wait-for-it.sh stac:8000 -t ${STAC_ASSET_GENERATOR_TIMEOUT} && ./populate.sh"
     depends_on:
       - stac
