@@ -6,7 +6,6 @@
     "service-wfs",
     "service-wps"
   ],
-  "documentation": "https://docs.geoserver.org/",
   "description": "GeoServer is a server that allows users to view and edit geospatial data.",
   "links": [
     {
