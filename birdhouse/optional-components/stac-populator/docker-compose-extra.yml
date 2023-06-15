@@ -16,6 +16,6 @@ services:
       - STAC_ASSET_GENERATOR_TIMEOUT=${STAC_ASSET_GENERATOR_TIMEOUT}
       - STAC_HOST=${PAVICS_FQDN_PUBLIC}/stac
     command: >
-      bash -c "./wait-for-it.sh stac:8000 -t ${STAC_ASSET_GENERATOR_TIMEOUT} && ./populate.sh"
+      bash -c "./wait-for-it.sh stac:8000 -t 30 && ./populate.sh"
     depends_on:
       - stac
