@@ -29,8 +29,6 @@ START_TIME="`date -Isecond`"
 echo "==========
 notebookdeploy START_TIME=$START_TIME"
 
-set -x
-
 # running script manually (not with cron) source env.local file.
 if [ -z "$COMPOSE_DIR" ]; then
     COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
@@ -42,6 +40,8 @@ if [ -f "$COMPOSE_DIR/read-configs.include.sh" ]; then
     # Get JUPYTERHUB_USER_DATA_DIR
     read_configs
 fi
+
+set -x
 
 NOTEBOOK_DIR_MNT="/notebook_dir"
 TUTORIAL_NOTEBOOKS_DIR="tutorial-notebooks"
