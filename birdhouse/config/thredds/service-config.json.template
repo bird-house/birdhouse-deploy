@@ -8,7 +8,7 @@
   "links": [
     {
       "rel": "service",
-      "type": "application/json",
+      "type": "text/html",
       "href": "https://${PAVICS_FQDN_PUBLIC}/thredds/"
     },
     {

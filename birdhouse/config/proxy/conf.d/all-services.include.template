@@ -2,7 +2,7 @@
         ${PROXY_ROOT_LOCATION}
     }
 
-    location /components/ {
+    location /components {
         default_type application/json;
         root /static;
         try_files /components.json =404;

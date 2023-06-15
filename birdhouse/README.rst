@@ -264,8 +264,7 @@ To run the tests:
 
 Some tests require internet access (to access JSON schemas used to validate
 JSON structure). If you need to run tests offline, you can skip the tests that
-require internet access by setting the `DACCS_SKIP_ONLINE_TESTS` environment
-variable to a non-empty value.
+require internet access by using the `-k 'not online'` pytest option.
 
 
 Tagging policy

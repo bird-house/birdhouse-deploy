@@ -50,6 +50,7 @@ class TestDockerCompose:
                     invalid_names.append((config_name, path_name))
         assert not invalid_names, "service names in service-config.json.template should match the directory name"
 
+    @pytest.mark.online
     def test_service_config_valid(self, component_paths, services_config_schema):
         invalid_schemas = []
 
@@ -62,12 +63,4 @@ class TestDockerCompose:
                     jsonschema.validate(instance=service_config, schema=services_config_schema)
                 except jsonschema.exceptions.ValidationError as e:
                     invalid_schemas.append(f"{os.path.basename(path)} contains invalid service configuration: {e}")
-                except jsonschema.exceptions.RefResolutionError as e:
-                    if os.environ.get("DACCS_SKIP_ONLINE_TESTS"):
-                        pytest.skip("This test requires an internet connection, skipping")
-                    else:
-                        pytest.fail(
-                            f"This test requires an internet connection. To skip this test instead set the"
-                            " DACCS_SKIP_ONLINE_TESTS environment variable failing with error: \n{e}"
-                        )
         assert not invalid_schemas, "\n".join(invalid_schemas)
