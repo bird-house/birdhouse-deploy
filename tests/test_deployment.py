@@ -43,7 +43,7 @@ class TestDockerCompose:
             service_config_file = os.path.join(path, "service-config.json.template")
             if os.path.isfile(service_config_file):
                 with open(service_config_file) as f:
-                    service_config = json.loads(Template(f.read()).substitute(TEMPLATE_SUBSTITUTIONS))
+                    service_config = json.loads(Template(f.read()).safe_substitute(TEMPLATE_SUBSTITUTIONS))
                 config_name = service_config.get("name")
                 path_name = os.path.basename(path)
                 if config_name != path_name:
@@ -58,7 +58,7 @@ class TestDockerCompose:
             service_config_file = os.path.join(path, "service-config.json.template")
             if os.path.isfile(service_config_file):
                 with open(service_config_file) as f:
-                    service_config = json.loads(Template(f.read()).substitute(TEMPLATE_SUBSTITUTIONS))
+                    service_config = json.loads(Template(f.read()).safe_substitute(TEMPLATE_SUBSTITUTIONS))
                 try:
                     jsonschema.validate(instance=service_config, schema=services_config_schema)
                 except jsonschema.exceptions.ValidationError as e:
