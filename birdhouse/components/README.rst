@@ -402,7 +402,11 @@ define the following in the ``env.local`` file::
 Here is a sample search query using a CLI::
 
   pip install pystac-client
-  stac-client search $PAVIS_FQDN/stac -c c604ffb6d610adbb9a6b4787db7b8fd7 -q "variable_id=txgt_32" "scenario=ssp585"
+  stac-client search $PAVIS_FQDN/stac -q "variable_id=txgt_32" "scenario=ssp585"
+
+It is important to note that STAC API is not protected by any authorization mecanism. Calls to the STAC API pass 
+through Twitcher in order to do authentication. An anonymous user can have read-only access to STAC resources while 
+members of the `stac-admin` group can create and modify resources.
 
 How to Enable the Component
 ---------------------------
