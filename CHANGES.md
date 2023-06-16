@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.26.5](https://github.com/bird-house/birdhouse-deploy/tree/1.26.5) (2023-06-16)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 - Autodeploy: optionally fix file permissions
 
