@@ -15,6 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Fixes
+- Tests: some tests fail to run when `CWD` is not `COMPOSE_DIR`
+
+ The root cause is the automatic `COMPOSE_DIR` detection in
+ `read-configs.include.sh` missed one case and the detection ordering was wrong
+ for one other case as well.
+
 ## Changes
 - Autodeploy: document test procedure
 

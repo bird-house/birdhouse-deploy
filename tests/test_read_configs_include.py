@@ -102,11 +102,13 @@ class TestReadConfigs:
     def test_all_conf_dirs_set(self, read_config_include_file) -> None:
         """Test that the ALL_CONF_DIRS variable is set"""
         proc = self.run_func(read_config_include_file, {}, 'echo "$ALL_CONF_DIRS"')
+        print(proc.stdout)  # useful when assert fail
         assert get_command_stdout(proc).strip()
 
     def test_all_conf_dirs_default_order(self, read_config_include_file) -> None:
         """Test that the expected order that default.env files are loaded is correct"""
         proc = self.run_func(read_config_include_file, {}, 'echo "$ALL_CONF_DIRS"')
+        print(proc.stdout)  # useful when assert fail
         assert split_and_strip(get_command_stdout(proc)) == self.default_all_conf_order
 
     def test_all_conf_dirs_extra_last(self, read_config_include_file) -> None:
@@ -122,6 +124,7 @@ class TestReadConfigs:
         """Test that dependencies are loaded first"""
         extra = {"EXTRA_CONF_DIRS": '"./optional-components/test-weaver"'}
         proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"')
+        print(proc.stdout)  # useful when assert fail
         assert split_and_strip(get_command_stdout(proc))[-2:] == [
             "./components/weaver",
             "./optional-components/test-weaver",
@@ -138,6 +141,7 @@ class TestReadConfigs:
         extra = {"PAVICS_FQDN": '"fqdn.example.com"'}
         proc = self.run_func(read_config_include_file, extra,
                              'echo "$PAVICS_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"')
+        print(proc.stdout)  # useful when assert fail
         # By default, PAVICS_FQDN_PUBLIC has same value as PAVICS_FQDN.
         assert (split_and_strip(get_command_stdout(proc))[-1] ==
                 "fqdn.example.com - /data/jupyterhub_user_data - /data/geoserver")
@@ -151,6 +155,7 @@ class TestReadConfigs:
                  }
         proc = self.run_func(read_config_include_file, extra,
                              'echo "$PAVICS_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"')
+        print(proc.stdout)  # useful when assert fail
         # If PAVICS_FQDN_PUBLIC is set in env.local, that value should be effective.
         assert (split_and_strip(get_command_stdout(proc))[-1] ==
                 "public.example.com - /my-data-root/jupyterhub_user_data - /my-geoserver-data")
@@ -256,6 +261,7 @@ class TestCreateComposeConfList:
         proc = self.run_func(
             read_config_include_file, {"ALL_CONF_DIRS": "./config/finch ./config/raven"}, 'echo "$COMPOSE_CONF_LIST"'
         )
+        print(proc.stdout)  # useful when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == [
             "docker-compose.yml",
             "./config/finch/docker-compose-extra.yml",
@@ -279,6 +285,7 @@ class TestCreateComposeConfList:
         proc = self.run_func(
             read_config_include_file, {"ALL_CONF_DIRS": "./config/finch ./config/magpie"}, 'echo "$COMPOSE_CONF_LIST"'
         )
+        print(proc.stdout)  # useful when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == [
             "docker-compose.yml",
             "./config/finch/docker-compose-extra.yml",
@@ -292,4 +299,5 @@ class TestCreateComposeConfList:
             {"ALL_CONF_DIRS": " ".join(TestReadConfigs.default_all_conf_order)},
             'echo "$COMPOSE_CONF_LIST"',
         )
+        print(proc.stdout)  # useful when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == self.default_conf_list_order

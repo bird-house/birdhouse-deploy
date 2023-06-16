@@ -25,6 +25,7 @@
 
 # Derive COMPOSE_DIR from the most probable locations.
 # This is NOT meant to be exhautive.
+# Assume the checkout is named "birdhouse-deploy", which might NOT be true.
 # Caller of this file can simply set COMPOSE_DIR itself.
 discover_compose_dir() {
     if [ -z "$COMPOSE_DIR" ] || [ ! -e "$COMPOSE_DIR" ]; then
@@ -35,6 +36,15 @@ discover_compose_dir() {
             # Parent dir is COMPOSE_DIR
             # Case of all the scripts under deployment/ or scripts/
             COMPOSE_DIR="$(realpath ..)"
+        elif [ -f "../birdhouse/pavics-compose.sh" ]; then
+            # Sibling dir is COMPOSE_DIR
+            # Case of all the tests under tests/
+            COMPOSE_DIR="$(realpath ../birdhouse)"
+        elif [ -f "./birdhouse/pavics-compose.sh" ]; then
+            # Child dir is COMPOSE_DIR
+            COMPOSE_DIR="$(realpath birdhouse)"
+        # Below assume checkout is named birdhouse-deploy, which might not
+        # always be true.
         elif [ -f "../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
             # Case of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../birdhouse-deploy/birdhouse")"
@@ -44,9 +54,6 @@ discover_compose_dir() {
         elif [ -f "../../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
             # Case of sub-subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../../../birdhouse-deploy/birdhouse")"
-        elif [ -f "./birdhouse/pavics-compose.sh" ]; then
-            # Child dir is COMPOSE_DIR
-            COMPOSE_DIR="$(realpath birdhouse)"
         fi
         echo "$COMPOSE_DIR"
         export COMPOSE_DIR
