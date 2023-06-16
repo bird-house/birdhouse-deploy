@@ -18,9 +18,16 @@
 ## Fixes
 - Tests: some tests fail to run when `CWD` is not `COMPOSE_DIR`
 
- The root cause is the automatic `COMPOSE_DIR` detection in
- `read-configs.include.sh` missed one case and the detection ordering was wrong
- for one other case as well.
+  The root cause is the automatic `COMPOSE_DIR` detection in
+  `read-configs.include.sh` missed one case and the detection ordering was wrong
+  for one other case as well.
+
+  This was not found before because the checkout was properly named
+  "birdhouse-deploy".  When the checkout is named something else, then we hit
+  this error.
+
+  Fixes the error found here
+  https://github.com/bird-house/birdhouse-deploy/pull/329#pullrequestreview-1480211502
 
 ## Changes
 - Autodeploy: document test procedure
