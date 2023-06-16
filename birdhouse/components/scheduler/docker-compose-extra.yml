@@ -10,6 +10,7 @@ services:
     environment:
       COMPOSE_DIR: ${PWD}
       AUTODEPLOY_DEPLOY_KEY_ROOT_DIR: ${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}
+      CODE_OWNERSHIP: ${AUTODEPLOY_CODE_OWNERSHIP}
     restart: always
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2

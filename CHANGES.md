@@ -17,6 +17,20 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.26.5](https://github.com/bird-house/birdhouse-deploy/tree/1.26.5) (2023-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Autodeploy: optionally fix file permissions
+
+  The autodeploy mechanism creates new files owned by root. If this is not desired then users have to manually
+  update the file ownership after each autodeployment. This adds an option to change the ownership of all files
+  to a specific user after each autodeployment. 
+
+  For example, if the code in this repo is currently owned by a user named `birduser` with uid 1002, then by
+  setting `export AUTODEPLOY_CODE_OWNERSHIP="1002:1002"` in `env.local`, all files and folders in this repo will 
+  continue to be owned by `birduser` after each autodeployment. 
+
 [1.26.4](https://github.com/bird-house/birdhouse-deploy/tree/1.26.4) (2023-06-06)
 ------------------------------------------------------------------------------------------------------------------
 

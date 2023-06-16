@@ -156,6 +156,13 @@ for adir in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
 
         # pull the current branch, so this deploy script supports any branches, not just master
         git pull
+
+        # This runs as the root user so new/updated files will be owned by root after the git pull, this sets the
+        # owner of the code to CODE_OWNERSHIP if set. CODE_OWNERSHIP should contain uids instead of usernames since
+        # usernames within a docker container will not necessarily line up with those on the host system.
+        if [ -n "$CODE_OWNERSHIP" ]; then
+          chown -R "$CODE_OWNERSHIP" "$(git rev-parse --show-toplevel)"
+        fi
     else
         echo "WARNING: extra repo '$adir' do not exist"
     fi
