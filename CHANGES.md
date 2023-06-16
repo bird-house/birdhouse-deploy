@@ -20,12 +20,6 @@
 
 - Dev environment: add Conda `environment-dev.yml` to easily install all the dev tools required
 
-- Test random error: fix test failure on some machine only
-
-  The reason the tests fail is still unclear and illogical.  Why only 8 of the
-  13 fail but the same fix work for them all?  Why the other 5 that did not
-  fail do not need that same fix?
-
 
 [1.26.4](https://github.com/bird-house/birdhouse-deploy/tree/1.26.4) (2023-06-06)
 ------------------------------------------------------------------------------------------------------------------
