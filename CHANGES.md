@@ -15,7 +15,14 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Geoserver: protect web interface and ows routes behind magpie/twitcher
+
+  Creates two new magpie services: 
+    - `geoserver-ows`: protects the `geoserver/ows`
+    - `geoserver-web`: protects all other `geoserver/` routes (mostly `geoserver/web`)
+
+  See https://github.com/bird-house/birdhouse-deploy/issues/333 for details.
 
 [1.26.4](https://github.com/bird-house/birdhouse-deploy/tree/1.26.4) (2023-06-06)
 ------------------------------------------------------------------------------------------------------------------
