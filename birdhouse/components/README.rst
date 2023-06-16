@@ -140,11 +140,11 @@ How to test platform autodeploy is not broken by a PR
 
 There are 2 tests that need to be performed:
 
-* Can autodeploy deploy the PR from ``master`` branch, the stable reference point
+* Can autodeploy deploy the PR from ``master`` branch, the stable reference point?
 
-  * This could fail if some changes in the PR, are incompatible with autodeploy. For example: ``./pavics-compose.sh`` calls some binaries that do not exist in the autodeploy docker image.
+  * This could fail if some changes in the PR are incompatible with autodeploy. For example: ``./pavics-compose.sh`` calls some binaries that do not exist in the autodeploy docker image.
 
-* Can autodeploy be triggered again successfully, after the PR is live
+* Can autodeploy be triggered again successfully, after the PR is live?
 
   * This could fail if the PR renamed some files and forgot to add the old file names to a ``.gitignore`` file.  Then old file names will appear as new uncommitted files and autodeploy will halt because it expects a clean working directory.
 
@@ -171,23 +171,29 @@ Here is a sample setup to test autodeploy:
   echo 'export EXTRA_CONF_DIRS="$EXTRA_CONF_DIRS ./components/scheduler" >> env.local
 
   # set AUTODEPLOY_PLATFORM_FREQUENCY
+  # can set to more frequent than 5 minutes if your machine is capable enough
   echo 'export AUTODEPLOY_PLATFORM_FREQUENCY="@every 5m"' >> env.local
 
+  # if scheduler container already running:
   # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
   ./pavics-compose.sh stop scheduler && ./pavics-compose.sh rm -vf scheduler && ./pavics-compose.sh up -d
 
-* Create a ``test`` branch so you can add bogus commits without affecting your real PR.  Set up your main checkout (birdhouse-deploy) to track that test branch so it will detect new changes on the test branch and trigger the autodeploy.
+  # if scheduler container not running yet: start the newly added scheduler component
+  ./pavics-compose.sh up -d
+
+* Create a ``${USER}-test`` branch so you can add bogus commits without affecting your real PR.  Set up your main checkout (birdhouse-deploy) to track that test branch so it will detect new changes on the test branch and trigger the autodeploy.
 
 .. code-block:: shell
 
   # go to the main checkout
   cd birdhouse-deploy/birdhouse
 
-  # initially create the test branch from master
+  # initially create the ${USER}-test branch from master
+  # the ${USER} prefix is to avoid name clash if another user is also testing autodeploy
   git checkout master
   git pull
-  git checkout -b test
-  git push -u test
+  git checkout -b ${USER}-test
+  git push -u ${USER}-test
 
   # ensure your runnings code is at "master" and is working correctly
   # if you do not have a working baseline, you will not know if the breakage is due to autodeploy or your code
@@ -200,19 +206,27 @@ Here is a sample setup to test autodeploy:
   # go to the other checkout to trigger autodeploy
   cd birdhouse-deploy-trigger/birdhouse
 
-  # set branch test to the same commit as your PR, this will trigger autodeploy from master to your PR
+  # set branch ${USER}-test to the same commit as your PR, this will trigger autodeploy from master to your PR
   git pull
-  git checkout test
+  git checkout ${USER}-test
   git reset --hard YOUR_PR_BRANCH
   git push
 
-  # now that the remote "test" branch differs from the local "test" branch in the birdhouse-deploy repo,
+  # now that the remote "${USER}-test" branch differs from the local "${USER}-test" branch in the birdhouse-deploy repo,
   # the autodeploy mechanism will detect that the remote branch has changed and attempt to update the local branch
 
   # follow logs, check for errors
   tail -f /var/log/PAVICS/autodeploy.log
 
-  # do spot checks, run Jenkins on your deployment if needed
+  # each autodeploy trigger will start the log with
+  #   ==========
+  #   triggerdeploy START_TIME=2023-06-15T05:07:01+0000
+
+  # each autodeploy trigger will end the log with
+  #   triggerdeploy finished START_TIME=2023-06-15T05:07:01+0000
+  #   triggerdeploy finished   END_TIME=2023-06-15T05:07:06+0000
+
+  # do spot checks in the log, run Jenkins on your deployment if needed
 
 * Test scenario 2, from your PR to later changes
 
@@ -227,30 +241,30 @@ Here is a sample setup to test autodeploy:
   git commit -m "trigger autodeploy"
   git push
 
-  # now that the remote "test" branch differs from the local "test" branch in the birdhouse-deploy repo,
+  # now that the remote "${USER}-test" branch differs from the local "${USER}-test" branch in the birdhouse-deploy repo,
   # the autodeploy mechanism will detect that the remote branch has changed and attempt to update the local branch
 
   # follow logs, check for errors
   tail -f /var/log/PAVICS/autodeploy.log
 
-* Test done, clean up the bogus ``test`` branch and optionally relax AUTODEPLOY_PLATFORM_FREQUENCY
+* Test done, clean up the bogus ``${USER}-test`` branch and optionally relax ``AUTODEPLOY_PLATFORM_FREQUENCY``
 
 .. code-block:: shell
 
   # go to the other checkout to trigger autodeploy
   cd birdhouse-deploy-trigger/birdhouse
 
-  # go to master so we can delete the test branch
+  # go to master so we can delete the ${USER}-test branch
   git checkout master
-  git push origin --delete test
-  git branch -D test
+  git push origin --delete ${USER}-test
+  git branch -D ${USER}-test
 
   # go to the main checkout
   cd birdhouse-deploy/birdhouse
 
-  # go to YOUR_PR_BRANCH so we can delete the test branch
+  # go to YOUR_PR_BRANCH so we can delete the ${USER}-test branch
   git checkout YOUR_PR_BRANCH
-  git branch -D test
+  git branch -D ${USER}-test
 
   # edit env.local and change AUTODEPLOY_PLATFORM_FREQUENCY to something less frequent to save your cpu
   # do not remove the scheduler component from the stack yet or the next command will fail
@@ -259,6 +273,8 @@ Here is a sample setup to test autodeploy:
   ./pavics-compose.sh stop scheduler && ./pavics-compose.sh rm -vf scheduler && ./pavics-compose.sh up -d
 
   # optionally edit env.local to remove the scheduler component from the stack
+  # then remove the running scheduler container
+  ./pavics-compose.sh up -d --remove-orphans
 
 
 Monitoring
