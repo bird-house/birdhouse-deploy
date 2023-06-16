@@ -17,6 +17,20 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.26.6](https://github.com/bird-house/birdhouse-deploy/tree/1.26.6) (2023-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- `components/` endpoint displays intended information after auto-deploy
+
+  Previously, the script that generates the content for the `components/` endpoint
+  was using a feature of `grep` that is not supported by all versions of `grep`.
+  This meant that this script running in the auto-deployment docker container was
+  not able to properly parse the running components using `grep`. 
+  This fixes the issue by making the script compliant with all versions of `grep`.
+
+  Resolves https://github.com/bird-house/birdhouse-deploy/issues/342
+
 [1.26.5](https://github.com/bird-house/birdhouse-deploy/tree/1.26.5) (2023-06-16)
 ------------------------------------------------------------------------------------------------------------------
 
