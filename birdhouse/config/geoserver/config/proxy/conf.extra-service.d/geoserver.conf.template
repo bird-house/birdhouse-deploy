@@ -1,5 +1,16 @@
     location /geoserver/ {
-        proxy_pass http://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/geoserver/;
+        proxy_pass http://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/geoserver-web/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $real_scheme;
+        proxy_set_header  Accept-Encoding "";
+        gzip_proxied any;
+        gzip on;
+        gzip_comp_level 1;
+        gzip_types application/json text/plain application/xml text/html;
+    }
+
+    location /geoserver/ows {
+        proxy_pass http://${PAVICS_FQDN}${TWITCHER_PROTECTED_PATH}/geoserver-ows/ows;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $real_scheme;
         proxy_set_header  Accept-Encoding "";
