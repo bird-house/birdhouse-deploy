@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  magpie:
+    volumes:
+      - ./optional-components/all-public-access/config/geoserver/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/all-public-access-geoserver-permissions.cfg:ro
