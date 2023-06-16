@@ -1,8 +1,9 @@
 providers:
   geoserver-secured:
-    url: http://geoserver:8080/geoserver
+    url: http://${PAVICS_FQDN}:8087/geoserver
     title: geoserver-secured
     public: true
     c4i: false
     type: geoserver
     sync_type: geoserver
+
