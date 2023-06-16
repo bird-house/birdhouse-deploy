@@ -26,7 +26,7 @@
 # Derive COMPOSE_DIR from the most probable locations.
 # This is NOT meant to be exhautive.
 # Assume the checkout is named "birdhouse-deploy", which might NOT be true.
-# Caller of this file can simply set COMPOSE_DIR itself.
+# Caller of this file can simply set COMPOSE_DIR itself, this is the safest way.
 discover_compose_dir() {
     if [ -z "$COMPOSE_DIR" ] || [ ! -e "$COMPOSE_DIR" ]; then
         if [ -f "./pavics-compose.sh" ]; then

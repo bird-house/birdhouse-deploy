@@ -27,6 +27,12 @@
 
 - Dev environment: add Conda `environment-dev.yml` to easily install all the dev tools required
 
+- Tests: make test runs more robust, able to run from any `CWD`
+
+  Before, test runs can only be started from inside the checkout, at some
+  "popular" locations inside the checkout.  Now it can be started from
+  litterally anywhere.
+
 
 [1.26.4](https://github.com/bird-house/birdhouse-deploy/tree/1.26.4) (2023-06-06)
 ------------------------------------------------------------------------------------------------------------------
