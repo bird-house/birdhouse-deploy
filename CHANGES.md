@@ -15,7 +15,81 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.26.6](https://github.com/bird-house/birdhouse-deploy/tree/1.26.6) (2023-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- `components/` endpoint displays intended information after auto-deploy
+
+  Previously, the script that generates the content for the `components/` endpoint
+  was using a feature of `grep` that is not supported by all versions of `grep`.
+  This meant that this script running in the auto-deployment docker container was
+  not able to properly parse the running components using `grep`. 
+  This fixes the issue by making the script compliant with all versions of `grep`.
+
+  Resolves https://github.com/bird-house/birdhouse-deploy/issues/342
+
+[1.26.5](https://github.com/bird-house/birdhouse-deploy/tree/1.26.5) (2023-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Autodeploy: optionally fix file permissions
+
+  The autodeploy mechanism creates new files owned by root. If this is not desired then users have to manually
+  update the file ownership after each autodeployment. This adds an option to change the ownership of all files
+  to a specific user after each autodeployment. 
+
+  For example, if the code in this repo is currently owned by a user named `birduser` with uid 1002, then by
+  setting `export AUTODEPLOY_CODE_OWNERSHIP="1002:1002"` in `env.local`, all files and folders in this repo will 
+  continue to be owned by `birduser` after each autodeployment. 
+
+[1.26.4](https://github.com/bird-house/birdhouse-deploy/tree/1.26.4) (2023-06-06)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
+- Jupyter env: new version with latest RavenPy
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/119 for more
+  details.
+
+
+[1.26.3](https://github.com/bird-house/birdhouse-deploy/tree/1.26.3) (2023-06-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new version with latest Xclim and RavenPy
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/115 for more
+  details.
+
+- Raven WPS: new version to match with new RavenPy inside the Jupyter env
+
+  See https://github.com/Ouranosinc/raven/compare/v0.14.2...v0.18.1 for more
+  details.
+
+## Fixes
+- Notebook autodeploy: unable to read the `env.local`
+
+  When `env.local` is a symlink we need to volume-mount the destination of the
+  symlink so it resolves inside the notebook autodeploy container.
+
+  This will allow notebook autodeploy config variable to be set in `env.local`.
+
+  Also had someone changed the value of `JUPYTERHUB_USER_DATA_DIR` in `env.local`,
+  it would not have worked without this fix.
+
+  This is a non-breaking fix.
+
+
+[1.26.2](https://github.com/bird-house/birdhouse-deploy/tree/1.26.2) (2023-05-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Update Zenodo config
+  *  Add Misha to creators
+  *  Add birdhouse community
 
 - A new endpoint `/services` is added that provides a JSON string describing each of the user facing services currently 
   enabled on the stack. This is a static string and serves a different purpose than the endpoints served by canarie-api
