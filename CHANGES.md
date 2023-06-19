@@ -20,6 +20,34 @@
   Move unused and unmaintained components to a separate [`deprecated-components/`](birdhouse/deprecated-components)
   subdirectory and remove them from the `DEFAULT_CONF_DIRS` list if required.
 
+[1.26.6](https://github.com/bird-house/birdhouse-deploy/tree/1.26.6) (2023-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- `components/` endpoint displays intended information after auto-deploy
+
+  Previously, the script that generates the content for the `components/` endpoint
+  was using a feature of `grep` that is not supported by all versions of `grep`.
+  This meant that this script running in the auto-deployment docker container was
+  not able to properly parse the running components using `grep`. 
+  This fixes the issue by making the script compliant with all versions of `grep`.
+
+  Resolves https://github.com/bird-house/birdhouse-deploy/issues/342
+
+[1.26.5](https://github.com/bird-house/birdhouse-deploy/tree/1.26.5) (2023-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Autodeploy: optionally fix file permissions
+
+  The autodeploy mechanism creates new files owned by root. If this is not desired then users have to manually
+  update the file ownership after each autodeployment. This adds an option to change the ownership of all files
+  to a specific user after each autodeployment. 
+
+  For example, if the code in this repo is currently owned by a user named `birduser` with uid 1002, then by
+  setting `export AUTODEPLOY_CODE_OWNERSHIP="1002:1002"` in `env.local`, all files and folders in this repo will 
+  continue to be owned by `birduser` after each autodeployment. 
+
 [1.26.4](https://github.com/bird-house/birdhouse-deploy/tree/1.26.4) (2023-06-06)
 ------------------------------------------------------------------------------------------------------------------
 
