@@ -26,7 +26,7 @@ SERVICES['STAC'] = {
     "monitoring": {
         "STAC": {
             'request': {
-                'url': 'http://stac:8000/'
+                'url': 'http://stac:8000/stac'
             }
         }
     }
