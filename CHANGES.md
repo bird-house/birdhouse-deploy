@@ -17,6 +17,11 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.26.7](https://github.com/bird-house/birdhouse-deploy/tree/1.26.7) (2023-06-19)
+------------------------------------------------------------------------------------------------------------------
+
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
 [1.26.6](https://github.com/bird-house/birdhouse-deploy/tree/1.26.6) (2023-06-16)
 ------------------------------------------------------------------------------------------------------------------
 
