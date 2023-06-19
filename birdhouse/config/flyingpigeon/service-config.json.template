@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/DACCS-node-registry/main/node_registry.schema.json#service",
+  "name": "flyingpigeon",
+  "keywords": [
+    "service-wps"
+  ],
+  "description": "WPS for climate model data, indices and extreme events.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/xml",
+      "href": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/flyingpigeon?service=WPS&request=GetCapabilities"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://flyingpigeon.readthedocs.io"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/xml",
+      "href": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/flyingpigeon?service=WPS&request=GetCapabilities"
+    }
+  ]
+}

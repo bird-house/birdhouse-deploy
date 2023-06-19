@@ -17,6 +17,22 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.26.7](https://github.com/bird-house/birdhouse-deploy/tree/1.26.7) (2023-06-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- A new endpoint `/services` is added that provides a JSON string describing each of the user facing services currently 
+  enabled on the stack. This is a static string and serves a different purpose than the endpoints served by canarie-api
+  (monitoring status). This endpoint is meant to be polled by the node registry scripts 
+  (https://github.com/DACCS-Climate/DACCS-node-registry) to provide information about what services are meant to be 
+  available without having to poll other endpoints directly.
+
+- A new endpoint `/version` is added that provides a string containing the current version number of the stack 
+  (e.g. "1.26.0"). This endpoint is meant to be polled by the node registry scripts 
+  (https://github.com/DACCS-Climate/DACCS-node-registry).
+
+
 [1.26.6](https://github.com/bird-house/birdhouse-deploy/tree/1.26.6) (2023-06-16)
 ------------------------------------------------------------------------------------------------------------------
 
