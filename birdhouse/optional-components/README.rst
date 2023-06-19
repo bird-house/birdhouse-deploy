@@ -151,7 +151,7 @@ By enabling this component, all WPS services and data on THREDDS are completely 
 Once enabled, if you need to revert the change, you have to do it manually by logging into Magpie.
 Just disabling this component will not revert the change.
 Alternatively, you can create a similar file to |magpie-public-perms|_ and replace all desired ``action: create``
-entries by ``action: remove`` to make sure the permissions are removed as startup if they exist.
+entries by ``action: remove`` to make sure the permissions are removed at startup if they exist.
 
 This optional component is required for the test suite at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
@@ -167,6 +167,34 @@ The anonymous user will now have all the permissions described in |magpie-public
 .. _magpie-public-perms: ./all-public-access/all-public-access-magpie-permission.cfg
 .. |magpie-public-perms| replace:: optional-components/all-public-access/all-public-access-magpie-permission.cfg
 .. _env.local.example: ../env.local.example
+
+
+Control secured access to WPS outputs
+--------------------------------------------------------
+
+By default, all outputs of WPS processes (i.e.: ``/wpsoutputs``) are publicly accessible. This is to preserve
+backward compatibility with previous instances. However, enabling this optional component adds secured access to data
+stored under ``/wpsoutputs``.
+
+To provide secured access, all requests sent to ``/wpsoutputs`` require a prior authorization from a new service added
+to Magpie, called ``secure-data-proxy``. As shown below, this service should replicate the file system directory
+hierarchy defined to store the data. A file located under ``/wpsoutputs/weaver/public`` for example would use the
+corresponding resources and user/group permissions defined under this service to validate that the authenticated
+request user can obtain access to it.
+
+.. image:: secure-data-proxy/images/magpie-service.png
+
+How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
+
+* Add ``./optional-components/secure-data-proxy`` to ``EXTRA_CONF_DIRS``.
+
+Once enabled, users will *NOT* have public access to files under ``/wpsoutputs`` anymore, except for items defined
+with authorized ``read`` permissions for the ``anonymous`` group under |secure-data-proxy-perms|_. As any other Magpie
+configuration file, any combination of user/group/resource/permission could be defined for the ``secure-data-proxy``
+service to customize specific user access control to stored data files.
+
+.. _secure-data-proxy-perms: ./secure-data-proxy/config/magpie/config.yml.template
+.. |secure-data-proxy-perms| replace:: optional-components/secure-data-proxy/config/magpie/config.yml.template
 
 
 Control secured access to resources example
@@ -236,3 +264,31 @@ How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`dow
 .. |test-weaver-perms| replace:: optional-components/test-weaver/config/magpie/test-weaver-permission.cfg
 .. _pavics-sdi-weaver|: https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebook-components/weaver_example.ipynb
 .. |pavics-sdi-weaver| replace:: Ouranosinc/pavics-sdi Weaver Example
+
+
+Test Geoserver Secured Access
+-----------------------------
+
+This optional component adds a new provider and location for Geoserver, ``test-geoserver-secured-access``, 
+in order to test secured access to this service before it is moved behind Twitcher (undetermined date).
+
+The old ``/geoserver`` path is still available, so current workflows are not affected.
+
+The new ``/geoserver-secured`` path is available for testing once the optional component is activated.
+
+To test the ``geoserver-secured`` service through Magpie, each workspace needs to be added to the new service and then 
+permissions can be set on a per-workspace or even layer basis.
+
+A ``GetFeature`` request for a layer in a public workspace (named public in this example) will succeed for any user 
+using any of these two request types:
+
+* {BASE_URL}/geoserver-secured/wfs?version=2.0.0&request=GetFeature&typeNames=public:{LAYER_NAME}
+* {BASE_URL}/geoserver-secured/public/wfs?version=2.0.0&request=GetFeature&typeNames={LAYER_NAME}
+
+Whereas access to a private workspace will require a user or group be given explicit permissions through the ``Magpie``
+interface.
+
+See |geoserver_secured_pr|_. for more details.
+
+.. _geoserver_secured_pr: https://github.com/bird-house/birdhouse-deploy/pull/242
+.. |geoserver_secured_pr| replace:: Pull Request

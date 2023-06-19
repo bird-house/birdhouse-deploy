@@ -23,14 +23,11 @@ THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
-if [ -f "$COMPOSE_DIR/default.env" ]; then
-    # Need to source this one first, else sourcing env.local might not work.
-    . "${COMPOSE_DIR}/default.env"
-fi
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
 
-if [ -f "$COMPOSE_DIR/env.local" ]; then
     # Get POSTGRES_MAGPIE_USERNAME, MAGPIE_DB_NAME.
-    . "${COMPOSE_DIR}/env.local"
+    read_configs
 fi
 
 set -x

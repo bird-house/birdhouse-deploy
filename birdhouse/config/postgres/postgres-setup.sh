@@ -4,21 +4,12 @@ set -e
 
 export PGPASSWORD=${POSTGRES_PASSWORD}
 
-databases_to_create=(
-    flyingpigeon
-    hummingbird
-    malleefowl
-    catalog
-    finch
-    raven
-)
-
 echo 'Waiting for postgres database connection'
 while ! pg_isready -h postgres -U ${POSTGRES_USER}; do sleep 1; done;
 
 databases=$(psql -h postgres -U ${POSTGRES_USER} -d ${POSTGRES_DB} -t -c 'SELECT datname FROM pg_database WHERE datistemplate = false;')
 
-for db_to_create in ${databases_to_create[*]}
+for db_to_create in ${POSTGRES_DATABASES_TO_CREATE}
 do
     exists=false
     for db in $databases

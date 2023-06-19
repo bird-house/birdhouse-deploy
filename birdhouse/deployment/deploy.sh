@@ -105,10 +105,10 @@ cd $COMPOSE_DIR
 START_TIME="`date -Isecond`"
 echo "deploy START_TIME=$START_TIME"
 
-. $COMPOSE_DIR/default.env
+. "$COMPOSE_DIR/read-configs.include.sh"
 
 # Read AUTODEPLOY_EXTRA_REPOS
-. $ENV_LOCAL_FILE
+read_basic_configs_only
 
 set -x
 
@@ -128,12 +128,7 @@ done
 
 cd $COMPOSE_DIR
 
-. ./default.env
-
-set +x  # hide passwd in env.local in logs
-# reload again after default.env since env.local can override default.env
-. $ENV_LOCAL_FILE
-set -x
+read_basic_configs_only
 
 # stop all to force reload any changed config that are volume-mount into the containers
 ./pavics-compose.sh stop
@@ -161,6 +156,13 @@ for adir in $COMPOSE_DIR $AUTODEPLOY_EXTRA_REPOS; do
 
         # pull the current branch, so this deploy script supports any branches, not just master
         git pull
+
+        # This runs as the root user so new/updated files will be owned by root after the git pull, this sets the
+        # owner of the code to CODE_OWNERSHIP if set. CODE_OWNERSHIP should contain uids instead of usernames since
+        # usernames within a docker container will not necessarily line up with those on the host system.
+        if [ -n "$CODE_OWNERSHIP" ]; then
+          chown -R "$CODE_OWNERSHIP" "$(git rev-parse --show-toplevel)"
+        fi
     else
         echo "WARNING: extra repo '$adir' do not exist"
     fi
@@ -169,13 +171,11 @@ done
 cd $COMPOSE_DIR
 
 # reload again after git pull because this file could be changed by the pull
-. ./default.env
+. "$COMPOSE_DIR/read-configs.include.sh"
 
-set +x  # hide passwd in env.local in logs
 # reload again after default.env since env.local can override default.env
 # (ex: JUPYTERHUB_USER_DATA_DIR)
-. $ENV_LOCAL_FILE
-set -x
+read_basic_configs_only
 
 # restart everything, only changed containers will be destroyed and recreated
 ./pavics-compose.sh up -d

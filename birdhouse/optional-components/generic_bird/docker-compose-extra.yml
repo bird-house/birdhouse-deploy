@@ -9,7 +9,6 @@ services:
       - "${GENERIC_BIRD_PORT}:${GENERIC_BIRD_INTERNAL_PORT}"
     volumes:
       - ./optional-components/generic_bird/wps.cfg:/wps.cfg:ro
-      - wps_outputs:/data/wpsoutputs
       - /tmp
     links:
       - postgres_generic_bird
@@ -26,15 +25,6 @@ services:
     env_file:
       - ./config/postgres/credentials.env
     restart: always
-
-  magpie:
-    volumes:
-    - ./optional-components/generic_bird/generic_bird-magpie-permission.cfg:/opt/local/src/magpie/config/permissions/generic_bird-magpie-permission.cfg:ro
-    - ./optional-components/generic_bird/generic_bird-magpie-provider.cfg:/opt/local/src/magpie/config/providers/generic_bird-magpie-provider.cfg:ro
-
-  proxy:
-    volumes:
-    - ./optional-components/generic_bird/generic_bird_canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/generic_bird_canarie_api_monitoring.py:ro
 
 volumes:
   postgres_generic_bird: {}

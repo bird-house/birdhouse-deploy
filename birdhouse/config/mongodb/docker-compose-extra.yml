@@ -1,0 +1,24 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  mongodb:
+    image: mongo:3.4.0
+    container_name: mongodb
+    networks:
+      - mongodb
+    volumes:
+      - ${DATA_PERSIST_ROOT}/mongodb_persist:/data/db
+    # Mongodb crash with permission denied errors if the command is not overridden like this
+    command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
+    restart: always
+    logging: *default-logging
+
+networks:
+  mongodb: {}

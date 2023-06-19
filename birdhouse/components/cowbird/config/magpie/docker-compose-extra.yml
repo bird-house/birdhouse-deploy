@@ -1,0 +1,21 @@
+version: "3.4"
+
+services:
+  # extend Magpie permissions to grant access to Cowbird API via secured Twitcher proxy
+  magpie:
+    links:
+      # must have link to send webhook requests directly though internal network
+      - cowbird
+    volumes:
+      # NOTE:
+      #   Although the file uses the combined "config.yml" format, it is very important to pass it as independent and
+      #   duplicate references for providers/permissions/webhooks config files. This is because 'MAGPIE_CONFIG_PATH' is
+      #   not used to allow parsing additive per-component config files for each extendable service, using loading of
+      #   all configuration files found in mounted directories.
+      - ./components/cowbird/config/magpie/config.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/cowbird.yml:ro
+      - ./components/cowbird/config/magpie/config.yml:${MAGPIE_PROVIDERS_CONFIG_PATH}/cowbird.yml:ro
+      - ./components/cowbird/config/magpie/config.yml:${MAGPIE_WEBHOOKS_CONFIG_PATH}/cowbird.yml:ro
+  cowbird-worker:
+    env_file:
+      # user/password for admin session to perform permission sync updates
+      - ./config/magpie/postgres-credentials.env

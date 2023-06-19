@@ -1,0 +1,8 @@
+providers:
+  ncWMS2:
+    url: http://${PAVICS_FQDN}:8080/ncWMS2
+    title: ncWMS2
+    public: true
+    c4i: false
+    type: ncwms
+    sync_type: ncwms

@@ -1,0 +1,35 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  twitcher:
+    image: pavics/twitcher:magpie-${MAGPIE_VERSION}
+    container_name: twitcher
+    ports:
+      - "8000:8000"
+    environment:
+      # target directories to allow loading multiple config files of corresponding category
+      # each compose override should volume mount its files inside the below directory
+      # (note: DO NOT use 'MAGPIE_CONFIG_PATH' that would disable multi-config loading capability)
+      # Only 'providers' sections are used to employ 'request/response hooks' with 'MagpieAdapter'.
+      # Hooks are defined within Magpie config, but it is actually Twitcher proxy that runs them.
+      # Other Magpie components are unknown and ignored by Twitcher itself.
+      MAGPIE_PROVIDERS_CONFIG_PATH: "/opt/birdhouse/src/magpie/config"
+    env_file:
+      - ./config/magpie/postgres-credentials.env
+    depends_on:
+      - postgres-magpie
+      - magpie
+    links:
+      - postgres-magpie
+    volumes:
+      - ./config/twitcher/twitcher.ini:/opt/birdhouse/src/twitcher/twitcher.ini
+    command: "pserve /opt/birdhouse/src/twitcher/twitcher.ini"
+    restart: always
+    logging: *default-logging
