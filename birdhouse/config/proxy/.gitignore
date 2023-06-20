@@ -1,3 +1,4 @@
 conf.d/frontend.conf
 conf.d/all-services.include
 nginx.conf
+static/

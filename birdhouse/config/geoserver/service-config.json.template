@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/DACCS-node-registry/main/node_registry.schema.json#service",
+  "name": "geoserver",
+  "keywords": [
+    "data",
+    "service-wms",
+    "service-wfs",
+    "service-wps"
+  ],
+  "description": "GeoServer is a server that allows users to view and edit geospatial data.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "application/json",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/geoserver/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://docs.geoserver.org/"
+    }
+  ]
+}
