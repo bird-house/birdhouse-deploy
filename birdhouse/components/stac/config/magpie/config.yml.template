@@ -10,10 +10,6 @@ providers:
 
 permissions:
   - service: stac
-    permission: read
-    group: anonymous
-    action: create
-  - service: stac
     permission: write
     group: stac-admin
     action: create
