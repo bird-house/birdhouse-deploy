@@ -1,2 +1,2 @@
-conf.extra-service.d/stac.conf
+config/proxy/conf.extra-service.d/stac.conf
 config/magpie/config.yml
