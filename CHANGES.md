@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.26.8](https://github.com/bird-house/birdhouse-deploy/tree/1.26.8) (2023-06-22)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 - Tests: some tests fail to run when `CWD` is not `COMPOSE_DIR`
 
