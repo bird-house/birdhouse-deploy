@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/DACCS-node-registry/main/node_registry.schema.json#service",
+  "name": "jupyterhub",
+  "keywords": [
+    "jupyterhub"
+  ],
+  "description": "An interactive development environment use to create and share documents that contain live code.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/jupyter"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://jupyter.org/hub"
+    }
+  ]
+}
