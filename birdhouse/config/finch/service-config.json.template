@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/DACCS-node-registry/main/node_registry.schema.json#service",
+  "name": "finch",
+  "keywords": [
+    "service-wps"
+  ],
+  "description": "A Web Processing Service for Climate Indicators.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/xml",
+      "href": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&request=GetCapabilities"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://finch.readthedocs.io"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/xml",
+      "href": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&request=GetCapabilities"
+    }
+  ]
+}

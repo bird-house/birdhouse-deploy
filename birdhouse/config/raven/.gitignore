@@ -1,6 +1,7 @@
 config/canarie-api/canarie_api_monitoring.py
 config/magpie/providers.cfg
 wps.cfg
+service-config.json
 
 # Old paths. Keep these so that old config files remain uncommittable after updates.
 config/proxy/canarie_api_monitoring.py

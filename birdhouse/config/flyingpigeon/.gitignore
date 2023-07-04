@@ -2,3 +2,4 @@ wps.cfg
 config/canarie-api/canarie_api_monitoring.py
 config/magpie/permissions.cfg
 config/magpie/providers.cfg
+service-config.json

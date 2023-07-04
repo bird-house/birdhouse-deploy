@@ -262,6 +262,10 @@ To run the tests:
     python3 -m pip install -r tests/requirements.txt
     pytest tests/
 
+Some tests require internet access (to access JSON schemas used to validate
+JSON structure). If you need to run tests offline, you can skip the tests that
+require internet access by using the `-k 'not online'` pytest option.
+
 
 Tagging policy
 --------------
