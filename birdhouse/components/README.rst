@@ -294,9 +294,9 @@ Prometheus stack is used:
 Usage
 -----
 
-- Grafana to view metric graphs: http://PAVICS_FQDN/grafana/d/pf6xQMWGz/docker-and-system-monitoring
-- Prometheus alert rules: http://PAVICS_FQDN/prometheus/rules
-- AlertManager to manage alerts: http://PAVICS_FQDN/alertmanager
+- Grafana to view metric graphs: https://PAVICS_FQDN/grafana/d/pf6xQMWGz/docker-and-system-monitoring
+- Prometheus alert rules: https://PAVICS_FQDN/prometheus/rules
+- AlertManager to manage alerts: https://PAVICS_FQDN/alertmanager
 
 The paths above are by default only accessible to a user logged in to magpie as an administrator.
 These routes provide sensitive information about the birdhouse-deploy software stack and the machine
