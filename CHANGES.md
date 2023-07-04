@@ -24,6 +24,24 @@
 
   This fixes https://github.com/bird-house/birdhouse-deploy/issues/339
 
+[1.26.10](https://github.com/bird-house/birdhouse-deploy/tree/1.26.10) (2023-07-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Move canarie-api configuration for cowbird from proxy to canarie-api config directory
+  - The canarie-api configuration for cowbird was being loaded whenever the proxy component was enabled instead
+    of when the canarie-api component was enabled. Since these components can now be enabled separately, the
+    configuration has to be moved to ensure that canarie-api configuration files aren't unintentionally mounted
+    to a container that is just running an nginx proxy.
+
+[1.26.9](https://github.com/bird-house/birdhouse-deploy/tree/1.26.9) (2023-07-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix Cowbird's `sync_permissions` config which used invalid Magpie service types.
+
 [1.26.8](https://github.com/bird-house/birdhouse-deploy/tree/1.26.8) (2023-06-22)
 ------------------------------------------------------------------------------------------------------------------
 
