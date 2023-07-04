@@ -59,7 +59,7 @@ BIRDHOUSE_DEPLOY_COMPONENTS_BASE="bird-house/birdhouse-deploy:"
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST=$( \
   echo "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_ACTIVE}" \
   | grep ${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN} \
-  | sed -E 's|^\s*([A-Za-z0-0./_-]+)\s*$|"\1",|g' \
+  | sed -E 's|^\s*([A-Za-z0-9./_-]+)\s*$|"\1",|g' \
   | sed -E "s|^\"\./(.*)\"|\"${BIRDHOUSE_DEPLOY_COMPONENTS_BASE}\\1\"|g" \
   | sed '/^\n*$/d' \
 )

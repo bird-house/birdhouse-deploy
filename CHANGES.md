@@ -20,6 +20,81 @@
   Move unused and unmaintained components to a separate [`deprecated-components/`](birdhouse/deprecated-components)
   subdirectory and remove them from the `DEFAULT_CONF_DIRS` list if required.
 
+[1.26.11](https://github.com/bird-house/birdhouse-deploy/tree/1.26.11) (2023-07-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Components endpoint now returns valid json
+
+  The JSON string reported by the `/components/` path was not valid JSON due to a misconfigured regular expression
+  used to generate the content. The issue was that integers were not being properly parsed by the regular expression
+  meaning that paths that contained integers other than 0 were not recognized as valid paths.
+
+  This fixes https://github.com/bird-house/birdhouse-deploy/issues/339
+
+[1.26.10](https://github.com/bird-house/birdhouse-deploy/tree/1.26.10) (2023-07-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Move canarie-api configuration for cowbird from proxy to canarie-api config directory
+  - The canarie-api configuration for cowbird was being loaded whenever the proxy component was enabled instead
+    of when the canarie-api component was enabled. Since these components can now be enabled separately, the
+    configuration has to be moved to ensure that canarie-api configuration files aren't unintentionally mounted
+    to a container that is just running an nginx proxy.
+
+[1.26.9](https://github.com/bird-house/birdhouse-deploy/tree/1.26.9) (2023-07-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix Cowbird's `sync_permissions` config which used invalid Magpie service types.
+
+[1.26.8](https://github.com/bird-house/birdhouse-deploy/tree/1.26.8) (2023-06-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Tests: some tests fail to run when `CWD` is not `COMPOSE_DIR`
+
+  The root cause is the automatic `COMPOSE_DIR` detection in
+  `read-configs.include.sh` missed one case and the detection ordering was wrong
+  for one other case as well.
+
+  This was not found before because the checkout was properly named
+  "birdhouse-deploy".  When the checkout is named something else, then we hit
+  this error.
+
+  Fixes the error found here
+  https://github.com/bird-house/birdhouse-deploy/pull/329#pullrequestreview-1480211502
+
+## Changes
+- Autodeploy: document test procedure
+
+- Dev environment: add Conda `environment-dev.yml` to easily install all the dev tools required
+
+- Tests: make test runs more robust, able to run from any `CWD`
+
+  Before, test runs can only be started from inside the checkout, at some
+  "popular" locations inside the checkout.  Now it can be started from
+  litterally anywhere.
+
+
+[1.26.7](https://github.com/bird-house/birdhouse-deploy/tree/1.26.7) (2023-06-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- A new endpoint `/services` is added that provides a JSON string describing each of the user facing services currently 
+  enabled on the stack. This is a static string and serves a different purpose than the endpoints served by canarie-api
+  (monitoring status). This endpoint is meant to be polled by the node registry scripts 
+  (https://github.com/DACCS-Climate/DACCS-node-registry) to provide information about what services are meant to be 
+  available without having to poll other endpoints directly.
+
+- A new endpoint `/version` is added that provides a string containing the current version number of the stack 
+  (e.g. "1.26.0"). This endpoint is meant to be polled by the node registry scripts 
+  (https://github.com/DACCS-Climate/DACCS-node-registry).
+
+
 [1.26.6](https://github.com/bird-house/birdhouse-deploy/tree/1.26.6) (2023-06-16)
 ------------------------------------------------------------------------------------------------------------------
 
