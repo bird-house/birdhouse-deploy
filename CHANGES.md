@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.26.11](https://github.com/bird-house/birdhouse-deploy/tree/1.26.11) (2023-07-04)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 - Components endpoint now returns valid json
 
