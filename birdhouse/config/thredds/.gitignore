@@ -1,6 +1,7 @@
 catalog.xml
 threddsConfig.xml
 config/proxy/conf.extra-service.d/thredds.conf
+config/proxy/conf.extra-service.d.bypasstwitcher/thredds_bypass_twitcher.conf
 config/canarie-api/canarie_api_monitoring.py
 service-config.json
 

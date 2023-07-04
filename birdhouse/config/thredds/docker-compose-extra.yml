@@ -19,6 +19,7 @@ services:
       # for reconstructing proper URL back to user when Thredds behind proxy
       # because Twitcher eats the "Host" http header set by Nginx
       PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+      THREDDS_CONTEXT_ROOT: $THREDDS_CONTEXT_ROOT
     volumes:
       - thredds_persistence:/usr/local/tomcat/content/thredds
       - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
@@ -37,7 +38,7 @@ services:
           "CMD",
           "curl",
           "--fail",
-          "http://localhost:8080${TWITCHER_PROTECTED_PATH}/thredds/catalog.html",
+          "http://localhost:8080${THREDDS_CONTEXT_ROOT}/catalog.html",
         ]
 
 volumes:

@@ -8,7 +8,9 @@ providers:
     sync_type: wps
 
   ${CATALOG_THREDDS_SERVICE}:
-    url: http://${PAVICS_FQDN}:8083/twitcher/ows/proxy/thredds
+    # below URL is only used to fill in the required location in Magpie
+    # actual auth validation is performed with Twitcher 'verify' endpoint without accessing this proxied URL
+    url: http://proxy:80
     title: Thredds
     public: true
     c4i: false
