@@ -17,6 +17,18 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.26.11](https://github.com/bird-house/birdhouse-deploy/tree/1.26.11) (2023-07-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Components endpoint now returns valid json
+
+  The JSON string reported by the `/components/` path was not valid JSON due to a misconfigured regular expression
+  used to generate the content. The issue was that integers were not being properly parsed by the regular expression
+  meaning that paths that contained integers other than 0 were not recognized as valid paths.
+
+  This fixes https://github.com/bird-house/birdhouse-deploy/issues/339
+
 [1.26.10](https://github.com/bird-house/birdhouse-deploy/tree/1.26.10) (2023-07-04)
 ------------------------------------------------------------------------------------------------------------------
 
