@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.26.9](https://github.com/bird-house/birdhouse-deploy/tree/1.26.9) (2023-07-04)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Fix Cowbird's `sync_permissions` config which used invalid Magpie service types.
