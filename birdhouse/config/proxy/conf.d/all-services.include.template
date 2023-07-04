@@ -2,9 +2,22 @@
         ${PROXY_ROOT_LOCATION}
     }
 
-    location /components/ {
+    location /components {
         default_type application/json;
-        return 200 '${BIRDHOUSE_DEPLOY_COMPONENTS_JSON}';
+        root /static;
+        try_files /components.json =404;
+    }
+
+    location /services {
+        default_type application/json;
+        root /static;
+        try_files /services.json =404;
+    }
+
+    location /version {
+        default_type application/json;
+        root /static;
+        try_files /version.json =404;
     }
 
     location /doc {

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/DACCS-node-registry/main/node_registry.schema.json#service",
+  "name": "hummingbird",
+  "keywords": [
+    "service-wps"
+  ],
+  "description": "A WPS for metadata compliance checks used in the climate science community.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/xml",
+      "href": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&request=GetCapabilities"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://birdhouse-hummingbird.readthedocs.io"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/xml",
+      "href": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&request=GetCapabilities"
+    }
+  ]
+}

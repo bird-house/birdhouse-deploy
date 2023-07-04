@@ -37,6 +37,8 @@ cd "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" || true  # ignore error for now, empty 
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN="$( \
   ls -d1 ./*components/*/ ./config/*/ 2>/dev/null \
   | sed -E "s|\./(.*)/|\1|" \
+  | sed -E '/^[[:space:]]*$/d' \
+  | sed -E 's/^|[[:space:]]+/ -e /' \
 )"
 if [ -z "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" ]; then
   echo "[WARNING]" \
@@ -56,7 +58,7 @@ BIRDHOUSE_DEPLOY_COMPONENTS_LIST_ACTIVE=$( \
 BIRDHOUSE_DEPLOY_COMPONENTS_BASE="bird-house/birdhouse-deploy:"
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST=$( \
   echo "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_ACTIVE}" \
-  | grep "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" \
+  | grep ${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN} \
   | sed -E 's|^\s*([A-Za-z0-0./_-]+)\s*$|"\1",|g' \
   | sed -E "s|^\"\./(.*)\"|\"${BIRDHOUSE_DEPLOY_COMPONENTS_BASE}\\1\"|g" \
   | sed '/^\n*$/d' \
