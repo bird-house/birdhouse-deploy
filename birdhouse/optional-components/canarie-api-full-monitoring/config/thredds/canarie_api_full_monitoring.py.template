@@ -1,0 +1,16 @@
+import copy
+
+bird_public = "Thredds-public"
+bird_public_cfg = {
+    'request': {
+        'url': 'https://${PAVICS_FQDN_PUBLIC}/thredds/catalog.html',
+    },
+}
+
+bird_private = bird_public.split("-public")[0]
+if bird_private in SERVICES:
+    SERVICES[bird_private]["monitoring"][bird_public] = bird_public_cfg
+elif "node" in SERVICES:
+    SERVICES["node"]["monitoring"][bird_public] = bird_public_cfg
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python
