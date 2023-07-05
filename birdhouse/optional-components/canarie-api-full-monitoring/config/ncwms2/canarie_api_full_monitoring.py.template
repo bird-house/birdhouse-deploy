@@ -1,16 +1,16 @@
 import copy
 
-bird_public = "ncWMS2-public"
-bird_public_cfg = {
+service_public = "ncWMS2-public"
+service_public_cfg = {
     'request': {
         'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/ncWMS2/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
     }
 }
 
-bird_private = bird_public.split("-public")[0]
-if bird_private in SERVICES:
-    SERVICES[bird_private]["monitoring"][bird_public] = bird_public_cfg
+service_private = service_public.split("-public")[0]
+if service_private in SERVICES:
+    SERVICES[service_private]["monitoring"][service_public] = service_public_cfg
 elif "node" in SERVICES:
-    SERVICES["node"]["monitoring"][bird_public] = bird_public_cfg
+    SERVICES["node"]["monitoring"][service_public] = service_public_cfg
 
 # vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python
