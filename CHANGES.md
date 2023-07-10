@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 - Add Magpie webhook definitions for permission creation and deletion cases to be processed by Cowbird.
 - Add `USER_WORKSPACE_UID` and `USER_WORKSPACE_GID` env variables to manage ownership of the user workspaces used by
