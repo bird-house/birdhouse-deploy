@@ -21,6 +21,8 @@
   Cowbird, JupyterHub and others.
 - Update `magpie` service from [3.31.0](https://github.com/Ouranosinc/Magpie/tree/3.31.0)
   to [3.34.0](https://github.com/Ouranosinc/Magpie/tree/3.34.0)
+- Update `cowbird` service from [1.1.1](https://github.com/Ouranosinc/cowbird/tree/1.1.1)
+  to [1.2.0](https://github.com/Ouranosinc/cowbird/tree/1.2.0)
 
 [1.27.0](https://github.com/bird-house/birdhouse-deploy/tree/1.27.0) (2023-07-06)
 ------------------------------------------------------------------------------------------------------------------
