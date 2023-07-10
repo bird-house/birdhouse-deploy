@@ -27,6 +27,8 @@ services:
       JUPYTER_GOOGLE_DRIVE_SETTINGS: ${JUPYTER_GOOGLE_DRIVE_SETTINGS}
       JUPYTERHUB_README: ${JUPYTERHUB_README}
       MOUNT_IMAGE_SPECIFIC_NOTEBOOKS: ${MOUNT_IMAGE_SPECIFIC_NOTEBOOKS}
+      USER_WORKSPACE_UID: ${USER_WORKSPACE_UID}
+      USER_WORKSPACE_GID: ${USER_WORKSPACE_GID}
     volumes:
       - ./config/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
       - ./config/jupyterhub/custom_templates:/custom_templates:ro

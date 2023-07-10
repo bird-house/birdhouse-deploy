@@ -18,6 +18,11 @@ services:
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
       COWBIRD_INI_FILE_PATH: /opt/local/src/cowbird/config/cowbird.ini
+      COWBIRD_FILESYSTEM_USER_UID: ${USER_WORKSPACE_UID}
+      COWBIRD_FILESYSTEM_USER_GID: ${USER_WORKSPACE_GID}
+      # root user
+      COWBIRD_FILESYSTEM_ADMIN_UID: 0
+      COWBIRD_FILESYSTEM_ADMIN_GID: 0
       WORKSPACE_DIR: /${USER_WORKSPACES}
     links:
       - "${COWBIRD_MONGODB_SERVICE}"
@@ -42,6 +47,11 @@ services:
       COWBIRD_SSL_VERIFY: "true"
       COWBIRD_CONFIG_PATH: /opt/local/src/cowbird/config/cowbird.yml
       COWBIRD_INI_FILE_PATH: /opt/local/src/cowbird/config/cowbird.ini
+      COWBIRD_FILESYSTEM_USER_UID: ${USER_WORKSPACE_UID}
+      COWBIRD_FILESYSTEM_USER_GID: ${USER_WORKSPACE_GID}
+      # root user
+      COWBIRD_FILESYSTEM_ADMIN_UID: 0
+      COWBIRD_FILESYSTEM_ADMIN_GID: 0
       WORKSPACE_DIR: /${USER_WORKSPACES}
     links:
       - "${COWBIRD_MONGODB_SERVICE}"
