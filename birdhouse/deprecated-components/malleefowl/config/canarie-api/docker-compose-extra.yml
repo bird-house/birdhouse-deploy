@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+    - ./deprecated-components/malleefowl/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/malleefowl_canarie_api_monitoring.py:ro

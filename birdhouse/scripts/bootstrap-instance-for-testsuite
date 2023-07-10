@@ -18,15 +18,17 @@ set -x
 # Need write-access to DATASET_ROOT (/data/datasets/).
 $THIS_DIR/bootstrap-testdata
 
-# Index Thredds catalog.
-# Need to open temporary Thredds "testdata/secure/" on local PAVICS host to anonymous group.
-# Only crawl the subset enough to pass canarie-api monitoring
-# see config/canarie-api/docker_configuration.py.template
-$THIS_DIR/trigger-pavicscrawler target_files=birdhouse/testdata/flyingpigeon/cmip5
+if [ -n "$(docker ps --filter name=solr)" ]; then
+  # Index Thredds catalog.
+  # Need to open temporary Thredds "testdata/secure/" on local PAVICS host to anonymous group.
+  # Only crawl the subset enough to pass canarie-api monitoring
+  # see config/canarie-api/docker_configuration.py.template
+  $THIS_DIR/trigger-pavicscrawler target_files=birdhouse/testdata/flyingpigeon/cmip5
 
-# For crawler to complete, assuming minimal dataset from bootstrap-testdata so
-# should be super fast to finish crawling.
-sleep 5
+  # For crawler to complete, assuming minimal dataset from bootstrap-testdata so
+  # should be super fast to finish crawling.
+  sleep 5
+fi
 
 # Create test user.
 # Need "optional-components/secure-thredds" activated to pre-create group thredds-secure-authtest-group.

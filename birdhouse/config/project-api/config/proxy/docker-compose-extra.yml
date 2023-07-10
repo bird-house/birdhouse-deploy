@@ -1,5 +1,0 @@
-version: "3.4"
-services:
-  proxy:
-    volumes:
-    - ./config/project-api/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/project-api:ro

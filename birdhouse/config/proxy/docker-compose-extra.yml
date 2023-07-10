@@ -23,6 +23,7 @@ services:
       - ./config/proxy/conf.d:/etc/nginx/conf.d
       - ./config/proxy/nginx.conf:/etc/nginx/nginx.conf
       - ${SSL_CERTIFICATE}:/etc/nginx/cert.pem
+      - ./config/proxy/static:/static
     environment:
       # https://github.com/bird-house/birdhouse-deploy/issues/198
       REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt

@@ -1,0 +1,2 @@
+# Old paths. Keep these so that old config files remain uncommittable after updates.
+canarie_api_full_monitoring.py

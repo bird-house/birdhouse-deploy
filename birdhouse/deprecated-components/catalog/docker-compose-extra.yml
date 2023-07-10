@@ -1,0 +1,22 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  catalog:
+    image: ${CATALOG_DOCKER}:${CATALOG_VERSION}
+    container_name: catalog
+    ports:
+      - "8086:80"
+    volumes:
+      - ./deprecated-components/catalog/catalog.cfg:/home/catalog.cfg
+      - wps_outputs:/var/www/html/wps_results
+    depends_on:
+      - postgres
+    restart: always
+    logging: *default-logging

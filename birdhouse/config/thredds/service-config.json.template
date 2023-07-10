@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/DACCS-node-registry/main/node_registry.schema.json#service",
+  "name": "thredds",
+  "keywords": [
+    "data",
+    "catalog"
+  ],
+  "description": "A server that provides catalog, metadata, and data access services for scientific data.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/thredds/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://www.unidata.ucar.edu/software/tds/"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/xml",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/thredds/catalog.xml"
+    }
+  ]
+}
