@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Add Magpie webhook definitions for permission creation and deletion cases to be processed by Cowbird.
+- Add `USER_WORKSPACE_UID` and `USER_WORKSPACE_GID` env variables to manage ownership of the user workspaces used by
+  Cowbird, JupyterHub and others.
+- Update `magpie` service from [3.31.0](https://github.com/Ouranosinc/Magpie/tree/3.31.0)
+  to [3.34.0](https://github.com/Ouranosinc/Magpie/tree/3.34.0)
 
 [1.27.0](https://github.com/bird-house/birdhouse-deploy/tree/1.27.0) (2023-07-06)
 ------------------------------------------------------------------------------------------------------------------
@@ -174,14 +179,7 @@
   *  Add Misha to creators
   *  Add birdhouse community
 
-- Add Magpie webhook definitions for permission creation and deletion cases to be processed by Cowbird.
-- Add `USER_WORKSPACE_UID` and `USER_WORKSPACE_GID` env variables to manage ownership of the user workspaces used by
-  Cowbird, JupyterHub and others.
 - Licence: update copyright line with year and ownership
-
-## Fixes
-
-- Fix Cowbird's `sync_permissions` config which used invalid Magpie service types.
 
 [1.26.1](https://github.com/bird-house/birdhouse-deploy/tree/1.26.1) (2023-04-26)
 ------------------------------------------------------------------------------------------------------------------
