@@ -21,6 +21,10 @@
 
   * birdhouse/docker/geoserver: not used since 3-4 years, replaced by https://github.com/kartoza/docker-geoserver
 
+  * birdhouse/config/geoserver/Dockerfile: was introduced in commit f3b9896e6b771e0aff62c6851c2376d730ddadaf
+    (PR #233, commit d1ecc63284ec9d2940bfa2b1b4baca3fbe1308b3) as a temporary
+    solution only, not needed with newer kartoza docker images.
+
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------
