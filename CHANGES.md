@@ -15,7 +15,19 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Make bind-mount locations more flexible
+
+  Previously, most bind mount locations on the host machine were subdirectories of the folder specified by the 
+  `DATA_PERSIST_ROOT` environment variable (`/data` by default). This change allows the user to set custom locations
+  for the following additional variables, so that they don't need to be all under the same common directory.
+
+  - `LOGROTATE_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/logrotate`)
+  - `MONGODB_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/mongodb_persist`)
+  - `POSTGRES_DATA_DIR` (default `${DATA_PERSIST_ROOT}/frontend_persist`)
+  - `USER_WORKSPACES` (default `${DATA_PERSIST_ROOT}/user_workspaces`)
+  - `WEAVER_MONGODB_DATA_DIR` (default `${DATA_PERSIST_ROOT}/mongodb_weaver_persist`)
+  - `WEAVER_WPS_PRIVATE_DIR` (default `${DATA_PERSIST_ROOT}/wps_private`)
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------
