@@ -1,2 +1,10 @@
 # Old paths. Keep these so that old config files remain uncommittable after updates.
 postgres-magpie/
+catalog/
+frontend/
+malleefowl/
+ncops/
+ncwms2/
+project-api/
+solr/
+phoenix/

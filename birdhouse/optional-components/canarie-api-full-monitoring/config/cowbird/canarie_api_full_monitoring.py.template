@@ -1,0 +1,10 @@
+import copy
+
+if "Cowbird" in SERVICES:
+    # See notes in 'components/cowbird/docker-compose-extra.yml'
+    # about the conditional loading of this config in 'proxy' service.
+    cowbird_cfg = copy.deepcopy(SERVICES["Cowbird"]["monitoring"]["Cowbird"])
+    cowbird_cfg["request"]["url"] = "https://${PAVICS_FQDN_PUBLIC}/cowbird/"
+    SERVICES["Cowbird"]["monitoring"]["Cowbird-public"] = cowbird_cfg
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python

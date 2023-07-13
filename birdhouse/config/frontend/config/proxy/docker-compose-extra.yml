@@ -1,5 +1,0 @@
-version: "3.4"
-services:
-  proxy:
-    volumes:
-    - ./config/frontend/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/frontend:ro

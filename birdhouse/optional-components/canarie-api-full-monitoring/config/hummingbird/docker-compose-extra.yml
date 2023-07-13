@@ -1,0 +1,7 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+      - ./optional-components/canarie-api-full-monitoring/config/hummingbird/canarie_api_full_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/hummingbird_canarie_api_full_monitoring.py:ro
+
+# vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
