@@ -15,7 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Protect jupyterhub behind twitcher authentication
+
+  Also sets magpie cookies whenever a user logs in through jupyterhub so that they are automatically logged in through
+  magpie as well.
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------
