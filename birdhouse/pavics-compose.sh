@@ -49,6 +49,8 @@ COMPOSE_DIR="`pwd`"
 read_configs # this sets ALL_CONF_DIRS
 
 . ./scripts/get-components-json.include.sh
+. ./scripts/get-services-json.include.sh
+. ./scripts/get-version-json.include.sh
 
 for i in ${VARS}
 do

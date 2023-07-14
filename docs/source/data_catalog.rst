@@ -6,6 +6,12 @@ for data and add data to the catalog.
 
 PAVICS Catalogue Search
 -----------------------
++--------------+---------------------------------------------------------------------+
+| |deprecated| | this is no longer maintained and may be removed in a future version |
++--------------+---------------------------------------------------------------------+
+
+.. |deprecated| image:: https://img.shields.io/badge/status-deprecated-orange
+
 The ``pavicssearch`` service closely mimics the API for the Earth 
 System Grid Federation (ESGF) search. The search fields (or *facets*)
 include author, category, cf_standard_name, experiment, frequency, 

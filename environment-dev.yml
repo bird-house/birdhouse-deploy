@@ -1,0 +1,13 @@
+# conda env create -f environment-dev.yml
+name: birdhouse-deploy
+channels:
+  - conda-forge  # for bump2version
+dependencies:
+  - make
+
+  # make bump-install will install bump2version using pip, for user prefering pip
+  - bump2version
+
+  - pip
+  - pip:
+    - -r tests/requirements.txt
