@@ -23,7 +23,11 @@ services:
       # root user
       COWBIRD_FILESYSTEM_ADMIN_UID: 0
       COWBIRD_FILESYSTEM_ADMIN_GID: 0
-      WORKSPACE_DIR: /${USER_WORKSPACES}
+      # Note that WPS_OUTPUTS_DIR and WORKSPACE_DIR must both point to paths from the same volume.
+      # This is to allow the creation of hardlinks between the wpsoutputs and the user workspace.
+      WPS_OUTPUTS_DIR: ${WPS_OUTPUTS_DIR}
+      WPS_OUTPUTS_PUBLIC_SUBDIR: ${WPS_OUTPUTS_PUBLIC_SUBDIR}
+      WORKSPACE_DIR: ${DATA_PERSIST_ROOT}/${USER_WORKSPACES}
     links:
       - "${COWBIRD_MONGODB_SERVICE}"
     networks:
@@ -36,7 +40,7 @@ services:
       - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
       # even if not running tasks here, they must be registered to send them off to the right place!
       - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
-      - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
+      - "${DATA_PERSIST_ROOT}:${DATA_PERSIST_ROOT}"
     restart: always
     logging: *default-logging
 
@@ -52,7 +56,7 @@ services:
       # root user
       COWBIRD_FILESYSTEM_ADMIN_UID: 0
       COWBIRD_FILESYSTEM_ADMIN_GID: 0
-      WORKSPACE_DIR: /${USER_WORKSPACES}
+      WORKSPACE_DIR: ${DATA_PERSIST_ROOT}/${USER_WORKSPACES}
     links:
       - "${COWBIRD_MONGODB_SERVICE}"
     networks:
@@ -65,6 +69,6 @@ services:
       - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
       - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
       - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
-      - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
+      - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:${DATA_PERSIST_ROOT}/${USER_WORKSPACES}"
     restart: always
     logging: *default-logging
