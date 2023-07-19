@@ -1,7 +1,6 @@
 version: "3.4"
 
-x-logging:
-  &default-logging
+x-logging: &default-logging
   driver: "json-file"
   options:
     max-size: "50m"
@@ -19,8 +18,8 @@ services:
       PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
     volumes:
       - thredds_persistence:/usr/local/tomcat/content/thredds
-      - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
-      - ${DATA_PERSIST_ROOT}/ncml:/pavics-ncml
+      - ${MISC_DATA_LOCATION_FOR_THREDDS_ON_HOST}:${MISC_DATA_LOCATION_FOR_THREDDS_ON_CONTAINER}
+      - ${STAC_DATA_LOCATION_FOR_THREDDS_ON_HOST}:${STAC_DATA_LOCATION_FOR_THREDDS_ON_CONTAINER}
       - wps_outputs:/pavics-data/wps_outputs
       - ./config/thredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
       - ./config/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
@@ -35,7 +34,7 @@ services:
           "CMD",
           "curl",
           "--fail",
-          "http://localhost:8080${TWITCHER_PROTECTED_PATH}/thredds/catalog.html",
+          "http://localhost:8080${TWITCHER_PROTECTED_PATH}/thredds/catalog.html"
         ]
 
 volumes:
