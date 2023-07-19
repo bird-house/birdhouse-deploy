@@ -15,7 +15,7 @@ services:
       - stac-db
     environment:
       - POSTGRES_USER=${STAC_POSTGRES_USER}
-      - POSTGRES_PASS=${STAC_POSTGRES_USER}
+      - POSTGRES_PASS=${STAC_POSTGRES_PASSWORD}
       - POSTGRES_DBNAME=postgis
       - POSTGRES_HOST_READER=stac-db
       - POSTGRES_HOST_WRITER=stac-db
