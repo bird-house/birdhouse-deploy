@@ -1,7 +1,32 @@
 [server]
+url = https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/flyingpigeon
 outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs/flyingpigeon
 outputpath = /data/wpsoutputs/flyingpigeon
 maxsingleinputsize = 2097152000.0
+
+[metadata:main]
+identification_title = flyingpigeon
+identification_abstract = Climatology modeling and analysis.
+identification_keywords = climatology
+identification_keywords_type = theme
+# identification_fees =
+identification_accessconstraints = https://github.com/bird-house/flyingpigeon/blob/master/LICENSE.txt
+provider_name = bird-house
+provider_url = https://github.com/bird-house/flyingpigeon
+contact_name = bird-house
+contact_position = developer
+# contact_address = NONE
+# contact_city =
+# contact_stateorprovince =
+# contact_postalcode =
+# contact_country =
+# contact_phone =
+# contact_fax =
+# contact_email =
+contact_url = https://github.com/bird-house/flyingpigeon/issues
+# contact_hours =
+contact_instructions = Submit an new issue
+contact_role = originator
 
 [logging]
 level = INFO

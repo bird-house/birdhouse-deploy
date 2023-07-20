@@ -12,6 +12,8 @@ opendap_url = https://${environment:HOSTNAME}/twitcher/ows/proxy/thredds/dodsC/b
 magpie_hostname = https://${environment:HOSTNAME}/magpie
 
 [pywps]
+url = https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/malleefowl
+outputurl=https://${PAVICS_FQDN_PUBLIC}/wpsoutputs/malleefowl
 enable-https = true
 https-port = 443
 https-output-port = 443
@@ -28,3 +30,27 @@ extra-options =
     known_extensions=nc,nc4
     wms_mapping=${settings:wps_url},${settings:ncwms_url}/wps_outputs,${settings:wps_url2},${settings:ncwms_url}/wps_outputs,${settings:thredds_url},${settings:ncwms_url}
     opendap_mapping=${settings:wps_url},${settings:opendap_url}/wps_outputs,${settings:wps_url2},${settings:opendap_url}/wps_outputs,${settings:thredds_url},${settings:opendap_url}
+
+[metadata:main]
+identification_title = catalog
+identification_abstract = Catalog
+identification_keywords = catalog, data, deprecated
+identification_keywords_type = theme
+# identification_fees =
+identification_accessconstraints = https://github.com/Ouranosinc/malleefowl/blob/master/LICENSE.txt
+provider_name = Ouranos, Inc.
+provider_url = https://github.com/Ouranosinc/malleefowl
+contact_name = Ouranos
+contact_position = developer
+# contact_address = NONE
+# contact_city =
+# contact_stateorprovince =
+# contact_postalcode =
+# contact_country =
+# contact_phone =
+# contact_fax =
+# contact_email =
+contact_url = https://github.com/Ouranosinc/malleefowl/issues
+# contact_hours =
+contact_instructions = Submit an new issue
+contact_role = originator

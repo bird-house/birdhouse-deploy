@@ -1,12 +1,38 @@
 [server]
+url = https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch
 outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs/finch
 outputpath = /data/wpsoutputs/finch
+language = en,en-US,fr,fr-CA
 
 # default 3mb, fix "Broken pipe" between the proxy and the wps service
 maxrequestsize = 400mb
 
 # default 2, too low for a production server with capable CPUs
 parallelprocesses = 10
+
+[metadata:main]
+identification_title = finch
+identification_abstract = A Web Processing Service for Climate Indicators.
+identification_keywords = climatology, indices, cloud, birdhouse, PyWPS
+identification_keywords_type = theme
+# identification_fees =
+identification_accessconstraints = https://github.com/bird-house/finch/blob/master/LICENSE.txt
+provider_name = bird-house
+provider_url = https://github.com/bird-house/finch
+contact_name = bird-house
+contact_position = developer
+# contact_address = NONE
+# contact_city =
+# contact_stateorprovince =
+# contact_postalcode =
+# contact_country =
+# contact_phone =
+# contact_fax =
+# contact_email =
+contact_url = https://github.com/bird-house/finch/issues
+# contact_hours =
+contact_instructions = Submit an new issue
+contact_role = originator
 
 [logging]
 level = INFO

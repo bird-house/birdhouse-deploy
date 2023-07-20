@@ -20,7 +20,7 @@ SERVICES['Malleefowl'] = {
         'support': 'https://github.com/Ouranosinc/malleefowl/issues',
         'source': 'https://github.com/Ouranosinc/malleefowl',
         'tryme': 'https://${PAVICS_FQDN_PUBLIC}/malleefowl/',
-        'licence': '',
+        'licence': 'https://github.com/Ouranosinc/malleefowl/blob/master/LICENSE.txt',
         'provenance': ''
     },
     'monitoring': {

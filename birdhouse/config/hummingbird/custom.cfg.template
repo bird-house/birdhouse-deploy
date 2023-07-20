@@ -2,7 +2,32 @@
 extends = profiles/docker.cfg
 
 [pywps]
+url = https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird
 enable-https = true
 https-port = 443
 https-output-port = 443
 database=postgresql://${POSTGRES_PAVICS_USERNAME}:${POSTGRES_PAVICS_PASSWORD}@postgres/hummingbird
+
+[metadata:main]
+identification_title = flyingpigeon
+identification_abstract = A Web Processing Service for compliance checks used in the climate science community.
+identification_keywords = climatology, checker, compliance, CF-conventions
+identification_keywords_type = theme
+# identification_fees =
+identification_accessconstraints = https://github.com/bird-house/hummingbird/blob/master/LICENSE.txt
+provider_name = bird-house
+provider_url = https://github.com/bird-house/hummingbird
+contact_name = bird-house
+contact_position = developer
+# contact_address = NONE
+# contact_city =
+# contact_stateorprovince =
+# contact_postalcode =
+# contact_country =
+# contact_phone =
+# contact_fax =
+# contact_email =
+contact_url = https://github.com/bird-house/hummingbird/issues
+# contact_hours =
+contact_instructions = Submit an new issue
+contact_role = originator
