@@ -1,11 +1,19 @@
 from traitlets import Unicode
 from jupyterhub.auth import Authenticator
-from tornado import gen
+from jupyterhub.handlers.login import LogoutHandler
 import requests
+
 
 # TODO: add this to
 #  github.com/Ouranosinc/jupyterhub/blob/master/jupyterhub_magpie_authenticator/jupyterhub_magpie_authenticator.py
 #  and remove this from here once that is updated
+
+class MagpieLogoutHandler(BaseHandler):
+    async def handle_logout(self):
+        cookies = {key: morsel.coded_value for key, morsel in self.request.cookies.items()}
+        signout_url = self.authenticator.magpie_url.rstrip("/") + "/signout"
+        requests.get(signout_url, cookies=cookies)
+
 
 class MagpieAuthenticator(Authenticator):
     """Authenticate to JupyterHub using Magpie.
@@ -25,8 +33,12 @@ class MagpieAuthenticator(Authenticator):
         help="Public fully qualified domain name. Used to set the magpie login cookie."
     )
 
-    @gen.coroutine
-    def authenticate(self, handler, data):
+    def get_handlers(self, app):
+        return [
+            ('/logout', MagpieLogoutHandler)
+        ]
+
+    async def authenticate(self, handler, data):
         signin_url = self.magpie_url.rstrip('/') + '/signin'
 
         post_data = {
