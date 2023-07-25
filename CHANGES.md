@@ -38,6 +38,7 @@
   created under `DATA_PERSIST_ROOT` by default):
 
   - `USER_WORKSPACES` (default `user_workspaces`)
+  - `WEAVER_WPS_OUTPUTS_DIR` (default `wps_outputs/weaver`)
 
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
