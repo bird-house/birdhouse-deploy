@@ -8,11 +8,16 @@ import requests
 #  github.com/Ouranosinc/jupyterhub/blob/master/jupyterhub_magpie_authenticator/jupyterhub_magpie_authenticator.py
 #  and remove this from here once that is updated
 
-class MagpieLogoutHandler(BaseHandler):
+class MagpieLogoutHandler(LogoutHandler):
+    """
+    Logout Handler that also logs the user out of magpie when logging out of jupyterhub.
+    """
     async def handle_logout(self):
         cookies = {key: morsel.coded_value for key, morsel in self.request.cookies.items()}
         signout_url = self.authenticator.magpie_url.rstrip("/") + "/signout"
-        requests.get(signout_url, cookies=cookies)
+        response = requests.get(signout_url, cookies=cookies, headers={"Host": self.authenticator.public_fqdn})
+        if response.ok and 'Set-Cookie' in response.headers:
+            self.set_header("Set-Cookie", response.headers["Set-Cookie"])
 
 
 class MagpieAuthenticator(Authenticator):
