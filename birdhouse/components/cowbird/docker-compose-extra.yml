@@ -72,3 +72,17 @@ services:
       - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:${DATA_PERSIST_ROOT}/${USER_WORKSPACES}"
     restart: always
     logging: *default-logging
+
+  # Dedicated database for Cowbird, since other 'mongodb' image does not employ the same version.
+  cowbird-mongodb:
+    image: mongo:${COWBIRD_MONGODB_VERSION}
+    container_name: ${COWBIRD_MONGODB_SERVICE}
+    networks:
+      - "${COWBIRD_MONGODB_SERVICE}"
+    volumes:
+      - ${DATA_PERSIST_ROOT}/mongodb_cowbird_persist:/data/db
+    restart: always
+    logging: *default-logging
+
+networks:
+  cowbird-mongodb: {}
