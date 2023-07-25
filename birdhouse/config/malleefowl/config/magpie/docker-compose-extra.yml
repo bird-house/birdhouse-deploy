@@ -1,5 +1,0 @@
-version: "3.4"
-services:
-  magpie:
-    volumes:
-    - ./config/malleefowl/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/malleefowl-providers.cfg:ro

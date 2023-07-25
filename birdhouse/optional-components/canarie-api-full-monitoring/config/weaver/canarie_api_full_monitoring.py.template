@@ -1,0 +1,10 @@
+import copy
+
+if "Weaver" in SERVICES:
+    # See notes in 'components/weaver/docker-compose-extra.yml'
+    # about the conditional loading of this config in 'proxy' service.
+    weaver_cfg = copy.deepcopy(SERVICES["Weaver"]["monitoring"]["Weaver"])
+    weaver_cfg["request"]["url"] = "https://${PAVICS_FQDN_PUBLIC}/weaver/"
+    SERVICES["Weaver"]["monitoring"]["Weaver-public"] = weaver_cfg
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/DACCS-node-registry/main/node_registry.schema.json#service",
+  "name": "weaver",
+  "keywords": [
+    "service-ogcapi_processes"
+  ],
+  "description": "An OGC-API flavored Execution Management Service",
+  "links": [
+    {
+      "rel": "service",
+      "type": "application/json",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://pavics-weaver.readthedocs.io/"
+    },
+    {
+      "rel": "service-desc",
+      "type": "application/json",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/"
+    },
+    {
+      "rel": "conformance",
+      "type": "application/json",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/conformance/"
+    }
+  ]
+}

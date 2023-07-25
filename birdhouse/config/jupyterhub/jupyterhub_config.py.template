@@ -112,7 +112,8 @@ def create_dir_hook(spawner):
     if not os.path.exists(jupyterhub_user_dir):
         os.mkdir(jupyterhub_user_dir, 0o755)
 
-    subprocess.call(["chown", "-R", "1000:1000", jupyterhub_user_dir])
+    subprocess.call(["chown", "-R", f"{os.environ['USER_WORKSPACE_UID']}:{os.environ['USER_WORKSPACE_GID']}",
+                     jupyterhub_user_dir])
 
     if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
         # Case for cowbird setup. The workspace directory should also have the user's ownership,
@@ -121,7 +122,8 @@ def create_dir_hook(spawner):
         if not os.path.exists(workspace_user_dir):
             raise FileNotFoundError(f"The user {username}'s workspace doesn't exist in the workspace directory, "
                                     "but should have been created by Cowbird already.")
-        subprocess.call(["chown", "1000:1000", workspace_user_dir])
+        subprocess.call(["chown", f"{os.environ['USER_WORKSPACE_UID']}:{os.environ['USER_WORKSPACE_GID']}",
+                         workspace_user_dir])
 
     if username == os.environ['JUPYTER_DEMO_USER']:
         # Restrict resources for the public demo user
