@@ -25,9 +25,20 @@
   - `LOGROTATE_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/logrotate`)
   - `MONGODB_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/mongodb_persist`)
   - `POSTGRES_DATA_DIR` (default `${DATA_PERSIST_ROOT}/frontend_persist`)
-  - `USER_WORKSPACES` (default `${DATA_PERSIST_ROOT}/user_workspaces`)
   - `WEAVER_MONGODB_DATA_DIR` (default `${DATA_PERSIST_ROOT}/mongodb_weaver_persist`)
   - `WEAVER_WPS_PRIVATE_DIR` (default `${DATA_PERSIST_ROOT}/wps_private`)
+
+  The following variable is also added which is another location on disk where files that may contain links
+  are placed. Because the links need to be mounted together in order to resolve properly, the subdirectories
+  of this directory are not configurable:
+
+  - `DATA_PERSIST_SHARED_ROOT` (default: same as `DATA_PERSIST_ROOT`)
+
+  The following variables now create subdirectories under `DATA_PERSIST_SHARED_ROOT` (previously they were
+  created under `DATA_PERSIST_ROOT` by default):
+
+  - `USER_WORKSPACES` (default `user_workspaces`)
+
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------
