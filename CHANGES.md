@@ -16,11 +16,11 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
-- Add public wps outputs directory to Cowbird and add corresponding volume mount in JupyterHub.
+- Add public wps outputs directory to Cowbird and add corresponding volume mount to JupyterHub.
 - Update `cowbird` service from [1.2.0](https://github.com/Ouranosinc/cowbird/tree/1.2.0)
   to [2.0.0](https://github.com/Ouranosinc/cowbird/tree/2.0.0)
 - Require `MongoDB==5.0` Docker image for Cowbird's database.
-- Add `WPS_OUTPUTS_DIR` env variable manage the location of the wps outputs data.
+- Add `WPS_OUTPUTS_DIR` env variable to manage the location of the wps outputs data.
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------
