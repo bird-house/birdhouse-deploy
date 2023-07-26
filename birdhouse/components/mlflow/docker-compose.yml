@@ -1,0 +1,37 @@
+version: '3.4'
+
+services:
+    mlflow:
+        restart: always
+        build:
+            context: .
+            args:
+                MLFLOW_USER_DATA_DIR: ${MLFLOW_USER_DATA_DIR}
+        image: mlflow_server
+        container_name: mlflow_server
+        ports:
+            - "5000:5000"
+        environment:
+            MLFLOW_USER_DATA_DIR: ${MLFLOW_USER_DATA_DIR}
+        networks:
+            - frontend
+        command: mlflow server --backend-store-uri sqlite:////${MLFLOW_USER_DATA_DIR}/mlflow/mlflow.db --default-artifact-root ${MLFLOW_USER_DATA_DIR}/mlflow/artifacts --host 0.0.0.0
+        volumes:
+            - ${MLFLOW_USER_DATA_DIR}:${MLFLOW_USER_DATA_DIR}
+    nginx:
+        restart: always
+        build: ./proxy/conf.extra-service.d
+        image: mlflow_nginx
+        container_name: mlflow_nginx
+        ports:
+            - "80:80"
+        networks:
+            - frontend
+        depends_on:
+            - mlflow
+        volumes:
+            - "/home/vagrant/Desktop/workspace/birdhouse-deploy/birdhouse/config/proxy/conf.d/cors.include:/etc/nginx/conf.d/cors.include"
+
+networks:
+    frontend:
+        driver: bridge
