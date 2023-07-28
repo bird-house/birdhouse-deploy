@@ -18,8 +18,8 @@ Requirements
 * Install latest docker-ce and docker-compose for the chosen distro (not the
   version from the distro).
   
-* Have a real SSL Certificate, self-signed SSL Certificate do not work properly.
-  Let's Encrypt offers free SSL Certificate.
+* Have a real SSL Certificate. Let's Encrypt offers free SSL Certificate.
+  Self-signed certificates can also be used but are only recommended for local development.
 
 * If using Let's Encrypt, port 80 and 443 and hostname should be accessible publicly
   over the internet before requesting a certificate with Let's Encrypt. Let's Encrypt
@@ -112,6 +112,37 @@ CPU: at least 48 cores for parallel computations
 Disk: at least 100 TB, depending how much data is hosted on Thredds and Geoserver and storage for the various Jupyter users
 
 In general, the more users, the more cpu cores and memory needed.  The more data, more memory and bigger and faster disks needed.
+
+
+Local deployment for development
+--------------------------------
+
+To deploy the birdhouse stack for development, a self-signed SSL certificate is required:
+
+First create a self signed certificate as described in the `LetsEncrypt documentation <https://letsencrypt.org/docs/certificates-for-localhost/#making-and-trusting-your-own-certificates>`_ .
+Then add the certificate you just generated to the trust store as described `here <https://ubuntu.com/server/docs/security-trust-store>`_ .
+Finally, combine the generated key and certificate files together to use as the `SSL_CERTIFICATE` for this stack.
+
+The following should work to generate a self-signed ssl certificate on ubuntu 20.04+:
+
+.. code-block::
+
+    openssl req -x509 -out localhost.crt -keyout localhost.key \
+      -newkey rsa:2048 -nodes -sha256 \
+      -subj '/CN=localhost' -extensions EXT -config <( \
+       printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+
+    # https://ubuntu.com/server/docs/security-trust-store
+    sudo cp localhost.crt /usr/local/share/ca-certificates/
+
+    cat localhost.crt localhost.key > cert.pem
+
+    rm localhost.crt localhost.key
+
+Then set the following following variables in the env.local file:
+
+* `SSL_CERTIFICATE=/absolute/path/to/cert.pem`
+* `PAVICS_FQDN=localhost`
 
 
 Note

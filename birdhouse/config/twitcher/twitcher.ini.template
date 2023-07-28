@@ -65,7 +65,7 @@ twitcher.workdir =
 twitcher.prefix =
 
 # magpie (for twitcher.adapter)
-magpie.url = https://${PAVICS_FQDN}/magpie
+magpie.url = http://magpie:2001
 magpie.secret = ${MAGPIE_SECRET}
 magpie.admin_user = ${MAGPIE_ADMIN_USERNAME}
 magpie.admin_password = ${MAGPIE_ADMIN_PASSWORD}

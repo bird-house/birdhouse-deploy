@@ -22,6 +22,7 @@ VARS='
   $DOC_URL
   $SUPPORT_EMAIL
   $DATA_PERSIST_ROOT
+  $BIRDHOUSE_DEFAULT_NETWORK
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local
