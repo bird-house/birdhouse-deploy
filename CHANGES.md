@@ -40,6 +40,8 @@
   items via [CEDA STAC Generator](https://github.com/cedadev/stac-generator), employed in sample 
   [CMIP Dataset Ingestion Workflows](https://github.com/cedadev/stac-generator-example/tree/master/conf).
 
+- Adds ``optional-components/stac-public-access`` to give public access to the STAC catalog.
+
 [1.26.7](https://github.com/bird-house/birdhouse-deploy/tree/1.26.7) (2023-06-19)
 ------------------------------------------------------------------------------------------------------------------
 

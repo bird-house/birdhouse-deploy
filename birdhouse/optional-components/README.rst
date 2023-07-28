@@ -308,3 +308,14 @@ To enable this optional-component:
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 - Add ``"./optional-components/stac-populator"`` to ``EXTRA_CONF_DIRS``.
+
+
+Allow public access to STAC catalog
+--------------------------------------------------------
+
+STAC Public Access allows STAC catalog to be accessed by anyone, without authentication.
+
+To enable this optional-component:
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``"./optional-components/stac-public-access"`` to ``EXTRA_CONF_DIRS``.
