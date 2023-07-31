@@ -85,8 +85,17 @@ for adir in $AUTODEPLOY_EXTRA_REPOS; do
 done
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
+BUILD_DIR="${COMPOSE_DIR}/build"
+
+rm -r "${BUILD_DIR}"
+mkdir -p "${BUILD_DIR}"
+
+for adir in $ALL_CONF_DIRS; do
+  cp -r "${adir}" "${BUILD_DIR}/$(basename "${adir}")"
+done
+
 # we apply all the templates
-find $ALL_CONF_DIRS -name '*.template' |
+find "$BUILD_DIR" -name '*.template' |
   while read FILE
   do
     DEST=${FILE%.template}
@@ -94,7 +103,7 @@ find $ALL_CONF_DIRS -name '*.template' |
   done
 
 if [ x"$1" = x"up" ]; then
-  for adir in $ALL_CONF_DIRS; do
+  for adir in "${BUILD_DIR}"/*; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
     if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
       echo "executing '$COMPONENT_PRE_COMPOSE_UP'"
@@ -107,8 +116,16 @@ create_compose_conf_list # this sets COMPOSE_CONF_LIST
 echo "COMPOSE_CONF_LIST="
 echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
 
+COMPOSE_FILE="${BUILD_DIR}/docker-compose.yml"
+
+cp "${COMPOSE_DIR}/docker-compose.yml" "${COMPOSE_FILE}"
+
 # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} $*
+PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} config > "${COMPOSE_FILE}.final"
+
+mv "${COMPOSE_FILE}.final" "${COMPOSE_FILE}"
+
+docker-compose -f "${COMPOSE_FILE}" "$@"
 ERR=$?
 
 # execute post-compose function if exists and no error occurred
@@ -124,11 +141,11 @@ while [ $# -gt 0 ]
 do
   if [ x"$1" = x"up" ]; then
     # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
-    PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} restart proxy
+    docker-compose -f "${COMPOSE_FILE}" restart proxy
 
     # run postgres post-startup setup script
     # Note: this must run before the post-docker-compose-up scripts since some may expect postgres databases to exist
-    postgres_id=$(PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres)
+    postgres_id=$(docker-compose -f "${COMPOSE_FILE}" ps -q postgres)
     if [ ! -z "$postgres_id" ]; then
       docker exec ${postgres_id} /postgres-setup.sh
     fi

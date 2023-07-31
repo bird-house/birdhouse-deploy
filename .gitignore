@@ -3,6 +3,7 @@ birdhouse/env.local
 birdhouse/certkey.pem
 birdhouse/cert.pem
 birdhouse/key.pem
+birdhouse/build/
 
 ## Deployment
 vagrant_variables.yml

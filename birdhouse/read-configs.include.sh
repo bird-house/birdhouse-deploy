@@ -203,16 +203,14 @@ process_delayed_eval() {
 #  - otherwise, the override files will be added immediately after the component that is being overridden
 #    has been added
 create_compose_conf_list() {
-  # ALL_CONF_DIRS relative paths are relative to COMPOSE_DIR.
-  discover_compose_dir
-  if [ -d "$COMPOSE_DIR" ]; then
-      cd "$COMPOSE_DIR" || return
+  if [ -z "$BUILD_DIR" ]; then
+      return
   fi
 
-  COMPOSE_CONF_LIST="-f docker-compose.yml"
+  COMPOSE_CONF_LIST="-f ${BUILD_DIR}/docker-compose.yml"
   COMPONENT_OVERRIDES=''
   LOADED_COMPONENTS=''
-  for adir in $ALL_CONF_DIRS; do
+  for adir in "$BUILD_DIR"/*; do
     service_name=$(basename "$adir")
     LOADED_COMPONENTS="${LOADED_COMPONENTS}\n${service_name}"
 
@@ -237,11 +235,6 @@ create_compose_conf_list() {
       fi
     done
   done
-
-    # Return to previous pwd.
-  if [ -d "$COMPOSE_DIR" ]; then
-      cd - || return
-  fi
 }
 
 
