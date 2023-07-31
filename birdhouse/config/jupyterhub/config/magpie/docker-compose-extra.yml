@@ -3,6 +3,3 @@ services:
   magpie:
     volumes:
     - ./config/jupyterhub/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/jupyter.cfg:ro
-  jupyterhub:
-    volumes:
-      - ./config/jupyterhub/config/magpie/authenticator:/jupyterhub_magpie_authenticator:ro

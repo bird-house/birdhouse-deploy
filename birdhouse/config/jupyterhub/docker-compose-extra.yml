@@ -27,7 +27,6 @@ services:
       JUPYTER_GOOGLE_DRIVE_SETTINGS: ${JUPYTER_GOOGLE_DRIVE_SETTINGS}
       JUPYTERHUB_README: ${JUPYTERHUB_README}
       MOUNT_IMAGE_SPECIFIC_NOTEBOOKS: ${MOUNT_IMAGE_SPECIFIC_NOTEBOOKS}
-      PYTHONPATH: /jupyterhub_magpie_authenticator # TODO: remove this when github.com/Ouranosinc/jupyterhub is updated
       USER_WORKSPACE_UID: ${USER_WORKSPACE_UID}
       USER_WORKSPACE_GID: ${USER_WORKSPACE_GID}
     volumes:
