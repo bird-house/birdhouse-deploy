@@ -18,8 +18,8 @@
 ## Changes
 - Protect jupyterhub behind twitcher authentication
 
-  Also sets magpie cookies whenever a user logs in through jupyterhub so that they are automatically logged in through
-  magpie as well.
+  - Sets magpie cookies whenever a user logs in or out through jupyterhub so that they are automatically logged in 
+    or out through magpie as well.
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------
