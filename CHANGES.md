@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Do not expose additional ports:
+  - Docker compose no longer exposes any container ports outside the default network except for ports 80 and 443 from 
+    the proxy container. This ensures that ports that are not intended for external access are not exposed to the wider 
+    internet even if firewall rules are not set correctly.
+  - Fixes https://github.com/bird-house/birdhouse-deploy/issues/222
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------
@@ -182,12 +187,6 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
-
-- Do not expose additional ports:
-  - Docker compose no longer exposes any container ports outside the default network except for ports 80 and 443 from 
-    the proxy container. This ensures that ports that are not intended for external access are not exposed to the wider 
-    internet even if firewall rules are not set correctly.
-  - Fixes https://github.com/bird-house/birdhouse-deploy/issues/222
 
 - Update Zenodo config
   *  Add Misha to creators
