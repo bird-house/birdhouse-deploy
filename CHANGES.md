@@ -22,6 +22,11 @@
     internet even if firewall rules are not set correctly.
   - Fixes https://github.com/bird-house/birdhouse-deploy/issues/222
 
+- Make local development possible with self-signed SSL certificate
+  - Ensure that containers in the stack do not require access to the host machine in order to operate properly
+  - This means that a developer can deploy a local version of the stack without requiring that the deployment
+    be exposed publicly on the internet.
+
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------
 
