@@ -23,7 +23,7 @@ services:
       HOSTNAME: ${PAVICS_FQDN}
       FORWARDED_ALLOW_IPS: "*"
     #env_file:
-    #  - ./config/mongodb/credentials.env
+    #  - ./mongodb/credentials.env
     depends_on:
       - weaver-mongodb
     links:
@@ -32,11 +32,11 @@ services:
       - default
       - weaver-mongodb
     volumes:
-      - ./components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
-      - ./components/weaver/config/weaver/data_sources.yml:/opt/local/src/weaver/config/data_sources.yml:ro
-      - ./components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
-      - ./components/weaver/config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml:ro
-      - ./components/weaver/celery-healthcheck:/opt/local/bin/weaver/celery-healthcheck:ro
+      - ./weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
+      - ./weaver/config/weaver/data_sources.yml:/opt/local/src/weaver/config/data_sources.yml:ro
+      - ./weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
+      - ./weaver/config/weaver/wps_processes.yml:/opt/local/src/weaver/config/wps_processes.yml:ro
+      - ./weaver/celery-healthcheck:/opt/local/bin/weaver/celery-healthcheck:ro
       # WARNING: see detail in 'worker' definition about below mount location
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     restart: always
@@ -49,7 +49,7 @@ services:
     environment:
       DOCKER_HOST: "tcp://docker-proxy:2375"
     #env_file:
-    #  - ./config/mongodb/credentials.env
+    #  - ./mongodb/credentials.env
     depends_on:
       # no 'default' network here such that the worker is not accessible from proxy/http
       - weaver-mongodb
@@ -66,9 +66,9 @@ services:
     volumes:
       #- wps_private:/data/wps_private
       - ${DATA_PERSIST_ROOT}/wps_private:/data/wps_private
-      - ./components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
-      - ./components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
-      - ./components/weaver/celery-healthcheck:/opt/local/bin/weaver/celery-healthcheck:ro
+      - ./weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
+      - ./weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
+      - ./weaver/celery-healthcheck:/opt/local/bin/weaver/celery-healthcheck:ro
       # WARNING:
       #   Working and output directories must be mounted as exact same path (e.g.: /some/path:/some/path)
       #   to avoid mismatching locations between container-side path resolution of cwltool stagedir/tmpdir/outdir

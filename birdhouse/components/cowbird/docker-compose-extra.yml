@@ -32,10 +32,10 @@ services:
     depends_on:
       - "${COWBIRD_MONGODB_SERVICE}"
     volumes:
-      - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
-      - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
+      - ./cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
+      - ./cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
       # even if not running tasks here, they must be registered to send them off to the right place!
-      - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
+      - ./cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
       - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
     restart: always
     logging: *default-logging
@@ -62,9 +62,9 @@ services:
       - "${COWBIRD_MONGODB_SERVICE}"
       - cowbird  # if not started first, sometimes celery misbehaves and will not pick jobs in queue
     volumes:
-      - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
-      - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
-      - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
+      - ./cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
+      - ./cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
+      - ./cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
       - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
     restart: always
     logging: *default-logging

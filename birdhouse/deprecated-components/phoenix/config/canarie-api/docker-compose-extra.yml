@@ -2,4 +2,4 @@ version: "3.4"
 services:
   proxy:
     volumes:
-    - ./deprecated-components/phoenix/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/phoenix_canarie_api_monitoring.py:ro
+    - ./phoenix/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/phoenix_canarie_api_monitoring.py:ro

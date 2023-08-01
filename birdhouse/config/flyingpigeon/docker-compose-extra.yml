@@ -16,7 +16,7 @@ services:
     ports:
       - "8093:8093"
     volumes:
-      - ./config/flyingpigeon/wps.cfg:/wps.cfg
+      - ./flyingpigeon/wps.cfg:/wps.cfg
       - /tmp
     depends_on:
       - postgres

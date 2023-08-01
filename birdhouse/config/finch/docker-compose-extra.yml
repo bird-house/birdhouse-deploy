@@ -18,7 +18,7 @@ services:
     ports:
       - "8095:5000"
     volumes:
-      - ./config/finch/wps.cfg:/wps.cfg
+      - ./finch/wps.cfg:/wps.cfg
       # - data:/opt/birdhouse/var/lib
       - /tmp
     restart: always

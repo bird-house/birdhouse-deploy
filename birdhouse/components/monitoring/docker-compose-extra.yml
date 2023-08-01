@@ -35,8 +35,8 @@ services:
     image: prom/prometheus:v2.19.0
     container_name: prometheus
     volumes:
-      - ./components/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./components/monitoring/prometheus.rules:/etc/prometheus/prometheus.rules:ro
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus.rules:/etc/prometheus/prometheus.rules:ro
       - prometheus_persistence:/prometheus:rw
     ports:
       - 9090:9090
@@ -59,9 +59,9 @@ services:
     image: grafana/grafana:7.0.3
     container_name: grafana
     volumes:
-      - ./components/monitoring/grafana_datasources.yml:/etc/grafana/provisioning/datasources/grafana_datasources.yml:ro
-      - ./components/monitoring/grafana_dashboards.yml:/etc/grafana/provisioning/dashboards/grafana_dashboards.yml:ro
-      - ./components/monitoring/grafana_dashboards:/etc/grafana/dashboards:ro
+      - ./monitoring/grafana_datasources.yml:/etc/grafana/provisioning/datasources/grafana_datasources.yml:ro
+      - ./monitoring/grafana_dashboards.yml:/etc/grafana/provisioning/dashboards/grafana_dashboards.yml:ro
+      - ./monitoring/grafana_dashboards:/etc/grafana/dashboards:ro
       - grafana_persistence:/var/lib/grafana:rw
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
@@ -76,8 +76,8 @@ services:
     image: prom/alertmanager:v0.21.0
     container_name: alertmanager
     volumes:
-      - ./components/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
-      - ./components/monitoring/alertmanager.tmpl:/etc/alertmanager/template/default.tmpl:ro
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./monitoring/alertmanager.tmpl:/etc/alertmanager/template/default.tmpl:ro
       - alertmanager_persistence:/alertmanager:rw
     command:
       # restore original CMD from image

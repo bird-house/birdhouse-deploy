@@ -6,7 +6,7 @@ services:
     ports:
       - "${TESTTHREDDS_PORT}:${TESTTHREDDS_INTERNAL_PORT}"
     env_file:
-      - ./optional-components/testthredds/thredds.env
+      - ./testthredds/thredds.env
     environment:
       # for reconstructing proper URL back to user when Thredds behind proxy
       # because Twitcher eats the "Host" http header set by Nginx
@@ -20,10 +20,10 @@ services:
       - ${DATA_PERSIST_ROOT}/ncml:/pavics-ncml:ro
       - testwps_outputs:/testwps_outputs:ro
       - wps_outputs:/pavics-data/wps_outputs:ro
-      - ./optional-components/testthredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
-      - ./optional-components/testthredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
-      - ./optional-components/testthredds/wmsConfig.xml:/usr/local/tomcat/content/thredds/wmsConfig.xml:ro
-      - ./optional-components/testthredds/entrypointwrapper:/entrypointwrapper:ro
+      - ./testthredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
+      - ./testthredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
+      - ./testthredds/wmsConfig.xml:/usr/local/tomcat/content/thredds/wmsConfig.xml:ro
+      - ./testthredds/entrypointwrapper:/entrypointwrapper:ro
     entrypoint: /entrypointwrapper
     restart: always
     healthcheck:

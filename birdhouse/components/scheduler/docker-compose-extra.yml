@@ -6,7 +6,7 @@ services:
     container_name: scheduler
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./components/scheduler/config.yml:/opt/crontab/config.yml:ro
+      - ./scheduler/config.yml:/opt/crontab/config.yml:ro
     environment:
       COMPOSE_DIR: ${PWD}
       AUTODEPLOY_DEPLOY_KEY_ROOT_DIR: ${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}

@@ -22,7 +22,7 @@ services:
       - "38097:38097"
       - "48097:9001"
     volumes:
-      - ./config/hummingbird/custom.cfg:/opt/birdhouse/src/hummingbird/custom.cfg
+      - ./hummingbird/custom.cfg:/opt/birdhouse/src/hummingbird/custom.cfg
     depends_on:
       - postgres
     restart: always

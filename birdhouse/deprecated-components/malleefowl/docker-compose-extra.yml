@@ -24,7 +24,7 @@ services:
       - "48091:9001"
     volumes:
       - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
-      - ./deprecated-components/malleefowl/custom.cfg:/opt/birdhouse/src/malleefowl/custom.cfg
+      - ./malleefowl/custom.cfg:/opt/birdhouse/src/malleefowl/custom.cfg
     depends_on:
       - postgres
     restart: always

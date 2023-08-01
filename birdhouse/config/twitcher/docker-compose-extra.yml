@@ -22,14 +22,14 @@ services:
       # Other Magpie components are unknown and ignored by Twitcher itself.
       MAGPIE_PROVIDERS_CONFIG_PATH: "/opt/birdhouse/src/magpie/config"
     env_file:
-      - ./config/magpie/postgres-credentials.env
+      - ./magpie/postgres-credentials.env
     depends_on:
       - postgres-magpie
       - magpie
     links:
       - postgres-magpie
     volumes:
-      - ./config/twitcher/twitcher.ini:/opt/birdhouse/src/twitcher/twitcher.ini
+      - ./twitcher/twitcher.ini:/opt/birdhouse/src/twitcher/twitcher.ini
     command: "pserve /opt/birdhouse/src/twitcher/twitcher.ini"
     restart: always
     logging: *default-logging

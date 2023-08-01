@@ -17,7 +17,7 @@ services:
       PYWPS_CFG: /wps.cfg
       GEO_URL: "${RAVEN_GEO_URL}"
     volumes:
-      - ./config/raven/wps.cfg:/wps.cfg
+      - ./raven/wps.cfg:/wps.cfg
       - /tmp
     restart: always
     logging: *default-logging

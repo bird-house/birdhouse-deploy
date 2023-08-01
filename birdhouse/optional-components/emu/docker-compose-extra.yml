@@ -8,7 +8,7 @@ services:
     ports:
       - "${EMU_PORT}:${EMU_INTERNAL_PORT}"
     volumes:
-      - ./optional-components/emu/wps.cfg:/wps.cfg
+      - ./emu/wps.cfg:/wps.cfg
       - ${EMU_WPS_OUTPUTS_VOL}:/data/wpsoutputs
       - /tmp
     restart: always

@@ -25,16 +25,16 @@ services:
       MAGPIE_PORT: 2001
       FORWARDED_ALLOW_IPS: "*"
     env_file:
-      - ./config/magpie/postgres-credentials.env
+      - ./magpie/postgres-credentials.env
     depends_on:
       - postgres-magpie
     links:
       - postgres-magpie
     volumes:
-      - ./config/magpie/postgres-credentials.env:/opt/local/src/magpie/env/postgres.env
-      - ./config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/providers.cfg
-      - ./config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/permissions.cfg
-      - ./config/magpie/magpie.ini:/opt/local/src/magpie/config/magpie.ini
+      - ./magpie/postgres-credentials.env:/opt/local/src/magpie/env/postgres.env
+      - ./magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/providers.cfg
+      - ./magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/permissions.cfg
+      - ./magpie/magpie.ini:/opt/local/src/magpie/config/magpie.ini
     restart: always
     logging: *default-logging
 
@@ -43,11 +43,11 @@ services:
     container_name: postgres-magpie
     # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
     env_file:
-      - ./config/magpie/postgres-credentials.env
+      - ./magpie/postgres-credentials.env
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - ${MAGPIE_PERSIST_DIR}:/var/lib/postgresql/data/pgdata
-      - ./config/magpie/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./magpie/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     restart: always
     logging: *default-logging
