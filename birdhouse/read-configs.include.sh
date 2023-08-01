@@ -203,19 +203,24 @@ process_delayed_eval() {
 #  - otherwise, the override files will be added immediately after the component that is being overridden
 #    has been added
 create_compose_conf_list() {
-  if [ -z "$BUILD_DIR" ]; then
-      return
+  # ALL_CONF_DIRS relative paths are relative to COMPOSE_DIR.
+  discover_compose_dir
+  if [ -d "$COMPOSE_DIR" ]; then
+      cd "$COMPOSE_DIR" || return
   fi
+
+  [ -z "$BUILD_DIR" ] && return
 
   COMPOSE_CONF_LIST="-f ${BUILD_DIR}/docker-compose.yml"
   COMPONENT_OVERRIDES=''
   LOADED_COMPONENTS=''
-  for adir in "$BUILD_DIR"/*; do
+  for adir in $ALL_CONF_DIRS; do
     service_name=$(basename "$adir")
+    build_dir_loc="${BUILD_DIR}/${service_name}"
     LOADED_COMPONENTS="${LOADED_COMPONENTS}\n${service_name}"
 
     if [ -f "$adir/docker-compose-extra.yml" ]; then
-      COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $adir/docker-compose-extra.yml"
+      COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f ${build_dir_loc}/docker-compose-extra.yml"
     fi
 
     # If previously loaded components specified overrides for the component that was just loaded, load those overrides now
@@ -227,14 +232,20 @@ create_compose_conf_list() {
       override_service_name=$(basename "$conf_dir")
       extra_compose="$conf_dir/docker-compose-extra.yml"
       if [ -f "$extra_compose" ]; then
+        build_extra_compose="${build_dir_loc}/config/${override_service_name}/docker-compose-extra.yml"
         if printf '%b' "${LOADED_COMPONENTS}" | grep -q "^$override_service_name$"; then
-          COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $extra_compose"
+          COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f ${build_extra_compose}"
         else
-          COMPONENT_OVERRIDES="${COMPONENT_OVERRIDES}\n${override_service_name} -f ${extra_compose}"
+          COMPONENT_OVERRIDES="${COMPONENT_OVERRIDES}\n${override_service_name} -f ${build_extra_compose}"
         fi
       fi
     done
   done
+
+    # Return to previous pwd.
+  if [ -d "$COMPOSE_DIR" ]; then
+      cd - || return
+  fi
 }
 
 

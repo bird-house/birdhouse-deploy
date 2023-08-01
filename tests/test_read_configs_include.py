@@ -28,6 +28,12 @@ def read_config_include_file(root_dir) -> str:
     return os.path.join(root_dir, "birdhouse", "read-configs.include.sh")
 
 
+@pytest.fixture
+def tmp_build_dir():
+    with tempfile.TemporaryDirectory() as build_dir:
+        yield build_dir
+
+
 def set_local_env(env_file: io.FileIO, content: str | dict) -> None:
     env_file.truncate()
     if isinstance(content, dict):
@@ -170,53 +176,55 @@ class TestReadConfigs:
 
 
 class TestCreateComposeConfList:
-    default_conf_list_order: list[str] = [
-        "docker-compose.yml",
-        "./config/proxy/docker-compose-extra.yml",
-        "./config/canarie-api/config/proxy/docker-compose-extra.yml",
-        "./config/geoserver/docker-compose-extra.yml",
-        "./config/geoserver/config/canarie-api/docker-compose-extra.yml",
-        "./config/geoserver/config/proxy/docker-compose-extra.yml",
-        "./config/postgres/docker-compose-extra.yml",
-        "./config/wps_outputs-volume/docker-compose-extra.yml",
-        "./config/wps_outputs-volume/config/canarie-api/docker-compose-extra.yml",
-        "./config/wps_outputs-volume/config/proxy/docker-compose-extra.yml",
-        "./config/flyingpigeon/docker-compose-extra.yml",
-        "./config/flyingpigeon/config/canarie-api/docker-compose-extra.yml",
-        "./config/flyingpigeon/config/wps_outputs-volume/docker-compose-extra.yml",
-        "./config/finch/docker-compose-extra.yml",
-        "./config/finch/config/canarie-api/docker-compose-extra.yml",
-        "./config/finch/config/wps_outputs-volume/docker-compose-extra.yml",
-        "./config/raven/docker-compose-extra.yml",
-        "./config/raven/config/canarie-api/docker-compose-extra.yml",
-        "./config/raven/config/wps_outputs-volume/docker-compose-extra.yml",
-        "./config/data-volume/docker-compose-extra.yml",
-        "./config/hummingbird/docker-compose-extra.yml",
-        "./config/hummingbird/config/canarie-api/docker-compose-extra.yml",
-        "./config/hummingbird/config/data-volume/docker-compose-extra.yml",
-        "./config/hummingbird/config/wps_outputs-volume/docker-compose-extra.yml",
-        "./config/thredds/docker-compose-extra.yml",
-        "./config/thredds/config/canarie-api/docker-compose-extra.yml",
-        "./config/thredds/config/proxy/docker-compose-extra.yml",
-        "./config/portainer/docker-compose-extra.yml",
-        "./config/portainer/config/proxy/docker-compose-extra.yml",
-        "./config/magpie/docker-compose-extra.yml",
-        "./config/geoserver/config/magpie/docker-compose-extra.yml",
-        "./config/flyingpigeon/config/magpie/docker-compose-extra.yml",
-        "./config/finch/config/magpie/docker-compose-extra.yml",
-        "./config/raven/config/magpie/docker-compose-extra.yml",
-        "./config/hummingbird/config/magpie/docker-compose-extra.yml",
-        "./config/thredds/config/magpie/docker-compose-extra.yml",
-        "./config/magpie/config/canarie-api/docker-compose-extra.yml",
-        "./config/magpie/config/proxy/docker-compose-extra.yml",
-        "./config/twitcher/docker-compose-extra.yml",
-        "./config/twitcher/config/canarie-api/docker-compose-extra.yml",
-        "./config/twitcher/config/proxy/docker-compose-extra.yml",
-        "./config/jupyterhub/docker-compose-extra.yml",
-        "./config/jupyterhub/config/canarie-api/docker-compose-extra.yml",
-        "./config/jupyterhub/config/magpie/docker-compose-extra.yml",
-        "./config/jupyterhub/config/proxy/docker-compose-extra.yml",
-    ]
+    @staticmethod
+    def default_conf_list_order(tmp_build_dir) -> list[str]:
+        return [
+            f"{tmp_build_dir}/docker-compose.yml",
+            f"{tmp_build_dir}/proxy/docker-compose-extra.yml",
+            f"{tmp_build_dir}/canarie-api/config/proxy/docker-compose-extra.yml",
+            f"{tmp_build_dir}/geoserver/docker-compose-extra.yml",
+            f"{tmp_build_dir}/geoserver/config/canarie-api/docker-compose-extra.yml",
+            f"{tmp_build_dir}/geoserver/config/proxy/docker-compose-extra.yml",
+            f"{tmp_build_dir}/postgres/docker-compose-extra.yml",
+            f"{tmp_build_dir}/wps_outputs-volume/docker-compose-extra.yml",
+            f"{tmp_build_dir}/wps_outputs-volume/config/canarie-api/docker-compose-extra.yml",
+            f"{tmp_build_dir}/wps_outputs-volume/config/proxy/docker-compose-extra.yml",
+            f"{tmp_build_dir}/flyingpigeon/docker-compose-extra.yml",
+            f"{tmp_build_dir}/flyingpigeon/config/canarie-api/docker-compose-extra.yml",
+            f"{tmp_build_dir}/flyingpigeon/config/wps_outputs-volume/docker-compose-extra.yml",
+            f"{tmp_build_dir}/finch/docker-compose-extra.yml",
+            f"{tmp_build_dir}/finch/config/canarie-api/docker-compose-extra.yml",
+            f"{tmp_build_dir}/finch/config/wps_outputs-volume/docker-compose-extra.yml",
+            f"{tmp_build_dir}/raven/docker-compose-extra.yml",
+            f"{tmp_build_dir}/raven/config/canarie-api/docker-compose-extra.yml",
+            f"{tmp_build_dir}/raven/config/wps_outputs-volume/docker-compose-extra.yml",
+            f"{tmp_build_dir}/data-volume/docker-compose-extra.yml",
+            f"{tmp_build_dir}/hummingbird/docker-compose-extra.yml",
+            f"{tmp_build_dir}/hummingbird/config/canarie-api/docker-compose-extra.yml",
+            f"{tmp_build_dir}/hummingbird/config/data-volume/docker-compose-extra.yml",
+            f"{tmp_build_dir}/hummingbird/config/wps_outputs-volume/docker-compose-extra.yml",
+            f"{tmp_build_dir}/thredds/docker-compose-extra.yml",
+            f"{tmp_build_dir}/thredds/config/canarie-api/docker-compose-extra.yml",
+            f"{tmp_build_dir}/thredds/config/proxy/docker-compose-extra.yml",
+            f"{tmp_build_dir}/portainer/docker-compose-extra.yml",
+            f"{tmp_build_dir}/portainer/config/proxy/docker-compose-extra.yml",
+            f"{tmp_build_dir}/magpie/docker-compose-extra.yml",
+            f"{tmp_build_dir}/geoserver/config/magpie/docker-compose-extra.yml",
+            f"{tmp_build_dir}/flyingpigeon/config/magpie/docker-compose-extra.yml",
+            f"{tmp_build_dir}/finch/config/magpie/docker-compose-extra.yml",
+            f"{tmp_build_dir}/raven/config/magpie/docker-compose-extra.yml",
+            f"{tmp_build_dir}/hummingbird/config/magpie/docker-compose-extra.yml",
+            f"{tmp_build_dir}/thredds/config/magpie/docker-compose-extra.yml",
+            f"{tmp_build_dir}/magpie/config/canarie-api/docker-compose-extra.yml",
+            f"{tmp_build_dir}/magpie/config/proxy/docker-compose-extra.yml",
+            f"{tmp_build_dir}/twitcher/docker-compose-extra.yml",
+            f"{tmp_build_dir}/twitcher/config/canarie-api/docker-compose-extra.yml",
+            f"{tmp_build_dir}/twitcher/config/proxy/docker-compose-extra.yml",
+            f"{tmp_build_dir}/jupyterhub/docker-compose-extra.yml",
+            f"{tmp_build_dir}/jupyterhub/config/canarie-api/docker-compose-extra.yml",
+            f"{tmp_build_dir}/jupyterhub/config/magpie/docker-compose-extra.yml",
+            f"{tmp_build_dir}/jupyterhub/config/proxy/docker-compose-extra.yml",
+        ]
 
     def run_func(self, include_file: str, local_env: dict, command_suffix: str = "") -> subprocess.CompletedProcess:
         if command_suffix:
@@ -237,22 +245,24 @@ class TestCreateComposeConfList:
             )
         return proc
 
-    def test_all_conf_dirs_empty(self, read_config_include_file):
+    def test_all_conf_dirs_empty(self, read_config_include_file, tmp_build_dir):
         """Test that only the base compose file is used when ALL_CONF_DIRS is empty"""
-        proc = self.run_func(read_config_include_file, {}, 'echo "$COMPOSE_CONF_LIST"')
-        assert split_and_strip(get_command_stdout(proc)) == ["-f docker-compose.yml"]
+        proc = self.run_func(read_config_include_file, {"BUILD_DIR": tmp_build_dir}, 'echo "$COMPOSE_CONF_LIST"')
+        assert split_and_strip(get_command_stdout(proc)) == [f"-f {tmp_build_dir}/docker-compose.yml"]
 
     @pytest.mark.usefixtures("run_in_compose_dir")
-    def test_compose_no_overrides(self, read_config_include_file):
+    def test_compose_no_overrides(self, read_config_include_file, tmp_build_dir):
         """Test that COMPOSE_CONF_LIST is set correctly when there are no overrides"""
         proc = self.run_func(
-            read_config_include_file, {"ALL_CONF_DIRS": "./config/finch ./config/raven"}, 'echo "$COMPOSE_CONF_LIST"'
+            read_config_include_file,
+            {"ALL_CONF_DIRS": "./config/finch ./config/raven", "BUILD_DIR": tmp_build_dir},
+            'echo "$COMPOSE_CONF_LIST"'
         )
         print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == [
-            "docker-compose.yml",
-            "./config/finch/docker-compose-extra.yml",
-            "./config/raven/docker-compose-extra.yml",
+            f"{tmp_build_dir}/docker-compose.yml",
+            f"{tmp_build_dir}/finch/docker-compose-extra.yml",
+            f"{tmp_build_dir}/raven/docker-compose-extra.yml",
         ]
 
     def test_compose_in_order(self, read_config_include_file):
@@ -268,25 +278,27 @@ class TestCreateComposeConfList:
         assert out1 == out2[:1] + out2[:0:-1]
 
     @pytest.mark.usefixtures("run_in_compose_dir")
-    def test_compose_overrides(self, read_config_include_file):
+    def test_compose_overrides(self, read_config_include_file, tmp_build_dir):
         """Test that COMPOSE_CONF_LIST is set correctly when there are overrides"""
         proc = self.run_func(
-            read_config_include_file, {"ALL_CONF_DIRS": "./config/finch ./config/magpie"}, 'echo "$COMPOSE_CONF_LIST"'
+            read_config_include_file,
+            {"ALL_CONF_DIRS": "./config/finch ./config/magpie", "BUILD_DIR": tmp_build_dir},
+            'echo "$COMPOSE_CONF_LIST"'
         )
         print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == [
-            "docker-compose.yml",
-            "./config/finch/docker-compose-extra.yml",
-            "./config/magpie/docker-compose-extra.yml",
-            "./config/finch/config/magpie/docker-compose-extra.yml",
+            f"{tmp_build_dir}/docker-compose.yml",
+            f"{tmp_build_dir}/finch/docker-compose-extra.yml",
+            f"{tmp_build_dir}/magpie/docker-compose-extra.yml",
+            f"{tmp_build_dir}/finch/config/magpie/docker-compose-extra.yml",
         ]
 
     @pytest.mark.usefixtures("run_in_compose_dir")
-    def test_default_all_conf_dirs(self, read_config_include_file):
+    def test_default_all_conf_dirs(self, read_config_include_file, tmp_build_dir):
         proc = self.run_func(
             read_config_include_file,
-            {"ALL_CONF_DIRS": " ".join(TestReadConfigs.default_all_conf_order)},
+            {"ALL_CONF_DIRS": " ".join(TestReadConfigs.default_all_conf_order), "BUILD_DIR": tmp_build_dir},
             'echo "$COMPOSE_CONF_LIST"',
         )
         print(proc.stdout)  # useful for debugging when assert fail
-        assert split_and_strip(get_command_stdout(proc), split_on="-f") == self.default_conf_list_order
+        assert split_and_strip(get_command_stdout(proc), split_on="-f") == self.default_conf_list_order(tmp_build_dir)
