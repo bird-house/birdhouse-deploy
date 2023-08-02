@@ -64,6 +64,7 @@ if [ ! -f "$SSL_CERTIFICATE" ]; then
     else
         openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem \
             -subj "/C=CA/ST=Quebec/L=Montreal/O=RnD/CN=${VM_HOSTNAME}.$VM_DOMAIN"
+        sudo cp cert.pem /usr/local/share/ca-certificates/
         cp cert.pem "$SSL_CERTIFICATE"
         cat key.pem >> "$SSL_CERTIFICATE"
         if [ -z "$VERIFY_SSL" ]; then
