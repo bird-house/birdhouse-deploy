@@ -85,7 +85,7 @@ for adir in $AUTODEPLOY_EXTRA_REPOS; do
 done
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
-BUILD_DIR="${COMPOSE_DIR}/build"
+BUILD_DIR="${BUILD_DIR:-"${COMPOSE_DIR}/build"}"
 
 rm -r "${BUILD_DIR}"
 mkdir -p "${BUILD_DIR}"

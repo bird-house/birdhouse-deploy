@@ -15,7 +15,22 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Write build context to a build directory instead of using `birdhouse/`:
+  - Copies all files needed to run `docker compose` commands to a build directory
+  - Generates a unified `docker-compose.yml` file that can be easily inspected to see exactly what is being deployed.
+  - Writes the generated output of template files to a new directory instead of beside the original template file
+    - this will keep the repo cleaner and won't require keeping legacy files in the various `.gitignore` file peppered
+      throughout the repository.
+  - The build directory is in `birdhouse/build` by default but can be changed by setting the `BUILD_DIR` variable in
+    `env.local`.
+  - No longer requires that custom component config files be placed relative to `./birdhouse/docker-compose.yml` since
+    these files are copied to the relevant location in the build directory.
+    - previously, file paths in `docker-compose-extra.yml` files were either absolute or relative paths from the
+      `birdhouse/` directory.
+    - now, they are absolute or relative paths from the parent of the component's directory (this resolves to the build
+      directory when the stack is started up).
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------
