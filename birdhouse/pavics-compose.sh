@@ -120,6 +120,9 @@ COMPOSE_FILE="${BUILD_DIR}/docker-compose.yml"
 
 cp "${COMPOSE_DIR}/docker-compose.yml" "${COMPOSE_FILE}"
 
+# Keep the compose project name as "birdhouse" by default (no matter where the build directory is located)
+export COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-birdhouse}
+
 # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
 PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} config > "${COMPOSE_FILE}.final"
 
