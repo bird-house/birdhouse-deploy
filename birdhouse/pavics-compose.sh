@@ -48,10 +48,6 @@ COMPOSE_DIR="`pwd`"
 . "$COMPOSE_DIR/read-configs.include.sh"
 read_configs # this sets ALL_CONF_DIRS
 
-. ./scripts/get-components-json.include.sh
-. ./scripts/get-services-json.include.sh
-. ./scripts/get-version-json.include.sh
-
 for i in ${VARS}
 do
   v="${i}"
@@ -101,6 +97,12 @@ find "$BUILD_DIR" -name '*.template' |
     DEST=${FILE%.template}
     cat ${FILE} | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > ${DEST}
   done
+
+# Get the information for enabled components, services, version; after the template
+# file have been written so that they reflect the most up-to-date changes.
+. ./scripts/get-components-json.include.sh
+. ./scripts/get-services-json.include.sh
+. ./scripts/get-version-json.include.sh
 
 if [ x"$1" = x"up" ]; then
   for adir in "${BUILD_DIR}"/*; do
