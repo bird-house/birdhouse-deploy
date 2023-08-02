@@ -1,7 +1,0 @@
-frontend.env
-config/proxy/conf.extra-service.d/frontend.conf
-config/canarie-api/canarie_api_monitoring.py
-
-# Old paths. Keep these so that old config files remain uncommittable after updates.
-conf.extra-service.d/frontend.conf
-config/proxy/canarie_api_monitoring.py
