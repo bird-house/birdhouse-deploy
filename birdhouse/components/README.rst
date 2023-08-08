@@ -286,7 +286,7 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 
-  - Add ``"./components/weaver"`` to ``EXTRA_CONF_DIRS``.
+  - Add ``./components/weaver`` to ``EXTRA_CONF_DIRS``.
 
   - Component ``birdhouse/optional-components/all-public-access`` should also be enabled to ensure that `Weaver`_
     can request ``GetCapabilities`` of every WPS provider to be registered. Publicly inaccessible services will not
@@ -364,7 +364,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``"./components/cowbird"`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/cowbird`` to ``EXTRA_CONF_DIRS``.
 
 Customizing the Component
 -------------------------
@@ -414,4 +414,4 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``"./optional-components/stac"`` to ``EXTRA_CONF_DIRS``.
+- Add ``./optional-components/stac`` to ``EXTRA_CONF_DIRS``.
