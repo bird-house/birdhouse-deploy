@@ -1,0 +1,2 @@
+config/proxy/conf.extra-service.d/stac.conf
+config/canarie-api/canarie_api_monitoring.py

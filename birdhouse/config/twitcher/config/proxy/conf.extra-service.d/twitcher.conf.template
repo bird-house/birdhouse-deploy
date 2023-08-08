@@ -4,4 +4,5 @@
         proxy_set_header X-Forwarded-Proto $real_scheme;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Host $host:$server_port;
+        proxy_set_header Forwarded "proto=https;host=${PAVICS_FQDN}";    # Helps the STAC component to craft URLs containing the full PAVICS_FQDN
     }
