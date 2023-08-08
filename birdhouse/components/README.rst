@@ -427,7 +427,7 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 
-  - Add ``"./components/weaver"`` to ``EXTRA_CONF_DIRS``.
+  - Add ``./components/weaver`` to ``EXTRA_CONF_DIRS``.
 
   - Component ``birdhouse/optional-components/all-public-access`` should also be enabled to ensure that `Weaver`_
     can request ``GetCapabilities`` of every WPS provider to be registered. Publicly inaccessible services will not
@@ -505,7 +505,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``"./components/cowbird"`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/cowbird`` to ``EXTRA_CONF_DIRS``.
 
 Customizing the Component
 -------------------------
@@ -519,3 +519,40 @@ define your custom values in ``env.local`` directly.
 
 .. |cowbird-default| replace:: cowbird/default.env
 .. _cowbird-default: ./cowbird/default.env
+
+
+STAC
+====
+
+`STAC`_ is the common name of the REST API that implements the STAC specification, common representation of geospatial 
+information.
+
+.. _STAC: https://stacspec.org/en
+
+Usage
+-----
+
+The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API 
+exposed by the current stack instance. Once this component is enabled, STAC API will be accessible at 
+``https://<PAVICS_FQDN_PUBLIC>/stac`` endpoint and the STAC browser will be available at 
+``https://<PAVICS_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint, 
+define the following in the ``env.local`` file::
+
+  export PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
+
+Here is a sample search query using a CLI::
+
+.. code-block:: shell
+
+    pip install pystac-client
+    stac-client search $PAVIS_FQDN/stac -q "variable_id=txgt_32" "scenario=ssp585"
+
+Calls to the STAC API pass through Twitcher in order to validate authorization. Unauthenticated users will have 
+read-only access by default to STAC API resources while members of the `stac-admin` group can create and modify 
+resources. STAC Browser is not protected by any authorization mechanism.
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./optional-components/stac`` to ``EXTRA_CONF_DIRS``.

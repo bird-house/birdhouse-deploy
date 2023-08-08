@@ -15,7 +15,32 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Adds [STAC](https://github.com/crim-ca/stac-app) to the stack (optional) when ``./components/stac`` 
+  is added to ``EXTRA_CONF_DIRS``. For more details, refer to 
+  [STAC Component](https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/components/README.rst#STAC)
+  Following happens when enabled:
+    
+  * Service ``stac`` (API) gets added with endpoints ``/twitcher/ows/proxy/stac`` and ``/stac``.
+    
+  * STAC catalog can be explored via the ``stac-browser`` component, available under ``/stac-browser``.
+      
+  * Image [crim-ca/stac-app](https://github.com/crim-ca/stac-app) is a STAC implementation based on 
+  [stac-utils/stac-fastapi](https://github.com/stac-utils/stac-fastapi).
+
+  * Image [crim-ca/stac-browser](https://github.com/crim-ca/stac-browser) is a fork of 
+  [radiantearth/stac-browser](https://github.com/radiantearth/stac-browser) in order to have the capacity to build 
+  the Docker container. The image reference will change when the 
+  [stac-browser PR related to Dockerfile](https://github.com/bird-house/birdhouse-deploy/issues/346) will have been 
+  merged.
+      
+  * Adds `Magpie` permissions and service for `stac` endpoints.
+  
+- Adds [stac-populator](https://github.com/crim-ca/stac-populator) to populate STAC catalog with sample collection 
+  items via [CEDA STAC Generator](https://github.com/cedadev/stac-generator), employed in sample 
+  [CMIP Dataset Ingestion Workflows](https://github.com/cedadev/stac-generator-example/tree/master/conf).
+
+- Adds ``optional-components/stac-public-access`` to give public access to the STAC catalog.
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------
