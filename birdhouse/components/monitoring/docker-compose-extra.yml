@@ -61,9 +61,9 @@ services:
       - grafana_persistence:/var/lib/grafana:rw
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
-      GF_SERVER_ROOT_URL: https://${PAVICS_FQDN}/grafana
+      GF_SERVER_ROOT_URL: https://${PAVICS_FQDN_PUBLIC}/grafana
       GF_SERVER_SERVE_FROM_SUB_PATH: 'true'
-      GF_SERVER_DOMAIN: ${PAVICS_FQDN}
+      GF_SERVER_DOMAIN: ${PAVICS_FQDN_PUBLIC}
     restart: always
 
   # https://github.com/prometheus/alertmanager
