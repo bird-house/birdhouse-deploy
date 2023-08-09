@@ -37,6 +37,10 @@ Policy rules
 
 3. Contributions will trigger a test suite that must successfully pass before being merged (or integrated).
 
+    * The test suite can be run using a different DACCS config with ``daccs_configs_branch: branch_name`` in the PR description.
+    * It is possible to skip the test suite if the latest commit contains either ``[skip ci]``, ``[ci skip]`` or ``[no ci]``.
+      To globally skip the test suite regardless of the commit message use ``daccs_skip_ci: true`` in the PR description.
+
 4. Contributions must be reviewed by every willing organizations
    (Default reviewers are `@tlvu`_ for `Ouranos`_ and `@MatProv`_ for `CRIM`_).
 
