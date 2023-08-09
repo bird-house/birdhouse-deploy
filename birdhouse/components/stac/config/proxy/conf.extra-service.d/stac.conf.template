@@ -1,0 +1,29 @@
+
+    location /stac {
+        # We need the first `/stac` for service resolution.
+        # We need the second `/stac` for API redirect in STAC (see `root-path` and `ROUTER_PREFIX`).
+        # See https://github.com/stac-utils/stac-fastapi/issues/427
+        # See https://github.com/crim-ca/stac-app/blob/main/stac_app.py#L60
+        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/stac/stac;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host:$server_port;
+        proxy_buffering off;
+        include /etc/nginx/conf.d/cors.include;
+    }
+
+    location /stac-browser/ {
+        # STAC API is protected behind Twitcher so we might not need to protect the browser as well.
+        # In case we encounter a valid use case in which we need to protect the browser, we might 
+        # consider using Twitcher's verify capability to protect the route in an efficient manner.
+        proxy_pass http://stac-browser:8080/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Host localhost;
+        proxy_set_header X-Forwarded-Server localhost;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Origin localhost;
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_redirect off;
+    }
