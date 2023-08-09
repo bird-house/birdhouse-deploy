@@ -1,0 +1,63 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  stac:
+    container_name: stac
+    image: ghcr.io/crim-ca/stac-app:main
+    depends_on:
+      - stac-db
+    environment:
+      - POSTGRES_USER=${STAC_POSTGRES_USER}
+      - POSTGRES_PASS=${STAC_POSTGRES_PASSWORD}
+      - POSTGRES_DBNAME=postgis
+      - POSTGRES_HOST_READER=stac-db
+      - POSTGRES_HOST_WRITER=stac-db
+      - POSTGRES_PORT=5432
+      - ROUTER_PREFIX=/stac
+      - OPENAPI_URL=/stac/api
+      - DOCS_URL=/stac/api.html
+    logging: *default-logging
+    restart: always
+
+  stac-browser:
+    container_name: stac-browser
+    image: ghcr.io/crim-ca/stac-browser:docker_image_push
+    environment:
+      - CATALOG_URL=https://${PAVICS_FQDN_PUBLIC}/stac/
+      - ROOT_PATH=/stac-browser/
+
+  stac-db:
+    container_name: stac-db
+    image: ghcr.io/stac-utils/pgstac:v0.6.10
+    environment:
+      - POSTGRES_USER=${STAC_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${STAC_POSTGRES_PASSWORD}
+      - POSTGRES_DB=postgis
+      - PGUSER=${STAC_PGUSER}
+      - PGPASSWORD=${STAC_PGPASSWORD}
+      - PGHOST=localhost
+      - PGDATABASE=postgis
+    volumes:
+      - stac-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # extend proxy with endpoint and config for STAC API access
+  proxy:
+    volumes:
+      - ./components/stac/conf.extra-service.d:/etc/nginx/conf.extra-service.d/stac:ro
+    links:
+      - stac
+
+volumes:
+  stac-db:
