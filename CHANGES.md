@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Small stac changes
+  - This PR includes some changes that were suggested in a review for #297. But because the PR was already merged I'm including them here:
+    - removes extra block to include in docker compose files (no longer needed)
+    - moves docker compose file in `stac-public-access` component to the correct location
+    - uses `PAVICS_FQDN_PUBLIC` for public facing URLs in all places
 
 [1.29.0](https://github.com/bird-house/birdhouse-deploy/tree/1.29.0) (2023-08-10)
 ------------------------------------------------------------------------------------------------------------------
