@@ -20,6 +20,9 @@
   - Docker compose no longer exposes any container ports outside the default network except for ports 80 and 443 from 
     the proxy container. This ensures that ports that are not intended for external access are not exposed to the wider 
     internet even if firewall rules are not set correctly.
+  - Note that if the `monitoring` component is used then port 9100 will be exposed from the `node-exporter` container.
+    This is because this container must be run on the host machine's network and unfortunately there is no known
+    workaround that would not require this port to be exposed on the host machine.
   - Fixes https://github.com/bird-house/birdhouse-deploy/issues/222
 
 - Adds [STAC](https://github.com/crim-ca/stac-app) to the stack (optional) when ``./components/stac`` 
