@@ -25,6 +25,11 @@
     workaround that would not require this port to be exposed on the host machine.
   - Fixes https://github.com/bird-house/birdhouse-deploy/issues/222
 
+
+[1.28.0](https://github.com/bird-house/birdhouse-deploy/tree/1.28.0) (2023-08-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
 - Adds [STAC](https://github.com/crim-ca/stac-app) to the stack (optional) when ``./components/stac`` 
   is added to ``EXTRA_CONF_DIRS``. For more details, refer to 
   [STAC Component](https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/components/README.rst#STAC)
