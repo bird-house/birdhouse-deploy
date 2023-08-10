@@ -1,5 +1,5 @@
     location /jupyter/ {
-        proxy_pass http://${PAVICS_FQDN}:8800/jupyter/;
+        proxy_pass http://jupyterhub:8000/jupyter/;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $real_scheme;

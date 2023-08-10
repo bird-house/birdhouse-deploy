@@ -1,5 +1,5 @@
     location /magpie/ {
-        proxy_pass http://${PAVICS_FQDN}:2001/;
+        proxy_pass http://magpie:2001/;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $real_scheme;
         include /etc/nginx/conf.d/cors.include;
