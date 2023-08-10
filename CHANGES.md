@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.28.0](https://github.com/bird-house/birdhouse-deploy/tree/1.28.0) (2023-08-10)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 - Adds [STAC](https://github.com/crim-ca/stac-app) to the stack (optional) when ``./components/stac`` 
   is added to ``EXTRA_CONF_DIRS``. For more details, refer to 
