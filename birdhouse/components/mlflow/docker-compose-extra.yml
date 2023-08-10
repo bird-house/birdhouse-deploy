@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  mlflow:
+    restart: always
+    image: ghcr.io/mlflow/mlflow:v2.5.0
+    container_name: mlflow_server
+    ports:
+      - "5000:5000"
+    environment:
+      MLFLOW_USER_DATA_DIR: ${MLFLOW_USER_DATA_DIR}
+    command: mlflow server --backend-store-uri sqlite:////${MLFLOW_USER_DATA_DIR}/mlflow.db --default-artifact-root ${MLFLOW_USER_DATA_DIR}/artifacts --host 0.0.0.0
+    volumes:
+      - ${MLFLOW_USER_DATA_DIR}:${MLFLOW_USER_DATA_DIR}
+  # extend proxy with endpoint and config for mlflow API access
+  proxy:
+    volumes:
+      - ./components/mlflow/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/mlflow:ro
+    links:
+      - mlflow
