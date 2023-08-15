@@ -3,4 +3,4 @@ version: "3.4"
 services:
   proxy:
     volumes:
-      - ./components/monitoring/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/monitoring:ro
+      - ./monitoring/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/monitoring:ro

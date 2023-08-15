@@ -55,7 +55,7 @@ services:
   # extend proxy with endpoint and config for STAC API access
   proxy:
     volumes:
-      - ./components/stac/conf.extra-service.d:/etc/nginx/conf.extra-service.d/stac:ro
+      - ./stac/conf.extra-service.d:/etc/nginx/conf.extra-service.d/stac:ro
     links:
       - stac
 
