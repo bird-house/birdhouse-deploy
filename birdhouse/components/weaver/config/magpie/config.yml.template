@@ -4,7 +4,7 @@
 providers:
   # definition of Weaver service
   ${WEAVER_MANAGER_NAME}:
-    url: http://${PAVICS_FQDN}:4001
+    url: http://weaver:4001
     title: Weaver (${WEAVER_CONFIG})
     public: true
     c4i: false
@@ -57,7 +57,7 @@ providers:
 
   # FIXME: remove when https://github.com/Ouranosinc/Magpie/issues/360 implemented, see 'default.env'
   ${WEAVER_WPS_NAME}:
-    url: http://${PAVICS_FQDN}:4001/wps
+    url: http://weaver:4001/wps
     title: Weaver (WPS)
     public: true
     c4i: false

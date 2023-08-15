@@ -11,8 +11,6 @@ services:
   thredds:
     image: ${THREDDS_IMAGE}
     container_name: thredds
-    ports:
-      - "8083:8080"
     env_file:
       - ./thredds/thredds.env
     environment:

@@ -11,8 +11,6 @@ services:
   twitcher:
     image: pavics/twitcher:magpie-${MAGPIE_VERSION}
     container_name: twitcher
-    ports:
-      - "8000:8000"
     environment:
       # target directories to allow loading multiple config files of corresponding category
       # each compose override should volume mount its files inside the below directory

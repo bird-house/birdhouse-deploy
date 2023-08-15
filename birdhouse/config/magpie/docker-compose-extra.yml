@@ -11,8 +11,6 @@ services:
   magpie:
     image: pavics/magpie:${MAGPIE_VERSION}
     container_name: magpie
-    ports:
-      - "2001:2001"
     environment:
       TWITCHER_PROTECTED_URL: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}
       # target directories to allow loading multiple config files of corresponding category
