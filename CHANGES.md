@@ -15,7 +15,10 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Flexible locations for data served by THREDDS
+  - This PR add the flexibility to configure the locations of THREDDS data on the host and the contained
+  - It also allows to configure the names of the top level THREDDS directories serving 'catalog' and 'raw' data
 
 [1.29.1](https://github.com/bird-house/birdhouse-deploy/tree/1.29.1) (2023-08-15)
 ------------------------------------------------------------------------------------------------------------------
