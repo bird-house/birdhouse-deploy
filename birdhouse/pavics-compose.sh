@@ -81,8 +81,6 @@ for adir in $AUTODEPLOY_EXTRA_REPOS; do
 done
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
-BUILD_DIR="${BUILD_DIR:-"${COMPOSE_DIR}/build"}"
-
 COMPOSE_FILE="${BUILD_DIR}/docker-compose.yml"
 
 # Keep the compose project name as "birdhouse" by default (no matter where the build directory is located)
@@ -98,7 +96,10 @@ if [ x"$1" = x"up" ]; then
         RELATIVE_FILE_PATH=${FILE#${adir}}
         DEST="${BUILD_DIR}/${CONF_NAME}/${RELATIVE_FILE_PATH#/}"
         mkdir -p "$(dirname "${DEST}")"
-        ln "${FILE}" "${DEST}"
+        if ! ln "${FILE}" "${DEST}"; then
+          echo "${YELLOW}Warning:${NORMAL} unable to link '${FILE}' to '${DEST}'. Attempting to copy instead."
+          cp "${FILE}" "${DEST}"
+        fi
       done
   done
 
