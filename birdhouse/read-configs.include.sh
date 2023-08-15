@@ -211,7 +211,7 @@ create_compose_conf_list() {
 
   [ -z "$BUILD_DIR" ] && return
 
-  COMPOSE_CONF_LIST="-f ${COMPOSE_DIR}/docker-compose.yml"
+  COMPOSE_CONF_LIST="-f ${BUILD_DIR}/docker-compose.yml"
   COMPONENT_OVERRIDES=''
   LOADED_COMPONENTS=''
   for adir in $ALL_CONF_DIRS; do
