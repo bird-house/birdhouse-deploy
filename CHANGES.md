@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.29.1](https://github.com/bird-house/birdhouse-deploy/tree/1.29.1) (2023-08-15)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Small STAC changes
