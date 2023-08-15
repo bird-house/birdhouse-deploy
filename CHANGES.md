@@ -18,7 +18,7 @@
 ## Changes
 
 - Write build context to a build directory instead of using `birdhouse/`:
-  - Copies all files needed to run `docker compose` commands to a build directory
+  - Links all files needed to run `docker compose` commands to a build directory
   - Generates a unified `docker-compose.yml` file that can be easily inspected to see exactly what is being deployed.
   - Writes the generated output of template files to a new directory instead of beside the original template file
     - this will keep the repo cleaner and won't require keeping legacy files in the various `.gitignore` file peppered

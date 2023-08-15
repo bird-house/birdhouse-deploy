@@ -83,28 +83,39 @@ export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 BUILD_DIR="${BUILD_DIR:-"${COMPOSE_DIR}/build"}"
 
-rm -r "${BUILD_DIR}"
-mkdir -p "${BUILD_DIR}"
+COMPOSE_FILE="${BUILD_DIR}/docker-compose.yml"
 
-for adir in $ALL_CONF_DIRS; do
-  cp -r "${adir}" "${BUILD_DIR}/$(basename "${adir}")"
-done
-
-# we apply all the templates
-find "$BUILD_DIR" -name '*.template' |
-  while read FILE
-  do
-    DEST=${FILE%.template}
-    cat ${FILE} | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > ${DEST}
-  done
-
-# Get the information for enabled components, services, version; after the template
-# file have been written so that they reflect the most up-to-date changes.
-. ./scripts/get-components-json.include.sh
-. ./scripts/get-services-json.include.sh
-. ./scripts/get-version-json.include.sh
+# Keep the compose project name as "birdhouse" by default (no matter where the build directory is located)
+export COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-birdhouse}
 
 if [ x"$1" = x"up" ]; then
+  rm -r "${BUILD_DIR}"
+  for adir in $ALL_CONF_DIRS; do
+    CONF_NAME="$(basename "${adir}")"
+    find "$adir" -type f |
+      while read -r FILE
+      do
+        RELATIVE_FILE_PATH=${FILE#${adir}}
+        DEST="${BUILD_DIR}/${CONF_NAME}/${RELATIVE_FILE_PATH#/}"
+        mkdir -p "$(dirname "${DEST}")"
+        ln "${FILE}" "${DEST}"
+      done
+  done
+
+  # we apply all the templates
+  find "$BUILD_DIR" -name '*.template' |
+    while read -r FILE
+    do
+      DEST=${FILE%.template}
+      cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
+    done
+
+  # Get the information for enabled components, services, version; after the template
+  # file have been written so that they reflect the most up-to-date changes.
+  . ./scripts/get-components-json.include.sh
+  . ./scripts/get-services-json.include.sh
+  . ./scripts/get-version-json.include.sh
+
   for adir in "${BUILD_DIR}"/*; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
     if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
@@ -112,23 +123,14 @@ if [ x"$1" = x"up" ]; then
       sh -x "$COMPONENT_PRE_COMPOSE_UP"
     fi
   done
+
+  create_compose_conf_list # this sets COMPOSE_CONF_LIST
+  echo "COMPOSE_CONF_LIST="
+  echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
+
+  # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
+  PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose --project-directory "${BUILD_DIR}" ${COMPOSE_CONF_LIST} config -o "${COMPOSE_FILE}"
 fi
-
-create_compose_conf_list # this sets COMPOSE_CONF_LIST
-echo "COMPOSE_CONF_LIST="
-echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
-
-COMPOSE_FILE="${BUILD_DIR}/docker-compose.yml"
-
-cp "${COMPOSE_DIR}/docker-compose.yml" "${COMPOSE_FILE}"
-
-# Keep the compose project name as "birdhouse" by default (no matter where the build directory is located)
-export COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-birdhouse}
-
-# the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} config > "${COMPOSE_FILE}.final"
-
-mv "${COMPOSE_FILE}.final" "${COMPOSE_FILE}"
 
 docker-compose -f "${COMPOSE_FILE}" "$@"
 ERR=$?

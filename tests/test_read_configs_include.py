@@ -177,9 +177,9 @@ class TestReadConfigs:
 
 class TestCreateComposeConfList:
     @staticmethod
-    def default_conf_list_order(tmp_build_dir) -> list[str]:
+    def default_conf_list_order(tmp_build_dir, root_dir) -> list[str]:
         return [
-            f"{tmp_build_dir}/docker-compose.yml",
+            f"{root_dir}/birdhouse/docker-compose.yml",
             f"{tmp_build_dir}/proxy/docker-compose-extra.yml",
             f"{tmp_build_dir}/canarie-api/config/proxy/docker-compose-extra.yml",
             f"{tmp_build_dir}/geoserver/docker-compose-extra.yml",
@@ -222,7 +222,6 @@ class TestCreateComposeConfList:
             f"{tmp_build_dir}/twitcher/config/proxy/docker-compose-extra.yml",
             f"{tmp_build_dir}/jupyterhub/docker-compose-extra.yml",
             f"{tmp_build_dir}/jupyterhub/config/canarie-api/docker-compose-extra.yml",
-            f"{tmp_build_dir}/jupyterhub/config/magpie/docker-compose-extra.yml",
             f"{tmp_build_dir}/jupyterhub/config/proxy/docker-compose-extra.yml",
         ]
 
@@ -245,13 +244,13 @@ class TestCreateComposeConfList:
             )
         return proc
 
-    def test_all_conf_dirs_empty(self, read_config_include_file, tmp_build_dir):
+    def test_all_conf_dirs_empty(self, read_config_include_file, tmp_build_dir, root_dir):
         """Test that only the base compose file is used when ALL_CONF_DIRS is empty"""
         proc = self.run_func(read_config_include_file, {"BUILD_DIR": tmp_build_dir}, 'echo "$COMPOSE_CONF_LIST"')
-        assert split_and_strip(get_command_stdout(proc)) == [f"-f {tmp_build_dir}/docker-compose.yml"]
+        assert split_and_strip(get_command_stdout(proc)) == [f"-f {root_dir}/birdhouse/docker-compose.yml"]
 
     @pytest.mark.usefixtures("run_in_compose_dir")
-    def test_compose_no_overrides(self, read_config_include_file, tmp_build_dir):
+    def test_compose_no_overrides(self, read_config_include_file, tmp_build_dir, root_dir):
         """Test that COMPOSE_CONF_LIST is set correctly when there are no overrides"""
         proc = self.run_func(
             read_config_include_file,
@@ -260,7 +259,7 @@ class TestCreateComposeConfList:
         )
         print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == [
-            f"{tmp_build_dir}/docker-compose.yml",
+            f"{root_dir}/birdhouse/docker-compose.yml",
             f"{tmp_build_dir}/finch/docker-compose-extra.yml",
             f"{tmp_build_dir}/raven/docker-compose-extra.yml",
         ]
@@ -278,7 +277,7 @@ class TestCreateComposeConfList:
         assert out1 == out2[:1] + out2[:0:-1]
 
     @pytest.mark.usefixtures("run_in_compose_dir")
-    def test_compose_overrides(self, read_config_include_file, tmp_build_dir):
+    def test_compose_overrides(self, read_config_include_file, tmp_build_dir, root_dir):
         """Test that COMPOSE_CONF_LIST is set correctly when there are overrides"""
         proc = self.run_func(
             read_config_include_file,
@@ -287,18 +286,19 @@ class TestCreateComposeConfList:
         )
         print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == [
-            f"{tmp_build_dir}/docker-compose.yml",
+            f"{root_dir}/birdhouse/docker-compose.yml",
             f"{tmp_build_dir}/finch/docker-compose-extra.yml",
             f"{tmp_build_dir}/magpie/docker-compose-extra.yml",
             f"{tmp_build_dir}/finch/config/magpie/docker-compose-extra.yml",
         ]
 
     @pytest.mark.usefixtures("run_in_compose_dir")
-    def test_default_all_conf_dirs(self, read_config_include_file, tmp_build_dir):
+    def test_default_all_conf_dirs(self, read_config_include_file, tmp_build_dir, root_dir):
         proc = self.run_func(
             read_config_include_file,
             {"ALL_CONF_DIRS": " ".join(TestReadConfigs.default_all_conf_order), "BUILD_DIR": tmp_build_dir},
             'echo "$COMPOSE_CONF_LIST"',
         )
         print(proc.stdout)  # useful for debugging when assert fail
-        assert split_and_strip(get_command_stdout(proc), split_on="-f") == self.default_conf_list_order(tmp_build_dir)
+        assert split_and_strip(get_command_stdout(proc), split_on="-f") == self.default_conf_list_order(tmp_build_dir,
+                                                                                                        root_dir)
