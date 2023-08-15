@@ -32,6 +32,18 @@
     - now, they are absolute or relative paths from the parent of the component's directory (this resolves to the build
       directory when the stack is started up).
 
+[1.29.1](https://github.com/bird-house/birdhouse-deploy/tree/1.29.1) (2023-08-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Small STAC changes
+  - This PR includes some changes that were suggested in a review for #297. But because the PR was already merged,
+    further updates are included here:
+    - removes extra block to include in docker compose files (no longer needed)
+    - moves docker compose file in `stac-public-access` component to the correct location
+    - uses `PAVICS_FQDN_PUBLIC` for public facing URLs in all places
+
 [1.29.0](https://github.com/bird-house/birdhouse-deploy/tree/1.29.0) (2023-08-10)
 ------------------------------------------------------------------------------------------------------------------
 
