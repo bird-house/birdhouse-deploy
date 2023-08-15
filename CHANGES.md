@@ -17,8 +17,9 @@
 
 ## Changes
 
-- Small stac changes
-  - This PR includes some changes that were suggested in a review for #297. But because the PR was already merged I'm including them here:
+- Small STAC changes
+  - This PR includes some changes that were suggested in a review for #297. But because the PR was already merged,
+    further updates are included here:
     - removes extra block to include in docker compose files (no longer needed)
     - moves docker compose file in `stac-public-access` component to the correct location
     - uses `PAVICS_FQDN_PUBLIC` for public facing URLs in all places
