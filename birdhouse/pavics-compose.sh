@@ -129,10 +129,10 @@ if [ x"$1" = x"up" ]; then
   echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
 
   # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-  PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose --project-directory "${BUILD_DIR}" ${COMPOSE_CONF_LIST} config -o "${COMPOSE_FILE}"
+  PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker compose --project-directory "${BUILD_DIR}" ${COMPOSE_CONF_LIST} config -o "${COMPOSE_FILE}"
 fi
 
-docker-compose -f "${COMPOSE_FILE}" "$@"
+docker compose -f "${COMPOSE_FILE}" "$@"
 ERR=$?
 
 # execute post-compose function if exists and no error occurred
@@ -148,11 +148,11 @@ while [ $# -gt 0 ]
 do
   if [ x"$1" = x"up" ]; then
     # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
-    docker-compose -f "${COMPOSE_FILE}" restart proxy
+    docker compose -f "${COMPOSE_FILE}" restart proxy
 
     # run postgres post-startup setup script
     # Note: this must run before the post-docker-compose-up scripts since some may expect postgres databases to exist
-    postgres_id=$(docker-compose -f "${COMPOSE_FILE}" ps -q postgres)
+    postgres_id=$(docker compose -f "${COMPOSE_FILE}" ps -q postgres)
     if [ ! -z "$postgres_id" ]; then
       docker exec ${postgres_id} /postgres-setup.sh
     fi
