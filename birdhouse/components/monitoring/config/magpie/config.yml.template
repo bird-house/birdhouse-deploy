@@ -1,0 +1,54 @@
+providers:
+  grafana:
+    # below URL is only used to fill in the required location in Magpie
+    # actual auth validation is performed with Twitcher 'verify' endpoint without accessing this proxied URL
+    url: http://proxy:80
+    title: Grafana
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+  prometheus:
+    # below URL is only used to fill in the required location in Magpie
+    # actual auth validation is performed with Twitcher 'verify' endpoint without accessing this proxied URL
+    url: http://proxy:80
+    title: Prometheus
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+  alertmanager:
+    # below URL is only used to fill in the required location in Magpie
+    # actual auth validation is performed with Twitcher 'verify' endpoint without accessing this proxied URL
+    url: http://proxy:80
+    title: AlertManager
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+
+permissions:
+  - service: grafana
+    permission: read
+    group: administrators
+    action: create
+  - service: grafana
+    permission: write
+    group: administrators
+    action: create
+  - service: prometheus
+    permission: read
+    group: administrators
+    action: create
+  - service: prometheus
+    permission: write
+    group: administrators
+    action: create
+  - service: alertmanager
+    permission: read
+    group: administrators
+    action: create
+  - service: alertmanager
+    permission: write
+    group: administrators
+    action: create

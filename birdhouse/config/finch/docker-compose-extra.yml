@@ -15,8 +15,6 @@ services:
       HOSTNAME: $HOSTNAME
       HTTP_PORT: 5000
       PYWPS_CFG: /wps.cfg
-    ports:
-      - "8095:5000"
     volumes:
       - ./config/finch/wps.cfg:/wps.cfg
       # - data:/opt/birdhouse/var/lib
