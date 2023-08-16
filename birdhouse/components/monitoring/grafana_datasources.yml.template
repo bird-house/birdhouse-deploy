@@ -6,6 +6,6 @@ datasources:
     type: prometheus
     access: proxy
     uid: local_pavics_prometheus
-    url: http://${PAVICS_FQDN}:9090
+    url: http://prometheus:9090/prometheus
     isDefault: true
     editable: false

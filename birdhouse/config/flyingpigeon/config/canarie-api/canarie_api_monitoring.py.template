@@ -24,15 +24,14 @@ SERVICES['flyingpigeon'] = {
         'releasenotes': 'https://github.com/bird-house/flyingpigeon/blob/master/CHANGES.rst',
         'support': 'https://github.com/bird-house/flyingpigeon/issues',
         'source': 'https://github.com/bird-house/flyingpigeon',
-        'tryme': 'http://${PAVICS_FQDN}:8093/wps?service=WPS&version=1.0.0&request=GetCapabilities',
+        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/flyingpigeon/wps?service=WPS&version=1.0.0&request=GetCapabilities',
         'licence': 'https://github.com/bird-house/flyingpigeon/blob/master/LICENSE.txt',
         'provenance': 'https://github.com/bird-house/flyingpigeon'
     },
     'monitoring': {
         'Flyingpigeon': {
             'request': {
-                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
-                'url': 'http://${PAVICS_FQDN}:8093/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+                'url': 'http://flyingpigeon:8093/wps?service=WPS&version=1.0.0&request=GetCapabilities'
             }
         },
     }

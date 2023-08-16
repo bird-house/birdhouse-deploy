@@ -6,7 +6,7 @@ SERVICES['node']['monitoring'].update({
     },
     '${TESTTHREDDS_NAME}': {
         'request': {
-            'url': 'http://${PAVICS_FQDN}:${TESTTHREDDS_PORT}/${TESTTHREDDS_CONTEXT_ROOT}/catalog.html'
+            'url': 'http://testthredds:${TESTTHREDDS_INTERNAL_PORT}/${TESTTHREDDS_CONTEXT_ROOT}/catalog.html'
         }
     },
 })

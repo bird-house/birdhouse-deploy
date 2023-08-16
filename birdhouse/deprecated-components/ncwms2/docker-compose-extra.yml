@@ -11,9 +11,6 @@ services:
   ncwms2:
     image: pavics/ncwms2:2.0.4
     container_name: ncwms2
-    ports:
-      - "8080:8080"
-      - "48080:9001"
     volumes:
       - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
       - ./deprecated-components/ncwms2/custom.cfg:/opt/birdhouse/custom.cfg

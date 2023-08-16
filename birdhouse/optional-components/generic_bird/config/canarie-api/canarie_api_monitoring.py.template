@@ -6,7 +6,7 @@ SERVICES['node']['monitoring'].update({
     },
     '${GENERIC_BIRD_NAME}': {
         'request': {
-            'url': 'http://${PAVICS_FQDN}:${GENERIC_BIRD_PORT}/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'http://generic_bird:${GENERIC_BIRD_INTERNAL_PORT}/wps?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
 })

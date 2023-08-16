@@ -1,0 +1,7 @@
+version: "3.4"
+
+services:
+  magpie:
+    volumes:
+      - ./components/monitoring/config/magpie/config.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/monitoring.yml:ro
+      - ./components/monitoring/config/magpie/config.yml:${MAGPIE_PROVIDERS_CONFIG_PATH}/monitoring.yml:ro

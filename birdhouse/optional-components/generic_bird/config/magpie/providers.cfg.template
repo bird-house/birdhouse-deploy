@@ -1,6 +1,6 @@
 providers:
   ${GENERIC_BIRD_NAME}:
-    url: http://${PAVICS_FQDN}:${GENERIC_BIRD_PORT}/wps
+    url: http://generic_bird:${GENERIC_BIRD_INTERNAL_PORT}/wps
     title: ${GENERIC_BIRD_NAME}
     public: true
     c4i: false

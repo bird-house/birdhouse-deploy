@@ -1,0 +1,19 @@
+providers:
+  # definition of STAC service for API access
+  stac:
+    url: http://stac:8000
+    title: STAC
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+
+permissions:
+  - service: stac
+    permission: read
+    group: anonymous
+    action: create
+  - service: stac
+    permission: write
+    group: stac-admin
+    action: create

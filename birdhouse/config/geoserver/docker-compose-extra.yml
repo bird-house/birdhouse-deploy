@@ -11,8 +11,6 @@ services:
   geoserver:
     image: ${GEOSERVER_IMAGE}
     container_name: geoserver
-    ports:
-      - "8087:8080"
     environment:
       STABLE_EXTENSIONS: ${GEOSERVER_STABLE_EXTENSIONS}
       COMMUNITY_EXTENSIONS: ${GEOSERVER_COMMUNITY_EXTENSIONS}

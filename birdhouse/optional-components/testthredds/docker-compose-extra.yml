@@ -3,8 +3,6 @@ services:
   testthredds:
     image: ${TESTTHREDDS_IMAGE}
     container_name: testthredds
-    ports:
-      - "${TESTTHREDDS_PORT}:${TESTTHREDDS_INTERNAL_PORT}"
     env_file:
       - ./optional-components/testthredds/thredds.env
     environment:

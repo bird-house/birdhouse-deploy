@@ -63,8 +63,7 @@ SERVICES['Thredds'] = {
     "monitoring": {
         "Thredds": {
             'request': {
-                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
-                'url': 'http://${PAVICS_FQDN}:8083${TWITCHER_PROTECTED_PATH}/thredds/catalog.html'
+                'url': 'http://thredds:8080/${TWITCHER_PROTECTED_PATH}/thredds/catalog.html'
             }
         }
     }

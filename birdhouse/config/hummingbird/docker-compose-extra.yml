@@ -13,14 +13,6 @@ services:
     container_name: hummingbird
     environment:
       HOSTNAME: $HOSTNAME
-      HTTP_PORT: 8097
-      HTTPS_PORT: 28097
-      OUTPUT_PORT: 38097
-    ports:
-      - "8097:8097"
-      - "28097:28097"
-      - "38097:38097"
-      - "48097:9001"
     volumes:
       - ./config/hummingbird/custom.cfg:/opt/birdhouse/src/hummingbird/custom.cfg
     depends_on:

@@ -67,8 +67,7 @@ SERVICES['slicer'] = {
     'monitoring': {
         'Finch': {
             'request': {
-                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
-                'url': 'http://${PAVICS_FQDN}:8095/?service=WPS&version=1.0.0&request=GetCapabilities'
+                'url': 'http://finch:5000/?service=WPS&version=1.0.0&request=GetCapabilities'
             }
         },
     }
@@ -106,8 +105,7 @@ SERVICES['Finch'] = {
     'monitoring': {
         'Finch': {
             'request': {
-                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
-                'url': 'http://${PAVICS_FQDN}:8095/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+                'url': 'http://finch:5000/wps?service=WPS&version=1.0.0&request=GetCapabilities'
             }
         },
     },

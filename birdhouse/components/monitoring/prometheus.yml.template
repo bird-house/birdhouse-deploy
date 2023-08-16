@@ -1,5 +1,5 @@
 # https://prometheus.io/docs/prometheus/latest/configuration/configuration/
-# http://PAVICS_FQDN:9090/config
+# http://PAVICS_FQDN/prometheus/config
 global:
   scrape_interval:     60s
   evaluation_interval: 30s
@@ -10,8 +10,10 @@ scrape_configs:
   honor_labels: true
   static_configs:
   - targets:
-    - ${PAVICS_FQDN}:9999
+    - cadvisor:8080
 
+# Node exporter is required to run on the host network so it is not accessible through the docker network.
+# It is only accessible via the host network which can be accessed using the PAVICS_FQDN variable.
 - job_name: node-exporter
   honor_labels: true
   static_configs:
@@ -26,4 +28,4 @@ alerting:
   - scheme: http
     static_configs:
     - targets:
-      - "${PAVICS_FQDN}:9093"
+      - alertmanager:9093

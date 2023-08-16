@@ -11,8 +11,6 @@ services:
   raven:
     image: pavics/raven:${RAVEN_VERSION}
     container_name: raven
-    ports:
-      - "8096:9099"
     environment:
       PYWPS_CFG: /wps.cfg
       GEO_URL: "${RAVEN_GEO_URL}"

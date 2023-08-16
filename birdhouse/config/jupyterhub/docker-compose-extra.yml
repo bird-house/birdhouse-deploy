@@ -12,8 +12,6 @@ services:
     image: ${JUPYTERHUB_DOCKER}:${JUPYTERHUB_VERSION}
     container_name: jupyterhub
     hostname: jupyterhub
-    ports:
-      - "8800:8000"
     environment:
       DOCKER_NOTEBOOK_IMAGES: ${DOCKER_NOTEBOOK_IMAGES}
       JUPYTERHUB_IMAGE_SELECTION_NAMES: ${JUPYTERHUB_IMAGE_SELECTION_NAMES}

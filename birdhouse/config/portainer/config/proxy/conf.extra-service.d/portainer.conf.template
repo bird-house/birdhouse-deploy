@@ -1,5 +1,5 @@
     location /portainer/ {
-        proxy_pass http://${PAVICS_FQDN}:9000/;
+        proxy_pass http://portainer:9000/;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $real_scheme;
     }

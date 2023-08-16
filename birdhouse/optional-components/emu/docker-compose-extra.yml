@@ -5,8 +5,6 @@ services:
     container_name: emu
     environment:
       - PYWPS_CFG=/wps.cfg
-    ports:
-      - "${EMU_PORT}:${EMU_INTERNAL_PORT}"
     volumes:
       - ./optional-components/emu/wps.cfg:/wps.cfg
       - ${EMU_WPS_OUTPUTS_VOL}:/data/wpsoutputs

@@ -1,6 +1,6 @@
 providers:
   ${EMU_NAME}:
-    url: http://${PAVICS_FQDN}:${EMU_PORT}/wps
+    url: http://emu:${EMU_INTERNAL_PORT}/wps
     title: ${EMU_NAME}
     public: true
     c4i: false
