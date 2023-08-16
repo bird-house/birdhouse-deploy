@@ -9,9 +9,10 @@ services:
       - "5000:5000"
     environment:
       MLFLOW_USER_DATA_DIR: ${MLFLOW_USER_DATA_DIR}
-    command: mlflow server --backend-store-uri sqlite:////${MLFLOW_USER_DATA_DIR}/mlflow.db --default-artifact-root ${MLFLOW_USER_DATA_DIR}/artifacts --host 0.0.0.0
+    command: mlflow server --app-name basic-auth --backend-store-uri sqlite:////${MLFLOW_USER_DATA_DIR}/mlflow.db --default-artifact-root ${MLFLOW_USER_DATA_DIR}/artifacts --host 0.0.0.0
     volumes:
       - ${MLFLOW_USER_DATA_DIR}:${MLFLOW_USER_DATA_DIR}
+      - ./components/mlflow/basic_auth.ini:/usr/local/lib/python3.10/site-packages/mlflow/server/auth/basic_auth.ini:ro
   # extend proxy with endpoint and config for mlflow API access
   proxy:
     volumes:
