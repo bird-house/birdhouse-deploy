@@ -52,12 +52,5 @@ services:
       timeout: 5s
       retries: 5
 
-  # extend proxy with endpoint and config for STAC API access
-  proxy:
-    volumes:
-      - ./components/stac/conf.extra-service.d:/etc/nginx/conf.extra-service.d/stac:ro
-    links:
-      - stac
-
 volumes:
   stac-db:
