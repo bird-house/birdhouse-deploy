@@ -26,5 +26,10 @@ Links to other issues or sources.
 
 - [ ] Things to do...
 
-daccs_configs_branch: master
-daccs_skip_ci: false
+<!--
+  The test suite can be run using a different DACCS config with ``birdhouse_daccs_configs_branch: branch_name`` in the PR description.
+  To globally skip the test suite regardless of the commit message use ``birdhouse_skip_ci: true`` in the PR description. 
+-->
+
+birdhouse_daccs_configs_branch: master
+birdhouse_skip_ci: false
