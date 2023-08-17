@@ -16,6 +16,6 @@ services:
   # extend proxy with endpoint and config for mlflow API access
   proxy:
     volumes:
-      - ./components/mlflow/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/mlflow:ro
+      - ./components/mlflow/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/mlflow:ro
     links:
       - mlflow

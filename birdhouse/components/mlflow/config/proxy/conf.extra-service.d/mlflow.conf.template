@@ -1,0 +1,27 @@
+location = /mlflow-auth {
+        # cannot call directly, only from internal redirects
+        internal;
+
+        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}$request_uri;
+        proxy_pass_request_body off;
+        proxy_set_header Host $host;
+        proxy_set_header Content-Length "";
+        proxy_set_header X-Original-URI $request_uri;
+        proxy_set_header X-Forwarded-Proto $real_scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host:$server_port;
+    }
+
+    
+    location /mlflow/ {
+        # Define the location of the proxy server to send the request to
+
+        proxy_pass http://mlflow:5000/;
+
+        # Redefine the header fields that NGINX sends to the upstream server
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        include /etc/nginx/conf.d/cors.include;
+    }
