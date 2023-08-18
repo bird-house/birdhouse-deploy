@@ -15,7 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Small change to the location of schema defining services
+  - Changed https://github.com/DACCS-Climate/DACCS-node-registry to https://github.com/DACCS-Climate/Marble-node-registry
+    in all service-config.json.template files.
 
 [1.29.1](https://github.com/bird-house/birdhouse-deploy/tree/1.29.1) (2023-08-15)
 ------------------------------------------------------------------------------------------------------------------
