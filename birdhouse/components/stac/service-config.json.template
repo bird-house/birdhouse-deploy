@@ -1,4 +1,4 @@
-[
+{
   {
   "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
   "name": "stac",
@@ -39,5 +39,5 @@
     },
   ]
 }
-]
+}
 
