@@ -294,17 +294,14 @@ Prometheus stack is used:
 Usage
 -----
 
-- Grafana to view metric graphs: http://PAVICS_FQDN:3001/d/pf6xQMWGz/docker-and-system-monitoring
-- Prometheus alert rules: http://PAVICS_FQDN:9090/rules
-- AlertManager to manage alerts: http://PAVICS_FQDN:9093
+- Grafana to view metric graphs: https://PAVICS_FQDN/grafana/d/pf6xQMWGz/docker-and-system-monitoring
+- Prometheus alert rules: https://PAVICS_FQDN/prometheus/rules
+- AlertManager to manage alerts: https://PAVICS_FQDN/alertmanager
 
-The paths above are purposely not behind the proxy to not expose them publicly,
-assuming only ports 80 and 443 are publicly exposed on the internet.  All other
-ports are not exposed.
-
-Only Grafana has authentication, Prometheus alert rules and AlertManager have
-no authentication at all so had they been behind the proxy, anyone will be
-able to access them.
+The paths above are by default only accessible to a user logged in to magpie as an administrator.
+These routes provide sensitive information about the birdhouse-deploy software stack and the machine
+that it is running on. It is highly discouraged to make these routes available to anyone who is not
+an administrator.
 
 
 How to Enable the Component

@@ -35,7 +35,7 @@ How to enable Emu in ``env.local`` (a copy from env.local.example_
 (:download:`download </birdhouse/env.local.example>`)):
 
 * Add ``./optional-components/emu`` to ``EXTRA_CONF_DIRS``.
-* Optionally set ``EMU_IMAGE``, ``EMU_PORT``,
+* Optionally set ``EMU_IMAGE``,
   ``EMU_NAME``, ``EMU_INTERNAL_PORT``,
   ``EMU_WPS_OUTPUTS_VOL`` in ``env.local`` for further customizations.
   Default values are in `optional-components/emu/default.env <emu/default.env>`_
