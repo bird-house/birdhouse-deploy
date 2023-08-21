@@ -88,8 +88,8 @@ if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
         "bind": join(jupyterhub_data_dir, "{username}"),
         "mode": "rw"
     }
-    c.DockerSpawner.volumes[join(os.environ['WORKSPACE_DIR'], os.environ['WPS_OUTPUTS_PUBLIC_SUBDIR'])] = {
-        "bind": join(notebook_dir, os.environ['WPS_OUTPUTS_PUBLIC_SUBDIR']),
+    c.DockerSpawner.volumes[join(os.environ['WORKSPACE_DIR'], os.environ['PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR'])] = {
+        "bind": join(notebook_dir, os.environ['PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR']),
         "mode": "ro"
     }
 

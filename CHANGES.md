@@ -41,11 +41,20 @@
   [CMIP Dataset Ingestion Workflows](https://github.com/cedadev/stac-generator-example/tree/master/conf).
 
 - Adds ``optional-components/stac-public-access`` to give public access to the STAC catalog.
-- Add public wps outputs directory to Cowbird and add corresponding volume mount to JupyterHub.
+- Add public WPS outputs directory to Cowbird and add corresponding volume mount to JupyterHub.
 - Update `cowbird` service from [1.2.0](https://github.com/Ouranosinc/cowbird/tree/1.2.0)
-  to [2.0.0](https://github.com/Ouranosinc/cowbird/tree/2.0.0)
+  to [2.0.0](https://github.com/Ouranosinc/cowbird/tree/2.0.0).
 - Require `MongoDB==5.0` Docker image for Cowbird's database.
-- Add `WPS_OUTPUTS_DIR` env variable to manage the location of the wps outputs data.
+- Add `WPS_OUTPUTS_DIR` env variable to manage the location of the WPS outputs data.
+
+## Important
+Because of the new `MongoDB==5.0` database requirement for Cowbird that uses (potentially) distinct version from other 
+birds, a separate Docker image is employed only for Cowbird. If some processes, jobs, or other Cowbird-related data 
+was already defined on one of your server instances, manual transfer between the generic 
+`${DATA_PERSIST_ROOT}/mongodb_persist` to new  `${DATA_PERSIST_ROOT}/mongodb_cowbird_persist` directory must be 
+accomplished. The data in the new directory should then be migrated to the new version following the same procedure as
+described for Weaver in 
+[Database Migration](https://pavics-weaver.readthedocs.io/en/latest/installation.html?#database-migration).
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------

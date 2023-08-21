@@ -26,15 +26,15 @@ services:
       # Note that WPS_OUTPUTS_DIR and WORKSPACE_DIR must both point to paths from the same volume.
       # This is to allow the creation of hardlinks between the wpsoutputs and the user workspace.
       WPS_OUTPUTS_DIR: ${WPS_OUTPUTS_DIR}
-      WPS_OUTPUTS_PUBLIC_SUBDIR: ${WPS_OUTPUTS_PUBLIC_SUBDIR}
+      PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR: ${PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR}
       WORKSPACE_DIR: ${DATA_PERSIST_ROOT}/${USER_WORKSPACES}
     links:
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
     networks:
       - default
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
     depends_on:
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
     volumes:
       - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
       - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
@@ -58,12 +58,12 @@ services:
       COWBIRD_FILESYSTEM_ADMIN_GID: 0
       WORKSPACE_DIR: ${DATA_PERSIST_ROOT}/${USER_WORKSPACES}
     links:
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
     networks:
       - default
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
     depends_on:
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
       - cowbird  # if not started first, sometimes celery misbehaves and will not pick jobs in queue
     volumes:
       - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
@@ -76,9 +76,9 @@ services:
   # Dedicated database for Cowbird, since other 'mongodb' image does not employ the same version.
   cowbird-mongodb:
     image: mongo:${COWBIRD_MONGODB_VERSION}
-    container_name: ${COWBIRD_MONGODB_SERVICE}
+    container_name: cowbird-mongodb
     networks:
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
     volumes:
       - ${DATA_PERSIST_ROOT}/mongodb_cowbird_persist:/data/db
     restart: always
