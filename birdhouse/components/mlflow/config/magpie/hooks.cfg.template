@@ -1,0 +1,11 @@
+# Definitions of all the webhooks urls that will be called when creating or deleting a user.
+webhooks:
+  - name: mlflow_create_user
+    action: create_user
+    method: POST
+    url: http://mlflow:5000/api/2.0/mlflow/users/create
+    payload:
+      event : "create"
+      username : "{{user.name}}"
+      password: ""
+      callback_url : "{{callback_url}}"

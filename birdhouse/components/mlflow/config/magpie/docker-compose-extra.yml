@@ -1,6 +1,10 @@
 version: "3.4"
 services:
   magpie:
+    links:
+      # must have link to send webhook requests directly though internal network
+      - mlflow
     volumes:
     - ./components/mlflow/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/mlflow-providers.cfg:ro
     - ./components/mlflow/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/mlflow-permissions.cfg:ro
+    - ./components/mlflow/config/magpie/hooks.cfg:${MAGPIE_WEBHOOKS_CONFIG_PATH}/mlflow-hooks.cfg:ro

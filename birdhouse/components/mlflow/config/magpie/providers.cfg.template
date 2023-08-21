@@ -1,8 +1,8 @@
 providers:
   mlflow:
-    url: http://${PAVICS_FQDN}:5000/wps
+    url: http://${PAVICS_FQDN}:5000/
     title: mlflow
     public: true
     c4i: false
-    type: wps
-    sync_type: wps
+    type: api
+    sync_type: api
