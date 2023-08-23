@@ -52,3 +52,27 @@ permissions:
     permission: write
     group: administrators
     action: create
+  - service: grafana
+    permission: read
+    group: monitoring
+    action: create
+  - service: grafana
+    permission: write
+    group: monitoring
+    action: create
+  - service: prometheus
+    permission: read
+    group: monitoring
+    action: create
+  - service: prometheus
+    permission: write
+    group: monitoring
+    action: create
+  - service: alertmanager
+    permission: read
+    group: monitoring
+    action: create
+  - service: alertmanager
+    permission: write
+    group: monitoring
+    action: create
