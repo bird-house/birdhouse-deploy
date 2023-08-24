@@ -17,10 +17,14 @@
 
 ## Changes
 
-- Monitoring: allow access to magpie members of group monitoring
+- Monitoring: allow access to magpie members of group `monitoring`
 
   To allow accessing the various monitoring WebUI without having full blown
   magpie admin priviledge to add and remove users.
+
+  Add existing users to this new `monitoring` group to allow them access to the
+  various monitoring WebUI.  This way, we do not need to share the `admin` user
+  account and do not have to add them to the `administrators` group.
 
 
 [1.29.1](https://github.com/bird-house/birdhouse-deploy/tree/1.29.1) (2023-08-15)
