@@ -1,6 +1,6 @@
 providers:
   finch:
-    url: http://${PAVICS_FQDN}:8095/wps
+    url: http://finch:5000/wps
     title: Finch
     public: true
     c4i: false
