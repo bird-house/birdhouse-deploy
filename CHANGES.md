@@ -21,6 +21,39 @@
   - Sets magpie cookies whenever a user logs in or out through jupyterhub so that they are automatically logged in 
     or out through magpie as well.
 
+- Delete unused Dockerfiles, fixes
+  [#349](https://github.com/bird-house/birdhouse-deploy/issues/349) and
+  [#352](https://github.com/bird-house/birdhouse-deploy/pull/352)
+
+  * birdhouse/docker/geoserver: not used since 3-4 years, replaced by https://github.com/kartoza/docker-geoserver
+
+  * birdhouse/config/geoserver/Dockerfile: was introduced in commit [f3b9896e6b771e0aff62c6851c2376d730ddadaf](https://github.com/bird-house/birdhouse-deploy/commit/f3b9896e6b771e0aff62c6851c2376d730ddadaf)
+    (PR [#233](https://github.com/bird-house/birdhouse-deploy/pull/233), commit
+    [d1ecc63284ec9d2940bfa2b1b4baca3fbe1308b3](https://github.com/bird-house/birdhouse-deploy/commit/d1ecc63284ec9d2940bfa2b1b4baca3fbe1308b3)) as a temporary
+    solution only, not needed with newer kartoza docker images.
+
+- Move birdhouse/docker/solr to birdhouse/deprecated-components/solr/docker
+  to group related files together.  Solr has been deprecated since PR
+  [#311](https://github.com/bird-house/birdhouse-deploy/pull/311)
+  (commit
+  [a8d3612fdb7fd7758b24e75b0ef697fd3d8ace51](https://github.com/bird-house/birdhouse-deploy/commit/a8d3612fdb7fd7758b24e75b0ef697fd3d8ace51)).
+
+
+[1.29.2](https://github.com/bird-house/birdhouse-deploy/tree/1.29.2) (2023-08-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Monitoring: allow access to magpie members of group `monitoring`
+
+  To allow accessing the various monitoring WebUI without having full blown
+  magpie admin priviledge to add and remove users.
+
+  Add existing users to this new `monitoring` group to allow them access to the
+  various monitoring WebUI.  This way, we do not need to share the `admin` user
+  account and do not have to add them to the `administrators` group.
+
+
 [1.29.1](https://github.com/bird-house/birdhouse-deploy/tree/1.29.1) (2023-08-15)
 ------------------------------------------------------------------------------------------------------------------
 
