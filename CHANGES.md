@@ -17,17 +17,22 @@
 
 ## Changes
 
-- Delete unused Dockerfiles, fixes #349 and #352
+- Delete unused Dockerfiles, fixes
+  [#349](https://github.com/bird-house/birdhouse-deploy/issues/349) and
+  [#352](https://github.com/bird-house/birdhouse-deploy/pull/352)
 
   * birdhouse/docker/geoserver: not used since 3-4 years, replaced by https://github.com/kartoza/docker-geoserver
 
-  * birdhouse/config/geoserver/Dockerfile: was introduced in commit f3b9896e6b771e0aff62c6851c2376d730ddadaf
-    (PR #233, commit d1ecc63284ec9d2940bfa2b1b4baca3fbe1308b3) as a temporary
+  * birdhouse/config/geoserver/Dockerfile: was introduced in commit [f3b9896e6b771e0aff62c6851c2376d730ddadaf](https://github.com/bird-house/birdhouse-deploy/commit/f3b9896e6b771e0aff62c6851c2376d730ddadaf)
+    (PR [#233](https://github.com/bird-house/birdhouse-deploy/pull/233), commit
+    [d1ecc63284ec9d2940bfa2b1b4baca3fbe1308b3](https://github.com/bird-house/birdhouse-deploy/commit/d1ecc63284ec9d2940bfa2b1b4baca3fbe1308b3)) as a temporary
     solution only, not needed with newer kartoza docker images.
 
 - Move birdhouse/docker/solr to birdhouse/deprecated-components/solr/docker
-  to group related files together.  Solr has been deprecated since PR #311
-  (commit a8d3612fdb7fd7758b24e75b0ef697fd3d8ace51).
+  to group related files together.  Solr has been deprecated since PR
+  [#311](https://github.com/bird-house/birdhouse-deploy/pull/311)
+  (commit
+  [a8d3612fdb7fd7758b24e75b0ef697fd3d8ace51](https://github.com/bird-house/birdhouse-deploy/commit/a8d3612fdb7fd7758b24e75b0ef697fd3d8ace51)).
 
 
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
