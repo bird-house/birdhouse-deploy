@@ -1,0 +1,21 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  # populates STAC catalog with sample collection items
+  stac-populator:
+    container_name: stac-populator
+    image: ghcr.io/crim-ca/stac-populator:master
+    environment:
+      - STAC_ASSET_GENERATOR_TIMEOUT=${STAC_ASSET_GENERATOR_TIMEOUT}
+      - STAC_HOST=http://stac:8000/stac  # STAC API internally accessed to avoid Twitcher authentication
+    command: >
+      bash -c "./wait-for-it.sh stac:8000 -t 30 && ./populate.sh"
+    depends_on:
+      - stac

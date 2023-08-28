@@ -35,6 +35,77 @@
   [a8d3612fdb7fd7758b24e75b0ef697fd3d8ace51](https://github.com/bird-house/birdhouse-deploy/commit/a8d3612fdb7fd7758b24e75b0ef697fd3d8ace51)).
 
 
+[1.29.2](https://github.com/bird-house/birdhouse-deploy/tree/1.29.2) (2023-08-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Monitoring: allow access to magpie members of group `monitoring`
+
+  To allow accessing the various monitoring WebUI without having full blown
+  magpie admin priviledge to add and remove users.
+
+  Add existing users to this new `monitoring` group to allow them access to the
+  various monitoring WebUI.  This way, we do not need to share the `admin` user
+  account and do not have to add them to the `administrators` group.
+
+
+[1.29.1](https://github.com/bird-house/birdhouse-deploy/tree/1.29.1) (2023-08-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Small STAC changes
+  - This PR includes some changes that were suggested in a review for #297. But because the PR was already merged,
+    further updates are included here:
+    - removes extra block to include in docker compose files (no longer needed)
+    - moves docker compose file in `stac-public-access` component to the correct location
+    - uses `PAVICS_FQDN_PUBLIC` for public facing URLs in all places
+
+[1.29.0](https://github.com/bird-house/birdhouse-deploy/tree/1.29.0) (2023-08-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Do not expose additional ports:
+  - Docker compose no longer exposes any container ports outside the default network except for ports 80 and 443 from 
+    the proxy container. This ensures that ports that are not intended for external access are not exposed to the wider 
+    internet even if firewall rules are not set correctly.
+  - Note that if the `monitoring` component is used then port 9100 will be exposed from the `node-exporter` container.
+    This is because this container must be run on the host machine's network and unfortunately there is no known
+    workaround that would not require this port to be exposed on the host machine.
+  - Fixes https://github.com/bird-house/birdhouse-deploy/issues/222
+
+
+[1.28.0](https://github.com/bird-house/birdhouse-deploy/tree/1.28.0) (2023-08-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Adds [STAC](https://github.com/crim-ca/stac-app) to the stack (optional) when ``./components/stac`` 
+  is added to ``EXTRA_CONF_DIRS``. For more details, refer to 
+  [STAC Component](https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/components/README.rst#STAC)
+  Following happens when enabled:
+    
+  * Service ``stac`` (API) gets added with endpoints ``/twitcher/ows/proxy/stac`` and ``/stac``.
+    
+  * STAC catalog can be explored via the ``stac-browser`` component, available under ``/stac-browser``.
+      
+  * Image [crim-ca/stac-app](https://github.com/crim-ca/stac-app) is a STAC implementation based on 
+  [stac-utils/stac-fastapi](https://github.com/stac-utils/stac-fastapi).
+
+  * Image [crim-ca/stac-browser](https://github.com/crim-ca/stac-browser) is a fork of 
+  [radiantearth/stac-browser](https://github.com/radiantearth/stac-browser) in order to have the capacity to build 
+  the Docker container. The image reference will change when the 
+  [stac-browser PR related to Dockerfile](https://github.com/bird-house/birdhouse-deploy/issues/346) will have been 
+  merged.
+      
+  * Adds `Magpie` permissions and service for `stac` endpoints.
+  
+- Adds [stac-populator](https://github.com/crim-ca/stac-populator) to populate STAC catalog with sample collection 
+  items via [CEDA STAC Generator](https://github.com/cedadev/stac-generator), employed in sample 
+  [CMIP Dataset Ingestion Workflows](https://github.com/cedadev/stac-generator-example/tree/master/conf).
+
+- Adds ``optional-components/stac-public-access`` to give public access to the STAC catalog.
+
 [1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -200,6 +271,7 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
+
 - Update Zenodo config
   *  Add Misha to creators
   *  Add birdhouse community

@@ -13,8 +13,6 @@ services:
     container_name: flyingpigeon
     environment:
       - PYWPS_CFG=/wps.cfg
-    ports:
-      - "8093:8093"
     volumes:
       - ./config/flyingpigeon/wps.cfg:/wps.cfg
       - /tmp
