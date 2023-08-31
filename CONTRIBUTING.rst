@@ -42,11 +42,12 @@ Policy rules
       To globally skip the test suite regardless of the commit message use ``birdhouse_skip_ci: true`` in the PR description.
 
 4. Contributions must be reviewed by every willing organizations
-   (Default reviewers are `@tlvu`_ for `Ouranos`_ and `@MatProv`_ for `CRIM`_).
+   (Default reviewers are `@mishaschwartz`_ for `UofT` , `@tlvu`_ for `Ouranos`_ and `@fmigneault`_ for `CRIM`_).
 
+.. _@mishaschwartz: https://github.com/mishaschwartz
 .. _@tlvu: https://github.com/tlvu
 .. _Ouranos: https://github.com/Ouranosinc
-.. _@MatProv: https://github.com/MatProv
+.. _@fmigneault: https://github.com/fmigneault
 .. _CRIM: https://github.com/crim-ca
 
 5. The reviews must be rigorous while respecting the initial scope.
