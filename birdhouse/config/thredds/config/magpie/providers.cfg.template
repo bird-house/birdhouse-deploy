@@ -1,0 +1,35 @@
+providers:
+  thredds:
+    url: http://thredds:8080/twitcher/ows/proxy/thredds
+    title: Thredds
+    public: true
+    c4i: false
+    type: thredds
+    sync_type: thredds
+    # below is a custom config to indicate how magpie should convert thredds path elements into resources/permissions
+    # see: https://pavics-magpie.readthedocs.io/en/latest/services.html#servicethredds
+    configuration:
+      skip_prefix: "thredds"  # prefix to ignore, below prefixes will be matched against whatever comes after in path
+      file_patterns:
+        # note: make sure to employ quotes and double escapes to avoid parsing YAML error
+        - ".+\\.ncml"  # match longest extension first to avoid tuncating it by match of sorter '.nc'
+        - ".+\\.nc"
+      metadata_type:
+        prefixes:
+          - null  # note: special YAML value evaluated as `no-prefix`, use quotes if literal value is needed
+          - "\\w+\\.gif"  # threddsIcon, folder icon, etc.
+          - "\\w+\\.ico"  # favicon
+          - "\\w+\\.txt"  # licence
+          - "\\w+\\.css"  # tds.css
+          - "catalog\\.\\w+"  # note: special case for `THREDDS` top-level directory (root) accessed for `BROWSE`
+          - catalog
+          - ncml
+          - uddc
+          - iso
+      data_type:
+        prefixes:
+          - fileServer
+          - dodsC
+          - wcs
+          - wms
+          - ncss

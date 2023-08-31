@@ -12,6 +12,17 @@ def root_dir(request):
     return os.path.dirname(os.path.dirname(request.fspath))
 
 
+@pytest.fixture(scope="function")
+def run_in_compose_dir(root_dir):
+    compose_dir = os.path.join(root_dir, "birdhouse")
+    old_cwd = os.getcwd()
+    os.chdir(compose_dir)
+    try:
+        yield
+    finally:
+        os.chdir(old_cwd)
+
+
 @pytest.fixture(scope="module")
 def read_config_include_file(root_dir) -> str:
     return os.path.join(root_dir, "birdhouse", "read-configs.include.sh")
@@ -43,27 +54,19 @@ class TestReadConfigs:
     default_all_conf_order: list[str] = [
         "./config/proxy",
         "./config/canarie-api",
+        "./config/geoserver",
         "./config/postgres",
         "./config/wps_outputs-volume",
-        "./config/data-volume",
-        "./config/malleefowl",
         "./config/flyingpigeon",
-        "./config/catalog",
-        "./config/mongodb",
-        "./config/phoenix",
-        "./config/geoserver",
         "./config/finch",
         "./config/raven",
+        "./config/data-volume",
         "./config/hummingbird",
         "./config/thredds",
         "./config/portainer",
         "./config/magpie",
         "./config/twitcher",
-        "./config/jupyterhub",
-        "./config/ncwms2",
-        "./config/frontend",
-        "./config/project-api",
-        "./config/solr",
+        "./config/jupyterhub"
     ]
 
     def run_func(
@@ -99,14 +102,18 @@ class TestReadConfigs:
         proc = self.run_func(read_config_include_file, {})
         assert proc.returncode == 0
 
+    @pytest.mark.usefixtures("run_in_compose_dir")
     def test_all_conf_dirs_set(self, read_config_include_file) -> None:
         """Test that the ALL_CONF_DIRS variable is set"""
         proc = self.run_func(read_config_include_file, {}, 'echo "$ALL_CONF_DIRS"')
+        print(proc.stdout)  # useful for debugging when assert fail
         assert get_command_stdout(proc).strip()
 
+    @pytest.mark.usefixtures("run_in_compose_dir")
     def test_all_conf_dirs_default_order(self, read_config_include_file) -> None:
         """Test that the expected order that default.env files are loaded is correct"""
         proc = self.run_func(read_config_include_file, {}, 'echo "$ALL_CONF_DIRS"')
+        print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc)) == self.default_all_conf_order
 
     def test_all_conf_dirs_extra_last(self, read_config_include_file) -> None:
@@ -118,10 +125,12 @@ class TestReadConfigs:
             "./components/weaver",
         ]
 
+    @pytest.mark.usefixtures("run_in_compose_dir")
     def test_dependencies_loaded_first(self, read_config_include_file) -> None:
         """Test that dependencies are loaded first"""
         extra = {"EXTRA_CONF_DIRS": '"./optional-components/test-weaver"'}
         proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"')
+        print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc))[-2:] == [
             "./components/weaver",
             "./optional-components/test-weaver",
@@ -133,15 +142,18 @@ class TestReadConfigs:
         proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"')
         assert split_and_strip(get_command_stdout(proc))[-1] == "./blah/other-random-component"
 
+    @pytest.mark.usefixtures("run_in_compose_dir")
     def test_delayed_eval_default_value(self, read_config_include_file) -> None:
         """Test delayed eval when value not set in env.local"""
         extra = {"PAVICS_FQDN": '"fqdn.example.com"'}
         proc = self.run_func(read_config_include_file, extra,
                              'echo "$PAVICS_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"')
+        print(proc.stdout)  # useful for debugging when assert fail
         # By default, PAVICS_FQDN_PUBLIC has same value as PAVICS_FQDN.
         assert (split_and_strip(get_command_stdout(proc))[-1] ==
                 "fqdn.example.com - /data/jupyterhub_user_data - /data/geoserver")
 
+    @pytest.mark.usefixtures("run_in_compose_dir")
     def test_delayed_eval_custom_value(self, read_config_include_file) -> None:
         """Test delayed eval when value is set in env.local"""
         extra = {"PAVICS_FQDN": '"fqdn.example.com"',
@@ -151,6 +163,7 @@ class TestReadConfigs:
                  }
         proc = self.run_func(read_config_include_file, extra,
                              'echo "$PAVICS_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"')
+        print(proc.stdout)  # useful for debugging when assert fail
         # If PAVICS_FQDN_PUBLIC is set in env.local, that value should be effective.
         assert (split_and_strip(get_command_stdout(proc))[-1] ==
                 "public.example.com - /my-data-root/jupyterhub_user_data - /my-geoserver-data")
@@ -161,32 +174,23 @@ class TestCreateComposeConfList:
         "docker-compose.yml",
         "./config/proxy/docker-compose-extra.yml",
         "./config/canarie-api/config/proxy/docker-compose-extra.yml",
+        "./config/geoserver/docker-compose-extra.yml",
+        "./config/geoserver/config/canarie-api/docker-compose-extra.yml",
+        "./config/geoserver/config/proxy/docker-compose-extra.yml",
         "./config/postgres/docker-compose-extra.yml",
         "./config/wps_outputs-volume/docker-compose-extra.yml",
         "./config/wps_outputs-volume/config/canarie-api/docker-compose-extra.yml",
         "./config/wps_outputs-volume/config/proxy/docker-compose-extra.yml",
-        "./config/data-volume/docker-compose-extra.yml",
-        "./config/malleefowl/docker-compose-extra.yml",
-        "./config/malleefowl/config/canarie-api/docker-compose-extra.yml",
-        "./config/malleefowl/config/data-volume/docker-compose-extra.yml",
-        "./config/malleefowl/config/wps_outputs-volume/docker-compose-extra.yml",
         "./config/flyingpigeon/docker-compose-extra.yml",
         "./config/flyingpigeon/config/canarie-api/docker-compose-extra.yml",
         "./config/flyingpigeon/config/wps_outputs-volume/docker-compose-extra.yml",
-        "./config/catalog/docker-compose-extra.yml",
-        "./config/catalog/config/canarie-api/docker-compose-extra.yml",
-        "./config/mongodb/docker-compose-extra.yml",
-        "./config/phoenix/docker-compose-extra.yml",
-        "./config/phoenix/config/canarie-api/docker-compose-extra.yml",
-        "./config/geoserver/docker-compose-extra.yml",
-        "./config/geoserver/config/canarie-api/docker-compose-extra.yml",
-        "./config/geoserver/config/proxy/docker-compose-extra.yml",
         "./config/finch/docker-compose-extra.yml",
         "./config/finch/config/canarie-api/docker-compose-extra.yml",
         "./config/finch/config/wps_outputs-volume/docker-compose-extra.yml",
         "./config/raven/docker-compose-extra.yml",
         "./config/raven/config/canarie-api/docker-compose-extra.yml",
         "./config/raven/config/wps_outputs-volume/docker-compose-extra.yml",
+        "./config/data-volume/docker-compose-extra.yml",
         "./config/hummingbird/docker-compose-extra.yml",
         "./config/hummingbird/config/canarie-api/docker-compose-extra.yml",
         "./config/hummingbird/config/data-volume/docker-compose-extra.yml",
@@ -197,13 +201,12 @@ class TestCreateComposeConfList:
         "./config/portainer/docker-compose-extra.yml",
         "./config/portainer/config/proxy/docker-compose-extra.yml",
         "./config/magpie/docker-compose-extra.yml",
-        "./config/malleefowl/config/magpie/docker-compose-extra.yml",
-        "./config/flyingpigeon/config/magpie/docker-compose-extra.yml",
-        "./config/catalog/config/magpie/docker-compose-extra.yml",
         "./config/geoserver/config/magpie/docker-compose-extra.yml",
+        "./config/flyingpigeon/config/magpie/docker-compose-extra.yml",
         "./config/finch/config/magpie/docker-compose-extra.yml",
         "./config/raven/config/magpie/docker-compose-extra.yml",
         "./config/hummingbird/config/magpie/docker-compose-extra.yml",
+        "./config/thredds/config/magpie/docker-compose-extra.yml",
         "./config/magpie/config/canarie-api/docker-compose-extra.yml",
         "./config/magpie/config/proxy/docker-compose-extra.yml",
         "./config/twitcher/docker-compose-extra.yml",
@@ -211,20 +214,7 @@ class TestCreateComposeConfList:
         "./config/twitcher/config/proxy/docker-compose-extra.yml",
         "./config/jupyterhub/docker-compose-extra.yml",
         "./config/jupyterhub/config/canarie-api/docker-compose-extra.yml",
-        "./config/jupyterhub/config/magpie/docker-compose-extra.yml",
         "./config/jupyterhub/config/proxy/docker-compose-extra.yml",
-        "./config/ncwms2/docker-compose-extra.yml",
-        "./config/ncwms2/config/magpie/docker-compose-extra.yml",
-        "./config/ncwms2/config/proxy/docker-compose-extra.yml",
-        "./config/ncwms2/config/wps_outputs-volume/docker-compose-extra.yml",
-        "./config/frontend/docker-compose-extra.yml",
-        "./config/frontend/config/canarie-api/docker-compose-extra.yml",
-        "./config/frontend/config/proxy/docker-compose-extra.yml",
-        "./config/project-api/docker-compose-extra.yml",
-        "./config/project-api/config/canarie-api/docker-compose-extra.yml",
-        "./config/project-api/config/proxy/docker-compose-extra.yml",
-        "./config/solr/docker-compose-extra.yml",
-        "./config/solr/config/canarie-api/docker-compose-extra.yml",
     ]
 
     def run_func(self, include_file: str, local_env: dict, command_suffix: str = "") -> subprocess.CompletedProcess:
@@ -251,11 +241,13 @@ class TestCreateComposeConfList:
         proc = self.run_func(read_config_include_file, {}, 'echo "$COMPOSE_CONF_LIST"')
         assert split_and_strip(get_command_stdout(proc)) == ["-f docker-compose.yml"]
 
+    @pytest.mark.usefixtures("run_in_compose_dir")
     def test_compose_no_overrides(self, read_config_include_file):
         """Test that COMPOSE_CONF_LIST is set correctly when there are no overrides"""
         proc = self.run_func(
             read_config_include_file, {"ALL_CONF_DIRS": "./config/finch ./config/raven"}, 'echo "$COMPOSE_CONF_LIST"'
         )
+        print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == [
             "docker-compose.yml",
             "./config/finch/docker-compose-extra.yml",
@@ -274,11 +266,13 @@ class TestCreateComposeConfList:
         out2 = split_and_strip(get_command_stdout(proc2), split_on="-f")
         assert out1 == out2[:1] + out2[:0:-1]
 
+    @pytest.mark.usefixtures("run_in_compose_dir")
     def test_compose_overrides(self, read_config_include_file):
         """Test that COMPOSE_CONF_LIST is set correctly when there are overrides"""
         proc = self.run_func(
             read_config_include_file, {"ALL_CONF_DIRS": "./config/finch ./config/magpie"}, 'echo "$COMPOSE_CONF_LIST"'
         )
+        print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == [
             "docker-compose.yml",
             "./config/finch/docker-compose-extra.yml",
@@ -286,10 +280,12 @@ class TestCreateComposeConfList:
             "./config/finch/config/magpie/docker-compose-extra.yml",
         ]
 
+    @pytest.mark.usefixtures("run_in_compose_dir")
     def test_default_all_conf_dirs(self, read_config_include_file):
         proc = self.run_func(
             read_config_include_file,
             {"ALL_CONF_DIRS": " ".join(TestReadConfigs.default_all_conf_order)},
             'echo "$COMPOSE_CONF_LIST"',
         )
+        print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == self.default_conf_list_order

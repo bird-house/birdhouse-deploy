@@ -6,7 +6,7 @@ SERVICES['node']['monitoring'].update({
     },
     '${EMU_NAME}': {
         'request': {
-            'url': 'http://${PAVICS_FQDN}:${EMU_PORT}/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+            'url': 'http://emu:${EMU_INTERNAL_PORT}/wps?service=WPS&version=1.0.0&request=GetCapabilities'
         }
     },
 })

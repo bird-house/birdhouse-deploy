@@ -47,3 +47,31 @@ webhooks:
     payload:
       event : "deleted"
       user_name : "{{user.name}}"
+  - name: cowbird_create_permission
+    action: create_user_permission
+    method: POST
+    url: http://cowbird:7000/webhooks/permissions
+    payload:
+      event : "created"
+      service_name: "{{service.name}}"
+      service_type: "{{service.type}}"
+      resource_id: "{{resource.id}}"
+      resource_full_name: "{{resource.name}}"
+      name: "{{permission.name}}"
+      access: "{{permission.access}}"
+      scope: "{{permission.scope}}"
+      user: "{{user.name}}"
+  - name: cowbird_delete_permission
+    action: delete_user_permission
+    method: POST
+    url: http://cowbird:7000/webhooks/permissions
+    payload:
+      event : "deleted"
+      service_name: "{{service.name}}"
+      service_type: "{{service.type}}"
+      resource_id: "{{resource.id}}"
+      resource_full_name: "{{resource.name}}"
+      name: "{{permission.name}}"
+      access: "{{permission.access}}"
+      scope: "{{permission.scope}}"
+      user: "{{user.name}}"

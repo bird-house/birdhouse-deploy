@@ -1,0 +1,16 @@
+import copy
+
+service_public = "Malleefowl-public"
+service_public_cfg = {
+    'request': {
+        'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/malleefowl?service=WPS&version=1.0.0&request=GetCapabilities'
+    }
+}
+
+service_private = service_public.split("-public")[0]
+if service_private in SERVICES:
+    SERVICES[service_private]["monitoring"][service_public] = service_public_cfg
+elif "node" in SERVICES:
+    SERVICES["node"]["monitoring"][service_public] = service_public_cfg
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python

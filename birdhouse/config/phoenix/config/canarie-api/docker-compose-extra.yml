@@ -1,5 +1,0 @@
-version: "3.4"
-services:
-  proxy:
-    volumes:
-    - ./config/phoenix/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/phoenix_canarie_api_monitoring.py:ro

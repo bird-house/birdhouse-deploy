@@ -1,0 +1,12 @@
+version: "3.4"
+
+services:
+  proxy:
+    volumes:
+      # NOTE:
+      #   Prefix '0_' to the mounted file name to ensure it is loaded first by 'birdhouse/config/canarie-api/docker_configuration.py'
+      #   This ensures that the alphabetical loading order it defines will first load the default configs, then will load
+      #   the Cowbird config, and then all python configuration within 'optional-components/canarie-api-full-monitoring'.
+      #   It is important to load Cowbird before, as the full monitoring need to know if 'Cowbird' service is added to the
+      #   stack in order to apply the corresponding public endpoint conditionally.
+      - ./components/cowbird/config/proxy/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/0_cowbird_config.py:ro

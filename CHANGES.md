@@ -15,12 +15,276 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Delete unused Dockerfiles, fixes
+  [#349](https://github.com/bird-house/birdhouse-deploy/issues/349) and
+  [#352](https://github.com/bird-house/birdhouse-deploy/pull/352)
+
+  * birdhouse/docker/geoserver: not used since 3-4 years, replaced by https://github.com/kartoza/docker-geoserver
+
+  * birdhouse/config/geoserver/Dockerfile: was introduced in commit [f3b9896e6b771e0aff62c6851c2376d730ddadaf](https://github.com/bird-house/birdhouse-deploy/commit/f3b9896e6b771e0aff62c6851c2376d730ddadaf)
+    (PR [#233](https://github.com/bird-house/birdhouse-deploy/pull/233), commit
+    [d1ecc63284ec9d2940bfa2b1b4baca3fbe1308b3](https://github.com/bird-house/birdhouse-deploy/commit/d1ecc63284ec9d2940bfa2b1b4baca3fbe1308b3)) as a temporary
+    solution only, not needed with newer kartoza docker images.
+
+- Move birdhouse/docker/solr to birdhouse/deprecated-components/solr/docker
+  to group related files together.  Solr has been deprecated since PR
+  [#311](https://github.com/bird-house/birdhouse-deploy/pull/311)
+  (commit
+  [a8d3612fdb7fd7758b24e75b0ef697fd3d8ace51](https://github.com/bird-house/birdhouse-deploy/commit/a8d3612fdb7fd7758b24e75b0ef697fd3d8ace51)).
+
+
+[1.29.2](https://github.com/bird-house/birdhouse-deploy/tree/1.29.2) (2023-08-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Monitoring: allow access to magpie members of group `monitoring`
+
+  To allow accessing the various monitoring WebUI without having full blown
+  magpie admin priviledge to add and remove users.
+
+  Add existing users to this new `monitoring` group to allow them access to the
+  various monitoring WebUI.  This way, we do not need to share the `admin` user
+  account and do not have to add them to the `administrators` group.
+
+
+[1.29.1](https://github.com/bird-house/birdhouse-deploy/tree/1.29.1) (2023-08-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Small STAC changes
+  - This PR includes some changes that were suggested in a review for #297. But because the PR was already merged,
+    further updates are included here:
+    - removes extra block to include in docker compose files (no longer needed)
+    - moves docker compose file in `stac-public-access` component to the correct location
+    - uses `PAVICS_FQDN_PUBLIC` for public facing URLs in all places
+
+[1.29.0](https://github.com/bird-house/birdhouse-deploy/tree/1.29.0) (2023-08-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Do not expose additional ports:
+  - Docker compose no longer exposes any container ports outside the default network except for ports 80 and 443 from 
+    the proxy container. This ensures that ports that are not intended for external access are not exposed to the wider 
+    internet even if firewall rules are not set correctly.
+  - Note that if the `monitoring` component is used then port 9100 will be exposed from the `node-exporter` container.
+    This is because this container must be run on the host machine's network and unfortunately there is no known
+    workaround that would not require this port to be exposed on the host machine.
+  - Fixes https://github.com/bird-house/birdhouse-deploy/issues/222
+
+
+[1.28.0](https://github.com/bird-house/birdhouse-deploy/tree/1.28.0) (2023-08-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Adds [STAC](https://github.com/crim-ca/stac-app) to the stack (optional) when ``./components/stac`` 
+  is added to ``EXTRA_CONF_DIRS``. For more details, refer to 
+  [STAC Component](https://github.com/bird-house/birdhouse-deploy/blob/master/birdhouse/components/README.rst#STAC)
+  Following happens when enabled:
+    
+  * Service ``stac`` (API) gets added with endpoints ``/twitcher/ows/proxy/stac`` and ``/stac``.
+    
+  * STAC catalog can be explored via the ``stac-browser`` component, available under ``/stac-browser``.
+      
+  * Image [crim-ca/stac-app](https://github.com/crim-ca/stac-app) is a STAC implementation based on 
+  [stac-utils/stac-fastapi](https://github.com/stac-utils/stac-fastapi).
+
+  * Image [crim-ca/stac-browser](https://github.com/crim-ca/stac-browser) is a fork of 
+  [radiantearth/stac-browser](https://github.com/radiantearth/stac-browser) in order to have the capacity to build 
+  the Docker container. The image reference will change when the 
+  [stac-browser PR related to Dockerfile](https://github.com/bird-house/birdhouse-deploy/issues/346) will have been 
+  merged.
+      
+  * Adds `Magpie` permissions and service for `stac` endpoints.
+  
+- Adds [stac-populator](https://github.com/crim-ca/stac-populator) to populate STAC catalog with sample collection 
+  items via [CEDA STAC Generator](https://github.com/cedadev/stac-generator), employed in sample 
+  [CMIP Dataset Ingestion Workflows](https://github.com/cedadev/stac-generator-example/tree/master/conf).
+
+- Adds ``optional-components/stac-public-access`` to give public access to the STAC catalog.
+
+[1.27.1](https://github.com/bird-house/birdhouse-deploy/tree/1.27.1) (2023-07-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Add Magpie webhook definitions for permission creation and deletion cases to be processed by Cowbird.
+- Add `USER_WORKSPACE_UID` and `USER_WORKSPACE_GID` env variables to manage ownership of the user workspaces used by
+  Cowbird, JupyterHub and others.
+- Update `magpie` service from [3.31.0](https://github.com/Ouranosinc/Magpie/tree/3.31.0)
+  to [3.34.0](https://github.com/Ouranosinc/Magpie/tree/3.34.0)
+- Update `cowbird` service from [1.1.1](https://github.com/Ouranosinc/cowbird/tree/1.1.1)
+  to [1.2.0](https://github.com/Ouranosinc/cowbird/tree/1.2.0)
+
+[1.27.0](https://github.com/bird-house/birdhouse-deploy/tree/1.27.0) (2023-07-06)
+------------------------------------------------------------------------------------------------------------------
+
+- Deprecate unused/unmaintained components
+
+  Move unused and unmaintained components to a separate [`deprecated-components/`](birdhouse/deprecated-components)
+  subdirectory and remove them from the `DEFAULT_CONF_DIRS` list if required.
+
+[1.26.11](https://github.com/bird-house/birdhouse-deploy/tree/1.26.11) (2023-07-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Components endpoint now returns valid json
+
+  The JSON string reported by the `/components/` path was not valid JSON due to a misconfigured regular expression
+  used to generate the content. The issue was that integers were not being properly parsed by the regular expression
+  meaning that paths that contained integers other than 0 were not recognized as valid paths.
+
+  This fixes https://github.com/bird-house/birdhouse-deploy/issues/339
+
+[1.26.10](https://github.com/bird-house/birdhouse-deploy/tree/1.26.10) (2023-07-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Move canarie-api configuration for cowbird from proxy to canarie-api config directory
+  - The canarie-api configuration for cowbird was being loaded whenever the proxy component was enabled instead
+    of when the canarie-api component was enabled. Since these components can now be enabled separately, the
+    configuration has to be moved to ensure that canarie-api configuration files aren't unintentionally mounted
+    to a container that is just running an nginx proxy.
+
+[1.26.9](https://github.com/bird-house/birdhouse-deploy/tree/1.26.9) (2023-07-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix Cowbird's `sync_permissions` config which used invalid Magpie service types.
+
+[1.26.8](https://github.com/bird-house/birdhouse-deploy/tree/1.26.8) (2023-06-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Tests: some tests fail to run when `CWD` is not `COMPOSE_DIR`
+
+  The root cause is the automatic `COMPOSE_DIR` detection in
+  `read-configs.include.sh` missed one case and the detection ordering was wrong
+  for one other case as well.
+
+  This was not found before because the checkout was properly named
+  "birdhouse-deploy".  When the checkout is named something else, then we hit
+  this error.
+
+  Fixes the error found here
+  https://github.com/bird-house/birdhouse-deploy/pull/329#pullrequestreview-1480211502
+
+## Changes
+- Autodeploy: document test procedure
+
+- Dev environment: add Conda `environment-dev.yml` to easily install all the dev tools required
+
+- Tests: make test runs more robust, able to run from any `CWD`
+
+  Before, test runs can only be started from inside the checkout, at some
+  "popular" locations inside the checkout.  Now it can be started from
+  litterally anywhere.
+
+
+[1.26.7](https://github.com/bird-house/birdhouse-deploy/tree/1.26.7) (2023-06-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- A new endpoint `/services` is added that provides a JSON string describing each of the user facing services currently 
+  enabled on the stack. This is a static string and serves a different purpose than the endpoints served by canarie-api
+  (monitoring status). This endpoint is meant to be polled by the node registry scripts 
+  (https://github.com/DACCS-Climate/DACCS-node-registry) to provide information about what services are meant to be 
+  available without having to poll other endpoints directly.
+
+- A new endpoint `/version` is added that provides a string containing the current version number of the stack 
+  (e.g. "1.26.0"). This endpoint is meant to be polled by the node registry scripts 
+  (https://github.com/DACCS-Climate/DACCS-node-registry).
+
+
+[1.26.6](https://github.com/bird-house/birdhouse-deploy/tree/1.26.6) (2023-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- `components/` endpoint displays intended information after auto-deploy
+
+  Previously, the script that generates the content for the `components/` endpoint
+  was using a feature of `grep` that is not supported by all versions of `grep`.
+  This meant that this script running in the auto-deployment docker container was
+  not able to properly parse the running components using `grep`. 
+  This fixes the issue by making the script compliant with all versions of `grep`.
+
+  Resolves https://github.com/bird-house/birdhouse-deploy/issues/342
+
+[1.26.5](https://github.com/bird-house/birdhouse-deploy/tree/1.26.5) (2023-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Autodeploy: optionally fix file permissions
+
+  The autodeploy mechanism creates new files owned by root. If this is not desired then users have to manually
+  update the file ownership after each autodeployment. This adds an option to change the ownership of all files
+  to a specific user after each autodeployment. 
+
+  For example, if the code in this repo is currently owned by a user named `birduser` with uid 1002, then by
+  setting `export AUTODEPLOY_CODE_OWNERSHIP="1002:1002"` in `env.local`, all files and folders in this repo will 
+  continue to be owned by `birduser` after each autodeployment. 
+
+[1.26.4](https://github.com/bird-house/birdhouse-deploy/tree/1.26.4) (2023-06-06)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new version with latest RavenPy
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/119 for more
+  details.
+
+
+[1.26.3](https://github.com/bird-house/birdhouse-deploy/tree/1.26.3) (2023-06-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new version with latest Xclim and RavenPy
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/115 for more
+  details.
+
+- Raven WPS: new version to match with new RavenPy inside the Jupyter env
+
+  See https://github.com/Ouranosinc/raven/compare/v0.14.2...v0.18.1 for more
+  details.
+
+## Fixes
+- Notebook autodeploy: unable to read the `env.local`
+
+  When `env.local` is a symlink we need to volume-mount the destination of the
+  symlink so it resolves inside the notebook autodeploy container.
+
+  This will allow notebook autodeploy config variable to be set in `env.local`.
+
+  Also had someone changed the value of `JUPYTERHUB_USER_DATA_DIR` in `env.local`,
+  it would not have worked without this fix.
+
+  This is a non-breaking fix.
+
+
+[1.26.2](https://github.com/bird-house/birdhouse-deploy/tree/1.26.2) (2023-05-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update Zenodo config
+  *  Add Misha to creators
+  *  Add birdhouse community
+
+- Licence: update copyright line with year and ownership
 
 [1.26.1](https://github.com/bird-house/birdhouse-deploy/tree/1.26.1) (2023-04-26)
 ------------------------------------------------------------------------------------------------------------------
 
+## Changes
+
 - Zenodo: A configuration file for [Zenodo](https://zenodo.org/) was added to the source code, listing all contributing authors on the *birdhouse-deploy* repository.
+
 
 [1.26.0](https://github.com/bird-house/birdhouse-deploy/tree/1.26.0) (2023-04-20)
 ------------------------------------------------------------------------------------------------------------------

@@ -1,19 +1,77 @@
 # label rules used by .github/workflows/label.yml
 
-# label 'ci' all automation-related steps and files
+# NOTE: all globs starting by a '*' must be quoted to parse properly
+
+# label 'ci/operations' for all automation-related steps and files
 #   Since this repository is in itself an automation process to deploy a server instance,
 #   we refer here to CI as the 'meta' configuration files for managing the code and integrations with the repository,
 #   not configurations related to the deployment process itself.
-ci:
+ci/operations:
   - .*  # all '.<something>' files
   - .github/**/*
   - docs/Makefile
   - Dockerfile*
+  - birdhouse/docker/**/*
+  - tests/**/*
+
+ci/deployment:
+  - birdhouse/deployment/**/*
+  - birdhouse/scripts/**/*
+  - birdhouse/templates/**/*
+  - birdhouse/vagrant-utils/**/*
+  - vagrant_variables.yml.example
+  - Vagrantfile
+  - birdhouse/**/*.include.sh
+  - birdhouse/pavics-compose.sh
+
+ci/tests:
+  - "**/test*/**/*"  # eg: optional-components/test...
+  - tests/**/*
 
 documentation:
   - "*.rst"
   - "*.example"
   - ".readthedocs.yml"
+  - ".zenodo.json"
   - docs/**/*
   - CONTRIBUTING.rst
-  - README.rst
+  - CHANGES.md
+  - LICENSE
+  - "**/README.rst"
+
+component/weaver:
+  - birdhouse/**/weaver/**/*
+
+component/cowbird:
+  - birdhouse/**/cowbird/**/*
+
+component/magpie:
+  - birdhouse/**/magpie/**/*
+
+component/twitcher:
+  - birdhouse/**/twitcher/**/*
+
+component/THREDDS:
+  - birdhouse/**/thredds/**/*
+
+component/geoserver:
+  - birdhouse/**/geoserver/**/*
+  - docker/geoserver/**/*
+
+component/jupyterhub:
+  - birdhouse/**/jupyterhub/**/*
+
+feature/WPS:
+  - birdhouse/**/finch/**/*
+  - birdhouse/**/flyingpigeon/**/*
+  - birdhouse/**/hummingbird/**/*
+  - birdhouse/**/malleefowl/**/*
+  - birdhouse/**/raven/**/*
+  - birdhouse/**/weaver/**/*
+  - birdhouse/**/wps_output-volume/**/*
+  - birdhouse/**/*wps*/**/*
+
+feature/node-registry:
+  - birdhouse/**/service-config.json.template
+  - birdhouse/scripts/get-version.include.sh
+  - birdhouse/scripts/get-services-json.include.sh

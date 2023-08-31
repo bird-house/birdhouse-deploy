@@ -41,8 +41,8 @@ sync_permissions:
     # For more info on the services available in Magpie :
     #     https://pavics-magpie.readthedocs.io/en/latest/services.html#available-services
     #     https://pavics-magpie.readthedocs.io/en/latest/autoapi/magpie/services/index.html
-    services: # Contains the different resources that can be synchronized, ordered by service
-      thredds: # Service name, which should also exist in Magpie
+    services: # Contains the different resources that can be synchronized, ordered by service type
+      thredds: # Service type, which should also exist in Magpie
         # Resource key (ex.: thredds_workspace): Custom name to represent a resource path.
         #
         # Example of resource that uses variables and a `MULTI_TOKEN`.
@@ -107,7 +107,7 @@ sync_permissions:
       - "geoserver_workspace : createStoredQuery <-> thredds_workspace : write"
   weaver_outputs:
     services:
-      weaver:
+      api:
         process_description:
           - name: weaver
             type: service
@@ -153,8 +153,7 @@ sync_permissions:
             type: route
           - name: "{outputID}"
             type: route
-      # see 'optional-components/secure-data-proxy' for more details on protected WPS-outputs
-      wps_outputs:
+        # see 'optional-components/secure-data-proxy' for more details on protected WPS-outputs
         # /wpsoutputs/weaver/{public|<user-id>}/{job-id}
         weaver_wps_outputs:
           - name: secure-data-proxy
