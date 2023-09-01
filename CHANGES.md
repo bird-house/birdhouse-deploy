@@ -17,6 +17,9 @@
 
 ## Changes
 
+- Add ``optional-components/x-robots-tags-header`` and ``X_ROBOTS_TAGS_HEADER`` variable to allow setting the desired
+  header value server-wide.
+
 - Delete unused Dockerfiles, fixes
   [#349](https://github.com/bird-house/birdhouse-deploy/issues/349) and
   [#352](https://github.com/bird-house/birdhouse-deploy/pull/352)
