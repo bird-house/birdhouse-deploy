@@ -319,3 +319,31 @@ To enable this optional-component:
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 - Add ``./optional-components/stac-public-access`` to ``EXTRA_CONF_DIRS``.
+
+
+Log proxy access log to ``PAVICS_LOG_DIR`` in json format
+---------------------------------------------------------
+
+By default, the Nginx proxy access log is inside the ``proxy`` container (see
+`proxy component`_) and the logging format is used by the `canarie-api
+component`_.
+
+This optional-component exposes that access log outside the ``proxy`` container
+so other monitoring tools can access it.
+
+The json logging format is also much easier to parse when ingesting the logs to
+extract metrics.
+
+The log file is exposed under ``PAVICS_LOG_DIR`` (defined in the `main
+default.env`_) which has log rotation built-in when the `scheduler component`_
+is enabled.
+
+To enable this optional-component:
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./optional-components/proxy-json-logging`` to ``EXTRA_CONF_DIRS``.
+
+.. _canarie-api component: ../config/canarie-api
+.. _proxy component: ../config/proxy
+.. _scheduler component: ../components/scheduler
+.. _main default.env: ../default.env

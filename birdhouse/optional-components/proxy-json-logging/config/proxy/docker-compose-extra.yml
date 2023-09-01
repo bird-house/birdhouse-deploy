@@ -1,0 +1,6 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+      - ./optional-components/proxy-json-logging/config/proxy/proxy-json-logging.conf:/etc/nginx/conf.d/proxy-json-logging.conf:ro
+      - ${PAVICS_LOG_DIR}:${PAVICS_LOG_DIR}:rw
