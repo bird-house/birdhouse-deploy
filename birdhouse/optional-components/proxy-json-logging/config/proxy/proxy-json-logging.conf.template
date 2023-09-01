@@ -1,8 +1,10 @@
-    log_format logger-json escape=json '{"source": "nginx", "time": $msec, "resp_body_size": $body_bytes_sent, '
-                                       '"host": "$http_host", "address": "$remote_addr", "user": $remote_user, '
+    log_format logger-json escape=json '{"source": "nginx", "time": $msec, '
+                                       '"resp_body_size": $body_bytes_sent, "host": "$http_host", '
+                                       '"address": "$remote_addr", "user": "$remote_user", '
                                        '"request_length": $request_length, "method": "$request_method", '
-                                       '"uri": "$request_uri", "status": $status,  "user_agent": "$http_user_agent", '
-                                       '"resp_time": $request_time, "upstream_addr": "$upstream_addr", '
-                                       '"referer": $http_referer, "forwarded_for": $http_x_forwarded_for}';
+                                       '"uri": "$request_uri", "status": $status, '
+                                       '"user_agent": "$http_user_agent", "resp_time": $request_time, '
+                                       '"upstream_addr": "$upstream_addr", "referer": "$http_referer", '
+                                       '"forwarded_for": "$http_x_forwarded_for"}';
 
     access_log  ${PAVICS_LOG_DIR}/proxy-access.json.log  logger-json;
