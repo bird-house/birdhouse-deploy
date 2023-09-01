@@ -34,7 +34,6 @@ http {
     proxy_read_timeout ${PROXY_READ_TIMEOUT_VALUE};  # default 60s
 
     include /etc/nginx/conf.d/*.conf;
-    add_header X-Robots-Tags noindex;
 
     # for other extra components to extend Nginx
     include /etc/nginx/conf.extra.d/*/*.conf;
