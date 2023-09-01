@@ -1,1 +1,1 @@
-add_header X-Robots-Tags ${X_ROBOTS_TAGS_HEADER};
+add_header X-Robots-Tags "${X_ROBOTS_TAGS_HEADER}";
