@@ -319,3 +319,25 @@ To enable this optional-component:
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 - Add ``./optional-components/stac-public-access`` to ``EXTRA_CONF_DIRS``.
+
+
+X-Robots-Tags Header
+---------------------------
+
+Applies the ``X-Robots-Tags`` header value defined by the ``X_ROBOTS_TAGS_HEADER`` variable globally for the server.
+
+If ``X_ROBOTS_TAGS_HEADER`` is not overriden, it uses ``noindex, nofollow`` which will disallow most crawling and
+indexing functionalities from robots. If omitting this optional component entirely, no ``X-Robots-Tags`` header
+will be applied, which is equivalent to the robots default ``X-Robots-Tags: all``, setting no restrictions regarding
+indexing and serving.
+
+.. seealso::
+    https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag#directives
+
+How to enable X-Robots-Tags Header in ``env.local`` (a copy from env.local.example_
+(:download:`download </birdhouse/env.local.example>`)):
+
+* Add ``./optional-components/x-robots-tags-header`` to ``EXTRA_CONF_DIRS``.
+* Optionally set ``X_ROBOTS_TAGS_HEADER`` to an alternate directive as desired.
+  Default values are in `optional-components/x-robots-tags-header/default.env <x-robots-tags-header/default.env>`_
+  (:download:`download </birdhouse/optional-components/x-robots-tags-header/default.env>`).
