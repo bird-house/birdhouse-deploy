@@ -20,7 +20,13 @@ fi
 REPO_ROOT="`realpath "$1"`"; shift  # path to PAVICS checkout
 REPO_OWNER="$1"; shift  #  user owning (have write access) the PAVICS checkout
 
-LOGROTATE_CONF_TEMPLATE="$REPO_ROOT/birdhouse/deployment/PAVICS-deploy.logrotate.template"
+COMPOSE_DIR="$REPO_ROOT/birdhouse"
+. $COMPOSE_DIR/read-configs.include.sh
+
+# read LOGROTATE_CONF_EXTRA for envsubst
+read_configs
+
+LOGROTATE_CONF_TEMPLATE="$COMPOSE_DIR/deployment/PAVICS-deploy.logrotate.template"
 
 if [ ! -e "$LOGROTATE_CONF_TEMPLATE" ]; then
     echo "ERROR: bad/wrong pavics-checkout '$REPO_ROOT' " 1>&2

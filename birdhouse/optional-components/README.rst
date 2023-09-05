@@ -321,8 +321,8 @@ To enable this optional-component:
 - Add ``./optional-components/stac-public-access`` to ``EXTRA_CONF_DIRS``.
 
 
-Log proxy access log to ``PAVICS_LOG_DIR`` in json format
----------------------------------------------------------
+Log proxy access log to ``PAVICS_LOG_DIR/proxy/access.json.log`` in json format
+-------------------------------------------------------------------------------
 
 By default, the Nginx proxy access log is inside the ``proxy`` container (see
 `proxy component`_) and the logging format is used by the `canarie-api
