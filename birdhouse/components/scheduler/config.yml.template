@@ -1,7 +1,7 @@
 ---
 - name: logrotate
   comment: Rotate log files under /var/log/PAVICS
-  schedule: '@daily'
+  schedule: '@hourly'
   command: bash -c 'cp /etc/logrotate.conf.orig /etc/logrotate.conf && chown root:root /etc/logrotate.conf && chmod 644 /etc/logrotate.conf && /usr/sbin/logrotate -v /etc/logrotate.conf'
   dockerargs: >-
     --rm --name logrotate

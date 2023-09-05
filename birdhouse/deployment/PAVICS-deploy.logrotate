@@ -9,3 +9,6 @@
     compress
     dateext
 }
+
+# Can not use 'include' directive since this logrotate job is spawned new each
+# time.  It is not a continuously running service.
