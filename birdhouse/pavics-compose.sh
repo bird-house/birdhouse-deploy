@@ -86,7 +86,7 @@ done
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
-find $ALL_CONF_DIRS -name '*.template' |
+find $ALL_CONF_DIRS $COMPOSE_DIR/deployment -name '*.template' |
   while read FILE
   do
     DEST=${FILE%.template}

@@ -20,7 +20,9 @@ fi
 REPO_ROOT="`realpath "$1"`"; shift  # path to PAVICS checkout
 REPO_OWNER="$1"; shift  #  user owning (have write access) the PAVICS checkout
 
-if [ ! -e "$REPO_ROOT/birdhouse/deployment/PAVICS-deploy.logrotate" ]; then
+LOGROTATE_CONF_TEMPLATE="$REPO_ROOT/birdhouse/deployment/PAVICS-deploy.logrotate.template"
+
+if [ ! -e "$LOGROTATE_CONF_TEMPLATE" ]; then
     echo "ERROR: bad/wrong pavics-checkout '$REPO_ROOT' " 1>&2
     usage
     exit 2
@@ -33,6 +35,6 @@ sudo mkdir -p /var/log/PAVICS
 sudo chown $REPO_OWNER /var/log/PAVICS
 
 LOGROTATE_FILE="/etc/logrotate.d/PAVICS-deploy"
-sudo cp -v $REPO_ROOT/birdhouse/deployment/PAVICS-deploy.logrotate $LOGROTATE_FILE
+cat $LOGROTATE_CONF_TEMPLATE | envsubst | sudo tee $LOGROTATE_FILE
 sudo chown root:root $LOGROTATE_FILE
 sudo chmod 644 $LOGROTATE_FILE
