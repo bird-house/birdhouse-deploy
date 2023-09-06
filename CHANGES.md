@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.30.0](https://github.com/bird-house/birdhouse-deploy/tree/1.30.0) (2023-09-06)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Add ``optional-components/x-robots-tags-header`` and ``X_ROBOTS_TAGS_HEADER`` variable to allow setting the desired
