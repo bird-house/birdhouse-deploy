@@ -22,6 +22,10 @@
 
 ## Changes
 
+- Changes `JUPYTERHUB_VERSION` from `1.4.0-20210506` to `4.0.2-20230816`
+
+- Add an image to the list of images that can be launched from JupyterHub which will be used to start an instance of MLflow.
+
 - Add ``optional-components/x-robots-tags-header`` and ``X_ROBOTS_TAGS_HEADER`` variable to allow setting the desired
   header value server-wide.
 
