@@ -321,35 +321,35 @@ To enable this optional-component:
 - Add ``./optional-components/stac-public-access`` to ``EXTRA_CONF_DIRS``.
 
 
-X-Robots-Tags Header
+X-Robots-Tag Header
 ---------------------------
 
-Applies the ``X-Robots-Tags`` header value defined by the ``X_ROBOTS_TAGS_HEADER`` variable globally for the server.
+Applies the ``X-Robots-Tag`` header value defined by the ``X_ROBOTS_TAG_HEADER`` variable globally for the server.
 
-If ``X_ROBOTS_TAGS_HEADER`` is not overriden, it uses ``noindex, nofollow`` which will disallow most crawling and
-indexing functionalities from robots. If omitting this optional component entirely, no ``X-Robots-Tags`` header
-will be applied, which is equivalent to the robots default ``X-Robots-Tags: all``, setting no restrictions regarding
+If ``X_ROBOTS_TAG_HEADER`` is not overriden, it uses ``noindex, nofollow`` which will disallow most crawling and
+indexing functionalities from robots. If omitting this optional component entirely, no ``X-Robots-Tag`` header
+will be applied, which is equivalent to the robots default ``X-Robots-Tag: all``, setting no restrictions regarding
 indexing and serving.
 
 .. seealso::
     https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag#directives
 
-How to enable X-Robots-Tags Header in ``env.local`` (a copy from `env.local.example`_
+How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.example`_
 (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/x-robots-tags-header`` to ``EXTRA_CONF_DIRS``.
-* Optionally set ``X_ROBOTS_TAGS_HEADER`` to an alternate directive as desired.
-  Default values are in `optional-components/x-robots-tags-header/default.env <x-robots-tags-header/default.env>`_
-  (:download:`download </birdhouse/optional-components/x-robots-tags-header/default.env>`).
+* Add ``./optional-components/x-robots-tag-header`` to ``EXTRA_CONF_DIRS``.
+* Optionally set ``X_ROBOTS_TAG_HEADER`` to an alternate directive as desired.
+  Default values are in `optional-components/x-robots-tag-header/default.env <x-robots-tag-header/default.env>`_
+  (:download:`download </birdhouse/optional-components/x-robots-tag-header/default.env>`).
 
 .. note::
-    In order to revert the ``X-Robots-Tags`` header on specific endpoints, the following Nginx configuration can be
+    In order to revert the ``X-Robots-Tag`` header on specific endpoints, the following Nginx configuration can be
     defined (other values than ``all`` are possible as well) under any ``location`` block of the server.
 
     .. code-block:: nginx
 
         location /<service-path>/ {
-            add_header X-Robots-Tags: "all";
+            add_header X-Robots-Tag: "all";
             # ... other nginx operations ...
         }
 
@@ -361,7 +361,7 @@ How to enable X-Robots-Tags Header in ``env.local`` (a copy from `env.local.exam
     .. code-block:: shell
 
         export PROXY_ROOT_LOCATION='
-            add_header X-Robots-Tags: "all";
+            add_header X-Robots-Tag: "all";
             alias /data/homepage/;  # or any other desired redirection (e.g.: "return 302 <URL>")
         '
 
