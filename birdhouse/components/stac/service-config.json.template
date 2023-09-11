@@ -4,17 +4,22 @@
   "keywords": [
     "catalog"
   ],
-  "description": "STAC catalog for discovering data on the Marble Network.",
+  "description": "Searchable spatiotemporal metadata describing climate and Earth observation datasets.",
   "links": [
     {
       "rel": "service",
-      "type": "text/html",
+      "type": "application/json",
       "href": "https://${PAVICS_FQDN_PUBLIC}/stac/"
     },
     {
       "rel": "service-doc",
       "type": "text/html",
-      "href": "https://stacspec.org/en"
+      "href": "https://github.com/radiantearth/stac-api-spec"
+    },
+    {
+      "rel": "service-desc",
+      "type": "application/yaml",
+      "href": "https://raw.githubusercontent.com/radiantearth/stac-api-spec/main/core/openapi.yaml"
     }
   ]
 }
