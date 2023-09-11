@@ -17,8 +17,9 @@
 
 ## Fixes
 
-- Fix incorrect tag ``X-Robots-Tags`` header to appropriate ``X-Robots-Tag`` (no final ``s``) name
-  for ``optional-components/x-robots-tags-header``.
+- Fix incorrect tag ``X-Robots-Tags`` header to appropriate ``X-Robots-Tag`` (no final ``s``) name.
+  Optional component name ``optional-components/x-robots-tag-header`` and variable ``X_ROBOTS_TAG_HEADER``
+  have also been adjusted accordingly.
 
 [1.30.0](https://github.com/bird-house/birdhouse-deploy/tree/1.30.0) (2023-09-06)
 ------------------------------------------------------------------------------------------------------------------
