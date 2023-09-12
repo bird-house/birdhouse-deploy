@@ -17,6 +17,15 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.30.1](https://github.com/bird-house/birdhouse-deploy/tree/1.30.1) (2023-09-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix incorrect tag ``X-Robots-Tags`` header to appropriate ``X-Robots-Tag`` (no final ``s``) name.
+  Optional component name ``optional-components/x-robots-tag-header`` and variable ``X_ROBOTS_TAG_HEADER``
+  have also been adjusted accordingly.
+
 [1.30.0](https://github.com/bird-house/birdhouse-deploy/tree/1.30.0) (2023-09-06)
 ------------------------------------------------------------------------------------------------------------------
 
