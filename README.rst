@@ -14,13 +14,13 @@ for a full-fledged production platform.
     * - releases
       - | |latest-version| |commits-since|
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/bird-house/birdhouse-deploy/1.30.0.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/bird-house/birdhouse-deploy/1.30.1.svg
     :alt: Commits since latest release
-    :target: https://github.com/bird-house/birdhouse-deploy/compare/1.30.0...master
+    :target: https://github.com/bird-house/birdhouse-deploy/compare/1.30.1...master
 
-.. |latest-version| image:: https://img.shields.io/badge/tag-1.30.0-blue.svg?style=flat
+.. |latest-version| image:: https://img.shields.io/badge/tag-1.30.1-blue.svg?style=flat
     :alt: Latest Tag
-    :target: https://github.com/bird-house/birdhouse-deploy/tree/1.30.0
+    :target: https://github.com/bird-house/birdhouse-deploy/tree/1.30.1
 
 .. |readthedocs| image:: https://readthedocs.org/projects/birdhouse-deploy/badge/?version=latest
     :alt: ReadTheDocs Build Status (latest version)

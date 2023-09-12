@@ -109,8 +109,8 @@ SERVICES = {
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '1.30.0',
-            'releaseTime': '2023-09-06T17:39:28Z',
+            'version': '1.30.1',
+            'releaseTime': '2023-09-11T15:55:37Z',
             'institution': 'Ouranos',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
@@ -142,8 +142,8 @@ PLATFORMS = {
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '1.30.0',
-            'releaseTime': '2023-09-06T17:39:28Z',
+            'version': '1.30.1',
+            'releaseTime': '2023-09-11T15:55:37Z',
             'institution': 'Ouranos',
             'researchSubject': 'Climatology',
             'supportEmail': '${SUPPORT_EMAIL}',
