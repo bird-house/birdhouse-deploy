@@ -15,7 +15,10 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Fix invalid templated configurations of `flyingpigeon` that could remain in the old 
+  location (`birdhouse/config/flyingpigeon`) when updating an existing instance to `1.31.0`.
 
 [1.31.0](https://github.com/bird-house/birdhouse-deploy/tree/1.31.0) (2023-09-13)
 ------------------------------------------------------------------------------------------------------------------
