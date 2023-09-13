@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.31.1](https://github.com/bird-house/birdhouse-deploy/tree/1.31.1) (2023-09-13)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Small change to the location of schema defining services
