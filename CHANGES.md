@@ -17,6 +17,14 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.31.0](https://github.com/bird-house/birdhouse-deploy/tree/1.31.0) (2023-09-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Deprecate the `flyingpigeon` web processing service.
+  The service can be enabled using [`deprecated-components/flyingpigeon`](birdhouse/deprecated-components/flyingpigeon) in `EXTRA_CONF_DIRS`.
+
 [1.30.1](https://github.com/bird-house/birdhouse-deploy/tree/1.30.1) (2023-09-11)
 ------------------------------------------------------------------------------------------------------------------
 

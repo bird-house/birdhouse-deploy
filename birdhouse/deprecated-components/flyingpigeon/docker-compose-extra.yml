@@ -14,7 +14,7 @@ services:
     environment:
       - PYWPS_CFG=/wps.cfg
     volumes:
-      - ./config/flyingpigeon/wps.cfg:/wps.cfg
+      - ./deprecated-components/flyingpigeon/wps.cfg:/wps.cfg
       - /tmp
     depends_on:
       - postgres
