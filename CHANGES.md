@@ -17,6 +17,15 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.31.1](https://github.com/bird-house/birdhouse-deploy/tree/1.31.1) (2023-09-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Small change to the location of schema defining services
+  - Changed https://github.com/DACCS-Climate/DACCS-node-registry to https://github.com/DACCS-Climate/Marble-node-registry
+    in all service-config.json.template files.
+
 [1.31.0](https://github.com/bird-house/birdhouse-deploy/tree/1.31.0) (2023-09-13)
 ------------------------------------------------------------------------------------------------------------------
 
