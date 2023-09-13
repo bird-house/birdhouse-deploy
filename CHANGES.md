@@ -17,6 +17,31 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.31.2](https://github.com/bird-house/birdhouse-deploy/tree/1.31.2) (2023-09-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix invalid templated configurations of `flyingpigeon` that could remain in the old 
+  location (`birdhouse/config/flyingpigeon`) when updating an existing instance to `1.31.0`.
+
+[1.31.1](https://github.com/bird-house/birdhouse-deploy/tree/1.31.1) (2023-09-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Small change to the location of schema defining services
+  - Changed https://github.com/DACCS-Climate/DACCS-node-registry to https://github.com/DACCS-Climate/Marble-node-registry
+    in all service-config.json.template files.
+
+[1.31.0](https://github.com/bird-house/birdhouse-deploy/tree/1.31.0) (2023-09-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Deprecate the `flyingpigeon` web processing service.
+  The service can be enabled using [`deprecated-components/flyingpigeon`](birdhouse/deprecated-components/flyingpigeon) in `EXTRA_CONF_DIRS`.
+
 [1.30.1](https://github.com/bird-house/birdhouse-deploy/tree/1.30.1) (2023-09-11)
 ------------------------------------------------------------------------------------------------------------------
 
