@@ -1,10 +1,10 @@
-import os
-import pytest
 import glob
 import json
+import os
 from string import Template
 
 import jsonschema
+import pytest
 import requests
 
 COMPONENT_LOCATIONS = ("components", "optional-components", "config")
@@ -29,7 +29,7 @@ def component_paths(root_dir):
 def services_config_schema():
     branch = os.environ.get("DACCS_NODE_REGISTRY_BRANCH", "main")
     schema = {
-        "$ref": "https://raw.githubusercontent.com/DACCS-Climate/DACCS-node-registry"
+        "$ref": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry"
         f"/{branch}/node_registry.schema.json#service"
     }
     return schema
