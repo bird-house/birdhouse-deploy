@@ -17,10 +17,8 @@
 
 ## Changes
 - Geoserver: protect web interface and ows routes behind magpie/twitcher
-
-  Creates two new magpie services: 
-    - `geoserver-ows`: protects the `geoserver/ows`
-    - `geoserver-web`: protects all other `geoserver/` routes (mostly `geoserver/web`)
+ 
+  Updates Magpie version to 3.35.0 in order to take advantage of the updated Geoserver Service.
 
   See https://github.com/bird-house/birdhouse-deploy/issues/333 for details.
 
