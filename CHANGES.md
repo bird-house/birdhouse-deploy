@@ -18,7 +18,21 @@
 ## Changes
 - Geoserver: protect web interface and ows routes behind magpie/twitcher
  
-  Updates Magpie version to 3.35.0 in order to take advantage of the updated Geoserver Service.
+  Updates Magpie version to [3.35.0](https://github.com/Ouranosinc/Magpie/tree/3.35.0) in order to take advantage of 
+  updated Geoserver Service.
+
+  The `geoserverwms` Magpie service is now deprecated. If a deployment is currently using this service, it is highly
+  recommended that the permissions are transferred from the deprecated `geoserverwms` service to the `geoserver` 
+  service.
+
+  The `/geoserver` endpoint is now protected by default. If a deployment currently assumes open access to Geoserver and 
+  would like to keep the same permissions after upgrading to this version, please update the permissions for the 
+  `geoserver` service in Magpie to allow the `anonymous` group access.
+
+  The `optional-components/all-public-access` component provides full access to the `geoserver` service for the 
+  `anonymous` group in Magpie. Please note that this includes some permissions that will allow anonymous users to 
+  perform destructive operations. Because of this, please remember that enabling the 
+  `optional-components/all-public-access` component is not recommended in a production environment.
 
   See https://github.com/bird-house/birdhouse-deploy/issues/333 for details.
 
