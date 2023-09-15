@@ -1,0 +1,10 @@
+version: "3.4"
+services:
+  magpie:
+    volumes:
+      - ./deprecated-components/test-geoserver-secured-access/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/test-geoserver-permissions.cfg:ro
+      - ./deprecated-components/test-geoserver-secured-access/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/test-geoserver-providers.cfg:ro
+
+  proxy:
+    volumes:
+      - ./deprecated-components/test-geoserver-secured-access/config/proxy/conf.d/test-geoserver-secured.conf:/etc/nginx/conf.extra-service.d/geoserver-secured-service/test-geoserver-secured.conf:ro
