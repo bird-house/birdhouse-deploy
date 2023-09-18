@@ -32,8 +32,7 @@ SERVICES['raven'] = {
     'monitoring': {
         'Raven': {
             'request': {
-                # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
-                'url': 'http://${PAVICS_FQDN}:8096/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+                'url': 'http://raven:9099/wps?service=WPS&version=1.0.0&request=GetCapabilities'
             }
         },
     }
