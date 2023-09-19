@@ -15,7 +15,9 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Fix invalid endpoint redirect for `STAC` when using Twitcher/Magpie.
 
 [1.31.2](https://github.com/bird-house/birdhouse-deploy/tree/1.31.2) (2023-09-13)
 ------------------------------------------------------------------------------------------------------------------
