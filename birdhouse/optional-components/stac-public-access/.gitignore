@@ -1,1 +1,3 @@
+config/magpie/permissions.cfg
+# old name for backward compatibility:
 config/magpie/config.yml
