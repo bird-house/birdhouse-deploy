@@ -1,0 +1,4 @@
+services:
+  magpie:
+    volumes:
+      - ./components/stac/config/magpie/config.yml:${MAGPIE_PROVIDERS_CONFIG_PATH}/stac.yml:ro
