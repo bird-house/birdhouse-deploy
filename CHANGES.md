@@ -30,7 +30,7 @@
   of `EXTRA_CONF_DIRS`.
 
 - Rename `optional-components/stac-public-access/config/magpie/config.yml.template` to
-  `optional-components/stac-public-access/config/magpie/permissions.yml.template` in order to align
+  `optional-components/stac-public-access/config/magpie/permissions.cfg` in order to align
   with permissions-specific contents as accomplished with other components.
 
 [1.31.2](https://github.com/bird-house/birdhouse-deploy/tree/1.31.2) (2023-09-13)
