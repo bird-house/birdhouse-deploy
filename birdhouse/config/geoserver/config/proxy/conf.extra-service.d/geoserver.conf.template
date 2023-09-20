@@ -1,5 +1,5 @@
     location /geoserver/ {
-        proxy_pass http://${PAVICS_FQDN}:8087;
+        proxy_pass http://geoserver:8080/geoserver/;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $real_scheme;
         proxy_set_header  Accept-Encoding "";
