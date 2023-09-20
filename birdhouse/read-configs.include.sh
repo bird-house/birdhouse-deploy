@@ -126,6 +126,14 @@ source_conf_files() {
           # fix immediately.
           # The new adir with typo will not be active but at least all the existing
           # will still work.
+          #
+          # Do not exit on not existing conf dir also allow for smooth
+          # transition of component path when they are new/renamed/deleted.
+          #
+          # New component names can be added to EXTRA_CONF_DIRS before the
+          # corresponding PR are merged and old component names can be removed
+          # after the corresponding PR are merge without any impact on the
+          # autodeploy process.
           echo "WARNING: '$adir' in $conf_locations does not exist" 1>&2
       fi
       if [ -f "$adir/default.env" ]; then
