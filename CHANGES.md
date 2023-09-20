@@ -24,6 +24,11 @@
     Without this resource being defined initially, it is very easy to forget creating it, which would not take into
     account the required ``/stac/stac`` request path to properly resolve the real endpoints where STAC API is served.
 
+- Remove `optional-components/stac-public-access` dependency under `optional-components/all-public-access`
+  to avoid indirectly enforcing `components/stac` when `optional-components/all-public-access` is enabled.
+  Users that desire using `optional-components/stac-public-access` will have to add it explicitly to the list
+  of `EXTRA_CONF_DIRS`.
+
 [1.31.2](https://github.com/bird-house/birdhouse-deploy/tree/1.31.2) (2023-09-13)
 ------------------------------------------------------------------------------------------------------------------
 
