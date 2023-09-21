@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.31.3](https://github.com/bird-house/birdhouse-deploy/tree/1.31.3) (2023-09-21)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Move initial ``stac`` service Magpie definition under its component configuration.
@@ -32,6 +37,10 @@
 - Rename `optional-components/stac-public-access/config/magpie/config.yml.template` to
   `optional-components/stac-public-access/config/magpie/permissions.cfg` in order to align
   with permissions-specific contents as accomplished with other components.
+
+- Fix invalid endpoint redirect for `STAC` when using Twitcher/Magpie.
+
+- Apply Magpie permission on `/stac/stac` since the second `/stac` is needed to secure access properly.
 
 [1.31.2](https://github.com/bird-house/birdhouse-deploy/tree/1.31.2) (2023-09-13)
 ------------------------------------------------------------------------------------------------------------------
