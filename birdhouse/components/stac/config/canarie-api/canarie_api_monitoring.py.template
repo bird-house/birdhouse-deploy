@@ -1,0 +1,35 @@
+SERVICES['STAC'] = {
+    'info': {
+        'name': 'STAC',
+        'synopsis': 'STAC is the common name of the REST API that implements the STAC specification, common representation of geospatial information.',
+        'version': "",
+        'institution': 'CRIM',
+        'releaseTime': "2023-06-16T00:00:00Z",
+        'researchSubject': 'Any',
+        'supportEmail': '${SUPPORT_EMAIL}',
+        'category': 'Data Manipulation',
+        'tags': ['Catalog', 'Data', 'OGC']
+    },
+    'stats': {
+        'method': '.*',
+        'route': "/stac/.*"
+    },
+    'redirect': {
+        'doc': 'https://stac-utils.github.io/stac-fastapi/',
+        'releasenotes': 'https://github.com/crim-ca/sac-app/blob/master/CHANGES.rst',
+        'support': 'https://github.com/crim-ca/stac-app/issues',
+        'source': 'https://github.com/crim-ca/stac-app',
+        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/stac/',
+        'licence': 'https://github.com/crim-ca/stac-app/blob/master/LICENSE',
+        'provenance': 'https://github.com/crim-ca/stac-app'
+    },
+    "monitoring": {
+        "STAC": {
+            'request': {
+                'url': 'http://stac:8000/stac'
+            }
+        }
+    }
+}
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python

@@ -8,3 +8,5 @@ ncwms2/
 project-api/
 solr/
 phoenix/
+# moved to deprecated-components
+flyingpigeon/

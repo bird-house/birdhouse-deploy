@@ -37,12 +37,17 @@ Policy rules
 
 3. Contributions will trigger a test suite that must successfully pass before being merged (or integrated).
 
-4. Contributions must be reviewed by every willing organizations
-   (Default reviewers are `@tlvu`_ for `Ouranos`_ and `@MatProv`_ for `CRIM`_).
+    * The test suite can be run using a different DACCS config with ``birdhouse_daccs_configs_branch: branch_name`` in the PR description.
+    * It is possible to skip the test suite if the latest commit contains either ``[skip ci]``, ``[ci skip]`` or ``[no ci]``.
+      To globally skip the test suite regardless of the commit message use ``birdhouse_skip_ci: true`` in the PR description.
 
+4. Contributions must be reviewed by every willing organizations
+   (Default reviewers are `@mishaschwartz`_ for `UofT` , `@tlvu`_ for `Ouranos`_ and `@fmigneault`_ for `CRIM`_).
+
+.. _@mishaschwartz: https://github.com/mishaschwartz
 .. _@tlvu: https://github.com/tlvu
 .. _Ouranos: https://github.com/Ouranosinc
-.. _@MatProv: https://github.com/MatProv
+.. _@fmigneault: https://github.com/fmigneault
 .. _CRIM: https://github.com/crim-ca
 
 5. The reviews must be rigorous while respecting the initial scope.
