@@ -1,0 +1,19 @@
+providers:
+  # definition of STAC service for API access
+  stac:
+    url: http://stac:8000
+    title: STAC
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+
+permissions:
+  # create a default 'stac' resource under 'stac' service
+  # because of the '/stac/stac' path prefix required to resolve the API links properly,
+  # all permissions must be nested under this 'stac' resource for requests and permissions to be resolved accordingly
+  - service: stac
+    resource: /stac
+    permission: read
+    group: administrator  # they already have access, just using admins to create the resource by default
+    action: create
