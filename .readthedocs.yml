@@ -30,4 +30,4 @@ python:
 build:
   os: "ubuntu-22.04"
   tools:
-    python: "3.6"
+    python: "3.10"
