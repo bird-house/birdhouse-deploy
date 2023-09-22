@@ -24,6 +24,31 @@
 - Add an image to the list of images that can be launched from JupyterHub which will be used to start an instance of MLflow.
   - Note that the jupyter lab google drive extension is not supported with this image.
 
+[1.31.3](https://github.com/bird-house/birdhouse-deploy/tree/1.31.3) (2023-09-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Move initial ``stac`` service Magpie definition under its component configuration.
+  - Before this change, ``optional-components/stac-public-access`` was mandatory since the ``stac`` service under
+    Magpie was not created otherwise, leading to "*service not found*" error when requesting the ``/stac`` endpoint.
+  - Ensure that the first ``stac`` resource under ``stac`` service in Magpie is created by default.
+    Without this resource being defined initially, it is very easy to forget creating it, which would not take into
+    account the required ``/stac/stac`` request path to properly resolve the real endpoints where STAC API is served.
+
+- Remove `optional-components/stac-public-access` dependency under `optional-components/all-public-access`
+  to avoid indirectly enforcing `components/stac` when `optional-components/all-public-access` is enabled.
+  Users that desire using `optional-components/stac-public-access` will have to add it explicitly to the list
+  of `EXTRA_CONF_DIRS`.
+
+- Rename `optional-components/stac-public-access/config/magpie/config.yml.template` to
+  `optional-components/stac-public-access/config/magpie/permissions.cfg` in order to align
+  with permissions-specific contents as accomplished with other components.
+
+- Fix invalid endpoint redirect for `STAC` when using Twitcher/Magpie.
+
+- Apply Magpie permission on `/stac/stac` since the second `/stac` is needed to secure access properly.
+
 [1.31.2](https://github.com/bird-house/birdhouse-deploy/tree/1.31.2) (2023-09-13)
 ------------------------------------------------------------------------------------------------------------------
 
