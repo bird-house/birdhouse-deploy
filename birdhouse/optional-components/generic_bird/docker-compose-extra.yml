@@ -5,8 +5,6 @@ services:
     container_name: generic_bird
     environment:
       PYWPS_CFG: /wps.cfg
-    ports:
-      - "${GENERIC_BIRD_PORT}:${GENERIC_BIRD_INTERNAL_PORT}"
     volumes:
       - ./optional-components/generic_bird/wps.cfg:/wps.cfg:ro
       - /tmp

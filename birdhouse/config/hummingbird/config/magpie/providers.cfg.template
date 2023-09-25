@@ -1,6 +1,6 @@
 providers:
   hummingbird:
-    url: http://${PAVICS_FQDN}:8097/wps
+    url: http://hummingbird:8080/wps
     title: Hummingbird
     public: true
     c4i: false
