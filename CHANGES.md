@@ -17,6 +17,15 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.33.1](https://github.com/bird-house/birdhouse-deploy/tree/1.33.1) (2023-09-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Docker compose version missing in ``stac/config/magpie/`` compose file
+  - The ``version:`` key was not set in the ``stac/config/magpie/docker-compose-extra.yml`` file which caused
+    ``docker-compose`` to report a version mismatch and fail to start.
+
 [1.33.0](https://github.com/bird-house/birdhouse-deploy/tree/1.33.0) (2023-09-25)
 ------------------------------------------------------------------------------------------------------------------
 
