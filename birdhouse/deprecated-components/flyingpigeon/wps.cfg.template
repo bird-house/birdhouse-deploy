@@ -1,0 +1,10 @@
+[server]
+outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs/flyingpigeon
+outputpath = /data/wpsoutputs/flyingpigeon
+maxsingleinputsize = 2097152000.0
+
+[logging]
+level = INFO
+database=postgresql://${POSTGRES_PAVICS_USERNAME}:${POSTGRES_PAVICS_PASSWORD}@postgres/flyingpigeon
+
+${EXTRA_PYWPS_CONFIG}

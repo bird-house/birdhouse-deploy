@@ -42,11 +42,11 @@ config/finch/config/magpie/providers.cfg
 config/finch/config/proxy/canarie_api_monitoring.py
 config/finch/service-config.json
 config/finch/wps.cfg
-config/flyingpigeon/config/canarie-api/canarie_api_monitoring.py
-config/flyingpigeon/config/magpie/permissions.cfg
-config/flyingpigeon/config/magpie/providers.cfg
-config/flyingpigeon/service-config.json
-config/flyingpigeon/wps.cfg
+deprecated-components/flyingpigeon/config/canarie-api/canarie_api_monitoring.py
+deprecated-components/flyingpigeon/config/magpie/permissions.cfg
+deprecated-components/flyingpigeon/config/magpie/providers.cfg
+deprecated-components/flyingpigeon/service-config.json
+deprecated-components/flyingpigeon/wps.cfg
 config/frontend/
 config/geoserver/config/canarie-api/canarie_api_monitoring.py
 config/geoserver/config/magpie/providers.cfg

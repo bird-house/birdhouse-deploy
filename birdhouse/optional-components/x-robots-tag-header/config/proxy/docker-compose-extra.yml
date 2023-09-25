@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+      - ./optional-components/x-robots-tag-header/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra.d/x-robots-tag-header:ro

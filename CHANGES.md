@@ -32,6 +32,138 @@
     - now, they are absolute or relative paths from the parent of the component's directory (this resolves to the build
       directory when the stack is started up).
 
+[1.33.0](https://github.com/bird-house/birdhouse-deploy/tree/1.33.0) (2023-09-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add public WPS outputs directory to Cowbird and add corresponding volume mount to JupyterHub.
+- Update `cowbird` service from [1.2.0](https://github.com/Ouranosinc/cowbird/tree/1.2.0)
+  to [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0).
+- Require `MongoDB==5.0` Docker image for Cowbird's database.
+- Add `WPS_OUTPUTS_DIR` env variable to manage the location of the WPS outputs data.
+
+## Important
+Because of the new `MongoDB==5.0` database requirement for Cowbird that uses (potentially) distinct version from other 
+birds, a separate Docker image is employed only for Cowbird. If some processes, jobs, or other Cowbird-related data 
+was already defined on one of your server instances, manual transfer between the generic 
+`${DATA_PERSIST_ROOT}/mongodb_persist` to new  `${DATA_PERSIST_ROOT}/mongodb_cowbird_persist` directory must be 
+accomplished. The data in the new directory should then be migrated to the new version following the same procedure as
+described for Weaver in 
+[Database Migration](https://pavics-weaver.readthedocs.io/en/latest/installation.html?#database-migration).
+
+[1.32.0](https://github.com/bird-house/birdhouse-deploy/tree/1.32.0) (2023-09-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Changes `JUPYTERHUB_VERSION` from `1.4.0-20210506` to `4.0.2-20230816`.
+  - This upgrade is needed to resolve a compatibility issue when using `Spawner.disable_user_config = True` in Jupyterhub 
+    config and the new image which run `jupyter-server 2.7.3`.
+
+- Add an image to the list of images that can be launched from JupyterHub which will be used to start an instance of MLflow.
+  - Note that the jupyter lab google drive extension is not supported with this image.
+
+[1.31.3](https://github.com/bird-house/birdhouse-deploy/tree/1.31.3) (2023-09-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Move initial ``stac`` service Magpie definition under its component configuration.
+  - Before this change, ``optional-components/stac-public-access`` was mandatory since the ``stac`` service under
+    Magpie was not created otherwise, leading to "*service not found*" error when requesting the ``/stac`` endpoint.
+  - Ensure that the first ``stac`` resource under ``stac`` service in Magpie is created by default.
+    Without this resource being defined initially, it is very easy to forget creating it, which would not take into
+    account the required ``/stac/stac`` request path to properly resolve the real endpoints where STAC API is served.
+
+- Remove `optional-components/stac-public-access` dependency under `optional-components/all-public-access`
+  to avoid indirectly enforcing `components/stac` when `optional-components/all-public-access` is enabled.
+  Users that desire using `optional-components/stac-public-access` will have to add it explicitly to the list
+  of `EXTRA_CONF_DIRS`.
+
+- Rename `optional-components/stac-public-access/config/magpie/config.yml.template` to
+  `optional-components/stac-public-access/config/magpie/permissions.cfg` in order to align
+  with permissions-specific contents as accomplished with other components.
+
+- Fix invalid endpoint redirect for `STAC` when using Twitcher/Magpie.
+
+- Apply Magpie permission on `/stac/stac` since the second `/stac` is needed to secure access properly.
+
+[1.31.2](https://github.com/bird-house/birdhouse-deploy/tree/1.31.2) (2023-09-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix invalid templated configurations of `flyingpigeon` that could remain in the old 
+  location (`birdhouse/config/flyingpigeon`) when updating an existing instance to `1.31.0`.
+
+[1.31.1](https://github.com/bird-house/birdhouse-deploy/tree/1.31.1) (2023-09-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Small change to the location of schema defining services
+  - Changed https://github.com/DACCS-Climate/DACCS-node-registry to https://github.com/DACCS-Climate/Marble-node-registry
+    in all service-config.json.template files.
+
+[1.31.0](https://github.com/bird-house/birdhouse-deploy/tree/1.31.0) (2023-09-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes:
+
+- Deprecate the `flyingpigeon` web processing service.
+  The service can be enabled using [`deprecated-components/flyingpigeon`](birdhouse/deprecated-components/flyingpigeon) in `EXTRA_CONF_DIRS`.
+
+[1.30.1](https://github.com/bird-house/birdhouse-deploy/tree/1.30.1) (2023-09-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix incorrect tag ``X-Robots-Tags`` header to appropriate ``X-Robots-Tag`` (no final ``s``) name.
+  Optional component name ``optional-components/x-robots-tag-header`` and variable ``X_ROBOTS_TAG_HEADER``
+  have also been adjusted accordingly.
+
+[1.30.0](https://github.com/bird-house/birdhouse-deploy/tree/1.30.0) (2023-09-06)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add ``optional-components/x-robots-tags-header`` and ``X_ROBOTS_TAGS_HEADER`` variable to allow setting the desired
+  header value server-wide.
+
+- Delete unused Dockerfiles, fixes
+  [#349](https://github.com/bird-house/birdhouse-deploy/issues/349) and
+  [#352](https://github.com/bird-house/birdhouse-deploy/pull/352)
+
+  * birdhouse/docker/geoserver: not used since 3-4 years, replaced by https://github.com/kartoza/docker-geoserver
+
+  * birdhouse/config/geoserver/Dockerfile: was introduced in commit [f3b9896e6b771e0aff62c6851c2376d730ddadaf](https://github.com/bird-house/birdhouse-deploy/commit/f3b9896e6b771e0aff62c6851c2376d730ddadaf)
+    (PR [#233](https://github.com/bird-house/birdhouse-deploy/pull/233), commit
+    [d1ecc63284ec9d2940bfa2b1b4baca3fbe1308b3](https://github.com/bird-house/birdhouse-deploy/commit/d1ecc63284ec9d2940bfa2b1b4baca3fbe1308b3)) as a temporary
+    solution only, not needed with newer kartoza docker images.
+
+- Move birdhouse/docker/solr to birdhouse/deprecated-components/solr/docker
+  to group related files together.  Solr has been deprecated since PR
+  [#311](https://github.com/bird-house/birdhouse-deploy/pull/311)
+  (commit
+  [a8d3612fdb7fd7758b24e75b0ef697fd3d8ace51](https://github.com/bird-house/birdhouse-deploy/commit/a8d3612fdb7fd7758b24e75b0ef697fd3d8ace51)).
+
+
+[1.29.2](https://github.com/bird-house/birdhouse-deploy/tree/1.29.2) (2023-08-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Monitoring: allow access to magpie members of group `monitoring`
+
+  To allow accessing the various monitoring WebUI without having full blown
+  magpie admin priviledge to add and remove users.
+
+  Add existing users to this new `monitoring` group to allow them access to the
+  various monitoring WebUI.  This way, we do not need to share the `admin` user
+  account and do not have to add them to the `administrators` group.
+
+
 [1.29.1](https://github.com/bird-house/birdhouse-deploy/tree/1.29.1) (2023-08-15)
 ------------------------------------------------------------------------------------------------------------------
 
