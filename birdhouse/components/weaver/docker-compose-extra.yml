@@ -63,7 +63,6 @@ services:
       - weaver-mongodb
     volumes:
       #- wps_private:/data/wps_private
-      - ${WEAVER_WPS_PRIVATE_DIR}:/data/wps_private
       - ./components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
       - ./components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
       - ./components/weaver/celery-healthcheck:/opt/local/bin/weaver/celery-healthcheck:ro
