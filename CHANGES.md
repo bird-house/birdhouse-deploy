@@ -32,6 +32,18 @@ accomplished. The data in the new directory should then be migrated to the new v
 described for Weaver in 
 [Database Migration](https://pavics-weaver.readthedocs.io/en/latest/installation.html?#database-migration).
 
+[1.32.0](https://github.com/bird-house/birdhouse-deploy/tree/1.32.0) (2023-09-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Changes `JUPYTERHUB_VERSION` from `1.4.0-20210506` to `4.0.2-20230816`.
+  - This upgrade is needed to resolve a compatibility issue when using `Spawner.disable_user_config = True` in Jupyterhub 
+    config and the new image which run `jupyter-server 2.7.3`.
+
+- Add an image to the list of images that can be launched from JupyterHub which will be used to start an instance of MLflow.
+  - Note that the jupyter lab google drive extension is not supported with this image.
+
 [1.31.3](https://github.com/bird-house/birdhouse-deploy/tree/1.31.3) (2023-09-21)
 ------------------------------------------------------------------------------------------------------------------
 
