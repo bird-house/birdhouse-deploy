@@ -21,6 +21,38 @@
   - The ``version:`` key was not set in the ``stac/config/magpie/docker-compose-extra.yml`` file which caused
     ``docker-compose`` to report a version mismatch and fail to start.
 
+[1.33.0](https://github.com/bird-house/birdhouse-deploy/tree/1.33.0) (2023-09-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add public WPS outputs directory to Cowbird and add corresponding volume mount to JupyterHub.
+- Update `cowbird` service from [1.2.0](https://github.com/Ouranosinc/cowbird/tree/1.2.0)
+  to [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0).
+- Require `MongoDB==5.0` Docker image for Cowbird's database.
+- Add `WPS_OUTPUTS_DIR` env variable to manage the location of the WPS outputs data.
+
+## Important
+Because of the new `MongoDB==5.0` database requirement for Cowbird that uses (potentially) distinct version from other 
+birds, a separate Docker image is employed only for Cowbird. If some processes, jobs, or other Cowbird-related data 
+was already defined on one of your server instances, manual transfer between the generic 
+`${DATA_PERSIST_ROOT}/mongodb_persist` to new  `${DATA_PERSIST_ROOT}/mongodb_cowbird_persist` directory must be 
+accomplished. The data in the new directory should then be migrated to the new version following the same procedure as
+described for Weaver in 
+[Database Migration](https://pavics-weaver.readthedocs.io/en/latest/installation.html?#database-migration).
+
+[1.32.0](https://github.com/bird-house/birdhouse-deploy/tree/1.32.0) (2023-09-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Changes `JUPYTERHUB_VERSION` from `1.4.0-20210506` to `4.0.2-20230816`.
+  - This upgrade is needed to resolve a compatibility issue when using `Spawner.disable_user_config = True` in Jupyterhub 
+    config and the new image which run `jupyter-server 2.7.3`.
+
+- Add an image to the list of images that can be launched from JupyterHub which will be used to start an instance of MLflow.
+  - Note that the jupyter lab google drive extension is not supported with this image.
+
 [1.31.3](https://github.com/bird-house/birdhouse-deploy/tree/1.31.3) (2023-09-21)
 ------------------------------------------------------------------------------------------------------------------
 

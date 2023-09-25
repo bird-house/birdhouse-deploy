@@ -40,6 +40,8 @@ services:
     # the Hub and the rest of the stack are on network 'default'
       - default
       - jupyterhub_network
+    # ensure the deployment does not fail when upgrading Jupyterhub version
+    command: bash -c "jupyterhub upgrade-db && jupyterhub"
     restart: always
     logging: *default-logging
 
