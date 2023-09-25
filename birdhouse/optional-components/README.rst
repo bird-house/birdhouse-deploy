@@ -163,6 +163,11 @@ How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`dow
 The anonymous user will now have all the permissions described in |magpie-public-perms|_
 (:download:`download </birdhouse/optional-components/all-public-access/all-public-access-magpie-permission.cfg>`).
 
+.. note::
+    If using the ``./components/stac`` feature, the corresponding ``./optional-components/stac-public-access``
+    must be applied as well to obtain similar functionalities to ``./optional-components/all-public-access``.
+    This optional component is kept separate since ``./components/stac`` is not required by default, and therefore
+    cannot be enforced as a component dependency.
 
 .. _magpie-public-perms: ./all-public-access/all-public-access-magpie-permission.cfg
 .. |magpie-public-perms| replace:: optional-components/all-public-access/all-public-access-magpie-permission.cfg
