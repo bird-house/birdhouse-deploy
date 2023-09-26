@@ -1513,7 +1513,7 @@ described for Weaver in
   The fix is to force `requests` to use the OS copy of the root cert bundle.
 
   Fix for this error:
-  ```
+  ```console
   $ docker exec proxy python -c "import requests; requests.request('GET', 'https://lvupavicsmaster.ouranos.ca/geoserver')"
   Traceback (most recent call last):
     File "<string>", line 1, in <module>
@@ -1529,13 +1529,13 @@ described for Weaver in
   ```
 
   Default SSL root cert bundle of `requests`:
-  ```
+  ```console
   $ docker exec proxy python -c "import requests; print requests.certs.where()"
   /usr/local/lib/python2.7/dist-packages/requests/cacert.pem
   ```
 
   Confirm the fix works:
-  ```
+  ```console
   $ docker exec -it proxy bash
   root@37ed3a2a03ae:/opt/local/src/CanarieAPI/canarieapi# REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt python -c "import requests; requests.request('GET', 'https://lvupavicsmaster.ouranos.ca/geoserver')"
   root@37ed3a2a03ae:/opt/local/src/CanarieAPI/canarieapi#
@@ -2120,7 +2120,7 @@ described for Weaver in
   We have 4 Java component but only 1 is vulnerable: Thredds:
   
   **After fix**:
-  ```
+  ```console
   $ docker run -it --rm unidata/thredds-docker:4.6.18 bash
   root@f65aadd2955c:/usr/local/tomcat# find -iname '**log4j**'
   ./webapps/thredds/WEB-INF/classes/log4j2.xml
@@ -2131,7 +2131,7 @@ described for Weaver in
   ```
   
   **Before fix (unidata/thredds-docker:4.6.15)**:
-  ```
+  ```console
   $ docker exec -it thredds find / -iname '**log4j**'
   find: ‘/proc/1/map_files’: Operation not permitted
   find: ‘/proc/12/map_files’: Operation not permitted
@@ -2146,7 +2146,7 @@ described for Weaver in
   **Other components (ncwms2, geoserver, solr) have log4j older than version 2.0
   so supposedly not affected**:
   
-  ```
+  ```console
   $ docker exec -it ncwms2 find / -iname '**log4j**'
   /opt/conda/envs/birdhouse/opt/apache-tomcat/webapps/ncWMS2/WEB-INF/classes/log4j.properties
   /opt/conda/envs/birdhouse/opt/apache-tomcat/webapps/ncWMS2/WEB-INF/lib/log4j-1.2.17.jar
@@ -2733,7 +2733,7 @@ Deployed to https://medus.ouranos.ca/jupyter/ for acceptance testing.
     database updates if such users exist on your server instance. To look for possible duplicates, the following command
     can be used. Duplicate entries must be updated or removed such that only unique emails are present.
     
-    ```shell
+    ```console
     echo "select email,user_name from users" | \
     docker exec -i postgres-magpie psql -U $POSTGRES_MAGPIE_USERNAME magpiedb | \
     sort > /tmp/magpie_users.txt

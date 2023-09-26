@@ -211,6 +211,69 @@ bump-check:		## Verifies that required bumpversion files are found
 version:	## Display project version
 	@-$(MSG_I) "$(APP_NAME) version: $(APP_VERSION)"
 
+## --- Documentation targets --- ##
+
+define BROWSER_PYSCRIPT
+import os, webbrowser, sys
+try:
+	from urllib import pathname2url
+except:
+	from urllib.request import pathname2url
+
+webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))
+endef
+export BROWSER_PYSCRIPT
+override BROWSER_DISPLAY := python -c "$$BROWSER_PYSCRIPT"
+
+override DOC_ROOT  := docs
+override DOC_INDEX := $(DOC_ROOT)/_build/html/index.html
+override DOC_XARGS ?=	## additional arguments for Sphinx build
+override DOC_XARGS := $(call clean_opt,$(DOC_XARGS))
+override DOC_DEBUG ?=	## set debug logging for Sphinx build
+override DOC_DEBUG := $(call clean_opt,$(DOC_DEBUG))
+ifneq ($(DOC_DEBUG),)
+  override DOC_XARGS := $(DOC_XARGS) -vv
+endif
+
+$(DOC_INDEX):
+	@-$(MSG_I) "Building docs..."
+	@$(SHELL) -c '$(CONDA_CMD) "$(MAKE)" -C "$(DOC_ROOT)" SPHINXOPTS="$(DOC_XARGS)" html;'
+	@-$(MSG_I) "Documentation available: [file://$(DOC_INDEX)]"
+
+.PHONY: _force_docs
+_force_docs:
+	@-rm -f "$(DOC_INDEX)"
+
+# rm without quotes important below to allow regex
+.PHONY: docs-clean
+docs-clean:		## remove doc artifacts
+	@-$(MSG_I) "Cleaning doc artifacts..."
+	@-find "$(DOC_ROOT)/" -type f -name "$(APP_NAME)*.rst" -delete
+	@-rm -f "$(DOC_ROOT)/modules.rst"
+	@-rm -rf "$(DOC_ROOT)/_build"
+
+.PHONY: docs-linkcheck
+docs-linkcheck: docs		## run check of external links in documentation for integrity
+	@-$(MSG_I) "Running link checks on docs..."
+	@$(SHELL) -c '$(CONDA_CMD) $(MAKE) -C "$(DOC_ROOT)" SPHINXOPTS="$(DOC_XARGS)" linkcheck'
+
+.PHONY: docs-install
+docs-install:		## install package requirements for documentation generation
+	@$(SHELL) -c '$(CONDA_CMD) pip install $(PIP_XARGS) -r "$(DOC_ROOT)/requirements.txt"'
+	@-$(MSG_I) "Successfully installed docs requirements."
+
+.PHONY: docs-only
+docs-only: _force_docs $(DOC_INDEX) 	## generate documentation without requirements installation or cleanup
+
+# NOTE: we need almost all base dependencies because magpie package needs to be parsed to generate OpenAPI
+.PHONY: docs
+docs: docs-install docs-clean docs-only	## generate Sphinx HTML documentation
+
+.PHONY: docs-show
+docs-show: $(DOC_INDEX)	## display HTML webpage of generated documentation (build docs if missing)
+	@-test -f "$(DOC_INDEX)" || $(MAKE) -C "$(APP_ROOT)" $(DOC_ROOT)
+	$(BROWSER_DISPLAY) "$(DOC_INDEX)"
+
 ### Execution Targets ###
 
 SCRIPT ?= birdhouse/pavics-compose.sh	## Script to run the stack
