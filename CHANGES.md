@@ -29,6 +29,9 @@
   would like to keep the same permissions after upgrading to this version, please update the permissions for the 
   `geoserver` service in Magpie to allow the `anonymous` group access.
 
+  A `Magpie` service named `geoserver` with type `wfs` exists already and must be manually deleted before the new
+  `Magpie` service created here can take effect.
+
   The `optional-components/all-public-access` component provides full access to the `geoserver` service for the 
   `anonymous` group in Magpie. Please note that this includes some permissions that will allow anonymous users to 
   perform destructive operations. Because of this, please remember that enabling the 
