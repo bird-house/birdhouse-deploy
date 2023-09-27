@@ -37,6 +37,10 @@
   perform destructive operations. Because of this, please remember that enabling the 
   `optional-components/all-public-access` component is not recommended in a production environment.
 
+  Introduces the `GEOSERVER_SKIP_AUTH` environment variable. If set to `True`, then requests to the geoserver endpoint 
+  will not be authorized through twitcher/magpie at all. This is not recommended at all. However, it will slightly 
+  improve performance when accessing geoserver endpoints.
+
   See https://github.com/bird-house/birdhouse-deploy/issues/333 for details.
 
 [1.33.2](https://github.com/bird-house/birdhouse-deploy/tree/1.33.2) (2023-09-27)
