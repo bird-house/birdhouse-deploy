@@ -6,7 +6,7 @@
   dockerargs: >-
     --rm --name logrotate
     --volume /var/log/PAVICS:/var/log/PAVICS:rw
-    --volume ${DATA_PERSIST_ROOT}/logrotate:/var/lib:rw
+    --volume ${LOGROTATE_DATA_DIR}:/var/lib:rw
     --volume ${COMPOSE_DIR}/deployment/PAVICS-deploy.logrotate:/etc/logrotate.conf.orig:ro
   image: 'stakater/logrotate:3.13.0'
 
