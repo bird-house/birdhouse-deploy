@@ -22,4 +22,23 @@
       "href": "https://raw.githubusercontent.com/radiantearth/stac-api-spec/main/core/openapi.yaml"
     }
   ]
+}, {
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "stac-browser",
+  "keywords": [
+    "catalog"
+  ],
+  "description": "A web interface to browse the STAC catalogs.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/stac-browser/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://github.com/radiantearth/stac-browser"
+    }
+  ]
 }
