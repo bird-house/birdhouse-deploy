@@ -88,6 +88,10 @@ if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
         "bind": join(jupyterhub_data_dir, "{username}"),
         "mode": "rw"
     }
+    c.DockerSpawner.volumes[join(os.environ['WORKSPACE_DIR'], os.environ['PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR'])] = {
+        "bind": join(notebook_dir, os.environ['PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR']),
+        "mode": "ro"
+    }
 
 container_gdrive_settings_path = join(container_home_dir, ".jupyter/lab/user-settings/@jupyterlab/google-drive/drive.jupyterlab-settings")
 host_gdrive_settings_path = os.environ['JUPYTER_GOOGLE_DRIVE_SETTINGS']
