@@ -15,7 +15,10 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+# Fixes
+- Clean up: Make bind-mount locations more flexible
+
+  Clean up unused variables and correct file paths from the changes made in 1.33.2
 
 [1.33.2](https://github.com/bird-house/birdhouse-deploy/tree/1.33.2) (2023-09-27)
 ------------------------------------------------------------------------------------------------------------------
