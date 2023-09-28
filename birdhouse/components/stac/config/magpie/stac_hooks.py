@@ -16,14 +16,9 @@ import re
 from typing import TYPE_CHECKING
 
 from magpie.api.management.resource import resource_utils as ru
-from magpie.api.management.user import user_utils as uu
-from magpie.api.requests import get_user, get_service_matchdict_checked
-from magpie.constants import get_constant
+from magpie.api.requests import get_service_matchdict_checked
 from magpie.models import Route, Service
-from magpie.register import magpie_register_permissions_from_config
-from magpie.permissions import Access, Permission, PermissionSet, Scope
-from magpie.utils import get_header, get_logger
-from magpie.constants import MAGPIE_LOG_LEVEL
+from magpie.utils import get_logger
 from magpie.db import get_session_from_other
 
 if TYPE_CHECKING:
@@ -40,6 +35,7 @@ def create_collection_resource(response):
     request = response.request
     body = request.json
     collection_id = body['id']
+    display_name = extract_display_name(body['links'])
 
     # note: matchdict reference of Twitcher owsproxy view is used, just so happens to be same name as Magpie
     service = get_service_matchdict_checked(request)
@@ -57,17 +53,17 @@ def create_collection_resource(response):
                     if stac_child["node"].resource_name == "collections":
                         collection_res_id = stac_child["node"].resource_id
                         collection_res_create = False
+                        break
 
         # create resource /stac/stac/collections if does not exist
         if collection_res_create:
             collection_res = ru.create_resource("collections", None, Route.resource_type_name, stac_res_id, db_session=session)
             collection_res_id = collection_res.json["resource"]["resource_id"]
 
-        # TODO USE DISPLAY NAME OF thredd PATH instead of None
         # create resource /stac/stac/collections/<collection_id>
         # In try catch since Magpie resource are persistent but stac-db could be wiped
         try:
-            collection = ru.create_resource(collection_id, None, Route.resource_type_name, collection_res_id, db_session=session)
+            collection = ru.create_resource(collection_id, display_name, Route.resource_type_name, collection_res_id, db_session=session)
         except Exception as exc:
             LOGGER.warning("Failed creation of the collection %s %s", collection_id, str(exc), exc_info=exc)
 
@@ -86,10 +82,7 @@ def create_item_resource(response):
     request = response.request
     body = request.json
     item_id = body['id']
-    item_url = body['assets']['NetcdfSubset']['href']
-
-    # Match everything after ncss/ -> corresponding to the path in thredds ex: birdhouse/test-data/tc_Anon[...].nc
-    display_name = re.search(r'(?s)(?<=ncss\/).*', item_url).group()
+    display_name = extract_display_name(body['links'])
 
     # Get the <collection_id> from url -> /collections/{collection_id}/items
     collection_id = re.search(r'(?<=collections\/).*?(?=\/items)', request.url).group()
@@ -116,6 +109,7 @@ def create_item_resource(response):
                                     if item_child["node"].resource_name == "items":
                                         item_res_id = item_child["node"].resource_id
                                         item_res_create = False
+                                        break
 
         # create resource /stac/stac/collections/<collection_id>/items if does not already exist
         if item_res_create:
@@ -134,3 +128,17 @@ def create_item_resource(response):
         LOGGER.error("Unexpected error while creating the item %s %s", display_name, str(exc), exc_info=exc)
     
     return response
+
+def extract_display_name(links):
+    # type: (JSON array) -> string
+    """
+    Extract THREDD path from a STAC links
+    """
+    display_name = None
+    for link in links:
+        if link['rel'] == 'source':
+            # Example of title `thredds:birdhouse/CMIP6` -> `birdhouse/CMIP6`
+            display_name = link['title'].split(':')[1]
+            break
+
+    return display_name 
