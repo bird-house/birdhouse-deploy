@@ -15,7 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Add a Magpie Webhook to create the Magpie resources corresponding to the STAC-API path elements when a `STAC-API` 
+  `POST /collections/{collection_id}` or `POST /collections/{collection_id}/items/{item_id}` request is accomplished.
+  - When creating the STAC `Item`, the Asset URL corresponding to a `THREDDS` file on the same instance is used to 
+    define the Magpie `resource_display_name` corresponding to a file to be mapped later on
+    (eg: a NetCDF birdhouse/test-data/tc_Anon[...].nc).
+  - Checking same instance Asset URL is necessary because `STAC` could refer to external assets, and we do not want to 
+    inject Magpie resource that are not part of the active instance where the hook is running.
 
 [1.33.2](https://github.com/bird-house/birdhouse-deploy/tree/1.33.2) (2023-09-27)
 ------------------------------------------------------------------------------------------------------------------

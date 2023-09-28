@@ -41,10 +41,6 @@ def create_collection_resource(response):
     body = request.json
     collection_id = body['id']
 
-    # collection already exist
-    if response.status_code == 409:
-        return response
-
     # note: matchdict reference of Twitcher owsproxy view is used, just so happens to be same name as Magpie
     service = get_service_matchdict_checked(request)
     try:
@@ -69,11 +65,16 @@ def create_collection_resource(response):
 
         # TODO USE DISPLAY NAME OF thredd PATH instead of None
         # create resource /stac/stac/collections/<collection_id>
-        collection = ru.create_resource(collection_id, None, Route.resource_type_name, collection_res_id, db_session=session)
+        # In try catch since Magpie resource are persistent but stac-db could be wiped
+        try:
+            collection = ru.create_resource(collection_id, None, Route.resource_type_name, collection_res_id, db_session=session)
+        except Exception as exc:
+            LOGGER.warning("Failed creation of the collection %s %s", collection_id, str(exc), exc_info=exc)
+
         session.commit()   
    
     except Exception as exc:
-        LOGGER.error("Failed creation of the collection resource %s", str(exc), exc_info=exc)
+        LOGGER.error("Unexpected error while creating the collection %s", str(exc), exc_info=exc)
     
     return response
 
@@ -87,12 +88,11 @@ def create_item_resource(response):
     item_id = body['id']
     item_url = body['assets']['NetcdfSubset']['href']
 
-    # Match everything after ncss/ -> coresponding to path in thredds ex: birdhouse/test-data/tc_Anon[...].nc
+    # Match everything after ncss/ -> corresponding to the path in thredds ex: birdhouse/test-data/tc_Anon[...].nc
     display_name = re.search(r'(?s)(?<=ncss\/).*', item_url).group()
 
-    # Item already exist in stac , resource should already be created in Magpie
-    if response.status_code == 409:
-        return response
+    # Get the <collection_id> from url -> /collections/{collection_id}/items
+    collection_id = re.search(r'(?<=collections\/).*?(?=\/items)', request.url).group()
 
     # note: matchdict reference of Twitcher owsproxy view is used, just so happens to be same name as Magpie
     service = get_service_matchdict_checked(request)
@@ -109,8 +109,7 @@ def create_item_resource(response):
                     if stac_child["node"].resource_name == "collections":
                         # find the id of the resource matching stac/stac/collections/<collection_id>
                         for collection_child in stac_child["children"].values():
-                            # TODO use collection id instead of CMIP6  
-                            if collection_child["node"].resource_name == "CMIP6":
+                            if collection_child["node"].resource_name == collection_id:
                                 collection_res_id = collection_child["node"].resource_id
                                 # find the id of the resource matching stac/stac/collections/<collection_id>/items
                                 for item_child in collection_child["children"].values():
@@ -121,14 +120,17 @@ def create_item_resource(response):
         # create resource /stac/stac/collections/<collection_id>/items if does not already exist
         if item_res_create:
             item_res = ru.create_resource("items", None, Route.resource_type_name, collection_res_id, db_session=session)
-            LOGGER.debug("item_res_create is true , creating tag items %s", item_res)
             item_res_id = item_res.json["resource"]["resource_id"]
 
         # create resource stac/stac/collection/<collection_id>/items/<item_id>
-        item_res = ru.create_resource(item_id, display_name, Route.resource_type_name, item_res_id, db_session=session)
+        # In try catch since Magpie resource are persistent but stac-db could be wiped
+        try:
+            item_res = ru.create_resource(item_id, display_name, Route.resource_type_name, item_res_id, db_session=session)
+        except Exception as exc:
+            LOGGER.warning("Failed creation of the item %s %s", display_name, str(exc), exc_info=exc)
         session.commit()   
    
     except Exception as exc:
-        LOGGER.error("Failed creation of the item resource %s", str(exc), exc_info=exc)
+        LOGGER.error("Unexpected error while creating the item %s %s", display_name, str(exc), exc_info=exc)
     
     return response
