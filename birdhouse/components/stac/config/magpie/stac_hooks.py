@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from pyramid.request import Request
     from pyramid.response import Response
 
-LOGGER = get_logger("magpie.stac",level=logging.DEBUG)
+LOGGER = get_logger("magpie.stac", level=logging.DEBUG)
 
 def create_collection_resource(response):
     # type: (Response) -> Response
@@ -34,8 +34,8 @@ def create_collection_resource(response):
     """
     request = response.request
     body = request.json
-    collection_id = body['id']
-    display_name = extract_display_name(body['links'])
+    collection_id = body["id"]
+    display_name = extract_display_name(body["links"])
 
     # note: matchdict reference of Twitcher owsproxy view is used, just so happens to be same name as Magpie
     service = get_service_matchdict_checked(request)
@@ -81,8 +81,8 @@ def create_item_resource(response):
     """
     request = response.request
     body = request.json
-    item_id = body['id']
-    display_name = extract_display_name(body['links'])
+    item_id = body["id"]
+    display_name = extract_display_name(body["links"])
 
     # Get the <collection_id> from url -> /collections/{collection_id}/items
     collection_id = re.search(r'(?<=collections\/).*?(?=\/items)', request.url).group()
@@ -136,9 +136,9 @@ def extract_display_name(links):
     """
     display_name = None
     for link in links:
-        if link['rel'] == 'source':
+        if link["rel"] == "source":
             # Example of title `thredds:birdhouse/CMIP6` -> `birdhouse/CMIP6`
-            display_name = link['title'].split(':')[1]
+            display_name = link["title"].split(":")[1]
             break
 
     return display_name 
