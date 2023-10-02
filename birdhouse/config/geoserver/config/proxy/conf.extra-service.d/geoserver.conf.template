@@ -15,6 +15,10 @@
     location = /secure-geoserver-auth {
         internal;
         ${GEOSERVER_SKIP_AUTH_PROXY_INCLUDE}
+
+        # If GEOSERVER_SKIP_AUTH is "True" then the following section is skipped and this
+        # location block will always return 200 (which means that the /geoserver/ location, above,
+        # will be publicly available.
         proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_VERIFY_PATH}/geoserver$request_uri;
         proxy_pass_request_body off;
         proxy_set_header Host $host;
