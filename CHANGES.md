@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.33.5](https://github.com/bird-house/birdhouse-deploy/tree/1.33.5) (2023-10-02)
+------------------------------------------------------------------------------------------------------------------
+
 ## CHANGES
 
 - Adding a description for the STAC service that will be served at the `/services` endpoint
