@@ -13,7 +13,7 @@ providers:
         method: POST
         target: /opt/birdhouse/src/magpie/hooks/stac_hooks.py:create_collection_resource
       - type: response
-        path: "/stac/collections/[a-z-A-Z-0-9]+/items/?"
+        path: "/stac/collections/[\\w-]+/items/?"
         method: POST
         target: /opt/birdhouse/src/magpie/hooks/stac_hooks.py:create_item_resource
 

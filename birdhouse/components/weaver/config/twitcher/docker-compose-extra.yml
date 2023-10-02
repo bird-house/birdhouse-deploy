@@ -5,6 +5,6 @@ services:
   twitcher:
     volumes:
       # NOTE: MagpieAdapter hooks are defined within Magpie config, but it is actually Twitcher proxy that runs them
-      # target mount location depends on main docker-compose 'MAGPIE_PROVIDERS_CONFIG_PATH' environment variable
+      # target mount location depends on 'MAGPIE_PROVIDERS_CONFIG_PATH' environment variable that is found under `birdhouse/config/twitcher/docker-compose-extra.yml`
       - ./components/weaver/config/magpie/config.yml:/opt/birdhouse/src/magpie/config/weaver-config.yml:ro
       - ./components/weaver/config/magpie/weaver_hooks.py:/opt/birdhouse/src/magpie/hooks/weaver_hooks.py:ro
