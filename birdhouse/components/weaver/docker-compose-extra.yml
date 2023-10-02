@@ -96,7 +96,7 @@ services:
     networks:
       - weaver-mongodb
     volumes:
-      - ${WEAVER_MONGODB_DATA_DIR}/mongodb_weaver_persist:/data/db
+      - ${WEAVER_MONGODB_DATA_DIR}:/data/db
     restart: always
     logging: *default-logging
 

@@ -17,6 +17,14 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.33.4](https://github.com/bird-house/birdhouse-deploy/tree/1.33.4) (2023-10-02)
+------------------------------------------------------------------------------------------------------------------
+
+# Fixes
+- Clean up: Make bind-mount locations more flexible
+
+  Clean up unused variables and correct file paths from the changes made in 1.33.2
+
 [1.33.3](https://github.com/bird-house/birdhouse-deploy/tree/1.33.3) (2023-09-29)
 ------------------------------------------------------------------------------------------------------------------
 
