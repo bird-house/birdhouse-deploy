@@ -2,4 +2,4 @@ version: "3.4"
 services:
   proxy:
     volumes:
-    - ./config/magpie/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/magpie:ro
+    - ./magpie/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/magpie:ro

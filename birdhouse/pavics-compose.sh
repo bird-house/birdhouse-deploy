@@ -49,10 +49,6 @@ COMPOSE_DIR="`pwd`"
 . "$COMPOSE_DIR/read-configs.include.sh"
 read_configs # this sets ALL_CONF_DIRS
 
-. ./scripts/get-components-json.include.sh
-. ./scripts/get-services-json.include.sh
-. ./scripts/get-version-json.include.sh
-
 for i in ${VARS}
 do
   v="${i}"
@@ -86,30 +82,63 @@ for adir in $AUTODEPLOY_EXTRA_REPOS; do
 done
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
-# we apply all the templates
-find $ALL_CONF_DIRS -name '*.template' |
-  while read FILE
-  do
-    DEST=${FILE%.template}
-    cat ${FILE} | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > ${DEST}
-  done
+COMPOSE_FILE="${BUILD_DIR}/docker-compose.yml"
+
+# Keep the compose project name as "birdhouse" by default (no matter where the build directory is located)
+export COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-birdhouse}
 
 if [ x"$1" = x"up" ]; then
+  rm -r "${BUILD_DIR}"
   for adir in $ALL_CONF_DIRS; do
+    CONF_NAME="$(basename "${adir}")"
+    find "$adir" -type f |
+      while read -r FILE
+      do
+        RELATIVE_FILE_PATH=${FILE#${adir}}
+        DEST="${BUILD_DIR}/${CONF_NAME}/${RELATIVE_FILE_PATH#/}"
+        mkdir -p "$(dirname "${DEST}")"
+        if ! ln "${FILE}" "${DEST}"; then
+          echo "${YELLOW}Warning:${NORMAL} unable to link '${FILE}' to '${DEST}'. Attempting to copy instead."
+          cp "${FILE}" "${DEST}"
+        fi
+      done
+  done
+
+  # we apply all the templates
+  find "$BUILD_DIR" -name '*.template' |
+    while read -r FILE
+    do
+      DEST=${FILE%.template}
+      cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
+    done
+
+  # Get the information for enabled components, services, version; after the template
+  # file have been written so that they reflect the most up-to-date changes.
+  . ./scripts/get-components-json.include.sh
+  . ./scripts/get-services-json.include.sh
+  . ./scripts/get-version-json.include.sh
+
+  for adir in "${BUILD_DIR}"/*; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
     if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
       echo "executing '$COMPONENT_PRE_COMPOSE_UP'"
       sh -x "$COMPONENT_PRE_COMPOSE_UP"
     fi
   done
+
+  create_compose_conf_list # this sets COMPOSE_CONF_LIST
+  echo "COMPOSE_CONF_LIST="
+  echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
+
+  cp "${COMPOSE_DIR}/docker-compose.yml" "${COMPOSE_FILE}"
+
+  # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
+  PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} config > "${COMPOSE_FILE}.final"
+
+  mv "${COMPOSE_FILE}.final" "${COMPOSE_FILE}"
 fi
 
-create_compose_conf_list # this sets COMPOSE_CONF_LIST
-echo "COMPOSE_CONF_LIST="
-echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
-
-# the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} $*
+docker-compose -f "${COMPOSE_FILE}" "$@"
 ERR=$?
 
 # execute post-compose function if exists and no error occurred
@@ -125,11 +154,11 @@ while [ $# -gt 0 ]
 do
   if [ x"$1" = x"up" ]; then
     # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
-    PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} restart proxy
+    docker-compose -f "${COMPOSE_FILE}" restart proxy
 
     # run postgres post-startup setup script
     # Note: this must run before the post-docker-compose-up scripts since some may expect postgres databases to exist
-    postgres_id=$(PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres)
+    postgres_id=$(docker-compose -f "${COMPOSE_FILE}" ps -q postgres)
     if [ ! -z "$postgres_id" ]; then
       docker exec ${postgres_id} /postgres-setup.sh
     fi

@@ -3,8 +3,9 @@
 # default value in case of error or missing definitions
 
 for adir in ${ALL_CONF_DIRS}; do
-  [ -f "${adir}/service-config.json" ] || continue
-  SERVICES="${SERVICES}$([ -n "${SERVICES}" ] && echo ',') $(cat "${adir}/service-config.json")"
+  service_config="${BUILD_DIR}/$(basename "$adir")/service-config.json"
+  [ -f "${service_config}" ] || continue
+  SERVICES="${SERVICES}$([ -n "${SERVICES}" ] && echo ',') $(cat "${service_config}")"
 done
 
 if [ -z "${SERVICES}" ]; then

@@ -2,4 +2,4 @@ version: "3.4"
 services:
   proxy:
     volumes:
-    - ./config/geoserver/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/geoserver:ro
+    - ./geoserver/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/geoserver:ro

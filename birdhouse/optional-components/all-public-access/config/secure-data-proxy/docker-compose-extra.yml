@@ -2,4 +2,4 @@ version: "3.4"
 services:
   magpie:
     volumes:
-      - ./optional-components/all-public-access/config/secure-data-proxy/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/all-public-access-secure-data-proxy-permissions.cfg:ro
+      - ./all-public-access/config/secure-data-proxy/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/all-public-access-secure-data-proxy-permissions.cfg:ro

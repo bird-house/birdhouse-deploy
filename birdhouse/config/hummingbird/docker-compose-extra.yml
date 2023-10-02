@@ -14,7 +14,7 @@ services:
     environment:
       HOSTNAME: $HOSTNAME
     volumes:
-      - ./config/hummingbird/custom.cfg:/opt/birdhouse/src/hummingbird/custom.cfg
+      - ./hummingbird/custom.cfg:/opt/birdhouse/src/hummingbird/custom.cfg
     depends_on:
       - postgres
     restart: always

@@ -2,5 +2,5 @@ version: "3.4"
 services:
   magpie:
     volumes:
-    - ./optional-components/emu/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/emu-permissions.cfg:ro
-    - ./optional-components/emu/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/emu-providers.cfg:ro
+    - ./emu/config/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/emu-permissions.cfg:ro
+    - ./emu/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/emu-providers.cfg:ro

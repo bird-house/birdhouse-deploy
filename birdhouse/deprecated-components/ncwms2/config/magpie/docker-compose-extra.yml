@@ -2,4 +2,4 @@ version: "3.4"
 services:
   magpie:
     volumes:
-    - ./deprecated-components/ncwms2/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/ncwms2-providers.cfg:ro
+    - ./ncwms2/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/ncwms2-providers.cfg:ro

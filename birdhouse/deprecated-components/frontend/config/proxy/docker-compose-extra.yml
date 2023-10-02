@@ -2,4 +2,4 @@ version: "3.4"
 services:
   proxy:
     volumes:
-    - ./deprecated-components/frontend/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/frontend:ro
+    - ./frontend/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/frontend:ro
