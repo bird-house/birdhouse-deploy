@@ -5,7 +5,6 @@ from string import Template
 
 import jsonschema
 import pytest
-import requests
 
 COMPONENT_LOCATIONS = ("components", "optional-components", "config")
 TEMPLATE_SUBSTITUTIONS = {
@@ -43,11 +42,18 @@ class TestDockerCompose:
             service_config_file = os.path.join(path, "service-config.json.template")
             if os.path.isfile(service_config_file):
                 with open(service_config_file) as f:
-                    service_config = json.loads(Template(f.read()).safe_substitute(TEMPLATE_SUBSTITUTIONS))
-                config_name = service_config.get("name")
-                path_name = os.path.basename(path)
-                if config_name != path_name:
-                    invalid_names.append((config_name, path_name))
+                    config_info = Template(f.read()).safe_substitute(TEMPLATE_SUBSTITUTIONS)
+                    service_configs = json.loads("[{}]".format(config_info))
+                invalid_config_names = []
+                for service_config in service_configs:
+                    config_name = service_config.get("name")
+                    path_name = os.path.basename(path)
+                    if config_name == path_name:
+                        # If at least one service_config in the file contains a matching name, that's ok
+                        break
+                    invalid_config_names.append((config_name, path_name))
+                else:
+                    invalid_names.extend(invalid_config_names)
         assert not invalid_names, "service names in service-config.json.template should match the directory name"
 
     @pytest.mark.online
@@ -58,9 +64,11 @@ class TestDockerCompose:
             service_config_file = os.path.join(path, "service-config.json.template")
             if os.path.isfile(service_config_file):
                 with open(service_config_file) as f:
-                    service_config = json.loads(Template(f.read()).safe_substitute(TEMPLATE_SUBSTITUTIONS))
-                try:
-                    jsonschema.validate(instance=service_config, schema=services_config_schema)
-                except jsonschema.exceptions.ValidationError as e:
-                    invalid_schemas.append(f"{os.path.basename(path)} contains invalid service configuration: {e}")
+                    config_info = Template(f.read()).safe_substitute(TEMPLATE_SUBSTITUTIONS)
+                    service_configs = json.loads("[{}]".format(config_info))
+                for service_config in service_configs:
+                    try:
+                        jsonschema.validate(instance=service_config, schema=services_config_schema)
+                    except jsonschema.exceptions.ValidationError as e:
+                        invalid_schemas.append(f"{os.path.basename(path)} contains invalid service configuration: {e}")
         assert not invalid_schemas, "\n".join(invalid_schemas)
