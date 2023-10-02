@@ -26,7 +26,7 @@ fi
 
 # resolve path considering if sourced or executed, and whether from current dir, pavics-compose include or another dir
 BIRDHOUSE_DEPLOY_COMPONENTS_ROOT=$(dirname -- "$(realpath "$0")")
-if [ "$(echo "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" | grep -cE "/${RAW_DATA_LOCATION_NAME_lower}/?\$" 2>/dev/null)" -eq 1 ]; then
+if [ "$(echo "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" | grep -cE "/${THREDDS_RAW_DATA_LOCATION_NAME_lower}/?\$" 2>/dev/null)" -eq 1 ]; then
   BIRDHOUSE_DEPLOY_COMPONENTS_ROOT=.
 else
   BIRDHOUSE_DEPLOY_COMPONENTS_ROOT="${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}/.."

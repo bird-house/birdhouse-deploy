@@ -18,8 +18,8 @@ services:
       PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
     volumes:
       - thredds_persistence:/usr/local/tomcat/content/thredds
-      - ${RAW_DATA_LOCATION_FOR_THREDDS_ON_HOST}:${RAW_DATA_LOCATION_FOR_THREDDS_ON_CONTAINER}
-      - ${DATA_LOCATION_FOR_THREDDS_ON_HOST}:${DATA_LOCATION_FOR_THREDDS_ON_CONTAINER}
+      - ${THREDDS_RAW_DATA_LOCATION_ON_HOST}:${THREDDS_RAW_DATA_LOCATION_ON_CONTAINER}
+      - ${THREDDS_DATA_LOCATION_ON_HOST}:${THREDDS_DATA_LOCATION_ON_CONTAINER}
       - wps_outputs:/pavics-data/wps_outputs
       - ./config/thredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
       - ./config/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro

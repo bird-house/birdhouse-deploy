@@ -1,5 +1,5 @@
 [catalog]
-solr_host=http://${PAVICS_FQDN}:8983/solr/${RAW_DATA_LOCATION_NAME_lower}/
+solr_host=http://${PAVICS_FQDN}:8983/solr/${THREDDS_RAW_DATA_LOCATION_NAME_lower}/
 
 # Multiple thredds hosts can be given, comma separated
 # note: this URL is also used as prefix when comparing authorizations from magpie
