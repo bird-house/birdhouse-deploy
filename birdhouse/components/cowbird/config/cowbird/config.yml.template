@@ -32,6 +32,12 @@ handlers:
     priority: 1
     workspace_dir: ${WORKSPACE_DIR}
     jupyterhub_user_data_dir: ${JUPYTERHUB_USER_DATA_DIR}
+    wps_outputs_dir: ${WPS_OUTPUTS_DIR}
+    secure_data_proxy_name: ${SECURE_DATA_PROXY_NAME}
+    # wps_outputs_res_name: ${WPS_OUTPUTS_RES_NAME}
+    public_workspace_wps_outputs_subdir: ${PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR}
+    # notebooks_dir_name: ${NOTEBOOKS_DIR_NAME}
+    # user_wps_outputs_dir_name: ${USER_WPS_OUTPUTS_DIR_NAME}
 
 # [Required] This section defines how to synchronize permissions between services when they share resources
 sync_permissions:

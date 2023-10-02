@@ -23,20 +23,26 @@ services:
       # root user
       COWBIRD_FILESYSTEM_ADMIN_UID: 0
       COWBIRD_FILESYSTEM_ADMIN_GID: 0
-      WORKSPACE_DIR: /${USER_WORKSPACES}
+      PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR: ${PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR}
+      SECURE_DATA_PROXY_NAME: ${SECURE_DATA_PROXY_NAME}
+      # Note that WPS_OUTPUTS_DIR and WORKSPACE_DIR must both point to paths from the same volume.
+      # This is to allow the creation of hardlinks between the wpsoutputs and the user workspace.
+      # By default, both are mounted under the "${DATA_PERSIST_SHARED_ROOT}" volume.
+      WPS_OUTPUTS_DIR: ${WPS_OUTPUTS_DIR}
+      WORKSPACE_DIR: ${DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}
     links:
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
     networks:
       - default
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
     depends_on:
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
     volumes:
       - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
       - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
       # even if not running tasks here, they must be registered to send them off to the right place!
       - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
-      - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
+      - "${DATA_PERSIST_SHARED_ROOT}:${DATA_PERSIST_SHARED_ROOT}"
     restart: always
     logging: *default-logging
 
@@ -52,19 +58,33 @@ services:
       # root user
       COWBIRD_FILESYSTEM_ADMIN_UID: 0
       COWBIRD_FILESYSTEM_ADMIN_GID: 0
-      WORKSPACE_DIR: /${USER_WORKSPACES}
+      WORKSPACE_DIR: ${DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}
     links:
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
     networks:
       - default
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
     depends_on:
-      - "${COWBIRD_MONGODB_SERVICE}"
+      - cowbird-mongodb
       - cowbird  # if not started first, sometimes celery misbehaves and will not pick jobs in queue
     volumes:
       - ./components/cowbird/config/cowbird/config.yml:/opt/local/src/cowbird/config/cowbird.yml
       - ./components/cowbird/config/cowbird/cowbird.ini:/opt/local/src/cowbird/config/cowbird.ini
       - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
-      - "${DATA_PERSIST_ROOT}/${USER_WORKSPACES}:/${USER_WORKSPACES}"
+      - "${DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}:${DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}"
     restart: always
     logging: *default-logging
+
+  # Dedicated database for Cowbird, since other 'mongodb' image does not employ the same version.
+  cowbird-mongodb:
+    image: mongo:${COWBIRD_MONGODB_VERSION}
+    container_name: cowbird-mongodb
+    networks:
+      - cowbird-mongodb
+    volumes:
+      - ${COWBIRD_MONGODB_DATA_DIR}:/data/db
+    restart: always
+    logging: *default-logging
+
+networks:
+  cowbird-mongodb: {}

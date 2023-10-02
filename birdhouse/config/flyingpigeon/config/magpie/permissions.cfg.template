@@ -1,5 +1,0 @@
-permissions:
-  - service: flyingpigeon
-    permission: getcapabilities
-    group: administrators
-    action: create
