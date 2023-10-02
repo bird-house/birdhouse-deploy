@@ -113,19 +113,18 @@ def create_resource_tree(resource_tree, nodes, current_depth, parent_id, session
     Create the resource tree on Magpie
     """
     tree = resource_tree.split("/")
-    # We are at the max depth of the tree , return
+    # We are at the max depth of the tree.
     if current_depth > len(tree) - 1:
         return 
 
-    # The current resource to find/create.
     resource = tree[current_depth]
 
     create_resource = True
     for childs in nodes.values():
-        # Find the resource in the curent childrens
+        # Find the resource in the current children.
         if childs["node"].resource_name == resource:
             children = childs["children"]
-            # Since the resource exist, we can use it's id to create the next resource.
+            # Since the resource exists, we can use its id to create the next resource.
             parent_id = childs["node"].resource_id
             next_depth = current_depth + 1
             return create_resource_tree(resource_tree, children, next_depth, parent_id, session, display_name)
@@ -139,7 +138,7 @@ def create_resource_tree(resource_tree, nodes, current_depth, parent_id, session
             ru.create_resource(resource, display_name, Route.resource_type_name, parent_id, db_session=session)
             return
         else:
-            # Creating a resource somewhere in the middle of the tree, we need to create it before using it's id.
+            # Creating the resource somewhere in the middle of the tree before using its id.
             node = ru.create_resource(resource, None, Route.resource_type_name, parent_id, db_session=session)
             parent_id = node.json["resource"]["resource_id"]
             next_depth = current_depth + 1
