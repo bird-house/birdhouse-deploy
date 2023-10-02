@@ -32,6 +32,66 @@
     - now, they are absolute or relative paths from the parent of the component's directory (this resolves to the build
       directory when the stack is started up).
 
+[1.33.5](https://github.com/bird-house/birdhouse-deploy/tree/1.33.5) (2023-10-02)
+------------------------------------------------------------------------------------------------------------------
+
+## CHANGES
+
+- Adding a description for the STAC service that will be served at the `/services` endpoint
+
+[1.33.4](https://github.com/bird-house/birdhouse-deploy/tree/1.33.4) (2023-10-02)
+------------------------------------------------------------------------------------------------------------------
+
+# Fixes
+- Clean up: Make bind-mount locations more flexible
+
+  Clean up unused variables and correct file paths from the changes made in 1.33.2
+
+[1.33.3](https://github.com/bird-house/birdhouse-deploy/tree/1.33.3) (2023-09-29)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add test data and volume for `test-geoserver-secured-access`
+
+[1.33.2](https://github.com/bird-house/birdhouse-deploy/tree/1.33.2) (2023-09-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Make bind-mount locations more flexible
+
+  Previously, most bind mount locations on the host machine were subdirectories of the folder specified by the 
+  `DATA_PERSIST_ROOT` environment variable (`/data` by default). This change allows the user to set custom locations
+  for the following additional variables, so that they don't need to be all under the same common directory.
+
+  - `LOGROTATE_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/logrotate`)
+  - `MONGODB_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/mongodb_persist`)
+  - `COWBIRD_MONGODB_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/mongodb_cowbird_persist`)
+  - `POSTGRES_DATA_DIR` (default `${DATA_PERSIST_ROOT}/frontend_persist`)
+  - `WEAVER_MONGODB_DATA_DIR` (default `${DATA_PERSIST_ROOT}/mongodb_weaver_persist`)
+
+  The following variable is also added which is another location on disk where files that may contain links
+  are placed. Because the links need to be mounted together in order to resolve properly, the subdirectories
+  of this directory are not configurable:
+
+  - `DATA_PERSIST_SHARED_ROOT` (default: same as `DATA_PERSIST_ROOT`)
+
+  The following variables now create subdirectories under `DATA_PERSIST_SHARED_ROOT` (previously they were
+  created under `DATA_PERSIST_ROOT` by default):
+
+  - `USER_WORKSPACES` (default `user_workspaces`)
+  - `WEAVER_WPS_OUTPUTS_DIR` (default `wps_outputs/weaver`)
+
+
+[1.33.1](https://github.com/bird-house/birdhouse-deploy/tree/1.33.1) (2023-09-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Docker compose version missing in ``stac/config/magpie/`` compose file
+  - The ``version:`` key was not set in the ``stac/config/magpie/docker-compose-extra.yml`` file which caused
+    ``docker-compose`` to report a version mismatch and fail to start.
+
 [1.33.0](https://github.com/bird-house/birdhouse-deploy/tree/1.33.0) (2023-09-25)
 ------------------------------------------------------------------------------------------------------------------
 

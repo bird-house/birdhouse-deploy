@@ -14,7 +14,7 @@ services:
     networks:
       - mongodb
     volumes:
-      - ${DATA_PERSIST_ROOT}/mongodb_persist:/data/db
+      - ${MONGODB_DATA_DIR}:/data/db
     # Mongodb crash with permission denied errors if the command is not overridden like this
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
     restart: always
