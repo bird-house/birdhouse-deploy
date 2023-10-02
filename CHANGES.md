@@ -20,6 +20,13 @@
 
   Clean up unused variables and correct file paths from the changes made in 1.33.2
 
+[1.33.3](https://github.com/bird-house/birdhouse-deploy/tree/1.33.3) (2023-09-29)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add test data and volume for `test-geoserver-secured-access`
+
 [1.33.2](https://github.com/bird-house/birdhouse-deploy/tree/1.33.2) (2023-09-27)
 ------------------------------------------------------------------------------------------------------------------
 
