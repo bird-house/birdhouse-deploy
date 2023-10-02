@@ -35,8 +35,11 @@ def create_collection_resource(response):
     request = response.request
     body = request.json
     collection_id = body["id"]
-    display_name = extract_display_name(body["links"])
-
+    try:
+        display_name = extract_display_name(body["links"])
+    except Exception as exc:
+        LOGGER.error("Error when extracting display_name from links %s %s", body["links"], str(exc), exc_info=exc)
+        return response
     # note: matchdict reference of Twitcher owsproxy view is used, just so happens to be same name as Magpie
     service = get_service_matchdict_checked(request)
     try:
@@ -48,7 +51,7 @@ def create_collection_resource(response):
         session.commit()
 
     except Exception as exc:
-        LOGGER.error("Unexpected error while creating the collection ", str(exc), exc_info=exc)
+        LOGGER.error("Unexpected error while creating the collection %s %s", display_name, str(exc), exc_info=exc)
         session.rollback() 
         return response
 
@@ -62,7 +65,11 @@ def create_item_resource(response):
     request = response.request
     body = request.json
     item_id = body["id"]
-    display_name = extract_display_name(body["links"])
+    try:
+        display_name = extract_display_name(body["links"])
+    except Exception as exc:
+        LOGGER.error("Error when extracting display_name from links %s %s", body["links"], str(exc), exc_info=exc)
+        return response
 
     # Get the <collection_id> from url -> /collections/{collection_id}/items
     collection_id = re.search(r'(?<=collections\/).*?(?=\/items)', request.url).group()
@@ -95,6 +102,9 @@ def extract_display_name(links):
             # Example of title `thredds:birdhouse/CMIP6` -> `birdhouse/CMIP6`
             display_name = link["title"].split(":")[1]
             break
+    if display_name is None:
+        raise Exception("The display name was not extracted properly")
+
     return display_name 
 
 def create_resource_tree(resource_tree, nodes, current_depth, parent_id, session, display_name):
