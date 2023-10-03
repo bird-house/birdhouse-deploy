@@ -102,8 +102,8 @@ def extract_display_name(links):
             # Example of title `thredds:birdhouse/CMIP6` -> `birdhouse/CMIP6`
             display_name = link["title"].split(":")[1]
             break
-    if display_name is None:
-        raise Exception("The display name was not extracted properly")
+    if not display_name:
+        raise ValueError("The display name was not extracted properly")
 
     return display_name 
 
@@ -127,7 +127,7 @@ def create_resource_tree(resource_tree, nodes, current_depth, parent_id, session
             # Since the resource exists, we can use its id to create the next resource.
             parent_id = childs["node"].resource_id
             next_depth = current_depth + 1
-            return create_resource_tree(resource_tree, children, next_depth, parent_id, session, display_name)
+            create_resource_tree(resource_tree, children, next_depth, parent_id, session, display_name)
             create_resource = False
             break
 
@@ -142,6 +142,6 @@ def create_resource_tree(resource_tree, nodes, current_depth, parent_id, session
             node = ru.create_resource(resource, None, Route.resource_type_name, parent_id, db_session=session)
             parent_id = node.json["resource"]["resource_id"]
             next_depth = current_depth + 1
-            create_resource_tree(resource_tree, nodes, next_depth, parent_id, session, display_name)
+            create_resource_tree(resource_tree, {}, next_depth, parent_id, session, display_name)
 
     return 

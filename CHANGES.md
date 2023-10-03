@@ -21,7 +21,7 @@
   `POST /collections/{collection_id}` or `POST /collections/{collection_id}/items/{item_id}` request is accomplished.
   - When creating the STAC `Item`, the `source` entry in `links` corresponding to a `THREDDS` file on the same instance
     is used to define the Magpie `resource_display_name` corresponding to a file to be mapped later on
-    (eg: a NetCDF birdhouse/test-data/tc_Anon[...].nc).
+    (eg: a NetCDF `birdhouse/test-data/tc_Anon[...].nc`).
   - Checking same instance `source` path is necessary because `STAC` could refer to external assets, and we do not want
     to inject Magpie resource that are not part of the active instance where the hook is running.
 
