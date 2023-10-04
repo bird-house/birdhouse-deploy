@@ -30,7 +30,21 @@ if TYPE_CHECKING:
 
     from magpie.adapter import HookContext
 
-LOGGER = get_logger("birdhouse-weaver-hooks")
+LOGGER = get_logger("magpie.weaver-hooks")
+
+# NOTE:
+#  This value should correspond to the directory defined for public data on WPS outputs.
+#  The output hierarchy would be:
+#
+#       ${WEAVER_WPS_OUTPUTS_DIR}/
+#           users/
+#               <user-id>/
+#                   <job-id>/
+#           ${PUBLIC_USER_CONTEXT}/
+#               <job-id>/
+#
+# NOTE: This value should align with Cowbird's setting 'PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR'.
+PUBLIC_USER_CONTEXT = "public"
 
 
 def is_admin(request):
@@ -50,15 +64,18 @@ def add_x_wps_output_context(request):
     # if explicitly provided, ensure it is permitted (admin allow any, otherwise self-user reference only)
     if header is not None:
         if request.user is None:
-            header = "public"
-        else:
+            header = PUBLIC_USER_CONTEXT
+        # if the user explicitly requested to make their job output public right away,
+        # generate it under the public location instead of their specific user-workspace
+        elif header != PUBLIC_USER_CONTEXT:
+            # admin-level user is allowed to write anywhere, otherwise force user-workspace
             if not is_admin(request):
                 # override disallowed writing to other location
                 # otherwise, up to admin to have written something sensible
                 header = "users/" + str(request.user.id)
     else:
         if request.user is None:
-            header = "public"
+            header = PUBLIC_USER_CONTEXT
         else:
             header = "users/" + str(request.user.id)
     request.headers["X-WPS-Output-Context"] = header
