@@ -40,11 +40,14 @@ LOGGER = get_logger("magpie.weaver-hooks")
 #           users/
 #               <user-id>/
 #                   <job-id>/
-#           ${PUBLIC_USER_CONTEXT}/
+#           ${PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR}/
 #               <job-id>/
 #
-# NOTE: This value should align with Cowbird's setting 'PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR'.
-PUBLIC_USER_CONTEXT = "public"
+PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR = "${PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR}" or "public"
+PUBLIC_USER_CONTEXTS = {
+    "public",  # shortcut notation to avoid instance-specific configuration
+    PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR,
+}
 
 
 def is_admin(request):
@@ -61,23 +64,16 @@ def add_x_wps_output_context(request):
     Apply the ``X-WPS-Output-Context`` for saving outputs in the user-context WPS-outputs directory.
     """
     header = get_header("X-WPS-Output-Context", request.headers)
-    # if explicitly provided, ensure it is permitted (admin allow any, otherwise self-user reference only)
-    if header is not None:
-        if request.user is None:
-            header = PUBLIC_USER_CONTEXT
-        # if the user explicitly requested to make their job output public right away,
-        # generate it under the public location instead of their specific user-workspace
-        elif header != PUBLIC_USER_CONTEXT:
-            # admin-level user is allowed to write anywhere, otherwise force user-workspace
-            if not is_admin(request):
-                # override disallowed writing to other location
-                # otherwise, up to admin to have written something sensible
-                header = "users/" + str(request.user.id)
-    else:
-        if request.user is None:
-            header = PUBLIC_USER_CONTEXT
-        else:
-            header = "users/" + str(request.user.id)
+    # if no user logged in, ignore specified value to avoid writing in someone else's user-workspace
+    # if explicitly requested to make their job output public right away, whether logged in or not,
+    # use the public location instead of specific user-workspace
+    if request.user is None or header in PUBLIC_USER_CONTEXTS:
+        header = PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR
+    # if explicitly provided, ensure it is permitted, and if not provided, default to current user
+    # admin-level user is allowed to write anywhere (up to them to use a sensible location)
+    # otherwise, enforce the current user-workspace even if provided explicitly
+    if not header or not is_admin(request):
+        header = "users/" + str(request.user.id)
     request.headers["X-WPS-Output-Context"] = header
     return request
 
