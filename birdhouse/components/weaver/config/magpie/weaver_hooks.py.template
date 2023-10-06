@@ -72,7 +72,7 @@ def add_x_wps_output_context(request):
     # if explicitly provided, ensure it is permitted, and if not provided, default to current user
     # admin-level user is allowed to write anywhere (up to them to use a sensible location)
     # otherwise, enforce the current user-workspace even if provided explicitly
-    if not header or not is_admin(request):
+    elif not header or not is_admin(request):
         header = "users/" + str(request.user.id)
     request.headers["X-WPS-Output-Context"] = header
     return request
