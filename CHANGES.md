@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.34.0](https://github.com/bird-house/birdhouse-deploy/tree/1.34.0) (2023-10-10)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 - Allow users to submit a Weaver job requesting to store outputs to the public location instead of their user-workspace.
 - Update default Weaver version from [4.22.0](https://github.com/crim-ca/weaver/tree/4.22.0)
