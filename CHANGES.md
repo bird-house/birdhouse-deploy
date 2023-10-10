@@ -17,17 +17,26 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.34.0](https://github.com/bird-house/birdhouse-deploy/tree/1.34.0) (2023-10-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Allow users to submit a Weaver job requesting to store outputs to the public location instead of their user-workspace.
+- Update default Weaver version from [4.22.0](https://github.com/crim-ca/weaver/tree/4.22.0)
+  to [4.32.0](https://github.com/crim-ca/weaver/tree/4.32.0).
+- Add `COWBIRD_LOG_LEVEL` environment variable to allow control over logging level of Cowbird services.
+
 [1.33.5](https://github.com/bird-house/birdhouse-deploy/tree/1.33.5) (2023-10-02)
 ------------------------------------------------------------------------------------------------------------------
 
-## CHANGES
+## Changes
 
 - Adding a description for the STAC service that will be served at the `/services` endpoint
 
 [1.33.4](https://github.com/bird-house/birdhouse-deploy/tree/1.33.4) (2023-10-02)
 ------------------------------------------------------------------------------------------------------------------
 
-# Fixes
+## Fixes
 - Clean up: Make bind-mount locations more flexible
 
   Clean up unused variables and correct file paths from the changes made in 1.33.2

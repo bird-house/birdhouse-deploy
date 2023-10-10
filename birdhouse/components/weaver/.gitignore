@@ -1,4 +1,5 @@
 config/magpie/config.yml
+config/magpie/weaver_hooks.py
 config/weaver/data_sources.yml
 config/weaver/request_options.yml
 config/weaver/wps_processes.yml
