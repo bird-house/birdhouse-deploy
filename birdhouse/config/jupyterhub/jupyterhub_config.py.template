@@ -187,4 +187,5 @@ blocked_users = {'authtest', '${CATALOG_USERNAME}', 'anonymous'}
 c.Authenticator.blacklist = blocked_users  # v0.9+
 c.Authenticator.blocked_users = blocked_users  # v1.2+
 
+${JUPYTERHUB_CONFIG_EXTENDED}    # noqa
 ${JUPYTERHUB_CONFIG_OVERRIDE}    # noqa
