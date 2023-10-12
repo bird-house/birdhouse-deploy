@@ -31,7 +31,7 @@
 
     </datasetScan>
 
-    <datasetScan name="${THREDDS_DATA_LOCATION_NAME}" ID="${THREDDS_DATA_LOCATION_NAME_lower}" path="${THREDDS_DATA_LOCATION_NAME_lower}" location="${THREDDS_DATA_LOCATION_ON_CONTAINER}">
+    <datasetScan name="${THREDDS_DATASET_LOCATION_NAME}" ID="${THREDDS_DATASET_LOCATION_NAME_lower}" path="${THREDDS_DATASET_LOCATION_NAME_lower}" location="${THREDDS_DATASET_LOCATION_ON_CONTAINER}">
 
       <metadata inherited="true">
         <serviceName>all</serviceName>

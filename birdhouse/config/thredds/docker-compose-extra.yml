@@ -19,7 +19,7 @@ services:
     volumes:
       - thredds_persistence:/usr/local/tomcat/content/thredds
       - ${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}
-      - ${THREDDS_DATA_LOCATION_ON_HOST}:${THREDDS_DATA_LOCATION_ON_CONTAINER}
+      - ${THREDDS_DATASET_LOCATION_ON_HOST}:${THREDDS_DATASET_LOCATION_ON_CONTAINER}
       - wps_outputs:/pavics-data/wps_outputs
       - ./config/thredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
       - ./config/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
