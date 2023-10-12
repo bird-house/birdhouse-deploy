@@ -15,7 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Jupyterhub configurable idle server culling.
+  - Add optional variables `JUPYTER_IDLE_SERVER_CULL_TIMEOUT`, `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT` and
+    `JUPYTER_IDLE_KERNEL_CULL_INTERVAL` that allows fined-grained configuration of user-kernel and server-wide
+    docker image culling when their activity status reached a certain idle timeout threshold.
+  - Enable idler server culling by default with a timeout of 1 day.
+  - Avoids the need for custom `JUPYTERHUB_CONFIG_OVERRIDE` specifically for idle server culling.
+    If similar argument parameters should be defined using an older `JUPYTERHUB_CONFIG_OVERRIDE` definition,
+    the new configuration strategy can be skipped by setting `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT=0`.
 
 [1.34.0](https://github.com/bird-house/birdhouse-deploy/tree/1.34.0) (2023-10-10)
 ------------------------------------------------------------------------------------------------------------------
