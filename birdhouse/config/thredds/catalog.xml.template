@@ -48,4 +48,6 @@
 
     </datasetScan>
 
+    ${THREDDS_ADDITIONAL_CATALOG}
+
 </catalog>
