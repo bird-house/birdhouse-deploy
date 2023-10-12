@@ -187,4 +187,37 @@ blocked_users = {'authtest', '${CATALOG_USERNAME}', 'anonymous'}
 c.Authenticator.blacklist = blocked_users  # v0.9+
 c.Authenticator.blocked_users = blocked_users  # v1.2+
 
+
+# ------------------------------------------------------------------------------
+# Shutdown idle user server based on configured timeouts.
+# ------------------------------------------------------------------------------
+# Timeout (in seconds) to shut down the whole server when no kernels or terminals are running and there is no activity.
+# If left undefined or zero, the feature will not be enabled.
+jupyter_idle_server_cull_timeout = int("${JUPYTER_IDLE_SERVER_CULL_TIMEOUT}" or 0)
+if jupyter_idle_server_cull_timeout:
+    c.Spawner.args.append('--NotebookApp.shutdown_no_activity_timeout={}'.format(jupyter_idle_server_cull_timeout))
+# Timeout (in seconds) after which individual user kernels/terminals are considered idle and ready to be culled.
+jupyter_idle_kernel_cull_timeout = int("${JUPYTER_IDLE_KERNEL_CULL_TIMEOUT}" or 0)
+# Interval (in seconds) on which to check for idle kernels exceeding the cull timeout value.
+jupyter_idle_kernel_cull_interval = int("${JUPYTER_IDLE_KERNEL_CULL_INTERVAL}" or 0)
+if jupyter_idle_kernel_cull_timeout:
+    if jupyter_idle_kernel_cull_interval > jupyter_idle_kernel_cull_timeout:
+        jupyter_idle_kernel_cull_interval = jupyter_idle_kernel_cull_timeout / 2
+    c.Spawner.args.extend([
+        '--MappingKernelManager.cull_idle_timeout={}'.format(jupyter_idle_kernel_cull_timeout),
+        '--MappingKernelManager.cull_interval={}'.format(jupyter_idle_kernel_cull_interval),
+        '--TerminalManager.cull_inactive_timeout={}'.format(jupyter_idle_kernel_cull_timeout),
+        '--TerminalManager.cull_interval={}'.format(jupyter_idle_kernel_cull_interval),
+    ])
+# Culling kernels which have one or more connections for idle but open notebooks and/or terminals.
+# Otherwise, browser tabs, notebooks and terminals all have to be closed for culling to work.
+if jupyter_idle_server_cull_timeout or jupyter_idle_kernel_cull_timeout:
+    c.Spawner.args.extend([
+        '--MappingKernelManager.cull_connected=True',
+        '--TerminalManager.cull_connected=True',
+    ])
+
+# ------------------------------------------------------------------------------
+# Configuration overrides
+# ------------------------------------------------------------------------------
 ${JUPYTERHUB_CONFIG_OVERRIDE}    # noqa
