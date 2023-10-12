@@ -29,7 +29,7 @@ SERVICES['renderer'] = {
     'monitoring': {
         'ncWMS': {
             'request': {
-                'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds/wms/${THREDDS_RAW_DATA_LOCATION_NAME_lower}/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc?service=WMS&version=1.3.0&request=GetCapabilities'
+                'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds/wms/${THREDDS_SERVICE_DATA_LOCATION_NAME_lower}/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc?service=WMS&version=1.3.0&request=GetCapabilities'
             }
         },
     }

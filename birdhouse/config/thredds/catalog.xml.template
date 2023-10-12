@@ -14,7 +14,7 @@
         <service name="subsetServer" serviceType="NetcdfSubset" base="/twitcher/ows/proxy/thredds/ncss/" />
     </service>
 
-    <datasetScan name="${THREDDS_RAW_DATA_LOCATION_NAME}" ID="${THREDDS_RAW_DATA_LOCATION_NAME_lower}" path="${THREDDS_RAW_DATA_LOCATION_NAME_lower}" location="${THREDDS_RAW_DATA_LOCATION_ON_CONTAINER}">
+    <datasetScan name="${THREDDS_SERVICE_DATA_LOCATION_NAME}" ID="${THREDDS_SERVICE_DATA_LOCATION_NAME_lower}" path="${THREDDS_SERVICE_DATA_LOCATION_NAME_lower}" location="${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}">
 
       <metadata inherited="true">
         <serviceName>all</serviceName>
