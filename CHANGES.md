@@ -20,7 +20,7 @@
   - Add optional variables `JUPYTER_IDLE_SERVER_CULL_TIMEOUT`, `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT` and
     `JUPYTER_IDLE_KERNEL_CULL_INTERVAL` that allows fined-grained configuration of user-kernel and server-wide
     docker image culling when their activity status reached a certain idle timeout threshold.
-  - Enable idler server culling by default with a timeout of 1 day.
+  - Enable idle kernel culling by default with a timeout of 1 day, and user server culling with timeout of 3 days.
   - Avoids the need for custom `JUPYTERHUB_CONFIG_OVERRIDE` specifically for idle server culling.
     If similar argument parameters should be defined using an older `JUPYTERHUB_CONFIG_OVERRIDE` definition,
     the new configuration strategy can be skipped by setting `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT=0`.
