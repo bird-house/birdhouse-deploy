@@ -191,14 +191,15 @@ c.Authenticator.blocked_users = blocked_users  # v1.2+
 # ------------------------------------------------------------------------------
 # Shutdown idle user server based on configured timeouts.
 # ------------------------------------------------------------------------------
-# Timeout (in seconds) to shut down the whole server when no kernels or terminals are running and there is no activity.
-# If left undefined or zero, the feature will not be enabled.
+# Timeout (in seconds, default: 3 days) to shut down the user server when no kernels or terminals
+# are running and there is no activity. If undefined or set to zero, the feature will not be enabled.
 jupyter_idle_server_cull_timeout = int("${JUPYTER_IDLE_SERVER_CULL_TIMEOUT}" or 0)
 if jupyter_idle_server_cull_timeout:
     c.Spawner.args.append('--NotebookApp.shutdown_no_activity_timeout={}'.format(jupyter_idle_server_cull_timeout))
-# Timeout (in seconds) after which individual user kernels/terminals are considered idle and ready to be culled.
+# Timeout (in seconds, default: 1 day) after which individual
+# user kernels/terminals are considered idle and ready to be culled.
 jupyter_idle_kernel_cull_timeout = int("${JUPYTER_IDLE_KERNEL_CULL_TIMEOUT}" or 0)
-# Interval (in seconds) on which to check for idle kernels exceeding the cull timeout value.
+# Interval (in seconds, default: half of timeout) on which to check for idle kernels exceeding the cull timeout value.
 jupyter_idle_kernel_cull_interval = int("${JUPYTER_IDLE_KERNEL_CULL_INTERVAL}" or 0)
 if jupyter_idle_kernel_cull_timeout:
     if not jupyter_idle_kernel_cull_interval or jupyter_idle_kernel_cull_interval > jupyter_idle_kernel_cull_timeout:
