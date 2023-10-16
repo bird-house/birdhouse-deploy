@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.35.0](https://github.com/bird-house/birdhouse-deploy/tree/1.35.0) (2023-10-16)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 - Jupyterhub configurable idle server culling.
   - Add optional variables `JUPYTER_IDLE_SERVER_CULL_TIMEOUT`, `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT` and
