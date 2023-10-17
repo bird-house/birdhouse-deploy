@@ -22,7 +22,7 @@ services:
       - "38091:38091"
       - "48091:9001"
     volumes:
-      - ${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}
+      - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
       - ./deprecated-components/malleefowl/custom.cfg:/opt/birdhouse/src/malleefowl/custom.cfg
     depends_on:
       - postgres

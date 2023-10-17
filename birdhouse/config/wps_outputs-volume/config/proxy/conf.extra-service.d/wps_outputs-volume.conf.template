@@ -1,5 +1,5 @@
     location /wpsoutputs/ {
         ${SECURE_DATA_PROXY_AUTH_INCLUDE}
 
-        alias ${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}/wps_outputs/;
+        alias /pavics-data/wps_outputs/;
     }
