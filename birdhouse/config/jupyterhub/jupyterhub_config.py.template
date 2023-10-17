@@ -203,7 +203,7 @@ jupyter_idle_kernel_cull_timeout = int("${JUPYTER_IDLE_KERNEL_CULL_TIMEOUT}" or 
 jupyter_idle_kernel_cull_interval = int("${JUPYTER_IDLE_KERNEL_CULL_INTERVAL}" or 0)
 if jupyter_idle_kernel_cull_timeout:
     if not jupyter_idle_kernel_cull_interval or jupyter_idle_kernel_cull_interval > jupyter_idle_kernel_cull_timeout:
-        jupyter_idle_kernel_cull_interval = jupyter_idle_kernel_cull_timeout / 2
+        jupyter_idle_kernel_cull_interval = int(jupyter_idle_kernel_cull_timeout / 2)
     c.Spawner.args.extend([
         '--MappingKernelManager.cull_idle_timeout={}'.format(jupyter_idle_kernel_cull_timeout),
         '--MappingKernelManager.cull_interval={}'.format(jupyter_idle_kernel_cull_interval),
