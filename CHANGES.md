@@ -17,6 +17,17 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.35.1](https://github.com/bird-house/birdhouse-deploy/tree/1.35.1) (2023-10-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Jupyterhub cull interval setting must be an integer:
+  - Previously, the default `jupyter_idle_kernel_cull_interval` setting is calculated by dividing the 
+    `jupyter_idle_kernel_cull_timeout` setting by 2 using float division. This meant that the result was a float 
+    instead of the expected integer value. This caused and error when the jupyterlab server spawned.
+    In order to fix this, the value is cast to an integer after division.
+
 [1.35.0](https://github.com/bird-house/birdhouse-deploy/tree/1.35.0) (2023-10-16)
 ------------------------------------------------------------------------------------------------------------------
 
