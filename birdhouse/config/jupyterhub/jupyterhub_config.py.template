@@ -62,11 +62,11 @@ c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
 notebook_dir = '/notebook_dir'
 jupyterhub_data_dir = os.environ['JUPYTERHUB_USER_DATA_DIR']
 container_workspace_dir = join(notebook_dir, "writable-workspace")
-container_home_dir = join(container_workspace_dir, ".home")
+jupyter_config_dir = os.environ['JUPYTER_CONFIG_DIR']
 
 c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.environment = {
-    "HOME": container_home_dir,
+    "JUPYTER_CONFIG_PATH": jupyter_config_dir,
     # https://docs.bokeh.org/en/latest/docs/user_guide/jupyter.html#jupyterhub
     # Issue https://github.com/bokeh/bokeh/issues/12090
     # Post on Panel forum:
@@ -93,7 +93,7 @@ if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
         "mode": "ro"
     }
 
-container_gdrive_settings_path = join(container_home_dir, ".jupyter/lab/user-settings/@jupyterlab/google-drive/drive.jupyterlab-settings")
+container_gdrive_settings_path = join(jupyter_config_dir, "lab/user-settings/@jupyterlab/google-drive/drive.jupyterlab-settings")
 host_gdrive_settings_path = os.environ['JUPYTER_GOOGLE_DRIVE_SETTINGS']
 
 if len(host_gdrive_settings_path) > 0:
