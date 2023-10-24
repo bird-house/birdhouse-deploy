@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Fix warning from JupyterHub regarding DockerSpawner method never awaited.
+  - [`DockerSpawner.start`](
+    https://github.com/jupyterhub/dockerspawner/blob/a6bf72e7/dockerspawner/dockerspawner.py#L1246) is defined
+    as `async`. Therefore, `async def` and `await super().start()` where not properly invoked by `CustomDockerSpawner`
+    in [`jupyterhub_config.py.template`](./birdhouse/config/jupyterhub/jupyterhub_config.py.template).
 
 [1.35.1](https://github.com/bird-house/birdhouse-deploy/tree/1.35.1) (2023-10-18)
 ------------------------------------------------------------------------------------------------------------------
