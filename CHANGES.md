@@ -15,7 +15,17 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Limit usernames in Magpie to match restrictions by Jupyterhub's Dockerspawner
+
+  When Jupyterhub spawns a new jupyterlab container, it escapes any non-ascii, non-digit character in the username as
+  well as converting any uppercase character to lowercase. This results in a username that may not match the expected
+  username (as defined by Magpie). This mismatch results in the container failing to spawn since expected volumes
+  cannot be mounter to the jupyterlab container.
+
+  This fixes the issue by limiting Magpie usernames to contain only lowercase ascii characters and digits. This ensures
+  that no characters will be escaped in Jupyterhub.
 
 [1.35.2](https://github.com/bird-house/birdhouse-deploy/tree/1.35.2) (2023-10-24)
 ------------------------------------------------------------------------------------------------------------------
