@@ -11,7 +11,6 @@ The code below can make use of any package that is installed by Magpie/Twitcher.
 """
 
 import json
-import logging
 import re
 from typing import TYPE_CHECKING
 
@@ -20,6 +19,7 @@ from magpie.api.requests import get_service_matchdict_checked
 from magpie.models import Route, Service
 from magpie.utils import get_logger
 from magpie.db import get_session_from_other
+from ziggurat_foundations.models.services.resource import ResourceService
 
 if TYPE_CHECKING:
     from pyramid.request import Request
@@ -45,9 +45,8 @@ def create_collection_resource(response):
     try:
         # Getting a new session from the request, since the current session found in the request is already handled with his own transaction manager.
         session = get_session_from_other(request.db)
-        children = ru.get_resource_children(service, db_session=session, limit_depth=3)
         # Create the resource tree
-        create_resource_tree(f"stac/collections/{collection_id}", children, 0, service.resource_id , session, display_name)
+        create_resource_tree(f"stac/collections/{collection_id}", 0, service.resource_id , session, display_name)
         session.commit()
 
     except Exception as exc:
@@ -79,9 +78,8 @@ def create_item_resource(response):
     try:
         # Getting a new session from the request, since the current session found in the request is already handled with his own transaction manager.
         session = get_session_from_other(request.db)
-        children = ru.get_resource_children(service, db_session=session, limit_depth=5)
         # Create the resource tree
-        create_resource_tree(f"stac/collections/{collection_id}/items/{item_id}", children, 0, service.resource_id, session, display_name)
+        create_resource_tree(f"stac/collections/{collection_id}/items/{item_id}", 0, service.resource_id, session, display_name)
         session.commit()
 
     except Exception as exc:
@@ -107,8 +105,8 @@ def extract_display_name(links):
 
     return display_name 
 
-def create_resource_tree(resource_tree, nodes, current_depth, parent_id, session, display_name):
-    # type: (str, OrderedDict, int, int, session, str) -> None 
+def create_resource_tree(resource_tree, current_depth, parent_id, session, display_name):
+    # type: (str, int, int, session, str) -> None 
     """
     Create the resource tree on Magpie
     """
@@ -117,31 +115,26 @@ def create_resource_tree(resource_tree, nodes, current_depth, parent_id, session
     if current_depth > len(tree) - 1:
         return 
 
-    resource = tree[current_depth]
+    resource_name = tree[current_depth]
+    query = session.query(ResourceService.model).filter(ResourceService.model.resource_name == resource_name, ResourceService.model.parent_id == parent_id)
+    resource = query.first()
 
-    create_resource = True
-    for childs in nodes.values():
-        # Find the resource in the current children.
-        if childs["node"].resource_name == resource:
-            children = childs["children"]
-            # Since the resource exists, we can use its id to create the next resource.
-            parent_id = childs["node"].resource_id
-            next_depth = current_depth + 1
-            create_resource_tree(resource_tree, children, next_depth, parent_id, session, display_name)
-            create_resource = False
-            break
+    if resource is not None:
+        # Since the resource exists, we can use its id to create the next resource.
+        parent_id = resource.resource_id
+        next_depth = current_depth + 1
+        create_resource_tree(resource_tree, next_depth, parent_id, session, display_name)
 
     # The resource wasn't found in the current depth, we need to create it.
-    if create_resource:
+    else:
         # Creating the last resource in the tree, we need to use the display_name.
         if current_depth == len(tree) - 1:
-            ru.create_resource(resource, display_name, Route.resource_type_name, parent_id, db_session=session)
-            return
+            ru.create_resource(resource_name, display_name, Route.resource_type_name, parent_id, db_session=session)
         else:
             # Creating the resource somewhere in the middle of the tree before using its id.
-            node = ru.create_resource(resource, None, Route.resource_type_name, parent_id, db_session=session)
+            node = ru.create_resource(resource_name, None, Route.resource_type_name, parent_id, db_session=session)
             parent_id = node.json["resource"]["resource_id"]
             next_depth = current_depth + 1
-            create_resource_tree(resource_tree, {}, next_depth, parent_id, session, display_name)
+            create_resource_tree(resource_tree, next_depth, parent_id, session, display_name)
 
-    return 
+    return
