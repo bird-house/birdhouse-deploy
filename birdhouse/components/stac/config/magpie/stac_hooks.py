@@ -71,7 +71,7 @@ def create_item_resource(response):
         return response
 
     # Get the <collection_id> from url -> /collections/{collection_id}/items
-    collection_id = re.search(r'(?<=collections\/).*?(?=\/items)', request.url).group()
+    collection_id = re.search(r'(?<=collections\/)[0-9a-zA-Z_.-]+?(?=\/items)', request.url).group()
 
     # note: matchdict reference of Twitcher owsproxy view is used, just so happens to be same name as Magpie
     service = get_service_matchdict_checked(request)
