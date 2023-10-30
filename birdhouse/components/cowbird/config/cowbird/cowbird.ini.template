@@ -80,13 +80,13 @@ handlers = console
 formatter = generic
 
 [logger_cowbird]
-level = INFO
+level = ${COWBIRD_LOG_LEVEL}
 handlers =
 qualname = cowbird
 formatter = generic
 
 [logger_celery]
-level = INFO
+level = ${COWBIRD_LOG_LEVEL}
 handlers = console
 qualname = celery
 propagate = 0

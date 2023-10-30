@@ -17,6 +17,101 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.35.2](https://github.com/bird-house/birdhouse-deploy/tree/1.35.2) (2023-10-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix warning from JupyterHub regarding DockerSpawner method never awaited.
+  - [`DockerSpawner.start`](
+    https://github.com/jupyterhub/dockerspawner/blob/a6bf72e7/dockerspawner/dockerspawner.py#L1246) is defined
+    as `async`. Therefore, `async def` and `await super().start()` where not properly invoked by `CustomDockerSpawner`
+    in [`jupyterhub_config.py.template`](./birdhouse/config/jupyterhub/jupyterhub_config.py.template).
+
+[1.35.1](https://github.com/bird-house/birdhouse-deploy/tree/1.35.1) (2023-10-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Jupyterhub cull interval setting must be an integer:
+  - Previously, the default `jupyter_idle_kernel_cull_interval` setting is calculated by dividing the 
+    `jupyter_idle_kernel_cull_timeout` setting by 2 using float division. This meant that the result was a float 
+    instead of the expected integer value. This caused and error when the jupyterlab server spawned.
+    In order to fix this, the value is cast to an integer after division.
+
+[1.35.0](https://github.com/bird-house/birdhouse-deploy/tree/1.35.0) (2023-10-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyterhub configurable idle server culling.
+  - Add optional variables `JUPYTER_IDLE_SERVER_CULL_TIMEOUT`, `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT` and
+    `JUPYTER_IDLE_KERNEL_CULL_INTERVAL` that allows fined-grained configuration of user-kernel and server-wide
+    docker image culling when their activity status reached a certain idle timeout threshold.
+  - Enable idle kernel culling by default with a timeout of 1 day, and user server culling with timeout of 3 days.
+  - Avoids the need for custom `JUPYTERHUB_CONFIG_OVERRIDE` specifically for idle server culling.
+    If similar argument parameters should be defined using an older `JUPYTERHUB_CONFIG_OVERRIDE` definition,
+    the new configuration strategy can be skipped by setting `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT=0`.
+
+[1.34.0](https://github.com/bird-house/birdhouse-deploy/tree/1.34.0) (2023-10-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Allow users to submit a Weaver job requesting to store outputs to the public location instead of their user-workspace.
+- Update default Weaver version from [4.22.0](https://github.com/crim-ca/weaver/tree/4.22.0)
+  to [4.32.0](https://github.com/crim-ca/weaver/tree/4.32.0).
+- Add `COWBIRD_LOG_LEVEL` environment variable to allow control over logging level of Cowbird services.
+
+[1.33.5](https://github.com/bird-house/birdhouse-deploy/tree/1.33.5) (2023-10-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Adding a description for the STAC service that will be served at the `/services` endpoint
+
+[1.33.4](https://github.com/bird-house/birdhouse-deploy/tree/1.33.4) (2023-10-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Clean up: Make bind-mount locations more flexible
+
+  Clean up unused variables and correct file paths from the changes made in 1.33.2
+
+[1.33.3](https://github.com/bird-house/birdhouse-deploy/tree/1.33.3) (2023-09-29)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add test data and volume for `test-geoserver-secured-access`
+
+[1.33.2](https://github.com/bird-house/birdhouse-deploy/tree/1.33.2) (2023-09-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Make bind-mount locations more flexible
+
+  Previously, most bind mount locations on the host machine were subdirectories of the folder specified by the 
+  `DATA_PERSIST_ROOT` environment variable (`/data` by default). This change allows the user to set custom locations
+  for the following additional variables, so that they don't need to be all under the same common directory.
+
+  - `LOGROTATE_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/logrotate`)
+  - `MONGODB_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/mongodb_persist`)
+  - `COWBIRD_MONGODB_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/mongodb_cowbird_persist`)
+  - `POSTGRES_DATA_DIR` (default `${DATA_PERSIST_ROOT}/frontend_persist`)
+  - `WEAVER_MONGODB_DATA_DIR` (default `${DATA_PERSIST_ROOT}/mongodb_weaver_persist`)
+
+  The following variable is also added which is another location on disk where files that may contain links
+  are placed. Because the links need to be mounted together in order to resolve properly, the subdirectories
+  of this directory are not configurable:
+
+  - `DATA_PERSIST_SHARED_ROOT` (default: same as `DATA_PERSIST_ROOT`)
+
+  The following variables now create subdirectories under `DATA_PERSIST_SHARED_ROOT` (previously they were
+  created under `DATA_PERSIST_ROOT` by default):
+
+  - `USER_WORKSPACES` (default `user_workspaces`)
+  - `WEAVER_WPS_OUTPUTS_DIR` (default `wps_outputs/weaver`)
+
+
 [1.33.1](https://github.com/bird-house/birdhouse-deploy/tree/1.33.1) (2023-09-25)
 ------------------------------------------------------------------------------------------------------------------
 
