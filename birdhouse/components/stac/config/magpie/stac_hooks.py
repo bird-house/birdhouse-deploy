@@ -97,8 +97,8 @@ def extract_display_name(links):
     display_name = None
     for link in links:
         if link["rel"] == "source":
-            # Example of title `thredds:birdhouse/CMIP6` -> `birdhouse/CMIP6`
-            display_name = link["title"].split(":")[1]
+            # Example of title `thredds:birdhouse/CMIP6`
+            display_name = link["title"]
             break
     if not display_name:
         raise ValueError("The display name was not extracted properly")
