@@ -28,8 +28,6 @@
     or out through magpie as well.
   - Ensures that the user has permission to access jupyterhub according to magpie when logging in.
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
-
 [1.35.2](https://github.com/bird-house/birdhouse-deploy/tree/1.35.2) (2023-10-24)
 ------------------------------------------------------------------------------------------------------------------
 
