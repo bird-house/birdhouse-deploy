@@ -20,6 +20,14 @@
 [1.36.0](https://github.com/bird-house/birdhouse-deploy/tree/1.36.0) (2023-10-31)
 ------------------------------------------------------------------------------------------------------------------
 
+## Changes
+
+- Protect jupyterhub behind twitcher authentication
+
+  - Sets magpie cookies whenever a user logs in or out through jupyterhub so that they are automatically logged in 
+    or out through magpie as well.
+  - Ensures that the user has permission to access jupyterhub according to magpie when logging in.
+
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
 [1.35.2](https://github.com/bird-house/birdhouse-deploy/tree/1.35.2) (2023-10-24)
@@ -130,11 +138,6 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
-- Protect jupyterhub behind twitcher authentication
-
-  - Sets magpie cookies whenever a user logs in or out through jupyterhub so that they are automatically logged in 
-    or out through magpie as well.
-
 - Add public WPS outputs directory to Cowbird and add corresponding volume mount to JupyterHub.
 - Update `cowbird` service from [1.2.0](https://github.com/Ouranosinc/cowbird/tree/1.2.0)
   to [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0).
