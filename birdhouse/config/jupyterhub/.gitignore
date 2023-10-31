@@ -2,6 +2,7 @@ custom_templates/login.html
 jupyterhub_config.py
 config/proxy/conf.extra-service.d/jupyterhub.conf
 config/canarie-api/canarie_api_monitoring.py
+config/magpie/providers.cfg
 service-config.json
 
 # Old paths. Keep these so that old config files remain uncommittable after updates.
