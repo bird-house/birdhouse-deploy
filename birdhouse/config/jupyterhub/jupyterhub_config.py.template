@@ -16,6 +16,8 @@ c.JupyterHub.hub_ip = 'jupyterhub'
 
 c.JupyterHub.authenticator_class = 'jupyterhub_magpie_authenticator.MagpieAuthenticator'
 c.MagpieAuthenticator.magpie_url = "http://magpie:2001"
+c.MagpieAuthenticator.public_fqdn = "${PAVICS_FQDN_PUBLIC}"
+c.MagpieAuthenticator.authorization_url = "${JUPYTERHUB_AUTHENTICATOR_AUTHORIZATION_URL}"
 
 c.JupyterHub.cookie_secret_file = '/persist/jupyterhub_cookie_secret'
 c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
