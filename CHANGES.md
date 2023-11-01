@@ -43,6 +43,76 @@
 
   See https://github.com/bird-house/birdhouse-deploy/issues/333 for details.
 
+[1.36.0](https://github.com/bird-house/birdhouse-deploy/tree/1.36.0) (2023-10-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Protect jupyterhub behind twitcher authentication
+
+  - Sets magpie cookies whenever a user logs in or out through jupyterhub so that they are automatically logged in 
+    or out through magpie as well.
+  - Ensures that the user has permission to access jupyterhub according to magpie when logging in.
+
+[1.35.2](https://github.com/bird-house/birdhouse-deploy/tree/1.35.2) (2023-10-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix warning from JupyterHub regarding DockerSpawner method never awaited.
+  - [`DockerSpawner.start`](
+    https://github.com/jupyterhub/dockerspawner/blob/a6bf72e7/dockerspawner/dockerspawner.py#L1246) is defined
+    as `async`. Therefore, `async def` and `await super().start()` where not properly invoked by `CustomDockerSpawner`
+    in [`jupyterhub_config.py.template`](./birdhouse/config/jupyterhub/jupyterhub_config.py.template).
+
+[1.35.1](https://github.com/bird-house/birdhouse-deploy/tree/1.35.1) (2023-10-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Jupyterhub cull interval setting must be an integer:
+  - Previously, the default `jupyter_idle_kernel_cull_interval` setting is calculated by dividing the 
+    `jupyter_idle_kernel_cull_timeout` setting by 2 using float division. This meant that the result was a float 
+    instead of the expected integer value. This caused and error when the jupyterlab server spawned.
+    In order to fix this, the value is cast to an integer after division.
+
+[1.35.0](https://github.com/bird-house/birdhouse-deploy/tree/1.35.0) (2023-10-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyterhub configurable idle server culling.
+  - Add optional variables `JUPYTER_IDLE_SERVER_CULL_TIMEOUT`, `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT` and
+    `JUPYTER_IDLE_KERNEL_CULL_INTERVAL` that allows fined-grained configuration of user-kernel and server-wide
+    docker image culling when their activity status reached a certain idle timeout threshold.
+  - Enable idle kernel culling by default with a timeout of 1 day, and user server culling with timeout of 3 days.
+  - Avoids the need for custom `JUPYTERHUB_CONFIG_OVERRIDE` specifically for idle server culling.
+    If similar argument parameters should be defined using an older `JUPYTERHUB_CONFIG_OVERRIDE` definition,
+    the new configuration strategy can be skipped by setting `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT=0`.
+
+[1.34.0](https://github.com/bird-house/birdhouse-deploy/tree/1.34.0) (2023-10-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Allow users to submit a Weaver job requesting to store outputs to the public location instead of their user-workspace.
+- Update default Weaver version from [4.22.0](https://github.com/crim-ca/weaver/tree/4.22.0)
+  to [4.32.0](https://github.com/crim-ca/weaver/tree/4.32.0).
+- Add `COWBIRD_LOG_LEVEL` environment variable to allow control over logging level of Cowbird services.
+
+[1.33.5](https://github.com/bird-house/birdhouse-deploy/tree/1.33.5) (2023-10-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Adding a description for the STAC service that will be served at the `/services` endpoint
+
+[1.33.4](https://github.com/bird-house/birdhouse-deploy/tree/1.33.4) (2023-10-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Clean up: Make bind-mount locations more flexible
+
+  Clean up unused variables and correct file paths from the changes made in 1.33.2
+
 [1.33.3](https://github.com/bird-house/birdhouse-deploy/tree/1.33.3) (2023-09-29)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -92,7 +162,6 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
-
 - Add public WPS outputs directory to Cowbird and add corresponding volume mount to JupyterHub.
 - Update `cowbird` service from [1.2.0](https://github.com/Ouranosinc/cowbird/tree/1.2.0)
   to [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0).

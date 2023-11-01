@@ -209,6 +209,7 @@ class TestCreateComposeConfList:
         "./config/twitcher/config/proxy/docker-compose-extra.yml",
         "./config/jupyterhub/docker-compose-extra.yml",
         "./config/jupyterhub/config/canarie-api/docker-compose-extra.yml",
+        "./config/jupyterhub/config/magpie/docker-compose-extra.yml",
         "./config/jupyterhub/config/proxy/docker-compose-extra.yml",
     ]
 
