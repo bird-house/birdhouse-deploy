@@ -17,6 +17,12 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- `optional-components/all-public-access`: remove erroneous Magpie route permission properties for GeoServer.
+
 [1.37.0](https://github.com/bird-house/birdhouse-deploy/tree/1.37.0) (2023-11-01)
 ------------------------------------------------------------------------------------------------------------------
 
