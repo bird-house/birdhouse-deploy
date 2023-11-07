@@ -378,7 +378,7 @@ Release Procedure
   * Run ``git push --tags`` to upload the new version.
 
 
-.. _nginx.conf: ./config/proxy/nginx.conf
+.. _nginx.conf: ./components/proxy/nginx.conf
 .. _default.env: ./default.env
 .. _`.bumpversion.cfg`: ../.bumpversion.cfg
 .. _CHANGES.md: ../CHANGES.md

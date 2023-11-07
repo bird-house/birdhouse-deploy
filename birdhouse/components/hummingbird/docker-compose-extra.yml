@@ -1,0 +1,21 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  hummingbird:
+    image: pavics/hummingbird:${HUMMINGBIRD_VERSION}
+    container_name: hummingbird
+    environment:
+      HOSTNAME: $HOSTNAME
+    volumes:
+      - ./components/hummingbird/custom.cfg:/opt/birdhouse/src/hummingbird/custom.cfg
+    depends_on:
+      - postgres
+    restart: always
+    logging: *default-logging

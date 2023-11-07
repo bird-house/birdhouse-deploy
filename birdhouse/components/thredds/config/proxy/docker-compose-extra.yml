@@ -1,0 +1,7 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+    - ./components/thredds/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/thredds:ro
+    links:
+      - thredds
