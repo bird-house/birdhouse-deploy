@@ -129,7 +129,7 @@ do
 
     # run postgres post-startup setup script
     # Note: this must run before the post-docker-compose-up scripts since some may expect postgres databases to exist
-    postgres_id=$(PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres)
+    postgres_id=$(PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres 2> /dev/null)
     if [ ! -z "$postgres_id" ]; then
       docker exec ${postgres_id} /postgres-setup.sh
     fi
