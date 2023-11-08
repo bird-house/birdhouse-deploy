@@ -27,6 +27,54 @@
   This fixes the issue by limiting Magpie usernames to contain only lowercase ascii characters and digits. This ensures
   that no characters will be escaped in Jupyterhub.
 
+[1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- `optional-components/all-public-access`: remove erroneous Magpie route permission properties for GeoServer.
+
+[1.37.0](https://github.com/bird-house/birdhouse-deploy/tree/1.37.0) (2023-11-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Geoserver: protect web interface and ows routes behind magpie/twitcher
+ 
+  Updates Magpie version to [3.35.0](https://github.com/Ouranosinc/Magpie/tree/3.35.0) in order to take advantage of 
+  updated Geoserver Service.
+
+  The `geoserverwms` Magpie service is now deprecated. If a deployment is currently using this service, it is highly
+  recommended that the permissions are transferred from the deprecated `geoserverwms` service to the `geoserver` 
+  service.
+
+  The `/geoserver` endpoint is now protected by default. If a deployment currently assumes open access to Geoserver and 
+  would like to keep the same permissions after upgrading to this version, please update the permissions for the 
+  `geoserver` service in Magpie to allow the `anonymous` group access.
+
+  A `Magpie` service named `geoserver` with type `wfs` exists already and must be manually deleted before the new
+  `Magpie` service created here can take effect.
+
+  The `optional-components/all-public-access` component provides full access to the `geoserver` service for the 
+  `anonymous` group in Magpie. Please note that this includes some permissions that will allow anonymous users to 
+  perform destructive operations. Because of this, please remember that enabling the 
+  `optional-components/all-public-access` component is not recommended in a production environment.
+
+  Introduces the `GEOSERVER_SKIP_AUTH` environment variable. If set to `True`, then requests to the geoserver endpoint 
+  will not be authorized through twitcher/magpie at all. This is not recommended at all. However, it will slightly 
+  improve performance when accessing geoserver endpoints.
+
+  See https://github.com/bird-house/birdhouse-deploy/issues/333 for details.
+
+[1.36.0](https://github.com/bird-house/birdhouse-deploy/tree/1.36.0) (2023-10-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Protect jupyterhub behind twitcher authentication
+
+  - Sets magpie cookies whenever a user logs in or out through jupyterhub so that they are automatically logged in 
+    or out through magpie as well.
+  - Ensures that the user has permission to access jupyterhub according to magpie when logging in.
+
 [1.35.2](https://github.com/bird-house/birdhouse-deploy/tree/1.35.2) (2023-10-24)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -135,7 +183,6 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
-
 - Add public WPS outputs directory to Cowbird and add corresponding volume mount to JupyterHub.
 - Update `cowbird` service from [1.2.0](https://github.com/Ouranosinc/cowbird/tree/1.2.0)
   to [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0).

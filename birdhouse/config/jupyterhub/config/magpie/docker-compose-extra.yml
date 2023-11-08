@@ -3,3 +3,5 @@ services:
   magpie:
     environment:
       MAGPIE_USER_NAME_EXTRA_REGEX: "^[a-z0-9]+$$"
+    volumes:
+      - ./config/jupyterhub/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/jupyter.cfg:ro
