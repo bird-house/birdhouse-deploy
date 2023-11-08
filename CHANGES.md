@@ -15,7 +15,16 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Jupyter: new incremental build to include `SAlib` for sensitivity analysis
+
+  Also make `/notebook_dir/` read-only to avoid users putting their files there
+  and losing them since only `/notebook_dir/writable-workspace` is persisted on
+  disk.
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/128 for more
+  details.
+
 
 [1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
 ------------------------------------------------------------------------------------------------------------------
