@@ -15,7 +15,27 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Update `DEFAULT_CONF_DIRS` to the minimal components required to deploy the stack
+
+  Changes `DEFAULT_CONF_DIRS` to refer exclusively to the proxy, magpie, twitcher, stac, and cowbird components.
+  Also moves all components that were previously under the `birdhouse/config` directory to the `birdhouse/components`
+  directory. This removes the arbitrary distinction between these groups of components that didn't have any functional
+  or logical reason.
+
+  Because this change updates the default components, this is not backwards compatible unless the following changes are
+  made to the local environment file (`birdhouse/env.local` by default):
+
+  - add any components no longer in the `DEFAULT_CONF_DIRS` list to the `EXTRA_CONF_DIRS` list.
+  
+    For example, to keep the jupyterhub component enabled, add `./components/jupyterhub` to the `EXTRA_CONF_DIRS` list.
+  
+  - set `PROXY_ROOT_LOCATION="return 302 https://\$host/jupyter/hub/login;"` if you would like to keep the jupyterhub
+    login page as the default landing page.
+    
+    Since jupyterhub is no longer a default component, we cannot assume that it will be enabled and so we cannot use it 
+    as the default landing page. If this is not set, the default landing page will be the magpie login page instead.
 
 [1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
 ------------------------------------------------------------------------------------------------------------------
