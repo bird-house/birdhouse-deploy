@@ -30,12 +30,6 @@
   - add any components no longer in the `DEFAULT_CONF_DIRS` list to the `EXTRA_CONF_DIRS` list.
   
     For example, to keep the jupyterhub component enabled, add `./components/jupyterhub` to the `EXTRA_CONF_DIRS` list.
-  
-  - set `PROXY_ROOT_LOCATION="return 302 https://\$host/jupyter/hub/login;"` if you would like to keep the jupyterhub
-    login page as the default landing page.
-    
-    Since jupyterhub is no longer a default component, we cannot assume that it will be enabled and so we cannot use it 
-    as the default landing page. If this is not set, the default landing page will be the magpie login page instead.
 
 [1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
 ------------------------------------------------------------------------------------------------------------------
