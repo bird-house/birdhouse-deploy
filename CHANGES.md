@@ -15,7 +15,17 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Jupyterhub: periodically check whether the logged-in user still have permission to access
+
+  By setting the `JUPYTERHUB_CRYPT_KEY` environment variable in the `env.local` file, jupyterhub will store user's
+  authentication information (session cookie) in the database. This allows jupyterhub to periodically check whether the
+  user still has permission to access jupyterhub (the session cookie is not expired and the permission have not 
+  changed).
+  
+  The minimum duration between checks can be set with the `JUPYTERHUB_AUTHENTICATOR_REFRESH_AGE` variable which is an 
+  integer (in seconds).
 
 [1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
 ------------------------------------------------------------------------------------------------------------------
