@@ -25,6 +25,43 @@
   - Checking same instance `source` path is necessary because `STAC` could refer to external assets, and we do not want
     to inject Magpie resource that are not part of the active instance where the hook is running.
 
+[1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- `optional-components/all-public-access`: remove erroneous Magpie route permission properties for GeoServer.
+
+[1.37.0](https://github.com/bird-house/birdhouse-deploy/tree/1.37.0) (2023-11-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Geoserver: protect web interface and ows routes behind magpie/twitcher
+ 
+  Updates Magpie version to [3.35.0](https://github.com/Ouranosinc/Magpie/tree/3.35.0) in order to take advantage of 
+  updated Geoserver Service.
+
+  The `geoserverwms` Magpie service is now deprecated. If a deployment is currently using this service, it is highly
+  recommended that the permissions are transferred from the deprecated `geoserverwms` service to the `geoserver` 
+  service.
+
+  The `/geoserver` endpoint is now protected by default. If a deployment currently assumes open access to Geoserver and 
+  would like to keep the same permissions after upgrading to this version, please update the permissions for the 
+  `geoserver` service in Magpie to allow the `anonymous` group access.
+
+  A `Magpie` service named `geoserver` with type `wfs` exists already and must be manually deleted before the new
+  `Magpie` service created here can take effect.
+
+  The `optional-components/all-public-access` component provides full access to the `geoserver` service for the 
+  `anonymous` group in Magpie. Please note that this includes some permissions that will allow anonymous users to 
+  perform destructive operations. Because of this, please remember that enabling the 
+  `optional-components/all-public-access` component is not recommended in a production environment.
+
+  Introduces the `GEOSERVER_SKIP_AUTH` environment variable. If set to `True`, then requests to the geoserver endpoint 
+  will not be authorized through twitcher/magpie at all. This is not recommended at all. However, it will slightly 
+  improve performance when accessing geoserver endpoints.
+
+  See https://github.com/bird-house/birdhouse-deploy/issues/333 for details.
+
 [1.36.0](https://github.com/bird-house/birdhouse-deploy/tree/1.36.0) (2023-10-31)
 ------------------------------------------------------------------------------------------------------------------
 
