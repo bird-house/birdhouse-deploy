@@ -55,8 +55,8 @@ class TestReadConfigs:
         "./components/proxy",
         "./components/magpie",
         "./components/twitcher",
+        "./components/cowbird",
         "./components/stac",
-        "./components/cowbird"
     ]
 
     extra_conf_order: list[str] = [
@@ -121,10 +121,10 @@ class TestReadConfigs:
 
     def test_all_conf_dirs_extra_last(self, read_config_include_file) -> None:
         """Test that any extra components are loaded last"""
-        extra = {"EXTRA_CONF_DIRS": '"./components/cowbird\n./components/weaver"'}
+        extra = {"EXTRA_CONF_DIRS": '"./components/finch\n./components/weaver"'}
         proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"')
         assert split_and_strip(get_command_stdout(proc))[-2:] == [
-            "./components/cowbird",
+            "./components/finch",
             "./components/weaver",
         ]
 
@@ -182,16 +182,16 @@ class TestCreateComposeConfList:
         "./components/magpie/config/proxy/docker-compose-extra.yml",
         "./components/twitcher/docker-compose-extra.yml",
         "./components/twitcher/config/proxy/docker-compose-extra.yml",
-        "./components/stac/docker-compose-extra.yml",
-        "./components/stac/config/magpie/docker-compose-extra.yml",
-        "./components/stac/config/proxy/docker-compose-extra.yml",
         "./components/cowbird/docker-compose-extra.yml",
         "./components/cowbird/config/magpie/docker-compose-extra.yml",
         "./components/cowbird/config/proxy/docker-compose-extra.yml",
+        "./components/stac/docker-compose-extra.yml",
+        "./components/stac/config/magpie/docker-compose-extra.yml",
+        "./components/stac/config/proxy/docker-compose-extra.yml",
         "./components/magpie/config/canarie-api/docker-compose-extra.yml",
         "./components/twitcher/config/canarie-api/docker-compose-extra.yml",
-        "./components/stac/config/canarie-api/docker-compose-extra.yml",
         "./components/cowbird/config/canarie-api/docker-compose-extra.yml",
+        "./components/stac/config/canarie-api/docker-compose-extra.yml",
         "./components/canarie-api/config/proxy/docker-compose-extra.yml",
         "./components/geoserver/docker-compose-extra.yml",
         "./components/cowbird/config/geoserver/docker-compose-extra.yml",

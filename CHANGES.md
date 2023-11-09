@@ -28,8 +28,12 @@
   made to the local environment file (`birdhouse/env.local` by default):
 
   - add any components no longer in the `DEFAULT_CONF_DIRS` list to the `EXTRA_CONF_DIRS` list.
-  
     For example, to keep the jupyterhub component enabled, add `./components/jupyterhub` to the `EXTRA_CONF_DIRS` list.
+
+  - update the `PROXY_ROOT_LOCATION` to redirect the root path `/` to an enabled component. By default, this will
+    redirect to Magpie's landing page, unless jupyterhub is enabled, in which case it will redirect to jupyterhub's
+    landing page.
+    If any other behaviour is desired, `PROXY_ROOT_LOCATION` should be updated in the `env.local` file.
 
 [1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
 ------------------------------------------------------------------------------------------------------------------
