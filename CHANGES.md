@@ -24,8 +24,10 @@
   username (as defined by Magpie). This mismatch results in the container failing to spawn since expected volumes
   cannot be mounter to the jupyterlab container.
 
-  This fixes the issue by limiting Magpie usernames to contain only lowercase ascii characters and digits. This ensures
-  that no characters will be escaped in Jupyterhub.
+  This fixes the issue by limiting Magpie usernames to not contain any spaces as well as ensuring that juptyerhub does
+  not convert the username that is receives from Magpie.
+
+  Note that this updates the Magpie version.
 
 [1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
 ------------------------------------------------------------------------------------------------------------------
