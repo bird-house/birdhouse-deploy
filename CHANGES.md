@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.37.2](https://github.com/bird-house/birdhouse-deploy/tree/1.37.2) (2023-11-10)
+------------------------------------------------------------------------------------------------------------------
+
 - Fix `weaver` and `cowbird` inconsistencies for `public` WPS outputs directory handling.
 
   Because `cowbird` needs to mount multiple directories within the user-workspace for `jupyterhub`, it needs to define
