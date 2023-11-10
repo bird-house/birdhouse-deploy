@@ -17,6 +17,21 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.37.2](https://github.com/bird-house/birdhouse-deploy/tree/1.37.2) (2023-11-10)
+------------------------------------------------------------------------------------------------------------------
+
+- Fix `weaver` and `cowbird` inconsistencies for `public` WPS outputs directory handling.
+
+  Because `cowbird` needs to mount multiple directories within the user-workspace for `jupyterhub`, it needs to define
+  a dedicated `public/wps_outputs` sub-directory to distinguish it from other `public` files not part of WPS outputs.
+  However, for WPS birds, other files than WPS outputs are irrelevant, and are therefore mounted directly in their
+  container. The variable `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` was being misused in the context of `weaver`,
+  causing WPS output URLs for `public` context to be nested as `/wpsoutputs/weaver/public/wps_outputs/{jobID}`
+  instead of the intended location `/wpsoutputs/weaver/public/{jobID}`, in contrast to user-context WPS outputs
+  located under `/wpsoutputs/weaver/users/{userID}/{jobID}`.
+
+  Relates to [Ouranosinc/pavics-sdi#314](https://github.com/Ouranosinc/pavics-sdi/pull/314).
+
 [1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
 ------------------------------------------------------------------------------------------------------------------
 
