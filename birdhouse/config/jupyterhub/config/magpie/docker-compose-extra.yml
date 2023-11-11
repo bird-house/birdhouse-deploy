@@ -2,4 +2,4 @@ version: "3.4"
 services:
   magpie:
     volumes:
-      - ./config/jupyterhub/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/jupyter.cfg:ro
+    - ./config/jupyterhub/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/jupyter.cfg:ro
