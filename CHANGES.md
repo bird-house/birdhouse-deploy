@@ -19,13 +19,11 @@
 
 - Limit usernames in Magpie to match restrictions by Jupyterhub's Dockerspawner
 
-  When Jupyterhub spawns a new jupyterlab container, it escapes any non-ascii, non-digit character in the username as
-  well as converting any uppercase character to lowercase. This results in a username that may not match the expected
-  username (as defined by Magpie). This mismatch results in the container failing to spawn since expected volumes
-  cannot be mounter to the jupyterlab container.
+  When Jupyterhub spawns a new jupyterlab container, it escapes any non-ascii, non-digit character in the username. 
+  This results in a username that may not match the expected username (as defined by Magpie). This mismatch results in 
+  the container failing to spawn since expected volumes cannot be mounted to the jupyterlab container.
 
-  This fixes the issue by limiting Magpie usernames to not contain any spaces as well as ensuring that juptyerhub does
-  not convert the username that is receives from Magpie.
+  This fixes the issue by ensuring that juptyerhub does not convert the username that is receives from Magpie.
 
   Note that this updates the Magpie version.
 
