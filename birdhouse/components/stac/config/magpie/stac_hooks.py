@@ -10,20 +10,19 @@ The code below can make use of any package that is installed by Magpie/Twitcher.
     https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks
 """
 
-import json
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Dict
 
 from magpie.api.management.resource import resource_utils as ru
 from magpie.api.requests import get_service_matchdict_checked
-from magpie.models import Route, Service
+from magpie.models import Route
 from magpie.utils import get_logger
 from magpie.db import get_session_from_other
 from ziggurat_foundations.models.services.resource import ResourceService
 
 if TYPE_CHECKING:
-    from pyramid.request import Request
     from pyramid.response import Response
+    from sqlalchemy.orm.session import Session
 
 LOGGER = get_logger("magpie.stac")
 
@@ -40,11 +39,12 @@ def create_collection_resource(response):
     except Exception as exc:
         LOGGER.error("Error when extracting display_name from links %s %s", body["links"], str(exc), exc_info=exc)
         return response
+
     # note: matchdict reference of Twitcher owsproxy view is used, just so happens to be same name as Magpie
     service = get_service_matchdict_checked(request)
+    # Getting a new session from the request, since the current session found in the request is already handled with his own transaction manager.
+    session = get_session_from_other(request.db)
     try:
-        # Getting a new session from the request, since the current session found in the request is already handled with his own transaction manager.
-        session = get_session_from_other(request.db)
         # Create the resource tree
         create_resource_tree(f"stac/collections/{collection_id}", 0, service.resource_id , session, display_name)
         session.commit()
@@ -52,7 +52,6 @@ def create_collection_resource(response):
     except Exception as exc:
         LOGGER.error("Unexpected error while creating the collection %s %s", display_name, str(exc), exc_info=exc)
         session.rollback() 
-        return response
 
     return response
 
@@ -71,13 +70,13 @@ def create_item_resource(response):
         return response
 
     # Get the <collection_id> from url -> /collections/{collection_id}/items
-    collection_id = re.search(r'(?<=collections\/)[0-9a-zA-Z_.-]+?(?=\/items)', request.url).group()
+    collection_id = re.search(r'(?<=collections/)[0-9a-zA-Z_.-]+?(?=/items)', request.url).group()
 
     # note: matchdict reference of Twitcher owsproxy view is used, just so happens to be same name as Magpie
     service = get_service_matchdict_checked(request)
+    # Getting a new session from the request, since the current session found in the request is already handled with his own transaction manager.
+    session = get_session_from_other(request.db)
     try:
-        # Getting a new session from the request, since the current session found in the request is already handled with his own transaction manager.
-        session = get_session_from_other(request.db)
         # Create the resource tree
         create_resource_tree(f"stac/collections/{collection_id}/items/{item_id}", 0, service.resource_id, session, display_name)
         session.commit()
@@ -85,7 +84,6 @@ def create_item_resource(response):
     except Exception as exc:
         LOGGER.error("Unexpected error while creating the item %s %s", display_name, str(exc), exc_info=exc)
         session.rollback()
-        return response
 
     return response
 
@@ -136,5 +134,3 @@ def create_resource_tree(resource_tree, current_depth, parent_id, session, displ
             parent_id = node.json["resource"]["resource_id"]
             next_depth = current_depth + 1
             create_resource_tree(resource_tree, next_depth, parent_id, session, display_name)
-
-    return
