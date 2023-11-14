@@ -14,7 +14,7 @@ from pathlib import Path
 print("Setup configuration parameters...")
 
 TIMEOUT_DELAY = 5
-TIMEOUT_ATTEMPTS = 3
+CONNECTION_ATTEMPTS = 10
 
 VERIFY_SSL = False
 if not VERIFY_SSL:
@@ -83,7 +83,7 @@ def create_magpie_user(user_name, password, session):
 
 # Make sure Cowbird is running before creating user
 resp = None
-for i in range(TIMEOUT_ATTEMPTS):
+for i in range(CONNECTION_ATTEMPTS):
     try:
         resp = requests.get(COWBIRD_URL, verify=VERIFY_SSL)
         assert resp.status_code == 200
@@ -113,7 +113,7 @@ user_workspace_dir = f"{WORKSPACE_DIR}/{TEST_USER}"
 
 # Make sure cowbird had time to create user workspace before executing following operations
 resp = None
-for i in range(TIMEOUT_ATTEMPTS):
+for i in range(CONNECTION_ATTEMPTS):
     if os.path.exists(user_workspace_dir):
         print(f"User workspace successfully found at path `{user_workspace_dir}`.")
         break
