@@ -1,6 +1,0 @@
-version: "3.4"
-services:
-  jupyterhub:
-    environment:
-      TEST_NOTEBOOK: ${TEST_NOTEBOOK}
-      COWBIRD_JUPYTER_ACCESS_DIR: ${COWBIRD_JUPYTER_ACCESS_DIR}
