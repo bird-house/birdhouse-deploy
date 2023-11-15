@@ -1,0 +1,2 @@
+config/magpie/permissions.cfg
+config/proxy/conf.extra-service.d/stac-proxy-data.conf
