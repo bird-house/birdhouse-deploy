@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- New optional-component `test-cowbird-jupyter-access` that executes a script to set up a test user along with different
+  test files. This component is used for the related e2e test from the
+  [PAVICS-e2e-workflow-tests](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests) repo.
+
+## Fixes
+- Updates incorrect WPS outputs resource name in the cowbird config.
 
 [1.37.2](https://github.com/bird-house/birdhouse-deploy/tree/1.37.2) (2023-11-10)
 ------------------------------------------------------------------------------------------------------------------
