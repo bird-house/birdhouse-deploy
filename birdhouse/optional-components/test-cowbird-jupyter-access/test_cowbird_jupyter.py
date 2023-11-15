@@ -14,7 +14,7 @@ from pathlib import Path
 print("Setup configuration parameters...")
 
 TIMEOUT_DELAY = 5
-CONNECTION_ATTEMPTS = 10
+MAX_ATTEMPTS = 10
 
 VERIFY_SSL = False
 if not VERIFY_SSL:
@@ -80,10 +80,11 @@ def create_magpie_user(user_name, password, session):
     if resp.status_code != 201:
         raise ValueError(response_msg("\nCould not create test user [{}]".format(user_name), resp))
     session.cookies = magpie_signin(user_name, password).cookies
+    return resp.json()
 
 # Make sure Cowbird is running before creating user
 resp = None
-for i in range(CONNECTION_ATTEMPTS):
+for i in range(MAX_ATTEMPTS):
     try:
         resp = requests.get(COWBIRD_URL, verify=VERIFY_SSL)
         assert resp.status_code == 200
@@ -107,13 +108,12 @@ test_user_session.headers = HEADERS
 
 # ------------------------------------------------------------------
 print("Creating test user on Magpie...")
-create_magpie_user(TEST_USER, TEST_PASSWORD, test_user_session)
+test_user_id = create_magpie_user(TEST_USER, TEST_PASSWORD, test_user_session)["user"]["user_id"]
 
 user_workspace_dir = f"{WORKSPACE_DIR}/{TEST_USER}"
 
 # Make sure cowbird had time to create user workspace before executing following operations
-resp = None
-for i in range(CONNECTION_ATTEMPTS):
+for i in range(MAX_ATTEMPTS):
     if os.path.exists(user_workspace_dir):
         print(f"User workspace successfully found at path `{user_workspace_dir}`.")
         break
@@ -138,21 +138,51 @@ for filename in os.listdir(GEOSERVER_TEST_DATA_DIR):
 # ------------------------------------------------------------------
 # Add wps-outputs
 print("Creating test WPS outputs data...")
-# public file
+# Add public file
 public_wpsoutputs_filepath = f"{WPS_OUTPUTS_DIR}/weaver/public/test_public_file.txt"
 os.makedirs(os.path.dirname(public_wpsoutputs_filepath), exist_ok=True)
 Path(public_wpsoutputs_filepath).touch()
 
-# user specific file
-# Get user_id from Magpie
-resp = test_user_session.get(f"{MAGPIE_URL}/users/current")
-if resp.status_code != 200:
-    raise RuntimeError("Failed to get user data from Magpie url `{}`".format(f"{MAGPIE_URL}/users/current"))
-test_user_id = resp.json()["user"]["user_id"]
+# Check user permissions on WPS outputs user data
+resp = magpie_admin_session.get(f"{MAGPIE_URL}/services/secure-data-proxy")
+if resp.status_code == 200:
+    print("Secure-data-proxy service exists. Checking that the user has access to the wpsoutputs resource...")
+    svc_id = resp.json()["service"]["resource_id"]
 
+    resp = magpie_admin_session.get(f"{MAGPIE_URL}/users/{TEST_USER}/resources/{svc_id}/permissions?effective=true")
+    if resp.status_code != 200:
+        raise ValueError(response_msg("\nCould not get the secure-data-proxy resource permissions for the user.", resp))
+    if "read-allow-match" not in resp.json()["permission_names"]:
+        print("User does not have access to secure-data-proxy service. Adding read permission...")
+        resp = magpie_admin_session.post(f"{MAGPIE_URL}/users/{TEST_USER}/resources/{svc_id}/permissions",
+                                         json={"permission": {
+                                             "name": "read",
+                                             "access": "allow",
+                                             "scope": "recursive"
+                                         }})
+        if resp.status_code != 201:
+            raise ValueError(response_msg("\nFailed to add secure-data-proxy permission to the test user.", resp))
+    print("User access to secure-data-proxy is allowed.")
+elif resp.status_code == 404:
+    print("No secure-data-proxy service found. The user should have access to the wpsoutputs resource by default.")
+else:
+    raise ValueError(response_msg("\nCould not find secure-data-proxy service.", resp))
+
+# Add user specific file
 user_wpsoutputs_filepath = f"{WPS_OUTPUTS_DIR}/weaver/users/{test_user_id}/test_user_file.txt"
 os.makedirs(os.path.dirname(user_wpsoutputs_filepath), exist_ok=True)
 
 Path(user_wpsoutputs_filepath).touch()
+
+# Make sure cowbird has created the user WPS outputs hardlink successfuly before continuing with the tests.
+expected_user_wps_outputs_hardlink = f"{user_workspace_dir}/wps_outputs/weaver/test_user_file.txt"
+for i in range(MAX_ATTEMPTS):
+    if os.path.exists(expected_user_wps_outputs_hardlink):
+        print(f"User WPS outputs hardlink successfully found at path `{expected_user_wps_outputs_hardlink}`.")
+        break
+    print(f"Failed to find user hardlink at path [{expected_user_wps_outputs_hardlink}]. Attempting again ({i + 1})...")
+    time.sleep((i + 1) * TIMEOUT_DELAY)
+else:
+    raise RuntimeError(f"Failed to create `{expected_user_wps_outputs_hardlink}` hardlink in the user workspace.")
 
 print("Test setup completed.")
