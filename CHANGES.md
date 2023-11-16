@@ -16,9 +16,12 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
-- New optional-component `test-cowbird-jupyter-access` that executes a script to set up a test user along with different
-  test files. This component is used for the related e2e test from the
-  [PAVICS-e2e-workflow-tests](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests) repo.
+- New optional-component `optional-components/test-cowbird-jupyter-access` that executes a script to set up a test user  
+  along with different test files. This component is used for the related 
+  [e2e test](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/blob/master/notebooks-auth/test_cowbird_jupyter.ipynb)
+  from the [PAVICS-e2e-workflow-tests](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests) repo.
+- Update `cowbird` service from [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0)
+  to [2.2.0](https://github.com/Ouranosinc/cowbird/tree/2.2.0).
 
 ## Fixes
 - Updates incorrect WPS outputs resource name in the cowbird config.

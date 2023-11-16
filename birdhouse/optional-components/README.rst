@@ -299,6 +299,26 @@ See |geoserver_secured_pr|_. for more details.
 .. |geoserver_secured_pr| replace:: Pull Request
 
 
+Test user workspace in JupyterLab when using Cowbird
+----------------------------------------------------
+
+This optional component is used to prepare the related |test_cowbird_jupyter|_ test, where a user workspace is
+validated in a JupyterLab environment spawned from JupyterHub and where Cowbird is used to prepare the user workspace.
+
+The component will start a Docker container specifically made to run a Python script, where the different test
+requirements are initialized. This includes creating a test user, preparing different test files and setting permissions
+correctly. This component also customizes the JupyterHub config according to the test requirements.
+
+.. warning::
+    This component should never be used in non-test environments, as it opens public access for certain endpoints,
+    defines admin-tokens for a JupyterHub user for which credentials are clearly visible in the script, and enforces
+    use of root access for the test preparation container. The component is for validation only. If used in a prod
+    stack, it would create a security vulnerability.
+
+.. _test_cowbird_jupyter: https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/blob/master/notebooks-auth/test_cowbird_jupyter.ipynb
+.. |test_cowbird_jupyter| replace:: notebook
+
+
 Populate STAC catalog with sample data
 --------------------------------------------------------
 
