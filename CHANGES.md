@@ -20,17 +20,124 @@
   - This PR add the flexibility to configure the locations of THREDDS data on the host and the contained
   - It also allows to configure the names of the top level THREDDS directories serving 'catalog' and 'raw' data
 
+[1.37.2](https://github.com/bird-house/birdhouse-deploy/tree/1.37.2) (2023-11-10)
+------------------------------------------------------------------------------------------------------------------
+
+- Fix `weaver` and `cowbird` inconsistencies for `public` WPS outputs directory handling.
+
+  Because `cowbird` needs to mount multiple directories within the user-workspace for `jupyterhub`, it needs to define
+  a dedicated `public/wps_outputs` sub-directory to distinguish it from other `public` files not part of WPS outputs.
+  However, for WPS birds, other files than WPS outputs are irrelevant, and are therefore mounted directly in their
+  container. The variable `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` was being misused in the context of `weaver`,
+  causing WPS output URLs for `public` context to be nested as `/wpsoutputs/weaver/public/wps_outputs/{jobID}`
+  instead of the intended location `/wpsoutputs/weaver/public/{jobID}`, in contrast to user-context WPS outputs
+  located under `/wpsoutputs/weaver/users/{userID}/{jobID}`.
+
+  Relates to [Ouranosinc/pavics-sdi#314](https://github.com/Ouranosinc/pavics-sdi/pull/314).
+
+[1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- `optional-components/all-public-access`: remove erroneous Magpie route permission properties for GeoServer.
+
+[1.37.0](https://github.com/bird-house/birdhouse-deploy/tree/1.37.0) (2023-11-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Geoserver: protect web interface and ows routes behind magpie/twitcher
+ 
+  Updates Magpie version to [3.35.0](https://github.com/Ouranosinc/Magpie/tree/3.35.0) in order to take advantage of 
+  updated Geoserver Service.
+
+  The `geoserverwms` Magpie service is now deprecated. If a deployment is currently using this service, it is highly
+  recommended that the permissions are transferred from the deprecated `geoserverwms` service to the `geoserver` 
+  service.
+
+  The `/geoserver` endpoint is now protected by default. If a deployment currently assumes open access to Geoserver and 
+  would like to keep the same permissions after upgrading to this version, please update the permissions for the 
+  `geoserver` service in Magpie to allow the `anonymous` group access.
+
+  A `Magpie` service named `geoserver` with type `wfs` exists already and must be manually deleted before the new
+  `Magpie` service created here can take effect.
+
+  The `optional-components/all-public-access` component provides full access to the `geoserver` service for the 
+  `anonymous` group in Magpie. Please note that this includes some permissions that will allow anonymous users to 
+  perform destructive operations. Because of this, please remember that enabling the 
+  `optional-components/all-public-access` component is not recommended in a production environment.
+
+  Introduces the `GEOSERVER_SKIP_AUTH` environment variable. If set to `True`, then requests to the geoserver endpoint 
+  will not be authorized through twitcher/magpie at all. This is not recommended at all. However, it will slightly 
+  improve performance when accessing geoserver endpoints.
+
+  See https://github.com/bird-house/birdhouse-deploy/issues/333 for details.
+
+[1.36.0](https://github.com/bird-house/birdhouse-deploy/tree/1.36.0) (2023-10-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Protect jupyterhub behind twitcher authentication
+
+  - Sets magpie cookies whenever a user logs in or out through jupyterhub so that they are automatically logged in 
+    or out through magpie as well.
+  - Ensures that the user has permission to access jupyterhub according to magpie when logging in.
+
+[1.35.2](https://github.com/bird-house/birdhouse-deploy/tree/1.35.2) (2023-10-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix warning from JupyterHub regarding DockerSpawner method never awaited.
+  - [`DockerSpawner.start`](
+    https://github.com/jupyterhub/dockerspawner/blob/a6bf72e7/dockerspawner/dockerspawner.py#L1246) is defined
+    as `async`. Therefore, `async def` and `await super().start()` where not properly invoked by `CustomDockerSpawner`
+    in [`jupyterhub_config.py.template`](./birdhouse/config/jupyterhub/jupyterhub_config.py.template).
+
+[1.35.1](https://github.com/bird-house/birdhouse-deploy/tree/1.35.1) (2023-10-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Jupyterhub cull interval setting must be an integer:
+  - Previously, the default `jupyter_idle_kernel_cull_interval` setting is calculated by dividing the 
+    `jupyter_idle_kernel_cull_timeout` setting by 2 using float division. This meant that the result was a float 
+    instead of the expected integer value. This caused and error when the jupyterlab server spawned.
+    In order to fix this, the value is cast to an integer after division.
+
+[1.35.0](https://github.com/bird-house/birdhouse-deploy/tree/1.35.0) (2023-10-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyterhub configurable idle server culling.
+  - Add optional variables `JUPYTER_IDLE_SERVER_CULL_TIMEOUT`, `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT` and
+    `JUPYTER_IDLE_KERNEL_CULL_INTERVAL` that allows fined-grained configuration of user-kernel and server-wide
+    docker image culling when their activity status reached a certain idle timeout threshold.
+  - Enable idle kernel culling by default with a timeout of 1 day, and user server culling with timeout of 3 days.
+  - Avoids the need for custom `JUPYTERHUB_CONFIG_OVERRIDE` specifically for idle server culling.
+    If similar argument parameters should be defined using an older `JUPYTERHUB_CONFIG_OVERRIDE` definition,
+    the new configuration strategy can be skipped by setting `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT=0`.
+
+[1.34.0](https://github.com/bird-house/birdhouse-deploy/tree/1.34.0) (2023-10-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Allow users to submit a Weaver job requesting to store outputs to the public location instead of their user-workspace.
+- Update default Weaver version from [4.22.0](https://github.com/crim-ca/weaver/tree/4.22.0)
+  to [4.32.0](https://github.com/crim-ca/weaver/tree/4.32.0).
+- Add `COWBIRD_LOG_LEVEL` environment variable to allow control over logging level of Cowbird services.
+
 [1.33.5](https://github.com/bird-house/birdhouse-deploy/tree/1.33.5) (2023-10-02)
 ------------------------------------------------------------------------------------------------------------------
 
-## CHANGES
+## Changes
 
 - Adding a description for the STAC service that will be served at the `/services` endpoint
 
 [1.33.4](https://github.com/bird-house/birdhouse-deploy/tree/1.33.4) (2023-10-02)
 ------------------------------------------------------------------------------------------------------------------
 
-# Fixes
+## Fixes
 - Clean up: Make bind-mount locations more flexible
 
   Clean up unused variables and correct file paths from the changes made in 1.33.2
@@ -84,7 +191,6 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
-
 - Add public WPS outputs directory to Cowbird and add corresponding volume mount to JupyterHub.
 - Update `cowbird` service from [1.2.0](https://github.com/Ouranosinc/cowbird/tree/1.2.0)
   to [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0).

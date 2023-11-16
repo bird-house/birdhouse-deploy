@@ -1,4 +1,7 @@
     location /geoserver/ {
+        auth_request /secure-geoserver-auth;
+        auth_request_set $auth_status $upstream_status;
+
         proxy_pass http://geoserver:8080/geoserver/;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $real_scheme;
@@ -7,4 +10,21 @@
         gzip on;
         gzip_comp_level 1;
         gzip_types application/json text/plain application/xml text/html;
+    }
+
+    location = /secure-geoserver-auth {
+        internal;
+        ${GEOSERVER_SKIP_AUTH_PROXY_INCLUDE}
+
+        # If GEOSERVER_SKIP_AUTH is "True" then the following section is skipped and this
+        # location block will always return 200 (which means that the /geoserver/ location, above,
+        # will be publicly available.
+        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_VERIFY_PATH}/geoserver$request_uri;
+        proxy_pass_request_body off;
+        proxy_set_header Host $host;
+        proxy_set_header Content-Length "";
+        proxy_set_header X-Original-URI $request_uri;
+        proxy_set_header X-Forwarded-Proto $real_scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host:$server_port;
     }
