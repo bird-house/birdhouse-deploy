@@ -1,6 +1,9 @@
 """
-Script used to setup a test user along with different test files, for the test notebooks
-"test_cowbird_jupyter.ipynb" and "user_test_cowbird_jupyter.ipynb" found in the `PAVICS-e2e-workflow-test` repo.
+Script used to setup a test user along with different test files, for the test notebooks from the
+ `PAVICS-e2e-workflow-test` repo :
+
+- https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/blob/master/notebooks-auth/test_cowbird_jupyter.ipynb
+- https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/blob/master/notebooks-auth/resources/user_test_cowbird_jupyter.ipynb
 """
 
 import json
@@ -40,8 +43,8 @@ def get_credentials(var_name):
 TEST_MAGPIE_ADMIN_USERNAME = get_credentials("MAGPIE_ADMIN_USERNAME")
 TEST_MAGPIE_ADMIN_PASSWORD = get_credentials("MAGPIE_ADMIN_PASSWORD")
 
-TEST_USER = "testcowbirdjupyter"
-TEST_PASSWORD = "qwertyqwerty"
+TEST_COWBIRD_JUPYTERHUB_USERNAME = os.getenv("TEST_COWBIRD_JUPYTERHUB_USERNAME")
+TEST_COWBIRD_JUPYTERHUB_PASSWORD = os.getenv("TEST_COWBIRD_JUPYTERHUB_PASSWORD")
 
 print("  Verify SSL : {}".format(VERIFY_SSL))
 print("  Will use Magpie URL:   [{}]".format(MAGPIE_URL))
@@ -108,9 +111,9 @@ test_user_session.headers = HEADERS
 
 # ------------------------------------------------------------------
 print("Creating test user on Magpie...")
-test_user_id = create_magpie_user(TEST_USER, TEST_PASSWORD, test_user_session)["user"]["user_id"]
+test_user_id = create_magpie_user(TEST_COWBIRD_JUPYTERHUB_USERNAME, TEST_COWBIRD_JUPYTERHUB_PASSWORD, test_user_session)["user"]["user_id"]
 
-user_workspace_dir = f"{WORKSPACE_DIR}/{TEST_USER}"
+user_workspace_dir = f"{WORKSPACE_DIR}/{TEST_COWBIRD_JUPYTERHUB_USERNAME}"
 
 # Make sure cowbird had time to create user workspace before executing following operations
 for i in range(MAX_ATTEMPTS):
@@ -139,7 +142,7 @@ for filename in os.listdir(GEOSERVER_TEST_DATA_DIR):
 # Add wps-outputs
 print("Creating test WPS outputs data...")
 # Add public file
-public_wpsoutputs_filepath = f"{WPS_OUTPUTS_DIR}/weaver/public/test_public_file.txt"
+public_wpsoutputs_filepath = f"{WPS_OUTPUTS_DIR}/weaver/public/3dc704a8-e1f6-4fe8-8bf0-153cf1e52c7a/output/test_public_file.txt"
 os.makedirs(os.path.dirname(public_wpsoutputs_filepath), exist_ok=True)
 Path(public_wpsoutputs_filepath).touch()
 
@@ -149,12 +152,12 @@ if resp.status_code == 200:
     print("Secure-data-proxy service exists. Checking that the user has access to the wpsoutputs resource...")
     svc_id = resp.json()["service"]["resource_id"]
 
-    resp = magpie_admin_session.get(f"{MAGPIE_URL}/users/{TEST_USER}/resources/{svc_id}/permissions?effective=true")
+    resp = magpie_admin_session.get(f"{MAGPIE_URL}/users/{TEST_COWBIRD_JUPYTERHUB_USERNAME}/resources/{svc_id}/permissions?effective=true")
     if resp.status_code != 200:
         raise ValueError(response_msg("\nCould not get the secure-data-proxy resource permissions for the user.", resp))
     if "read-allow-match" not in resp.json()["permission_names"]:
         print("User does not have access to secure-data-proxy service. Adding read permission...")
-        resp = magpie_admin_session.post(f"{MAGPIE_URL}/users/{TEST_USER}/resources/{svc_id}/permissions",
+        resp = magpie_admin_session.post(f"{MAGPIE_URL}/users/{TEST_COWBIRD_JUPYTERHUB_USERNAME}/resources/{svc_id}/permissions",
                                          json={"permission": {
                                              "name": "read",
                                              "access": "allow",
