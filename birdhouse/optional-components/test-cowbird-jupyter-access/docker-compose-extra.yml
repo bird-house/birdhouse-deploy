@@ -1,5 +1,8 @@
 version: "3.4"
 services:
+  jupyterhub:
+    environment:
+      TEST_COWBIRD_JUPYTERHUB_USERNAME: ${TEST_COWBIRD_JUPYTERHUB_USERNAME}
   test-cowbird-jupyter-access:
     image: pavics/workflow-tests:210216
     container_name: test-cowbird-jupyter-access
