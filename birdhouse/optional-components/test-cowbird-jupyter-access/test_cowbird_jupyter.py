@@ -17,7 +17,7 @@ from pathlib import Path
 print("Setup configuration parameters...")
 
 TIMEOUT_DELAY = 5
-MAX_ATTEMPTS = 10
+MAX_ATTEMPTS = 8
 
 VERIFY_SSL = False
 if not VERIFY_SSL:
@@ -147,13 +147,19 @@ os.makedirs(os.path.dirname(public_wpsoutputs_filepath), exist_ok=True)
 Path(public_wpsoutputs_filepath).touch()
 
 # Check user permissions on WPS outputs user data
-try:
-    resp = magpie_admin_session.get(f"{MAGPIE_URL}/services/secure-data-proxy")
-except Exception as exc: # try with ConnectionError
-    print(f"Exception received when attempting to check for the `secure-data-proxy` service : \n{repr(exc)}\n"
-          "Attempting to sign in again with the admin user...")
+resp = None
+for i in range(MAX_ATTEMPTS):
+    try:
+        resp = magpie_admin_session.get(f"{MAGPIE_URL}/services/secure-data-proxy")
+        break
+    except ConnectionError as exc:
+        print(f"Exception received when attempting to check for the `secure-data-proxy` service : \n{repr(exc)}\n"
+              f"Attempting to refresh admin login and to access `secure-data-proxy` again ({i + 1})...")
+    time.sleep((i + 1) * TIMEOUT_DELAY)
+    # Make sure admin cookies are still valid
     magpie_admin_session.cookies = magpie_signin(TEST_MAGPIE_ADMIN_USERNAME, TEST_MAGPIE_ADMIN_PASSWORD).cookies
-    resp = magpie_admin_session.get(f"{MAGPIE_URL}/services/secure-data-proxy")
+else:
+    raise ConnectionError("Failed to connect to Magpie on url {}".format(f"{MAGPIE_URL}/services/secure-data-proxy"))
 
 if resp.status_code == 200:
     print("Secure-data-proxy service exists. Checking that the user has access to the wpsoutputs resource...")
