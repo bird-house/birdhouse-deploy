@@ -156,8 +156,10 @@ for i in range(MAX_ATTEMPTS):
         resp = magpie_admin_session.get(f"{MAGPIE_URL}/services/secure-data-proxy")
         break
     except Exception as exc:
+        # Magpie is sometimes unaccessible even after the initial checkup and user creation,
+        # so apply checks and attempts again
         print(f"Exception received when attempting to check for the `secure-data-proxy` service : \n{repr(exc)}\n"
-              f"Attempting to refresh admin login and to access `secure-data-proxy` again ({i + 1})...")
+              f"Attempting again ({i + 1})...")
 else:
     raise ConnectionError("Failed to connect to Magpie on url {}".format(f"{MAGPIE_URL}/services/secure-data-proxy"))
 
