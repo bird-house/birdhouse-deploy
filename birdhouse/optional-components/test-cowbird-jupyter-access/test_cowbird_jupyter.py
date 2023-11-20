@@ -158,8 +158,6 @@ for i in range(MAX_ATTEMPTS):
     except Exception as exc:
         print(f"Exception received when attempting to check for the `secure-data-proxy` service : \n{repr(exc)}\n"
               f"Attempting to refresh admin login and to access `secure-data-proxy` again ({i + 1})...")
-    # Make sure admin cookies are still valid
-    magpie_admin_session.cookies = magpie_signin(TEST_MAGPIE_ADMIN_USERNAME, TEST_MAGPIE_ADMIN_PASSWORD).cookies
 else:
     raise ConnectionError("Failed to connect to Magpie on url {}".format(f"{MAGPIE_URL}/services/secure-data-proxy"))
 
