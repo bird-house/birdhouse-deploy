@@ -88,6 +88,7 @@ def create_magpie_user(user_name, password, session):
 # Make sure Cowbird is running before creating user
 resp = None
 for i in range(MAX_ATTEMPTS):
+    time.sleep(i * TIMEOUT_DELAY)
     try:
         resp = requests.get(COWBIRD_URL, verify=VERIFY_SSL)
         assert resp.status_code == 200
@@ -95,7 +96,6 @@ for i in range(MAX_ATTEMPTS):
         break
     except Exception as exc:
         print(f"Failed to connect to Cowbird [{exc}]. \nAttempting again ({i + 1})...")
-    time.sleep((i + 1) * TIMEOUT_DELAY)
 else:
     raise ConnectionError("Failed to connect to Cowbird on url {}".format(COWBIRD_URL))
 
@@ -117,11 +117,11 @@ user_workspace_dir = f"{WORKSPACE_DIR}/{TEST_COWBIRD_JUPYTERHUB_USERNAME}"
 
 # Make sure cowbird had time to create user workspace before executing following operations
 for i in range(MAX_ATTEMPTS):
+    time.sleep(i * TIMEOUT_DELAY)
     if os.path.exists(user_workspace_dir):
         print(f"User workspace successfully found at path `{user_workspace_dir}`.")
         break
     print(f"Failed to find user workspace at path [{user_workspace_dir}]. Attempting again ({i + 1})...")
-    time.sleep((i + 1) * TIMEOUT_DELAY)
 else:
     raise ConnectionError("Failed to create user workspace  to Cowbird on url {}".format(COWBIRD_URL))
 
@@ -149,13 +149,13 @@ Path(public_wpsoutputs_filepath).touch()
 # Check user permissions on WPS outputs user data
 resp = None
 for i in range(MAX_ATTEMPTS):
+    time.sleep(i * TIMEOUT_DELAY)
     try:
         resp = magpie_admin_session.get(f"{MAGPIE_URL}/services/secure-data-proxy")
         break
     except Exception as exc:
         print(f"Exception received when attempting to check for the `secure-data-proxy` service : \n{repr(exc)}\n"
               f"Attempting to refresh admin login and to access `secure-data-proxy` again ({i + 1})...")
-    time.sleep((i + 1) * TIMEOUT_DELAY)
     # Make sure admin cookies are still valid
     magpie_admin_session.cookies = magpie_signin(TEST_MAGPIE_ADMIN_USERNAME, TEST_MAGPIE_ADMIN_PASSWORD).cookies
 else:
@@ -193,11 +193,11 @@ Path(user_wpsoutputs_filepath).touch()
 # Make sure cowbird has created the user WPS outputs hardlink successfuly before continuing with the tests.
 expected_user_wps_outputs_hardlink = f"{user_workspace_dir}/wps_outputs/weaver/test_user_file.txt"
 for i in range(MAX_ATTEMPTS):
+    time.sleep(i * TIMEOUT_DELAY)
     if os.path.exists(expected_user_wps_outputs_hardlink):
         print(f"User WPS outputs hardlink successfully found at path `{expected_user_wps_outputs_hardlink}`.")
         break
     print(f"Failed to find user hardlink at path [{expected_user_wps_outputs_hardlink}]. Attempting again ({i + 1})...")
-    time.sleep((i + 1) * TIMEOUT_DELAY)
 else:
     raise RuntimeError(f"Failed to create `{expected_user_wps_outputs_hardlink}` hardlink in the user workspace.")
 
