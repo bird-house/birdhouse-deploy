@@ -152,7 +152,7 @@ for i in range(MAX_ATTEMPTS):
     try:
         resp = magpie_admin_session.get(f"{MAGPIE_URL}/services/secure-data-proxy")
         break
-    except ConnectionError as exc:
+    except Exception as exc:
         print(f"Exception received when attempting to check for the `secure-data-proxy` service : \n{repr(exc)}\n"
               f"Attempting to refresh admin login and to access `secure-data-proxy` again ({i + 1})...")
     time.sleep((i + 1) * TIMEOUT_DELAY)
