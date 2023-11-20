@@ -86,18 +86,20 @@ def create_magpie_user(user_name, password, session):
     return resp.json()
 
 # Make sure Cowbird is running before creating user
-resp = None
-for i in range(MAX_ATTEMPTS):
-    time.sleep(i * TIMEOUT_DELAY)
-    try:
-        resp = requests.get(COWBIRD_URL, verify=VERIFY_SSL)
-        assert resp.status_code == 200
-        print("Cowbird availability checked successfully.")
-        break
-    except Exception as exc:
-        print(f"Failed to connect to Cowbird [{exc}]. \nAttempting again ({i + 1})...")
-else:
-    raise ConnectionError("Failed to connect to Cowbird on url {}".format(COWBIRD_URL))
+for svc_name, svc_url in [("Magpie", MAGPIE_URL),
+                          ("Cowbird", COWBIRD_URL)]:
+    resp = None
+    for i in range(MAX_ATTEMPTS):
+        time.sleep(i * TIMEOUT_DELAY)
+        try:
+            resp = requests.get(svc_url, verify=VERIFY_SSL)
+            assert resp.status_code == 200
+            print(f"{svc_name} availability checked successfully.")
+            break
+        except Exception as exc:
+            print(f"Failed to connect to {svc_name} [{exc}]. \nAttempting again ({i + 1})...")
+    else:
+        raise ConnectionError("Failed to connect to {} on url {}".format(svc_name, svc_url))
 
 # ------------------------------------------------------------------
 magpie_admin_session = requests.Session()
