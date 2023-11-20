@@ -149,7 +149,7 @@ Path(public_wpsoutputs_filepath).touch()
 # Check user permissions on WPS outputs user data
 try:
     resp = magpie_admin_session.get(f"{MAGPIE_URL}/services/secure-data-proxy")
-except ConnectionRefusedError as exc:
+except Exception as exc: # try with ConnectionError
     print(f"Exception received when attempting to check for the `secure-data-proxy` service : \n{repr(exc)}\n"
           "Attempting to sign in again with the admin user...")
     magpie_admin_session.cookies = magpie_signin(TEST_MAGPIE_ADMIN_USERNAME, TEST_MAGPIE_ADMIN_PASSWORD).cookies
