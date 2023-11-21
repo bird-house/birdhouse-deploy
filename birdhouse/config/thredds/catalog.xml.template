@@ -14,7 +14,7 @@
         <service name="subsetServer" serviceType="NetcdfSubset" base="/twitcher/ows/proxy/thredds/ncss/" />
     </service>
 
-    <datasetScan name="Birdhouse" ID="birdhouse" path="birdhouse" location="/pavics-data">
+    <datasetScan name="${THREDDS_SERVICE_DATA_LOCATION_NAME}" ID="${THREDDS_SERVICE_DATA_URL_PATH}" path="${THREDDS_SERVICE_DATA_URL_PATH}" location="${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}">
 
       <metadata inherited="true">
         <serviceName>all</serviceName>
@@ -31,7 +31,7 @@
 
     </datasetScan>
 
-    <datasetScan name="Datasets" ID="datasets" path="datasets" location="/pavics-ncml">
+    <datasetScan name="${THREDDS_DATASET_LOCATION_NAME}" ID="${THREDDS_DATASET_URL_PATH}" path="${THREDDS_DATASET_URL_PATH}" location="${THREDDS_DATASET_LOCATION_ON_CONTAINER}">
 
       <metadata inherited="true">
         <serviceName>all</serviceName>
@@ -47,5 +47,7 @@
       </filter>
 
     </datasetScan>
+
+    ${THREDDS_ADDITIONAL_CATALOG}
 
 </catalog>
