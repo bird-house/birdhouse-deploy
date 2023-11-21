@@ -187,10 +187,10 @@ sync_permissions:
           - name: "{outputID}"
             type: route
       thredds:
-        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/catalog.html
-        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/{public|<user-id>}/catalog.html
-        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/{public|<user-id>}/{job-id}/catalog.html
-        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/{public|<user-id>}/{job-id}/{output-file}
+        # /twitcher/ows/proxy/thredds/catalog/${THREDDS_SERVICE_DATA_URL_PATH}/wps_outputs/weaver/catalog.html
+        # /twitcher/ows/proxy/thredds/catalog/${THREDDS_SERVICE_DATA_URL_PATH}/wps_outputs/weaver/{public|<user-id>}/catalog.html
+        # /twitcher/ows/proxy/thredds/catalog/${THREDDS_SERVICE_DATA_URL_PATH}/wps_outputs/weaver/{public|<user-id>}/{job-id}/catalog.html
+        # /twitcher/ows/proxy/thredds/catalog/${THREDDS_SERVICE_DATA_URL_PATH}/wps_outputs/weaver/{public|<user-id>}/{job-id}/{output-file}
         # note: paths start after ows-proxy portion extracted when Twitcher/Magpie resolve between each other
         thredds_wps_outputs:
           - name: thredds
@@ -199,7 +199,7 @@ sync_permissions:
           # 'catalog' is the file/view format specifier for the rest of the path
           # - name: catalog
           #  type: directory
-          - name: birdhouse
+          - name: ${THREDDS_SERVICE_DATA_URL_PATH}
             type: directory
           - name: wps_outputs
             type: directory
@@ -216,7 +216,7 @@ sync_permissions:
           # 'catalog' is the file/view format specifier for the rest of the path
           # - name: catalog
           #  type: directory
-          - name: birdhouse
+          - name: ${THREDDS_SERVICE_DATA_URL_PATH}
             type: directory
           - name: wps_outputs
             type: directory

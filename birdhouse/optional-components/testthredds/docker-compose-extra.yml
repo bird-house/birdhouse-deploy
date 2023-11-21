@@ -14,10 +14,10 @@ services:
     volumes:
       - testthredds_persistence:/usr/local/tomcat/content/thredds
       - ${DATA_PERSIST_ROOT}/testdatasets:/pavics-testdata:ro
-      - ${DATA_PERSIST_ROOT}/datasets:/pavics-data:ro
-      - ${DATA_PERSIST_ROOT}/ncml:/pavics-ncml:ro
+      - ${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}:ro
+      - ${THREDDS_DATASET_LOCATION_ON_HOST}:${THREDDS_DATASET_LOCATION_ON_CONTAINER}:ro
       - testwps_outputs:/testwps_outputs:ro
-      - wps_outputs:/pavics-data/wps_outputs:ro
+      - wps_outputs:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}/wps_outputs:ro
       - ./optional-components/testthredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
       - ./optional-components/testthredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
       - ./optional-components/testthredds/wmsConfig.xml:/usr/local/tomcat/content/thredds/wmsConfig.xml:ro
@@ -30,7 +30,7 @@ services:
           "CMD",
           "curl",
           "--fail",
-          "http://localhost:${TESTTHREDDS_INTERNAL_PORT}/${TESTTHREDDS_CONTEXT_ROOT}/catalog.html",
+          "http://localhost:${TESTTHREDDS_INTERNAL_PORT}/${TESTTHREDDS_CONTEXT_ROOT}/catalog.html"
         ]
 
 volumes:
