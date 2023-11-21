@@ -4,7 +4,7 @@ services:
     extra_hosts:
       - "dummy.crim.ca:${LOCALHOST_IP}"
     volumes:
-      - ${PATH_TO_LOCAL_NETCDF_FILES}:/pavics-data
+      - ${PATH_TO_LOCAL_NETCDF_FILES}:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}
 
   proxy:
     extra_hosts:
