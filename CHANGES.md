@@ -15,7 +15,9 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Add new `README` file to be used on `jupyterhub` when `cowbird` is activated. The file describes to the user the 
+  different directories and permissions found in its workspace.
 
 [1.38.0](https://github.com/bird-house/birdhouse-deploy/tree/1.38.0) (2023-11-21)
 ------------------------------------------------------------------------------------------------------------------
