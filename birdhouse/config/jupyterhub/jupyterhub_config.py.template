@@ -2,7 +2,6 @@ import os
 from os.path import join
 import logging
 import subprocess
-from pathlib import Path
 
 from dockerspawner import DockerSpawner
 
@@ -93,15 +92,6 @@ if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
     }
     c.DockerSpawner.volumes[join(os.environ['WORKSPACE_DIR'], os.environ['PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR'])] = {
         "bind": join(notebook_dir, os.environ['PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR']),
-        "mode": "ro"
-    }
-    #c.DockerSpawner.volumes["/home/cumminch/cowbird/cowbird/handlers/impl/user_workspace_readme.rst"] = {
-    #c.DockerSpawner.volumes[str(Path(__file__).parent.resolve() / "../../components/cowbird/user_workspace_readme.rst")] = {
-
-    # /srv/jupyterhub/components/cowbird/user_workspace_readme.rst
-    #c.DockerSpawner.volumes[str(Path("./components/cowbird/user_workspace_readme.rst").resolve())] = {
-    c.DockerSpawner.volumes[join(os.environ["JUPYTERHUB_CONFIG_DIR"], "../../components/cowbird/user_workspace_readme.rst")] = {
-        "bind": join(notebook_dir, "USER_WORKSPACE_README.rst"),
         "mode": "ro"
     }
 
