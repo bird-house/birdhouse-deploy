@@ -1,5 +1,5 @@
 [catalog]
-solr_host=http://${PAVICS_FQDN}:8983/solr/birdhouse/
+solr_host=http://${PAVICS_FQDN}:8983/solr/${THREDDS_SERVICE_DATA_URL_PATH}/
 
 # Multiple thredds hosts can be given, comma separated
 # note: this URL is also used as prefix when comparing authorizations from magpie

@@ -2,7 +2,7 @@
 extends=profiles/docker.cfg
 
 [settings]
-persist-path = /pavics-data
+persist-path = /data
 archive-root = / 
 thredds_url = https://${environment:HOSTNAME}/twitcher/ows/proxy/thredds/fileServer/birdhouse
 wps_url = https://${environment:PAVICS_FQDN_PUBLIC}/wpsoutputs
