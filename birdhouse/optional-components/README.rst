@@ -348,26 +348,30 @@ feature is combined with ``./optional-components/stac-public-access`` and ``./op
 Following are the possible combinations and obtained behaviors:
 
 .. list-table::
-    :widths: 40,60
+    :header-rows: 1
 
     * - Enabled Components
-      - Only ``./optional-components/stac-data-proxy`` is enabled.
-      - Both ``./optional-components/stac-data-proxy`` and ``./optional-components/stac-public-access`` are enabled.
-      - Both ``./optional-components/stac-data-proxy`` and ``./optional-components/secure-data-proxy`` are enabled.
-      - All of ``./optional-components/stac-data-proxy``, ``./optional-components/stac-public-access`` and
-        ``./optional-components/secure-data-proxy`` are enabled.
-    * - Obtained Behaviors
+      - Obtained Behaviors
+
+    * - Only ``./optional-components/stac-data-proxy`` is enabled.
       - All data under ``STAC_DATA_PROXY_URL_PATH`` is publicly accessible without authorization control
         and specific resource access cannot be managed per content. However, since STAC-API itself is not made public,
         the STAC Catalog, Collections and Items cannot be accessed publicly
         (*note*: this is most probably never desired).
+
+    * - Both ``./optional-components/stac-data-proxy`` and ``./optional-components/stac-public-access`` are enabled.
       - All data under ``STAC_DATA_PROXY_URL_PATH`` is publicly accessible without possibility to manage per-resource
         access. However, this public access is aligned with publicly accessible STAC-API endpoints and contents.
+
+    * - Both ``./optional-components/stac-data-proxy`` and ``./optional-components/secure-data-proxy`` are enabled.
       - All data under ``STAC_DATA_PROXY_URL_PATH`` is protected (by default, admin-only), but can be granted access
         on a per-user, per-group and per-resource basis according to permissions applied by the administrator.
         Since STAC-API is not made public by default, the administrator can decide whether they grant access only to
         STAC metadata (Catalog, Collection, Items) with permission applied on the ``stac`` Magpie service, only to
         assets data with permission under the ``stac-data-proxy``, or both.
+
+    * - All of ``./optional-components/stac-data-proxy``, ``./optional-components/stac-public-access`` and
+        ``./optional-components/secure-data-proxy`` are enabled.
       - Similar to the previous case, allowing full authorization management control by the administrator, but contents
         are publicly accessible by default. To revoke access, a Magpie administrator has to apply a ``deny`` permission.
 
