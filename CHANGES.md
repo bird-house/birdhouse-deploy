@@ -25,6 +25,30 @@
   - Checking same instance `source` path is necessary because `STAC` could refer to external assets, and we do not want
     to inject Magpie resource that are not part of the active instance where the hook is running.
 
+[1.38.0](https://github.com/bird-house/birdhouse-deploy/tree/1.38.0) (2023-11-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+Flexible locations for data served by THREDDS. This PR adds two capabilities:
+
+- Makes it possible to configure all aspects of the two default top-level THREDDS catalogs that has been available on Birdhouse (conventionally referred to as `Birdhouse` and `Datasets` on PAIVCS). This is done by defining the following two sets of new environment variables. The `THREDDS_DATASET_` set of variables are meant to control properties of the `Datasets` catalog:
+
+    * THREDDS_DATASET_LOCATION_ON_CONTAINER
+    * THREDDS_DATASET_LOCATION_ON_HOST
+    * THREDDS_DATASET_LOCATION_NAME
+    * THREDDS_DATASET_URL_PATH
+
+    The `THREDDS_SERVICE_DATA_` set of variables control properties of the `Birdhouse` catalog.
+
+    * THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER
+    * THREDDS_SERVICE_DATA_LOCATION_ON_HOST
+    * THREDDS_SERVICE_DATA_LOCATION_NAME
+    * THREDDS_SERVICE_DATA_URL_PATH
+
+    These new variables are defined in [`thredds/default.env`](./birdhouse/config/thredds/default.env) and included in [`env.local.example`](./birdhouse/env.local.example). Their default values have been chosen to ensure the behaviours of the two catalogs remain unchanged (for reasons of backward compatibility).
+
+- Adds the ability to define additional top-level THREDDS catalogs. This is achieved by introducing the `THREDDS_ADDITIONAL_CATALOG` variable in [`thredds/default.env`](./birdhouse/config/thredds/default.env) that can be used to inject custom XML configuration for a new catalog. This information is picked up by the THREDDS server. An example is provided in [`env.local.example`](./birdhouse/env.local.example).
+
 [1.37.2](https://github.com/bird-house/birdhouse-deploy/tree/1.37.2) (2023-11-10)
 ------------------------------------------------------------------------------------------------------------------
 

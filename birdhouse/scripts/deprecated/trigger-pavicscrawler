@@ -43,6 +43,6 @@ returned in the XML body of the curl command. The status of the crawl,
 whether ongoing, failed or success will be in that link.
 
 Once crawler is done, go check the Solr DB at
-http://$PAVICS_CRAWLER_HOST:8983/solr/#/birdhouse/query for content inserted by the
+http://$PAVICS_CRAWLER_HOST:8983/solr/#/${THREDDS_SERVICE_DATA_URL_PATH}/query for content inserted by the
 crawler.  Just click on \"Execute Query\".
 "
