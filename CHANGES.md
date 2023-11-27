@@ -17,6 +17,19 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.39.0](https://github.com/bird-house/birdhouse-deploy/tree/1.39.0) (2023-11-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add a Magpie Webhook to create the Magpie resources corresponding to the STAC-API path elements when a `STAC-API`
+  `POST /collections/{collection_id}` or `POST /collections/{collection_id}/items/{item_id}` request is accomplished.
+  - When creating the STAC `Item`, the `source` entry in `links` corresponding to a `THREDDS` file on the same instance
+    is used to define the Magpie `resource_display_name` corresponding to a file to be mapped later on
+    (eg: a NetCDF `birdhouse/test-data/tc_Anon[...].nc`).
+  - Checking same instance `source` path is necessary because `STAC` could refer to external assets, and we do not want
+    to inject Magpie resource that are not part of the active instance where the hook is running.
+
 [1.38.0](https://github.com/bird-house/birdhouse-deploy/tree/1.38.0) (2023-11-21)
 ------------------------------------------------------------------------------------------------------------------
 
