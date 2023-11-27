@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.39.0](https://github.com/bird-house/birdhouse-deploy/tree/1.39.0) (2023-11-27)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Add a Magpie Webhook to create the Magpie resources corresponding to the STAC-API path elements when a `STAC-API`
