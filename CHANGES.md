@@ -27,6 +27,58 @@
 
   Note that this updates the Magpie version.
 
+[1.39.0](https://github.com/bird-house/birdhouse-deploy/tree/1.39.0) (2023-11-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add a Magpie Webhook to create the Magpie resources corresponding to the STAC-API path elements when a `STAC-API`
+  `POST /collections/{collection_id}` or `POST /collections/{collection_id}/items/{item_id}` request is accomplished.
+  - When creating the STAC `Item`, the `source` entry in `links` corresponding to a `THREDDS` file on the same instance
+    is used to define the Magpie `resource_display_name` corresponding to a file to be mapped later on
+    (eg: a NetCDF `birdhouse/test-data/tc_Anon[...].nc`).
+  - Checking same instance `source` path is necessary because `STAC` could refer to external assets, and we do not want
+    to inject Magpie resource that are not part of the active instance where the hook is running.
+
+[1.38.0](https://github.com/bird-house/birdhouse-deploy/tree/1.38.0) (2023-11-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+Flexible locations for data served by THREDDS. This PR adds two capabilities:
+
+- Makes it possible to configure all aspects of the two default top-level THREDDS catalogs that has been available on Birdhouse (conventionally referred to as `Birdhouse` and `Datasets` on PAIVCS). This is done by defining the following two sets of new environment variables. The `THREDDS_DATASET_` set of variables are meant to control properties of the `Datasets` catalog:
+
+    * THREDDS_DATASET_LOCATION_ON_CONTAINER
+    * THREDDS_DATASET_LOCATION_ON_HOST
+    * THREDDS_DATASET_LOCATION_NAME
+    * THREDDS_DATASET_URL_PATH
+
+    The `THREDDS_SERVICE_DATA_` set of variables control properties of the `Birdhouse` catalog.
+
+    * THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER
+    * THREDDS_SERVICE_DATA_LOCATION_ON_HOST
+    * THREDDS_SERVICE_DATA_LOCATION_NAME
+    * THREDDS_SERVICE_DATA_URL_PATH
+
+    These new variables are defined in [`thredds/default.env`](./birdhouse/config/thredds/default.env) and included in [`env.local.example`](./birdhouse/env.local.example). Their default values have been chosen to ensure the behaviours of the two catalogs remain unchanged (for reasons of backward compatibility).
+
+- Adds the ability to define additional top-level THREDDS catalogs. This is achieved by introducing the `THREDDS_ADDITIONAL_CATALOG` variable in [`thredds/default.env`](./birdhouse/config/thredds/default.env) that can be used to inject custom XML configuration for a new catalog. This information is picked up by the THREDDS server. An example is provided in [`env.local.example`](./birdhouse/env.local.example).
+
+[1.37.2](https://github.com/bird-house/birdhouse-deploy/tree/1.37.2) (2023-11-10)
+------------------------------------------------------------------------------------------------------------------
+
+- Fix `weaver` and `cowbird` inconsistencies for `public` WPS outputs directory handling.
+
+  Because `cowbird` needs to mount multiple directories within the user-workspace for `jupyterhub`, it needs to define
+  a dedicated `public/wps_outputs` sub-directory to distinguish it from other `public` files not part of WPS outputs.
+  However, for WPS birds, other files than WPS outputs are irrelevant, and are therefore mounted directly in their
+  container. The variable `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` was being misused in the context of `weaver`,
+  causing WPS output URLs for `public` context to be nested as `/wpsoutputs/weaver/public/wps_outputs/{jobID}`
+  instead of the intended location `/wpsoutputs/weaver/public/{jobID}`, in contrast to user-context WPS outputs
+  located under `/wpsoutputs/weaver/users/{userID}/{jobID}`.
+
+  Relates to [Ouranosinc/pavics-sdi#314](https://github.com/Ouranosinc/pavics-sdi/pull/314).
+
 [1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
 ------------------------------------------------------------------------------------------------------------------
 

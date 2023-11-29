@@ -2,5 +2,5 @@ version: "3.4"
 services:
   thredds:
     volumes:
-      - ${PATH_TO_LOCAL_NETCDF_FILES}:/pavics-data
+      - ${PATH_TO_LOCAL_NETCDF_FILES}:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}
       - ./config/thredds/catalog-public.xml:/opt/birdhouse/eggs/birdhousebuilder.recipe.thredds-0.3.0-py2.7.egg/birdhousebuilder/recipe/thredds/catalog.xml
