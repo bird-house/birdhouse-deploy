@@ -27,6 +27,16 @@
   The minimum duration between checks can be set with the `JUPYTERHUB_AUTHENTICATOR_REFRESH_AGE` variable which is an 
   integer (in seconds).
 
+  Note that users who are already logged in to jupyterhub will need to log out and log in for these changes to take
+  effect.
+
+  To forcibly log out all users currently logged in to jupyterhub you can run the following command to force the
+  recreation of the cookie secret:
+
+  ```shell
+  docker exec jupyterhub rm /persist/jupyterhub_cookie_secret && docker restart jupyterhub
+  ```
+
 [1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
 ------------------------------------------------------------------------------------------------------------------
 
