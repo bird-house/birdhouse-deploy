@@ -81,6 +81,11 @@ magpie.smtp_port = ${MAGPIE_SMTP_PORT}
 magpie.smtp_ssl = ${MAGPIE_SMTP_SSL}
 magpie.smtp_password = ${MAGPIE_SMTP_PASSWORD}
 
+# See https://pavics-magpie.readthedocs.io/en/latest/configuration.html#envvar-MAGPIE_USER_NAME_EXTRA_REGEX for details
+# User names must match the regular expression defined here as well (whether this variable is set or not):
+#    https://github.com/Ouranosinc/Magpie/blob/595602/magpie/api/management/user/user_utils.py#L66
+#magpie.user_name_extra_regex =
+
 # Caching settings for specific sections/functions - improves performance response times of recurring requests
 # See Twitcher INI configuration for caching that takes effect when resolving access enforcement to actual services.
 # Following cache settings apply only during Magpie API requests.

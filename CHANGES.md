@@ -30,6 +30,34 @@
   `optional-components/secure-data-proxy`. More details are provided under the component's
   [README](./birdhouse/optional-components/README.rst#provide-a-proxy-for-local-stac-asset-hosting).
 
+[1.39.1](https://github.com/bird-house/birdhouse-deploy/tree/1.39.1) (2023-11-29)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Limit usernames in Magpie to match restrictions by Jupyterhub's Dockerspawner
+
+  When Jupyterhub spawns a new jupyterlab container, it escapes any non-ascii, non-digit character in the username. 
+  This results in a username that may not match the expected username (as defined by Magpie). This mismatch results in 
+  the container failing to spawn since expected volumes cannot be mounted to the jupyterlab container.
+
+  This fixes the issue by ensuring that juptyerhub does not convert the username that is receives from Magpie.
+
+  Note that this updates the Magpie version.
+
+[1.39.0](https://github.com/bird-house/birdhouse-deploy/tree/1.39.0) (2023-11-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add a Magpie Webhook to create the Magpie resources corresponding to the STAC-API path elements when a `STAC-API`
+  `POST /collections/{collection_id}` or `POST /collections/{collection_id}/items/{item_id}` request is accomplished.
+  - When creating the STAC `Item`, the `source` entry in `links` corresponding to a `THREDDS` file on the same instance
+    is used to define the Magpie `resource_display_name` corresponding to a file to be mapped later on
+    (eg: a NetCDF `birdhouse/test-data/tc_Anon[...].nc`).
+  - Checking same instance `source` path is necessary because `STAC` could refer to external assets, and we do not want
+    to inject Magpie resource that are not part of the active instance where the hook is running.
+
 [1.38.0](https://github.com/bird-house/birdhouse-deploy/tree/1.38.0) (2023-11-21)
 ------------------------------------------------------------------------------------------------------------------
 
