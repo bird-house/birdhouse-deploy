@@ -1,7 +1,6 @@
 version: "3.4"
 
-x-logging:
-  &default-logging
+x-logging: &default-logging
   driver: "json-file"
   options:
     max-size: "50m"
@@ -23,7 +22,7 @@ services:
       - "38091:38091"
       - "48091:9001"
     volumes:
-      - ${DATA_PERSIST_ROOT}/datasets:/pavics-data
+      - ${DATA_PERSIST_ROOT}/datasets:/data
       - ./deprecated-components/malleefowl/custom.cfg:/opt/birdhouse/src/malleefowl/custom.cfg
     depends_on:
       - postgres

@@ -4,7 +4,7 @@ CONF_FILE="/usr/local/tomcat/conf/server.xml"
 
 if ! grep ' relaxedQueryChars=' $CONF_FILE; then
     # allow angle bracket in query params, ex:
-    # https://boreas.ouranos.ca/twitcher/ows/proxy/thredds/dodsC/birdhouse/testdata/tasmax_day_BCCAQv2+ANUSPLIN300_BNU-ESM_historical+rcp85_r1i1p1_19500101-21001231.nc.ascii?tasmax[0:1:0][0:1:0][0:1:0]
+    # https://boreas.ouranos.ca/twitcher/ows/proxy/thredds/dodsC/${THREDDS_SERVICE_DATA_URL_PATH}/testdata/tasmax_day_BCCAQv2+ANUSPLIN300_BNU-ESM_historical+rcp85_r1i1p1_19500101-21001231.nc.ascii?tasmax[0:1:0][0:1:0][0:1:0]
     cp -v $CONF_FILE ${CONF_FILE}.bak.relaxedQueryChars.$$
     sed -i 's/<Connector /<Connector relaxedQueryChars="[,]" /g' $CONF_FILE
 fi

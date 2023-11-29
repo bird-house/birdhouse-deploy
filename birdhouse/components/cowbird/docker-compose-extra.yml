@@ -23,7 +23,7 @@ services:
       # root user
       COWBIRD_FILESYSTEM_ADMIN_UID: 0
       COWBIRD_FILESYSTEM_ADMIN_GID: 0
-      PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR: ${PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR}
+      PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR: ${COWBIRD_PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR}
       SECURE_DATA_PROXY_NAME: ${SECURE_DATA_PROXY_NAME}
       # Note that WPS_OUTPUTS_DIR and WORKSPACE_DIR must both point to paths from the same volume.
       # This is to allow the creation of hardlinks between the wpsoutputs and the user workspace.
