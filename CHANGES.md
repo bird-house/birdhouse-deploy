@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.40.0](https://github.com/bird-house/birdhouse-deploy/tree/1.40.0) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
 - `optional-components/stac-data-proxy`: add a new feature to allow hosting of local STAC assets.
 
   The new component defines variables `STAC_DATA_PROXY_DIR_PATH` (default `${DATA_PERSIST_ROOT}/stac-data`) and
