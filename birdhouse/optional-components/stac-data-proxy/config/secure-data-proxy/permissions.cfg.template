@@ -1,0 +1,12 @@
+# NOTE:
+# Assume 'secure-data-proxy' would exist if needed (other component dependency).
+# Since sorted load order of 'secure-data-proxy' < 'stac-data-proxy' in Magpie, 'secure-data-proxy' should exist.
+permissions:
+  # following permission does not change anything technically (full access for admins)
+  # it is employed only to set up the relevant resource path and make permission customization easier by Magpie API/UI
+  - service: secure-data-proxy
+    resource: ${STAC_DATA_PROXY_URL_PATH}
+    type: route
+    permission: read
+    group: administrators
+    action: create
