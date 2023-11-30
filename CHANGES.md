@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.41.0](https://github.com/bird-house/birdhouse-deploy/tree/1.41.0) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 - New optional-component `optional-components/test-cowbird-jupyter-access` that executes a script to set up a test user  
   along with different test files. This component is used for the related 
@@ -22,6 +27,8 @@
   from the [PAVICS-e2e-workflow-tests](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests) repo.
 - Update `cowbird` service from [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0)
   to [2.2.0](https://github.com/Ouranosinc/cowbird/tree/2.2.0).
+- Add new `README` file to be used on `jupyterhub` when `cowbird` is activated. The file describes to the user the 
+  different directories and permissions found in its workspace.
 
 ## Fixes
 - Updates incorrect WPS outputs resource name in the cowbird config.
