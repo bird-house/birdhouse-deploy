@@ -15,6 +15,26 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.40.0](https://github.com/bird-house/birdhouse-deploy/tree/1.40.0) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
+- `optional-components/stac-data-proxy`: add a new feature to allow hosting of local STAC assets.
+
+  The new component defines variables `STAC_DATA_PROXY_DIR_PATH` (default `${DATA_PERSIST_ROOT}/stac-data`) and
+  `STAC_DATA_PROXY_URL_PATH` (default `/data/stac`) that are aliased (mapped) under `nginx` to provide a URL
+  where locally hosted STAC assets can be downloaded from. This allows a server node to be a proper data provider,
+  where its STAC-API can return Catalog, Collection and Item definitions that points at these local assets available
+  through the `STAC_DATA_PROXY_URL_PATH` endpoint.
+
+  When enabled, this component can be combined with `optional-components/secure-data-proxy` to allow per-resource
+  access control of the contents under `STAC_DATA_PROXY_DIR_PATH` by setting relevant Magpie permissions under service
+  `secure-data-proxy` for children resources that correspond to `STAC_DATA_PROXY_URL_PATH`. Otherwise, the path and
+  all of its contents are publicly available, in the same fashion that WPS outputs are managed without
+  `optional-components/secure-data-proxy`. More details are provided under the component's
+  [README](./birdhouse/optional-components/README.rst#provide-a-proxy-for-local-stac-asset-hosting).
+
 - `optional-components/stac-public-access`: add public write permission for `POST /stac/search` request.
 
   Since [`pystac_client`](https://github.com/stac-utils/pystac-client), a common interface to interact with STAC API,
