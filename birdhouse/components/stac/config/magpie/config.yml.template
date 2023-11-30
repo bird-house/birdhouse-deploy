@@ -7,6 +7,15 @@ providers:
     c4i: false
     type: api
     sync_type: api
+    hooks:
+      - type: response
+        path: "/stac/collections/?"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/stac_hooks.py:create_collection_resource
+      - type: response
+        path: "/stac/collections/[\\w-]+/items/?"
+        method: POST
+        target: /opt/birdhouse/src/magpie/hooks/stac_hooks.py:create_item_resource
 
 permissions:
   # create a default 'stac' resource under 'stac' service
