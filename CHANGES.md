@@ -15,7 +15,46 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Add magpie cookie as environment variable in jupyterlab server
+
+  When the jupyterlab server starts, add the current magpie cookie values as an environment variable in the jupyterlab 
+  environment. The environment variable is name `MAGPIE_COOKIES` and the value of this variable is a JSON object where
+  keys are the name of a cookie and values are a cookie's content.
+  
+  This will allow users to programatically access resources protected by magpie without having to 
+  copy/paste these cookies from their browser session or add a username and password in plaintext to the file. 
+
+  For example, to access a dataset behind a secured URL with `xarray.open_dataset` using a username and password:
+
+  ```python
+  import requests
+  from request_magpie import MagpieAuth
+  import xarray
+  
+  with requests.session() as session:
+       session.auth = MagpieAuth("https://mynode/magpie", "myusername", "myverysecretpassword")
+       store = xarray.backends.PydapDataStore.open("https://mynode/thredds/some/secure/dataset.nc", session=session)
+       dataset = xarray.open_dataset(store)
+  ```
+
+  And to do the same thing using the current magpie cookie already used to log in the current user (no need to include username and password)
+  
+  ```python
+  import os
+  import requests
+  import xarray
+  
+  with requests.session() as session:
+      for name, value in os.getenv("MAGPIE_COOKIES", {}).items():
+          session.cookies.set(name, value)
+      store = xarray.backends.PydapDataStore.open("https://mynode/thredds/some/secure/dataset.nc", session=session)
+      dataset = xarray.open_dataset(store)        
+  ```
+
+  Note that users who are already logged in to jupyterhub will need to log out and log in for these changes to take
+  effect.
 
 [1.39.2](https://github.com/bird-house/birdhouse-deploy/tree/1.39.2) (2023-11-30)
 ------------------------------------------------------------------------------------------------------------------
