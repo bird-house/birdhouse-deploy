@@ -19,12 +19,26 @@ c.MagpieAuthenticator.magpie_url = "http://magpie:2001"
 c.MagpieAuthenticator.public_fqdn = "${PAVICS_FQDN_PUBLIC}"
 c.MagpieAuthenticator.authorization_url = "${JUPYTERHUB_AUTHENTICATOR_AUTHORIZATION_URL}"
 
+if os.getenv("JUPYTERHUB_CRYPT_KEY"):
+    c.MagpieAuthenticator.enable_auth_state = True
+    c.MagpieAuthenticator.refresh_pre_spawn = True
+    c.MagpieAuthenticator.auth_refresh_age = int("${JUPYTERHUB_AUTHENTICATOR_REFRESH_AGE}")
+
 c.JupyterHub.cookie_secret_file = '/persist/jupyterhub_cookie_secret'
 c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
 
 c.JupyterHub.template_paths = ['/custom_templates']
 
 class CustomDockerSpawner(DockerSpawner):
+    @property
+    def escaped_name(self):
+        """
+        Return the username without escaping. This ensures that mounted directories on the
+        host machine are discovered properly since we expect the username to match the username
+        set by Magpie.
+        """
+        return self.user.name
+
     async def start(self):
         if(os.environ['MOUNT_IMAGE_SPECIFIC_NOTEBOOKS'] == 'true'):
             host_dir = join(os.environ['JUPYTERHUB_USER_DATA_DIR'], 'tutorial-notebooks-specific-images')

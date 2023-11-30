@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  magpie:
+    volumes:
+      - ./optional-components/stac-data-proxy/config/secure-data-proxy/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/stac-data-proxy.cfg:ro
