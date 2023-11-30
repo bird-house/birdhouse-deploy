@@ -27,6 +27,7 @@ services:
       MOUNT_IMAGE_SPECIFIC_NOTEBOOKS: ${MOUNT_IMAGE_SPECIFIC_NOTEBOOKS}
       USER_WORKSPACE_UID: ${USER_WORKSPACE_UID}
       USER_WORKSPACE_GID: ${USER_WORKSPACE_GID}
+      JUPYTERHUB_CRYPT_KEY: ${JUPYTERHUB_CRYPT_KEY}
     volumes:
       - ./config/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
       - ./config/jupyterhub/custom_templates:/custom_templates:ro
