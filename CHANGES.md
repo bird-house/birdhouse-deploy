@@ -35,6 +35,14 @@
   `optional-components/secure-data-proxy`. More details are provided under the component's
   [README](./birdhouse/optional-components/README.rst#provide-a-proxy-for-local-stac-asset-hosting).
 
+- `optional-components/stac-public-access`: add public write permission for `POST /stac/search` request.
+
+  Since [`pystac_client`](https://github.com/stac-utils/pystac-client), a common interface to interact with STAC API,
+  employs `POST` method by default to perform search, the missing permission caused an unexpected error for users that
+  are not aware of the specific permission control of Magpie. Since nothing is created by that endpoint, but rather,
+  the POST'ed body employs the convenient JSON format to provide search criteria, it is safe to set this permission
+  when the STAC service was configured to be publicly searchable.
+
 [1.39.2](https://github.com/bird-house/birdhouse-deploy/tree/1.39.2) (2023-11-30)
 ------------------------------------------------------------------------------------------------------------------
 
