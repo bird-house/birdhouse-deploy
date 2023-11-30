@@ -20,10 +20,10 @@
 - Add magpie cookie as environment variable in jupyterlab server
 
   When the jupyterlab server starts, add the current magpie cookie values as an environment variable in the jupyterlab 
-  environment. The environment variable is name `MAGPIE_COOKIES` and the value of this variable is a JSON object where
+  environment. The environment variable is named `MAGPIE_COOKIES` and the value of this variable is a JSON object where
   keys are the name of a cookie and values are a cookie's content.
   
-  This will allow users to programatically access resources protected by magpie without having to 
+  This will allow users to programmatically access resources protected by magpie without having to 
   copy/paste these cookies from their browser session or add a username and password in plaintext to the file. 
 
   For example, to access a dataset behind a secured URL with `xarray.open_dataset` using a username and password:
