@@ -17,6 +17,31 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.39.2](https://github.com/bird-house/birdhouse-deploy/tree/1.39.2) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyterhub: periodically check whether the logged-in user still have permission to access
+
+  By setting the `JUPYTERHUB_CRYPT_KEY` environment variable in the `env.local` file, jupyterhub will store user's
+  authentication information (session cookie) in the database. This allows jupyterhub to periodically check whether the
+  user still has permission to access jupyterhub (the session cookie is not expired and the permission have not 
+  changed).
+  
+  The minimum duration between checks can be set with the `JUPYTERHUB_AUTHENTICATOR_REFRESH_AGE` variable which is an 
+  integer (in seconds).
+
+  Note that users who are already logged in to jupyterhub will need to log out and log in for these changes to take
+  effect.
+
+  To forcibly log out all users currently logged in to jupyterhub you can run the following command to force the
+  recreation of the cookie secret:
+
+  ```shell
+  docker exec jupyterhub rm /persist/jupyterhub_cookie_secret && docker restart jupyterhub
+  ```
+
 [1.39.1](https://github.com/bird-house/birdhouse-deploy/tree/1.39.1) (2023-11-29)
 ------------------------------------------------------------------------------------------------------------------
 
