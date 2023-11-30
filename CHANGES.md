@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.41.0](https://github.com/bird-house/birdhouse-deploy/tree/1.41.0) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Update `cowbird` service from [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0)
