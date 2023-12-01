@@ -36,7 +36,8 @@
        dataset = xarray.open_dataset(store)
   ```
 
-  And to do the same thing using the current magpie cookie already used to log in the current user (no need to include username and password)
+  And to do the same thing using the current magpie cookie already used to log in the current user (no need to include 
+  username and password)
   
   ```python
   import os
