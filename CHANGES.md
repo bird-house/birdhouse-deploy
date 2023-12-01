@@ -45,7 +45,7 @@
   import xarray
   
   with requests.session() as session:
-      r = requests.get(f"{os.getenv('PAVICS_HOST_URL')}/jupyter/hub/api/users/{os.getenv('JUPYTERHUB_USER')}", 
+      r = requests.get(f"{os.getenv('JUPYTERHUB_API_URL')}/users/{os.getenv('JUPYTERHUB_USER')}", 
                        headers={"Authorization": f"token {os.getenv('JUPYTERHUB_API_TOKEN')}"})
       for name, value in r.json().get("auth_state", {}).get("magpie_cookies", {}).items():
           session.cookies.set(name, value)
