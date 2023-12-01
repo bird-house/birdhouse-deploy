@@ -17,14 +17,11 @@
 
 ## Changes
 
-- Add magpie cookie as environment variable in jupyterlab server
+- Allow user to access their Magpie cookie programmatically
 
-  When the jupyterlab server starts, add the current magpie cookie values as an environment variable in the jupyterlab 
-  environment. The environment variable is named `MAGPIE_COOKIES` and the value of this variable is a JSON object where
-  keys are the name of a cookie and values are a cookie's content.
-  
-  This will allow users to programmatically access resources protected by magpie without having to 
-  copy/paste these cookies from their browser session or add a username and password in plaintext to the file. 
+  When the user logs in to jupyterhub, their Magpie cookie is stored in the jupyterhub database. This allows the user
+  to access this variable to programmatically access resources protected by magpie without having to copy/paste these 
+  cookies from their browser session or add a username and password in plaintext to the file. 
 
   For example, to access a dataset behind a secured URL with `xarray.open_dataset` using a username and password:
 
@@ -47,7 +44,9 @@
   import xarray
   
   with requests.session() as session:
-      for name, value in os.getenv("MAGPIE_COOKIES", {}).items():
+      r = requests.get(f"{os.getenv('PAVICS_HOST_URL')}/jupyter/hub/api/users/{os.getenv('JUPYTERHUB_USER')}", 
+                       headers={"Authorization": f"token {os.getenv('JUPYTERHUB_API_TOKEN')}"})
+      for name, value in r.json().get("auth_state", {}).get("magpie_cookies", {}).items():
           session.cookies.set(name, value)
       store = xarray.backends.PydapDataStore.open("https://mynode/thredds/some/secure/dataset.nc", session=session)
       dataset = xarray.open_dataset(store)        
