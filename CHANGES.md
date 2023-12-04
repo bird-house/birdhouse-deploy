@@ -23,7 +23,8 @@
   to access this variable to programmatically access resources protected by magpie without having to copy/paste these 
   cookies from their browser session or add a username and password in plaintext to the file. 
 
-  For example, to access a dataset behind a secured URL with `xarray.open_dataset` using a username and password:
+  For example, to access a dataset behind a secured URL with `xarray.open_dataset` using a username and password.
+  (this is *not recommended* as it makes it much easier to accidentally leak user credentials):
 
   ```python
   import requests
@@ -37,7 +38,7 @@
   ```
 
   And to do the same thing using the current magpie cookie already used to log in the current user (no need to include 
-  username and password)
+  username and password, this is *strongly recommended* over the technique above):
   
   ```python
   import os
