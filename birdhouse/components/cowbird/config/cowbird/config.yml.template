@@ -34,8 +34,8 @@ handlers:
     jupyterhub_user_data_dir: ${JUPYTERHUB_USER_DATA_DIR}
     wps_outputs_dir: ${WPS_OUTPUTS_DIR}
     secure_data_proxy_name: ${SECURE_DATA_PROXY_NAME}
-    # wps_outputs_res_name: ${WPS_OUTPUTS_RES_NAME}
-    public_workspace_wps_outputs_subdir: ${PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR}
+    wps_outputs_res_name: ${WPS_OUTPUTS_RES_NAME}
+    public_workspace_wps_outputs_subdir: ${COWBIRD_PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR}
     # notebooks_dir_name: ${NOTEBOOKS_DIR_NAME}
     # user_wps_outputs_dir_name: ${USER_WPS_OUTPUTS_DIR_NAME}
 
@@ -187,10 +187,10 @@ sync_permissions:
           - name: "{outputID}"
             type: route
       thredds:
-        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/catalog.html
-        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/{public|<user-id>}/catalog.html
-        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/{public|<user-id>}/{job-id}/catalog.html
-        # /twitcher/ows/proxy/thredds/catalog/birdhouse/wps_outputs/weaver/{public|<user-id>}/{job-id}/{output-file}
+        # /twitcher/ows/proxy/thredds/catalog/${THREDDS_SERVICE_DATA_URL_PATH}/wps_outputs/weaver/catalog.html
+        # /twitcher/ows/proxy/thredds/catalog/${THREDDS_SERVICE_DATA_URL_PATH}/wps_outputs/weaver/{public|<user-id>}/catalog.html
+        # /twitcher/ows/proxy/thredds/catalog/${THREDDS_SERVICE_DATA_URL_PATH}/wps_outputs/weaver/{public|<user-id>}/{job-id}/catalog.html
+        # /twitcher/ows/proxy/thredds/catalog/${THREDDS_SERVICE_DATA_URL_PATH}/wps_outputs/weaver/{public|<user-id>}/{job-id}/{output-file}
         # note: paths start after ows-proxy portion extracted when Twitcher/Magpie resolve between each other
         thredds_wps_outputs:
           - name: thredds
@@ -199,7 +199,7 @@ sync_permissions:
           # 'catalog' is the file/view format specifier for the rest of the path
           # - name: catalog
           #  type: directory
-          - name: birdhouse
+          - name: ${THREDDS_SERVICE_DATA_URL_PATH}
             type: directory
           - name: wps_outputs
             type: directory
@@ -216,7 +216,7 @@ sync_permissions:
           # 'catalog' is the file/view format specifier for the rest of the path
           # - name: catalog
           #  type: directory
-          - name: birdhouse
+          - name: ${THREDDS_SERVICE_DATA_URL_PATH}
             type: directory
           - name: wps_outputs
             type: directory

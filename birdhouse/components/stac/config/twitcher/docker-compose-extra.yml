@@ -1,0 +1,10 @@
+version: "3.4"
+
+services:
+  # extend twitcher with MagpieAdapter hooks employed for STAC proxied requests
+  twitcher:
+    volumes:
+      # NOTE: MagpieAdapter hooks are defined within Magpie config, but it is actually Twitcher proxy that runs them
+      # target mount location depends on 'MAGPIE_PROVIDERS_CONFIG_PATH' environment variable that is found under `birdhouse/config/twitcher/docker-compose-extra.yml`
+      - ./components/stac/config/magpie/config.yml:/opt/birdhouse/src/magpie/config/stac-config.yml:ro
+      - ./components/stac/config/magpie/stac_hooks.py:/opt/birdhouse/src/magpie/hooks/stac_hooks.py:ro
