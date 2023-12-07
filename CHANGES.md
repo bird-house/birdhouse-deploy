@@ -17,6 +17,51 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.42.1](https://github.com/bird-house/birdhouse-deploy/tree/1.42.1) (2023-12-07)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow user to access their Magpie cookie programmatically
+
+  When the user logs in to jupyterhub, their Magpie cookie is stored in the jupyterhub database. This allows the user
+  to access this variable to programmatically access resources protected by magpie without having to copy/paste these 
+  cookies from their browser session or add a username and password in plaintext to the file. 
+
+  For example, to access a dataset behind a secured URL with `xarray.open_dataset` using a username and password.
+  (this is *not recommended* as it makes it much easier to accidentally leak user credentials):
+
+  ```python
+  import requests
+  from request_magpie import MagpieAuth
+  import xarray
+  
+  with requests.session() as session:
+       session.auth = MagpieAuth("https://mynode/magpie", "myusername", "myverysecretpassword")
+       store = xarray.backends.PydapDataStore.open("https://mynode/thredds/some/secure/dataset.nc", session=session)
+       dataset = xarray.open_dataset(store)
+  ```
+
+  And to do the same thing using the current magpie cookie already used to log in the current user (no need to include 
+  username and password, this is *strongly recommended* over the technique above):
+  
+  ```python
+  import os
+  import requests
+  import xarray
+  
+  with requests.session() as session:
+      r = requests.get(f"{os.getenv('JUPYTERHUB_API_URL')}/users/{os.getenv('JUPYTERHUB_USER')}", 
+                       headers={"Authorization": f"token {os.getenv('JUPYTERHUB_API_TOKEN')}"})
+      for name, value in r.json().get("auth_state", {}).get("magpie_cookies", {}).items():
+          session.cookies.set(name, value)
+      store = xarray.backends.PydapDataStore.open("https://mynode/thredds/some/secure/dataset.nc", session=session)
+      dataset = xarray.open_dataset(store)        
+  ```
+
+  Note that users who are already logged in to jupyterhub will need to log out and log in for these changes to take
+  effect.
+
 [1.42.0](https://github.com/bird-house/birdhouse-deploy/tree/1.42.0) (2023-11-30)
 ------------------------------------------------------------------------------------------------------------------
 
