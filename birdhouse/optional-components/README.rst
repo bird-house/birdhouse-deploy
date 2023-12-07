@@ -299,6 +299,26 @@ See |geoserver_secured_pr|_. for more details.
 .. |geoserver_secured_pr| replace:: Pull Request
 
 
+Test user workspace in JupyterLab when using Cowbird
+----------------------------------------------------
+
+This optional component is used to prepare the related |test_cowbird_jupyter|_ test, where a user workspace is
+validated in a JupyterLab environment spawned from JupyterHub and where Cowbird is used to prepare the user workspace.
+
+The component will start a Docker container specifically made to run a Python script, where the different test
+requirements are initialized. This includes creating a test user, preparing different test files and setting permissions
+correctly. This component also customizes the JupyterHub config according to the test requirements.
+
+.. warning::
+    This component should never be used in non-test environments, as it opens public access for certain endpoints,
+    defines admin-tokens for a JupyterHub user for which credentials are clearly visible in the script, and enforces
+    use of root access for the test preparation container. The component is for validation only. If used in a prod
+    stack, it would create a security vulnerability.
+
+.. _test_cowbird_jupyter: https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/blob/master/notebooks-auth/test_cowbird_jupyter.ipynb
+.. |test_cowbird_jupyter| replace:: notebook
+
+
 Populate STAC catalog with sample data
 --------------------------------------------------------
 
@@ -325,6 +345,55 @@ To enable this optional-component:
 - Edit ``env.local`` (a copy of `env.local.example`_)
 - Add ``./optional-components/stac-public-access`` to ``EXTRA_CONF_DIRS``.
 
+
+Provide a proxy for local STAC asset hosting
+--------------------------------------------------------
+
+STAC data proxy allows to host the URL location defined by ``PAVICS_FQDN_PUBLIC`` and ``STAC_DATA_PROXY_URL_PATH``
+to provide access to files contained within ``STAC_DATA_PROXY_DIR_PATH``.
+
+The ``STAC_DATA_PROXY_DIR_PATH`` location can be used to hold STAC Assets defined by the current server node
+(in contrast to STAC definitions that would refer to remote locations), such that the node can be the original
+location of new data, or to make a new local replication of remote data.
+
+To enable this optional-component:
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./optional-components/stac-data-proxy`` to ``EXTRA_CONF_DIRS``.
+- Optionally, add any other relevant components to control access as desired (see below).
+
+When using this component, access to the endpoint defined by ``STAC_DATA_PROXY_URL_PATH``, and therefore all
+corresponding files contained under mapped ``STAC_DATA_PROXY_DIR_PATH`` will depend on how this
+feature is combined with ``./optional-components/stac-public-access`` and ``./optional-components/secure-data-proxy``.
+Following are the possible combinations and obtained behaviors:
+
+.. list-table::
+    :header-rows: 1
+
+    * - Enabled Components
+      - Obtained Behaviors
+
+    * - Only ``./optional-components/stac-data-proxy`` is enabled.
+      - All data under ``STAC_DATA_PROXY_URL_PATH`` is publicly accessible without authorization control
+        and specific resource access cannot be managed per content. However, since STAC-API itself is not made public,
+        the STAC Catalog, Collections and Items cannot be accessed publicly
+        (*note*: this is most probably never desired).
+
+    * - Both ``./optional-components/stac-data-proxy`` and ``./optional-components/stac-public-access`` are enabled.
+      - All data under ``STAC_DATA_PROXY_URL_PATH`` is publicly accessible without possibility to manage per-resource
+        access. However, this public access is aligned with publicly accessible STAC-API endpoints and contents.
+
+    * - Both ``./optional-components/stac-data-proxy`` and ``./optional-components/secure-data-proxy`` are enabled.
+      - All data under ``STAC_DATA_PROXY_URL_PATH`` is protected (by default, admin-only), but can be granted access
+        on a per-user, per-group and per-resource basis according to permissions applied by the administrator.
+        Since STAC-API is not made public by default, the administrator can decide whether they grant access only to
+        STAC metadata (Catalog, Collection, Items) with permission applied on the ``stac`` Magpie service, only to
+        assets data with permission under the ``stac-data-proxy``, or both.
+
+    * - All of ``./optional-components/stac-data-proxy``, ``./optional-components/stac-public-access`` and
+        ``./optional-components/secure-data-proxy`` are enabled.
+      - Similar to the previous case, allowing full authorization management control by the administrator, but contents
+        are publicly accessible by default. To revoke access, a Magpie administrator has to apply a ``deny`` permission.
 
 X-Robots-Tag Header
 ---------------------------

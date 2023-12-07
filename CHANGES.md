@@ -35,6 +35,126 @@
     landing page.
     If any other behaviour is desired, `PROXY_ROOT_LOCATION` should be updated in the `env.local` file.
 
+[1.42.1](https://github.com/bird-house/birdhouse-deploy/tree/1.42.1) (2023-12-07)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow user to access their Magpie cookie programmatically
+
+  When the user logs in to jupyterhub, their Magpie cookie is stored in the jupyterhub database. This allows the user
+  to access this variable to programmatically access resources protected by magpie without having to copy/paste these 
+  cookies from their browser session or add a username and password in plaintext to the file. 
+
+  For example, to access a dataset behind a secured URL with `xarray.open_dataset` using a username and password.
+  (this is *not recommended* as it makes it much easier to accidentally leak user credentials):
+
+  ```python
+  import requests
+  from request_magpie import MagpieAuth
+  import xarray
+  
+  with requests.session() as session:
+       session.auth = MagpieAuth("https://mynode/magpie", "myusername", "myverysecretpassword")
+       store = xarray.backends.PydapDataStore.open("https://mynode/thredds/some/secure/dataset.nc", session=session)
+       dataset = xarray.open_dataset(store)
+  ```
+
+  And to do the same thing using the current magpie cookie already used to log in the current user (no need to include 
+  username and password, this is *strongly recommended* over the technique above):
+  
+  ```python
+  import os
+  import requests
+  import xarray
+  
+  with requests.session() as session:
+      r = requests.get(f"{os.getenv('JUPYTERHUB_API_URL')}/users/{os.getenv('JUPYTERHUB_USER')}", 
+                       headers={"Authorization": f"token {os.getenv('JUPYTERHUB_API_TOKEN')}"})
+      for name, value in r.json().get("auth_state", {}).get("magpie_cookies", {}).items():
+          session.cookies.set(name, value)
+      store = xarray.backends.PydapDataStore.open("https://mynode/thredds/some/secure/dataset.nc", session=session)
+      dataset = xarray.open_dataset(store)        
+  ```
+
+  Note that users who are already logged in to jupyterhub will need to log out and log in for these changes to take
+  effect.
+
+[1.42.0](https://github.com/bird-house/birdhouse-deploy/tree/1.42.0) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `cowbird` service from [2.2.0](https://github.com/Ouranosinc/cowbird/tree/2.2.0)
+  to [2.3.0](https://github.com/Ouranosinc/cowbird/tree/2.3.0).
+
+[1.41.0](https://github.com/bird-house/birdhouse-deploy/tree/1.41.0) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- New optional-component `optional-components/test-cowbird-jupyter-access` that executes a script to set up a test user  
+  along with different test files. This component is used for the related 
+  [e2e test](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/blob/master/notebooks-auth/test_cowbird_jupyter.ipynb)
+  from the [PAVICS-e2e-workflow-tests](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests) repo.
+- Update `cowbird` service from [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0)
+  to [2.2.0](https://github.com/Ouranosinc/cowbird/tree/2.2.0).
+- Add new `README` file to be used on `jupyterhub` when `cowbird` is activated. The file describes to the user the 
+  different directories and permissions found in its workspace.
+
+## Fixes
+- Updates incorrect WPS outputs resource name in the cowbird config.
+
+[1.40.0](https://github.com/bird-house/birdhouse-deploy/tree/1.40.0) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
+- `optional-components/stac-data-proxy`: add a new feature to allow hosting of local STAC assets.
+
+  The new component defines variables `STAC_DATA_PROXY_DIR_PATH` (default `${DATA_PERSIST_ROOT}/stac-data`) and
+  `STAC_DATA_PROXY_URL_PATH` (default `/data/stac`) that are aliased (mapped) under `nginx` to provide a URL
+  where locally hosted STAC assets can be downloaded from. This allows a server node to be a proper data provider,
+  where its STAC-API can return Catalog, Collection and Item definitions that points at these local assets available
+  through the `STAC_DATA_PROXY_URL_PATH` endpoint.
+
+  When enabled, this component can be combined with `optional-components/secure-data-proxy` to allow per-resource
+  access control of the contents under `STAC_DATA_PROXY_DIR_PATH` by setting relevant Magpie permissions under service
+  `secure-data-proxy` for children resources that correspond to `STAC_DATA_PROXY_URL_PATH`. Otherwise, the path and
+  all of its contents are publicly available, in the same fashion that WPS outputs are managed without
+  `optional-components/secure-data-proxy`. More details are provided under the component's
+  [README](./birdhouse/optional-components/README.rst#provide-a-proxy-for-local-stac-asset-hosting).
+
+- `optional-components/stac-public-access`: add public write permission for `POST /stac/search` request.
+
+  Since [`pystac_client`](https://github.com/stac-utils/pystac-client), a common interface to interact with STAC API,
+  employs `POST` method by default to perform search, the missing permission caused an unexpected error for users that
+  are not aware of the specific permission control of Magpie. Since nothing is created by that endpoint, but rather,
+  the POST'ed body employs the convenient JSON format to provide search criteria, it is safe to set this permission
+  when the STAC service was configured to be publicly searchable.
+
+[1.39.2](https://github.com/bird-house/birdhouse-deploy/tree/1.39.2) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyterhub: periodically check whether the logged-in user still have permission to access
+
+  By setting the `JUPYTERHUB_CRYPT_KEY` environment variable in the `env.local` file, jupyterhub will store user's
+  authentication information (session cookie) in the database. This allows jupyterhub to periodically check whether the
+  user still has permission to access jupyterhub (the session cookie is not expired and the permission have not 
+  changed).
+  
+  The minimum duration between checks can be set with the `JUPYTERHUB_AUTHENTICATOR_REFRESH_AGE` variable which is an 
+  integer (in seconds).
+
+  Note that users who are already logged in to jupyterhub will need to log out and log in for these changes to take
+  effect.
+
+  To forcibly log out all users currently logged in to jupyterhub you can run the following command to force the
+  recreation of the cookie secret:
+
+  ```shell
+  docker exec jupyterhub rm /persist/jupyterhub_cookie_secret && docker restart jupyterhub
+  ```
+
 [1.39.1](https://github.com/bird-house/birdhouse-deploy/tree/1.39.1) (2023-11-29)
 ------------------------------------------------------------------------------------------------------------------
 
