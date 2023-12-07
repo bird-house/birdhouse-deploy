@@ -59,6 +59,15 @@ class TestReadConfigs:
         "./components/stac",
     ]
 
+    default_all_conf_order_with_dependencies: list[str] = [
+        "./components/proxy",
+        "./components/magpie",
+        "./components/twitcher",
+        "./components/wps_outputs-volume",
+        "./components/cowbird",
+        "./components/stac",
+    ]
+
     extra_conf_order: list[str] = [
         "./components/canarie-api",
         "./components/geoserver",
@@ -117,7 +126,7 @@ class TestReadConfigs:
         """Test that the expected order that default.env files are loaded is correct"""
         proc = self.run_func(read_config_include_file, {}, 'echo "$ALL_CONF_DIRS"')
         print(proc.stdout)  # useful for debugging when assert fail
-        assert split_and_strip(get_command_stdout(proc)) == self.default_all_conf_order
+        assert split_and_strip(get_command_stdout(proc)) == self.default_all_conf_order_with_dependencies
 
     def test_all_conf_dirs_extra_last(self, read_config_include_file) -> None:
         """Test that any extra components are loaded last"""
