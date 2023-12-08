@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[1.42.2](https://github.com/bird-house/birdhouse-deploy/tree/1.42.2) (2023-12-08)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 - Jupyter: new incremental build to include `SAlib` for sensitivity analysis
   and `fstd2nc` to convert RPN files (from Environment Canada) to netCDF files
