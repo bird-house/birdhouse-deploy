@@ -17,6 +17,23 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.42.2](https://github.com/bird-house/birdhouse-deploy/tree/1.42.2) (2023-12-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter: new incremental build to include `SAlib` for sensitivity analysis
+  and `fstd2nc` to convert RPN files (from Environment Canada) to netCDF files
+
+  Also make `/notebook_dir/` read-only to avoid users putting their files there
+  and losing them since only `/notebook_dir/writable-workspace` is persisted on
+  disk.
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/128 for more
+  details about `SAlib` and
+  https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/132 for more
+  details about `fstd2nc`.
+
+
 [1.42.1](https://github.com/bird-house/birdhouse-deploy/tree/1.42.1) (2023-12-07)
 ------------------------------------------------------------------------------------------------------------------
 
