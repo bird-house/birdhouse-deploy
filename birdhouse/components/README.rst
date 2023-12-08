@@ -617,7 +617,7 @@ Geospatial Web.
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/geoserver``. For usage and
+The service is available at ``https://${PAVICS_FQDN_PUBLIC}/geoserver``. For usage and
 configuration options please refer to the `Geoserver documentation`_.
 
 .. _Geoserver documentation: https://docs.geoserver.org
