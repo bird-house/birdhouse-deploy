@@ -1,1 +1,1 @@
-CANARIE_STATS_ROUTES.append('wpsoutputs')
+CANARIE_STATS_ROUTES.append("${WPS_OUTPUTS_RES_NAME}")

@@ -11,7 +11,7 @@
 
 
 if [ -z "$DATASET_ROOT" ]; then
-    DATASET_ROOT="${DATA_PERSIST_ROOT:-/data}/datasets"
+    DATASET_ROOT="${DATA_PERSIST_ROOT}/${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}"
 fi
 
 FROM_SERVER="https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/fileServer/birdhouse"

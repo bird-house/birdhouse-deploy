@@ -63,7 +63,6 @@ services:
       - weaver-mongodb
     volumes:
       #- wps_private:/data/wps_private
-      - ${DATA_PERSIST_ROOT}/wps_private:/data/wps_private
       - ./components/weaver/config/weaver/weaver.ini:/opt/local/src/weaver/config/weaver.ini:ro
       - ./components/weaver/config/weaver/request_options.yml:/opt/local/src/weaver/config/request_options.yml:ro
       - ./components/weaver/celery-healthcheck:/opt/local/bin/weaver/celery-healthcheck:ro
@@ -97,7 +96,7 @@ services:
     networks:
       - weaver-mongodb
     volumes:
-      - ${DATA_PERSIST_ROOT}/mongodb_weaver_persist:/data/db
+      - ${WEAVER_MONGODB_DATA_DIR}:/data/db
     restart: always
     logging: *default-logging
 

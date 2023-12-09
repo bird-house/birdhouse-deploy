@@ -1,2 +1,4 @@
+config/magpie/config.yml
 config/proxy/conf.extra-service.d/stac.conf
 config/canarie-api/canarie_api_monitoring.py
+service-config.json

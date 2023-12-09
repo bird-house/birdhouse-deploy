@@ -16,6 +16,33 @@ c.JupyterHub.hub_ip = 'jupyterhub'
 
 c.JupyterHub.authenticator_class = 'jupyterhub_magpie_authenticator.MagpieAuthenticator'
 c.MagpieAuthenticator.magpie_url = "http://magpie:2001"
+c.MagpieAuthenticator.public_fqdn = "${PAVICS_FQDN_PUBLIC}"
+c.MagpieAuthenticator.authorization_url = "${JUPYTERHUB_AUTHENTICATOR_AUTHORIZATION_URL}"
+
+if os.getenv("JUPYTERHUB_CRYPT_KEY"):
+    c.MagpieAuthenticator.enable_auth_state = True
+    c.MagpieAuthenticator.refresh_pre_spawn = True
+    c.MagpieAuthenticator.auth_refresh_age = int("${JUPYTERHUB_AUTHENTICATOR_REFRESH_AGE}")
+
+    # Allow users to access their own auth_state in order to get their own magpie cookie
+    # See https://github.com/jupyterhub/jupyterhub/issues/3588 for details
+    c.JupyterHub.load_roles = [
+        {
+            "name": "user",
+            "description": "User Role for accessing auth_state via API",
+            "scopes": ["self", "admin:auth_state!user"],
+            "services": [],
+        }, {
+            "name": "server",
+            "description": "Allows parties to start and stop user servers",
+            "scopes": ["access:servers!user",
+                       "read:users:activity!user",
+                       "users:activity!user",
+                       "admin:auth_state!user"],
+            "services":[]
+        }
+    ]
+
 
 c.JupyterHub.cookie_secret_file = '/persist/jupyterhub_cookie_secret'
 c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
@@ -23,7 +50,16 @@ c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
 c.JupyterHub.template_paths = ['/custom_templates']
 
 class CustomDockerSpawner(DockerSpawner):
-    def start(self):
+    @property
+    def escaped_name(self):
+        """
+        Return the username without escaping. This ensures that mounted directories on the
+        host machine are discovered properly since we expect the username to match the username
+        set by Magpie.
+        """
+        return self.user.name
+
+    async def start(self):
         if(os.environ['MOUNT_IMAGE_SPECIFIC_NOTEBOOKS'] == 'true'):
             host_dir = join(os.environ['JUPYTERHUB_USER_DATA_DIR'], 'tutorial-notebooks-specific-images')
 
@@ -50,7 +86,7 @@ class CustomDockerSpawner(DockerSpawner):
                 "bind": "/notebook_dir/tutorial-notebooks",
                 "mode": "ro"
             }
-        return super().start()
+        return await super().start()
 
 c.JupyterHub.spawner_class = CustomDockerSpawner
 
@@ -87,6 +123,10 @@ if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
     c.DockerSpawner.volumes[join(jupyterhub_data_dir, "{username}")] = {
         "bind": join(jupyterhub_data_dir, "{username}"),
         "mode": "rw"
+    }
+    c.DockerSpawner.volumes[join(os.environ['WORKSPACE_DIR'], os.environ['PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR'])] = {
+        "bind": join(notebook_dir, os.environ['PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR']),
+        "mode": "ro"
     }
 
 container_gdrive_settings_path = join(container_home_dir, ".jupyter/lab/user-settings/@jupyterlab/google-drive/drive.jupyterlab-settings")
@@ -183,4 +223,38 @@ blocked_users = {'authtest', '${CATALOG_USERNAME}', 'anonymous'}
 c.Authenticator.blacklist = blocked_users  # v0.9+
 c.Authenticator.blocked_users = blocked_users  # v1.2+
 
+
+# ------------------------------------------------------------------------------
+# Shutdown idle user server based on configured timeouts.
+# ------------------------------------------------------------------------------
+# Timeout (in seconds, default: 3 days) to shut down the user server when no kernels or terminals
+# are running and there is no activity. If undefined or set to zero, the feature will not be enabled.
+jupyter_idle_server_cull_timeout = int("${JUPYTER_IDLE_SERVER_CULL_TIMEOUT}" or 0)
+if jupyter_idle_server_cull_timeout:
+    c.Spawner.args.append('--NotebookApp.shutdown_no_activity_timeout={}'.format(jupyter_idle_server_cull_timeout))
+# Timeout (in seconds, default: 1 day) after which individual
+# user kernels/terminals are considered idle and ready to be culled.
+jupyter_idle_kernel_cull_timeout = int("${JUPYTER_IDLE_KERNEL_CULL_TIMEOUT}" or 0)
+# Interval (in seconds, default: half of timeout) on which to check for idle kernels exceeding the cull timeout value.
+jupyter_idle_kernel_cull_interval = int("${JUPYTER_IDLE_KERNEL_CULL_INTERVAL}" or 0)
+if jupyter_idle_kernel_cull_timeout:
+    if not jupyter_idle_kernel_cull_interval or jupyter_idle_kernel_cull_interval > jupyter_idle_kernel_cull_timeout:
+        jupyter_idle_kernel_cull_interval = max(1, int(jupyter_idle_kernel_cull_timeout / 2))
+    c.Spawner.args.extend([
+        '--MappingKernelManager.cull_idle_timeout={}'.format(jupyter_idle_kernel_cull_timeout),
+        '--MappingKernelManager.cull_interval={}'.format(jupyter_idle_kernel_cull_interval),
+        '--TerminalManager.cull_inactive_timeout={}'.format(jupyter_idle_kernel_cull_timeout),
+        '--TerminalManager.cull_interval={}'.format(jupyter_idle_kernel_cull_interval),
+    ])
+# Culling kernels which have one or more connections for idle but open notebooks and/or terminals.
+# Otherwise, browser tabs, notebooks and terminals all have to be closed for culling to work.
+if jupyter_idle_server_cull_timeout or jupyter_idle_kernel_cull_timeout:
+    c.Spawner.args.extend([
+        '--MappingKernelManager.cull_connected=True',
+        '--TerminalManager.cull_connected=True',
+    ])
+
+# ------------------------------------------------------------------------------
+# Configuration overrides
+# ------------------------------------------------------------------------------
 ${JUPYTERHUB_CONFIG_OVERRIDE}    # noqa

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "stac",
+  "keywords": [
+    "catalog"
+  ],
+  "description": "Searchable spatiotemporal metadata describing climate and Earth observation datasets.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "application/json",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/stac/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://github.com/radiantearth/stac-api-spec/tree/v1.0.0"
+    },
+    {
+      "rel": "service-desc",
+      "type": "application/yaml",
+      "href": "https://raw.githubusercontent.com/radiantearth/stac-api-spec/main/core/openapi.yaml"
+    },
+    {
+      "rel": "alternate",
+      "type": "text/html",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/stac-browser/"
+    }
+  ]
+}, {
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "stac-browser",
+  "keywords": [
+    "catalog"
+  ],
+  "description": "A web interface to browse the STAC catalogs.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/stac-browser/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://github.com/radiantearth/stac-browser"
+    },
+    {
+      "rel": "alternate",
+      "type": "application/json",
+      "href": "https://${PAVICS_FQDN_PUBLIC}/stac/"
+    }
+  ]
+}

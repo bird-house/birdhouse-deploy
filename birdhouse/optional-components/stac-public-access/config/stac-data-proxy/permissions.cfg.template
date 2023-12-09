@@ -1,0 +1,10 @@
+# NOTE:
+# Assume 'secure-data-proxy' would exist if needed.
+# Since 'secure-data-proxy' < 'stac-data-proxy-public', it should be loaded first.
+permissions:
+  - service: secure-data-proxy
+    resource: ${STAC_DATA_PROXY_URL_PATH}
+    type: route
+    permission: read
+    group: anonymous
+    action: create

@@ -17,6 +17,418 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[1.42.2](https://github.com/bird-house/birdhouse-deploy/tree/1.42.2) (2023-12-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter: new incremental build to include `SAlib` for sensitivity analysis
+  and `fstd2nc` to convert RPN files (from Environment Canada) to netCDF files
+
+  Also make `/notebook_dir/` read-only to avoid users putting their files there
+  and losing them since only `/notebook_dir/writable-workspace` is persisted on
+  disk.
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/128 for more
+  details about `SAlib` and
+  https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/132 for more
+  details about `fstd2nc`.
+
+
+[1.42.1](https://github.com/bird-house/birdhouse-deploy/tree/1.42.1) (2023-12-07)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow user to access their Magpie cookie programmatically
+
+  When the user logs in to jupyterhub, their Magpie cookie is stored in the jupyterhub database. This allows the user
+  to access this variable to programmatically access resources protected by magpie without having to copy/paste these 
+  cookies from their browser session or add a username and password in plaintext to the file. 
+
+  For example, to access a dataset behind a secured URL with `xarray.open_dataset` using a username and password.
+  (this is *not recommended* as it makes it much easier to accidentally leak user credentials):
+
+  ```python
+  import requests
+  from request_magpie import MagpieAuth
+  import xarray
+  
+  with requests.session() as session:
+       session.auth = MagpieAuth("https://mynode/magpie", "myusername", "myverysecretpassword")
+       store = xarray.backends.PydapDataStore.open("https://mynode/thredds/some/secure/dataset.nc", session=session)
+       dataset = xarray.open_dataset(store)
+  ```
+
+  And to do the same thing using the current magpie cookie already used to log in the current user (no need to include 
+  username and password, this is *strongly recommended* over the technique above):
+  
+  ```python
+  import os
+  import requests
+  import xarray
+  
+  with requests.session() as session:
+      r = requests.get(f"{os.getenv('JUPYTERHUB_API_URL')}/users/{os.getenv('JUPYTERHUB_USER')}", 
+                       headers={"Authorization": f"token {os.getenv('JUPYTERHUB_API_TOKEN')}"})
+      for name, value in r.json().get("auth_state", {}).get("magpie_cookies", {}).items():
+          session.cookies.set(name, value)
+      store = xarray.backends.PydapDataStore.open("https://mynode/thredds/some/secure/dataset.nc", session=session)
+      dataset = xarray.open_dataset(store)        
+  ```
+
+  Note that users who are already logged in to jupyterhub will need to log out and log in for these changes to take
+  effect.
+
+[1.42.0](https://github.com/bird-house/birdhouse-deploy/tree/1.42.0) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `cowbird` service from [2.2.0](https://github.com/Ouranosinc/cowbird/tree/2.2.0)
+  to [2.3.0](https://github.com/Ouranosinc/cowbird/tree/2.3.0).
+
+[1.41.0](https://github.com/bird-house/birdhouse-deploy/tree/1.41.0) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- New optional-component `optional-components/test-cowbird-jupyter-access` that executes a script to set up a test user  
+  along with different test files. This component is used for the related 
+  [e2e test](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/blob/master/notebooks-auth/test_cowbird_jupyter.ipynb)
+  from the [PAVICS-e2e-workflow-tests](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests) repo.
+- Update `cowbird` service from [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0)
+  to [2.2.0](https://github.com/Ouranosinc/cowbird/tree/2.2.0).
+- Add new `README` file to be used on `jupyterhub` when `cowbird` is activated. The file describes to the user the 
+  different directories and permissions found in its workspace.
+
+## Fixes
+- Updates incorrect WPS outputs resource name in the cowbird config.
+
+[1.40.0](https://github.com/bird-house/birdhouse-deploy/tree/1.40.0) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
+- `optional-components/stac-data-proxy`: add a new feature to allow hosting of local STAC assets.
+
+  The new component defines variables `STAC_DATA_PROXY_DIR_PATH` (default `${DATA_PERSIST_ROOT}/stac-data`) and
+  `STAC_DATA_PROXY_URL_PATH` (default `/data/stac`) that are aliased (mapped) under `nginx` to provide a URL
+  where locally hosted STAC assets can be downloaded from. This allows a server node to be a proper data provider,
+  where its STAC-API can return Catalog, Collection and Item definitions that points at these local assets available
+  through the `STAC_DATA_PROXY_URL_PATH` endpoint.
+
+  When enabled, this component can be combined with `optional-components/secure-data-proxy` to allow per-resource
+  access control of the contents under `STAC_DATA_PROXY_DIR_PATH` by setting relevant Magpie permissions under service
+  `secure-data-proxy` for children resources that correspond to `STAC_DATA_PROXY_URL_PATH`. Otherwise, the path and
+  all of its contents are publicly available, in the same fashion that WPS outputs are managed without
+  `optional-components/secure-data-proxy`. More details are provided under the component's
+  [README](./birdhouse/optional-components/README.rst#provide-a-proxy-for-local-stac-asset-hosting).
+
+- `optional-components/stac-public-access`: add public write permission for `POST /stac/search` request.
+
+  Since [`pystac_client`](https://github.com/stac-utils/pystac-client), a common interface to interact with STAC API,
+  employs `POST` method by default to perform search, the missing permission caused an unexpected error for users that
+  are not aware of the specific permission control of Magpie. Since nothing is created by that endpoint, but rather,
+  the POST'ed body employs the convenient JSON format to provide search criteria, it is safe to set this permission
+  when the STAC service was configured to be publicly searchable.
+
+[1.39.2](https://github.com/bird-house/birdhouse-deploy/tree/1.39.2) (2023-11-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyterhub: periodically check whether the logged-in user still have permission to access
+
+  By setting the `JUPYTERHUB_CRYPT_KEY` environment variable in the `env.local` file, jupyterhub will store user's
+  authentication information (session cookie) in the database. This allows jupyterhub to periodically check whether the
+  user still has permission to access jupyterhub (the session cookie is not expired and the permission have not 
+  changed).
+  
+  The minimum duration between checks can be set with the `JUPYTERHUB_AUTHENTICATOR_REFRESH_AGE` variable which is an 
+  integer (in seconds).
+
+  Note that users who are already logged in to jupyterhub will need to log out and log in for these changes to take
+  effect.
+
+  To forcibly log out all users currently logged in to jupyterhub you can run the following command to force the
+  recreation of the cookie secret:
+
+  ```shell
+  docker exec jupyterhub rm /persist/jupyterhub_cookie_secret && docker restart jupyterhub
+  ```
+
+[1.39.1](https://github.com/bird-house/birdhouse-deploy/tree/1.39.1) (2023-11-29)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Limit usernames in Magpie to match restrictions by Jupyterhub's Dockerspawner
+
+  When Jupyterhub spawns a new jupyterlab container, it escapes any non-ascii, non-digit character in the username. 
+  This results in a username that may not match the expected username (as defined by Magpie). This mismatch results in 
+  the container failing to spawn since expected volumes cannot be mounted to the jupyterlab container.
+
+  This fixes the issue by ensuring that juptyerhub does not convert the username that is receives from Magpie.
+
+  Note that this updates the Magpie version.
+
+[1.39.0](https://github.com/bird-house/birdhouse-deploy/tree/1.39.0) (2023-11-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add a Magpie Webhook to create the Magpie resources corresponding to the STAC-API path elements when a `STAC-API`
+  `POST /collections/{collection_id}` or `POST /collections/{collection_id}/items/{item_id}` request is accomplished.
+  - When creating the STAC `Item`, the `source` entry in `links` corresponding to a `THREDDS` file on the same instance
+    is used to define the Magpie `resource_display_name` corresponding to a file to be mapped later on
+    (eg: a NetCDF `birdhouse/test-data/tc_Anon[...].nc`).
+  - Checking same instance `source` path is necessary because `STAC` could refer to external assets, and we do not want
+    to inject Magpie resource that are not part of the active instance where the hook is running.
+
+[1.38.0](https://github.com/bird-house/birdhouse-deploy/tree/1.38.0) (2023-11-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+Flexible locations for data served by THREDDS. This PR adds two capabilities:
+
+- Makes it possible to configure all aspects of the two default top-level THREDDS catalogs that has been available on Birdhouse (conventionally referred to as `Birdhouse` and `Datasets` on PAIVCS). This is done by defining the following two sets of new environment variables. The `THREDDS_DATASET_` set of variables are meant to control properties of the `Datasets` catalog:
+
+    * THREDDS_DATASET_LOCATION_ON_CONTAINER
+    * THREDDS_DATASET_LOCATION_ON_HOST
+    * THREDDS_DATASET_LOCATION_NAME
+    * THREDDS_DATASET_URL_PATH
+
+    The `THREDDS_SERVICE_DATA_` set of variables control properties of the `Birdhouse` catalog.
+
+    * THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER
+    * THREDDS_SERVICE_DATA_LOCATION_ON_HOST
+    * THREDDS_SERVICE_DATA_LOCATION_NAME
+    * THREDDS_SERVICE_DATA_URL_PATH
+
+    These new variables are defined in [`thredds/default.env`](./birdhouse/config/thredds/default.env) and included in [`env.local.example`](./birdhouse/env.local.example). Their default values have been chosen to ensure the behaviours of the two catalogs remain unchanged (for reasons of backward compatibility).
+
+- Adds the ability to define additional top-level THREDDS catalogs. This is achieved by introducing the `THREDDS_ADDITIONAL_CATALOG` variable in [`thredds/default.env`](./birdhouse/config/thredds/default.env) that can be used to inject custom XML configuration for a new catalog. This information is picked up by the THREDDS server. An example is provided in [`env.local.example`](./birdhouse/env.local.example).
+
+[1.37.2](https://github.com/bird-house/birdhouse-deploy/tree/1.37.2) (2023-11-10)
+------------------------------------------------------------------------------------------------------------------
+
+- Fix `weaver` and `cowbird` inconsistencies for `public` WPS outputs directory handling.
+
+  Because `cowbird` needs to mount multiple directories within the user-workspace for `jupyterhub`, it needs to define
+  a dedicated `public/wps_outputs` sub-directory to distinguish it from other `public` files not part of WPS outputs.
+  However, for WPS birds, other files than WPS outputs are irrelevant, and are therefore mounted directly in their
+  container. The variable `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` was being misused in the context of `weaver`,
+  causing WPS output URLs for `public` context to be nested as `/wpsoutputs/weaver/public/wps_outputs/{jobID}`
+  instead of the intended location `/wpsoutputs/weaver/public/{jobID}`, in contrast to user-context WPS outputs
+  located under `/wpsoutputs/weaver/users/{userID}/{jobID}`.
+
+  Relates to [Ouranosinc/pavics-sdi#314](https://github.com/Ouranosinc/pavics-sdi/pull/314).
+
+[1.37.1](https://github.com/bird-house/birdhouse-deploy/tree/1.37.1) (2023-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- `optional-components/all-public-access`: remove erroneous Magpie route permission properties for GeoServer.
+
+[1.37.0](https://github.com/bird-house/birdhouse-deploy/tree/1.37.0) (2023-11-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Geoserver: protect web interface and ows routes behind magpie/twitcher
+ 
+  Updates Magpie version to [3.35.0](https://github.com/Ouranosinc/Magpie/tree/3.35.0) in order to take advantage of 
+  updated Geoserver Service.
+
+  The `geoserverwms` Magpie service is now deprecated. If a deployment is currently using this service, it is highly
+  recommended that the permissions are transferred from the deprecated `geoserverwms` service to the `geoserver` 
+  service.
+
+  The `/geoserver` endpoint is now protected by default. If a deployment currently assumes open access to Geoserver and 
+  would like to keep the same permissions after upgrading to this version, please update the permissions for the 
+  `geoserver` service in Magpie to allow the `anonymous` group access.
+
+  A `Magpie` service named `geoserver` with type `wfs` exists already and must be manually deleted before the new
+  `Magpie` service created here can take effect.
+
+  The `optional-components/all-public-access` component provides full access to the `geoserver` service for the 
+  `anonymous` group in Magpie. Please note that this includes some permissions that will allow anonymous users to 
+  perform destructive operations. Because of this, please remember that enabling the 
+  `optional-components/all-public-access` component is not recommended in a production environment.
+
+  Introduces the `GEOSERVER_SKIP_AUTH` environment variable. If set to `True`, then requests to the geoserver endpoint 
+  will not be authorized through twitcher/magpie at all. This is not recommended at all. However, it will slightly 
+  improve performance when accessing geoserver endpoints.
+
+  See https://github.com/bird-house/birdhouse-deploy/issues/333 for details.
+
+[1.36.0](https://github.com/bird-house/birdhouse-deploy/tree/1.36.0) (2023-10-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Protect jupyterhub behind twitcher authentication
+
+  - Sets magpie cookies whenever a user logs in or out through jupyterhub so that they are automatically logged in 
+    or out through magpie as well.
+  - Ensures that the user has permission to access jupyterhub according to magpie when logging in.
+
+[1.35.2](https://github.com/bird-house/birdhouse-deploy/tree/1.35.2) (2023-10-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix warning from JupyterHub regarding DockerSpawner method never awaited.
+  - [`DockerSpawner.start`](
+    https://github.com/jupyterhub/dockerspawner/blob/a6bf72e7/dockerspawner/dockerspawner.py#L1246) is defined
+    as `async`. Therefore, `async def` and `await super().start()` where not properly invoked by `CustomDockerSpawner`
+    in [`jupyterhub_config.py.template`](./birdhouse/config/jupyterhub/jupyterhub_config.py.template).
+
+[1.35.1](https://github.com/bird-house/birdhouse-deploy/tree/1.35.1) (2023-10-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Jupyterhub cull interval setting must be an integer:
+  - Previously, the default `jupyter_idle_kernel_cull_interval` setting is calculated by dividing the 
+    `jupyter_idle_kernel_cull_timeout` setting by 2 using float division. This meant that the result was a float 
+    instead of the expected integer value. This caused and error when the jupyterlab server spawned.
+    In order to fix this, the value is cast to an integer after division.
+
+[1.35.0](https://github.com/bird-house/birdhouse-deploy/tree/1.35.0) (2023-10-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyterhub configurable idle server culling.
+  - Add optional variables `JUPYTER_IDLE_SERVER_CULL_TIMEOUT`, `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT` and
+    `JUPYTER_IDLE_KERNEL_CULL_INTERVAL` that allows fined-grained configuration of user-kernel and server-wide
+    docker image culling when their activity status reached a certain idle timeout threshold.
+  - Enable idle kernel culling by default with a timeout of 1 day, and user server culling with timeout of 3 days.
+  - Avoids the need for custom `JUPYTERHUB_CONFIG_OVERRIDE` specifically for idle server culling.
+    If similar argument parameters should be defined using an older `JUPYTERHUB_CONFIG_OVERRIDE` definition,
+    the new configuration strategy can be skipped by setting `JUPYTER_IDLE_KERNEL_CULL_TIMEOUT=0`.
+
+[1.34.0](https://github.com/bird-house/birdhouse-deploy/tree/1.34.0) (2023-10-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Allow users to submit a Weaver job requesting to store outputs to the public location instead of their user-workspace.
+- Update default Weaver version from [4.22.0](https://github.com/crim-ca/weaver/tree/4.22.0)
+  to [4.32.0](https://github.com/crim-ca/weaver/tree/4.32.0).
+- Add `COWBIRD_LOG_LEVEL` environment variable to allow control over logging level of Cowbird services.
+
+[1.33.5](https://github.com/bird-house/birdhouse-deploy/tree/1.33.5) (2023-10-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Adding a description for the STAC service that will be served at the `/services` endpoint
+
+[1.33.4](https://github.com/bird-house/birdhouse-deploy/tree/1.33.4) (2023-10-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Clean up: Make bind-mount locations more flexible
+
+  Clean up unused variables and correct file paths from the changes made in 1.33.2
+
+[1.33.3](https://github.com/bird-house/birdhouse-deploy/tree/1.33.3) (2023-09-29)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add test data and volume for `test-geoserver-secured-access`
+
+[1.33.2](https://github.com/bird-house/birdhouse-deploy/tree/1.33.2) (2023-09-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Make bind-mount locations more flexible
+
+  Previously, most bind mount locations on the host machine were subdirectories of the folder specified by the 
+  `DATA_PERSIST_ROOT` environment variable (`/data` by default). This change allows the user to set custom locations
+  for the following additional variables, so that they don't need to be all under the same common directory.
+
+  - `LOGROTATE_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/logrotate`)
+  - `MONGODB_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/mongodb_persist`)
+  - `COWBIRD_MONGODB_DATA_DIR` (default: `${DATA_PERSIST_ROOT}/mongodb_cowbird_persist`)
+  - `POSTGRES_DATA_DIR` (default `${DATA_PERSIST_ROOT}/frontend_persist`)
+  - `WEAVER_MONGODB_DATA_DIR` (default `${DATA_PERSIST_ROOT}/mongodb_weaver_persist`)
+
+  The following variable is also added which is another location on disk where files that may contain links
+  are placed. Because the links need to be mounted together in order to resolve properly, the subdirectories
+  of this directory are not configurable:
+
+  - `DATA_PERSIST_SHARED_ROOT` (default: same as `DATA_PERSIST_ROOT`)
+
+  The following variables now create subdirectories under `DATA_PERSIST_SHARED_ROOT` (previously they were
+  created under `DATA_PERSIST_ROOT` by default):
+
+  - `USER_WORKSPACES` (default `user_workspaces`)
+  - `WEAVER_WPS_OUTPUTS_DIR` (default `wps_outputs/weaver`)
+
+
+[1.33.1](https://github.com/bird-house/birdhouse-deploy/tree/1.33.1) (2023-09-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Docker compose version missing in ``stac/config/magpie/`` compose file
+  - The ``version:`` key was not set in the ``stac/config/magpie/docker-compose-extra.yml`` file which caused
+    ``docker-compose`` to report a version mismatch and fail to start.
+
+[1.33.0](https://github.com/bird-house/birdhouse-deploy/tree/1.33.0) (2023-09-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Add public WPS outputs directory to Cowbird and add corresponding volume mount to JupyterHub.
+- Update `cowbird` service from [1.2.0](https://github.com/Ouranosinc/cowbird/tree/1.2.0)
+  to [2.1.0](https://github.com/Ouranosinc/cowbird/tree/2.1.0).
+- Require `MongoDB==5.0` Docker image for Cowbird's database.
+- Add `WPS_OUTPUTS_DIR` env variable to manage the location of the WPS outputs data.
+
+## Important
+Because of the new `MongoDB==5.0` database requirement for Cowbird that uses (potentially) distinct version from other 
+birds, a separate Docker image is employed only for Cowbird. If some processes, jobs, or other Cowbird-related data 
+was already defined on one of your server instances, manual transfer between the generic 
+`${DATA_PERSIST_ROOT}/mongodb_persist` to new  `${DATA_PERSIST_ROOT}/mongodb_cowbird_persist` directory must be 
+accomplished. The data in the new directory should then be migrated to the new version following the same procedure as
+described for Weaver in 
+[Database Migration](https://pavics-weaver.readthedocs.io/en/latest/installation.html?#database-migration).
+
+[1.32.0](https://github.com/bird-house/birdhouse-deploy/tree/1.32.0) (2023-09-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Changes `JUPYTERHUB_VERSION` from `1.4.0-20210506` to `4.0.2-20230816`.
+  - This upgrade is needed to resolve a compatibility issue when using `Spawner.disable_user_config = True` in Jupyterhub 
+    config and the new image which run `jupyter-server 2.7.3`.
+
+- Add an image to the list of images that can be launched from JupyterHub which will be used to start an instance of MLflow.
+  - Note that the jupyter lab google drive extension is not supported with this image.
+
+[1.31.3](https://github.com/bird-house/birdhouse-deploy/tree/1.31.3) (2023-09-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Move initial ``stac`` service Magpie definition under its component configuration.
+  - Before this change, ``optional-components/stac-public-access`` was mandatory since the ``stac`` service under
+    Magpie was not created otherwise, leading to "*service not found*" error when requesting the ``/stac`` endpoint.
+  - Ensure that the first ``stac`` resource under ``stac`` service in Magpie is created by default.
+    Without this resource being defined initially, it is very easy to forget creating it, which would not take into
+    account the required ``/stac/stac`` request path to properly resolve the real endpoints where STAC API is served.
+
+- Remove `optional-components/stac-public-access` dependency under `optional-components/all-public-access`
+  to avoid indirectly enforcing `components/stac` when `optional-components/all-public-access` is enabled.
+  Users that desire using `optional-components/stac-public-access` will have to add it explicitly to the list
+  of `EXTRA_CONF_DIRS`.
+
+- Rename `optional-components/stac-public-access/config/magpie/config.yml.template` to
+  `optional-components/stac-public-access/config/magpie/permissions.cfg` in order to align
+  with permissions-specific contents as accomplished with other components.
+
+- Fix invalid endpoint redirect for `STAC` when using Twitcher/Magpie.
+
+- Apply Magpie permission on `/stac/stac` since the second `/stac` is needed to secure access properly.
+
 [1.31.2](https://github.com/bird-house/birdhouse-deploy/tree/1.31.2) (2023-09-13)
 ------------------------------------------------------------------------------------------------------------------
 

@@ -8,3 +8,6 @@ services:
   proxy:
     volumes:
       - ./optional-components/test-geoserver-secured-access/config/proxy/conf.d/test-geoserver-secured.conf:/etc/nginx/conf.extra-service.d/geoserver-secured-service/test-geoserver-secured.conf:ro
+  geoserver:
+    volumes:
+      - ./optional-components/test-geoserver-secured-access/test-data:/geoserver-test-data:ro

@@ -2,5 +2,5 @@ version: "3.4"
 services:
   proxy:
     volumes:
-    - ./config/wps_outputs-volume/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/wps_outputs-volume:ro
-    - wps_outputs:/pavics-data/wps_outputs
+      - ./config/wps_outputs-volume/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/wps_outputs-volume:ro
+      - wps_outputs:/data/wps_outputs

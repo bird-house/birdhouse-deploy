@@ -8,4 +8,4 @@ supervisor-port = 9001
 tomcat-ncwms-password = ${TOMCAT_NCWMS_PASSWORD}
 
 [ncwms]
-data_dir = /pavics-data
+data_dir = /data
