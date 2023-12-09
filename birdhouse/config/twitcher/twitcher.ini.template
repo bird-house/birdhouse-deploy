@@ -112,7 +112,7 @@ handlers = console
 # "level = WARN"    only potential problems/unexpected results reported, such as when caching is employed
 level = ${TWITCHER_LOG_LEVEL}
 handlers =
-qualname = twitcher
+qualname = TWITCHER
 
 # MagpieAdapter or any other Magpie utilities it employs through Twitcher proxy-adapter security check
 [logger_magpie]
