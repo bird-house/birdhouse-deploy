@@ -21,7 +21,7 @@ services:
       HOSTNAME: ${PAVICS_FQDN}
       FORWARDED_ALLOW_IPS: "*"
     #env_file:
-    #  - ./config/mongodb/credentials.env
+    #  - ./components/mongodb/credentials.env
     depends_on:
       - weaver-mongodb
     links:
@@ -47,7 +47,7 @@ services:
     environment:
       DOCKER_HOST: "tcp://docker-proxy:2375"
     #env_file:
-    #  - ./config/mongodb/credentials.env
+    #  - ./components/mongodb/credentials.env
     depends_on:
       # no 'default' network here such that the worker is not accessible from proxy/http
       - weaver-mongodb

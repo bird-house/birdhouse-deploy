@@ -196,7 +196,7 @@ process_delayed_eval() {
 # variable (set using the read_components_default_env function).
 # The file order is determined by the order of the config directories in ALL_CONF_DIRS.
 # If a config directory also includes an override file for another component
-# (eg: ./config/finch/config/proxy/docker-compose-extra.yml overrides ./config/proxy/docker-compose-extra.yml),
+# (eg: ./components/finch/config/proxy/docker-compose-extra.yml overrides ./components/proxy/docker-compose-extra.yml),
 # the following additional order rules apply:
 #
 #  - if the component that is being overridden has already been added, the override file is added immediately
