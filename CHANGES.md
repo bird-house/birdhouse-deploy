@@ -17,6 +17,16 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.0.1](https://github.com/bird-house/birdhouse-deploy/tree/2.0.1) (2023-12-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Code documentation: provide an additional reason to not exit early if a directory listed in the `EXTRA_CONF_DIRS` variable does not exist.
+
+## Fixes
+- Twitcher: unable to change log level because of typo in qualname config
+
+
 [2.0.0](https://github.com/bird-house/birdhouse-deploy/tree/2.0.0) (2023-12-11)
 ------------------------------------------------------------------------------------------------------------------
 
