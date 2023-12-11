@@ -127,7 +127,7 @@ source_conf_files() {
           # The new adir with typo will not be active but at least all the existing
           # will still work.
           #
-          # Do not exit on not existing conf dir also allow for smooth
+          # Allowing not existing conf dir also helps for smooth
           # transition of component path when they are new/renamed/deleted.
           #
           # New component names can be added to EXTRA_CONF_DIRS before the

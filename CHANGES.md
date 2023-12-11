@@ -16,7 +16,7 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
-- Code documentation: extra reason to allow not existing dir in `EXTRA_CONF_DIRS`
+- Code documentation: provide an additional reason to not exit early if a directory listed in the `EXTRA_CONF_DIRS` variable does not exist.
 
 ## Fixes
 - Twitcher: unable to change log level because of typo in qualname config
