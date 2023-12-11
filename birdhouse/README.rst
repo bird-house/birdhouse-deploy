@@ -118,7 +118,7 @@ Note
 ----
 
 * All WPS requests should be completed within ``proxy_read_timeout`` of the
-  Nginx proxy, see `nginx.conf`_ (:download:`download <birdhouse/config/proxy/nginx.conf>`).
+  Nginx proxy, see `nginx.conf`_ (:download:`download <birdhouse/components/proxy/nginx.conf>`).
   Any WPS requests that will take longer should use the async mode.
 
   Default value ``PROXY_READ_TIMEOUT_VALUE`` in `default.env`_ (:download:`download <birdhouse/default.env>`).
