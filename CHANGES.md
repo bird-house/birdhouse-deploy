@@ -15,7 +15,14 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Cowbird README file disappears now that cowbird is a default component
+
+  The settings to enable the Cowbird README file (added in version 1.41.0) assumed that the cowbird component would
+  be loaded after the juptyerhub component. Now that the cowbird component is part of the `DEFAULT_CONF_DIRS` and
+  therefore will always be loaded first, this updates the settings so that the README file will be enabled given the new
+  component load order.
 
 [2.0.1](https://github.com/bird-house/birdhouse-deploy/tree/2.0.1) (2023-12-11)
 ------------------------------------------------------------------------------------------------------------------
