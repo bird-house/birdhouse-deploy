@@ -1,5 +1,11 @@
 #!/bin/bash
 
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+
+if [ -f "${THIS_DIR}/logging.include.sh" ]; then
+    . "${THIS_DIR}/logging.include.sh"
+fi
 
 function usage(){
   cat <<EOF
@@ -60,7 +66,7 @@ case $2 in
     docker run -ti --rm -v birdhouse_data:/data  birdhouse/bird-base sqlite3 $DB
     ;;
   *)
-    echo "Error, unknown operation: $2"
+    echo "${MSG_ERROR}unknown operation: $2"
     usage
     ;;
 esac

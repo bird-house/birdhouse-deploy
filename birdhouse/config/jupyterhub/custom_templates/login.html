@@ -1,0 +1,45 @@
+{% extends "templates/login.html" %} {% set announcement_login = '
+
+
+
+<p><strong>Public demo login:</strong> demo</p>
+<p>
+  Given this public nature, anyone can tamper with your notebooks so please
+  <strong>export your valuable notebooks elsewhere</strong> if you want to
+  preverve them.  This public demo account also have limitted computing
+  resources.
+</p>
+<p>
+  Contact <strong>helpdesk@example.com</strong> for information on how to
+  <strong>get an account and a private workspace or the password of the
+  public demo account</strong>.
+</p>
+<p>
+  The only writable folder is <strong>writable-workspace</strong>
+  (/notebook_dir/writable-workspace in the terminal) and it is persisted
+  between sessions.
+</p>
+<p>
+  Please <strong>be considerate</strong> with the amount of
+  <strong>disk space usage</strong> on this Jupyter instance.
+</p>
+<p>
+  Please <strong>shutdown the kernel</strong> and <strong>close un-used
+  notebooks</strong> to avoid wasting computing resources.
+</p>
+<p>
+  This Jupyter instance can restart every day.
+  <strong>Long running processes will be killed without notice.</strong>
+</p>
+
+
+' %}
+
+{% set login_term_url = '' %}
+
+{# Example overriding the actual login terms and condition text #}
+{#
+{% block login_terms_text %}
+Your own text here <a href="{{ login_term_url }}">terms and conditions</a>.
+{% endblock login_terms_text %}
+#}

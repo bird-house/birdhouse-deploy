@@ -16,15 +16,26 @@
 #
 #  # Source the script providing function read_configs.
 #  # read_configs uses COMPOSE_DIR to find default.env and env.local.
-#  . $COMPOSE_DIR/read-configs.include.sh
+#  . ${COMPOSE_DIR}/scripts/read-configs.include.sh
 #
 #  # Call function read_configs to read the various config files in the
 #  # appropriate order and process delayed eval vars properly.
 #  read_configs
 
 
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+
+if [ -f "${THIS_DIR}/logging.include.sh" ]; then
+    . "${THIS_DIR}/logging.include.sh"
+fi
+if [ -f "${THIS_DIR}/scripts/logging.include.sh" ]; then
+    . "${THIS_DIR}/scripts/logging.include.sh"
+fi
+
+
 # Derive COMPOSE_DIR from the most probable locations.
-# This is NOT meant to be exhautive.
+# This is NOT meant to be exhaustive.
 # Assume the checkout is named "birdhouse-deploy", which might NOT be true.
 # Caller of this file can simply set COMPOSE_DIR itself, this is the safest way.
 discover_compose_dir() {
@@ -55,7 +66,7 @@ discover_compose_dir() {
             # Case of sub-subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../../../birdhouse-deploy/birdhouse")"
         fi
-        echo "$COMPOSE_DIR"
+        echo "${MSG_INFO}Resolved docker-compose directory: [${COMPOSE_DIR}]"
         export COMPOSE_DIR
     fi
 }
@@ -82,7 +93,7 @@ read_default_env() {
 
         . "$COMPOSE_DIR/default.env"
     else
-        echo "WARNING: '$COMPOSE_DIR/default.env' not found" 1>&2
+        echo "${MSG_WARN}'$COMPOSE_DIR/default.env' not found" 1>&2
     fi
 }
 
@@ -90,7 +101,7 @@ read_default_env() {
 read_env_local() {
     # we don't use usual .env filename, because docker-compose uses it
 
-    echo "Using local environment file at: ${BIRDHOUSE_LOCAL_ENV}"
+    echo "${MSG_INFO}Using local environment file at: ${BIRDHOUSE_LOCAL_ENV}"
 
     if [ -e "$BIRDHOUSE_LOCAL_ENV" ]; then
         saved_shell_options="$(set +o)"
@@ -102,7 +113,7 @@ read_env_local() {
         eval "$saved_shell_options"
 
     else
-        echo "WARNING: '$BIRDHOUSE_LOCAL_ENV' not found" 1>&2
+        echo "${MSG_WARN}'$BIRDHOUSE_LOCAL_ENV' not found" 1>&2
     fi
 
 }
@@ -134,7 +145,7 @@ source_conf_files() {
           # corresponding PR are merged and old component names can be removed
           # after the corresponding PR are merge without any impact on the
           # autodeploy process.
-          echo "WARNING: '$adir' in $conf_locations does not exist" 1>&2
+          echo "${MSG_WARN}'$adir' in $conf_locations does not exist" 1>&2
       fi
       if [ -f "$adir/default.env" ]; then
           # Source config settings of dependencies first if they haven't been sourced previously.
@@ -146,7 +157,7 @@ source_conf_files() {
             # reset the adir variable in case it was changed in a recursive call
             adir="$(printf '%b' "$_adir_stack" | tail -1)"
           fi
-          echo "reading '$adir/default.env'"
+          echo "${MSG_DEBUG}reading '$adir/default.env'"
           . "$adir/default.env"
       fi
       if echo "$ALL_CONF_DIRS" | grep -qE "^\s*$adir\s*$"; then
@@ -166,7 +177,7 @@ read_components_default_env() {
 
     # EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS relative paths are relative to COMPOSE_DIR.
     if [ -d "$COMPOSE_DIR" ]; then
-        cd "$COMPOSE_DIR"
+        cd "$COMPOSE_DIR" >/dev/null
     fi
 
     source_conf_files "$DEFAULT_CONF_DIRS" 'DEFAULT_CONF_DIRS'
@@ -174,8 +185,29 @@ read_components_default_env() {
 
     # Return to previous pwd.
     if [ -d "$COMPOSE_DIR" ]; then
-        cd -
+        cd - >/dev/null
     fi
+}
+
+
+check_optional_vars() {
+
+    for i in ${OPTIONAL_VARS}
+    do
+        v="${i}"
+        d=`eval echo "$v"`
+        n="${i#\$}"
+        default="\${__DEFAULT__${n}}"
+        result=`echo "${d}" | grep -c "${default}"`
+        if [ -z "`eval "echo ${v}"`" ]
+        then
+            echo "${MSG_WARN}Optional variable [${n}] is not set. Check env.local file."
+        fi
+        if [ "${result}" -gt 0 ]
+        then
+            echo "${MSG_WARN}Optional variable [${n}] employs a default recommended for override. Check env.local file."
+        fi
+    done
 }
 
 
@@ -191,7 +223,7 @@ process_delayed_eval() {
         fi
         v="`eval "echo \\$${i}"`"
         eval 'export ${i}="`eval "echo ${v}"`"'
-        echo "delayed eval '$(env |grep "${i}=")'"
+        echo "${MSG_DEBUG}delayed eval '$(env | grep -e "^${i}=")'"
         ALREADY_EVALED="
           $ALREADY_EVALED
           $i"
@@ -214,6 +246,7 @@ create_compose_conf_list() {
   # ALL_CONF_DIRS relative paths are relative to COMPOSE_DIR.
   discover_compose_dir
   if [ -d "$COMPOSE_DIR" ]; then
+      echo "${MSG_INFO}Found compose directory [${COMPOSE_DIR}]"
       cd "$COMPOSE_DIR" || return
   fi
 
@@ -248,7 +281,8 @@ create_compose_conf_list() {
 
     # Return to previous pwd.
   if [ -d "$COMPOSE_DIR" ]; then
-      cd - || return
+      echo "${MSG_INFO}Moving to [${COMPOSE_DIR}]"
+      cd - >/dev/null || return
   fi
 }
 
@@ -262,6 +296,7 @@ read_configs() {
     read_env_local  # for EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, need discover_env_local
     read_components_default_env  # uses EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
     read_env_local  # again to override components default.env, need discover_env_local
+    check_optional_vars
     process_delayed_eval
 }
 

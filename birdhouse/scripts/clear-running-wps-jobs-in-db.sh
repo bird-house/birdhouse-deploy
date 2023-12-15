@@ -1,9 +1,17 @@
 #!/bin/sh
 
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+COMPOSE_DIR="`dirname "$THIS_DIR"`"
+
+if [ -f "${COMPOSE_DIR}/scripts/logging.include.sh" ]; then
+    . "${COMPOSE_DIR}/scripts/logging.include.sh"
+fi
+
 # eg: DB_NAME=finch
 DB_NAME="$1"
 if [ -z "$DB_NAME" ]; then
-    echo "ERROR: please provide a database name, ex: finch" 1>&2
+    echo "${MSG_ERROR}please provide a database name, ex: finch" 1>&2
     exit 2
 fi
 shift
@@ -24,7 +32,7 @@ docker exec $POSTGRES_CONTAINER_NAME psql -U $POSTGRES_USER $DB_NAME -c "select 
 
 set +x
 echo "
-WARNING: this will crash all the above requests if currently still processing
+${MSG_WARN}This will crash all the above requests if currently still processing
 
 Clear those jobs? (Ctrl-C to cancel, any keys to continue)"
 

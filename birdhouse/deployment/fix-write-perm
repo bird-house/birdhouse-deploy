@@ -43,7 +43,7 @@ THIS_DIR="`dirname "$THIS_FILE"`"
 # Go to repo root.
 cd $THIS_DIR/../..
 
-. birdhouse/read-configs.include.sh
+. birdhouse/scripts/read-configs.include.sh
 
 # Get GEOSERVER_DATA_DIR, JUPYTERHUB_USER_DATA_DIR, MAGPIE_PERSIST_DIR
 read_configs

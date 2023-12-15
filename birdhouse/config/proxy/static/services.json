@@ -1,0 +1,221 @@
+{"services": [ {
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "geoserver",
+  "keywords": [
+    "data",
+    "service-wms",
+    "service-wfs",
+    "service-wps"
+  ],
+  "description": "GeoServer is a server that allows users to view and edit geospatial data.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "application/json",
+      "href": "https://10.0.2.15/geoserver/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://docs.geoserver.org/"
+    }
+  ]
+}, {
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "finch",
+  "keywords": [
+    "service-wps"
+  ],
+  "description": "A Web Processing Service for Climate Indicators.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/xml",
+      "href": "https://10.0.2.15/twitcher/ows/proxy/finch?service=WPS&request=GetCapabilities"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://finch.readthedocs.io"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/xml",
+      "href": "https://10.0.2.15/twitcher/ows/proxy/finch?service=WPS&request=GetCapabilities"
+    }
+  ]
+}, {
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "raven",
+  "keywords": [
+    "service-wps"
+  ],
+  "description": "A WPS providing hydrological modeling and analysis services.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/xml",
+      "href": "https://10.0.2.15/twitcher/ows/proxy/raven?service=WPS&request=GetCapabilities"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://pavics-raven.readthedocs.io"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/xml",
+      "href": "https://10.0.2.15/twitcher/ows/proxy/raven?service=WPS&request=GetCapabilities"
+    }
+  ]
+}, {
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "hummingbird",
+  "keywords": [
+    "service-wps"
+  ],
+  "description": "A WPS for metadata compliance checks used in the climate science community.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/xml",
+      "href": "https://10.0.2.15/twitcher/ows/proxy/hummingbird?service=WPS&request=GetCapabilities"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://birdhouse-hummingbird.readthedocs.io"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/xml",
+      "href": "https://10.0.2.15/twitcher/ows/proxy/hummingbird?service=WPS&request=GetCapabilities"
+    }
+  ]
+}, {
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "thredds",
+  "keywords": [
+    "data",
+    "catalog"
+  ],
+  "description": "A server that provides catalog, metadata, and data access services for scientific data.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "href": "https://10.0.2.15/thredds/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://www.unidata.ucar.edu/software/tds/"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/xml",
+      "href": "https://10.0.2.15/thredds/catalog.xml"
+    }
+  ]
+}, {
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "jupyterhub",
+  "keywords": [
+    "jupyterhub"
+  ],
+  "description": "An interactive development environment use to create and share documents that contain live code.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "href": "https://10.0.2.15/jupyter"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://jupyter.org/hub"
+    }
+  ]
+}, {
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "weaver",
+  "keywords": [
+    "service-ogcapi_processes"
+  ],
+  "description": "An OGC-API flavored Execution Management Service",
+  "links": [
+    {
+      "rel": "service",
+      "type": "application/json",
+      "href": "https://10.0.2.15/weaver/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://pavics-weaver.readthedocs.io/"
+    },
+    {
+      "rel": "service-desc",
+      "type": "application/json",
+      "href": "https://10.0.2.15/weaver/"
+    },
+    {
+      "rel": "conformance",
+      "type": "application/json",
+      "href": "https://10.0.2.15/weaver/conformance/"
+    }
+  ]
+}, {
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "stac",
+  "keywords": [
+    "catalog"
+  ],
+  "description": "Searchable spatiotemporal metadata describing climate and Earth observation datasets.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "application/json",
+      "href": "https://10.0.2.15/stac/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://github.com/radiantearth/stac-api-spec/tree/v1.0.0"
+    },
+    {
+      "rel": "service-desc",
+      "type": "application/yaml",
+      "href": "https://raw.githubusercontent.com/radiantearth/stac-api-spec/main/core/openapi.yaml"
+    },
+    {
+      "rel": "alternate",
+      "type": "text/html",
+      "href": "https://10.0.2.15/stac-browser/"
+    }
+  ]
+}, {
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
+  "name": "stac-browser",
+  "keywords": [
+    "catalog"
+  ],
+  "description": "A web interface to browse the STAC catalogs.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "href": "https://10.0.2.15/stac-browser/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://github.com/radiantearth/stac-browser"
+    },
+    {
+      "rel": "alternate",
+      "type": "application/json",
+      "href": "https://10.0.2.15/stac/"
+    }
+  ]
+}]}

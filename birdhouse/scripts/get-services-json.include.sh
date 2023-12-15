@@ -1,5 +1,12 @@
 #!/bin/sh
 
+THIS_FILE="`realpath "$0"`"
+THIS_DIR="`dirname "$THIS_FILE"`"
+
+if [ -f "${THIS_DIR}/logging.include.sh" ]; then
+    . "${THIS_DIR}/logging.include.sh"
+fi
+
 # default value in case of error or missing definitions
 
 for adir in ${ALL_CONF_DIRS}; do
@@ -8,6 +15,6 @@ for adir in ${ALL_CONF_DIRS}; do
 done
 
 if [ -z "${SERVICES}" ]; then
-  echo "${YELLOW}Warning: ${NORMAL}No services in DEFAULT_CONF_DIRS and EXTRA_CONF_DIRS. SERVICES JSON list will be empty!"
+  echo "${MSG_WARN}No services in DEFAULT_CONF_DIRS and EXTRA_CONF_DIRS. SERVICES JSON list will be empty!"
 fi
 export BIRDHOUSE_DEPLOY_SERVICES_JSON="{\"services\": [${SERVICES}]}"

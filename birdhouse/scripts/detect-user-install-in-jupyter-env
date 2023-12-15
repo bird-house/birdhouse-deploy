@@ -10,7 +10,12 @@
 THIS_FILE="`realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 
-. "$THIS_DIR/../read-configs.include.sh"
+. "$THIS_DIR/read-configs.include.sh"
+
+if [ -f "${THIS_DIR}/logging.include.sh" ]; then
+    . "${THIS_DIR}/logging.include.sh"
+fi
+
 
 # Get JUPYTERHUB_USER_DATA_DIR
 read_configs
@@ -28,7 +33,7 @@ ls -a */.home/.local/bin
 
 set +x
 
-echo "
+echo "${MSG_INFO}
 Errors like
   ls: cannot access */.home/.local/lib/python*/site-packages: No such file or directory
   ls: cannot access */.home/.local/bin: No such file or directory

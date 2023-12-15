@@ -15,7 +15,26 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Compose script utilities:
+  * Add `BIRDHOUSE_COLOR` option and various logging/messaging definitions in `birdhouse/scripts/logging.include.sh`.
+  * Replace all explicit color "logging" related `echo` in scripts by utility variables
+    `MSG_DEBUG`, `MSG_INFO`,  `MSG_WARN` and `MSG_ERROR` as applicable per respective messages.
+  * Move `read-configs.include.sh` into `birdhouse/scripts` along other include scripts.
+
+- Defaults:
+  * Add multiple `SERVER_[...]` variables with defaults using previously hard coded values referring to PAVICS.
+    These variables use a special combination of `DELAYED_EVAL` and `OPTIONAL_VARS` definitions that can make use
+    of a variable formatted as `<ANY_NAME>='${__DEFAULT__<ANY_NAME>}'` that will print a warning messages indicating
+    that the default is employed, although *STRONGLY* recommended to be overridden. This allows a middle ground between
+    backward-compatible `env.local` while flagging potentially misused configurations.
+
+## Fixes
+- Canarie-API: updated references
+  * Use the new `SERVER_[...]` variables.
+  * Replace the LICENSE URL of the server node pointing
+    at [Ouranosinc/pavics-sdi](https://github.com/Ouranosinc/pavics-sdi) instead
+    of intended [bird-house/birdhouse-deploy](https://github.com/bird-house/birdhouse-deploy).
 
 [2.0.1](https://github.com/bird-house/birdhouse-deploy/tree/2.0.1) (2023-12-11)
 ------------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,112 @@
+# used more than once, avoid unnecessary requests
+FINCH_VERSION = "0.9.2"
+FINCH_RELEASE_TIME = get_release_time_from_repo_tag("github", "bird-house/finch", FINCH_VERSION)
+
+SERVICES['indices'] = {
+    'info': {
+        'name': 'Climate indices',
+        'synopsis': (
+            'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, '
+            'the number of degree-days of cooling, the duration of heatwaves, etc. '
+            'This returns annual values of the most popular climate indices.'
+        ),
+        'version': FINCH_VERSION,
+        'institution': 'Ouranos',
+        'releaseTime': FINCH_RELEASE_TIME,
+        'researchSubject': 'Climatology',
+        'supportEmail': 'helpdesk@example.com',
+        'category': 'Data Manipulation',
+        'tags': ['Climatology', 'Cloud']
+    },
+    'stats': {
+        'method': '.*',
+        'route': '/twitcher/ows/proxy/finch.*'
+    },
+    'redirect': {
+        'doc': 'https://finch.readthedocs.io/en/latest/index.html',
+        'releasenotes': 'https://github.com/bird-house/finch/releases',
+        'support': 'https://github.com/bird-house/finch/issues',
+        'source': 'https://github.com/bird-house/finch',
+        'tryme': 'https://ouranosinc.github.io/pavics-sdi/notebooks/climate_indices.html',
+        'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
+        'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+    },
+    'monitoring': {
+        'Finch': {
+            'request': {
+                'url': 'https://10.0.2.15/twitcher/ows/proxy/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+            }
+        },
+    }
+}
+SERVICES['slicer'] = {
+    'info': {
+        'name': 'Spatial and temporal data slicer',
+        'synopsis': 'These services allow the subsetting and download of NetCDF over user-defined regions and periods.',
+        'version': '0.7.1',
+        'institution': 'Ouranos',
+        'releaseTime': '2021-03-25T00:00:00Z',
+        'researchSubject': 'Climatology',
+        'supportEmail': 'helpdesk@example.com',
+        'category': 'Data Manipulation',
+        'tags': ['Climatology', 'Cloud']
+    },
+    'stats': {
+        'method': '.*',
+        'route': '/twitcher/ows/proxy/finch.*'
+    },
+    'redirect': {
+        'doc': 'https://finch.readthedocs.io/en/latest/index.html',
+        'releasenotes': 'https://github.com/bird-house/finch/releases',
+        'support': 'https://github.com/bird-house/finch/issues',
+        'source': 'https://github.com/bird-house/finch',
+        'tryme': 'https://pavics-sdi.readthedocs.io/en/latest/notebooks/regridding.html',
+        'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
+        'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+    },
+    'monitoring': {
+        'Finch': {
+            'request': {
+                'url': 'http://finch:5000/?service=WPS&version=1.0.0&request=GetCapabilities'
+            }
+        },
+    }
+}
+
+SERVICES['Finch'] = {
+    'info': {
+        'name': 'Finch',
+        'synopsis': (
+            'Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, '
+            'the number of degree-days of cooling, the duration of heatwaves, etc. This returns annual values of '
+            'the most popular climate indices.'
+        ),
+        'version': FINCH_VERSION,
+        'institution': 'Ouranos',
+        'releaseTime': FINCH_RELEASE_TIME,
+        'researchSubject': 'Climatology',
+        'supportEmail': 'helpdesk@example.com',
+        'category': 'Data Manipulation',
+        'tags': ['Climatology', 'Cloud']
+    },
+    'stats': {
+        'method': '.*',
+        'route': '/twitcher/ows/proxy/finch.*'
+    },
+    'redirect': {
+        'doc': 'https://finch.readthedocs.io/en/latest/index.html',
+        'releasenotes': 'https://github.com/bird-house/finch/releases',
+        'support': 'https://github.com/bird-house/finch/issues',
+        'source': 'https://github.com/bird-house/finch',
+        'tryme': 'https://ouranosinc.github.io/pavics-sdi/notebooks/climate_indices.html',
+        'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
+        'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
+    },
+    'monitoring': {
+        'Finch': {
+            'request': {
+                'url': 'http://finch:5000/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+            }
+        },
+    },
+}

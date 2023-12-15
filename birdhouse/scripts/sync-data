@@ -28,7 +28,7 @@ SOURCE_HOST="$1"; shift
 FORCE_MODE="$1"
 
 if [ -z "$SOURCE_HOST" ]; then
-    echo "ERROR: no source host provided" 1>&2
+    echo "${MSG_ERROR}no source host provided" 1>&2
     exit 2
 fi
 
@@ -58,7 +58,7 @@ for item in $GEOSERVER_DATA_DIR/ $JUPYTERHUB_USER_DATA_DIR/ $MAGPIE_PERSIST_DIR/
 done
 
 if [ ! x"$FORCE_MODE" = xforce ]; then
-    echo "Dry-run mode, not executing '$COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm' and other permission fixup"
+    echo "${MSG_INFO}Dry-run mode, not executing '$COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm' and other permission fixup"
 else
     $COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm
 
