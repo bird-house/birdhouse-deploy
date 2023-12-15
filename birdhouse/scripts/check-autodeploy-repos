@@ -2,7 +2,7 @@
 # Check Autodeploy repos status.
 # If there are changes or uncommitted, autodeploy will not trigger.
 
-THIS_FILE="`realpath "$0"`"
+THIS_FILE="`readlink -f "$0" || realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 

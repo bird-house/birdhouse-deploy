@@ -7,7 +7,7 @@
 # version is pinned at the user installed version.
 #
 
-THIS_FILE="`realpath "$0"`"
+THIS_FILE="`readlink -f "$0" || realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 
 . "$THIS_DIR/read-configs.include.sh"

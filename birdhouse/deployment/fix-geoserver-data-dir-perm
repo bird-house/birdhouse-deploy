@@ -8,7 +8,7 @@
 # global.xml will exist and this script will not execute.  Without
 # FIRST_RUN_ONLY, this script will always execute.
 
-THIS_FILE="`realpath "$0"`"
+THIS_FILE="`readlink -f "$0" || realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 
 # Go to repo root.

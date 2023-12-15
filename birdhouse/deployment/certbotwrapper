@@ -46,7 +46,7 @@ certbotwrapper START_TIME=$START_TIME"
 
 set -x
 
-THIS_FILE="`realpath "$0"`"
+THIS_FILE="`readlink -f "$0" || realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 SAVED_PWD="`pwd`"
 

@@ -7,7 +7,7 @@
 # Options:
 #   -d: delete user 'authtest' instead of creating it
 
-THIS_FILE="`realpath "$0"`"
+THIS_FILE="`readlink -f "$0" || realpath "$0"`"
 THIS_DIR="`dirname "$THIS_FILE"`"
 
 TMP_CONFIG_FILE="/tmp/create-magpie-authtest-user.yml"
