@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.0.2](https://github.com/bird-house/birdhouse-deploy/tree/2.0.2) (2023-12-15)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Cowbird README file disappears now that cowbird is a default component
