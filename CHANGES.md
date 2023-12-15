@@ -21,6 +21,9 @@
   * Replace all explicit color "logging" related `echo` in scripts by utility variables
     `MSG_DEBUG`, `MSG_INFO`,  `MSG_WARN` and `MSG_ERROR` as applicable per respective messages.
   * Move `read-configs.include.sh` into `birdhouse/scripts` along other include scripts.
+  * Add `info` option (ie: `pavics-compose.sh info`) that will stop processing just before `docker-compose` call.
+    This can be used to run a "dry-run" of the command and validate that was is loaded is as expected, by inspecting
+    provided log messages.
 
 - Defaults:
   * Add multiple `SERVER_[...]` variables with defaults using previously hard coded values referring to PAVICS.
