@@ -4,8 +4,8 @@
 # location JUPYTERHUB_USER_DATA_DIR/PUBLIC_USERNAME.
 #
 
-THIS_FILE="`readlink -f "$0" || realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "$THIS_FILE")"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
 . "${COMPOSE_DIR}/scripts/read-configs.include.sh"

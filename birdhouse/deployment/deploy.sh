@@ -79,8 +79,8 @@ else
     shift
 fi
 
-COMPOSE_DIR="`realpath "$COMPOSE_DIR"`"
-REPO_ROOT="`realpath "$COMPOSE_DIR/.."`"
+COMPOSE_DIR="$(realpath "$COMPOSE_DIR")"
+REPO_ROOT="$(realpath "$COMPOSE_DIR/..")"
 
 if [ ! -f "$COMPOSE_DIR/docker-compose.yml" -o \
      ! -f "$COMPOSE_DIR/pavics-compose.sh" ]; then

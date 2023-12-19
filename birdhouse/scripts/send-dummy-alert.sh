@@ -1,6 +1,6 @@
 #!/bin/bash
 # https://gist.githubusercontent.com/cherti/61ec48deaaab7d288c9fcf17e700853a/raw/a69ddd1d96507f6d94059071d500fe499631e739/alert.sh
-# Useful to test receving alert on UI and via email notif.
+# Useful to test receiving alert on UI and via email notif.
 
 name=$RANDOM
 url='http://localhost:9093/api/v1/alerts'

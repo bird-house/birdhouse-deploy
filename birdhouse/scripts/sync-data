@@ -13,8 +13,8 @@
 # Assume
 # * ssh passwordless to source host is setup properly
 
-THIS_FILE="`readlink -f "$0" || realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "$THIS_FILE")"
 COMPOSE_DIR="`dirname "$THIS_DIR"`"
 
 if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then

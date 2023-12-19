@@ -23,8 +23,8 @@
 #  read_configs
 
 
-THIS_FILE="`readlink -f "$0" || realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "$THIS_FILE")"
 
 if [ -f "${THIS_DIR}/logging.include.sh" ]; then
     . "${THIS_DIR}/logging.include.sh"

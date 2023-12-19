@@ -31,7 +31,7 @@ cccma/CanESM2/historical/fx/atmos/r0i0p0/sftlf/sftlf_fx_CanESM2_historical_r0i0p
 testdata/xclim/NRCANdaily/nrcan_canada_daily_tasmin_1990.nc
 "
 
-cd "$DATASET_ROOT"
+cd "$DATASET_ROOT" || exit 1
 
 for afile in $FILE_LIST; do
     if [ ! -f "$afile" ]; then

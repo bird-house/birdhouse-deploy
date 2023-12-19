@@ -46,8 +46,8 @@ certbotwrapper START_TIME=$START_TIME"
 
 set -x
 
-THIS_FILE="`readlink -f "$0" || realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "$THIS_FILE")"
 SAVED_PWD="`pwd`"
 
 . "$THIS_DIR/../read-configs.include.sh"

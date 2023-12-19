@@ -59,7 +59,7 @@ else
     shift
 fi
 
-COMPOSE_DIR="`realpath "$COMPOSE_DIR"`"
+COMPOSE_DIR="$(realpath "$COMPOSE_DIR")"
 
 if [ ! -f "$COMPOSE_DIR/docker-compose.yml" ]; then
     echo "ERROR: missing docker-compose.yml in '$COMPOSE_DIR'" 1>&2

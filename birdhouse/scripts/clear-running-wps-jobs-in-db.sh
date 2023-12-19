@@ -1,8 +1,8 @@
 #!/bin/sh
 
-THIS_FILE="`readlink -f "$0" || realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
-COMPOSE_DIR="`dirname "$THIS_DIR"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "$THIS_FILE")"
+COMPOSE_DIR="$(dirname "$THIS_DIR")"
 
 if [ -f "${COMPOSE_DIR}/scripts/logging.include.sh" ]; then
     . "${COMPOSE_DIR}/scripts/logging.include.sh"

@@ -37,8 +37,8 @@
 # So the setfacl solution is the simplest, most portable/generic and most
 # localized (only the directories we need) solution.
 
-THIS_FILE="`readlink -f "$0" || realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "$THIS_FILE")"
 
 # Go to repo root.
 cd $THIS_DIR/../..

@@ -47,7 +47,7 @@ cd "$(dirname "$(readlink -f "$0" || realpath "$0")")" || exit 1
 # Setup COMPOSE_DIR for sourcing env.local.
 # Prevent un-expected difference when this script is run inside autodeploy
 # container and manually from the host.
-COMPOSE_DIR="`pwd`"
+COMPOSE_DIR="$(pwd)"
 
 . "${COMPOSE_DIR}/scripts/read-configs.include.sh"
 read_configs # this sets ALL_CONF_DIRS
