@@ -11,7 +11,7 @@ fi
 # eg: DB_NAME=finch
 DB_NAME="$1"
 if [ -z "$DB_NAME" ]; then
-    echo "${MSG_ERROR}please provide a database name, ex: finch" 1>&2
+    log ERROR "please provide a database name, ex: finch" 1>&2
     exit 2
 fi
 shift

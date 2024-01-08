@@ -66,7 +66,7 @@ case $2 in
     docker run -ti --rm -v birdhouse_data:/data  birdhouse/bird-base sqlite3 $DB
     ;;
   *)
-    echo "${MSG_ERROR}unknown operation: $2"
+    log ERROR "unknown operation: $2"
     usage
     ;;
 esac

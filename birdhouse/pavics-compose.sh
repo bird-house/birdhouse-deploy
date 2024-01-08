@@ -61,7 +61,7 @@ do
   v="${i}"
   if [ -z "`eval "echo ${v}"`" ]
   then
-    echo "${MSG_ERROR}Required variable $v is not set. Check env.local file."
+    log ERROR "Required variable $v is not set. Check env.local file."
     exit 1
   fi
 done
@@ -70,14 +70,14 @@ done
 # will add delay
 # if [ ! -f $SSL_CERTIFICATE ]
 # then
-#   echo "${MSG_ERROR}SSL certificate file $SSL_CERTIFICATE is missing"
+#   log ERROR "SSL certificate file $SSL_CERTIFICATE is missing"
 #   exit 1
 # fi
 
 TIMEWAIT_REUSE=$(/sbin/sysctl -n  net.ipv4.tcp_tw_reuse)
 if [ "${TIMEWAIT_REUSE}" -eq 0 ]
 then
-  echo "${MSG_WARN}the sysctl net.ipv4.tcp_tw_reuse is not enabled. " \
+  log WARN "the sysctl net.ipv4.tcp_tw_reuse is not enabled. " \
        "It it suggested to set it to 1, otherwise the pavicscrawler may fail."
 fi
 
@@ -90,7 +90,7 @@ done
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
-find $ALL_CONF_DIRS -name '*.template' |
+find $ALL_CONF_DIRS -name '*.template' 2>/dev/null |
   while read FILE
   do
     DEST=${FILE%.template}
@@ -101,18 +101,19 @@ if [ x"$1" = x"up" ]; then
   for adir in $ALL_CONF_DIRS; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
     if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
-      echo "${MSG_INFO}executing '$COMPONENT_PRE_COMPOSE_UP'"
+      log INFO "Executing '$COMPONENT_PRE_COMPOSE_UP'"
       sh -x "$COMPONENT_PRE_COMPOSE_UP"
     fi
   done
 fi
 
 create_compose_conf_list # this sets COMPOSE_CONF_LIST
+log INFO "Displaying resolved compose configurations:"
 echo "COMPOSE_CONF_LIST="
 echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
 
 if [ x"$1" = x"info" ]; then
-  echo "${MSG_INFO}Stopping before execution of docker-compose command."
+  log INFO "Stopping before execution of docker-compose command."
   exit 0
 fi
 
@@ -124,7 +125,7 @@ ERR=$?
 type post-compose 2>&1 | grep 'post-compose is a function' > /dev/null
 if [ $? -eq 0 ]
 then
-  [ ${ERR} -gt 0 ] && { echo "${MSG_ERROR}Error occurred with docker-compose, not running post-compose"; exit $?; }
+  [ ${ERR} -gt 0 ] && { log ERROR "Error occurred with docker-compose, not running post-compose"; exit $?; }
   post-compose $*
 fi
 
@@ -145,7 +146,7 @@ do
     for adir in $ALL_CONF_DIRS; do
       COMPONENT_POST_COMPOSE_UP="$adir/post-docker-compose-up"
       if [ -x "$COMPONENT_POST_COMPOSE_UP" ]; then
-        echo "${MSG_INFO}executing '$COMPONENT_POST_COMPOSE_UP'"
+        log INFO "Executing '$COMPONENT_POST_COMPOSE_UP'"
         sh -x "$COMPONENT_POST_COMPOSE_UP"
       fi
     done

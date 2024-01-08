@@ -66,7 +66,7 @@ discover_compose_dir() {
             # Case of sub-subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../../../birdhouse-deploy/birdhouse")"
         fi
-        echo "${MSG_INFO}Resolved docker-compose directory: [${COMPOSE_DIR}]"
+        log INFO "Resolved docker-compose directory: [${COMPOSE_DIR}]"
         export COMPOSE_DIR
     fi
 }
@@ -93,7 +93,7 @@ read_default_env() {
 
         . "$COMPOSE_DIR/default.env"
     else
-        echo "${MSG_WARN}'$COMPOSE_DIR/default.env' not found" 1>&2
+        log WARN "'$COMPOSE_DIR/default.env' not found" 1>&2
     fi
 }
 
@@ -101,7 +101,7 @@ read_default_env() {
 read_env_local() {
     # we don't use usual .env filename, because docker-compose uses it
 
-    echo "${MSG_INFO}Using local environment file at: ${BIRDHOUSE_LOCAL_ENV}"
+    log INFO "Using local environment file at: ${BIRDHOUSE_LOCAL_ENV}"
 
     if [ -e "$BIRDHOUSE_LOCAL_ENV" ]; then
         saved_shell_options="$(set +o)"
@@ -113,7 +113,7 @@ read_env_local() {
         eval "$saved_shell_options"
 
     else
-        echo "${MSG_WARN}'$BIRDHOUSE_LOCAL_ENV' not found" 1>&2
+        log WARN "'$BIRDHOUSE_LOCAL_ENV' not found" 1>&2
     fi
 
 }
@@ -145,7 +145,7 @@ source_conf_files() {
           # corresponding PR are merged and old component names can be removed
           # after the corresponding PR are merge without any impact on the
           # autodeploy process.
-          echo "${MSG_WARN}'$adir' in $conf_locations does not exist" 1>&2
+          log WARN "'$adir' in $conf_locations does not exist" 1>&2
       fi
       if [ -f "$adir/default.env" ]; then
           # Source config settings of dependencies first if they haven't been sourced previously.
@@ -157,7 +157,7 @@ source_conf_files() {
             # reset the adir variable in case it was changed in a recursive call
             adir="$(printf '%b' "$_adir_stack" | tail -1)"
           fi
-          echo "${MSG_DEBUG}reading '$adir/default.env'"
+          log DEBUG "reading '$adir/default.env'"
           . "$adir/default.env"
       fi
       if echo "$ALL_CONF_DIRS" | grep -qE "^\s*$adir\s*$"; then
@@ -201,11 +201,11 @@ check_optional_vars() {
         result=`echo "${d}" | grep -c "${default}"`
         if [ -z "`eval "echo ${v}"`" ]
         then
-            echo "${MSG_WARN}Optional variable [${n}] is not set. Check env.local file."
+            log WARN "Optional variable [${n}] is not set. Check env.local file."
         fi
         if [ "${result}" -gt 0 ]
         then
-            echo "${MSG_WARN}Optional variable [${n}] employs a default recommended for override. Check env.local file."
+            log WARN "Optional variable [${n}] employs a default recommended for override. Check env.local file."
         fi
     done
 }
@@ -223,7 +223,7 @@ process_delayed_eval() {
         fi
         v="`eval "echo \\$${i}"`"
         eval 'export ${i}="`eval "echo ${v}"`"'
-        echo "${MSG_DEBUG}delayed eval '$(env | grep -e "^${i}=")'"
+        log DEBUG "delayed eval '$(env | grep -e "^${i}=")'"
         ALREADY_EVALED="
           $ALREADY_EVALED
           $i"
@@ -246,7 +246,7 @@ create_compose_conf_list() {
   # ALL_CONF_DIRS relative paths are relative to COMPOSE_DIR.
   discover_compose_dir
   if [ -d "$COMPOSE_DIR" ]; then
-      echo "${MSG_INFO}Found compose directory [${COMPOSE_DIR}]"
+      log INFO "Found compose directory [${COMPOSE_DIR}]"
       cd "$COMPOSE_DIR" || return
   fi
 
@@ -281,7 +281,7 @@ create_compose_conf_list() {
 
     # Return to previous pwd.
   if [ -d "$COMPOSE_DIR" ]; then
-      echo "${MSG_INFO}Moving to [${COMPOSE_DIR}]"
+      log INFO "Moving to [${COMPOSE_DIR}]"
       cd - >/dev/null || return
   fi
 }

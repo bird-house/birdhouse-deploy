@@ -18,13 +18,16 @@
 ## Changes
 - Compose script utilities:
   * Add `BIRDHOUSE_COLOR` option and various logging/messaging definitions in `birdhouse/scripts/logging.include.sh`.
-  * Replace all explicit color "logging" related `echo` in scripts by utility variables
-    `MSG_DEBUG`, `MSG_INFO`,  `MSG_WARN` and `MSG_ERROR` as applicable per respective messages.
+  * Replace all explicit color "logging" related `echo` in scripts by a utility `log {LEVEL} {message}` function
+    that employs variables `LOG_DEBUG`, `LOG_INFO`, `LOG_WARN`, `LOG_ERROR` and `LOG_CRITICAL` as applicable per
+    respective messages to report logging messages in a standard approach.
+    Colors can be disabled with `BIRDHOUSE_COLOR=0` and logging level can be set with `BIRDHOUSE_LOG_LEVEL={LEVEL}`
+    where all levels above or equal to the configured one will be displayed (default logging level is `INFO`).
   * Move `read-configs.include.sh` into `birdhouse/scripts` along other include scripts.
   * Add `info` option (ie: `pavics-compose.sh info`) that will stop processing just before `docker-compose` call.
-    This can be used to run a "dry-run" of the command and validate that was is loaded is as expected, by inspecting
+    This can be used to perform a "dry-run" of the command and validate that was is loaded is as expected, by inspecting
     provided log messages.
-  * Replaced older backtick (``` ` ```) executions by `$(...)` representation except for `eval` calls that require
+  * Replace older backtick (``` ` ```) executions by `$(...)` representation except for `eval` calls that require
     them for backward compatibility of `sh` on some server instances.
 
 - Defaults:
