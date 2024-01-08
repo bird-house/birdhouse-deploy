@@ -24,6 +24,8 @@
   * Add `info` option (ie: `pavics-compose.sh info`) that will stop processing just before `docker-compose` call.
     This can be used to run a "dry-run" of the command and validate that was is loaded is as expected, by inspecting
     provided log messages.
+  * Replaced older backtick (``` ` ```) executions by `$(...)` representation except for `eval` calls that require
+    them for backward compatibility of `sh` on some server instances.
 
 - Defaults:
   * Add multiple `SERVER_[...]` variables with defaults using previously hard coded values referring to PAVICS.
