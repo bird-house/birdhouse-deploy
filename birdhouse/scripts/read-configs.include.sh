@@ -190,8 +190,30 @@ read_components_default_env() {
 }
 
 
-check_optional_vars() {
+# Check that all optional variables are defined with a different value than the default to emit a warning log message.
+# Also check that required variables do not use generic defaults to indicate possible security issues.
+check_default_vars() {
+    # for required variables, do not check for omitted override
+    # those will be flagged as error (check_required_vars)
+    # only indicate if there is a possible security concern
+    # note that the defaults of required variables are not define in those variables
+    # (ie: __DEFAULT__MAGPIE_ADMIN_PASSWORD exists, but MAGPIE_ADMIN_PASSWORD is not set, must have explicit override)
+    for i in ${VARS}
+    do
+      n="${i#\$}"
+      v=`eval echo "${i}" 2>/dev/null`
+      default="\${__DEFAULT__${n}}"
+      d=`eval echo "${default}" 2>/dev/null`
+      if [ ! -z "${d}" ]; then
+          if [ "${d}" = "${v}" ]; then
+              log WARN \
+                "Required variable [${n}] employs a default recommended for override." \
+                "The security of your deployment may be compromised unless it is changed. Check env.local file."
+          fi
+      fi
+    done
 
+    # for optional variables, warn about possibility omitted override or when defaults are employed
     for i in ${OPTIONAL_VARS}
     do
         v="${i}"
@@ -206,6 +228,20 @@ check_optional_vars() {
         if [ "${result}" -gt 0 ]
         then
             log WARN "Optional variable [${n}] employs a default recommended for override. Check env.local file."
+        fi
+    done
+}
+
+
+# Verify that all required variables are set, and error out otherwise with an error log message.
+check_required_vars() {
+    for i in ${VARS}
+    do
+        v="${i}"
+        if [ -z "`eval "echo ${v}"`" ]
+        then
+            log ERROR "Required variable $v is not set. Check env.local file."
+            exit 1
         fi
     done
 }
@@ -296,7 +332,7 @@ read_configs() {
     read_env_local  # for EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, need discover_env_local
     read_components_default_env  # uses EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
     read_env_local  # again to override components default.env, need discover_env_local
-    check_optional_vars
+    check_default_vars
     process_delayed_eval
 }
 

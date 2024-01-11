@@ -20,7 +20,9 @@ export LOG_WARN="${YELLOW}WARNING${NORMAL}:  "
 export LOG_ERROR="${RED}ERROR${NORMAL}:    "
 export LOG_CRITICAL="${REG_BG_BOLD}CRITICAL${NORMAL}: "  # to report misuse of functions
 
-# Usage: log {LEVEL} "{message}"
+
+# Usage: log {LEVEL} "{message}" [...]
+# Any amount of messages can be passed to the function.
 log() {
     if [ "${BIRDHOUSE_LOG_LEVEL}" != DEBUG ] \
     && [ "${BIRDHOUSE_LOG_LEVEL}" != INFO ] \
@@ -29,29 +31,31 @@ log() {
         echo "${LOG_CRITICAL}Invalid log level setting: [BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL}]."
         exit 2
     fi
-    if [ "$2" = "" ]; then
+    level="$1"
+    shift
+    if [ "$*" = "" ]; then
         echo "${LOG_CRITICAL}Invalid log message is missing."
         exit 2
     fi
-    if [ "$1" = "DEBUG" ]; then
+    if [ "${level}" = "DEBUG" ]; then
         if [ "${BIRDHOUSE_LOG_LEVEL}" = DEBUG ]; then
-            echo "${LOG_DEBUG}$2"
+            echo "${LOG_DEBUG}$*"
         fi
-    elif [ "$1" = "INFO" ]; then
+    elif [ "${level}" = "INFO" ]; then
         if [ "${BIRDHOUSE_LOG_LEVEL}" = DEBUG ] \
         || [ "${BIRDHOUSE_LOG_LEVEL}" = INFO ]; then
-            echo "${LOG_INFO}$2"
+            echo "${LOG_INFO}$*"
         fi
-    elif [ "$1" = "WARN" ]; then
+    elif [ "${level}" = "WARN" ]; then
         if [ "${BIRDHOUSE_LOG_LEVEL}" = DEBUG ] \
         || [ "${BIRDHOUSE_LOG_LEVEL}" = INFO ] \
         || [ "${BIRDHOUSE_LOG_LEVEL}" = WARN ]; then
-            echo "${LOG_WARN}$2"
+            echo "${LOG_WARN}$*"
         fi
-    elif [ "$1" = "ERROR" ]; then
-        echo "${LOG_ERROR}$2"
+    elif [ "${level}" = "ERROR" ]; then
+        echo "${LOG_ERROR}$*"
     else
-        echo "${LOG_CRITICAL}Invalid log level: [$1]"
+        echo "${LOG_CRITICAL}Invalid log level: [${level}]"
         exit 2
     fi
 }
