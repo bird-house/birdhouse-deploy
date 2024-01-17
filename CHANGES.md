@@ -21,6 +21,41 @@
  
   Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.4.
 
+
+## Fixes
+
+- Allow users to log in to Jupyterhub with their email address
+
+  Previously, JupyterHub's `MagpieAuthenticator` class treated the email address entered into the username field as
+  the username itself. This led to a mismatch between the username in JupyterHub and the username in Magpie.
+  To resolve this, we update the JupyterHub docker image to a version where this bug is fixed. 
+
+  See https://github.com/Ouranosinc/jupyterhub/pull/26 and https://github.com/Ouranosinc/Magpie/issues/598 for 
+  reference.
+
+[2.0.3](https://github.com/bird-house/birdhouse-deploy/tree/2.0.3) (2024-01-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Autodeploy broken due to instanciated left-over files in ./config/ dir
+
+  The `.gitignore` syntax was wrong.  Regression from v2.0.0.
+
+
+[2.0.2](https://github.com/bird-house/birdhouse-deploy/tree/2.0.2) (2023-12-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Cowbird README file disappears now that cowbird is a default component
+
+  The settings to enable the Cowbird README file (added in version 1.41.0) assumed that the cowbird component would
+  be loaded after the juptyerhub component. Now that the cowbird component is part of the `DEFAULT_CONF_DIRS` and
+  therefore will always be loaded first, this updates the settings so that the README file will be enabled given the new
+  component load order.
+
+
 [2.0.1](https://github.com/bird-house/birdhouse-deploy/tree/2.0.1) (2023-12-11)
 ------------------------------------------------------------------------------------------------------------------
 
