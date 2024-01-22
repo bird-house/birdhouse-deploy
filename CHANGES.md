@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.0.5](https://github.com/bird-house/birdhouse-deploy/tree/2.0.5) (2024-01-22)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 - Jupyter env: new incremental build for compatibility with upcoming Thredds v5
 
