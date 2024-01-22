@@ -17,6 +17,15 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.0.5](https://github.com/bird-house/birdhouse-deploy/tree/2.0.5) (2024-01-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new incremental build for compatibility with upcoming Thredds v5
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/134 for more info.
+
+
 [2.0.4](https://github.com/bird-house/birdhouse-deploy/tree/2.0.4) (2024-01-18)
 ------------------------------------------------------------------------------------------------------------------
 
