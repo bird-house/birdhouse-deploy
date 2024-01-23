@@ -89,12 +89,17 @@ find $ALL_CONF_DIRS -name '*.template' 2>/dev/null |
     cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
   done
 
+SHELL_EXEC_FLAGS=
+if [ "${BIRDHOUSE_LOG_LEVEL}" = "DEBUG" ]; then
+  SHELL_EXEC_FLAGS=-x
+fi
+
 if [ x"$1" = x"up" ]; then
   for adir in $ALL_CONF_DIRS; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
     if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
       log INFO "Executing '$COMPONENT_PRE_COMPOSE_UP'"
-      sh -x "$COMPONENT_PRE_COMPOSE_UP"
+      sh ${SHELL_EXEC_FLAGS} "$COMPONENT_PRE_COMPOSE_UP"
     fi
   done
 fi
@@ -139,7 +144,7 @@ do
       COMPONENT_POST_COMPOSE_UP="$adir/post-docker-compose-up"
       if [ -x "$COMPONENT_POST_COMPOSE_UP" ]; then
         log INFO "Executing '$COMPONENT_POST_COMPOSE_UP'"
-        sh -x "$COMPONENT_POST_COMPOSE_UP"
+        sh ${SHELL_EXEC_FLAGS} "$COMPONENT_POST_COMPOSE_UP"
       fi
     done
 

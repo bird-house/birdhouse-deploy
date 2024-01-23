@@ -29,6 +29,8 @@
     provided log messages.
   * Replace older backtick (``` ` ```) executions by `$(...)` representation except for `eval` calls that require
     them for backward compatibility of `sh` on some server instances.
+  * Modify the `sh -x` calls to scripts listed in `COMPONENT_PRE_COMPOSE_UP` and `COMPONENT_POST_COMPOSE_UP` to employ
+    the `-x` flag (showing commands) only when `BIRDHOUSE_LOG_LEVEL=DEBUG`.
 
 - Defaults:
   * Add multiple `SERVER_[...]` variables with defaults using previously hard coded values referring to PAVICS.
