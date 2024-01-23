@@ -109,10 +109,10 @@ SERVICES = {
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '2.0.4',
-            'releaseTime': '2024-01-18T14:27:21Z',
-            'institution': 'Ouranos',
-            'researchSubject': 'Climatology',
+            'version': '2.0.5',
+            'releaseTime': '2024-01-22T04:23:33Z',
+            'institution': '${SERVER_INSTITUTION}',
+            'researchSubject': '${SERVER_SUBJECT}',
             'supportEmail': '${SUPPORT_EMAIL}',
             'category': 'Resource/Cloud Management',
             'tags': [tag.strip() for tag in "${SERVER_TAGS}".split(",") if tag.strip()],
@@ -142,12 +142,12 @@ PLATFORMS = {
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '2.0.4',
-            'releaseTime': '2024-01-18T14:27:21Z',
-            'institution': 'Ouranos',
-            'researchSubject': 'Climatology',
+            'version': '2.0.5',
+            'releaseTime': '2024-01-22T04:23:33Z',
+            'institution': '${SERVER_INSTITUTION}',
+            'researchSubject': '${SERVER_SUBJECT}',
             'supportEmail': '${SUPPORT_EMAIL}',
-            'tags': ['Climatology', 'Cloud']
+            'tags': [tag.strip() for tag in "${SERVER_TAGS}".split(",") if tag.strip()],
         },
         'stats': {
             'method': '.*',
