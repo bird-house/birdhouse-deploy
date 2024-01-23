@@ -46,6 +46,30 @@
     at [Ouranosinc/pavics-sdi](https://github.com/Ouranosinc/pavics-sdi) instead
     of intended [bird-house/birdhouse-deploy](https://github.com/bird-house/birdhouse-deploy).
 
+[2.0.4](https://github.com/bird-house/birdhouse-deploy/tree/2.0.4) (2024-01-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Allow users to log in to Jupyterhub with their email address
+
+  Previously, JupyterHub's `MagpieAuthenticator` class treated the email address entered into the username field as
+  the username itself. This led to a mismatch between the username in JupyterHub and the username in Magpie.
+  To resolve this, we update the JupyterHub docker image to a version where this bug is fixed. 
+
+  See https://github.com/Ouranosinc/jupyterhub/pull/26 and https://github.com/Ouranosinc/Magpie/issues/598 for 
+  reference.
+
+[2.0.3](https://github.com/bird-house/birdhouse-deploy/tree/2.0.3) (2024-01-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Autodeploy broken due to instanciated left-over files in ./config/ dir
+
+  The `.gitignore` syntax was wrong.  Regression from v2.0.0.
+
+
 [2.0.2](https://github.com/bird-house/birdhouse-deploy/tree/2.0.2) (2023-12-15)
 ------------------------------------------------------------------------------------------------------------------
 
