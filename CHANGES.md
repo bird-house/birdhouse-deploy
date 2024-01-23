@@ -29,6 +29,8 @@
     provided log messages.
   * Replace older backtick (``` ` ```) executions by `$(...)` representation except for `eval` calls that require
     them for backward compatibility of `sh` on some server instances.
+  * Modify the `sh -x` calls to scripts listed in `COMPONENT_PRE_COMPOSE_UP` and `COMPONENT_POST_COMPOSE_UP` to employ
+    the `-x` flag (showing commands) only when `BIRDHOUSE_LOG_LEVEL=DEBUG`.
 
 - Defaults:
   * Add multiple `SERVER_[...]` variables with defaults using previously hard coded values referring to PAVICS.
@@ -46,6 +48,39 @@
 - Magpie: ensure that the `MAGPIE_ADMIN_USERNAME` variable is respected
   * When determining the `JUPYTERHUB_ADMIN_USERS` variable
   * Double check that it is being respected everywhere else
+
+[2.0.5](https://github.com/bird-house/birdhouse-deploy/tree/2.0.5) (2024-01-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new incremental build for compatibility with upcoming Thredds v5
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/134 for more info.
+
+
+[2.0.4](https://github.com/bird-house/birdhouse-deploy/tree/2.0.4) (2024-01-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Allow users to log in to Jupyterhub with their email address
+
+  Previously, JupyterHub's `MagpieAuthenticator` class treated the email address entered into the username field as
+  the username itself. This led to a mismatch between the username in JupyterHub and the username in Magpie.
+  To resolve this, we update the JupyterHub docker image to a version where this bug is fixed. 
+
+  See https://github.com/Ouranosinc/jupyterhub/pull/26 and https://github.com/Ouranosinc/Magpie/issues/598 for 
+  reference.
+
+[2.0.3](https://github.com/bird-house/birdhouse-deploy/tree/2.0.3) (2024-01-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Autodeploy broken due to instanciated left-over files in ./config/ dir
+
+  The `.gitignore` syntax was wrong.  Regression from v2.0.0.
+
 
 [2.0.2](https://github.com/bird-house/birdhouse-deploy/tree/2.0.2) (2023-12-15)
 ------------------------------------------------------------------------------------------------------------------

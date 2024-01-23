@@ -20,8 +20,8 @@
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "$THIS_FILE")"
 
-if [ -f "${THIS_DIR}/logging.include.sh" ]; then
-    . "${THIS_DIR}/logging.include.sh"
+if [ -f "${THIS_DIR}/read-configs.include.sh" ]; then
+    . "${THIS_DIR}/read-configs.include.sh"
 fi
 
 # default value in case of error or missing definitions
