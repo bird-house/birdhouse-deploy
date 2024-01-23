@@ -3,8 +3,8 @@
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "$THIS_FILE")"
 
-if [ -f "${COMPOSE_DIR}/scripts/read-configs.include.sh" ]; then
-    . "${COMPOSE_DIR}/scripts/read-configs.include.sh"
+if [ -f "${THIS_DIR}/read-configs.include.sh" ]; then
+    . "${THIS_DIR}/read-configs.include.sh"
 fi
 
 function usage(){
