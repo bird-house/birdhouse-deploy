@@ -193,10 +193,11 @@ read_components_default_env() {
 # Check that all optional variables are defined with a different value than the default to emit a warning log message.
 # Also check that required variables do not use generic defaults to indicate possible security issues.
 check_default_vars() {
-    # for required variables, do not check for omitted override
-    # those will be flagged as error (check_required_vars)
-    # only indicate if there is a possible security concern
-    # note that the defaults of required variables are not define in those variables
+    # For required variables, do not check for omitted override,
+    # since those will be flagged as error anyway (see 'check_required_vars').
+    # Only indicate if there is a possible security concern.
+    # Note that the defaults of required variables are not actually set in those variables, but
+    # are listed in 'env.local.example', hence why they pose a possible security concern.
     # (ie: __DEFAULT__MAGPIE_ADMIN_PASSWORD exists, but MAGPIE_ADMIN_PASSWORD is not set, must have explicit override)
     for i in ${VARS}
     do
