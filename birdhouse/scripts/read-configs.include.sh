@@ -345,5 +345,6 @@ read_basic_configs_only() {
     discover_env_local
     read_default_env
     read_env_local  # need discover_env_local
+    check_default_vars
     process_delayed_eval
 }
