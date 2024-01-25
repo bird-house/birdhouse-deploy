@@ -258,7 +258,8 @@ process_delayed_eval() {
           continue
         fi
         v="`eval "echo \\$${i}"`"
-        eval 'export ${i}="`eval "echo ${v}"`"'
+        value=`eval "echo \"${v}\""`
+        eval 'export ${i}="${value}"'
         log DEBUG "delayed eval '$(env | grep -e "^${i}=")'"
         ALREADY_EVALED="
           $ALREADY_EVALED
