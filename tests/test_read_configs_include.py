@@ -183,6 +183,12 @@ class TestReadConfigs:
         assert (split_and_strip(get_command_stdout(proc))[-1] ==
                 "public.example.com - /my-data-root/jupyterhub_user_data - /my-geoserver-data")
 
+    def test_delayed_eval_quoting(self, read_config_include_file) -> None:
+        """Test that the delayed evaluation functions resolve quotation marks and braces properly"""
+        extra = {"EXTRA_TEST_VAR": "\"{'123'}\"", "DELAYED_EVAL": "$DELAYED_EVAL EXTRA_TEST_VAR"}
+        proc = self.run_func(read_config_include_file, extra, 'echo "${EXTRA_TEST_VAR}"')
+        assert split_and_strip(get_command_stdout(proc))[-1] == "{'123'}"
+
 
 class TestCreateComposeConfList:
     default_conf_list_order: list[str] = [

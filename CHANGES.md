@@ -45,6 +45,9 @@
   * Replace the LICENSE URL of the server node pointing
     at [Ouranosinc/pavics-sdi](https://github.com/Ouranosinc/pavics-sdi) instead
     of intended [bird-house/birdhouse-deploy](https://github.com/bird-house/birdhouse-deploy).
+- Magpie: ensure that the `MAGPIE_ADMIN_USERNAME` variable is respected
+  * When determining the `JUPYTERHUB_ADMIN_USERS` variable
+  * Double check that it is being respected everywhere else
 
 [2.0.5](https://github.com/bird-house/birdhouse-deploy/tree/2.0.5) (2024-01-22)
 ------------------------------------------------------------------------------------------------------------------

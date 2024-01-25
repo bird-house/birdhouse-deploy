@@ -304,7 +304,7 @@ birdhouse-deploy software stack and the machine that it is running on. It is hig
 make these routes available to anyone who does not have proper access permissions.
 
 Add existing users to the ``monitoring`` group to allow them access to the various monitoring WebUI.
-This way, we do not need to share the ``admin`` user account and do not have to add them to the
+This way, we do not need to share the ``MAGPIE_ADMIN_USERNAME`` user account and do not have to add them to the
 ``administrators`` group, which would give them too much permissions.
 
 
