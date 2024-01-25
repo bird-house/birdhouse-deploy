@@ -56,7 +56,7 @@ read_configs # this sets ALL_CONF_DIRS
 . "${COMPOSE_DIR}/scripts/get-services-json.include.sh"
 . "${COMPOSE_DIR}/scripts/get-version-json.include.sh"
 
-check_required_vars
+check_required_vars || exit $?
 
 ## check fails when root access is required to access this file.. workaround possible by going through docker daemon... but
 # will add delay
