@@ -4,8 +4,8 @@ THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "$THIS_FILE")"
 COMPOSE_DIR="$(dirname "$THIS_DIR")"
 
-if [ -f "${COMPOSE_DIR}/scripts/logging.include.sh" ]; then
-    . "${COMPOSE_DIR}/scripts/logging.include.sh"
+if [ -f "${COMPOSE_DIR}/scripts/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/scripts/read-configs.include.sh"
 fi
 
 # eg: DB_NAME=finch
