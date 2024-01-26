@@ -94,16 +94,6 @@ if [ "${BIRDHOUSE_LOG_LEVEL}" = "DEBUG" ]; then
   SHELL_EXEC_FLAGS=-x
 fi
 
-if [ x"$1" = x"up" ]; then
-  for adir in $ALL_CONF_DIRS; do
-    COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
-    if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
-      log INFO "Executing '$COMPONENT_PRE_COMPOSE_UP'"
-      sh ${SHELL_EXEC_FLAGS} "$COMPONENT_PRE_COMPOSE_UP"
-    fi
-  done
-fi
-
 create_compose_conf_list # this sets COMPOSE_CONF_LIST
 log INFO "Displaying resolved compose configurations:"
 echo "COMPOSE_CONF_LIST="
@@ -112,6 +102,16 @@ echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
 if [ x"$1" = x"info" ]; then
   log INFO "Stopping before execution of docker-compose command."
   exit 0
+fi
+
+if [ x"$1" = x"up" ]; then
+  for adir in $ALL_CONF_DIRS; do
+    COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
+    if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
+      log INFO "Executing '$COMPONENT_PRE_COMPOSE_UP'"
+      sh ${SHELL_EXEC_FLAGS} "$COMPONENT_PRE_COMPOSE_UP"
+    fi
+  done
 fi
 
 # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
