@@ -31,7 +31,7 @@ ls -a */.home/.local/bin
 
 set +x
 
-echo "${MSG_INFO}
+log INFO "
 Errors like
   ls: cannot access */.home/.local/lib/python*/site-packages: No such file or directory
   ls: cannot access */.home/.local/bin: No such file or directory

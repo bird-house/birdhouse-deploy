@@ -31,10 +31,9 @@ set -x
 docker exec $POSTGRES_CONTAINER_NAME psql -U $POSTGRES_USER $DB_NAME -c "select * from pywps_requests where percent_done > -1 and percent_done < 100.0;"
 
 set +x
-echo "
-${MSG_WARN}This will crash all the above requests if currently still processing
-
-Clear those jobs? (Ctrl-C to cancel, any keys to continue)"
+log WARN \
+  "This will crash all the above requests if currently still processing.\n" \
+  "Clear those jobs? (Ctrl-C to cancel, any keys to continue)"
 
 read a
 

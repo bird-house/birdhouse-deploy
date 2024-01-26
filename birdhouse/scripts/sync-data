@@ -28,7 +28,7 @@ SOURCE_HOST="$1"; shift
 FORCE_MODE="$1"
 
 if [ -z "$SOURCE_HOST" ]; then
-    echo "${MSG_ERROR}no source host provided" 1>&2
+    log ERROR "no source host provided" 1>&2
     exit 2
 fi
 
@@ -58,8 +58,9 @@ for item in $GEOSERVER_DATA_DIR/ $JUPYTERHUB_USER_DATA_DIR/ $MAGPIE_PERSIST_DIR/
 done
 
 if [ ! x"$FORCE_MODE" = xforce ]; then
-    echo "${MSG_INFO}Dry-run mode, not executing '$COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm' and other permission fixup"
+    log INFO "Dry-run mode, not executing '$COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm' and other permission fixup"
 else
+    log INFO "Executing '$COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm' and other permission fixup"
     $COMPOSE_DIR/deployment/fix-geoserver-data-dir-perm
 
     docker run --rm --name fix-jupyter-data-dir-perm \

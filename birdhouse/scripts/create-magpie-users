@@ -102,7 +102,7 @@ fi
 if [ -z "$MAGPIE_CLI_IMAGE" ]; then
     # MAGPIE_VERSION must be provided by 'default.env', 'env.local' or directly
     if [ -z "${MAGPIE_VERSION}" ]; then
-        echo "${MSG_ERROR}Required MAGPIE_VERSION is undefined or empty."
+        log ERROR "Required MAGPIE_VERSION is undefined or empty."
         exit 1
     fi
     MAGPIE_CLI_IMAGE="pavics/magpie:${MAGPIE_VERSION}"
