@@ -23,21 +23,11 @@
 #  read_configs
 
 
-THIS_FILE="$(readlink -f "$0" || realpath "$0")"
-THIS_DIR="$(dirname "$THIS_FILE")"
-
-if [ -f "${THIS_DIR}/logging.include.sh" ]; then
-    . "${THIS_DIR}/logging.include.sh"
-fi
-if [ -f "${THIS_DIR}/scripts/logging.include.sh" ]; then
-    . "${THIS_DIR}/scripts/logging.include.sh"
-fi
-
-
 # Derive COMPOSE_DIR from the most probable locations.
 # This is NOT meant to be exhaustive.
 # Assume the checkout is named "birdhouse-deploy", which might NOT be true.
 # Caller of this file can simply set COMPOSE_DIR itself, this is the safest way.
+# WARNING: cannot use 'log' calls within this function until the following logging script gets resolved and sourced.
 discover_compose_dir() {
     if [ -z "$COMPOSE_DIR" ] || [ ! -e "$COMPOSE_DIR" ]; then
         if [ -f "./pavics-compose.sh" ]; then
@@ -66,10 +56,16 @@ discover_compose_dir() {
             # Case of sub-subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../../../birdhouse-deploy/birdhouse")"
         fi
-        log INFO "Resolved docker-compose directory: [${COMPOSE_DIR}]"
         export COMPOSE_DIR
     fi
 }
+
+
+discover_compose_dir
+if [ -f "${COMPOSE_DIR}/scripts/logging.include.sh" ]; then
+    . "${COMPOSE_DIR}/scripts/logging.include.sh"
+fi
+log INFO "Resolved docker-compose directory: [${COMPOSE_DIR}]"
 
 
 discover_env_local() {
