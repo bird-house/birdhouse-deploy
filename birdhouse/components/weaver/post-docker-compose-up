@@ -333,6 +333,25 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
 done
 echo "${PREFIX}All Weaver remote WPS providers registered successfully!"
 
+if [ x"${WEAVER_UNREGISTER_DROPPED_PROVIDERS}" = x"True" ]; then
+    resp=$( \
+        curl_cmd --insecure --silent --location \
+            -m ${REQUEST_TIMEOUT} \
+            -b "${cookie}" \
+            "${WEAVER_URL}/providers?check=false&detail=false" \
+    )
+    for prov in $(echo "$resp" | sed -e 's/.*"providers":\[//' -e 's/\].*//' -e 's/[",]/ /g'); do
+        if echo "${WEAVER_WPS_PROVIDERS}" | grep -wqv "$prov" ; then
+            # unregister provider that is no longer specified in WEAVER_WPS_PROVIDERS
+            echo "${PREFIX}Unregistering the remote WPS provider matching [${prov}] not in WEAVER_WPS_PROVIDERS."
+            curl_cmd --insecure --silent --location \
+                 -m ${REQUEST_TIMEOUT} \
+                 -b "${cookie}" \
+                 -X DELETE \
+                 "${WEAVER_URL}/providers/${prov}"
+            fi
+    done
+fi
 
 echo "${PREFIX}Starting Weaver WebApp/Worker Celery tasks validation..."
 CUR_SCRIPT_DIR="$(dirname "$(realpath "$0")")"
