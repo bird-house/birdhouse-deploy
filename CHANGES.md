@@ -15,7 +15,19 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Weaver: add option to automatically unregister old providers
+
+  Introduces the `WEAVER_UNREGISTER_DROPPED_PROVIDERS` variable. If set to "True", Weaver providers that are no longer 
+  working (not responding when deployed) and are not named in `WEAVER_WPS_PROVIDERS` will be unregistered. This is  
+  useful when deploying Weaver with fewer providers than a previous deployment.
+
+  For example, if the stack is deployed with the Weaver, Finch, and Raven components. Then later deployed with jus
+  Weaver and Raven, the Finch provider will be unregistered from weaver.
+
+  Previously, the Finch provider would have remained as a Weaver provider despite the fact that it has been removed from
+  the stack.
 
 [2.0.5](https://github.com/bird-house/birdhouse-deploy/tree/2.0.5) (2024-01-22)
 ------------------------------------------------------------------------------------------------------------------
