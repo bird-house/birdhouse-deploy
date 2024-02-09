@@ -23,7 +23,7 @@
   working (not responding when deployed) and are not named in `WEAVER_WPS_PROVIDERS` will be unregistered. This is  
   useful when deploying Weaver with fewer providers than a previous deployment.
 
-  For example, if the stack is deployed with the Weaver, Finch, and Raven components. Then later deployed with jus
+  For example, if the stack is deployed with the Weaver, Finch, and Raven components. Then later deployed with just
   Weaver and Raven, the Finch provider will be unregistered from weaver.
 
   Previously, the Finch provider would have remained as a Weaver provider despite the fact that it has been removed from
