@@ -348,9 +348,12 @@ if [ x"${WEAVER_UNREGISTER_DROPPED_PROVIDERS}" = x"True" ]; then
             -b "${cookie}" \
             "${WEAVER_URL}/providers?check=true&detail=false" \
     )
-    working_providers=$(echo "$working_providers_resp" | sed -e 's/.*"providers":\[//' -e 's/\].*//' -e 's/[",]/ /g')
+    working_providers=$(echo "$working_providers_resp" | tr '\n' ' ' | \
+                        sed -e 's/.*"providers":\[//' -e 's/\].*//' -e 's/[",]/ /g')
     for prov in $(echo "$all_providers_resp" | sed -e 's/.*"providers":\[//' -e 's/\].*//' -e 's/[",]/ /g'); do
-        if echo "${WEAVER_WPS_PROVIDERS}" | grep -wqv "$prov" && echo "${working_providers}" | grep -wqv "$prov"; then
+        # Note: both WEAVER_WPS_PROVIDERS and working_providers are whitespace delimited with no newlines
+        if echo " ${WEAVER_WPS_PROVIDERS} " | grep -qv "[[:space:]]${prov}[[:space:]]" && \
+           echo " ${working_providers} " | grep -qv "[[:space:]]${prov}[[:space:]]"; then
             # unregister provider that is no longer specified in WEAVER_WPS_PROVIDERS and is no longer working
             echo "${PREFIX}Unregistering the remote WPS provider matching [${prov}] not in WEAVER_WPS_PROVIDERS."
             curl_cmd --insecure --silent --location \
