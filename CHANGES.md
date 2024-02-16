@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- env.local.example: fix `JUPYTERHUB_CONFIG_OVERRIDE` comment section
+
+  `JUPYTERHUB_CONFIG_OVERRIDE` was disconnected from its sample code.
+
 
 [2.0.6](https://github.com/bird-house/birdhouse-deploy/tree/2.0.6) (2024-02-15)
 ------------------------------------------------------------------------------------------------------------------
