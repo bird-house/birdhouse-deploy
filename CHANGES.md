@@ -48,6 +48,9 @@
 - Magpie: ensure that the `MAGPIE_ADMIN_USERNAME` variable is respected
   * When determining the `JUPYTERHUB_ADMIN_USERS` variable
   * Double check that it is being respected everywhere else
+- env.local.example: fix `JUPYTERHUB_CONFIG_OVERRIDE` comment section
+
+  `JUPYTERHUB_CONFIG_OVERRIDE` was disconnected from its sample code.
 
 [2.0.6](https://github.com/bird-house/birdhouse-deploy/tree/2.0.6) (2024-02-15)
 ------------------------------------------------------------------------------------------------------------------
