@@ -22,6 +22,35 @@
   Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.4.
 
 
+[2.0.6](https://github.com/bird-house/birdhouse-deploy/tree/2.0.6) (2024-02-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: add option to automatically unregister old providers
+
+  Introduces the `WEAVER_UNREGISTER_DROPPED_PROVIDERS` variable. If set to "True", Weaver providers that are no longer 
+  working (not responding when deployed) and are not named in `WEAVER_WPS_PROVIDERS` will be unregistered. This is  
+  useful when deploying Weaver with fewer providers than a previous deployment.
+
+  For example, if the stack is deployed with the Weaver, Finch, and Raven components. Then later deployed with just
+  Weaver and Raven, the Finch provider will be unregistered from weaver.
+
+  Previously, the Finch provider would have remained as a Weaver provider despite the fact that it has been removed from
+  the stack.
+
+[2.0.5](https://github.com/bird-house/birdhouse-deploy/tree/2.0.5) (2024-01-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new incremental build for compatibility with upcoming Thredds v5
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/134 for more info.
+
+
+[2.0.4](https://github.com/bird-house/birdhouse-deploy/tree/2.0.4) (2024-01-18)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Allow users to log in to Jupyterhub with their email address
