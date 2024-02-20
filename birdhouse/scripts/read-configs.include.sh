@@ -58,13 +58,21 @@ discover_compose_dir() {
         fi
         export COMPOSE_DIR
     fi
+    # Perform last-chance validation in case 'COMPOSE_DIR' was incorrectly set explicitly
+    # and that 'read-configs.include.sh' was sourced directly from an invalid location.
+    if [ ! -f "${COMPOSE_DIR}/pavics-compose.sh" ]; then
+        echo \
+          "CRITICAL: [${COMPOSE_DIR}/pavics-compose.sh] not found," \
+          "please set variable 'COMPOSE_DIR' to a valid location." \
+          "Many features depend on this variable." 1>&2
+        return 2
+    fi
 }
 
 
-discover_compose_dir
-if [ -f "${COMPOSE_DIR}/scripts/logging.include.sh" ]; then
-    . "${COMPOSE_DIR}/scripts/logging.include.sh"
-fi
+# error out appropriately without closing shell according to 'sh <script>' or '. <script>' call
+discover_compose_dir || return $? 2>/dev/null || exit $?
+. "${COMPOSE_DIR}/scripts/logging.include.sh"
 log INFO "Resolved docker-compose directory: [${COMPOSE_DIR}]"
 
 
