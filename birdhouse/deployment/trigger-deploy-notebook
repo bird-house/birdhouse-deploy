@@ -12,6 +12,10 @@
 #
 # Logs to /var/log/PAVICS/notebookdeploy.log, re-use existing logrotate.
 
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
+
 LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
 exec >>$LOG_FILE 2>&1
 
@@ -20,24 +24,21 @@ cleanup_on_exit() {
     set +x
     echo "
 notebookdeploy finished START_TIME=$START_TIME
-notebookdeploy finished   END_TIME=`date -Isecond`"
+notebookdeploy finished   END_TIME=$(date -Isecond)"
 }
 
 trap cleanup_on_exit EXIT
 
-START_TIME="`date -Isecond`"
+START_TIME="$(date -Isecond)"
 echo "==========
 notebookdeploy START_TIME=$START_TIME"
 
 # running script manually (not with cron) source env.local file.
-if [ -z "$COMPOSE_DIR" ]; then
-    COMPOSE_DIR="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
-fi
-
-if [ -f "${COMPOSE_DIR}/scripts/read-configs.include.sh" ]; then
-    . "${COMPOSE_DIR}/scripts/read-configs.include.sh"
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
 
     # Get JUPYTERHUB_USER_DATA_DIR
+    # Get BASH_IMAGE
     read_configs
 fi
 
@@ -45,31 +46,31 @@ set -x
 
 NOTEBOOK_DIR_MNT="/notebook_dir"
 TUTORIAL_NOTEBOOKS_DIR="tutorial-notebooks"
-if [ -z "$WORKFLOW_TESTS_BRANCH" ]; then
+if [ -z "${WORKFLOW_TESTS_BRANCH}" ]; then
     # when testing, override this
     WORKFLOW_TESTS_BRANCH="master"
 fi
 
-if [ -z "$TMP_BASE_DIR" ]; then
+if [ -z "${TMP_BASE_DIR}" ]; then
     TMP_BASE_DIR="/tmp"
 fi
 
-TMPDIR="`mktemp -d -t notebookdeploy.XXXXXXXXXXXX -p $TMP_BASE_DIR`"
+TMPDIR="$(mktemp -d -t notebookdeploy.XXXXXXXXXXXX -p "${TMP_BASE_DIR}")"
 
-cd $TMPDIR
-mkdir $TUTORIAL_NOTEBOOKS_DIR
-cd $TUTORIAL_NOTEBOOKS_DIR
+cd "${TMPDIR}" || exit
+mkdir "${TUTORIAL_NOTEBOOKS_DIR}"
+cd "${TUTORIAL_NOTEBOOKS_DIR}" || exit
 
-wget --quiet https://raw.githubusercontent.com/Ouranosinc/PAVICS-e2e-workflow-tests/$WORKFLOW_TESTS_BRANCH/downloadrepos
+wget --quiet "https://raw.githubusercontent.com/Ouranosinc/PAVICS-e2e-workflow-tests/${WORKFLOW_TESTS_BRANCH}/downloadrepos"
 chmod a+x downloadrepos
 
-wget --quiet https://raw.githubusercontent.com/Ouranosinc/PAVICS-e2e-workflow-tests/$WORKFLOW_TESTS_BRANCH/default_build_params
+wget --quiet "https://raw.githubusercontent.com/Ouranosinc/PAVICS-e2e-workflow-tests/${WORKFLOW_TESTS_BRANCH}/default_build_params"
 
-wget --quiet https://raw.githubusercontent.com/Ouranosinc/PAVICS-e2e-workflow-tests/$WORKFLOW_TESTS_BRANCH/binder/reorg-notebooks
+wget --quiet "https://raw.githubusercontent.com/Ouranosinc/PAVICS-e2e-workflow-tests/${WORKFLOW_TESTS_BRANCH}/binder/reorg-notebooks"
 chmod a+x reorg-notebooks
 
 # same sequence as Binder, same layout as Binder
-wget --quiet --output-document - https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/archive/master.tar.gz | tar xz
+wget --quiet --output-document - "https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/archive/master.tar.gz" | tar xz
 ./downloadrepos
 ./reorg-notebooks
 mv -v PAVICS-e2e-workflow-tests-master/notebooks/*.ipynb ./
@@ -77,30 +78,30 @@ rm -rf PAVICS-e2e-workflow-tests-master
 rm -rf downloadrepos default_build_params reorg-notebooks
 
 TMP_SCRIPT="$TMPDIR/deploy-notebook"
-cat << __EOF__ > $TMP_SCRIPT
+cat << __EOF__ > "${TMP_SCRIPT}"
 #!/bin/sh -x
 
 if [ -n "\`ls -A /$TUTORIAL_NOTEBOOKS_DIR/\`" ]; then
-    cd $NOTEBOOK_DIR_MNT
-    rm -rf $TUTORIAL_NOTEBOOKS_DIR/*
-    if [ ! -d $TUTORIAL_NOTEBOOKS_DIR ]; then
-        mkdir $TUTORIAL_NOTEBOOKS_DIR
+    cd "${NOTEBOOK_DIR_MNT}"
+    rm -rf ${TUTORIAL_NOTEBOOKS_DIR}/*
+    if [ ! -d "${TUTORIAL_NOTEBOOKS_DIR}" ]; then
+        mkdir "${TUTORIAL_NOTEBOOKS_DIR}"
     fi
-    cp -rv /$TUTORIAL_NOTEBOOKS_DIR/* $TUTORIAL_NOTEBOOKS_DIR
+    cp -rv /${TUTORIAL_NOTEBOOKS_DIR}/* "${TUTORIAL_NOTEBOOKS_DIR}"
     # make read-only
-    chown -R root:root $TUTORIAL_NOTEBOOKS_DIR
+    chown -R root:root "${TUTORIAL_NOTEBOOKS_DIR}"
 fi
 __EOF__
-chmod a+x $TMP_SCRIPT
+chmod a+x "${TMP_SCRIPT}"
 
 docker run --rm \
   --name deploy_tutorial_notebooks \
   -u root \
-  -v $TMP_SCRIPT:/deploy-notebook:ro \
-  -v $TMPDIR/$TUTORIAL_NOTEBOOKS_DIR:/$TUTORIAL_NOTEBOOKS_DIR:ro \
-  -v "$JUPYTERHUB_USER_DATA_DIR":$NOTEBOOK_DIR_MNT:rw \
+  -v "${TMP_SCRIPT}":/deploy-notebook:ro \
+  -v "${TMPDIR}/${TUTORIAL_NOTEBOOKS_DIR}":"/${TUTORIAL_NOTEBOOKS_DIR}":ro \
+  -v "${JUPYTERHUB_USER_DATA_DIR}":"${NOTEBOOK_DIR_MNT}":rw \
   --entrypoint /deploy-notebook \
-  bash:5.1.4
+  "${BASH_IMAGE}"
 
 
 # vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4

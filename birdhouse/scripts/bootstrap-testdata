@@ -10,7 +10,7 @@
 # Need write-access to DATASET_ROOT (/data/datasets/).
 
 
-if [ -z "$DATASET_ROOT" ]; then
+if [ -z "${DATASET_ROOT}" ]; then
     DATASET_ROOT="${DATA_PERSIST_ROOT}/${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}"
 fi
 
@@ -31,14 +31,14 @@ cccma/CanESM2/historical/fx/atmos/r0i0p0/sftlf/sftlf_fx_CanESM2_historical_r0i0p
 testdata/xclim/NRCANdaily/nrcan_canada_daily_tasmin_1990.nc
 "
 
-cd "$DATASET_ROOT" || exit 1
+cd "${DATASET_ROOT}" || exit 1
 
-for afile in $FILE_LIST; do
-    if [ ! -f "$afile" ]; then
-        PARENT_DIRS="`dirname "$afile"`"
-        if [ ! -d "$PARENT_DIRS" ]; then
-            mkdir -p "$PARENT_DIRS"
+for afile in ${FILE_LIST}; do
+    if [ ! -f "${afile}" ]; then
+        PARENT_DIRS="$(dirname "${afile}")"
+        if [ ! -d "${PARENT_DIRS}" ]; then
+            mkdir -p "${PARENT_DIRS}"
         fi
-        curl "$FROM_SERVER/$afile" --output "$afile"
+        curl "${FROM_SERVER}/${afile}" --output "${afile}"
     fi
 done

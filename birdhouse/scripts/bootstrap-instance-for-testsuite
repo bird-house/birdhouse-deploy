@@ -10,20 +10,22 @@
 #
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
-THIS_DIR="$(dirname "$THIS_FILE")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
+SCRIPTS_DIR="${COMPOSE_DIR}/scripts"
 
 set -x
 # Populate test .nc file on Thredds.
 # Need to open temporary Thredds "testdata/secure/" on PAVICS production to anonymous group.
 # Need write-access to DATASET_ROOT (/data/datasets/).
-$THIS_DIR/bootstrap-testdata
+"${SCRIPTS_DIR}/bootstrap-testdata"
 
 if [ -n "$(docker ps --filter name=solr)" ]; then
   # Index Thredds catalog.
   # Need to open temporary Thredds "testdata/secure/" on local PAVICS host to anonymous group.
   # Only crawl the subset enough to pass canarie-api monitoring
   # see config/canarie-api/docker_configuration.py.template
-  $THIS_DIR/trigger-pavicscrawler target_files=birdhouse/testdata/flyingpigeon/cmip5
+  "${SCRIPTS_DIR}/trigger-pavicscrawler" target_files=birdhouse/testdata/flyingpigeon/cmip5
 
   # For crawler to complete, assuming minimal dataset from bootstrap-testdata so
   # should be super fast to finish crawling.
@@ -32,7 +34,7 @@ fi
 
 # Create test user.
 # Need "optional-components/secure-thredds" activated to pre-create group thredds-secure-authtest-group.
-$THIS_DIR/create-magpie-authtest-user
+"${SCRIPTS_DIR}/create-magpie-authtest-user"
 
-# Check if instance properly provisionned for testsuite.
-$THIS_DIR/check-instance-ready
+# Check if instance properly provisioned for testsuite.
+"${SCRIPTS_DIR}/check-instance-ready"

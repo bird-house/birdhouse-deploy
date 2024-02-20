@@ -1,11 +1,11 @@
 #!/bin/sh
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
-THIS_DIR="$(dirname "$THIS_FILE")"
-COMPOSE_DIR="$(dirname "$THIS_DIR")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
-if [ -f "${COMPOSE_DIR}/scripts/read-configs.include.sh" ]; then
-    . "${COMPOSE_DIR}/scripts/read-configs.include.sh"
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
 fi
 
 # eg: DB_NAME=finch
@@ -28,14 +28,19 @@ if [ -z "$POSTGRES_CONTAINER_NAME" ]; then
 fi
 
 set -x
-docker exec $POSTGRES_CONTAINER_NAME psql -U $POSTGRES_USER $DB_NAME -c "select * from pywps_requests where percent_done > -1 and percent_done < 100.0;"
+docker exec "${POSTGRES_CONTAINER_NAME}" psql \
+  -U "${POSTGRES_USER}" \
+  "${DB_NAME}" \
+  -c "select * from pywps_requests where percent_done > -1 and percent_done < 100.0;"
 
 set +x
 log WARN \
   "This will crash all the above requests if currently still processing.\n" \
   "Clear those jobs? (Ctrl-C to cancel, any keys to continue)"
-
-read a
+read -r
 
 set -x
-docker exec $POSTGRES_CONTAINER_NAME psql -U $POSTGRES_USER $DB_NAME -c "delete from pywps_requests where percent_done > -1 and percent_done < 100.0;"
+docker exec "${POSTGRES_CONTAINER_NAME}" psql \
+  -U "${POSTGRES_USER}" \
+  "${DB_NAME}" \
+  -c "delete from pywps_requests where percent_done > -1 and percent_done < 100.0;"

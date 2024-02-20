@@ -4,7 +4,7 @@
 # enabled components. These files will be served by the nginx proxy as static files.
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
-THIS_DIR="$(dirname "$THIS_FILE")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
 
 mkdir -p "${THIS_DIR}/static"
 

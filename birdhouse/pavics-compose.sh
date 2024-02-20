@@ -50,7 +50,7 @@ cd "$(dirname "$(readlink -f "$0" || realpath "$0")")" || exit 1
 # container and manually from the host.
 COMPOSE_DIR="$(pwd)"
 
-. "${COMPOSE_DIR}/scripts/read-configs.include.sh"
+. "${COMPOSE_DIR}/read-configs.include.sh"
 read_configs # this sets ALL_CONF_DIRS
 
 . "${COMPOSE_DIR}/scripts/get-components-json.include.sh"
@@ -75,15 +75,15 @@ then
 fi
 
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""
-for adir in $AUTODEPLOY_EXTRA_REPOS; do
+for adir in ${AUTODEPLOY_EXTRA_REPOS}; do
   # 4 spaces in front of '--volume' is important
-  AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES="$AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
+  AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES="${AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES}
     --volume ${adir}:${adir}:rw"
 done
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
-find $ALL_CONF_DIRS -name '*.template' 2>/dev/null |
+find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
   while read FILE
   do
     DEST=${FILE%.template}

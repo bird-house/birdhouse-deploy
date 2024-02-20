@@ -16,7 +16,7 @@
 #
 #  # Source the script providing function read_configs.
 #  # read_configs uses COMPOSE_DIR to find default.env and env.local.
-#  . ${COMPOSE_DIR}/scripts/read-configs.include.sh
+#  . ${COMPOSE_DIR}/read-configs.include.sh
 #
 #  # Call function read_configs to read the various config files in the
 #  # appropriate order and process delayed eval vars properly.
@@ -29,7 +29,7 @@
 # Caller of this file can simply set COMPOSE_DIR itself, this is the safest way.
 # WARNING: cannot use 'log' calls within this function until the following logging script gets resolved and sourced.
 discover_compose_dir() {
-    if [ -z "$COMPOSE_DIR" ] || [ ! -e "$COMPOSE_DIR" ]; then
+    if [ -z "${COMPOSE_DIR}" ] || [ ! -e "${COMPOSE_DIR}" ]; then
         if [ -f "./pavics-compose.sh" ]; then
             # Current dir is COMPOSE_DIR
             COMPOSE_DIR="$(realpath .)"
@@ -77,27 +77,27 @@ log INFO "Resolved docker-compose directory: [${COMPOSE_DIR}]"
 
 
 discover_env_local() {
-    if [ -z "$BIRDHOUSE_LOCAL_ENV" ]; then
-        BIRDHOUSE_LOCAL_ENV="$COMPOSE_DIR/env.local"
+    if [ -z "${BIRDHOUSE_LOCAL_ENV}" ]; then
+        BIRDHOUSE_LOCAL_ENV="${COMPOSE_DIR}/env.local"
     fi
 
     # env.local can be a symlink to the private config repo where the real
     # env.local file is source controlled.
     # Docker volume-mount will need the real dir of the file for symlink to
     # resolve inside the container.
-    BIRDHOUSE_LOCAL_ENV_REAL_PATH="$(realpath "$BIRDHOUSE_LOCAL_ENV")"
-    BIRDHOUSE_LOCAL_ENV_REAL_DIR="$(dirname "$BIRDHOUSE_LOCAL_ENV_REAL_PATH")"
+    BIRDHOUSE_LOCAL_ENV_REAL_PATH="$(realpath "${BIRDHOUSE_LOCAL_ENV}")"
+    BIRDHOUSE_LOCAL_ENV_REAL_DIR="$(dirname "${BIRDHOUSE_LOCAL_ENV}_REAL_PATH")"
 }
 
 
 read_default_env() {
-    if [ -e "$COMPOSE_DIR/default.env" ]; then
+    if [ -e "${COMPOSE_DIR}/default.env" ]; then
         # Ensure DELAYED_EVAL is properly initialized before being appended to.
         DELAYED_EVAL=''
 
-        . "$COMPOSE_DIR/default.env"
+        . "${COMPOSE_DIR}/default.env"
     else
-        log WARN "'$COMPOSE_DIR/default.env' not found" 1>&2
+        log WARN "'${COMPOSE_DIR}/default.env' not found" 1>&2
     fi
 }
 
@@ -107,17 +107,17 @@ read_env_local() {
 
     log INFO "Using local environment file at: ${BIRDHOUSE_LOCAL_ENV}"
 
-    if [ -e "$BIRDHOUSE_LOCAL_ENV" ]; then
+    if [ -e "${BIRDHOUSE_LOCAL_ENV}" ]; then
         saved_shell_options="$(set +o)"
         set +xv  # hide passwd in env.local in logs
 
-        . "$BIRDHOUSE_LOCAL_ENV"
+        . "${BIRDHOUSE_LOCAL_ENV}"
 
         # restore saved shell options
-        eval "$saved_shell_options"
+        eval "${saved_shell_options}"
 
     else
-        log WARN "'$BIRDHOUSE_LOCAL_ENV' not found" 1>&2
+        log WARN "'${BIRDHOUSE_LOCAL_ENV}' not found" 1>&2
     fi
 
 }
@@ -130,13 +130,13 @@ source_conf_files() {
   dirs=$1
   conf_locations=$2
   for adir in ${dirs}; do
-      if echo "$ALL_CONF_DIRS" | grep -qE "^\s*$adir\s*$"; then
+      if echo "${ALL_CONF_DIRS}" | grep -qE "^\s*${adir}\s*$"; then
           # ignore directories that are already in ALL_CONF_DIRS
           continue
       fi
       # push current adir onto the stack (this helps keep track of current adir when recursing)
-      _adir_stack="$_adir_stack\n$adir"
-      if [ ! -e "$adir" ]; then
+      _adir_stack="${_adir_stack}\n${adir}"
+      if [ ! -e "${adir}" ]; then
           # Do not exit to not break unattended autodeploy since no human around to
           # fix immediately.
           # The new adir with typo will not be active but at least all the existing
@@ -149,30 +149,30 @@ source_conf_files() {
           # corresponding PR are merged and old component names can be removed
           # after the corresponding PR are merge without any impact on the
           # autodeploy process.
-          log WARN "'$adir' in $conf_locations does not exist" 1>&2
+          log WARN "'${adir}' in ${conf_locations} does not exist" 1>&2
       fi
-      if [ -f "$adir/default.env" ]; then
+      if [ -f "${adir}/default.env" ]; then
           # Source config settings of dependencies first if they haven't been sourced previously.
           # Note that this will also define the order that docker-compose-extra.yml files will be loaded.
           unset COMPONENT_DEPENDENCIES
-          dependencies="$(. "$adir/default.env" && echo "$COMPONENT_DEPENDENCIES")"
-          if [ -n "$dependencies" ]; then
-            source_conf_files "$dependencies" "a dependency of $adir"
+          dependencies="$(. "${adir}/default.env" && echo "${COMPONENT_DEPENDENCIES}")"
+          if [ -n "${dependencies}" ]; then
+            source_conf_files "${dependencies}" "a dependency of ${adir}"
             # reset the adir variable in case it was changed in a recursive call
-            adir="$(printf '%b' "$_adir_stack" | tail -1)"
+            adir="$(printf '%b' "${_adir_stack}" | tail -1)"
           fi
-          log DEBUG "reading '$adir/default.env'"
-          . "$adir/default.env"
+          log DEBUG "reading '${adir}/default.env'"
+          . "${adir}/default.env"
       fi
-      if echo "$ALL_CONF_DIRS" | grep -qE "^\s*$adir\s*$"; then
+      if echo "${ALL_CONF_DIRS}" | grep -qE "^\s*${adir}\s*$"; then
           # check again in case a dependency has already added this to the ALL_CONF_DIRS variable
           continue
       fi
-      ALL_CONF_DIRS="$ALL_CONF_DIRS
-        $adir
+      ALL_CONF_DIRS="${ALL_CONF_DIRS}
+        ${adir}
       "
       # pop current adir from the stack once we're done with it
-      _adir_stack="$(printf '%b' "$_adir_stack" | sed '$d')"
+      _adir_stack="$(printf '%b' "${_adir_stack}" | sed '$d')"
   done
 }
 
@@ -180,16 +180,16 @@ read_components_default_env() {
     # EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS normally set by env.local so should read_env_local() first.
 
     # EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS relative paths are relative to COMPOSE_DIR.
-    if [ -d "$COMPOSE_DIR" ]; then
-        cd "$COMPOSE_DIR" >/dev/null
+    if [ -d "${COMPOSE_DIR}" ]; then
+        cd "${COMPOSE_DIR}" >/dev/null || true
     fi
 
-    source_conf_files "$DEFAULT_CONF_DIRS" 'DEFAULT_CONF_DIRS'
-    source_conf_files "$EXTRA_CONF_DIRS" 'EXTRA_CONF_DIRS'
+    source_conf_files "${DEFAULT_CONF_DIRS}" 'DEFAULT_CONF_DIRS'
+    source_conf_files "${EXTRA_CONF_DIRS}" 'EXTRA_CONF_DIRS'
 
     # Return to previous pwd.
-    if [ -d "$COMPOSE_DIR" ]; then
-        cd - >/dev/null
+    if [ -d "${COMPOSE_DIR}" ]; then
+        cd - >/dev/null || true
     fi
 }
 
@@ -258,7 +258,7 @@ check_required_vars() {
 process_delayed_eval() {
     ALREADY_EVALED=''
     for i in ${DELAYED_EVAL}; do
-        if echo "$ALREADY_EVALED" | grep -qE "^\s*$i\s*$"; then
+        if echo "${ALREADY_EVALED}" | grep -qE "^\s*$i\s*$"; then
           # only eval each variable once (in case it was added to the list multiple times)
           continue
         fi
@@ -267,7 +267,7 @@ process_delayed_eval() {
         eval 'export ${i}="${value}"'
         log DEBUG "delayed eval '$(env | grep -e "^${i}=")'"
         ALREADY_EVALED="
-          $ALREADY_EVALED
+          ${ALREADY_EVALED}
           $i"
     done
 }
@@ -287,33 +287,33 @@ process_delayed_eval() {
 create_compose_conf_list() {
   # ALL_CONF_DIRS relative paths are relative to COMPOSE_DIR.
   discover_compose_dir
-  if [ -d "$COMPOSE_DIR" ]; then
+  if [ -d "${COMPOSE_DIR}" ]; then
       log INFO "Found compose directory [${COMPOSE_DIR}]"
-      cd "$COMPOSE_DIR" || return
+      cd "${COMPOSE_DIR}" || return
   fi
 
   COMPOSE_CONF_LIST="-f docker-compose.yml"
   COMPONENT_OVERRIDES=''
   LOADED_COMPONENTS=''
-  for adir in $ALL_CONF_DIRS; do
-    service_name=$(basename "$adir")
+  for adir in ${ALL_CONF_DIRS}; do
+    service_name=$(basename "${adir}")
     LOADED_COMPONENTS="${LOADED_COMPONENTS}\n${service_name}"
 
-    if [ -f "$adir/docker-compose-extra.yml" ]; then
-      COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $adir/docker-compose-extra.yml"
+    if [ -f "${adir}/docker-compose-extra.yml" ]; then
+      COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f ${adir}/docker-compose-extra.yml"
     fi
 
     # If previously loaded components specified overrides for the component that was just loaded, load those overrides now
-    previous_overrides=$(printf '%b' "${COMPONENT_OVERRIDES}" | grep "^$service_name " | sed "s/^${service_name}//g" | tr '\n' ' ')
+    previous_overrides=$(printf '%b' "${COMPONENT_OVERRIDES}" | grep "^${service_name} " | sed "s/^${service_name}//g" | tr '\n' ' ')
     COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} ${previous_overrides}"
     # Load overrides for other components unless the component to be overridden hasn't been loaded yet. If the component
     # hasn't been loaded yet, store a reference to it so that it can be added in as soon as the component is loaded.
-    for conf_dir in "$adir"/config/*; do
-      override_service_name=$(basename "$conf_dir")
-      extra_compose="$conf_dir/docker-compose-extra.yml"
-      if [ -f "$extra_compose" ]; then
-        if printf '%b' "${LOADED_COMPONENTS}" | grep -q "^$override_service_name$"; then
-          COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f $extra_compose"
+    for conf_dir in "${adir}"/config/*; do
+      override_service_name=$(basename "${conf_dir}")
+      extra_compose="${conf_dir}/docker-compose-extra.yml"
+      if [ -f "${extra_compose}" ]; then
+        if printf '%b' "${LOADED_COMPONENTS}" | grep -q "^${override_service_name}$"; then
+          COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f ${extra_compose}"
         else
           COMPONENT_OVERRIDES="${COMPONENT_OVERRIDES}\n${override_service_name} -f ${extra_compose}"
         fi
@@ -322,7 +322,7 @@ create_compose_conf_list() {
   done
 
     # Return to previous pwd.
-  if [ -d "$COMPOSE_DIR" ]; then
+  if [ -d "${COMPOSE_DIR}" ]; then
       log INFO "Moving to [${COMPOSE_DIR}]"
       cd - >/dev/null || return
   fi

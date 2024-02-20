@@ -23,7 +23,8 @@
     respective messages to report logging messages in a standard approach.
     Colors can be disabled with `BIRDHOUSE_COLOR=0` and logging level can be set with `BIRDHOUSE_LOG_LEVEL={LEVEL}`
     where all levels above or equal to the configured one will be displayed (default logging level is `INFO`).
-  * Move `read-configs.include.sh` into `birdhouse/scripts` along other include scripts.
+  * Unify all `birdhouse/scripts` utilities to employ the same `COMPOSE_DIR` variable (auto-resolved or explicitly set)
+    in order to include or source any relevant dependencies they might have within the `birdhouse-deploy` repository.
   * Add `info` option (ie: `pavics-compose.sh info`) that will stop processing just before `docker-compose` call.
     This can be used to perform a "dry-run" of the command and validate that was is loaded is as expected, by inspecting
     provided log messages.

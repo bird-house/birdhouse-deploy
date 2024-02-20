@@ -38,25 +38,26 @@
 # localized (only the directories we need) solution.
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
-THIS_DIR="$(dirname "$THIS_FILE")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
-# Go to repo root.
-cd $THIS_DIR/../..
-
-. birdhouse/scripts/read-configs.include.sh
+. "${COMPOSE_DIR}/read-configs.include.sh"
 
 # Get GEOSERVER_DATA_DIR, JUPYTERHUB_USER_DATA_DIR, MAGPIE_PERSIST_DIR
 read_configs
 
-DEFAULT_EXTRA_DATA_DIR="$GEOSERVER_DATA_DIR/ $JUPYTERHUB_USER_DATA_DIR/ \
-    $MAGPIE_PERSIST_DIR/"
+DEFAULT_EXTRA_DATA_DIR="
+    ${GEOSERVER_DATA_DIR}/
+    ${JUPYTERHUB_USER_DATA_DIR}/ \
+    ${MAGPIE_PERSIST_DIR}/ \
+"
 
 EXTRA_DATA_DIR=""
 if [ -n "$FIX_WRITE_PERM_EXTRA" ]; then
-    EXTRA_DATA_DIR="$DEFAULT_EXTRA_DATA_DIR"
+    EXTRA_DATA_DIR="${DEFAULT_EXTRA_DATA_DIR}"
 fi
 
 set -x
 
-sudo setfacl -Rdm u:$USER:rwX $PWD $AUTODEPLOY_EXTRA_REPOS $EXTRA_DATA_DIR "$@"  # for future files
-sudo setfacl -Rm u:$USER:rwX $PWD $AUTODEPLOY_EXTRA_REPOS $EXTRA_DATA_DIR "$@"  # for existing files
+sudo setfacl -Rdm "u:${USER}:rwX" "${PWD}" ${AUTODEPLOY_EXTRA_REPOS} ${EXTRA_DATA_DIR} "$@"  # for future files
+sudo setfacl -Rm "u:${USER}:rwX" "${PWD}" ${AUTODEPLOY_EXTRA_REPOS} ${EXTRA_DATA_DIR} "$@"  # for existing files
