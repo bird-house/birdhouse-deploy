@@ -27,6 +27,7 @@ VARS='
 #   when the value provided explicitly, it will be used instead of guessing it by inferred values from other variables
 OPTIONAL_VARS='
   $PAVICS_FQDN_PUBLIC
+  $SSL_CERTIFICATE
   $EXTRA_PYWPS_CONFIG
   $SERVER_NAME
   $SERVER_DESCRIPTION
