@@ -26,7 +26,7 @@ def run_in_compose_dir(root_dir):
 
 @pytest.fixture(scope="module")
 def read_config_include_file(root_dir) -> str:
-    return os.path.join(root_dir, "birdhouse", "scripts", "read-configs.include.sh")
+    return os.path.join(root_dir, "birdhouse", "read-configs.include.sh")
 
 
 def set_local_env(env_file: io.FileIO, content: Union[str, dict]) -> None:
