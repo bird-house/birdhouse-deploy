@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- logging: decrease logging level for empty optional vars from WARN to DEBUG
+
+  To avoid drowing real WARN messages.  Many optional vars can be valid if empty.
+
 
 [2.1.0](https://github.com/bird-house/birdhouse-deploy/tree/2.1.0) (2024-02-23)
 ------------------------------------------------------------------------------------------------------------------
