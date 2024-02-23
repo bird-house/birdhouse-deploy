@@ -109,25 +109,25 @@ SERVICES = {
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '2.0.6',
-            'releaseTime': '2024-02-15T16:29:01Z',
-            'institution': 'Ouranos',
-            'researchSubject': 'Climatology',
+            'version': '2.1.0',
+            'releaseTime': '2024-02-23T20:32:41Z',
+            'institution': '${SERVER_INSTITUTION}',
+            'researchSubject': '${SERVER_SUBJECT}',
             'supportEmail': '${SUPPORT_EMAIL}',
             'category': 'Resource/Cloud Management',
-            'tags': ['Climatology']
+            'tags': [tag.strip() for tag in "${SERVER_TAGS}".split(",") if tag.strip()],
         },
         'stats': {
             'method': '.*',
             'route': '(?!)'  # this will be set by CANARIE_STATS_ROUTES (see below)
         },
         'redirect': {
-            'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
-            'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/blob/master/CHANGES.md',
-            'support': 'https://github.com/bird-house/birdhouse-deploy/issues',
+            'doc': '${SERVER_DOCUMENTATION_URL}',
+            'releasenotes': '${SERVER_RELEASE_NOTES_URL}',
+            'support': '${SERVER_SUPPORT_URL}',
             'source': 'https://github.com/bird-house/birdhouse-deploy',
             'tryme': 'https://${PAVICS_FQDN_PUBLIC}',
-            'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
+            'licence': '${SERVER_LICENSE_URL}',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
         },
         'monitoring': {}  # filled in after processing everything, see end of script
@@ -142,12 +142,12 @@ PLATFORMS = {
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '2.0.6',
-            'releaseTime': '2024-02-15T16:29:01Z',
-            'institution': 'Ouranos',
-            'researchSubject': 'Climatology',
+            'version': '2.1.0',
+            'releaseTime': '2024-02-23T20:32:41Z',
+            'institution': '${SERVER_INSTITUTION}',
+            'researchSubject': '${SERVER_SUBJECT}',
             'supportEmail': '${SUPPORT_EMAIL}',
-            'tags': ['Climatology', 'Cloud']
+            'tags': [tag.strip() for tag in "${SERVER_TAGS}".split(",") if tag.strip()],
         },
         'stats': {
             'method': '.*',

@@ -148,7 +148,7 @@ instructions below.
 Manual instructions:
 
 * Go to
-  ``https://<PAVICS_FQDN>/magpie/ui/login`` and login with the ``admin`` user. The password should be in ``env.local``.
+  ``https://<PAVICS_FQDN>/magpie/ui/login`` and login with the ``MAGPIE_ADMIN_USERNAME`` user. The password should be in ``env.local``.
 
 * Then go to ``https://<PAVICS_FQDN>/magpie/ui/users/add``.
 
