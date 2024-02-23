@@ -3,6 +3,7 @@ import os
 import tempfile
 import pytest
 import subprocess
+from typing import Union
 
 ENV_SPLIT_STR: str = "#env for testing#"
 
@@ -28,7 +29,7 @@ def read_config_include_file(root_dir) -> str:
     return os.path.join(root_dir, "birdhouse", "read-configs.include.sh")
 
 
-def set_local_env(env_file: io.FileIO, content: str | dict) -> None:
+def set_local_env(env_file: io.FileIO, content: Union[str, dict]) -> None:
     env_file.truncate()
     if isinstance(content, dict):
         env_file.write("\n".join(f"{k}={v}" for k, v in content.items()))
@@ -82,7 +83,7 @@ class TestReadConfigs:
     ]
 
     def run_func(
-            self, include_file: str, local_env: str | dict, command_suffix: str = ""
+            self, include_file: str, local_env: Union[str, dict], command_suffix: str = ""
     ) -> subprocess.CompletedProcess:
         try:
             with tempfile.NamedTemporaryFile(delete=False, mode="w") as f:
@@ -181,6 +182,12 @@ class TestReadConfigs:
         # If PAVICS_FQDN_PUBLIC is set in env.local, that value should be effective.
         assert (split_and_strip(get_command_stdout(proc))[-1] ==
                 "public.example.com - /my-data-root/jupyterhub_user_data - /my-geoserver-data")
+
+    def test_delayed_eval_quoting(self, read_config_include_file) -> None:
+        """Test that the delayed evaluation functions resolve quotation marks and braces properly"""
+        extra = {"EXTRA_TEST_VAR": "\"{'123'}\"", "DELAYED_EVAL": "$DELAYED_EVAL EXTRA_TEST_VAR"}
+        proc = self.run_func(read_config_include_file, extra, 'echo "${EXTRA_TEST_VAR}"')
+        assert split_and_strip(get_command_stdout(proc))[-1] == "{'123'}"
 
 
 class TestCreateComposeConfList:

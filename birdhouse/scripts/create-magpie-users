@@ -65,15 +65,12 @@
 # bogus03      bvNWVWCQi8M6     409 : User name matches an already existing user name.
 #
 
-RED=$(tput setaf 1)
-NORMAL=$(tput sgr0)
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
-THIS_FILE="`realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
-COMPOSE_DIR="`dirname "$THIS_DIR"`"
-
-if [ -f "$COMPOSE_DIR/read-configs.include.sh" ]; then
-    . "$COMPOSE_DIR/read-configs.include.sh"
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
 
     # Get MAGPIE_VERSION, PAVICS_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
     read_configs
@@ -105,7 +102,7 @@ fi
 if [ -z "$MAGPIE_CLI_IMAGE" ]; then
     # MAGPIE_VERSION must be provided by 'default.env', 'env.local' or directly
     if [ -z "${MAGPIE_VERSION}" ]; then
-        echo "${RED}Error${NORMAL}: Required MAGPIE_VERSION is undefined or empty."
+        log ERROR "Required MAGPIE_VERSION is undefined or empty."
         exit 1
     fi
     MAGPIE_CLI_IMAGE="pavics/magpie:${MAGPIE_VERSION}"

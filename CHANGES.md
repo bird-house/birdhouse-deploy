@@ -22,6 +22,47 @@
   Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.4.
 
 
+[2.1.0](https://github.com/bird-house/birdhouse-deploy/tree/2.1.0) (2024-02-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Compose script utilities:
+  * Add `BIRDHOUSE_COLOR` option and various logging/messaging definitions in `birdhouse/scripts/logging.include.sh`.
+  * Replace all explicit color "logging" related `echo` in scripts by a utility `log {LEVEL} {message}` function
+    that employs variables `LOG_DEBUG`, `LOG_INFO`, `LOG_WARN`, `LOG_ERROR` and `LOG_CRITICAL` as applicable per
+    respective messages to report logging messages in a standard approach.
+    Colors can be disabled with `BIRDHOUSE_COLOR=0` and logging level can be set with `BIRDHOUSE_LOG_LEVEL={LEVEL}`
+    where all levels above or equal to the configured one will be displayed (default logging level is `INFO`).
+  * Unify all `birdhouse/scripts` utilities to employ the same `COMPOSE_DIR` variable (auto-resolved or explicitly set)
+    in order to include or source any relevant dependencies they might have within the `birdhouse-deploy` repository.
+  * Add `info` option (ie: `pavics-compose.sh info`) that will stop processing just before `docker-compose` call.
+    This can be used to perform a "dry-run" of the command and validate that was is loaded is as expected, by inspecting
+    provided log messages.
+  * Replace older backtick (``` ` ```) executions by `$(...)` representation except for `eval` calls that require
+    them for backward compatibility of `sh` on some server instances.
+  * Modify the `sh -x` calls to scripts listed in `COMPONENT_PRE_COMPOSE_UP` and `COMPONENT_POST_COMPOSE_UP` to employ
+    the `-x` flag (showing commands) only when `BIRDHOUSE_LOG_LEVEL=DEBUG`.
+
+- Defaults:
+  * Add multiple `SERVER_[...]` variables with defaults using previously hard coded values referring to PAVICS.
+    These variables use a special combination of `DELAYED_EVAL` and `OPTIONAL_VARS` definitions that can make use
+    of a variable formatted as `<ANY_NAME>='${__DEFAULT__<ANY_NAME>}'` that will print a warning messages indicating
+    that the default is employed, although *STRONGLY* recommended to be overridden. This allows a middle ground between
+    backward-compatible `env.local` while flagging potentially misused configurations.
+
+## Fixes
+- Canarie-API: updated references
+  * Use the new `SERVER_[...]` variables.
+  * Replace the LICENSE URL of the server node pointing
+    at [Ouranosinc/pavics-sdi](https://github.com/Ouranosinc/pavics-sdi) instead
+    of intended [bird-house/birdhouse-deploy](https://github.com/bird-house/birdhouse-deploy).
+- Magpie: ensure that the `MAGPIE_ADMIN_USERNAME` variable is respected
+  * When determining the `JUPYTERHUB_ADMIN_USERS` variable
+  * Double check that it is being respected everywhere else
+- env.local.example: fix `JUPYTERHUB_CONFIG_OVERRIDE` comment section
+
+  `JUPYTERHUB_CONFIG_OVERRIDE` was disconnected from its sample code.
+
 [2.0.6](https://github.com/bird-house/birdhouse-deploy/tree/2.0.6) (2024-02-15)
 ------------------------------------------------------------------------------------------------------------------
 

@@ -4,16 +4,16 @@
 # location JUPYTERHUB_USER_DATA_DIR/PUBLIC_USERNAME.
 #
 
-THIS_FILE="`realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
-COMPOSE_DIR="`dirname "$THIS_DIR"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
-. "$COMPOSE_DIR/read-configs.include.sh"
+. "${COMPOSE_DIR}/read-configs.include.sh"
 
 # Get JUPYTERHUB_USER_DATA_DIR
 read_configs
 
-PUBLIC_USERNAME="$JUPYTER_DEMO_USER"
+PUBLIC_USERNAME="${JUPYTER_DEMO_USER}"
 
 BASE_CMD="docker run -it --rm --name migrate_jupyterhub_user_persistence \
     -u root \
@@ -23,10 +23,10 @@ BASE_CMD="docker run -it --rm --name migrate_jupyterhub_user_persistence \
 
 set -x
 
-$BASE_CMD bash -c "mkdir -p $JUPYTERHUB_USER_DATA_DIR/$PUBLIC_USERNAME \
-    && cp -r /jpuser/* $JUPYTERHUB_USER_DATA_DIR/$PUBLIC_USERNAME/ \
-    && rm -rf $JUPYTERHUB_USER_DATA_DIR/$PUBLIC_USERNAME/tutorial-notebooks \
-    && touch $JUPYTERHUB_USER_DATA_DIR/tutorial-notebooks \
-    && rm $JUPYTERHUB_USER_DATA_DIR/$PUBLIC_USERNAME/README.ipynb \
-    && touch $JUPYTERHUB_USER_DATA_DIR/README.ipynb \
-    && chown -R 1000:1000 $JUPYTERHUB_USER_DATA_DIR/$PUBLIC_USERNAME"
+$BASE_CMD bash -c "mkdir -p ${JUPYTERHUB_USER_DATA_DIR}/${PUBLIC_USERNAME} \
+    && cp -r /jpuser/* ${JUPYTERHUB_USER_DATA_DIR}/${PUBLIC_USERNAME}/ \
+    && rm -rf ${JUPYTERHUB_USER_DATA_DIR}/${PUBLIC_USERNAME}/tutorial-notebooks \
+    && touch ${JUPYTERHUB_USER_DATA_DIR}/tutorial-notebooks \
+    && rm ${JUPYTERHUB_USER_DATA_DIR}/${PUBLIC_USERNAME}/README.ipynb \
+    && touch ${JUPYTERHUB_USER_DATA_DIR}/README.ipynb \
+    && chown -R 1000:1000 ${JUPYTERHUB_USER_DATA_DIR}/${PUBLIC_USERNAME}"
