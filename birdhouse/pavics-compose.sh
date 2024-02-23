@@ -105,7 +105,10 @@ if [ x"$1" = x"info" ]; then
   exit 0
 fi
 
+COMPOSE_EXTRA_OPTS=""
+
 if [ x"$1" = x"up" ]; then
+  COMPOSE_EXTRA_OPTS="${COMPOSE_UP_EXTRA_OPTS}"
   for adir in $ALL_CONF_DIRS; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
     if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
@@ -116,7 +119,7 @@ if [ x"$1" = x"up" ]; then
 fi
 
 # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} $*
+PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} ${COMPOSE_EXTRA_OPTS} $*
 ERR=$?
 
 # execute post-compose function if exists and no error occurred
