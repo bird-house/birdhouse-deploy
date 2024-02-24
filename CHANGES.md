@@ -19,7 +19,7 @@
 
 - logging: decrease logging level for empty optional vars from WARN to DEBUG
 
-  To avoid drowing real WARN messages.  Many optional vars can be valid if empty.
+  To avoid drowning real WARN messages.  Many optional vars can be valid if empty.
 
 - compose script: allow to pass extra options to `up` operation
 
