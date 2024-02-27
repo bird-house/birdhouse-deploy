@@ -21,6 +21,11 @@
 
   To avoid drowning real WARN messages.  Many optional vars can be valid if empty.
 
+- config: add sample config to configure docker-compose to remove orphans
+
+  To remove orphans containers when components are disabled.  Also link to full
+  documentations if other env var can be used.
+
 
 [2.1.0](https://github.com/bird-house/birdhouse-deploy/tree/2.1.0) (2024-02-23)
 ------------------------------------------------------------------------------------------------------------------
