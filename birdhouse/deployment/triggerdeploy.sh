@@ -19,8 +19,8 @@
 #
 # Sample <repo_root>/autodeploy/conditional-trigger content:
 # ====================
-# if [ -n "`echo "$GIT_CHANGED_FILES" | grep pavics-config/`" ]; then
-#     # Only changes under pavics-config/ will need to trigger autodeploy.
+# if [ -n "`echo "$GIT_CHANGED_FILES" | grep birdhouse-config/`" ]; then
+#     # Only changes under birdhouse-config/ will need to trigger autodeploy.
 #     echo "trigger autodeploy"
 #     exit 0
 # else
@@ -34,7 +34,7 @@
 #   Follow same instructions in deploy.sh.
 
 if [ ! -z "$AUTODEPLOY_SILENT" ]; then
-    LOG_FILE="/var/log/PAVICS/autodeploy.log"
+    LOG_FILE="/var/log/birdhouse/autodeploy.log"
     exec >>$LOG_FILE 2>&1
 fi
 

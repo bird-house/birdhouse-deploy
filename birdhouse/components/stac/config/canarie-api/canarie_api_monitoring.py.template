@@ -19,7 +19,7 @@ SERVICES['STAC'] = {
         'releasenotes': 'https://github.com/crim-ca/sac-app/blob/master/CHANGES.rst',
         'support': 'https://github.com/crim-ca/stac-app/issues',
         'source': 'https://github.com/crim-ca/stac-app',
-        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/stac/',
+        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/stac/',
         'licence': 'https://github.com/crim-ca/stac-app/blob/master/LICENSE',
         'provenance': 'https://github.com/crim-ca/stac-app'
     },

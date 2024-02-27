@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to automate local deployment process.
 #
-# Log to "/var/log/PAVICS/autodeploy.log" if AUTODEPLOY_SILENT is not empty.
+# Log to "/var/log/birdhouse/autodeploy.log" if AUTODEPLOY_SILENT is not empty.
 #
 # Still have to ssh to target machine but at least this single script
 # takes care of all the common steps for a standard deployment (see corner
@@ -54,7 +54,7 @@
 #   docker-compose.yml file.
 
 if [ ! -z "${AUTODEPLOY_SILENT}" ]; then
-    LOG_FILE="/var/log/PAVICS/autodeploy.log"
+    LOG_FILE="/var/log/birdhouse/autodeploy.log"
     exec >> "${LOG_FILE}" 2>&1
 fi
 
@@ -66,7 +66,7 @@ COMPOSE_DIR="$1"
 ENV_LOCAL_FILE="$2"
 
 if [ -z "${COMPOSE_DIR}" ]; then
-    echo "ERROR: please provide path to PAVICS docker-compose dir." 1>&2
+    echo "ERROR: please provide path to Birdhouse docker-compose dir." 1>&2
     usage
     exit 2
 else

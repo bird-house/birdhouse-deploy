@@ -2,14 +2,14 @@
 # Ensure this combinabion of "hostname.domain" name really exist on the DNS of
 # the network you are bridging onto.
 #
-# "hostname.domain" will be used as PAVICS_FQDN in env.local file.
+# "hostname.domain" will be used as BIRDHOUSE_FQDN in env.local file.
 #
 # If this combinabion of "hostname.domain" name do not exist on the DNS, use
 # the override mechanism https://docs.docker.com/compose/extends/ to add the
 # extra DNS entry and also set it manually in your
 # /etc/hosts file.
-hostname: mypavics
-domain: ouranos.ca
+hostname: mybirdhouse
+domain: example.ca
 
 # Set network bridge, else you'll simply be prompted on vagrant up.
 # network_bridge: enp0s25
@@ -35,11 +35,11 @@ domain: ouranos.ca
 
 # If you want to provide a SSL certificate yourself, name it
 # '/home/vagrant/certkey.pem' and it won't be overriden, see
-# vagrant-utils/configure-pavics.sh.  Otherwise one
+# vagrant-utils/configure-birdhouse.sh.  Otherwise one
 # will be generated automatically for you.
 
 # If you want to provide an env.local yourself, just create it and it won't be
-# overriden, see vagrant-utils/configure-pavics.sh for what values vagrant
+# overriden, see vagrant-utils/configure-birdhouse.sh for what values vagrant
 # expects and try to match it.  Otherwise one will be generated automatically
 # for you from the default values in env.local.example.
 

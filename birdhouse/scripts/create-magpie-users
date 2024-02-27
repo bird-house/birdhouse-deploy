@@ -4,7 +4,7 @@
 # /tmp/create_magpie_users/config.yml (configurable using MAGPIE_CLI_CONF env
 # var).
 #
-# Should run from checkout on same host running PAVICS to have access to
+# Should run from checkout on same host running Birdhouse to have access to
 # env.local file for Magpie credentials.  Else these can be provided via
 # environment variables.
 #
@@ -72,7 +72,7 @@ COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
     . "${COMPOSE_DIR}/read-configs.include.sh"
 
-    # Get MAGPIE_VERSION, PAVICS_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
+    # Get MAGPIE_VERSION, BIRDHOUSE_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
     read_configs
 fi
 
@@ -80,7 +80,7 @@ fi
 # Allow override using same name env var.
 
 if [ -z "$MAGPIE_SERVER_URL" ]; then
-    MAGPIE_SERVER_URL="https://$PAVICS_FQDN/magpie"
+    MAGPIE_SERVER_URL="https://$BIRDHOUSE_FQDN/magpie"
 fi
 
 if [ -z "$MAGPIE_CLI_USER" ]; then

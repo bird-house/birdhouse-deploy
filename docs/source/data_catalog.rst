@@ -1,10 +1,10 @@
 Data Catalog 
 ============
 
-Pavics bundles a number of cataloguing services that allow you to search 
+Birdhouse bundles a number of cataloguing services that allow you to search
 for data and add data to the catalog. 
 
-PAVICS Catalogue Search
+Birdhouse Catalogue Search
 -----------------------
 +--------------+---------------------------------------------------------------------+
 | |deprecated| | this is no longer maintained and may be removed in a future version |

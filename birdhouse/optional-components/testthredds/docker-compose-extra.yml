@@ -8,7 +8,7 @@ services:
     environment:
       # for reconstructing proper URL back to user when Thredds behind proxy
       # because Twitcher eats the "Host" http header set by Nginx
-      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+      BIRDHOUSE_FQDN_PUBLIC: $BIRDHOUSE_FQDN_PUBLIC
       WANTED_CONTEXT_ROOT: $TESTTHREDDS_CONTEXT_ROOT
       WANTED_CONTEXT_ROOT_WARFILE_NAME: $TESTTHREDDS_WARFILE_NAME
     volumes:

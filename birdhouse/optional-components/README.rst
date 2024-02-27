@@ -8,7 +8,7 @@ Optional components
 Monitor all components in CANARIE node, both public and internal url
 --------------------------------------------------------------------
 
-So that the url ``https://<PAVICS_FQDN>/canarie/node/service/stats`` also return
+So that the url ``https://<BIRDHOUSE_FQDN>/canarie/node/service/stats`` also return
 what the end user really see (a component might work but is not accessible to
 the end user).
 
@@ -41,9 +41,9 @@ How to enable Emu in ``env.local`` (a copy from env.local.example_
   Default values are in `optional-components/emu/default.env <emu/default.env>`_
   (:download:`download </birdhouse/optional-components/emu/default.env>`).
 
-Emu service will be available at ``http://PAVICS_FQDN:EMU_PORT/wps`` or
-``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/EMU_NAME`` where
-``PAVICS_FQDN``\ , ``PAVICS_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
+Emu service will be available at ``http://BIRDHOUSE_FQDN:EMU_PORT/wps`` or
+``https://BIRDHOUSE_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/EMU_NAME`` where
+``BIRDHOUSE_FQDN``\ , ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
 in your ``env.local``.
 
 Magpie will be automatically configured to give complete public anonymous
@@ -66,9 +66,9 @@ How to enable in ``env.local`` (a copy from env.local.example_ (:download:`downl
   customizations.  Default values are in: `optional-components/testthredds/default.env <testthredds/default.env>`_ (:download:`download </birdhouse/optional-components/testthredds/default.env>`).
 
 Test THREDDS service will be available at
-``http://PAVICS_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT`` or
-``https://PAVICS_FQDN_PUBLIC/TESTTHREDDS_CONTEXT_ROOT`` where ``PAVICS_FQDN`` and
-``PAVICS_FQDN_PUBLIC`` are defined in your ``env.local``.
+``http://BIRDHOUSE_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT`` or
+``https://BIRDHOUSE_FQDN_PUBLIC/TESTTHREDDS_CONTEXT_ROOT`` where ``BIRDHOUSE_FQDN`` and
+``BIRDHOUSE_FQDN_PUBLIC`` are defined in your ``env.local``.
 
 Use same docker image as regular THREDDS by default but can be customized.
 
@@ -105,9 +105,9 @@ How to enable in ``env.local`` (a copy from env.local.example_ (:download:`downl
   Default values are in `optional-components/generic_bird/default.env <generic_bird/default.env>`_
   (:download:`download </birdhouse/optional-components/generic_bird/default.env>`).
 
-The WPS service will be available at ``http://PAVICS_FQDN:GENERIC_BIRD_PORT/wps``
-or ``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME`` where
-``PAVICS_FQDN``\ , ``PAVICS_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
+The WPS service will be available at ``http://BIRDHOUSE_FQDN:GENERIC_BIRD_PORT/wps``
+or ``https://BIRDHOUSE_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME`` where
+``BIRDHOUSE_FQDN``\ , ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
 in your ``env.local``.
 
 Use same docker image as regular Finch by default but can be customized.
@@ -349,7 +349,7 @@ To enable this optional-component:
 Provide a proxy for local STAC asset hosting
 --------------------------------------------------------
 
-STAC data proxy allows to host the URL location defined by ``PAVICS_FQDN_PUBLIC`` and ``STAC_DATA_PROXY_URL_PATH``
+STAC data proxy allows to host the URL location defined by ``BIRDHOUSE_FQDN_PUBLIC`` and ``STAC_DATA_PROXY_URL_PATH``
 to provide access to files contained within ``STAC_DATA_PROXY_DIR_PATH``.
 
 The ``STAC_DATA_PROXY_DIR_PATH`` location can be used to hold STAC Assets defined by the current server node

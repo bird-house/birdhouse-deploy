@@ -16,7 +16,7 @@ c.JupyterHub.hub_ip = 'jupyterhub'
 
 c.JupyterHub.authenticator_class = 'jupyterhub_magpie_authenticator.MagpieAuthenticator'
 c.MagpieAuthenticator.magpie_url = "http://magpie:2001"
-c.MagpieAuthenticator.public_fqdn = "${PAVICS_FQDN_PUBLIC}"
+c.MagpieAuthenticator.public_fqdn = "${BIRDHOUSE_FQDN_PUBLIC}"
 c.MagpieAuthenticator.authorization_url = "${JUPYTERHUB_AUTHENTICATOR_AUTHORIZATION_URL}"
 
 if os.getenv("JUPYTERHUB_CRYPT_KEY"):
@@ -107,10 +107,10 @@ c.DockerSpawner.environment = {
     # Post on Panel forum:
     # https://discourse.holoviz.org/t/how-to-customize-the-display-url-from-panel-serve-for-use-behind-jupyterhub-with-jupyter-server-proxy/3571
     # Issue about Panel Preview: https://github.com/holoviz/panel/issues/3440
-    "PAVICS_HOST_URL": "https://${PAVICS_FQDN_PUBLIC}",
+    "BIRDHOUSE_HOST_URL": "https://${BIRDHOUSE_FQDN_PUBLIC}",
     # https://docs.dask.org/en/stable/configuration.html
     # https://jupyterhub-on-hadoop.readthedocs.io/en/latest/dask.html
-    "DASK_DISTRIBUTED__DASHBOARD__LINK": "https://${PAVICS_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
+    "DASK_DISTRIBUTED__DASHBOARD__LINK": "https://${BIRDHOUSE_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
 }
 
 host_user_data_dir = join(os.environ['WORKSPACE_DIR'], "{username}")

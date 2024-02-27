@@ -4,7 +4,7 @@
 # Will deploy:
 #
 # * logrotate config for various automation scripts output
-#   (/etc/logrotate.d/PAVICS-deploy)
+#   (/etc/logrotate.d/birdhouse-deploy)
 #
 
 usage() {

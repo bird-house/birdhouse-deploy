@@ -158,28 +158,28 @@ class TestReadConfigs:
     @pytest.mark.usefixtures("run_in_compose_dir")
     def test_delayed_eval_default_value(self, read_config_include_file) -> None:
         """Test delayed eval when value not set in env.local"""
-        extra = {"PAVICS_FQDN": '"fqdn.example.com"',
+        extra = {"BIRDHOUSE_FQDN": '"fqdn.example.com"',
                  "EXTRA_CONF_DIRS": '"./components/jupyterhub ./components/geoserver"'}
         proc = self.run_func(read_config_include_file, extra,
-                             'echo "$PAVICS_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"')
+                             'echo "$BIRDHOUSE_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"')
         print(proc.stdout)  # useful for debugging when assert fail
-        # By default, PAVICS_FQDN_PUBLIC has same value as PAVICS_FQDN.
+        # By default, BIRDHOUSE_FQDN_PUBLIC has same value as BIRDHOUSE_FQDN.
         assert (split_and_strip(get_command_stdout(proc))[-1] ==
                 "fqdn.example.com - /data/jupyterhub_user_data - /data/geoserver")
 
     @pytest.mark.usefixtures("run_in_compose_dir")
     def test_delayed_eval_custom_value(self, read_config_include_file) -> None:
         """Test delayed eval when value is set in env.local"""
-        extra = {"PAVICS_FQDN": '"fqdn.example.com"',
-                 "PAVICS_FQDN_PUBLIC": '"public.example.com"',
+        extra = {"BIRDHOUSE_FQDN": '"fqdn.example.com"',
+                 "BIRDHOUSE_FQDN_PUBLIC": '"public.example.com"',
                  "EXTRA_CONF_DIRS": '"./components/jupyterhub ./components/geoserver"',
                  "DATA_PERSIST_ROOT": '"/my-data-root"',  # indirectly change JUPYTERHUB_USER_DATA_DIR
                  "GEOSERVER_DATA_DIR": '"/my-geoserver-data"',
                  }
         proc = self.run_func(read_config_include_file, extra,
-                             'echo "$PAVICS_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"')
+                             'echo "$BIRDHOUSE_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"')
         print(proc.stdout)  # useful for debugging when assert fail
-        # If PAVICS_FQDN_PUBLIC is set in env.local, that value should be effective.
+        # If BIRDHOUSE_FQDN_PUBLIC is set in env.local, that value should be effective.
         assert (split_and_strip(get_command_stdout(proc))[-1] ==
                 "public.example.com - /my-data-root/jupyterhub_user_data - /my-geoserver-data")
 

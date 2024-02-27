@@ -34,7 +34,7 @@ SERVICES['indices'] = {
     'monitoring': {
         'Finch': {
             'request': {
-                'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+                'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
             }
         },
     }

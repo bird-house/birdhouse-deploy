@@ -32,7 +32,7 @@ if [ -z "${ALL_CONF_DIRS}" ]; then
   return
 fi
 
-# resolve path considering if sourced or executed, and whether from current dir, pavics-compose include or another dir
+# resolve path considering if sourced or executed, and whether from current dir, birdhouse-compose include or another dir
 BIRDHOUSE_DEPLOY_COMPONENTS_ROOT=$(dirname -- "$(realpath "$0")")
 if [ "$(echo "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" | grep -cE "/birdhouse/?\$" 2>/dev/null)" -eq 1 ]; then
   BIRDHOUSE_DEPLOY_COMPONENTS_ROOT=.

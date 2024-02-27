@@ -5,8 +5,8 @@ extends=profiles/docker.cfg
 persist-path = /data
 archive-root = / 
 thredds_url = https://${environment:HOSTNAME}/twitcher/ows/proxy/thredds/fileServer/birdhouse
-wps_url = https://${environment:PAVICS_FQDN_PUBLIC}/wpsoutputs
-wps_url2 = https://${environment:PAVICS_FQDN_PUBLIC}:443/wpsoutputs
+wps_url = https://${environment:BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs
+wps_url2 = https://${environment:BIRDHOUSE_FQDN_PUBLIC}:443/wpsoutputs
 ncwms_url = https://${environment:HOSTNAME}/twitcher/ows/proxy/ncWMS2/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&DATASET=outputs
 opendap_url = https://${environment:HOSTNAME}/twitcher/ows/proxy/thredds/dodsC/birdhouse
 magpie_hostname = https://${environment:HOSTNAME}/magpie

@@ -5,11 +5,11 @@
 # Will deploy:
 #
 # * cron job to periodically check if a deployment is needed
-#   (/etc/cron.d/PAVICS-deploy), update check frequency here
+#   (/etc/cron.d/birdhouse-deploy), update check frequency here
 #
 # * script called by cron job (/usr/local/sbin/triggerdeploy.sh)
 #
-# * deploy check logs can be found in /var/log/PAVICS/autodeploy.log
+# * deploy check logs can be found in /var/log/birdhouse/autodeploy.log
 #
 #
 # 2 cron frequency presets are available:
@@ -24,7 +24,7 @@
 #
 
 usage() {
-    echo "USAGE: $0 pavics-checkout owner-pavics-checkout [daily | 5-mins]"
+    echo "USAGE: $0 birdhouse-checkout owner-birdhouse-checkout [daily | 5-mins]"
 }
 
 if [ -z "$1" ]; then
@@ -34,8 +34,8 @@ if [ -z "$1" ]; then
 fi
 
 
-REPO_ROOT="`realpath "$1"`"; shift  # path to PAVICS checkout
-REPO_OWNER="$1"; shift  #  user owning (have write access) the PAVICS checkout
+REPO_ROOT="`realpath "$1"`"; shift  # path to Birdhouse checkout
+REPO_OWNER="$1"; shift  #  user owning (have write access) the Birdhouse checkout
 CRON_FREQUENCY="$1"
 
 # defaults, overridable

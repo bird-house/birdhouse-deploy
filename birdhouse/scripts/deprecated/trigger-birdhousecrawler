@@ -1,18 +1,18 @@
 #!/bin/sh
-# Trigger pavicscrawler on local PAVICS host.
+# Trigger birdhousecrawler on local Birdhouse host.
 #
-# Need to open temporary Thredds "testdata/secure/" on local PAVICS host to anonymous group.
+# Need to open temporary Thredds "testdata/secure/" on local Birdhouse host to anonymous group.
 #
-# pavicscrawler is a method of the catalog WPS service to index Thredds
+# birdhousecrawler is a method of the catalog WPS service to index Thredds
 # catalog into Solr DB for quick searching.
 #
 # To crawl only 1 file:
-#   trigger-pavicscrawler target_files=birdhouse/testdata/secure/tasmax_Amon_MPI-ESM-MR_rcp45_r2i1p1_200601-200612.nc
+#   trigger-birdhousecrawler target_files=birdhouse/testdata/secure/tasmax_Amon_MPI-ESM-MR_rcp45_r2i1p1_200601-200612.nc
 #
 # To crawl only 1 dir:
-#   trigger-pavicscrawler target_files=birdhouse/testdata
+#   trigger-birdhousecrawler target_files=birdhouse/testdata
 #
-# Set env var PAVICS_CRAWLER_HOST to target different PAVICS host.
+# Set env var BIRDHOUSE_CRAWLER_HOST to target different BIRDHOUSE host.
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
@@ -21,13 +21,13 @@ COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
     . "${COMPOSE_DIR}/read-configs.include.sh"
 
-    # Get PAVICS_FQDN
+    # Get BIRDHOUSE_FQDN
     read_configs
 fi
 
 # Allow override using same name env var.
 if [ -z "${PAVICS_CRAWLER_HOST}" ]; then
-    PAVICS_CRAWLER_HOST="${PAVICS_FQDN}"
+    PAVICS_CRAWLER_HOST="${BIRDHOUSE_FQDN}"
 fi
 
 set -x

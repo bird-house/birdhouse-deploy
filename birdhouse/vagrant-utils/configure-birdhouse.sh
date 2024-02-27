@@ -16,7 +16,7 @@ if [ ! -f env.local ]; then
 
 # override with values needed for vagrant
 export SSL_CERTIFICATE='$SSL_CERTIFICATE'  # *absolute* path to the nginx ssl certificate, path and key bundle
-export PAVICS_FQDN='${VM_HOSTNAME}.$VM_DOMAIN' # Fully qualified domain name of this Pavics installation
+export BIRDHOUSE_FQDN='${VM_HOSTNAME}.$VM_DOMAIN' # Fully qualified domain name of this Pavics installation
 EOF
 
     if [ -n "$LETSENCRYPT_EMAIL" ]; then
@@ -41,7 +41,7 @@ fi
 EOF
     elif [ -n "$KITENAME" -a -n "$KITESUBDOMAIN" ]; then
     cat <<EOF >> env.local
-export PAVICS_FQDN_PUBLIC="$KITESUBDOMAIN-$KITENAME"
+export BIRDHOUSE_FQDN_PUBLIC="$KITESUBDOMAIN-$KITENAME"
 export ALLOW_UNSECURE_HTTP="True"
 EOF
     fi

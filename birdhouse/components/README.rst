@@ -1,4 +1,4 @@
-PAVICS Components
+Birdhouse Components
 #################
 
 
@@ -9,11 +9,11 @@ Scheduler
 =========
 
 This component provides automated unattended continuous deployment for the
-"PAVICS stack" (all the git repos in var ``AUTODEPLOY_EXTRA_REPOS``), for the
+"Birdhouse stack" (all the git repos in var ``AUTODEPLOY_EXTRA_REPOS``), for the
 tutorial notebooks on the Jupyter environment and for the automated deployment
 itself.
 
-It can also be used to schedule other tasks on the PAVICS physical host.
+It can also be used to schedule other tasks on the Birdhouse physical host.
 
 Everything is dockerized, the deployment runs inside a container that will
 update all other containers.
@@ -27,12 +27,12 @@ The trigger for the deployment is new code change on the server on the current
 branch (PR merged, push). New code change locally will not trigger deployment
 so local development workflow is also supported.
 
-Multiple remote repos are supported so the "PAVICS stack" can be made of
+Multiple remote repos are supported so the "Birdhouse stack" can be made of
 multiple checkouts for modularity and extensibility.  The autodeploy will
 trigger if any of the checkouts (configured in ``AUTODEPLOY_EXTRA_REPOS``) is
 not up-to-date with its remote repo.
 
-A suggested "PAVICS stack" is made of at least 2 repos, this repo and another
+A suggested "Birdhouse stack" is made of at least 2 repos, this repo and another
 private repo containing the source controlled ``env.local`` file and any other
 docker-compose override for true infrastructure-as-code.
 
@@ -45,11 +45,11 @@ Usage
 
 Given the unattended nature, there is no UI.  Logs are used to keep trace.
 
-- ``/var/log/PAVICS/autodeploy.log`` is for the PAVICS deployment.
+- ``/var/log/birdhouse/autodeploy.log`` is for the Birdhouse deployment.
 
-- ``/var/log/PAVICS/notebookdeploy.log`` is for the tutorial notebooks deployment.
+- ``/var/log/birdhouse/notebookdeploy.log`` is for the tutorial notebooks deployment.
 
-- logrotate is enabled for ``/var/log/PAVICS/*.log`` to avoid filling up the
+- logrotate is enabled for ``/var/log/birdhouse/*.log`` to avoid filling up the
   disk.  Any new ``.log`` files in that folder will get logrotate for free.
 
 
@@ -142,7 +142,7 @@ There are 2 tests that need to be performed:
 
 * Can autodeploy deploy the PR from ``master`` branch, the stable reference point?
 
-  * This could fail if some changes in the PR are incompatible with autodeploy. For example: ``./pavics-compose.sh`` calls some binaries that do not exist in the autodeploy docker image.
+  * This could fail if some changes in the PR are incompatible with autodeploy. For example: ``./birdhouse-compose.sh`` calls some binaries that do not exist in the autodeploy docker image.
 
 * Can autodeploy be triggered again successfully, after the PR is live?
 
@@ -294,9 +294,9 @@ Prometheus stack is used:
 Usage
 -----
 
-- Grafana to view metric graphs: https://PAVICS_FQDN/grafana/d/pf6xQMWGz/docker-and-system-monitoring
-- Prometheus alert rules: https://PAVICS_FQDN/prometheus/rules
-- AlertManager to manage alerts: https://PAVICS_FQDN/alertmanager
+- Grafana to view metric graphs: https://BIRDHOUSE_FQDN/grafana/d/pf6xQMWGz/docker-and-system-monitoring
+- Prometheus alert rules: https://BIRDHOUSE_FQDN/prometheus/rules
+- AlertManager to manage alerts: https://BIRDHOUSE_FQDN/alertmanager
 
 The paths above are by default only accessible to a user logged in to magpie as an administrator or
 as a member of group ``monitoring``.  These routes provide sensitive information about the
@@ -408,17 +408,17 @@ and execution of custom applications and workflows.
 Usage
 -----
 
-Once this component is enabled, `Weaver`_ will be accessible at ``https://<PAVICS_FQDN_PUBLIC>/weaver`` endpoint,
-where ``PAVICS_FQDN_PUBLIC`` is defined in your ``env.local`` file.
+Once this component is enabled, `Weaver`_ will be accessible at ``https://<BIRDHOUSE_FQDN_PUBLIC>/weaver`` endpoint,
+where ``BIRDHOUSE_FQDN_PUBLIC`` is defined in your ``env.local`` file.
 
 Full process listing (across WPS providers) should be available using request:
 
 .. code-block::
 
-    GET https://<PAVICS_FQDN_PUBLIC>/weaver/processes?providers=true
+    GET https://<BIRDHOUSE_FQDN_PUBLIC>/weaver/processes?providers=true
 
 Please refer to the `Weaver OpenAPI`_ for complete description of available requests.
-This description will also be accessible via ``https://<PAVICS_FQDN_PUBLIC>/weaver/api`` once the instance is started.
+This description will also be accessible via ``https://<BIRDHOUSE_FQDN_PUBLIC>/weaver/api`` once the instance is started.
 
 For any specific details about `Weaver`_ configuration parameters, functionalities or questions, please refer to its
 `documentation <https://pavics-weaver.readthedocs.io/en/latest/>`_.
@@ -499,7 +499,7 @@ the various services of the platform when changes are detected. Therefore, it do
 from users.
 
 In case the platform maintainer desires to perform manual syncing operations with Cowbird, its REST API should be used.
-It will be accessible under ``https://{PAVICS_FQDN_PUBLIC}/cowbird`` and details of available endpoints will be served
+It will be accessible under ``https://{BIRDHOUSE_FQDN_PUBLIC}/cowbird`` and details of available endpoints will be served
 under ``/cowbird/api``. Note that Magpie administrator credentials will be required to access those endpoints.
 
 How to Enable the Component
@@ -535,8 +535,8 @@ Usage
 
 The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API 
 exposed by the current stack instance. Once this component is enabled, STAC API will be accessible at 
-``https://<PAVICS_FQDN_PUBLIC>/stac`` endpoint and the STAC browser will be available at 
-``https://<PAVICS_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint, 
+``https://<BIRDHOUSE_FQDN_PUBLIC>/stac`` endpoint and the STAC browser will be available at
+``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint,
 define the following in the ``env.local`` file::
 
   export PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
@@ -566,7 +566,7 @@ An endpoint monitoring tool that shows the current status of other components in
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}/canarie``
+The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}/canarie``
 
 How to Enable the Component
 ---------------------------
@@ -598,7 +598,7 @@ degree-days of cooling, the duration of heatwaves, etc. This returns annual valu
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch``
+The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch``
 
 How to Enable the Component
 ---------------------------
@@ -617,7 +617,7 @@ Geospatial Web.
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}/geoserver``. For usage and
+The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}/geoserver``. For usage and
 configuration options please refer to the `Geoserver documentation`_.
 
 .. _Geoserver documentation: https://docs.geoserver.org
@@ -636,7 +636,7 @@ A Web Processing Service for compliance checks used in the climate science commu
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird``
+The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird``
 
 How to Enable the Component
 ---------------------------
@@ -653,7 +653,7 @@ end-users.
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}/jupyter``. Users are able to log in to Jupyterhub using the
+The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}/jupyter``. Users are able to log in to Jupyterhub using the
 same user name and password as Magpie. They will then be able to launch a personal jupyterlab server.
 
 How to Enable the Component
@@ -672,7 +672,7 @@ User/Group/Service/Resource/Permission management and integrates with Twitcher.
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}/magpie``. For usage and configuration options please
+The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}/magpie``. For usage and configuration options please
 refer to the `Magpie documentation`_.
 
 .. _Magpie documentation: https://pavics-magpie.readthedocs.io
@@ -705,7 +705,7 @@ A web based container deployment and management tool.
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}/portainer/``. For usage and configuration options please
+The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}/portainer/``. For usage and configuration options please
 refer to the `portainer documentation`_.
 
 How to Enable the Component
@@ -756,7 +756,7 @@ processing as well as time series analysis.
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven``
+The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven``
 
 How to Enable the Component
 ---------------------------
@@ -774,7 +774,7 @@ Climate Data Catalog and Format Renderers. See the `Thredds documentation`_ for 
 Usage
 -----
 
-The catalog is available at the ``https://${PAVICS_FQDN_PUBLIC}/thredds`` endpoint.
+The catalog is available at the ``https://${BIRDHOUSE_FQDN_PUBLIC}/thredds`` endpoint.
 
 How to Enable the Component
 ---------------------------
@@ -810,7 +810,7 @@ of all processes executed by these services.
 Usage
 -----
 
-All outputs from these processes will become available at the ``https://${PAVICS_FQDN_PUBLIC}/wpsoutputs`` endpoint.
+All outputs from these processes will become available at the ``https://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs`` endpoint.
 
 By default, this endpoint is not protected. To secure access to this endpoint it is highly recommended to enable the
 `./optional-components/secure-data-proxy` component as well.

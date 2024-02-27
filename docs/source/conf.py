@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# PAVICS documentation build configuration file, created by
+# Birdhouse documentation build configuration file, created by
 # sphinx-quickstart on Mon Oct  3 13:56:31 2016.
 #
 # This file is execfile()d with the current directory set to its
@@ -60,7 +60,7 @@ source_suffix = ['.rst', '.md']
 master_doc = 'index'
 
 # General information about the project.
-project = 'PAVICS'
+project = 'birdhouse'
 copyright = '2016, Ouranos & CRIM'
 author = 'Ouranos & CRIM'
 
@@ -145,7 +145,7 @@ html_theme = 'alabaster'
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-# html_title = 'PAVICS v0.1'
+# html_title = 'birdhouse v0.1'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #
@@ -175,7 +175,7 @@ html_static_path = ['_static']
 html_extra_path = [
     'birdhouse/README.rst',
     'birdhouse/env.local.example',
-    'birdhouse/pavics-compose.sh',
+    'birdhouse/birdhouse-compose.sh',
     'birdhouse/docker-compose.yml',
 ]
 
@@ -251,7 +251,7 @@ html_show_sourcelink = True
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'PAVICSdoc'
+htmlhelp_basename = 'Birdhousedoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -277,7 +277,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'PAVICS.tex', 'PAVICS Documentation',
+    (master_doc, 'birdhouse.tex', 'Birdhouse Documentation',
      'Ouranos \\& CRIM', 'manual'),
 ]
 
@@ -319,7 +319,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'pavics', 'PAVICS Documentation',
+    (master_doc, 'birdhouse', 'Birdhouse Documentation',
      [author], 1)
 ]
 
@@ -334,8 +334,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'PAVICS', 'PAVICS Documentation',
-     author, 'PAVICS', 'One line description of project.',
+    (master_doc, 'Birdhouse', 'Birdhouse Documentation',
+     author, 'Birdhouse', 'One line description of project.',
      'Miscellaneous'),
 ]
 

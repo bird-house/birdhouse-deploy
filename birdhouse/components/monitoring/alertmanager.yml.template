@@ -1,10 +1,10 @@
 # https://prometheus.io/docs/alerting/latest/configuration/
-# http://${PAVICS_FQDN}:9093/#/status
+# http://${BIRDHOUSE_FQDN}:9093/#/status
 global:
   # The smarthost and SMTP sender used for mail notifications.
   smtp_smarthost: '${SMTP_SERVER}'
-  smtp_from: 'alertmanager@${PAVICS_FQDN}'
-  smtp_hello: '${PAVICS_FQDN}'
+  smtp_from: 'alertmanager@${BIRDHOUSE_FQDN}'
+  smtp_hello: '${BIRDHOUSE_FQDN}'
 ${ALERTMANAGER_EXTRA_GLOBAL}
 # Below example of candidates for ALERTMANAGER_EXTRA_GLOBAL
 #  smtp_auth_username: 'alertmanager'

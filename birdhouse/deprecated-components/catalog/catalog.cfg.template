@@ -1,9 +1,9 @@
 [catalog]
-solr_host=http://${PAVICS_FQDN}:8983/solr/${THREDDS_SERVICE_DATA_URL_PATH}/
+solr_host=http://${BIRDHOUSE_FQDN}:8983/solr/${THREDDS_SERVICE_DATA_URL_PATH}/
 
 # Multiple thredds hosts can be given, comma separated
 # note: this URL is also used as prefix when comparing authorizations from magpie
-thredds_host=https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds
+thredds_host=https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/thredds
 
 # Multiple esgf nodes can be given, comma separated
 esgf_nodes=https://esgf-node.llnl.gov/esg-search
@@ -11,7 +11,7 @@ esgf_nodes=https://esgf-node.llnl.gov/esg-search
 # Provide a magpie host to filter results based on access permissions.
 # Must also provide credentials with read access so that the crawler can parse the thredds host(s)
 # Leave as a comment for a public catalog.
-magpie_host=https://${PAVICS_FQDN_PUBLIC}/magpie
+magpie_host=https://${BIRDHOUSE_FQDN_PUBLIC}/magpie
 magpie_user=${CATALOG_USERNAME}
 magpie_pw=${CATALOG_PASSWORD}
 # SSL verification (true or false)
@@ -22,10 +22,10 @@ thredds_host_magpie_svc_name=${CATALOG_THREDDS_SERVICE}
 # WMS service url with <HOST> replaced by each instance of the thredds_host,
 # without the port number and <DATASET> replaced by the base url in thredds.
 # Leave as comment to use the default WMS service
-wms_alternate_server=https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/ncWMS2/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&DATASET=outputs/<DATASET>
+wms_alternate_server=https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/ncWMS2/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0&DATASET=outputs/<DATASET>
 
 [pywps]
-outputurl=https://${PAVICS_FQDN_PUBLIC}/wpsoutputs/catalog
+outputurl=https://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs/catalog
 parallelprocesses=30
 
 [logging]

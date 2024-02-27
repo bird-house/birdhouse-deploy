@@ -14,7 +14,7 @@
 #   some of these variables *could* employ provided values in 'default.env',
 #   but they must ultimately be defined one way or another for the server to work
 VARS='
-  $PAVICS_FQDN
+  $BIRDHOUSE_FQDN
   $DOC_URL
   $SUPPORT_EMAIL
   $DATA_PERSIST_ROOT
@@ -26,7 +26,7 @@ VARS='
 #   they usually are intended to provide additional features or extended customization of their behavior
 #   when the value provided explicitly, it will be used instead of guessing it by inferred values from other variables
 OPTIONAL_VARS='
-  $PAVICS_FQDN_PUBLIC
+  $BIRDHOUSE_FQDN_PUBLIC
   $SSL_CERTIFICATE
   $EXTRA_PYWPS_CONFIG
   $SERVER_NAME
@@ -71,7 +71,7 @@ TIMEWAIT_REUSE=$(/sbin/sysctl -n  net.ipv4.tcp_tw_reuse)
 if [ "${TIMEWAIT_REUSE}" -eq 0 ]
 then
   log WARN "the sysctl net.ipv4.tcp_tw_reuse is not enabled. " \
-       "It it suggested to set it to 1, otherwise the pavicscrawler may fail."
+       "It it suggested to set it to 1, otherwise the birdhousecrawler may fail."
 fi
 
 export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""
@@ -116,7 +116,7 @@ if [ x"$1" = x"up" ]; then
 fi
 
 # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} $*
+PROXY_SECURE_PORT=443 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} $*
 ERR=$?
 
 # execute post-compose function if exists and no error occurred
@@ -132,11 +132,11 @@ while [ $# -gt 0 ]
 do
   if [ x"$1" = x"up" ]; then
     # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
-    PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} restart proxy
+    PROXY_SECURE_PORT=443 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} restart proxy
 
     # run postgres post-startup setup script
     # Note: this must run before the post-docker-compose-up scripts since some may expect postgres databases to exist
-    postgres_id=$(PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres 2> /dev/null)
+    postgres_id=$(PROXY_SECURE_PORT=443 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres 2> /dev/null)
     if [ ! -z "$postgres_id" ]; then
       docker exec ${postgres_id} /postgres-setup.sh
     fi

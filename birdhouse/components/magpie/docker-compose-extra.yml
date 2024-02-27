@@ -12,7 +12,7 @@ services:
     image: pavics/magpie:${MAGPIE_VERSION}
     container_name: magpie
     environment:
-      TWITCHER_PROTECTED_URL: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}
+      TWITCHER_PROTECTED_URL: https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}
       # target directories to allow loading multiple config files of corresponding category
       # each compose override should volume mount its files inside the matching directories
       # (note: DO NOT use 'MAGPIE_CONFIG_PATH' that would disable multi-config loading capability)

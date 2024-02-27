@@ -1,5 +1,5 @@
 [server]
-outputurl = https://${PAVICS_FQDN_PUBLIC}/wpsoutputs
+outputurl = https://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs
 outputpath = /data/wpsoutputs
 
 # default 3mb, fix "Broken pipe" between the proxy and the wps service
