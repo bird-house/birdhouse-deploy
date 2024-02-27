@@ -21,13 +21,6 @@
 
   To avoid drowning real WARN messages.  Many optional vars can be valid if empty.
 
-- compose script: allow to pass extra options to `up` operation
-
-  When disabling components, their existing containers will not be removed
-  unless option `--remove-orphans` is given together with  `./pavics-compose.sh up -d`.
-
-  This change allow any additional options, not just `--remove-orphans`.
-
 
 [2.1.0](https://github.com/bird-house/birdhouse-deploy/tree/2.1.0) (2024-02-23)
 ------------------------------------------------------------------------------------------------------------------
