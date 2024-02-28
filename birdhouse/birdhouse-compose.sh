@@ -41,7 +41,7 @@ OPTIONAL_VARS='
 '
 
 # we switch to the real directory of the script, so it still works when used from $PATH
-# tip: ln -s /path/to/pavics-compose.sh ~/bin/
+# tip: ln -s /path/to/birdhouse-compose.sh ~/bin/
 # Setup PWD for sourcing env.local.
 cd "$(dirname "$(readlink -f "$0" || realpath "$0")")" || exit 1
 

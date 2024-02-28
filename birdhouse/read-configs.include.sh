@@ -228,12 +228,27 @@ check_default_vars() {
         result=`echo "${d}" | grep -c "${default}"`
         if [ -z "`eval "echo ${v}"`" ]
         then
-            log WARN "Optional variable [${n}] is not set. Check env.local file."
+            log DEBUG "Optional variable [${n}] is not set. Check env.local file."
         fi
         if [ "${result}" -gt 0 ]
         then
             log WARN "Optional variable [${n}] employs a default recommended for override. Check env.local file."
         fi
+    done
+}
+
+
+process_backwards_compatible_variables() {
+    [ x"${BIRDHOUSE_ALLOW_BACKWARDS_COMPATIBLE}" = x"True" ] || return
+    for pavics_var in ${BACKWARDS_COMPATIBLE_VARIABLES_PAVICS}
+    do
+      pavics_var_set="`eval "echo \\${${pavics_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
+      if [ "${pavics_var_set}" = "set" ]; then
+        pavics_value="`eval "echo \\$${pavics_var}"`"
+        birdhouse_var="$(echo "$pavics_var" | sed 's/PAVICS/BIRDHOUSE/')"
+        log WARN "Deprecated variable [${pavics_var}] is overriding [${birdhouse_var}]. Check env.local file."
+        eval 'export ${birdhouse_var}="${pavics_value}"'
+      fi
     done
 }
 
@@ -338,6 +353,7 @@ read_configs() {
     read_env_local  # for EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, need discover_env_local
     read_components_default_env  # uses EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
     read_env_local  # again to override components default.env, need discover_env_local
+    process_backwards_compatible_variables
     check_default_vars
     process_delayed_eval
 }
@@ -351,6 +367,7 @@ read_basic_configs_only() {
     discover_env_local
     read_default_env
     read_env_local  # need discover_env_local
+    process_backwards_compatible_variables
     check_default_vars
     process_delayed_eval
 }
