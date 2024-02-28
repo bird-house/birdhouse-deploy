@@ -118,7 +118,7 @@ if [ x"$1" = x"up" ]; then
   done
 fi
 
-log INFO "Executing docker-compose with extra options: ${COMPOSE_EXTRA_OPTS} $*"
+log INFO "Executing docker-compose with extra options: $* ${COMPOSE_EXTRA_OPTS}"
 # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
 PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} $* ${COMPOSE_EXTRA_OPTS}
 ERR=$?
