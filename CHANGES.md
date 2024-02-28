@@ -36,6 +36,11 @@
 
   This change allow any additional options, not just `--remove-orphans`.
 
+- compose script: exit early when any errors occurred during invocation
+
+  Before, all the `post-docker-compose-up` would still execute after
+  `docker-compose` has an error.
+
 
 [2.1.0](https://github.com/bird-house/birdhouse-deploy/tree/2.1.0) (2024-02-23)
 ------------------------------------------------------------------------------------------------------------------

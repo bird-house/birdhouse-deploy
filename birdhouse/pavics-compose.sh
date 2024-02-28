@@ -122,7 +122,10 @@ log INFO "Executing docker-compose with extra options: ${COMPOSE_EXTRA_OPTS} $*"
 # the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
 PROXY_SECURE_PORT=443 HOSTNAME=${PAVICS_FQDN} docker-compose ${COMPOSE_CONF_LIST} ${COMPOSE_EXTRA_OPTS} $*
 ERR=$?
-[ ${ERR} -gt 0 ] && exit ${ERR}
+if [ ${ERR} -gt 0 ]; then
+  log ERROR "docker-compose error, exit code ${ERR}"
+  exit ${ERR}
+fi
 
 # execute post-compose function if exists and no error occurred
 type post-compose 2>&1 | grep 'post-compose is a function' > /dev/null
