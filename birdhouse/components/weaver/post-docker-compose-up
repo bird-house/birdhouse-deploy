@@ -372,12 +372,12 @@ BIRDHOUSE_LOG_DIR="${BIRDHOUSE_LOG_DIR:-/tmp/birdhouse-compose}"
 CELERY_HEALTHCHECK="/opt/local/bin/weaver/celery-healthcheck"
 mkdir -p "${BIRDHOUSE_LOG_DIR}"
 # note: use 'tee' instead of capturing in variable to allow displaying results directly when running command
-${BIRDHOUSE_COMPOSE} exec weaver bash "${CELERY_HEALTHCHECK}" | tee "${PAVICS_LOG_DIR}/weaver.log"
+${BIRDHOUSE_COMPOSE} exec weaver bash "${CELERY_HEALTHCHECK}" | tee "${BIRDHOUSE_LOG_DIR}/weaver.log"
 ret_weaver=$?
-out_weaver=$(cat "${PAVICS_LOG_DIR}/weaver.log" | tail -n 1 | grep -c "ERROR")
-${BIRDHOUSE_COMPOSE} exec weaver-worker bash "${CELERY_HEALTHCHECK}" | tee "${PAVICS_LOG_DIR}/weaver-worker.log"
+out_weaver=$(cat "${BIRDHOUSE_LOG_DIR}/weaver.log" | tail -n 1 | grep -c "ERROR")
+${BIRDHOUSE_COMPOSE} exec weaver-worker bash "${CELERY_HEALTHCHECK}" | tee "${BIRDHOUSE_LOG_DIR}/weaver-worker.log"
 ret_worker=$?
-out_worker=$(cat "${PAVICS_LOG_DIR}/weaver-worker.log" | tail -n 1 | grep -c "ERROR")
+out_worker=$(cat "${BIRDHOUSE_LOG_DIR}/weaver-worker.log" | tail -n 1 | grep -c "ERROR")
 if [ ${ret_weaver} -ne 0 ] || [ ${ret_worker} -ne 0 ] || [ "${out_weaver}" -ne 0 ] || [ "${out_worker}" -ne 0 ]; then
   echo "${PREFIX}Weaver WebApp and/or Worker Celery tasks were not ready. Restarting both..."
   ${BIRDHOUSE_COMPOSE} restart weaver weaver-worker

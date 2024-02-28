@@ -45,11 +45,11 @@ Usage
 
 Given the unattended nature, there is no UI.  Logs are used to keep trace.
 
-- ``/var/log/birdhouse/autodeploy.log`` is for the Birdhouse deployment.
+- ``${BIRDHOUSE_LOG_DIR}/autodeploy.log`` is for the Birdhouse deployment.
 
-- ``/var/log/birdhouse/notebookdeploy.log`` is for the tutorial notebooks deployment.
+- ``${BIRDHOUSE_LOG_DIR}/notebookdeploy.log`` is for the tutorial notebooks deployment.
 
-- logrotate is enabled for ``/var/log/birdhouse/*.log`` to avoid filling up the
+- logrotate is enabled for ``${BIRDHOUSE_LOG_DIR}/*.log`` to avoid filling up the
   disk.  Any new ``.log`` files in that folder will get logrotate for free.
 
 
@@ -77,7 +77,7 @@ Configure logrotate for all following automations to prevent disk full::
 
   deployment/install-logrotate-config .. $USER
 
-To enable continuous deployment of PAVICS::
+To enable continuous deployment of Birdhouse::
 
   deployment/install-automated-deployment.sh .. $USER [daily|5-mins]
   # read the script for more options/details
@@ -96,7 +96,7 @@ To enable continuous deployment of tutorial Jupyter notebooks::
 To trigger tutorial Jupyter notebooks deploy manually::
 
   # configure logrotate before because this script will log to
-  # /var/log/PAVICS/notebookdeploy.log
+  # ${BIRDHOUSE_LOG_DIR}/notebookdeploy.log
 
   deployment/trigger-deploy-notebook
   # read the script for more details
@@ -112,7 +112,7 @@ Comparison between the old and new autodeploy mechanism
 
 Maximum backward-compatibility has been kept with the old install scripts style:
 
-* Still log to the same existing log files under ``/var/log/PAVICS``.
+* Still log to the same existing log files under ``${BIRDHOUSE_LOG_DIR}``.
 * Old single ssh deploy key is still compatible, but the new mechanism allows for different ssh deploy keys for each
   extra repos (again, public repos should use https clone path to avoid dealing with ssh deploy keys in the first
   place).
@@ -216,7 +216,7 @@ Here is a sample setup to test autodeploy:
   # the autodeploy mechanism will detect that the remote branch has changed and attempt to update the local branch
 
   # follow logs, check for errors
-  tail -f /var/log/PAVICS/autodeploy.log
+  tail -f ${BIRDHOUSE_LOG_DIR}/autodeploy.log
 
   # each autodeploy trigger will start the log with
   #   ==========
@@ -245,7 +245,7 @@ Here is a sample setup to test autodeploy:
   # the autodeploy mechanism will detect that the remote branch has changed and attempt to update the local branch
 
   # follow logs, check for errors
-  tail -f /var/log/PAVICS/autodeploy.log
+  tail -f ${BIRDHOUSE_LOG_DIR}/autodeploy.log
 
 * Test done, clean up the bogus ``${USER}-test`` branch and optionally relax ``AUTODEPLOY_PLATFORM_FREQUENCY``
 

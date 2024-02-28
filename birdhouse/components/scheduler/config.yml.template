@@ -1,11 +1,11 @@
 ---
 - name: logrotate
-  comment: Rotate log files under /var/log/birdhouse
+  comment: Rotate log files under ${BIRDHOUSE_LOG_DIR}
   schedule: '@daily'
   command: bash -c 'cp /etc/logrotate.conf.orig /etc/logrotate.conf && chown root:root /etc/logrotate.conf && chmod 644 /etc/logrotate.conf && /usr/sbin/logrotate -v /etc/logrotate.conf'
   dockerargs: >-
     --rm --name logrotate
-    --volume /var/log/birdhouse:/var/log/birdhouse:rw
+    --volume ${BIRDHOUSE_LOG_DIR}:/var/log/birdhouse:rw
     --volume ${LOGROTATE_DATA_DIR}:/var/lib:rw
     --volume ${COMPOSE_DIR}/deployment/birdhouse-deploy.logrotate:/etc/logrotate.conf.orig:ro
   image: 'stakater/logrotate:3.13.0'
@@ -17,12 +17,13 @@
   dockerargs: >-
     --rm --name notebookdeploy
     --volume /var/run/docker.sock:/var/run/docker.sock:ro
-    --volume /var/log/birdhouse:/var/log/birdhouse:rw
+    --volume ${BIRDHOUSE_LOG_DIR}:/var/log/birdhouse:rw
     --volume ${COMPOSE_DIR}:${COMPOSE_DIR}:ro
     --volume ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}:rw
     --volume /tmp/notebookdeploy:/tmp/notebookdeploy:rw
     --env COMPOSE_DIR=${COMPOSE_DIR}
     --env TMP_BASE_DIR=/tmp/notebookdeploy
+    --env BIRDHOUSE_COMPOSE_DIR=/var/log/birdhouse
     --env JUPYTERHUB_USER_DATA_DIR=${JUPYTERHUB_USER_DATA_DIR}${AUTODEPLOY_NOTEBOOK_EXTRA_DOCKER_ARGS}
   image: 'docker:19.03.6-git'
 
@@ -33,7 +34,7 @@
   dockerargs: >-
     --rm --name autodeploy${AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES}
     --volume /var/run/docker.sock:/var/run/docker.sock:ro
-    --volume /var/log/birdhouse:/var/log/birdhouse:rw
+    --volume ${BIRDHOUSE_LOG_DIR}:/var/log/birdhouse:rw
     --volume ${COMPOSE_DIR}/..:${COMPOSE_DIR}/..:rw
     --volume ${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:ro
     --volume ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}:rw

@@ -26,13 +26,16 @@ if [ ! -e "$REPO_ROOT/birdhouse/deployment/PAVICS-deploy.logrotate" ]; then
     exit 2
 fi
 
+. "${REPO_ROOT}/birdhouse/read-configs.include.sh"
+
+read_basic_configs_only
 
 set -x
 
-sudo mkdir -p /var/log/PAVICS
-sudo chown $REPO_OWNER /var/log/PAVICS
+sudo mkdir -p "${BIRDHOUSE_LOG_DIR}"
+sudo chown $REPO_OWNER "${BIRDHOUSE_LOG_DIR}"
 
-LOGROTATE_FILE="/etc/logrotate.d/PAVICS-deploy"
-sudo cp -v $REPO_ROOT/birdhouse/deployment/PAVICS-deploy.logrotate $LOGROTATE_FILE
+LOGROTATE_FILE="/etc/logrotate.d/Birdhouse-deploy"
+sudo cp -v $REPO_ROOT/birdhouse/deployment/birdhouse-deploy.logrotate $LOGROTATE_FILE
 sudo chown root:root $LOGROTATE_FILE
 sudo chmod 644 $LOGROTATE_FILE

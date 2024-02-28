@@ -36,6 +36,6 @@ read_configs
 
 set -x
 
-cat "${REPO_ROOT}/birdhouse/deployment/trigger-deploy-notebook" | envsubst '${JUPYTERHUB_USER_DATA_DIR}' | sudo tee "${CRON_FILE}"
+cat "${REPO_ROOT}/birdhouse/deployment/trigger-deploy-notebook" | envsubst '${JUPYTERHUB_USER_DATA_DIR} ${BIRDHOUSE_LOG_DIR}' | sudo tee "${CRON_FILE}"
 sudo chown root:root "${CRON_FILE}"
 sudo chmod 755 "${CRON_FILE}"

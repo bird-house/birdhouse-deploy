@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to automate local deployment process.
 #
-# Log to "/var/log/birdhouse/autodeploy.log" if AUTODEPLOY_SILENT is not empty.
+# Log to "${BIRDHOUSE_LOG_DIR}/autodeploy.log" if AUTODEPLOY_SILENT is not empty.
 #
 # Still have to ssh to target machine but at least this single script
 # takes care of all the common steps for a standard deployment (see corner
@@ -53,11 +53,6 @@
 #   are re-read.  docker-compose is not aware of any changes outside of the
 #   docker-compose.yml file.
 
-if [ ! -z "${AUTODEPLOY_SILENT}" ]; then
-    LOG_FILE="/var/log/birdhouse/autodeploy.log"
-    exec >> "${LOG_FILE}" 2>&1
-fi
-
 usage() {
     echo "USAGE: $0 <path to folder with docker-compose.yml file> [path to env.local]"
 }
@@ -79,11 +74,26 @@ else
     shift
 fi
 
+# Setup COMPOSE_DIR and PWD for sourcing env.local.
+# Prevent un-expected difference when this script is run inside autodeploy
+# container and manually from the host.
+cd "${COMPOSE_DIR}" || exit
+
+. "${COMPOSE_DIR}/read-configs.include.sh"
+
+# Read AUTODEPLOY_EXTRA_REPOS
+read_basic_configs_only
+
+if [ ! -z "${AUTODEPLOY_SILENT}" ]; then
+    LOG_FILE="${BIRDHOUSE_LOG_DIR}/autodeploy.log"
+    exec >> "${LOG_FILE}" 2>&1
+fi
+
 COMPOSE_DIR="$(realpath "${COMPOSE_DIR}")"
 
 if [ ! -f "${COMPOSE_DIR}/docker-compose.yml" ] || \
-   [ ! -f "${COMPOSE_DIR}/pavics-compose.sh" ]; then
-    echo "ERROR: missing docker-compose.yml or pavics-compose.sh file in '${COMPOSE_DIR}'" 1>&2
+   [ ! -f "${COMPOSE_DIR}/birdhouse-compose.sh" ]; then
+    echo "ERROR: missing docker-compose.yml or birdhouse-compose.sh file in '${COMPOSE_DIR}'" 1>&2
     exit 2
 fi
 
@@ -96,18 +106,8 @@ if [ -f "$COMPOSE_DIR/docker-compose.override.yml" ]; then
     echo "WARNING: docker-compose.override.yml found, should use EXTRA_CONF_DIRS in env.local instead"
 fi
 
-# Setup COMPOSE_DIR and PWD for sourcing env.local.
-# Prevent un-expected difference when this script is run inside autodeploy
-# container and manually from the host.
-cd "${COMPOSE_DIR}" || exit
-
 START_TIME="$(date -Isecond)"
 echo "deploy START_TIME=${START_TIME}"
-
-. "${COMPOSE_DIR}/read-configs.include.sh"
-
-# Read AUTODEPLOY_EXTRA_REPOS
-read_basic_configs_only
 
 set -x
 
