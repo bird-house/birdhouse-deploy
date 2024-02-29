@@ -14,7 +14,7 @@ if [ -z "${DATASET_ROOT}" ]; then
     DATASET_ROOT="${DATA_PERSIST_ROOT}/${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}"
 fi
 
-FROM_SERVER="https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/fileServer/birdhouse"
+FROM_SERVER=${FROM_SERVER:-"https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/fileServer/birdhouse"}
 
 FILE_LIST="
 nrcan/nrcan_canada_daily/tasmin/nrcan_canada_daily_tasmin_2013.nc
