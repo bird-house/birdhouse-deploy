@@ -130,7 +130,7 @@ cd "${COMPOSE_DIR}" || exit
 read_basic_configs_only
 
 # stop all to force reload any changed config that are volume-mount into the containers
-./pavics-compose.sh stop
+./birdhouse-compose.sh stop
 
 for adir in "${COMPOSE_DIR}" ${AUTODEPLOY_EXTRA_REPOS}; do
     if [ -d "${adir}" ]; then
@@ -177,7 +177,7 @@ cd "${COMPOSE_DIR}" || exit
 read_basic_configs_only
 
 # restart everything, only changed containers will be destroyed and recreated
-./pavics-compose.sh up -d
+./birdhouse-compose.sh up -d
 
 set +x
 

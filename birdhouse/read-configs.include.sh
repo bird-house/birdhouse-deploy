@@ -11,7 +11,7 @@
 # values.
 #
 # USAGE:
-#  # Set variable COMPOSE_DIR to the dir containing pavics-compose.sh and
+#  # Set variable COMPOSE_DIR to the dir containing birdhouse-compose.sh and
 #  # docker-compose.yml.
 #
 #  # Source the script providing function read_configs.
@@ -30,29 +30,29 @@
 # WARNING: cannot use 'log' calls within this function until the following logging script gets resolved and sourced.
 discover_compose_dir() {
     if [ -z "${COMPOSE_DIR}" ] || [ ! -e "${COMPOSE_DIR}" ]; then
-        if [ -f "./pavics-compose.sh" ]; then
+        if [ -f "./birdhouse-compose.sh" ]; then
             # Current dir is COMPOSE_DIR
             COMPOSE_DIR="$(realpath .)"
-        elif [ -f "../pavics-compose.sh" ]; then
+        elif [ -f "../birdhouse-compose.sh" ]; then
             # Parent dir is COMPOSE_DIR
             # Case of all the scripts under deployment/ or scripts/
             COMPOSE_DIR="$(realpath ..)"
-        elif [ -f "../birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../birdhouse/birdhouse-compose.sh" ]; then
             # Sibling dir is COMPOSE_DIR
             # Case of all the tests under tests/
             COMPOSE_DIR="$(realpath ../birdhouse)"
-        elif [ -f "./birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "./birdhouse/birdhouse-compose.sh" ]; then
             # Child dir is COMPOSE_DIR
             COMPOSE_DIR="$(realpath birdhouse)"
         # Below assume checkout is named birdhouse-deploy, which might not
         # always be true.
-        elif [ -f "../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../birdhouse-deploy/birdhouse/birdhouse-compose.sh" ]; then
             # Case of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../birdhouse-deploy/birdhouse")"
-        elif [ -f "../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../../birdhouse-deploy/birdhouse/birdhouse-compose.sh" ]; then
             # Case of subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../../birdhouse-deploy/birdhouse")"
-        elif [ -f "../../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../../../birdhouse-deploy/birdhouse/birdhouse-compose.sh" ]; then
             # Case of sub-subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../../../birdhouse-deploy/birdhouse")"
         fi
@@ -60,9 +60,9 @@ discover_compose_dir() {
     fi
     # Perform last-chance validation in case 'COMPOSE_DIR' was incorrectly set explicitly
     # and that 'read-configs.include.sh' was sourced directly from an invalid location.
-    if [ ! -f "${COMPOSE_DIR}/pavics-compose.sh" ]; then
+    if [ ! -f "${COMPOSE_DIR}/birdhouse-compose.sh" ]; then
         echo \
-          "CRITICAL: [${COMPOSE_DIR}/pavics-compose.sh] not found," \
+          "CRITICAL: [${COMPOSE_DIR}/birdhouse-compose.sh] not found," \
           "please set variable 'COMPOSE_DIR' to a valid location." \
           "Many features depend on this variable." 1>&2
         return 2

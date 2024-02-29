@@ -16,7 +16,7 @@ if [ ! -f env.local ]; then
 
 # override with values needed for vagrant
 export SSL_CERTIFICATE='$SSL_CERTIFICATE'  # *absolute* path to the nginx ssl certificate, path and key bundle
-export BIRDHOUSE_FQDN='${VM_HOSTNAME}.$VM_DOMAIN' # Fully qualified domain name of this Pavics installation
+export BIRDHOUSE_FQDN='${VM_HOSTNAME}.$VM_DOMAIN' # Fully qualified domain name of this Birdhouse installation
 EOF
 
     if [ -n "$LETSENCRYPT_EMAIL" ]; then
@@ -76,4 +76,4 @@ else
     echo "existing '$SSL_CERTIFICATE' file, not overriding"
 fi
 
-./pavics-compose.sh up -d
+./birdhouse-compose.sh up -d

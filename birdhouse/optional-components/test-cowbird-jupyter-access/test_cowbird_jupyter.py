@@ -23,10 +23,10 @@ VERIFY_SSL = False
 if not VERIFY_SSL:
     urllib3.disable_warnings()  # disable warnings for using https without certificate verification enabled
 HEADERS = {"Accept": "application/json", "Content-Type": "application/json"}
-PAVICS_HOST_URL = os.getenv("PAVICS_HOST_URL")
+BIRDHOUSE_HOST_URL = os.getenv("BIRDHOUSE_HOST_URL")
 
-COWBIRD_URL = f"{PAVICS_HOST_URL}/cowbird"
-MAGPIE_URL = f"{PAVICS_HOST_URL}/magpie"
+COWBIRD_URL = f"{BIRDHOUSE_HOST_URL}/cowbird"
+MAGPIE_URL = f"{BIRDHOUSE_HOST_URL}/magpie"
 
 WPS_OUTPUTS_DIR = os.getenv("WPS_OUTPUTS_DIR")
 WORKSPACE_DIR = os.getenv("WORKSPACE_DIR")

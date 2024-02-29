@@ -82,7 +82,7 @@ To enable continuous deployment of Birdhouse::
   deployment/install-automated-deployment.sh .. $USER [daily|5-mins]
   # read the script for more options/details
 
-If you want to manually force a deployment of PAVICS (note this might not use
+If you want to manually force a deployment of Birdhouse (note this might not use
 latest version of deploy.sh_ script (:download:`download <../deployment/deploy.sh>`)::
 
   deployment/deploy.sh .
@@ -102,8 +102,8 @@ To trigger tutorial Jupyter notebooks deploy manually::
   # read the script for more details
 
 Migrating to the new mechanism requires manual deletion of all the artifacts
-created by the old install scripts: ``sudo rm /etc/cron.d/PAVICS-deploy
-/etc/cron.hourly/PAVICS-deploy-notebooks /etc/logrotate.d/PAVICS-deploy
+created by the old install scripts: ``sudo rm /etc/cron.d/Birdhouse-deploy
+/etc/cron.hourly/birdhouse-deploy-notebooks /etc/logrotate.d/Birdhouse-deploy
 /usr/local/sbin/triggerdeploy.sh``.  Both can not co-exist at the same time.
 
 
@@ -122,7 +122,7 @@ Features missing in old install scripts or how the new mechanism improves on the
 
 * Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if triggerdeploy.sh_
   (:download:`download <../deployment/triggerdeploy.sh>`)
-  or the deployed ``/etc/cron.hourly/PAVICS-deploy-notebooks`` script changes, they have to be deployed manually.
+  or the deployed ``/etc/cron.hourly/birdhouse-deploy-notebooks`` script changes, they have to be deployed manually.
   It's very annoying.  Now they are volume-mount in so are fresh on each run.
 * ``env.local`` now drives absolutely everything, source control that file and we've got a true DevOPS pipeline.
 * Configurable platform and notebook autodeploy frequency.  Previously, this means manually editing the generated cron
@@ -150,11 +150,11 @@ There are 2 tests that need to be performed:
 
 Here is a sample setup to test autodeploy:
 
-* Have 2 checkout directories.  One is for starting the stack using ``./pavics-compose.sh``, the other one is to push new bogus changes to trigger the autodeploy mechanism.
+* Have 2 checkout directories.  One is for starting the stack using ``./birdhouse-compose.sh``, the other one is to push new bogus changes to trigger the autodeploy mechanism.
 
 .. code-block:: shell
 
-  # this one for running pavics-compose.sh
+  # this one for running birdhouse-compose.sh
   git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy
 
   # this one for triggering autodeploy
@@ -176,10 +176,10 @@ Here is a sample setup to test autodeploy:
 
   # if scheduler container already running:
   # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
-  ./pavics-compose.sh stop scheduler && ./pavics-compose.sh rm -vf scheduler && ./pavics-compose.sh up -d
+  ./birdhouse-compose.sh stop scheduler && ./birdhouse-compose.sh rm -vf scheduler && ./birdhouse-compose.sh up -d
 
   # if scheduler container not running yet: start the newly added scheduler component
-  ./pavics-compose.sh up -d
+  ./birdhouse-compose.sh up -d
 
 * Create a ``${USER}-test`` branch so you can add bogus commits without affecting your real PR.  Set up your main checkout (birdhouse-deploy) to track that test branch so it will detect new changes on the test branch and trigger the autodeploy.
 
@@ -197,7 +197,7 @@ Here is a sample setup to test autodeploy:
 
   # ensure your runnings code is at "master" and is working correctly
   # if you do not have a working baseline, you will not know if the breakage is due to autodeploy or your code
-  ./pavics-compose.sh up -d
+  ./birdhouse-compose.sh up -d
 
 * Test scenario 1, from ``master`` to your PR
 
@@ -270,17 +270,17 @@ Here is a sample setup to test autodeploy:
   # do not remove the scheduler component from the stack yet or the next command will fail
 
   # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
-  ./pavics-compose.sh stop scheduler && ./pavics-compose.sh rm -vf scheduler && ./pavics-compose.sh up -d
+  ./birdhouse-compose.sh stop scheduler && ./birdhouse-compose.sh rm -vf scheduler && ./birdhouse-compose.sh up -d
 
   # optionally edit env.local to remove the scheduler component from the stack
   # then remove the running scheduler container
-  ./pavics-compose.sh up -d --remove-orphans
+  ./birdhouse-compose.sh up -d --remove-orphans
 
 
 Monitoring
 ==========
 
-This component provides monitoring and alerting for the PAVICS physical host and containers.
+This component provides monitoring and alerting for the Birdhouse physical host and containers.
 
 Prometheus stack is used:
 

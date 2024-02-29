@@ -31,8 +31,8 @@
 # (https://docs.docker.com/engine/security/userns-remap/): this is a
 # global configuration for the docker deamon that impacts all containers
 # on the same host (we only need for the 'autodeploy' container).  Not
-# portable if a host is used to run other services than PAVICS, we do not
-# want to force all other services to the same owner as PAVICS checkout.
+# portable if a host is used to run other services than Birdhouse, we do not
+# want to force all other services to the same owner as Birdhouse checkout.
 #
 # So the setfacl solution is the simplest, most portable/generic and most
 # localized (only the directories we need) solution.

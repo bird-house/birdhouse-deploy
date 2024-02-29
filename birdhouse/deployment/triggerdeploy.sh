@@ -46,7 +46,7 @@ COMPOSE_DIR="$1"
 ENV_LOCAL_FILE="$2"
 
 if [ -z "$COMPOSE_DIR" ]; then
-    echo "ERROR: please provide path to PAVICS docker-compose dir." 1>&2
+    echo "ERROR: please provide path to Birdhouse docker-compose dir." 1>&2
     usage
     exit 2
 else
