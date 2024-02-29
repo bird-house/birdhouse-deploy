@@ -239,6 +239,10 @@ check_default_vars() {
 
 
 process_backwards_compatible_variables() {
+    # If BIRDHOUSE_ALLOW_BACKWARDS_COMPATIBLE is True then allow environment variables listed in
+    # BACKWARDS_COMPATIBLE_VARIABLES_PAVICS to override the equivalent non-deprecated variable.
+    # Deprecated variables contain the string "PAVICS", the equivalent non-deprecated variable has the same
+    # name with "PAVICS" replaced with "BIRDHOUSE".
     [ x"${BIRDHOUSE_ALLOW_BACKWARDS_COMPATIBLE}" = x"True" ] || return
     for pavics_var in ${BACKWARDS_COMPATIBLE_VARIABLES_PAVICS}
     do
