@@ -30,7 +30,7 @@
     where all levels above or equal to the configured one will be displayed (default logging level is `INFO`).
   * Unify all `birdhouse/scripts` utilities to employ the same `COMPOSE_DIR` variable (auto-resolved or explicitly set)
     in order to include or source any relevant dependencies they might have within the `birdhouse-deploy` repository.
-  * Add `info` option (ie: `birdhouse-compose.sh info`) that will stop processing just before `docker-compose` call.
+  * Add `info` option (ie: `pavics-compose.sh info`) that will stop processing just before `docker-compose` call.
     This can be used to perform a "dry-run" of the command and validate that was is loaded is as expected, by inspecting
     provided log messages.
   * Replace older backtick (``` ` ```) executions by `$(...)` representation except for `eval` calls that require
@@ -650,7 +650,7 @@ described for Weaver in
     further updates are included here:
     - removes extra block to include in docker compose files (no longer needed)
     - moves docker compose file in `stac-public-access` component to the correct location
-    - uses `BIRDHOUSE_FQDN_PUBLIC` for public facing URLs in all places
+    - uses `PAVICS_FQDN_PUBLIC` for public facing URLs in all places
 
 [1.29.0](https://github.com/bird-house/birdhouse-deploy/tree/1.29.0) (2023-08-10)
 ------------------------------------------------------------------------------------------------------------------
@@ -952,14 +952,14 @@ described for Weaver in
 ------------------------------------------------------------------------------------------------------------------
 
 ## Fixes
-- Config var `BIRDHOUSE_FQDN_PUBLIC` not usable in component `default.env` and external scripts
+- Config var `PAVICS_FQDN_PUBLIC` not usable in component `default.env` and external scripts
 
-  Currently, `BIRDHOUSE_FQDN_PUBLIC` is only usable in `.template` files, in
+  Currently, `PAVICS_FQDN_PUBLIC` is only usable in `.template` files, in
   `docker-compose-extra.yml` files and in component pre/post compose scripts
   because they are handled by `pavics-compose.sh`.
 
   It was good enough but now with delayed eval feature, we can do better.
-  `BIRDHOUSE_FQDN_PUBLIC` can be as accessible as the other `BIRDHOUSE_FQDN` var.
+  `PAVICS_FQDN_PUBLIC` can be as accessible as the other `PAVICS_FQDN` var.
 
   Both vars allow a host to have a different public and internal hostname.
   Some scripts, `certbotwrapper` for example, prefer the public hostname than
