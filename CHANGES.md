@@ -15,7 +15,58 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Rename variables, constants and files from PAVICS to Birdhouse
+
+  For historical reasons the name PAVICS was used in variable names, constants and filenames in this repo to refer
+  to the software stack in general. This was because, for a long time, the PAVICS deployment of this stack was the
+  only one that was being used in production. However, now that multiple deployments of this software exist in
+  production (that are not named PAVICS), we remove unnecessary references to PAVICS in order to reduce confusion
+  for maintainers and developers who may not be aware of the historical reasons for the PAVICS name.
+
+  This update makes the following changes:
+
+  * The string ``"PAVICS"`` in environment variables, constant values, and file names have been changed to 
+    ``"BIRDHOUSE"`` (case has been preserved where possible).
+    * For example:
+      * ``PAVICS_FQDN`` -> ``BIRDHOUSE_FQDN``
+      * ``pavics_compose.sh`` -> ``birdhouse_compose.sh``
+      * ``THREDDS_DATASET_LOCATION_ON_CONTAINER='/pavics-ncml'`` -> ``THREDDS_DATASET_LOCATION_ON_CONTAINER='/birdhouse-ncml'``
+  * Comment strings and documentation that refers to the software stack as ``PAVICS`` have been changed to use
+    ``Birdhouse``.
+  * Recreated the ``pavics-compose.sh`` script that runs ``birdhouse-compose.sh`` in backwards compatible mode.
+    * Backwards compatible mode means that variables in ``env.local`` that contain the string ``"PAVICS"`` will be used
+      to set the equivalent variable that contains ``"BIRDHOUSE"``. For example, the ``PAVICS_FQDN`` variable set in
+      the ``env.local`` file will be used to set the value of ``BIRDHOUSE_FQDN``.
+  
+  Migration Guide:
+
+  - Update ``env.local`` file to replace all variables that contain ``"PAVICS"`` with ``"BIRDHOUSE"``.
+    * see [`env.local.example`](./birdhouse/env.local.example) to see new variable names
+    * see the ``BACKWARDS_COMPATIBLE_VARIABLES_PAVICS`` variable (defined in 
+      [`default.env`](./birdhouse/default.env)) for a full list of changed environment variable names.
+  - Update any external scripts that access the old variable names directly to use the updated variable names.
+  - Update any external scripts that access any of the following files to use the new file name:
+
+    | old file name           | new file name              |
+    |-------------------------|----------------------------|
+    | pavics-compose.sh       | birdhouse-compose.sh       |
+    | PAVICS-deploy.logrotate | birdhouse-deploy.logrotate |
+    | configure-pavics.sh     | configure-birdhouse.sh     |
+    | trigger-pavicscrawler   | trigger-birdhousecrawler   |
+
+  - The following default values have changed. If your deployment was using the old default value, update your 
+    ``env.local`` file to explicitly set the old default values.
+
+    | old variable name                          | new variable name           | old default value | new default value  |
+    |--------------------------------------------|-----------------------------|-------------------|--------------------|
+    | POSTGRES_PAVICS_USERNAME                   | POSTGRES_BIRDHOUSE_USERNAME | postgres-pavics   | postgres-birdhouse |
+    | THREDDS_DATASET_LOCATION_ON_CONTAINER      | (no change)                 | /pavics-ncml      | /birdhouse-ncml    |
+    | THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER | (no change)                 | /pavics-data      | /birdhouse-data    |
+    | (hardcoded)                                | POSTGRES_BIRDHOUSE_DB       | pavics            | birdhouse          |
+    | JUPYTERHUB_IMAGE_SELECTION_NAMES           | (no change)                 | pavics            | birdhouse          |
+    | PAVICS_LOG_DIR                             | BIRDHOUSE_LOG_DIR           | /var/log/PAVICS   | /var/log/birdhouse |
+
 
 [2.1.0](https://github.com/bird-house/birdhouse-deploy/tree/2.1.0) (2024-02-23)
 ------------------------------------------------------------------------------------------------------------------
