@@ -9,7 +9,7 @@
 # extra DNS entry and also set it manually in your
 # /etc/hosts file.
 hostname: mybirdhouse
-domain: example.ca
+domain: example.com
 
 # Set network bridge, else you'll simply be prompted on vagrant up.
 # network_bridge: enp0s25

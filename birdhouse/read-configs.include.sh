@@ -228,7 +228,7 @@ check_default_vars() {
         result=`echo "${d}" | grep -c "${default}"`
         if [ -z "`eval "echo ${v}"`" ]
         then
-            log DEBUG "Optional variable [${n}] is not set. Check env.local file."
+            log WARN "Optional variable [${n}] is not set. Check env.local file."
         fi
         if [ "${result}" -gt 0 ]
         then

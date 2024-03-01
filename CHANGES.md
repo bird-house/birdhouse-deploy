@@ -26,8 +26,8 @@
 
   This update makes the following changes:
 
-  * The string ``"PAVICS"`` in environment variables, constant values, and file names have been changed to 
-    ``"BIRDHOUSE"`` (case has been preserved where possible).
+  * The string ``PAVICS`` in environment variables, constant values, and file names have been changed to 
+    ``BIRDHOUSE`` (case has been preserved where possible).
     * For example:
       * ``PAVICS_FQDN`` -> ``BIRDHOUSE_FQDN``
       * ``pavics_compose.sh`` -> ``birdhouse_compose.sh``
@@ -35,13 +35,13 @@
   * Comment strings and documentation that refers to the software stack as ``PAVICS`` have been changed to use
     ``Birdhouse``.
   * Recreated the ``pavics-compose.sh`` script that runs ``birdhouse-compose.sh`` in backwards compatible mode.
-    * Backwards compatible mode means that variables in ``env.local`` that contain the string ``"PAVICS"`` will be used
-      to set the equivalent variable that contains ``"BIRDHOUSE"``. For example, the ``PAVICS_FQDN`` variable set in
+    * Backwards compatible mode means that variables in ``env.local`` that contain the string ``PAVICS`` will be used
+      to set the equivalent variable that contains ``BIRDHOUSE``. For example, the ``PAVICS_FQDN`` variable set in
       the ``env.local`` file will be used to set the value of ``BIRDHOUSE_FQDN``.
   
   Migration Guide:
 
-  - Update ``env.local`` file to replace all variables that contain ``"PAVICS"`` with ``"BIRDHOUSE"``.
+  - Update ``env.local`` file to replace all variables that contain ``PAVICS`` with ``BIRDHOUSE``.
     * see [`env.local.example`](./birdhouse/env.local.example) to see new variable names
     * see the ``BACKWARDS_COMPATIBLE_VARIABLES_PAVICS`` variable (defined in 
       [`default.env`](./birdhouse/default.env)) for a full list of changed environment variable names.
@@ -66,6 +66,9 @@
     | (hardcoded)                                | POSTGRES_BIRDHOUSE_DB       | pavics            | birdhouse          |
     | JUPYTERHUB_IMAGE_SELECTION_NAMES           | (no change)                 | pavics            | birdhouse          |
     | PAVICS_LOG_DIR                             | BIRDHOUSE_LOG_DIR           | /var/log/PAVICS   | /var/log/birdhouse |
+
+  - update any jupyter notebooks that make use of the `PAVICS_HOST_URL` environment variable to use the new
+    `BIRDHOUSE_HOST_URL` instead.
 
 
 [2.1.0](https://github.com/bird-house/birdhouse-deploy/tree/2.1.0) (2024-02-23)
