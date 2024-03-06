@@ -17,6 +17,36 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.1.1](https://github.com/bird-house/birdhouse-deploy/tree/2.1.1) (2024-03-06)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- logging: decrease logging level for empty optional vars from WARN to DEBUG
+
+  To avoid drowning real WARN messages.  Many optional vars can be valid if empty.
+
+- config: add sample config to configure docker-compose to remove orphans
+
+  To remove orphans containers when components are disabled.  Also link to full
+  documentations if other env var can be used.
+
+- compose script: allow to pass extra options to `up` operation
+
+  The previous docker-compose built-in env var was not working so had to add
+  this homegrown solution.
+
+  When disabling components, their existing containers will not be removed
+  unless option `--remove-orphans` is given together with  `./pavics-compose.sh up -d`.
+
+  This change allow any additional options, not just `--remove-orphans`.
+
+- compose script: exit early when any errors occurred during invocation
+
+  Before, all the `post-docker-compose-up` would still execute after
+  `docker-compose` has an error.
+
+
 [2.1.0](https://github.com/bird-house/birdhouse-deploy/tree/2.1.0) (2024-02-23)
 ------------------------------------------------------------------------------------------------------------------
 
