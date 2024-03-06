@@ -3,7 +3,7 @@ name: ":books: Documentation"
 about: Report an issue related to missing, incorrect or insufficient documentation.
 title: ":books: [Documentation]: "
 labels: documentation
-assignees: tlvu
+assignees: tlvu, fmigneault, mishaschwartz
 ---
 
 ## Description
