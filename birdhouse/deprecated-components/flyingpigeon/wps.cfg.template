@@ -5,6 +5,6 @@ maxsingleinputsize = 2097152000.0
 
 [logging]
 level = INFO
-database=postgresql://${POSTGRES_BIRDHOUSE_USERNAME}:${POSTGRES_BIRDHOUSE_PASSWORD}@postgres/flyingpigeon
+database=postgresql://${BIRDHOUSE_POSTGRES_USERNAME}:${BIRDHOUSE_POSTGRES_PASSWORD}@postgres/flyingpigeon
 
 ${EXTRA_PYWPS_CONFIG}

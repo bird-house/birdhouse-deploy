@@ -242,36 +242,37 @@ check_default_vars() {
 
 
 process_backwards_compatible_variables() {
-    # If BIRDHOUSE_BACKWARD_COMPATIBLE_PAVICS_ALLOWED is True then allow environment variables listed in
-    # BACKWARDS_COMPATIBLE_VARIABLES_PAVICS to override the equivalent non-deprecated variable.
-    # Deprecated variables contain the string "PAVICS", the equivalent non-deprecated variable has the same
-    # name with "PAVICS" replaced with "BIRDHOUSE".
-    for pavics_var in ${BACKWARDS_COMPATIBLE_VARIABLES_PAVICS}
+    # If BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED is True then allow environment variables listed in
+    # BACKWARDS_COMPATIBLE_VARIABLES to override the equivalent non-deprecated variable.
+    # Otherwise, warn the user about deprecated variables that may still exist in the BIRDHOUSE_LOCAL_ENV
+    # file without overriding.
+    for back_compat_vars in ${BACKWARDS_COMPATIBLE_VARIABLES}
     do
-      pavics_var_set="`eval "echo \\${${pavics_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
-      if [ "${pavics_var_set}" = "set" ]; then
-        pavics_value="`eval "echo \\$${pavics_var}"`"
-        birdhouse_var="$(echo "$pavics_var" | sed 's/PAVICS/BIRDHOUSE/')"
-        if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_PAVICS_ALLOWED}" = x"True" ]; then
-          log WARN "Deprecated variable [${pavics_var}] is overriding [${birdhouse_var}]. Check env.local file."
-          eval 'export ${birdhouse_var}="${pavics_value}"'
+      old_var="${back_compat_vars%%=*}"
+      new_var="${back_compat_vars#*=}"
+      old_var_set="`eval "echo \\${${old_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
+      if [ "${old_var_set}" = "set" ]; then
+        old_value="`eval "echo \\$${old_var}"`"
+        if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
+          log WARN "Deprecated variable [${old_var}] is overriding [${new_var}]. Check env.local file."
+          eval 'export ${new_var}="${old_value}"'
         else
-          birdhouse_value="`eval "echo \\$${birdhouse_var}"`"
-          if [ x"${pavics_value}" = x"${birdhouse_value}" ]; then
-            log WARN "Deprecated variable [${pavics_var}] can be removed as it has been superseded by [${birdhouse_var}]. Check env.local file."
+          new_value="`eval "echo \\$${new_var}"`"
+          if [ x"${old_value}" = x"${new_value}" ]; then
+            log WARN "Deprecated variable [${old_var}] can be removed as it has been superseded by [${new_var}]. Check env.local file."
           else
-            log WARN "Deprecated variable [${pavics_var}] is present but ignored in favour of [${birdhouse_var}]. Check env.local file."
+            log WARN "Deprecated variable [${old_var}] is present but ignored in favour of [${new_var}]. Check env.local file."
           fi
         fi
       fi
     done
-    for default_pavics_var in ${BACKWARDS_COMPATIBLE_DEFAULTS_PAVICS}
+    for default_old_var in ${BACKWARDS_COMPATIBLE_DEFAULTS}
     do
-      pavics_var="${default_pavics_var%%=*}"
-      default_pavics_value="${default_pavics_var#*=}"
-      pavics_value="`eval "echo \\$${pavics_var}"`"
-      if [ "${pavics_value}" = "${default_pavics_value}" ]; then
-        log WARN "Variable [${pavics_var}] employs a deprecated default value recommended for override. Check env.local file."
+      old_var="${default_old_var%%=*}"
+      default_old_value="${default_old_var#*=}"
+      old_value="`eval "echo \\$${old_var}"`"
+      if [ "${old_value}" = "${default_old_value}" ]; then
+        log WARN "Variable [${old_var}] employs a deprecated default value recommended for override. Check env.local file."
       fi
     done
 }

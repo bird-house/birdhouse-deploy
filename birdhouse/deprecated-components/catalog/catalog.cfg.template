@@ -31,4 +31,4 @@ parallelprocesses=30
 [logging]
 #level=DEBUG
 #file=/tmp/wps.log
-database=postgresql://${POSTGRES_BIRDHOUSE_USERNAME}:${POSTGRES_BIRDHOUSE_PASSWORD}@postgres/catalog
+database=postgresql://${BIRDHOUSE_POSTGRES_USERNAME}:${BIRDHOUSE_POSTGRES_PASSWORD}@postgres/catalog

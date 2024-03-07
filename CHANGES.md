@@ -42,8 +42,9 @@
 ### Migration Guide
 
   - Update ``env.local`` file to replace all variables that contain ``PAVICS`` with ``BIRDHOUSE``.
+    Variable names have also been updated to ensure that they start with the prefix ``BIRDHOUSE_``.
     * see [`env.local.example`](./birdhouse/env.local.example) to see new variable names
-    * see the ``BACKWARDS_COMPATIBLE_VARIABLES_PAVICS`` variable (defined in 
+    * see the ``BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in 
       [`default.env`](./birdhouse/default.env)) for a full list of changed environment variable names.
   - Update any external scripts that access the old variable names directly to use the updated variable names.
   - Update any external scripts that access any of the following files to use the new file name:
@@ -60,13 +61,13 @@
 
     | old variable name                          | new variable name           | old default value | new default value  |
     |--------------------------------------------|-----------------------------|-------------------|--------------------|
-    | POSTGRES_PAVICS_USERNAME                   | POSTGRES_BIRDHOUSE_USERNAME | postgres-pavics   | postgres-birdhouse |
+    | POSTGRES_PAVICS_USERNAME                   | BIRDHOUSE_POSTGRES_USERNAME | postgres-pavics   | postgres-birdhouse |
     | THREDDS_DATASET_LOCATION_ON_CONTAINER      | (no change)                 | /pavics-ncml      | /birdhouse-ncml    |
     | THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER | (no change)                 | /pavics-data      | /birdhouse-data    |
-    | (hardcoded)                                | POSTGRES_BIRDHOUSE_DB       | pavics            | birdhouse          |
+    | (hardcoded)                                | BIRDHOUSE_POSTGRES_DB       | pavics            | birdhouse          |
     | PAVICS_LOG_DIR                             | BIRDHOUSE_LOG_DIR           | /var/log/PAVICS   | /var/log/birdhouse |
 
-  - Update any jupyter notebooks that make use of the `PAVICS_HOST_URL` environment variable to use the new
+  - Update any jupyter notebooks that make usedefault.env of the `PAVICS_HOST_URL` environment variable to use the new
     `BIRDHOUSE_HOST_URL` instead.
 
 
