@@ -114,7 +114,9 @@ Use same docker image as regular Finch by default but can be customized.
 
 Use a separate Postgres DB for this optional component to be completely
 self-contained and to allow experimenting with different versions of Postgres
-DB.
+DB. This Postgres DB will be named ``generic_bird`` by default but can be customized by
+setting the ``BIRDHOUSE_GENERIC_BIRD_POSTGRES_DB`` environment variable in ``env.local``
+in case that name clashes with the ``BIRDHOUSE_POSTGRES_DB`` variable.
 
 Magpie will be automatically configured to give complete public anonymous
 access for this WPS service.
