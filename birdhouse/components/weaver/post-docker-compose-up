@@ -367,7 +367,7 @@ fi
 
 echo "${PREFIX}Starting Weaver WebApp/Worker Celery tasks validation..."
 CUR_SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-BIRDHOUSE_COMPOSE="$(realpath "${CUR_SCRIPT_DIR}/../../birdhouse-compose.sh")"
+BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"$(realpath "${CUR_SCRIPT_DIR}/../../birdhouse-compose.sh")"}"
 BIRDHOUSE_LOG_DIR="${BIRDHOUSE_LOG_DIR:-/tmp/birdhouse-compose}"
 CELERY_HEALTHCHECK="/opt/local/bin/weaver/celery-healthcheck"
 mkdir -p "${BIRDHOUSE_LOG_DIR}"

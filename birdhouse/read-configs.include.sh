@@ -30,7 +30,10 @@
 # WARNING: cannot use 'log' calls within this function until the following logging script gets resolved and sourced.
 discover_compose_dir() {
     if [ -z "${COMPOSE_DIR}" ] || [ ! -e "${COMPOSE_DIR}" ]; then
-        if [ -f "./birdhouse-compose.sh" ]; then
+        if [ -n "${BIRDHOUSE_COMPOSE}" ] && [ -f "${BIRDHOUSE_COMPOSE}" ]; then
+            # Parent of the BIRDHOUSE_COMPOSE file is the COMPOSE_DIR
+            COMPOSE_DIR=$(dirname "${COMPOSE_DIR}")
+        elif [ -f "./birdhouse-compose.sh" ]; then
             # Current dir is COMPOSE_DIR
             COMPOSE_DIR="$(realpath .)"
         elif [ -f "../birdhouse-compose.sh" ]; then
@@ -239,19 +242,36 @@ check_default_vars() {
 
 
 process_backwards_compatible_variables() {
-    # If BIRDHOUSE_ALLOW_BACKWARDS_COMPATIBLE is True then allow environment variables listed in
+    # If BIRDHOUSE_BACKWARD_COMPATIBLE_PAVICS_ALLOWED is True then allow environment variables listed in
     # BACKWARDS_COMPATIBLE_VARIABLES_PAVICS to override the equivalent non-deprecated variable.
     # Deprecated variables contain the string "PAVICS", the equivalent non-deprecated variable has the same
     # name with "PAVICS" replaced with "BIRDHOUSE".
-    [ x"${BIRDHOUSE_ALLOW_BACKWARDS_COMPATIBLE}" = x"True" ] || return
     for pavics_var in ${BACKWARDS_COMPATIBLE_VARIABLES_PAVICS}
     do
       pavics_var_set="`eval "echo \\${${pavics_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
       if [ "${pavics_var_set}" = "set" ]; then
         pavics_value="`eval "echo \\$${pavics_var}"`"
         birdhouse_var="$(echo "$pavics_var" | sed 's/PAVICS/BIRDHOUSE/')"
-        log WARN "Deprecated variable [${pavics_var}] is overriding [${birdhouse_var}]. Check env.local file."
-        eval 'export ${birdhouse_var}="${pavics_value}"'
+        if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_PAVICS_ALLOWED}" = x"True" ]; then
+          log WARN "Deprecated variable [${pavics_var}] is overriding [${birdhouse_var}]. Check env.local file."
+          eval 'export ${birdhouse_var}="${pavics_value}"'
+        else
+          birdhouse_value="`eval "echo \\$${birdhouse_var}"`"
+          if [ x"${pavics_value}" = x"${birdhouse_value}" ]; then
+            log WARN "Deprecated variable [${pavics_var}] can be removed as it has been superseded by [${birdhouse_var}]. Check env.local file."
+          else
+            log WARN "Deprecated variable [${pavics_var}] is present but ignored in favour of [${birdhouse_var}]. Check env.local file."
+          fi
+        fi
+      fi
+    done
+    for default_pavics_var in ${BACKWARDS_COMPATIBLE_DEFAULTS_PAVICS}
+    do
+      pavics_var="${default_pavics_var%%=*}"
+      default_pavics_value="${default_pavics_var#*=}"
+      pavics_value="`eval "echo \\$${pavics_var}"`"
+      if [ "${pavics_value}" = "${default_pavics_value}" ]; then
+        log WARN "Variable [${pavics_var}] employs a deprecated default value recommended for override. Check env.local file."
       fi
     done
 }

@@ -33,8 +33,10 @@
 #
 #   Follow same instructions in deploy.sh.
 
+BIRDHOUSE_LOG_DIR=${BIRDHOUSE_LOG_DIR:-"/var/log/birdhouse"}
+
 if [ ! -z "$AUTODEPLOY_SILENT" ]; then
-    LOG_FILE="/var/log/birdhouse/autodeploy.log"
+    LOG_FILE="${BIRDHOUSE_LOG_DIR}/autodeploy.log"
     exec >>$LOG_FILE 2>&1
 fi
 

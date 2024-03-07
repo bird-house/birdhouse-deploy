@@ -142,7 +142,7 @@ There are 2 tests that need to be performed:
 
 * Can autodeploy deploy the PR from ``master`` branch, the stable reference point?
 
-  * This could fail if some changes in the PR are incompatible with autodeploy. For example: ``./birdhouse-compose.sh`` calls some binaries that do not exist in the autodeploy docker image.
+  * This could fail if some changes in the PR are incompatible with autodeploy. For example: ``birdhouse compose`` calls some binaries that do not exist in the autodeploy docker image.
 
 * Can autodeploy be triggered again successfully, after the PR is live?
 
@@ -150,11 +150,11 @@ There are 2 tests that need to be performed:
 
 Here is a sample setup to test autodeploy:
 
-* Have 2 checkout directories.  One is for starting the stack using ``./birdhouse-compose.sh``, the other one is to push new bogus changes to trigger the autodeploy mechanism.
+* Have 2 checkout directories.  One is for starting the stack using ``birdhouse compose``, the other one is to push new bogus changes to trigger the autodeploy mechanism.
 
 .. code-block:: shell
 
-  # this one for running birdhouse-compose.sh
+  # this one for running birdhouse compose
   git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy
 
   # this one for triggering autodeploy
@@ -176,10 +176,10 @@ Here is a sample setup to test autodeploy:
 
   # if scheduler container already running:
   # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
-  ./birdhouse-compose.sh stop scheduler && ./birdhouse-compose.sh rm -vf scheduler && ./birdhouse-compose.sh up -d
+  birdhouse compose stop scheduler && birdhouse compose rm -vf scheduler && birdhouse compose up -d
 
   # if scheduler container not running yet: start the newly added scheduler component
-  ./birdhouse-compose.sh up -d
+  birdhouse compose up -d
 
 * Create a ``${USER}-test`` branch so you can add bogus commits without affecting your real PR.  Set up your main checkout (birdhouse-deploy) to track that test branch so it will detect new changes on the test branch and trigger the autodeploy.
 
@@ -197,7 +197,7 @@ Here is a sample setup to test autodeploy:
 
   # ensure your runnings code is at "master" and is working correctly
   # if you do not have a working baseline, you will not know if the breakage is due to autodeploy or your code
-  ./birdhouse-compose.sh up -d
+  birdhouse compose up -d
 
 * Test scenario 1, from ``master`` to your PR
 
@@ -270,11 +270,11 @@ Here is a sample setup to test autodeploy:
   # do not remove the scheduler component from the stack yet or the next command will fail
 
   # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
-  ./birdhouse-compose.sh stop scheduler && ./birdhouse-compose.sh rm -vf scheduler && ./birdhouse-compose.sh up -d
+  birdhouse compose stop scheduler && birdhouse compose rm -vf scheduler && birdhouse compose up -d
 
   # optionally edit env.local to remove the scheduler component from the stack
   # then remove the running scheduler container
-  ./birdhouse-compose.sh up -d --remove-orphans
+  birdhouse compose up -d --remove-orphans
 
 
 Monitoring

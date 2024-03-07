@@ -213,15 +213,15 @@ version:	## Display project version
 
 ### Execution Targets ###
 
-SCRIPT ?= birdhouse/birdhouse-compose.sh	## Script to run the stack
+SCRIPT ?= bin/birdhouse	## Script to run the stack
 SCRIPT := $(call clean_opt,$(SCRIPT))
 
 .PHONY: start
 start:		## Start the stack with current env.local definitions
 	@-$(MSG_I) "Starting $(APP_NAME) stack..."
-	@$(SHELL) $(SCRIPT) up -d
+	@$(SHELL) $(SCRIPT) compose up -d
 
 .PHONY: stop
 stop:		## Stop the running stack
 	@-$(MSG_I) "Stopping $(APP_NAME) stack..."
-	@$(SHELL) $(SCRIPT) stop
+	@$(SHELL) $(SCRIPT) compose stop

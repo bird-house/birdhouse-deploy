@@ -1,0 +1,47 @@
+#!/bin/sh
+
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="$(dirname "${THIS_DIR}")/birdhouse"
+
+export BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"${COMPOSE_DIR}/birdhouse-compose.sh"}"
+USAGE="USAGE: $0 [-c|--compose-file birdhouse-compose-file] [-e|--env-file local-env-file] {info|compose}"
+
+parse_args() {
+  case "$1" in
+    -c|--compose-file)
+      shift
+      export BIRDHOUSE_COMPOSE="$(realpath "$1")"  # The argument here takes precedence over the env variable
+      shift
+      parse_args "$@"
+      return
+      ;;
+    -e|--env-file)
+      shift
+      export BIRDHOUSE_LOCAL_ENV=$(realpath "$1")  # The argument here takes precedence over the env variable
+      shift
+      parse_args "$@"
+      return
+      ;;
+    info)
+      shift
+      "${BIRDHOUSE_COMPOSE}" info "$@"
+      return
+      ;;
+    compose)
+      shift
+      "${BIRDHOUSE_COMPOSE}" "$@"
+      exit $?
+      ;;
+    -h|--help)
+      echo "$USAGE"
+      exit
+      ;;
+    *)
+      >&2 echo "$USAGE"
+      exit 1
+      ;;
+  esac
+}
+
+parse_args "$@"

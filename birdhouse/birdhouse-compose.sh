@@ -14,6 +14,7 @@
 #   some of these variables *could* employ provided values in 'default.env',
 #   but they must ultimately be defined one way or another for the server to work
 VARS='
+  $BIRDHOUSE_COMPOSE
   $BIRDHOUSE_FQDN
   $DOC_URL
   $SUPPORT_EMAIL
@@ -40,10 +41,15 @@ OPTIONAL_VARS='
   $SERVER_LICENSE_URL
 '
 
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+
+export BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"${THIS_FILE}"}"
+
 # we switch to the real directory of the script, so it still works when used from $PATH
 # tip: ln -s /path/to/birdhouse-compose.sh ~/bin/
 # Setup PWD for sourcing env.local.
-cd "$(dirname "$(readlink -f "$0" || realpath "$0")")" || exit 1
+cd "${THIS_DIR}" || exit 1
 
 # Setup COMPOSE_DIR for sourcing env.local.
 # Prevent un-expected difference when this script is run inside autodeploy
@@ -56,6 +62,10 @@ read_configs # this sets ALL_CONF_DIRS
 . "${COMPOSE_DIR}/scripts/get-components-json.include.sh"
 . "${COMPOSE_DIR}/scripts/get-services-json.include.sh"
 . "${COMPOSE_DIR}/scripts/get-version-json.include.sh"
+
+echo $BIRDHOUSE_FQDN_PUBLIC
+
+exit
 
 check_required_vars || exit $?
 

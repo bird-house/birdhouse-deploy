@@ -5,7 +5,7 @@
 # This is a stable interface for test automation shielding it from knowing the
 # intimate details of how to bootstrap a fresh new instance.
 #
-# Assume Birdhouse instance is already fully up (`./birdhouse-compose.sh up -d` has
+# Assume Birdhouse instance is already fully up (`birdhouse compose up -d` has
 # been called).
 #
 

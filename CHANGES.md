@@ -39,7 +39,7 @@
       to set the equivalent variable that contains ``BIRDHOUSE``. For example, the ``PAVICS_FQDN`` variable set in
       the ``env.local`` file will be used to set the value of ``BIRDHOUSE_FQDN``.
   
-  Migration Guide:
+### Migration Guide
 
   - Update ``env.local`` file to replace all variables that contain ``PAVICS`` with ``BIRDHOUSE``.
     * see [`env.local.example`](./birdhouse/env.local.example) to see new variable names
@@ -64,10 +64,9 @@
     | THREDDS_DATASET_LOCATION_ON_CONTAINER      | (no change)                 | /pavics-ncml      | /birdhouse-ncml    |
     | THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER | (no change)                 | /pavics-data      | /birdhouse-data    |
     | (hardcoded)                                | POSTGRES_BIRDHOUSE_DB       | pavics            | birdhouse          |
-    | JUPYTERHUB_IMAGE_SELECTION_NAMES           | (no change)                 | pavics            | birdhouse          |
     | PAVICS_LOG_DIR                             | BIRDHOUSE_LOG_DIR           | /var/log/PAVICS   | /var/log/birdhouse |
 
-  - update any jupyter notebooks that make use of the `PAVICS_HOST_URL` environment variable to use the new
+  - Update any jupyter notebooks that make use of the `PAVICS_HOST_URL` environment variable to use the new
     `BIRDHOUSE_HOST_URL` instead.
 
 

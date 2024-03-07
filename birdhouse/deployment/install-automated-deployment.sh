@@ -37,6 +37,7 @@ fi
 REPO_ROOT="`realpath "$1"`"; shift  # path to Birdhouse checkout
 REPO_OWNER="$1"; shift  #  user owning (have write access) the Birdhouse checkout
 CRON_FREQUENCY="$1"
+COMPOSE_DIR="${COMPOSE_DIR:-"${REPO_ROOT}/birdhouse"}"
 
 # defaults, overridable
 if [ -z "$CRON_FREQUENCY_TXT" ]; then
@@ -71,9 +72,9 @@ set -x
 sudo cp -v $REPO_ROOT/birdhouse/deployment/triggerdeploy.sh /usr/local/sbin/
 
 
-CRON_FILE="/etc/cron.d/Birdhouse-deploy"
+CRON_FILE=${CRON_FILE:-"/etc/cron.d/birdhouse-deploy"}
 
-. "${REPO_ROOT}/birdhouse/read-configs.include.sh"
+. "${COMPOSE_DIR}/read-configs.include.sh"
 
 read_basic_configs_only
 

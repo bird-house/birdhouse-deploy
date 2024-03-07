@@ -12,7 +12,7 @@ Requirements
 * Hostname of Docker host must exist on the network.  Must use bridge
   networking if Docker host is a Virtual Machine.
 
-* User running ``birdhouse-compose.sh`` below must not be ``root`` but a regular user
+* User running ``BIRDHOUSE_COMPOSE`` below must not be ``root`` but a regular user
   belonging to the ``docker`` group.
 
 * Install latest docker-ce and docker-compose for the chosen distro (not the
@@ -48,14 +48,36 @@ Quick-start
   FORCE_CERTBOT_E2E=1 FORCE_CERTBOT_E2E_NO_START_PROXY=1 deployment/certbotwrapper
 
   # Start the full stack.
-  ./birdhouse-compose.sh up -d
+  ./bin/birdhouse compose up -d
+
+Post-installation steps
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Add the ``birdhouse-deploy/bin/`` directory to your ``PATH``:
+
+.. code-block:: shell
+
+  export PATH="$(readlink -f ./bin):$PATH"
+
+  # Now instead of running (from the root directory of this project):
+
+  ./bin/birdhouse compose up -d
+
+  # you can run (from anywhere):
+
+  birdhouse compose up -d
+
+  # To ensure that your PATH variable always includes this directory in login shells:
+
+  echo "export PATH=$(readlink -f ./bin)"':$PATH' >> ~/.profile
+
 
 Further explanations
 ^^^^^^^^^^^^^^^^^^^^
 
-To run ``docker-compose`` for Birdhouse, the `birdhouse-compose.sh <birdhouse-compose.sh>`_ (:download:`download </birdhouse/birdhouse-compose.sh>`) wrapper script must be used.
-This script will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration files
-".template", and run ``docker-compose`` with all the command line arguments given to `birdhouse-compose.sh <birdhouse-compose.sh>`_ (:download:`download </birdhouse/birdhouse-compose.sh>`).
+To run ``docker-compose`` for Birdhouse, the `bin/birdhouse <bin/birdhouse>`_ (:download:`download </bin/birdhouse`) file can be run with the ``compose`` argument.
+This will source the ``env.lscriptocal`` file, apply the appropriate variable substitutions on all the configuration files
+".template", and run ``docker-compose`` with all the command line arguments after the ``compose`` argument.
 See `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`) for more details on what can go into the ``env.local`` file.
 
 If the file `env.local` is somewhere else, symlink it here, next to `docker-compose.yml <docker-compose.yml>`_ (:download:`download </birdhouse/docker-compose.yml>`) because many scripts assume this location.
@@ -71,9 +93,10 @@ Suggested deployment layout:
 .. code-block::
 
    ├── birdhouse-deploy/  # this repo
+   │   ├── bin/
+   │   │   ├── birdhouse
    │   ├── birdhouse/
    │   │   ├── env.local  # relative symlink to env.local.real below
-   │   │   ├── birdhouse-compose.sh
    │   │   ├── (...)
    ├── private-config/    # your private config and override: sibling level of this repo
    │   ├── docker-compose-extra.yml
@@ -96,7 +119,7 @@ To launch all the containers, use the following command:
 
 .. code-block::
 
-   ./birdhouse-compose.sh up -d
+   ./bin/birdhouse compose up -d
 
 If you get a ``'No applicable error code, please check error log'`` error from the WPS processes, please make sure that the WPS databases exists in the
 postgres instance. See `create-wps-pgsql-databases.sh <scripts/create-wps-pgsql-databases.sh>`_ (:download:`download </birdhouse/scripts/create-wps-pgsql-databases.sh>`).
@@ -230,8 +253,8 @@ Starting and managing the lifecycle of the VM:
 
    # get inside the VM
    # useful to manage the Birdhouse platform as if Vagrant is not there
-   # and use birdhouse-compose.sh as before
-   # ex: cd /vagrant/birdhouse; ./birdhouse-compose.sh ps
+   # and use `birdhouse compose` as before
+   # ex: birdhouse compose ps
    vagrant ssh
 
    # power-off VM

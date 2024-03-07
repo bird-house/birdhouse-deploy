@@ -76,4 +76,6 @@ else
     echo "existing '$SSL_CERTIFICATE' file, not overriding"
 fi
 
-./birdhouse-compose.sh up -d
+export PATH="$(readlink -f ../bin):$PATH"
+
+birdhouse compose up -d
