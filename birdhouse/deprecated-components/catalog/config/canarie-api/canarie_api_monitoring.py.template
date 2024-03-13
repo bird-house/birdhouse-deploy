@@ -6,7 +6,7 @@ SERVICES['Catalog'] = {
         'institution': 'Ouranos',
         'releaseTime': get_release_time_from_repo_tag("docker", "${CATALOG_DOCKER}", "${CATALOG_VERSION}"),
         'researchSubject': 'Climate',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Catalog',
         'tags': ['Catalog', 'Data']
     },

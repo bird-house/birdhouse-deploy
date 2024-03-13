@@ -6,7 +6,7 @@ SERVICES['Cowbird'] = {
         'institution': 'Ouranos, CRIM',
         'releaseTime': get_release_time_from_repo_tag("github", "Ouranosinc/cowbird", "${COWBIRD_VERSION}"),
         'researchSubject': 'Any',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Security',
         'tags': ['Security', 'Management', 'Access', 'Policy Decision Point']
     },

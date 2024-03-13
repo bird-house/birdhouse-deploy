@@ -131,7 +131,7 @@ class TestReadConfigs:
 
     def test_all_conf_dirs_extra_last(self, read_config_include_file) -> None:
         """Test that any extra components are loaded last"""
-        extra = {"EXTRA_CONF_DIRS": '"./components/finch\n./components/weaver"'}
+        extra = {"BIRDHOUSE_EXTRA_CONF_DIRS": '"./components/finch\n./components/weaver"'}
         proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"')
         assert split_and_strip(get_command_stdout(proc))[-2:] == [
             "./components/finch",
@@ -141,7 +141,7 @@ class TestReadConfigs:
     @pytest.mark.usefixtures("run_in_compose_dir")
     def test_dependencies_loaded_first(self, read_config_include_file) -> None:
         """Test that dependencies are loaded first"""
-        extra = {"EXTRA_CONF_DIRS": '"./optional-components/test-weaver"'}
+        extra = {"BIRDHOUSE_EXTRA_CONF_DIRS": '"./optional-components/test-weaver"'}
         proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"')
         print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc))[-2:] == [
@@ -151,7 +151,7 @@ class TestReadConfigs:
 
     def test_non_project_components_included(self, read_config_include_file) -> None:
         """Test that extra components can be included"""
-        extra = {"EXTRA_CONF_DIRS": '"./blah/other-random-component"'}
+        extra = {"BIRDHOUSE_EXTRA_CONF_DIRS": '"./blah/other-random-component"'}
         proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"')
         assert split_and_strip(get_command_stdout(proc))[-1] == "./blah/other-random-component"
 
@@ -159,7 +159,7 @@ class TestReadConfigs:
     def test_delayed_eval_default_value(self, read_config_include_file) -> None:
         """Test delayed eval when value not set in env.local"""
         extra = {"BIRDHOUSE_FQDN": '"fqdn.example.com"',
-                 "EXTRA_CONF_DIRS": '"./components/jupyterhub ./components/geoserver"'}
+                 "BIRDHOUSE_EXTRA_CONF_DIRS": '"./components/jupyterhub ./components/geoserver"'}
         proc = self.run_func(read_config_include_file, extra,
                              'echo "$BIRDHOUSE_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"')
         print(proc.stdout)  # useful for debugging when assert fail
@@ -172,8 +172,8 @@ class TestReadConfigs:
         """Test delayed eval when value is set in env.local"""
         extra = {"BIRDHOUSE_FQDN": '"fqdn.example.com"',
                  "BIRDHOUSE_FQDN_PUBLIC": '"public.example.com"',
-                 "EXTRA_CONF_DIRS": '"./components/jupyterhub ./components/geoserver"',
-                 "DATA_PERSIST_ROOT": '"/my-data-root"',  # indirectly change JUPYTERHUB_USER_DATA_DIR
+                 "BIRDHOUSE_EXTRA_CONF_DIRS": '"./components/jupyterhub ./components/geoserver"',
+                 "BIRDHOUSE_DATA_PERSIST_ROOT": '"/my-data-root"',  # indirectly change JUPYTERHUB_USER_DATA_DIR
                  "GEOSERVER_DATA_DIR": '"/my-geoserver-data"',
                  }
         proc = self.run_func(read_config_include_file, extra,

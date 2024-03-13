@@ -80,8 +80,8 @@ read_basic_configs_only
 
 export CRON_FREQUENCY_TXT="$CRON_FREQUENCY_TXT"
 export CRON_SCHEDULE="$CRON_SCHEDULE"
-export BIRDHOUSE_CHECKOUT_OWNER="$REPO_OWNER"
-export PATH_TO_BIRDHOUSE_CHECKOUT="$REPO_ROOT"
+export BIRDHOUSE_REPO_CHECKOUT_OWNER="$REPO_OWNER"
+export BIRDHOUSE_REPO_CHECKOUT_PATH="$REPO_ROOT"
 
 [ ! -d "${BIRDHOUSE_LOG_DIR}" ] && echo "WARNING: The logging directory doesn't exist. Run 'install-logrotate-config'."
 

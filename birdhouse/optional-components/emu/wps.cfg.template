@@ -5,4 +5,4 @@ outputpath = /data/wpsoutputs
 [logging]
 level = DEBUG
 
-${EXTRA_PYWPS_CONFIG}
+${BIRDHOUSE_EXTRA_PYWPS_CONFIG}

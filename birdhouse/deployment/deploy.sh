@@ -81,7 +81,7 @@ cd "${COMPOSE_DIR}" || exit
 
 . "${COMPOSE_DIR}/read-configs.include.sh"
 
-# Read AUTODEPLOY_EXTRA_REPOS
+# Read BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS
 read_basic_configs_only
 
 if [ ! -z "${AUTODEPLOY_SILENT}" ]; then
@@ -103,7 +103,7 @@ if [ ! -f "${ENV_LOCAL_FILE}" ]; then
 fi
 
 if [ -f "$COMPOSE_DIR/docker-compose.override.yml" ]; then
-    echo "WARNING: docker-compose.override.yml found, should use EXTRA_CONF_DIRS in env.local instead"
+    echo "WARNING: docker-compose.override.yml found, should use BIRDHOUSE_EXTRA_CONF_DIRS in env.local instead"
 fi
 
 START_TIME="$(date -Isecond)"
@@ -111,7 +111,7 @@ echo "deploy START_TIME=${START_TIME}"
 
 set -x
 
-for adir in "${COMPOSE_DIR}" ${AUTODEPLOY_EXTRA_REPOS}; do
+for adir in "${COMPOSE_DIR}" ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}; do
     if [ -d "${adir}" ]; then
         cd "${adir}" || exit
 
@@ -132,13 +132,13 @@ read_basic_configs_only
 # stop all to force reload any changed config that are volume-mount into the containers
 ./birdhouse-compose.sh stop
 
-for adir in "${COMPOSE_DIR}" ${AUTODEPLOY_EXTRA_REPOS}; do
+for adir in "${COMPOSE_DIR}" ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}; do
     if [ -d "${adir}" ]; then
         cd "${adir}" || exit
 
         EXTRA_REPO="$(git rev-parse --show-toplevel)"
-        DEPLOY_KEY="${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/$(basename "${EXTRA_REPO}")_deploy_key"
-        DEFAULT_DEPLOY_KEY="${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/id_rsa_git_ssh_read_only"
+        DEPLOY_KEY="${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/$(basename "${EXTRA_REPO}")_deploy_key"
+        DEFAULT_DEPLOY_KEY="${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/id_rsa_git_ssh_read_only"
         if [ ! -e "${DEPLOY_KEY}" ] && [ -e "${DEFAULT_DEPLOY_KEY}" ]; then
             DEPLOY_KEY="${DEFAULT_DEPLOY_KEY}"
         fi

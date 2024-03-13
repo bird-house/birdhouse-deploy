@@ -39,12 +39,12 @@ Quick-start
   
   $EDITOR env.local
   # Set the following variables at the minimun:
-  #SSL_CERTIFICATE='/path/to/cert.pem'
+  #BIRDHOUSE_SSL_CERTIFICATE='/path/to/cert.pem'
   #BIRDHOUSE_FQDN='<full qualified hostname of the current host>'
   # Only needed if using LetsEncrypt SSL certificate
-  #SUPPORT_EMAIL='a real email to receivez LetsEncrypt renewal notification'
+  #BIRDHOUSE_SUPPORT_EMAIL='a real email to receivez LetsEncrypt renewal notification'
 
-  # Get the SSL Cert from LetsEncrypt, written to path of var SSL_CERTIFICATE.
+  # Get the SSL Cert from LetsEncrypt, written to path of var BIRDHOUSE_SSL_CERTIFICATE.
   FORCE_CERTBOT_E2E=1 FORCE_CERTBOT_E2E_NO_START_PROXY=1 deployment/certbotwrapper
 
   # Start the full stack.
@@ -106,7 +106,7 @@ Suggested deployment layout:
 The automatic deployment is able to handle multiple repos, so will trigger if
 this repo or your private-personalized-config repo changes, giving you
 automated continuous deployment.  See the continuous deployment setup section
-below and the variable ``AUTODEPLOY_EXTRA_REPOS`` in `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`).
+below and the variable ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`` in `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`).
 
 The automatic deployment of the Birdhouse platform, of the Jupyter tutorial
 notebooks and of the automatic deployment mechanism itself can all be
@@ -198,7 +198,7 @@ to prepare your new instance.  Further documentation inside the script.
 Optional components
 `all-public-access <./optional-components#give-public-access-to-all-resources-for-testing-purposes>`_
 and `secure-thredds <./optional-components/#control-secured-access-to-resources-example>`_
-also need to be enabled in ``env.local`` using ``EXTRA_CONF_DIRS`` variable.
+also need to be enabled in ``env.local`` using ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable.
 
 ESGF login is also needed for
 https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebooks/esgf-dap.ipynb

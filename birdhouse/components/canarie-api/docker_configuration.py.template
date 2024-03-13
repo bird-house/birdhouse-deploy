@@ -111,23 +111,23 @@ SERVICES = {
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
             'version': '2.1.1',
             'releaseTime': '2024-03-06T22:15:17Z',
-            'institution': '${SERVER_INSTITUTION}',
-            'researchSubject': '${SERVER_SUBJECT}',
-            'supportEmail': '${SUPPORT_EMAIL}',
+            'institution': '${BIRDHOUSE_INSTITUTION}',
+            'researchSubject': '${BIRDHOUSE_SUBJECT}',
+            'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
             'category': 'Resource/Cloud Management',
-            'tags': [tag.strip() for tag in "${SERVER_TAGS}".split(",") if tag.strip()],
+            'tags': [tag.strip() for tag in "${BIRDHOUSE_TAGS}".split(",") if tag.strip()],
         },
         'stats': {
             'method': '.*',
             'route': '(?!)'  # this will be set by CANARIE_STATS_ROUTES (see below)
         },
         'redirect': {
-            'doc': '${SERVER_DOCUMENTATION_URL}',
-            'releasenotes': '${SERVER_RELEASE_NOTES_URL}',
-            'support': '${SERVER_SUPPORT_URL}',
+            'doc': '${BIRDHOUSE_DOCUMENTATION_URL}',
+            'releasenotes': '${BIRDHOUSE_RELEASE_NOTES_URL}',
+            'support': '${BIRDHOUSE_SUPPORT_URL}',
             'source': 'https://github.com/bird-house/birdhouse-deploy',
             'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}',
-            'licence': '${SERVER_LICENSE_URL}',
+            'licence': '${BIRDHOUSE_LICENSE_URL}',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
         },
         'monitoring': {}  # filled in after processing everything, see end of script
@@ -137,17 +137,17 @@ SERVICES = {
 PLATFORMS = {
     'server': {
         'info': {
-            'name': '${SERVER_NAME}',
-            'synopsis': """${SERVER_DESCRIPTION}""".replace("\n", " ").strip(),
+            'name': '${BIRDHOUSE_NAME}',
+            'synopsis': """${BIRDHOUSE_DESCRIPTION}""".replace("\n", " ").strip(),
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
             'version': '2.1.1',
             'releaseTime': '2024-03-06T22:15:17Z',
-            'institution': '${SERVER_INSTITUTION}',
-            'researchSubject': '${SERVER_SUBJECT}',
-            'supportEmail': '${SUPPORT_EMAIL}',
-            'tags': [tag.strip() for tag in "${SERVER_TAGS}".split(",") if tag.strip()],
+            'institution': '${BIRDHOUSE_INSTITUTION}',
+            'researchSubject': '${BIRDHOUSE_SUBJECT}',
+            'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
+            'tags': [tag.strip() for tag in "${BIRDHOUSE_TAGS}".split(",") if tag.strip()],
         },
         'stats': {
             'method': '.*',

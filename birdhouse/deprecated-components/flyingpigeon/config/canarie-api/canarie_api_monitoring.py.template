@@ -11,7 +11,7 @@ SERVICES['flyingpigeon'] = {
         'institution': 'bird-house',
         'releaseTime': FLYINGPIGEON_RELEASE,
         'researchSubject': 'Climatology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Processing',
         'tags': ['Climatology', 'WPS', 'OGC'],
     },

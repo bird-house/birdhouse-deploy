@@ -10,7 +10,7 @@ SERVICES['Magpie'] = {
         'institution': 'Ouranos',
         'releaseTime': get_release_time_from_repo_tag("github", "Ouranosinc/Magpie", "${MAGPIE_VERSION}"),
         'researchSubject': 'Security',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Security',
         'tags': ['Security', 'Management', 'Access', 'Policy Decision Point']
     },

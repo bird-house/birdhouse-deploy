@@ -11,7 +11,7 @@ SERVICES['hummingbird'] = {
         'institution': 'bird-house',
         'releaseTime': HUMMINGBIRD_RELEASE,
         'researchSubject': 'Climatology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Processing',
         'tags': ['Climatology', 'Checker', 'Compliance', 'CF-conventions', 'WPS', 'OGC'],
     },

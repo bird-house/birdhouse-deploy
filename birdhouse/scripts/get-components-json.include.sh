@@ -28,7 +28,7 @@ fi
 # default value in case of error or missing definitions
 export BIRDHOUSE_DEPLOY_COMPONENTS_JSON='{"components": []}'
 if [ -z "${ALL_CONF_DIRS}" ]; then
-  log WARN "No components in DEFAULT_CONF_DIRS and EXTRA_CONF_DIRS. Components JSON list will be empty!"
+  log WARN "No components in BIRDHOUSE_DEFAULT_CONF_DIRS and BIRDHOUSE_EXTRA_CONF_DIRS. Components JSON list will be empty!"
   return
 fi
 

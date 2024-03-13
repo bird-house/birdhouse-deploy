@@ -2,7 +2,7 @@
 # http://${BIRDHOUSE_FQDN}:9093/#/status
 global:
   # The smarthost and SMTP sender used for mail notifications.
-  smtp_smarthost: '${SMTP_SERVER}'
+  smtp_smarthost: '${ALERTMANAGER_SMTP_SERVER}'
   smtp_from: 'alertmanager@${BIRDHOUSE_FQDN}'
   smtp_hello: '${BIRDHOUSE_FQDN}'
 ${ALERTMANAGER_EXTRA_GLOBAL}

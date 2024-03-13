@@ -7,4 +7,4 @@ maxsingleinputsize = 2097152000.0
 level = INFO
 database=postgresql://${BIRDHOUSE_POSTGRES_USERNAME}:${BIRDHOUSE_POSTGRES_PASSWORD}@postgres/flyingpigeon
 
-${EXTRA_PYWPS_CONFIG}
+${BIRDHOUSE_EXTRA_PYWPS_CONFIG}

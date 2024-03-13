@@ -16,10 +16,10 @@
 VARS='
   $BIRDHOUSE_COMPOSE
   $BIRDHOUSE_FQDN
-  $DOC_URL
-  $SUPPORT_EMAIL
-  $DATA_PERSIST_ROOT
-  $DATA_PERSIST_SHARED_ROOT
+  $BIRDHOUSE_DOC_URL
+  $BIRDHOUSE_SUPPORT_EMAIL
+  $BIRDHOUSE_DATA_PERSIST_ROOT
+  $BIRDHOUSE_DATA_PERSIST_SHARED_ROOT
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local
@@ -28,17 +28,17 @@ VARS='
 #   when the value provided explicitly, it will be used instead of guessing it by inferred values from other variables
 OPTIONAL_VARS='
   $BIRDHOUSE_FQDN_PUBLIC
-  $SSL_CERTIFICATE
-  $EXTRA_PYWPS_CONFIG
-  $SERVER_NAME
-  $SERVER_DESCRIPTION
-  $SERVER_INSTITUTION
-  $SERVER_SUBJECT
-  $SERVER_TAGS
-  $SERVER_DOCUMENTATION_URL
-  $SERVER_RELEASE_NOTES_URL
-  $SERVER_SUPPORT_URL
-  $SERVER_LICENSE_URL
+  $BIRDHOUSE_SSL_CERTIFICATE
+  $BIRDHOUSE_EXTRA_PYWPS_CONFIG
+  $BIRDHOUSE_NAME
+  $BIRDHOUSE_DESCRIPTION
+  $BIRDHOUSE_INSTITUTION
+  $BIRDHOUSE_SUBJECT
+  $BIRDHOUSE_TAGS
+  $BIRDHOUSE_DOCUMENTATION_URL
+  $BIRDHOUSE_RELEASE_NOTES_URL
+  $BIRDHOUSE_SUPPORT_URL
+  $BIRDHOUSE_LICENSE_URL
 '
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
@@ -67,9 +67,9 @@ check_required_vars || exit $?
 
 ## check fails when root access is required to access this file.. workaround possible by going through docker daemon... but
 # will add delay
-# if [ ! -f $SSL_CERTIFICATE ]
+# if [ ! -f $BIRDHOUSE_SSL_CERTIFICATE ]
 # then
-#   log ERROR "SSL certificate file $SSL_CERTIFICATE is missing"
+#   log ERROR "SSL certificate file $BIRDHOUSE_SSL_CERTIFICATE is missing"
 #   exit 1
 # fi
 
@@ -80,13 +80,13 @@ then
        "It it suggested to set it to 1, otherwise the birdhousecrawler may fail."
 fi
 
-export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""
-for adir in ${AUTODEPLOY_EXTRA_REPOS}; do
+export BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""
+for adir in ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}; do
   # 4 spaces in front of '--volume' is important
-  AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES="${AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES}
+  BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES="${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES}
     --volume ${adir}:${adir}:rw"
 done
-export AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
+export BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
 find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
@@ -114,7 +114,7 @@ fi
 COMPOSE_EXTRA_OPTS=""
 
 if [ x"$1" = x"up" ]; then
-  COMPOSE_EXTRA_OPTS="${COMPOSE_UP_EXTRA_OPTS}"
+  COMPOSE_EXTRA_OPTS="${BIRDHOUSE_COMPOSE_UP_EXTRA_OPTS}"
   for adir in $ALL_CONF_DIRS; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
     if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
@@ -165,7 +165,7 @@ do
 
     # Note: This command should stay last, as it can take a while depending on network and drive speeds
     # immediately cache the new notebook images for faster startup by JupyterHub
-    for IMAGE in ${DOCKER_NOTEBOOK_IMAGES}
+    for IMAGE in ${JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES}
     do
       docker pull $IMAGE
     done

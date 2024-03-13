@@ -11,7 +11,7 @@ SERVICES['Solr'] = {
         'institution': 'Ouranos',
         'releaseTime': get_release_time_from_repo_tag("docker", "${SOLR_DOCKER}", "${SOLR_VERSION}"),
         'researchSubject': 'Climatology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Data Manipulation',
         'tags': ['Indexation', 'Search']
     },

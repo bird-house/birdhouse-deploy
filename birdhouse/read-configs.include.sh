@@ -148,7 +148,7 @@ source_conf_files() {
           # Allowing not existing conf dir also helps for smooth
           # transition of component path when they are new/renamed/deleted.
           #
-          # New component names can be added to EXTRA_CONF_DIRS before the
+          # New component names can be added to BIRDHOUSE_EXTRA_CONF_DIRS before the
           # corresponding PR are merged and old component names can be removed
           # after the corresponding PR are merge without any impact on the
           # autodeploy process.
@@ -180,15 +180,15 @@ source_conf_files() {
 }
 
 read_components_default_env() {
-    # EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS normally set by env.local so should read_env_local() first.
+    # BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS normally set by env.local so should read_env_local() first.
 
-    # EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS relative paths are relative to COMPOSE_DIR.
+    # BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS relative paths are relative to COMPOSE_DIR.
     if [ -d "${COMPOSE_DIR}" ]; then
         cd "${COMPOSE_DIR}" >/dev/null || true
     fi
 
-    source_conf_files "${DEFAULT_CONF_DIRS}" 'DEFAULT_CONF_DIRS'
-    source_conf_files "${EXTRA_CONF_DIRS}" 'EXTRA_CONF_DIRS'
+    source_conf_files "${BIRDHOUSE_DEFAULT_CONF_DIRS}" 'BIRDHOUSE_DEFAULT_CONF_DIRS'
+    source_conf_files "${BIRDHOUSE_EXTRA_CONF_DIRS}" 'BIRDHOUSE_EXTRA_CONF_DIRS'
 
     # Return to previous pwd.
     if [ -d "${COMPOSE_DIR}" ]; then
@@ -375,8 +375,8 @@ read_configs() {
     discover_compose_dir
     discover_env_local
     read_default_env
-    read_env_local  # for EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, need discover_env_local
-    read_components_default_env  # uses EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
+    read_env_local  # for BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, need discover_env_local
+    read_components_default_env  # uses BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
     read_env_local  # again to override components default.env, need discover_env_local
     process_backwards_compatible_variables
     check_default_vars

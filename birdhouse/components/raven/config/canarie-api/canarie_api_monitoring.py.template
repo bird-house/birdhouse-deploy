@@ -12,7 +12,7 @@ SERVICES['raven'] = {
         'institution': 'Ouranos',
         'releaseTime': RAVEN_RELEASE,
         'researchSubject': 'Hydrology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Data Manipulation',
         'tags': ['Hydrology']
     },

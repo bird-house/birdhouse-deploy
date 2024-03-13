@@ -35,8 +35,8 @@
 #
 # $ scripts/create-magpie-users
 # + docker run --rm -it --name create_magpie_users -v /tmp/create_magpie_users:/tmp/create_magpie_users:rw pavics/magpie:2.0.0 magpie_cli batch_update_users https://pavics.ouranos.ca/magpie admin 'sanitized' -f /tmp/create_magpie_users/config.yml -o /tmp/create_magpie_users/
-# Constant could not be found: GITHUB_CLIENT_ID (using default: None)
-# Constant could not be found: GITHUB_CLIENT_SECRET (using default: None)
+# Constant could not be found: MAGPIE_GITHUB_CLIENT_ID (using default: None)
+# Constant could not be found: MAGPIE_GITHUB_CLIENT_SECRET (using default: None)
 # Constant could not be found: WSO2_HOSTNAME (using default: None)
 # Constant could not be found: WSO2_CLIENT_ID (using default: None)
 # Constant could not be found: WSO2_CLIENT_SECRET (using default: None)

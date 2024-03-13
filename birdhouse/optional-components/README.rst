@@ -18,7 +18,7 @@ this config and adjust accordingly.
 How to enable this config in ``env.local`` (a copy from env.local.example_
 (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/canarie-api-full-monitoring`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/canarie-api-full-monitoring`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 Emu WPS service for testing
@@ -34,7 +34,7 @@ instead.
 How to enable Emu in ``env.local`` (a copy from env.local.example_
 (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/emu`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/emu`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 * Optionally set ``EMU_IMAGE``,
   ``EMU_NAME``, ``EMU_INTERNAL_PORT``,
   ``EMU_WPS_OUTPUTS_VOL`` in ``env.local`` for further customizations.
@@ -58,7 +58,7 @@ A second THREDDS server for testing
 
 How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/testthredds`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/testthredds`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 * Optionally set ``TESTTHREDDS_IMAGE``\ , ``TESTTHREDDS_PORT``\ ,
   ``TESTTHREDDS_CONTEXT_ROOT``\ , ``TESTTHREDDS_WARFILE_NAME``\ ,
@@ -97,7 +97,7 @@ Good to preview new birds or test alternative configuration of existing birds.
 
 How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/generic_bird`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/generic_bird`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 * Optionally set ``GENERIC_BIRD_IMAGE``, ``GENERIC_BIRD_PORT``,
   ``GENERIC_BIRD_NAME``, ``GENERIC_BIRD_INTERNAL_PORT``, and
@@ -137,7 +137,7 @@ defines all the appropriate ``healthcheck`` for all known WPS services in Birdho
 
 How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/wps-healthchecks`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/wps-healthchecks`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Once enabled, every WPS service will be monitored at regular intervals and ``docker-compose`` will indicate in their
 health status. Command ``birdhouse-compose ps`` can be employed to list running images, and along with it, the statuses
@@ -160,7 +160,7 @@ https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 
 How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/all-public-access`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/all-public-access`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 The anonymous user will now have all the permissions described in |magpie-public-perms|_
 (:download:`download </birdhouse/optional-components/all-public-access/all-public-access-magpie-permission.cfg>`).
@@ -193,7 +193,7 @@ request user can obtain access to it.
 
 How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/secure-data-proxy`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/secure-data-proxy`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Once enabled, users will *NOT* have public access to files under ``/wpsoutputs`` anymore, except for items defined
 with authorized ``read`` permissions for the ``anonymous`` group under |secure-data-proxy-perms|_. As any other Magpie
@@ -214,7 +214,7 @@ desired access rules.
 
 How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/secure-thredds`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/secure-thredds`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 The anonymous user will *NOT* have access anymore to THREDDS test directory ``birdhouse/testdata/secure`` and any other
 directories and files under it. Directories above and next to ``secure`` will still be accessible if
@@ -238,7 +238,7 @@ This component is intended to automatically map the databases (``PostgreSQL``, `
 
 How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/database-external-ports`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/database-external-ports`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 That's it. Databases will be accessible using the mapped ports in then optional component configuration.
 
@@ -260,10 +260,10 @@ This optional component is intended to be employed in combination with test note
 
 How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/test-weaver`` to ``EXTRA_CONF_DIRS``
+* Add ``./optional-components/test-weaver`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``
 
 .. note::
-    Definition ``./components/weaver`` is also expected to be in ``EXTRA_CONF_DIRS`` for permissions to have any effect.
+    Definition ``./components/weaver`` is also expected to be in ``BIRDHOUSE_EXTRA_CONF_DIRS`` for permissions to have any effect.
     Ensure that ``./optional-components/test-weaver`` is placed **AFTER** ``./components/weaver``. Otherwise, the
     ``request_options.yml`` override applied by this optional component will be discarded by the main component.
 
@@ -334,7 +334,7 @@ except time required to feed the catalog.
 To enable this optional-component:
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./optional-components/stac-populator`` to ``EXTRA_CONF_DIRS``.
+- Add ``./optional-components/stac-populator`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 Allow public access to STAC catalog
@@ -345,7 +345,7 @@ STAC Public Access allows STAC catalog to be accessed by anyone, without authent
 To enable this optional-component:
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./optional-components/stac-public-access`` to ``EXTRA_CONF_DIRS``.
+- Add ``./optional-components/stac-public-access`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 Provide a proxy for local STAC asset hosting
@@ -361,7 +361,7 @@ location of new data, or to make a new local replication of remote data.
 To enable this optional-component:
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./optional-components/stac-data-proxy`` to ``EXTRA_CONF_DIRS``.
+- Add ``./optional-components/stac-data-proxy`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 - Optionally, add any other relevant components to control access as desired (see below).
 
 When using this component, access to the endpoint defined by ``STAC_DATA_PROXY_URL_PATH``, and therefore all
@@ -413,7 +413,7 @@ indexing and serving.
 How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.example`_
 (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/x-robots-tag-header`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/x-robots-tag-header`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 * Optionally set ``X_ROBOTS_TAG_HEADER`` to an alternate directive as desired.
   Default values are in `optional-components/x-robots-tag-header/default.env <x-robots-tag-header/default.env>`_
   (:download:`download </birdhouse/optional-components/x-robots-tag-header/default.env>`).
@@ -431,15 +431,15 @@ How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.examp
 
     Note however that most Nginx configurations are predefined for this stack. Custom definitions would need to be
     added to apply additional operations. One exception to this case is the *Homepage* location
-    (i.e.: where the ``/`` location will be redirected), which can take advantage of the ``PROXY_ROOT_LOCATION``
+    (i.e.: where the ``/`` location will be redirected), which can take advantage of the ``BIRDHOUSE_PROXY_ROOT_LOCATION``
     environment variable to override the endpoint as follows:
 
     .. code-block:: shell
 
-        export PROXY_ROOT_LOCATION='
+        export BIRDHOUSE_PROXY_ROOT_LOCATION='
             add_header X-Robots-Tag: "all";
             alias /data/homepage/;  # or any other desired redirection (e.g.: "return 302 <URL>")
         '
 
     .. seealso::
-        See the `env.local.example`_ file for more details about this ``PROXY_ROOT_LOCATION`` behaviour.
+        See the `env.local.example`_ file for more details about this ``BIRDHOUSE_PROXY_ROOT_LOCATION`` behaviour.

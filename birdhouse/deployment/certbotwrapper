@@ -2,8 +2,8 @@
 # Renew LetsEncrypt SSL certificate using certbot docker image.
 #
 # Important:
-# * SSL_CERTIFICATE from env.local will be updated, backup that file first!
-# * SUPPORT_EMAIL from env.local is used as renew email, make sure it's valid!
+# * BIRDHOUSE_SSL_CERTIFICATE from env.local will be updated, backup that file first!
+# * BIRDHOUSE_SUPPORT_EMAIL from env.local is used as renew email, make sure it's valid!
 # * certbot requires your port 80 and 443 be accessible directly on the internet
 #
 # Useful extra options:
@@ -52,7 +52,7 @@ SAVED_PWD="`pwd`"
 
 . "$THIS_DIR/../read-configs.include.sh"
 
-# Get BIRDHOUSE_FQDN_PUBLIC, BIRDHOUSE_FQDN, SUPPORT_EMAIL, SSL_CERTIFICATE, BASH_IMAGE.
+# Get BIRDHOUSE_FQDN_PUBLIC, BIRDHOUSE_FQDN, BIRDHOUSE_SUPPORT_EMAIL, BIRDHOUSE_SSL_CERTIFICATE, BASH_IMAGE.
 read_configs
 
 CERT_DOMAIN="$BIRDHOUSE_FQDN_PUBLIC"
@@ -74,7 +74,7 @@ else
   --agree-tos \
   --no-eff-email \
   --standalone \
-  --email $SUPPORT_EMAIL \
+  --email $BIRDHOUSE_SUPPORT_EMAIL \
   --domain $CERT_DOMAIN \
   --cert-name $CERT_DOMAIN"
 fi
@@ -97,9 +97,9 @@ if [ ! -z "$FORCE_CERTBOT_E2E" ]; then
         -v "/etc/letsencrypt:/etc/letsencrypt" \
         $BASH_IMAGE \
         cat $CERTPATH/fullchain.pem $CERTPATH/privkey.pem > $TMP_SSL_CERT
-    if [ -s "$TMP_SSL_CERT" ] && ! diff $SSL_CERTIFICATE $TMP_SSL_CERT && [ $RC -eq 0 ]; then
-        # Only modify SSL_CERTIFICATE if there are real changes.
-        cp -v $TMP_SSL_CERT $SSL_CERTIFICATE
+    if [ -s "$TMP_SSL_CERT" ] && ! diff $BIRDHOUSE_SSL_CERTIFICATE $TMP_SSL_CERT && [ $RC -eq 0 ]; then
+        # Only modify BIRDHOUSE_SSL_CERTIFICATE if there are real changes.
+        cp -v $TMP_SSL_CERT $BIRDHOUSE_SSL_CERTIFICATE
     fi
     rm -v $TMP_SSL_CERT
     if [ -z "$FORCE_CERTBOT_E2E_NO_START_PROXY" ]; then
@@ -113,8 +113,8 @@ What to do next:
 
 CERTPATH=\"/etc/letsencrypt/live/$CERT_DOMAIN\"
 cd $THIS_DIR/..
-sudo cat \$CERTPATH/fullchain.pem \$CERTPATH/privkey.pem > $SSL_CERTIFICATE
-openssl x509 -noout -text -in $SSL_CERTIFICATE
+sudo cat \$CERTPATH/fullchain.pem \$CERTPATH/privkey.pem > $BIRDHOUSE_SSL_CERTIFICATE
+openssl x509 -noout -text -in $BIRDHOUSE_SSL_CERTIFICATE
 docker start proxy
 "
 fi

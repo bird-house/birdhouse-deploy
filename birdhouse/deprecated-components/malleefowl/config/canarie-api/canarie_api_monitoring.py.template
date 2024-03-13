@@ -6,7 +6,7 @@ SERVICES['Malleefowl'] = {
         'releaseTime': get_release_time_from_repo_tag("github", "Ouranosinc/malleefowl", "${MALLEEFOWL_VERSION}"),
         'institution': 'Ouranos',
         'researchSubject': 'Climatology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Resource/Cloud Management',
         'tags': ['Climatology']
     },

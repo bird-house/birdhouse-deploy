@@ -9,7 +9,7 @@ SERVICES['renderer'] = {
         'institution': 'Unidata',
         'releaseTime': '2020-06-16T00:00:00Z',
         'researchSubject': 'Climatology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Data Manipulation',
         'tags': ['Climatology']
     },
@@ -43,7 +43,7 @@ SERVICES['Thredds'] = {
         'releaseTime': get_release_time_from_repo_tag("docker", "${THREDDS_DOCKER}", "${THREDDS_VERSION}"),
         'institution': 'Ouranos',
         'researchSubject': 'Catalog',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Catalog',
         'tags': ['Catalog', 'Climate Data']
     },

@@ -9,7 +9,7 @@ Scheduler
 =========
 
 This component provides automated unattended continuous deployment for the
-"Birdhouse stack" (all the git repos in var ``AUTODEPLOY_EXTRA_REPOS``), for the
+"Birdhouse stack" (all the git repos in var ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``), for the
 tutorial notebooks on the Jupyter environment and for the automated deployment
 itself.
 
@@ -29,7 +29,7 @@ so local development workflow is also supported.
 
 Multiple remote repos are supported so the "Birdhouse stack" can be made of
 multiple checkouts for modularity and extensibility.  The autodeploy will
-trigger if any of the checkouts (configured in ``AUTODEPLOY_EXTRA_REPOS``) is
+trigger if any of the checkouts (configured in ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``) is
 not up-to-date with its remote repo.
 
 A suggested "Birdhouse stack" is made of at least 2 repos, this repo and another
@@ -58,9 +58,9 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy of env.local.example_ (:download:`download <../env.local.example>`))
 
-  - Add "./components/scheduler" to ``EXTRA_CONF_DIRS``.
-  - Set ``AUTODEPLOY_EXTRA_REPOS``, ``AUTODEPLOY_DEPLOY_KEY_ROOT_DIR``,
-    ``AUTODEPLOY_PLATFORM_FREQUENCY``, ``AUTODEPLOY_NOTEBOOK_FREQUENCY`` as desired,
+  - Add "./components/scheduler" to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+  - Set ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``, ``BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR``,
+    ``BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY``, ``BIRDHOUSE_AUTODEPLOY_NOTEBOOK_FREQUENCY`` as desired,
     full documentation in `env.local.example`_.
   - Run once fix-write-perm_ (:download:`download <../deployment/fix-write-perm>`), see doc in script.
 
@@ -160,7 +160,7 @@ Here is a sample setup to test autodeploy:
   # this one for triggering autodeploy
   git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy-trigger
 
-* Set ``AUTODEPLOY_PLATFORM_FREQUENCY`` in ``env.local`` to a very frequent value so you do not have to wait too long for autodeploy to trigger.
+* Set ``BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY`` in ``env.local`` to a very frequent value so you do not have to wait too long for autodeploy to trigger.
 
 .. code-block:: shell
 
@@ -168,14 +168,14 @@ Here is a sample setup to test autodeploy:
   cd birdhouse-deploy/birdhouse
 
   # ensure the scheduler component is enabled, otherwise autodeploy will not work
-  echo 'export EXTRA_CONF_DIRS="$EXTRA_CONF_DIRS ./components/scheduler" >> env.local
+  echo 'export BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./components/scheduler" >> env.local
 
-  # set AUTODEPLOY_PLATFORM_FREQUENCY
+  # set BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY
   # can set to more frequent than 5 minutes if your machine is capable enough
-  echo 'export AUTODEPLOY_PLATFORM_FREQUENCY="@every 5m"' >> env.local
+  echo 'export BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY="@every 5m"' >> env.local
 
   # if scheduler container already running:
-  # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
+  # recreate scheduler container for new BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to be effective
   birdhouse compose stop scheduler && birdhouse compose rm -vf scheduler && birdhouse compose up -d
 
   # if scheduler container not running yet: start the newly added scheduler component
@@ -247,7 +247,7 @@ Here is a sample setup to test autodeploy:
   # follow logs, check for errors
   tail -f ${BIRDHOUSE_LOG_DIR}/autodeploy.log
 
-* Test done, clean up the bogus ``${USER}-test`` branch and optionally relax ``AUTODEPLOY_PLATFORM_FREQUENCY``
+* Test done, clean up the bogus ``${USER}-test`` branch and optionally relax ``BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY``
 
 .. code-block:: shell
 
@@ -266,10 +266,10 @@ Here is a sample setup to test autodeploy:
   git checkout YOUR_PR_BRANCH
   git branch -D ${USER}-test
 
-  # edit env.local and change AUTODEPLOY_PLATFORM_FREQUENCY to something less frequent to save your cpu
+  # edit env.local and change BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to something less frequent to save your cpu
   # do not remove the scheduler component from the stack yet or the next command will fail
 
-  # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
+  # recreate scheduler container for new BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to be effective
   birdhouse compose stop scheduler && birdhouse compose rm -vf scheduler && birdhouse compose up -d
 
   # optionally edit env.local to remove the scheduler component from the stack
@@ -313,10 +313,10 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy of `env.local.example`_ (:download:`download <../env.local.example>`))
 
-  - Add "./components/monitoring" to ``EXTRA_CONF_DIRS``
+  - Add "./components/monitoring" to ``BIRDHOUSE_EXTRA_CONF_DIRS``
   - Set ``GRAFANA_ADMIN_PASSWORD`` to login to Grafana
   - Set ``ALERTMANAGER_ADMIN_EMAIL_RECEIVER`` for receiving alerts
-  - Set ``SMTP_SERVER`` for sending alerts
+  - Set ``ALERTMANAGER_SMTP_SERVER`` for sending alerts
   - Optionally set
 
     - ``ALERTMANAGER_EXTRA_GLOBAL`` to further configure AlertManager
@@ -428,7 +428,7 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 
-  - Add ``./components/weaver`` to ``EXTRA_CONF_DIRS``.
+  - Add ``./components/weaver`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
   - Component ``birdhouse/optional-components/all-public-access`` should also be enabled to ensure that `Weaver`_
     can request ``GetCapabilities`` of every WPS provider to be registered. Publicly inaccessible services will not
@@ -506,7 +506,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/cowbird`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/cowbird`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Customizing the Component
 -------------------------
@@ -539,7 +539,7 @@ exposed by the current stack instance. Once this component is enabled, STAC API 
 ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint,
 define the following in the ``env.local`` file::
 
-  export PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
+  export BIRDHOUSE_PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
 
 Here is a sample search query using a CLI::
 
@@ -556,7 +556,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/stac`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/stac`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Canarie-API
 ===========
@@ -572,7 +572,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/canarie`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/canarie`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 data-volume
 ===========
@@ -604,7 +604,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/finch`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/finch`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Geoserver
 =========
@@ -626,7 +626,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/geoserver`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/geoserver`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Hummingbird
 ===========
@@ -642,7 +642,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/hummingbird`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/hummingbird`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Jupyterhub
 ==========
@@ -660,7 +660,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/jupyterhub`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/jupyterhub`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 - Set the ``JUPYTERHUB_CRYPT_KEY`` environment variable
 
 Magpie
@@ -712,7 +712,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/portainer`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/portainer`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 .. _portainer documentation: https://docs.portainer.io/
 
@@ -762,7 +762,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/raven`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/raven`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Thredds
 =======
@@ -780,7 +780,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/thredds`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/thredds`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Twitcher
 ========

@@ -6,7 +6,7 @@ SERVICES['Jupyter'] = {
         'releaseTime': get_release_time_from_repo_tag("docker", "${JUPYTERHUB_DOCKER}", "${JUPYTERHUB_VERSION}"),
         'institution': 'Ouranos',
         'researchSubject': 'Any',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Research',
         'tags': ['Development', 'Research', 'Notebooks']
     },

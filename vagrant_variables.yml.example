@@ -55,7 +55,7 @@ domain: example.com
 # If this is not possible, use Pagekite below to have a real SSL certificate
 # and to expose your VM on the internet.
 #
-# letsencrypt_email is also used as SUPPORT_EMAIL in env.local.
+# letsencrypt_email is also used as BIRDHOUSE_SUPPORT_EMAIL in env.local.
 #
 # If letsencrypt_email is set, will get SSL cert from LetsEncrypt.
 #

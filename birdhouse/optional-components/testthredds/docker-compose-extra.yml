@@ -13,7 +13,7 @@ services:
       WANTED_CONTEXT_ROOT_WARFILE_NAME: $TESTTHREDDS_WARFILE_NAME
     volumes:
       - testthredds_persistence:/usr/local/tomcat/content/thredds
-      - ${DATA_PERSIST_ROOT}/testdatasets:/birdhouse-testdata:ro
+      - ${BIRDHOUSE_DATA_PERSIST_ROOT}/testdatasets:/birdhouse-testdata:ro
       - ${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}:ro
       - ${THREDDS_DATASET_LOCATION_ON_HOST}:${THREDDS_DATASET_LOCATION_ON_CONTAINER}:ro
       - testwps_outputs:/testwps_outputs:ro

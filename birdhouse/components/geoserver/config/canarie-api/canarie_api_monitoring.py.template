@@ -11,7 +11,7 @@ SERVICES['GeoServer'] = {
         'institution': 'Ouranos',
         'releaseTime': get_release_time_from_repo_tag("docker", "${GEOSERVER_DOCKER}", "${GEOSERVER_TAGGED}"),
         'researchSubject': 'Geospatial',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Data Catalog',
         'tags': ['Data', 'Geospatial', 'Catalog', 'OGC', 'WFS', 'WMS', 'WPS']
     },

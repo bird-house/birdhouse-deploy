@@ -40,7 +40,9 @@
       the ``env.local`` file will be used to set the value of ``BIRDHOUSE_FQDN``.
   * Create a new entrypoint in ``bin/birdhouse`` that can be used to invoke ``pavics-compose.sh`` or 
     ``birdhouse-compose.sh`` from one convenient location. This script also includes some useful options and provides
-    a generic entrypoint to the stack that can be extended in the future.    
+    a generic entrypoint to the stack that can be extended in the future.
+  * Removed unused variables:
+    * `CMIP5_THREDDS_ROOT`
 
 ### Migration Guide
 

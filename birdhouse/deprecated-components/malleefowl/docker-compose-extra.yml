@@ -22,7 +22,7 @@ services:
       - "38091:38091"
       - "48091:9001"
     volumes:
-      - ${DATA_PERSIST_ROOT}/datasets:/data
+      - ${BIRDHOUSE_DATA_PERSIST_ROOT}/datasets:/data
       - ./deprecated-components/malleefowl/custom.cfg:/opt/birdhouse/src/malleefowl/custom.cfg
     depends_on:
       - postgres

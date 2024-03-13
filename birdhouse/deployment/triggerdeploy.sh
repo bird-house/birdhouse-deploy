@@ -82,8 +82,8 @@ cd $COMPOSE_DIR
 should_trigger() {
     EXTRA_REPO="$(git rev-parse --show-toplevel)"
 
-    DEPLOY_KEY="${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/$(basename "$EXTRA_REPO")_deploy_key"
-    DEFAULT_DEPLOY_KEY="${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/id_rsa_git_ssh_read_only"
+    DEPLOY_KEY="${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/$(basename "$EXTRA_REPO")_deploy_key"
+    DEFAULT_DEPLOY_KEY="${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/id_rsa_git_ssh_read_only"
     if [ ! -e "$DEPLOY_KEY" ] && [ -e "${DEFAULT_DEPLOY_KEY}" ]; then
         DEPLOY_KEY="${DEFAULT_DEPLOY_KEY}"
     fi
@@ -181,13 +181,13 @@ triggerdeploy START_TIME=${START_TIME}"
 
 . "${COMPOSE_DIR}/read-configs.include.sh"
 
-# Read AUTODEPLOY_EXTRA_REPOS
+# Read BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS
 read_basic_configs_only
 
 set -x
 
 SHOULD_TRIGGER=""
-for adir in "${COMPOSE_DIR}" ${AUTODEPLOY_EXTRA_REPOS}; do
+for adir in "${COMPOSE_DIR}" ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}; do
     if [ -d "${adir}" ]; then
         cd "${adir}" || exit
 

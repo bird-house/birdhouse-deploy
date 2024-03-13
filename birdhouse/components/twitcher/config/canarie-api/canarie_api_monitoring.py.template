@@ -29,7 +29,7 @@ SERVICES['Twitcher'] = {
         'institution': 'Ouranos',
         'releaseTime': TWITCHER_RELEASE,
         'researchSubject': 'Security',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Security',
         'tags': ['Security', 'Proxy', 'Access', 'Policy Enforcement Point']
     },

@@ -6,7 +6,7 @@ SERVICES['Phoenix'] = {
         'institution': 'Ouranos',
         'releaseTime': get_release_time_from_repo_tag("docker", "${PHOENIX_DOCKER}", "${PHOENIX_VERSION}"),
         'researchSubject': 'Authentication',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Authentication',
         'tags': ['Authentication', 'Legacy']
     },

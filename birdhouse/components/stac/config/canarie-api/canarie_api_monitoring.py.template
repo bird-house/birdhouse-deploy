@@ -6,7 +6,7 @@ SERVICES['STAC'] = {
         'institution': 'CRIM',
         'releaseTime': "2023-06-16T00:00:00Z",
         'researchSubject': 'Any',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Data Manipulation',
         'tags': ['Catalog', 'Data', 'OGC']
     },
