@@ -47,8 +47,8 @@
   - Update ``env.local`` file to replace all variables that contain ``PAVICS`` with ``BIRDHOUSE``.
     Variable names have also been updated to ensure that they start with the prefix ``BIRDHOUSE_``.
     * see [`env.local.example`](./birdhouse/env.local.example) to see new variable names
-    * see the ``BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in 
-      [`default.env`](./birdhouse/default.env)) for a full list of changed environment variable names.
+    * see the ``BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in [`default.env`](./birdhouse/default.env)) for a 
+      full list of changed environment variable names.
   - Update any external scripts that access the old variable names directly to use the updated variable names.
   - Update any external scripts that access any of the following files to use the new file name:
 
@@ -70,9 +70,32 @@
     | (hardcoded)                                | BIRDHOUSE_POSTGRES_DB       | pavics            | birdhouse          |
     | PAVICS_LOG_DIR                             | BIRDHOUSE_LOG_DIR           | /var/log/PAVICS   | /var/log/birdhouse |
 
-  - Update any jupyter notebooks that make usedefault.env of the `PAVICS_HOST_URL` environment variable to use the new
+  - Update any jupyter notebooks that make use of the `PAVICS_HOST_URL` environment variable to use the new
     `BIRDHOUSE_HOST_URL` instead.
+  - Set the ``BIRDHOUSE_POSTGRES_DB`` variable to ``pavics`` in the ``env.local`` file. This value was previously
+    hardcoded to the string ``pavics`` so to maintain backwards compatibility with any existing databases this should be
+    kept the same. If you do want to update to the new database name, you will need to rename the existing database.
+    For example, the following will update the existing database named ``pavics`` to ``birdhouse`` (assuming the old
+    default values for the postgres username):
 
+    ```shell
+    docker exec -it postgres psql -U postgres-pavics -d postgres -c 'ALTER DATABASE pavics RENAME TO birdhouse'
+    ```
+
+    You can then update the ``env.local`` file to the new variable name and restart the stack
+  - Set the ``BIRDHOUSE_POSTGRES_USER`` variable to ``postgres-pavics`` in the ``env.local`` file if you would like to 
+    preserve the old default value. If you would like to change the value of ``BIRDHOUSE_POSTGRES_USER`` then also 
+    update the name for any running postgres instances. For example, the following will update the user named 
+    ``postgres-pavics`` to ``postgres-birdhouse``:
+
+    ```shell
+    docker exec -it postgres psql -U postgres-pavics -d postgres -c 'CREATE USER "tmpsuperuser" WITH SUPERUSER'
+    docker exec -it postgres psql -U tmpsuperuser -d postgres -c 'ALTER ROLE "postgres-pavics" RENAME TO "postgres-birdhouse"'
+    docker exec -it postgres psql -U postgres-birdhouse -d postgres -c 'DROP ROLE "tmpsuperuser"'
+    ```
+
+    Note that you'll need to do the same for the ``stac-db`` service as well (assuming that you weren't previously
+    overriding the ``STAC_POSTGRES_USER`` with a custom value).
 
 [2.1.1](https://github.com/bird-house/birdhouse-deploy/tree/2.1.1) (2024-03-06)
 ------------------------------------------------------------------------------------------------------------------
