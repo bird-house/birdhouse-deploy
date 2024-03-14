@@ -252,10 +252,10 @@ process_backwards_compatible_variables() {
     do
       old_var="${back_compat_vars%%=*}"
 
-      # shellcheck disable=SC2015
-      [ "$1" = "pre-components" ] && \
-        echo "${BACKWARDS_COMPATIBLE_VARIABLES_PRE_COMPONENTS}" | grep -q "^[[:space:]]*${old_var}[[:space:]]*$" ||
+      if [ "$1" = "pre-components" ] && \
+        ! echo "${BACKWARDS_COMPATIBLE_VARIABLES_PRE_COMPONENTS}" | grep -q "^[[:space:]]*${old_var}[[:space:]]*$"; then
           continue
+      fi
 
       new_var="${back_compat_vars#*=}"
       old_var_set="`eval "echo \\${${old_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
