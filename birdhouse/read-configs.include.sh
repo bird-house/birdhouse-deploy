@@ -246,9 +246,17 @@ process_backwards_compatible_variables() {
     # BACKWARDS_COMPATIBLE_VARIABLES to override the equivalent non-deprecated variable.
     # Otherwise, warn the user about deprecated variables that may still exist in the BIRDHOUSE_LOCAL_ENV
     # file without overriding.
+    # If the first argument to this function is "pre-components", only the variables from
+    # BACKWARDS_COMPATIBLE_VARIABLES_PRE_COMPONENTS will be processed.
     for back_compat_vars in ${BACKWARDS_COMPATIBLE_VARIABLES}
     do
       old_var="${back_compat_vars%%=*}"
+
+      # shellcheck disable=SC2015
+      [ "$1" = "pre-components" ] && \
+        echo "${BACKWARDS_COMPATIBLE_VARIABLES_PRE_COMPONENTS}" | grep -q "^[[:space:]]*${old_var}[[:space:]]*$" ||
+          continue
+
       new_var="${back_compat_vars#*=}"
       old_var_set="`eval "echo \\${${old_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
       if [ "${old_var_set}" = "set" ]; then
@@ -376,6 +384,7 @@ read_configs() {
     discover_env_local
     read_default_env
     read_env_local  # for BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, need discover_env_local
+    process_backwards_compatible_variables pre-components
     read_components_default_env  # uses BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
     read_env_local  # again to override components default.env, need discover_env_local
     process_backwards_compatible_variables
