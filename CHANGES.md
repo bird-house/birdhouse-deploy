@@ -93,9 +93,12 @@
     ```shell
     docker exec -it postgres psql -U postgres-pavics -d postgres -c 'CREATE USER "tmpsuperuser" WITH SUPERUSER'
     docker exec -it postgres psql -U tmpsuperuser -d postgres -c 'ALTER ROLE "postgres-pavics" RENAME TO "postgres-birdhouse"'
+    docker exec -it postgres psql -U tmpsuperuser -d postgres -c 'ALTER ROLE "postgres-birdhouse" WITH PASSWORD '\''postgres-qwerty'\'
     docker exec -it postgres psql -U postgres-birdhouse -d postgres -c 'DROP ROLE "tmpsuperuser"'
     ```
 
+    Note that the ``postgres-qwerty`` value is meant just for illustration, you should replace this with the value of 
+    the ``BIRDHOUSE_POSTGRES_PASSWORD`` variable.
     Note that you'll need to do the same for the ``stac-db`` service as well (assuming that you weren't previously
     overriding the ``STAC_POSTGRES_USER`` with a custom value).
 

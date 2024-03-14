@@ -283,6 +283,9 @@ process_backwards_compatible_variables() {
         log WARN "Variable [${old_var}] employs a deprecated default value recommended for override. Check env.local file."
       fi
     done
+    if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
+      BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./optional-components/backwards-compatible-overrides"
+    fi
 }
 
 
