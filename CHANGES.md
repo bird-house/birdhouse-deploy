@@ -64,13 +64,16 @@
   - The following default values have changed. If your deployment was using the old default value, update your 
     ``env.local`` file to explicitly set the old default values.
 
-    | old variable name                          | new variable name           | old default value | new default value  |
-    |--------------------------------------------|-----------------------------|-------------------|--------------------|
-    | POSTGRES_PAVICS_USERNAME                   | BIRDHOUSE_POSTGRES_USERNAME | postgres-pavics   | postgres-birdhouse |
-    | THREDDS_DATASET_LOCATION_ON_CONTAINER      | (no change)                 | /pavics-ncml      | /birdhouse-ncml    |
-    | THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER | (no change)                 | /pavics-data      | /birdhouse-data    |
-    | (hardcoded)                                | BIRDHOUSE_POSTGRES_DB       | pavics            | birdhouse          |
-    | PAVICS_LOG_DIR                             | BIRDHOUSE_LOG_DIR           | /var/log/PAVICS   | /var/log/birdhouse |
+    | old variable name                          | new variable name                    | old default value       | new default value          |
+    |--------------------------------------------|--------------------------------------|-------------------------|:---------------------------|
+    | POSTGRES_PAVICS_USERNAME                   | BIRDHOUSE_POSTGRES_USERNAME          | postgres-pavics         | postgres-birdhouse         |
+    | THREDDS_DATASET_LOCATION_ON_CONTAINER      | (no change)                          | /pavics-ncml            | /birdhouse-ncml            |
+    | THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER | (no change)                          | /pavics-data            | /birdhouse-data            |
+    | (hardcoded)                                | BIRDHOUSE_POSTGRES_DB                | pavics                  | birdhouse                  |
+    | PAVICS_LOG_DIR                             | BIRDHOUSE_LOG_DIR                    | /var/log/PAVICS         | /var/log/birdhouse         |
+    | (hardcoded)                                | GRAFANA_DEFAULT_PROVIDER_FOLDER      | Local-PAVICS            | Local-Birdhouse            |
+    | (hardcoded)                                | GRAFANA_DEFAULT_PROVIDER_FOLDER_UUID | local-pavics            | local-birdhouse            |
+    | (hardcoded)                                | GRAFANA_PROMETHEUS_DATASOURCE_UUID   | local_pavics_prometheus | local_birdhouse_prometheus |
 
   - Update any jupyter notebooks that make use of the `PAVICS_HOST_URL` environment variable to use the new
     `BIRDHOUSE_HOST_URL` instead.
