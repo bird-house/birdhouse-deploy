@@ -6,6 +6,7 @@
 #
 # * cron job to hourly deploy the tutorial notebooks
 #   (/etc/cron.hourly/birdhouse-deploy-notebooks), update check frequency here
+#   The cron file name can be overridden by setting the CRON_FILE environment variable
 #
 
 CRON_FILE=${CRON_FILE:-"/etc/cron.hourly/birdhouse-deploy-notebooks"}
