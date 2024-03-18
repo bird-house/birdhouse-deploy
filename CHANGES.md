@@ -75,8 +75,10 @@
     | (hardcoded)                                | GRAFANA_DEFAULT_PROVIDER_FOLDER_UUID | local-pavics            | local-birdhouse            |
     | (hardcoded)                                | GRAFANA_PROMETHEUS_DATASOURCE_UUID   | local_pavics_prometheus | local_birdhouse_prometheus |
 
-    Note that the `PAVICS_LOG_DIR` variable was actually hardcoded as `/var/log/PAVICS` in some scripts. It has now been
-    changed to use the new `BIRDHOUSE_LOG_DIR` variable everywhere.
+    Note that the `PAVICS_LOG_DIR` variable was actually hardcoded as `/var/log/PAVICS` in some scripts. If 
+    `PAVICS_LOG_DIR` was set to anything other than `/var/log/PAVICS` you'll end up with inconsistent log outputs as 
+    previously some logs would have been sent to `PAVICS_LOG_DIR` and others to `/var/log/PAVICS`. We recommend merging
+    these two log files. Going forward, all logs will be sent to `BIRDHOUSE_LOG_DIR`. 
 
   - Update any jupyter notebooks that make use of the `PAVICS_HOST_URL` environment variable to use the new
     `BIRDHOUSE_HOST_URL` instead.
