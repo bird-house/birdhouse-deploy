@@ -38,11 +38,12 @@
     * Backwards compatible mode means that variables in ``env.local`` that contain the string ``PAVICS`` will be used
       to set the equivalent variable that contains ``BIRDHOUSE``. For example, the ``PAVICS_FQDN`` variable set in
       the ``env.local`` file will be used to set the value of ``BIRDHOUSE_FQDN``.
-  * Create a new entrypoint in ``bin/birdhouse`` that can be used to invoke ``pavics-compose.sh`` or 
-    ``birdhouse-compose.sh`` from one convenient location. This script also includes some useful options and provides
-    a generic entrypoint to the stack that can be extended in the future.
   * Removed unused variables:
     * `CMIP5_THREDDS_ROOT`
+
+- Create a new entrypoint in ``bin/birdhouse`` that can be used to invoke ``pavics-compose.sh`` or 
+  ``birdhouse-compose.sh`` from one convenient location. This script also includes some useful options and provides
+  a generic entrypoint to the stack that can be extended in the future.
 
 ### Migration Guide
 
