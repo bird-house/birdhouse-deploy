@@ -49,7 +49,7 @@
   - Update ``env.local`` file to replace all variables that contain ``PAVICS`` with ``BIRDHOUSE``.
     Variable names have also been updated to ensure that they start with the prefix ``BIRDHOUSE_``.
     * see [`env.local.example`](./birdhouse/env.local.example) to see new variable names
-    * see the ``BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in [`default.env`](./birdhouse/default.env)) for a 
+    * see the ``BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in [`default.env`](./birdhouse/default.env)) for a 
       full list of changed environment variable names.
   - Update any external scripts that access the old variable names directly to use the updated variable names.
   - Update any external scripts that access any of the following files to use the new file name:

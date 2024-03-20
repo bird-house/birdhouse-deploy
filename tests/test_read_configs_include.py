@@ -210,7 +210,7 @@ class TestReadConfigs(_ReadConfigsMixin):
 class TestBackwardsCompatible(_ReadConfigsMixin):
     test_func = "read_configs"
 
-    # copy of BACKWARDS_COMPATIBLE_VARIABLES from birdhouse/default.env
+    # copy of BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES from birdhouse/default.env
     all_overrides = """
         PAVICS_FQDN=BIRDHOUSE_FQDN
         PAVICS_FQDN_PUBLIC=BIRDHOUSE_FQDN_PUBLIC
