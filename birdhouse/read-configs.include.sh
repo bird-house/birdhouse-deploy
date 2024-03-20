@@ -241,17 +241,44 @@ check_default_vars() {
 }
 
 
+# If BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED is True then allow environment variables listed in
+# BACKWARDS_COMPATIBLE_VARIABLES to override the equivalent deprecated variables as long as that
+# equivalent deprecated variable is unset.
+set_old_backwards_compatible_variables() {
+    [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ] || return
+    OLD_VARS_OVERRIDDEN=""
+    # Reverse the variable list so that old variables are overridden in the correct order.
+    REVERSE_BACKWARDS_COMPATIBLE_VARIABLES=""
+    for back_compat_vars in ${BACKWARDS_COMPATIBLE_VARIABLES}
+    do
+        REVERSE_BACKWARDS_COMPATIBLE_VARIABLES="${back_compat_vars} ${REVERSE_BACKWARDS_COMPATIBLE_VARIABLES}"
+    done
+    for back_compat_vars in ${REVERSE_BACKWARDS_COMPATIBLE_VARIABLES}
+    do
+        old_var="${back_compat_vars%%=*}"
+        new_var="${back_compat_vars#*=}"
+        old_var_set="`eval "echo \\${${old_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
+        new_var_set="`eval "echo \\${${new_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
+        if [ "${new_var_set}" = "set" ] && [ ! "${old_var_set}" = "set" ]; then
+            new_value="`eval "echo \\$${new_var}"`"
+            eval 'export ${old_var}="${new_value}"'
+            OLD_VARS_OVERRIDDEN="${OLD_VARS_OVERRIDDEN} ${old_var} "  # space before and after old_var is for grep (below)
+            log DEBUG "Variable [${new_var}] is being used to set the deprecated variable [${old_var}]."
+        fi
+  done
+}
+
+# If BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED is True then allow environment variables listed in
+# BACKWARDS_COMPATIBLE_VARIABLES to override the equivalent non-deprecated variable.
+# Otherwise, warn the user about deprecated variables that may still exist in the BIRDHOUSE_LOCAL_ENV
+# file without overriding.
+# If the first argument to this function is "pre-components", only the variables from
+# BACKWARDS_COMPATIBLE_VARIABLES_PRE_COMPONENTS will be processed.
 process_backwards_compatible_variables() {
-    # If BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED is True then allow environment variables listed in
-    # BACKWARDS_COMPATIBLE_VARIABLES to override the equivalent non-deprecated variable.
-    # Otherwise, warn the user about deprecated variables that may still exist in the BIRDHOUSE_LOCAL_ENV
-    # file without overriding.
-    # If the first argument to this function is "pre-components", only the variables from
-    # BACKWARDS_COMPATIBLE_VARIABLES_PRE_COMPONENTS will be processed.
     for back_compat_vars in ${BACKWARDS_COMPATIBLE_VARIABLES}
     do
       old_var="${back_compat_vars%%=*}"
-
+      echo "${OLD_VARS_OVERRIDDEN}" | grep -q "[[:space:]]${old_var}[[:space:]]" && continue
       if [ "$1" = "pre-components" ] && \
         ! echo "${BACKWARDS_COMPATIBLE_VARIABLES_PRE_COMPONENTS}" | grep -q "^[[:space:]]*${old_var}[[:space:]]*$"; then
           continue
@@ -389,6 +416,7 @@ read_configs() {
     read_env_local  # for BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, need discover_env_local
     process_backwards_compatible_variables pre-components
     read_components_default_env  # uses BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
+    set_old_backwards_compatible_variables
     read_env_local  # again to override components default.env, need discover_env_local
     process_backwards_compatible_variables
     check_default_vars
@@ -403,6 +431,7 @@ read_basic_configs_only() {
     discover_compose_dir
     discover_env_local
     read_default_env
+    set_old_backwards_compatible_variables
     read_env_local  # need discover_env_local
     process_backwards_compatible_variables
     check_default_vars

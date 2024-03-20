@@ -262,6 +262,9 @@ class TestBackwardsCompatible(_ReadConfigsMixin):
         SERVER_LICENSE_URL=BIRDHOUSE_LICENSE_URL
     """
 
+    old_vars = {line.strip().split("=")[0]: "old" for line in all_overrides.splitlines() if line.strip()}
+    new_vars = {line.strip().split("=")[1]: "new" for line in all_overrides.splitlines() if line.strip()}
+
     def test_allowed_simple_substitution(self, read_config_include_file) -> None:
         """
         Test that a deprecated variable can be used to set the new version if backwards compatible
@@ -304,41 +307,17 @@ class TestBackwardsCompatible(_ReadConfigsMixin):
                              command_suffix='echo "${BIRDHOUSE_FQDN}"')
         assert split_and_strip(get_command_stdout(proc))[-1] == "birdhouse.example.com"
 
-    def test_allowed_simple_log_warn(self, read_config_include_file) -> None:
-        """
-        Test that a warning message is logged when overriding a new variable if backwards compatible
-        variables are allowed.
-        """
-        extra = {"PAVICS_FQDN": "pavics.example.com",
-                 "BIRDHOUSE_FQDN": "birdhouse.example.com", "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
-        proc = self.run_func(read_config_include_file, local_env_file_content=extra)
-        assert re.search(r"^WARNING:.*?\[PAVICS_FQDN].*?\[BIRDHOUSE_FQDN].*$", get_read_config_stdout(proc),
-                         flags=re.MULTILINE)
-
-    def test_not_allowed_log_warn(self, read_config_include_file):
-        """
-        Test that a warning message is logged when overriding a new variable if backwards compatible
-        variables are not allowed.
-        """
-        extra = {"PAVICS_FQDN": "pavics.example.com",
-                 "BIRDHOUSE_FQDN": "birdhouse.example.com", "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
-        proc = self.run_func(read_config_include_file, local_env_file_content=extra)
-        assert re.search(r"^WARNING:.*?\[PAVICS_FQDN].*?\[BIRDHOUSE_FQDN].*$", get_read_config_stdout(proc),
-                         flags=re.MULTILINE)
-
     def test_allowed_substitution_all(self, read_config_include_file):
         """
         Test that all deprecated variables can be used to set the new versions if backwards compatible
         variables are allowed.
         """
-        extra_old = {line.strip().split("=")[0]: "old" for line in self.all_overrides.splitlines() if line.strip()}
-        extra_new = {line.strip().split("=")[1]: "new" for line in self.all_overrides.splitlines() if line.strip()}
-        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in extra_new)}"'
+        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in self.new_vars)}"'
         proc = self.run_func(read_config_include_file,
-                             local_env_file_content={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True", **extra_old},
+                             local_env_file_content={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True", **self.old_vars},
                              command_suffix=command_suffix)
         expected = set()
-        for k in extra_new:
+        for k in self.new_vars:
             if k == "BIRDHOUSE_EXTRA_CONF_DIRS":
                 expected.add(f"{k}=old ./optional-components/backwards-compatible-overrides")
             else:
@@ -351,14 +330,12 @@ class TestBackwardsCompatible(_ReadConfigsMixin):
         Test that all deprecated variables are not used to set the new versions if backwards compatible
         variables are not allowed.
         """
-        extra_old = {line.strip().split("=")[0]: "old" for line in self.all_overrides.splitlines() if line.strip()}
-        extra_new = [line.strip().split("=")[1] for line in self.all_overrides.splitlines() if line.strip()]
-        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in extra_new)}"'
+        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in self.new_vars)}"'
         proc = self.run_func(read_config_include_file,
-                             local_env_file_content={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False", **extra_old},
+                             local_env_file_content={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False", **self.old_vars},
                              command_suffix=command_suffix)
         expected = set()
-        for k in extra_new:
+        for k in self.new_vars:
             expected.add(f"{k}=new")
         actual = [re.sub(r'[\s\n]+', ' ', val.strip()) for val in get_command_stdout(proc).split(ENV_SPLIT_STR_ALT)]
         assert all(val != "new" for val in actual)
@@ -368,15 +345,13 @@ class TestBackwardsCompatible(_ReadConfigsMixin):
         Test that all deprecated variables can be used to override the new versions if backwards compatible
         variables are allowed.
         """
-        extra_old = {line.strip().split("=")[0]: "old" for line in self.all_overrides.splitlines() if line.strip()}
-        extra_new = {line.strip().split("=")[1]: "new" for line in self.all_overrides.splitlines() if line.strip()}
-        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in extra_new)}"'
+        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in self.new_vars)}"'
         proc = self.run_func(read_config_include_file,
-                             local_env_file_content={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True", **extra_old,
-                                                     **extra_new},
+                             local_env_file_content={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True", **self.old_vars,
+                                                     **self.new_vars},
                              command_suffix=command_suffix)
         expected = set()
-        for k in extra_new:
+        for k in self.new_vars:
             if k == "BIRDHOUSE_EXTRA_CONF_DIRS":
                 expected.add(f"{k}=old ./optional-components/backwards-compatible-overrides")
             else:
@@ -389,15 +364,44 @@ class TestBackwardsCompatible(_ReadConfigsMixin):
         Test that all deprecated variables are not used to override the new versions if backwards compatible
         variables are not allowed.
         """
-        extra_old = {line.strip().split("=")[0]: "old" for line in self.all_overrides.splitlines() if line.strip()}
-        extra_new = {line.strip().split("=")[1]: "new" for line in self.all_overrides.splitlines() if line.strip()}
-        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in extra_new)}"'
+        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in self.new_vars)}"'
         proc = self.run_func(read_config_include_file,
-                             local_env_file_content={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False", **extra_old,
-                                                     **extra_new},
+                             local_env_file_content={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False", **self.old_vars,
+                                                     **self.new_vars},
                              command_suffix=command_suffix)
         assert {re.sub(r'[\s\n]+', ' ', val.strip()) for val in
-                get_command_stdout(proc).split(ENV_SPLIT_STR_ALT)} == {f"{k}=new" for k in extra_new}
+                get_command_stdout(proc).split(ENV_SPLIT_STR_ALT)} == {f"{k}=new" for k in self.new_vars}
+
+    def test_allowed_set_old_variables_when_unset(self, read_config_include_file):
+        """
+        Test that new variables can be used to set deprecated variables when the deprecated variable is unset if
+        backwards compatible variables are allowed.
+        """
+        extra = {"BIRDHOUSE_FQDN": "birdhouse.example.com", "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
+        proc = self.run_func(read_config_include_file, local_env_file_content=extra,
+                             command_suffix='echo "${PAVICS_FQDN}"')
+        assert split_and_strip(get_command_stdout(proc))[-1] == "birdhouse.example.com"
+
+    def test_not_allowed_set_old_variables_when_unset(self, read_config_include_file):
+        """
+        Test that new variables cannot be used to set deprecated variables when the deprecated variable is unset if
+        backwards compatible variables are not allowed.
+        """
+        extra = {"BIRDHOUSE_FQDN": "birdhouse.example.com", "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
+        proc = self.run_func(read_config_include_file, local_env_file_content=extra,
+                             command_suffix='echo "${PAVICS_FQDN}"')
+        assert not split_and_strip(get_command_stdout(proc))
+
+    def test_allowed_no_override_old_variables_when_set(self, read_config_include_file):
+        """
+        Test that new variables cannot be used to override deprecated variables when the deprecated variable is set if
+        backwards compatible variables are allowed.
+        """
+        extra = {"PAVICS_FQDN": "pavics.example.com", "BIRDHOUSE_FQDN": "birdhouse.example.com",
+                 "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
+        proc = self.run_func(read_config_include_file, local_env_file_content=extra,
+                             command_suffix='echo "${PAVICS_FQDN}"')
+        assert split_and_strip(get_command_stdout(proc))[-1] == "pavics.example.com"
 
 
 class TestCreateComposeConfList(_ReadConfigsMixin):
