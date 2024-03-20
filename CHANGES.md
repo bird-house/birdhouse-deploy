@@ -17,7 +17,7 @@
 
 ## Changes
 
-- Weaver: bump version to 5.1.0
+- Weaver: bump version to 5.1.1
 
 [2.1.1](https://github.com/bird-house/birdhouse-deploy/tree/2.1.1) (2024-03-06)
 ------------------------------------------------------------------------------------------------------------------
