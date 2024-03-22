@@ -5,37 +5,142 @@ THIS_DIR="$(dirname "${THIS_FILE}")"
 COMPOSE_DIR="$(dirname "${THIS_DIR}")/birdhouse"
 
 export BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"${COMPOSE_DIR}/birdhouse-compose.sh"}"
-USAGE="USAGE: $0 [-c|--compose-file birdhouse-compose-file] [-e|--env-file local-env-file] {info|compose}"
+USAGE="USAGE: $0 [-h|--help] [-b|--backwards-compatible] [-e|--env-file local-env-file] {info|compose|configs}"
+HELP="$USAGE
+
+Manage the Birdhouse software stack.
+
+Commands:
+  info      Print build information
+  compose   Run a \"docker compose\" command for the Birdhouse project
+  configs   Print a command that can be used to load configuration settings as environment variables
+
+Options:
+  -h, --help                   Print this message and exit
+  -b, --backwards-compatible   Run in backwards compatible mode
+  -e, --env-file string        Override the local environment file, default is ${COMPOSE_DIR}/env.local
+"
+
+CONFIGS_USAGE="USAGE: $0 configs [-h|--help] [-d|--default] [-p|--print-config-command] [-c|--command command]"
+CONFIGS_HELP="$CONFIGS_USAGE
+
+Load or execute commands in the Birdhouse configuration environment.
+
+Options:
+  -d, --default                Only load/print a command for the default configuration settings, not those specified by the local environment file
+  -p, --print-config-command   Print a command that can be used to load configuration settings as environment variables
+  -c, --command string         Execute the given command after loading configuration settings
+  -q, --quiet                  Suppress stdout when loading configuration settings. Only used if it precedes the --command option.
+
+Example Usage:
+
+  $ ${0} configs -c 'echo \${BIRDHOUSE_FQDN}'
+  example.com  # This is the value of BIRDHOUSE_FQDN as determined by the current configuration settings
+  $ ${0} configs -p
+  . /path/to/configs/file/to/source && read_configs
+  $ eval \$(${0} configs)
+  $ echo \${BIRDHOUSE_FQDN}
+  example.com  # This is the value of BIRDHOUSE_FQDN as determined by the current configuration settings
+"
+
+CONFIGS_CMD=read_configs
+
+print_config_command() {
+  if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED+set}" = 'set' ]; then
+    configs_cmd_prefix="export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}' ;"
+  fi
+  if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV+set}" = 'set' ]; then
+    configs_cmd_suffix="export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV}' ;"
+  elif [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_UNSET}" = 'True' ]; then
+    configs_cmd_suffix="unset BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED ;"
+  fi
+
+  if [ "${BIRDHOUSE_LOCAL_ENV+set}" = 'set' ]; then
+    configs_cmd_prefix="${configs_cmd_prefix} export BIRDHOUSE_LOCAL_ENV='${BIRDHOUSE_LOCAL_ENV}' ;"
+  fi
+  if [ "${BIRDHOUSE_LOCAL_ENV_PREV+set}" = 'set' ]; then
+    configs_cmd_suffix="${configs_cmd_suffix} export BIRDHOUSE_LOCAL_ENV='${BIRDHOUSE_LOCAL_ENV_PREV}' ;"
+  elif [ "${BIRDHOUSE_LOCAL_ENV_UNSET}" = 'True' ]; then
+    configs_cmd_suffix="${configs_cmd_suffix} unset BIRDHOUSE_LOCAL_ENV ;"
+  fi
+
+  echo "${configs_cmd_prefix} . ${COMPOSE_DIR}/read-configs.include.sh; ${CONFIGS_CMD} ; ${configs_cmd_suffix}"
+}
+
+parse_configs_args() {
+  case "$1" in
+    -d|--default)
+      CONFIGS_CMD=read_basic_configs_only
+      shift
+      parse_configs_args "$@"
+      ;;
+    -q|--quiet)
+      CONFIGS_QUIET=True
+      shift
+      parse_configs_args "$@"
+      ;;
+    -p|--print-config-command)
+      print_config_command
+      ;;
+    -c|--command)
+      if [ "${CONFIGS_QUIET}" = "True" ]; then
+        eval "$(print_config_command)" > /dev/null
+      else
+        eval "$(print_config_command)"
+      fi
+      shift
+      eval "$@"
+      exit $?
+      ;;
+    -h|--help)
+      echo "${CONFIGS_HELP}" | more
+      ;;
+    *)
+      >&2 echo "$CONFIGS_USAGE"
+      exit 1
+      ;;
+  esac
+}
 
 parse_args() {
   case "$1" in
-    -c|--compose-file)
+    -b|--backwards-compatible)
       shift
-      export BIRDHOUSE_COMPOSE="$(realpath "$1")"  # The argument here takes precedence over the env variable
-      shift
+      if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED+set}" = 'set' ]; then
+        BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV="${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}"
+      else
+        BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_UNSET="True"
+      fi
+      export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED="True"  # The argument here takes precedence over the env variable
       parse_args "$@"
-      return
       ;;
     -e|--env-file)
       shift
+      if [ "${BIRDHOUSE_LOCAL_ENV+set}" = 'set' ]; then
+        BIRDHOUSE_LOCAL_ENV_PREV="${BIRDHOUSE_LOCAL_ENV}"
+      else
+        BIRDHOUSE_LOCAL_ENV_UNSET="True"
+      fi
       export BIRDHOUSE_LOCAL_ENV=$(realpath "$1")  # The argument here takes precedence over the env variable
       shift
       parse_args "$@"
-      return
       ;;
     info)
       shift
       "${BIRDHOUSE_COMPOSE}" info "$@"
-      return
+      exit $?
       ;;
     compose)
       shift
       "${BIRDHOUSE_COMPOSE}" "$@"
       exit $?
       ;;
+    configs)
+      shift
+      parse_configs_args "$@"
+      ;;
     -h|--help)
-      echo "$USAGE"
-      exit
+      echo "$HELP"
       ;;
     *)
       >&2 echo "$USAGE"
