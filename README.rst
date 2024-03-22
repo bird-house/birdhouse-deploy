@@ -13,6 +13,10 @@ for a full-fledged production platform.
       - | |readthedocs|
     * - releases
       - | |latest-version| |commits-since|
+    * - license
+      - | |license|
+    * - citation
+      - | |citation|
 
 .. |commits-since| image:: https://img.shields.io/github/commits-since/bird-house/birdhouse-deploy/2.1.1.svg
     :alt: Commits since latest release
@@ -25,6 +29,14 @@ for a full-fledged production platform.
 .. |readthedocs| image:: https://readthedocs.org/projects/birdhouse-deploy/badge/?version=latest
     :alt: ReadTheDocs Build Status (latest version)
     :target: https://birdhouse-deploy.readthedocs.io/en/latest/?badge=latest
+
+.. |license| image:: https://img.shields.io/github/license/bird-house/birdhouse-deploy
+    :alt: LICENSE
+    :target: https://github.com/bird-house/birdhouse-deploy/blob/master/LICENSE
+
+.. |citation| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.7865537.svg
+    :alt: DOI
+    :target: https://zenodo.org/doi/10.5281/zenodo.7865537
 
 .. end-badges
 
