@@ -76,7 +76,7 @@ Further explanations
 ^^^^^^^^^^^^^^^^^^^^
 
 To run ``docker-compose`` for Birdhouse, the `bin/birdhouse <bin/birdhouse>`_ (:download:`download </bin/birdhouse`) file can be run with the ``compose`` argument.
-This will source the ``env.lscriptocal`` file, apply the appropriate variable substitutions on all the configuration files
+This will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration files
 ".template", and run ``docker-compose`` with all the command line arguments after the ``compose`` argument.
 See `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`) for more details on what can go into the ``env.local`` file.
 
