@@ -41,9 +41,10 @@
   * Removed unused variables:
     * `CMIP5_THREDDS_ROOT`
 
-- Create a new entrypoint in ``bin/birdhouse`` that can be used to invoke ``pavics-compose.sh`` or 
+- Create a new CLI entrypoint in ``bin/birdhouse`` that can be used to invoke ``pavics-compose.sh`` or 
   ``birdhouse-compose.sh`` from one convenient location. This script also includes some useful options and provides
-  a generic entrypoint to the stack that can be extended in the future.
+  a generic entrypoint to the stack that can be extended in the future. In the future, users should treat this
+  entrypoint as the only stable CLI for interacting with the Birdhouse software.
 
 ### Migration Guide
 
@@ -62,6 +63,8 @@
     | configure-pavics.sh     | configure-birdhouse.sh     |
     | trigger-pavicscrawler   | trigger-birdhousecrawler   |
 
+  - Update any external scripts that called ``pavics-compose.sh`` or ``read-configs.include.sh`` to use the CLI 
+    entrypoint in ``bin/birdhouse`` instead.
   - The following default values have changed. If your deployment was using the old default value, update your 
     ``env.local`` file to explicitly set the old default values.
 

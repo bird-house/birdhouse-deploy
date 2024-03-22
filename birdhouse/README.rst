@@ -26,6 +26,47 @@ Requirements
   will need to access your hostname at port 80 and 443 in order to verify and provide
   the SSL certificate.
 
+Command Line Interface (CLI)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The command line interface for interacting with the Birdhouse software can be found in
+`bin/birdhouse <bin/birdhouse>`_ (:download:`download </bin/birdhouse`).
+
+This CLI provides utilities to manage the Birdhouse software like a docker compose project, display build information,
+etc. It also provides a mechanism to execute commands in the Birdhouse configuration environment so that you can ensure
+that external scripts run with the current configuration settings enabled.
+
+For a full description of the CLI usage run the CLI with the ``--help`` flag:
+
+.. code-block:: shell
+
+  ./bin/birdhouse --help
+
+For convenience we recommend adding the ``birdhouse-deploy/bin/`` directory to your ``PATH``:
+
+.. code-block:: shell
+
+  export PATH="$(readlink -f ./bin):$PATH"
+
+  # Now instead of running (from the root directory of this project):
+
+  ./bin/birdhouse --help
+
+  # you can run (from anywhere):
+
+  birdhouse --help
+
+  # To ensure that your PATH variable always includes this directory in login shells:
+
+  echo "export PATH=$(readlink -f ./bin)"':$PATH' >> ~/.profile
+
+.. warning::
+  It is no longer recommended to call scripts other than
+  `bin/birdhouse <bin/birdhouse>`_ (:download:`download </bin/birdhouse`) directly. In previous versions, we recommended
+  interacting with the platform by calling scripts (like ``birdhouse-compose.sh`` or ``read-configs.include.sh``)
+  directly. These scripts have been left in place for backwards compatibility **for now** but may be moved or modified
+  in some future version. We recommend updating any external scripts to use the CLI as soon as possible.
+
 Quick-start
 ^^^^^^^^^^^
 
@@ -49,28 +90,6 @@ Quick-start
 
   # Start the full stack.
   ./bin/birdhouse compose up -d
-
-Post-installation steps
-^^^^^^^^^^^^^^^^^^^^^^^
-
-Add the ``birdhouse-deploy/bin/`` directory to your ``PATH``:
-
-.. code-block:: shell
-
-  export PATH="$(readlink -f ./bin):$PATH"
-
-  # Now instead of running (from the root directory of this project):
-
-  ./bin/birdhouse compose up -d
-
-  # you can run (from anywhere):
-
-  birdhouse compose up -d
-
-  # To ensure that your PATH variable always includes this directory in login shells:
-
-  echo "export PATH=$(readlink -f ./bin)"':$PATH' >> ~/.profile
-
 
 Further explanations
 ^^^^^^^^^^^^^^^^^^^^

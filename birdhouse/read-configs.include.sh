@@ -406,10 +406,22 @@ create_compose_conf_list() {
   fi
 }
 
+# If unset, BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED is set to True to enable backwards compatible mode by default if this
+# file is not being run through a supported interface.
+set_backwards_compatible_as_default() {
+  if [ ! "${__BIRDHOUSE_SUPPORTED_INTERFACE}" = 'True' ]; then
+    log WARN "This file [$(readlink -f "$0" || realpath "$0")] is being executed through a non-supported interface for the Birdhouse software. This file may be moved or updated without warning."
+    if [ ! "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED+set}" = 'set' ];then
+      BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
+      log WARN "The BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED variable is being set to 'True' by default. To avoid this behaviour set this variable or execute this file through a supported interface."
+    fi
+  fi
+}
 
 # Main function to read all config files in appropriate order and call
 # process_delayed_eval() at the appropriate moment.
 read_configs() {
+    set_backwards_compatible_as_default
     discover_compose_dir
     discover_env_local
     read_default_env
@@ -428,6 +440,7 @@ read_configs() {
 # of various components.  Use only when you know what you are doing.  Else use
 # read_configs() to be safe.
 read_basic_configs_only() {
+    set_backwards_compatible_as_default
     discover_compose_dir
     discover_env_local
     read_default_env

@@ -9,6 +9,9 @@ from typing import Optional, Union
 ENV_SPLIT_STR: str = "#env for testing#"
 ENV_SPLIT_STR_ALT: str = "#env for testing alt#"
 
+# Set backwards compatible allowed to False explicitly since the current default
+# is True when not executing through the CLI.
+DEFAULT_BIRDHOUSE_ENV = {"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
 
 @pytest.fixture(scope="module")
 def root_dir(request):
@@ -34,9 +37,11 @@ def read_config_include_file(root_dir) -> str:
 def set_local_env(env_file: io.FileIO, content: Union[str, dict]) -> None:
     env_file.truncate()
     if isinstance(content, dict):
+        content = {**DEFAULT_BIRDHOUSE_ENV, **content}
         env_file.write("\n".join(f"export {k}={v}" for k, v in content.items()))
     else:
-        env_file.write(content)
+        default_content = "\n".join([f"{k}={v}" for k, v in DEFAULT_BIRDHOUSE_ENV.items()])
+        env_file.write(f"{default_content}\n{content}")
 
 
 def split_and_strip(s: str, split_on="\n") -> list[str]:
@@ -64,7 +69,7 @@ class _ReadConfigsMixin:
         if test_func is None:
             test_func = self.test_func
         try:
-            env = local_env or {}
+            env = {**DEFAULT_BIRDHOUSE_ENV, **(local_env or {})}
             if local_env_file_content:
                 with tempfile.NamedTemporaryFile(delete=False, mode="w") as f:
                     set_local_env(f, local_env_file_content)
@@ -140,7 +145,8 @@ class TestReadConfigs(_ReadConfigsMixin):
     @pytest.mark.usefixtures("run_in_compose_dir")
     def test_all_conf_dirs_default_order(self, read_config_include_file) -> None:
         """Test that the expected order that default.env files are loaded is correct"""
-        proc = self.run_func(read_config_include_file, command_suffix='echo "$ALL_CONF_DIRS"')
+        proc = self.run_func(read_config_include_file,
+                             command_suffix='echo "$ALL_CONF_DIRS"')
         assert split_and_strip(get_command_stdout(proc)) == self.default_all_conf_order_with_dependencies
 
     def test_all_conf_dirs_extra_last(self, read_config_include_file) -> None:

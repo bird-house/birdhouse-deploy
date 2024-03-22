@@ -1,10 +1,12 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
 COMPOSE_DIR="$(dirname "${THIS_DIR}")/birdhouse"
 
 export BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"${COMPOSE_DIR}/birdhouse-compose.sh"}"
+export __BIRDHOUSE_SUPPORTED_INTERFACE=True
+
 USAGE="USAGE: $0 [-h|--help] [-b|--backwards-compatible] [-e|--env-file local-env-file] {info|compose|configs}"
 HELP="$USAGE
 
@@ -21,7 +23,7 @@ Options:
   -e, --env-file string        Override the local environment file, default is ${COMPOSE_DIR}/env.local
 "
 
-CONFIGS_USAGE="USAGE: $0 configs [-h|--help] [-d|--default] [-p|--print-config-command] [-c|--command command]"
+CONFIGS_USAGE="USAGE: $0 configs [-h|--help] [-d|--default] {[-p|--print-config-command] | [-c|--command command]}"
 CONFIGS_HELP="$CONFIGS_USAGE
 
 Load or execute commands in the Birdhouse configuration environment.
@@ -30,7 +32,7 @@ Options:
   -d, --default                Only load/print a command for the default configuration settings, not those specified by the local environment file
   -p, --print-config-command   Print a command that can be used to load configuration settings as environment variables
   -c, --command string         Execute the given command after loading configuration settings
-  -q, --quiet                  Suppress stdout when loading configuration settings. Only used if it precedes the --command option.
+  -q, --quiet                  Suppress stdout when loading configuration settings for the '--command' option.
 
 Example Usage:
 
@@ -43,16 +45,29 @@ Example Usage:
   example.com  # This is the value of BIRDHOUSE_FQDN as determined by the current configuration settings
 "
 
-CONFIGS_CMD=read_configs
+READ_CONFIGS_CMD=read_configs
 
+# Print a command that can be used to load configuration settings as environment variables.
+# Modifies the command based on whether the options --backwards-compatible and --env-file are set in order
+# to respect these settings if this command is run `eval` later on.
+# Tries to set the BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED and BIRDHOUSE_LOCAL_ENV environment variables back to their
+# original setting after the command is run with `eval`.
+# Known issue: The original setting isn't restored if this script is called with an inline environment variable:
+#   $ export $BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=False
+#   $ BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True birdhouse configs -p
+#   ...
+#   $ echo $BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED
+#   True
 print_config_command() {
+  configs_cmd_prefix="export __BIRDHOUSE_SUPPORTED_INTERFACE=True ;"
+  configs_cmd_suffix="unset __BIRDHOUSE_SUPPORTED_INTERFACE ;"
   if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED+set}" = 'set' ]; then
-    configs_cmd_prefix="export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}' ;"
+    configs_cmd_prefix="${configs_cmd_prefix} export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}' ;"
   fi
   if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV+set}" = 'set' ]; then
-    configs_cmd_suffix="export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV}' ;"
+    configs_cmd_suffix="${configs_cmd_suffix} export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV}' ;"
   elif [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_UNSET}" = 'True' ]; then
-    configs_cmd_suffix="unset BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED ;"
+    configs_cmd_suffix="${configs_cmd_suffix} unset BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED ;"
   fi
 
   if [ "${BIRDHOUSE_LOCAL_ENV+set}" = 'set' ]; then
@@ -64,13 +79,34 @@ print_config_command() {
     configs_cmd_suffix="${configs_cmd_suffix} unset BIRDHOUSE_LOCAL_ENV ;"
   fi
 
-  echo "${configs_cmd_prefix} . ${COMPOSE_DIR}/read-configs.include.sh; ${CONFIGS_CMD} ; ${configs_cmd_suffix}"
+  echo "${configs_cmd_prefix} . ${COMPOSE_DIR}/read-configs.include.sh; ${READ_CONFIGS_CMD} ; ${configs_cmd_suffix}"
 }
 
+# Support multiple short flags together (ex: -abc instead of -a -b -c)
+# The first argument is the parse function to call once the multiple short flags have been parsed
+# The rest of the arguments are the rest arguments to be processed.
+parse_multiple_short_flags() {
+  parse_func=$1
+  shift
+  new_flags="${1%%=*}"
+  arg_value="${1#*=}"
+  [ "${arg_value}" = "$1" ] && unset arg_value
+  new_flags="$(echo "${new_flags#-*}" | sed 's/[a-z]/ -&/g')"
+  shift
+  if [ "${arg_value+set}" = 'set' ]; then
+    # shellcheck disable=SC2086
+    ${parse_func} ${new_flags} "${arg_value}" "$@"
+  else
+    # shellcheck disable=SC2086
+    ${parse_func} ${new_flags} "$@"
+  fi
+}
+
+# Parse arguments and options for the configs subcommand
 parse_configs_args() {
   case "$1" in
     -d|--default)
-      CONFIGS_CMD=read_basic_configs_only
+      READ_CONFIGS_CMD=read_basic_configs_only
       shift
       parse_configs_args "$@"
       ;;
@@ -80,20 +116,46 @@ parse_configs_args() {
       parse_configs_args "$@"
       ;;
     -p|--print-config-command)
-      print_config_command
+      # Cannot be called with the --command argument as well
+      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'invalid arg that triggers usage message'
+      CONFIGS_PRINT=True
+      shift
+      parse_configs_args "$@"
+      ;;
+    -c=*|--command=*)
+      arg_value="${1#*=}"
+      shift
+      parse_configs_args -c "${arg_value}" "$@"
       ;;
     -c|--command)
-      if [ "${CONFIGS_QUIET}" = "True" ]; then
-        eval "$(print_config_command)" > /dev/null
-      else
-        eval "$(print_config_command)"
-      fi
+      # Cannot be called with the --print-config-command option as well
+      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'invalid arg that triggers usage message'
       shift
-      eval "$@"
-      exit $?
+      CONFIGS_CMD="$1"
+      shift
+      parse_configs_args "$@"
       ;;
     -h|--help)
       echo "${CONFIGS_HELP}" | more
+      ;;
+    -??*)
+      parse_multiple_short_flags parse_configs_args "$@"
+      ;;
+    '')
+      # Print the configuration settings command or execute the specified
+      # command once all other options have been parsed
+      if [ "${CONFIGS_PRINT}" = 'True' ]; then
+        print_config_command
+      elif [ "${CONFIGS_CMD+set}" = 'set' ]; then
+        if [ "${CONFIGS_QUIET}" = "True" ]; then
+          eval "$(print_config_command)" > /dev/null
+        else
+          eval "$(print_config_command)"
+        fi
+        exec /usr/bin/env sh -c "${CONFIGS_CMD}"
+      else
+        parse_configs_args 'invalid arg that triggers usage message'
+      fi
       ;;
     *)
       >&2 echo "$CONFIGS_USAGE"
@@ -102,6 +164,7 @@ parse_configs_args() {
   esac
 }
 
+# Parse arguments and options
 parse_args() {
   case "$1" in
     -b|--backwards-compatible)
@@ -114,6 +177,11 @@ parse_args() {
       export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED="True"  # The argument here takes precedence over the env variable
       parse_args "$@"
       ;;
+    -e=*|--env-file=*)
+      arg_value="${1#*=}"
+      shift
+      parse_args -e "${arg_value}" "$@"
+      ;;
     -e|--env-file)
       shift
       if [ "${BIRDHOUSE_LOCAL_ENV+set}" = 'set' ]; then
@@ -121,7 +189,8 @@ parse_args() {
       else
         BIRDHOUSE_LOCAL_ENV_UNSET="True"
       fi
-      export BIRDHOUSE_LOCAL_ENV=$(realpath "$1")  # The argument here takes precedence over the env variable
+      BIRDHOUSE_LOCAL_ENV=$(realpath "$1")  # The argument here takes precedence over the env variable
+      export BIRDHOUSE_LOCAL_ENV
       shift
       parse_args "$@"
       ;;
@@ -141,6 +210,9 @@ parse_args() {
       ;;
     -h|--help)
       echo "$HELP"
+      ;;
+    -??*)
+      parse_multiple_short_flags parse_configs_args "$@"
       ;;
     *)
       >&2 echo "$USAGE"
