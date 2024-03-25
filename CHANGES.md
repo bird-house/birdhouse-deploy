@@ -19,6 +19,9 @@
 
 - Weaver: bump version to 5.1.1
 
+  - See changes in the [Weaver changes 
+    file](https://github.com/crim-ca/weaver/blob/ec5f403958de21e1af27ff86da391d0d53ded5d9/CHANGES.rst?plain=1#L23-L249)
+
 [2.1.2](https://github.com/bird-house/birdhouse-deploy/tree/2.1.2) (2024-03-25)
 ------------------------------------------------------------------------------------------------------------------
 
