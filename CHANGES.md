@@ -22,6 +22,17 @@
   Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.4.
 
 
+[2.1.2](https://github.com/bird-house/birdhouse-deploy/tree/2.1.2) (2024-03-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Weaver: celery-healthcheck: update regular expression
+
+  The `celery-healthcheck` file which checks if celery node is online when weaver starts up was using an outdated
+  regular expression to check if a node was online or not. This has been fixed so that this script can now reliably
+  check whether the node is available or not.
+
 [2.1.1](https://github.com/bird-house/birdhouse-deploy/tree/2.1.1) (2024-03-06)
 ------------------------------------------------------------------------------------------------------------------
 
