@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Update Thredds to supported version
+ 
+  Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.4.
+
 
 [2.1.2](https://github.com/bird-house/birdhouse-deploy/tree/2.1.2) (2024-03-25)
 ------------------------------------------------------------------------------------------------------------------
@@ -160,6 +165,7 @@
   be loaded after the juptyerhub component. Now that the cowbird component is part of the `DEFAULT_CONF_DIRS` and
   therefore will always be loaded first, this updates the settings so that the README file will be enabled given the new
   component load order.
+
 
 [2.0.1](https://github.com/bird-house/birdhouse-deploy/tree/2.0.1) (2023-12-11)
 ------------------------------------------------------------------------------------------------------------------
