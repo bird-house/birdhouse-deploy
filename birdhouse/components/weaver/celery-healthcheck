@@ -25,7 +25,7 @@ fi
 #   -> celery@<uuid>: OK
 #       * weaver.processes.execution.execute_process
 # more tasks possible depending on Weaver version and enabled features
-celery_status_index=$(echo "${result}" | grep --line-number -E '^-> celery' | cut -d ':' -f 1)
+celery_status_index=$(echo "${result}" | grep --line-number -E '^->[[:space:]]+celery' | cut -d ':' -f 1)
 if [[ -z "${celery_status_index}" ]]; then
   echo "${ERROR}Empty Celery status."
   exit 1
