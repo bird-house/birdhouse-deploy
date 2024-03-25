@@ -114,6 +114,17 @@
     Note that you'll need to do the same for the ``stac-db`` service as well (assuming that you weren't previously
     overriding the ``STAC_POSTGRES_USER`` with a custom value).
 
+[2.1.2](https://github.com/bird-house/birdhouse-deploy/tree/2.1.2) (2024-03-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Weaver: celery-healthcheck: update regular expression
+
+  The `celery-healthcheck` file which checks if celery node is online when weaver starts up was using an outdated
+  regular expression to check if a node was online or not. This has been fixed so that this script can now reliably
+  check whether the node is available or not.
+
 [2.1.1](https://github.com/bird-house/birdhouse-deploy/tree/2.1.1) (2024-03-06)
 ------------------------------------------------------------------------------------------------------------------
 
