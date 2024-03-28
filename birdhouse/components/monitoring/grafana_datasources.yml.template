@@ -5,7 +5,7 @@ datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    uid: local_pavics_prometheus
+    uid: ${GRAFANA_PROMETHEUS_DATASOURCE_UUID}
     url: http://prometheus:9090/prometheus
     isDefault: true
     editable: false

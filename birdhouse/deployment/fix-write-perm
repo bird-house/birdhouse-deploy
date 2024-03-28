@@ -1,7 +1,7 @@
 #!/bin/sh -e
 # Fix write permission lost due to files owned by root user.
 #
-# Run once for this repo and once each time AUTODEPLOY_EXTRA_REPOS changes.
+# Run once for this repo and once each time BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS changes.
 #
 # Set FIX_WRITE_PERM_EXTRA=1 to also grant write access other data typical
 # dir, useful for staging server to get update from production server.
@@ -9,7 +9,7 @@
 # Other data dir can also be given directly as arguments to this script.
 #
 # The 'autodeploy' container spawned by the 'scheduler' container runs as
-# user root.  It writes to all the git checkout in AUTODEPLOY_EXTRA_REPOS
+# user root.  It writes to all the git checkout in BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS
 # and the current birdhouse-deploy checkout as well.  All the new files
 # created will be owned by the root user.
 #
@@ -31,8 +31,8 @@
 # (https://docs.docker.com/engine/security/userns-remap/): this is a
 # global configuration for the docker deamon that impacts all containers
 # on the same host (we only need for the 'autodeploy' container).  Not
-# portable if a host is used to run other services than PAVICS, we do not
-# want to force all other services to the same owner as PAVICS checkout.
+# portable if a host is used to run other services than Birdhouse, we do not
+# want to force all other services to the same owner as Birdhouse checkout.
 #
 # So the setfacl solution is the simplest, most portable/generic and most
 # localized (only the directories we need) solution.
@@ -59,5 +59,5 @@ fi
 
 set -x
 
-sudo setfacl -Rdm "u:${USER}:rwX" "${PWD}" ${AUTODEPLOY_EXTRA_REPOS} ${EXTRA_DATA_DIR} "$@"  # for future files
-sudo setfacl -Rm "u:${USER}:rwX" "${PWD}" ${AUTODEPLOY_EXTRA_REPOS} ${EXTRA_DATA_DIR} "$@"  # for existing files
+sudo setfacl -Rdm "u:${USER}:rwX" "${PWD}" ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS} ${EXTRA_DATA_DIR} "$@"  # for future files
+sudo setfacl -Rm "u:${USER}:rwX" "${PWD}" ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS} ${EXTRA_DATA_DIR} "$@"  # for existing files

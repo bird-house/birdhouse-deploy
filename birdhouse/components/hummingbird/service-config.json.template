@@ -9,7 +9,7 @@
     {
       "rel": "service",
       "type": "text/xml",
-      "href": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&request=GetCapabilities"
+      "href": "https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&request=GetCapabilities"
     },
     {
       "rel": "service-doc",
@@ -19,7 +19,7 @@
     {
       "rel": "service-desc",
       "type": "text/xml",
-      "href": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&request=GetCapabilities"
+      "href": "https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&request=GetCapabilities"
     }
   ]
 }

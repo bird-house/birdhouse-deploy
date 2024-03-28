@@ -5,7 +5,7 @@
 # SERVICES['node']['monitoring'].update({
 #     'Thredds-public': {
 #         'request': {
-#             'url': 'https://${PAVICS_FQDN_PUBLIC}/toto',
+#             'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}/toto',
 #         },
 #     },
 # })

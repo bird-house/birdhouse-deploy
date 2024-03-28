@@ -9,7 +9,7 @@
     {
       "rel": "service",
       "type": "application/json",
-      "href": "https://${PAVICS_FQDN_PUBLIC}/stac/"
+      "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/stac/"
     },
     {
       "rel": "service-doc",
@@ -24,7 +24,7 @@
     {
       "rel": "alternate",
       "type": "text/html",
-      "href": "https://${PAVICS_FQDN_PUBLIC}/stac-browser/"
+      "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/stac-browser/"
     }
   ]
 }, {
@@ -38,7 +38,7 @@
     {
       "rel": "service",
       "type": "text/html",
-      "href": "https://${PAVICS_FQDN_PUBLIC}/stac-browser/"
+      "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/stac-browser/"
     },
     {
       "rel": "service-doc",
@@ -48,7 +48,7 @@
     {
       "rel": "alternate",
       "type": "application/json",
-      "href": "https://${PAVICS_FQDN_PUBLIC}/stac/"
+      "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/stac/"
     }
   ]
 }

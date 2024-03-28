@@ -12,7 +12,7 @@
     {
       "rel": "service",
       "type": "application/json",
-      "href": "https://${PAVICS_FQDN_PUBLIC}/geoserver/"
+      "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/geoserver/"
     },
     {
       "rel": "service-doc",

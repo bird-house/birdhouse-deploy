@@ -10,7 +10,7 @@
     {
       "rel": "service",
       "type": "text/html",
-      "href": "https://${PAVICS_FQDN_PUBLIC}/thredds/"
+      "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/thredds/"
     },
     {
       "rel": "service-doc",
@@ -20,7 +20,7 @@
     {
       "rel": "service-desc",
       "type": "text/xml",
-      "href": "https://${PAVICS_FQDN_PUBLIC}/thredds/catalog.xml"
+      "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/thredds/catalog.xml"
     }
   ]
 }

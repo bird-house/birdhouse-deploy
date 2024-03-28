@@ -6,7 +6,7 @@ SERVICES['Weaver'] = {
         'institution': 'CRIM',
         'releaseTime': get_release_time_from_repo_tag("github", "crim-ca/weaver", "${WEAVER_VERSION}"),
         'researchSubject': 'Any',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Processing',
         'tags': ['Workflow', 'Processes', 'Deployment', 'Distribution', 'EMS', 'ADES', 'CWL', 'OGC']
     },
@@ -19,7 +19,7 @@ SERVICES['Weaver'] = {
         'releasenotes': 'https://github.com/crim-ca/weaver/blob/master/CHANGES.rst',
         'support': 'https://github.com/crim-ca/weaver/issues',
         'source': 'https://github.com/crim-ca/weaver',
-        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/weaver/',
+        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/weaver/',
         'licence': 'https://github.com/crim-ca/weaver/blob/${WEAVER_VERSION}/LICENSE.txt',
         'provenance': 'https://github.com/crim-ca/weaver'
     },

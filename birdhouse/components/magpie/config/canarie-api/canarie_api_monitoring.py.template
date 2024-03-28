@@ -10,7 +10,7 @@ SERVICES['Magpie'] = {
         'institution': 'Ouranos',
         'releaseTime': get_release_time_from_repo_tag("github", "Ouranosinc/Magpie", "${MAGPIE_VERSION}"),
         'researchSubject': 'Security',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Security',
         'tags': ['Security', 'Management', 'Access', 'Policy Decision Point']
     },
@@ -23,14 +23,14 @@ SERVICES['Magpie'] = {
         'releasenotes': 'https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst',
         'support': 'https://github.com/Ouranosinc/Magpie/issues',
         'source': 'https://github.com/Ouranosinc/Magpie',
-        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/magpie/',
+        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/magpie/',
         'licence': 'https://github.com/Ouranosinc/Magpie/blob/${MAGPIE_VERSION}/LICENSE',
         'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
     },
     "monitoring": {
         "Magpie": {
             'request': {
-                'url': 'https://${PAVICS_FQDN_PUBLIC}/magpie/version'
+                'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}/magpie/version'
             },
             'response': {
                 'text': r'\{.*"code": 200.*"type": "application/json".*\}'

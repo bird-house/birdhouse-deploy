@@ -16,6 +16,6 @@ for adir in ${ALL_CONF_DIRS}; do
 done
 
 if [ -z "${SERVICES}" ]; then
-  log WARN "No services in DEFAULT_CONF_DIRS and EXTRA_CONF_DIRS. SERVICES JSON list will be empty!"
+  log WARN "No services in BIRDHOUSE_DEFAULT_CONF_DIRS and BIRDHOUSE_EXTRA_CONF_DIRS. SERVICES JSON list will be empty!"
 fi
 export BIRDHOUSE_DEPLOY_SERVICES_JSON="{\"services\": [${SERVICES}]}"

@@ -9,15 +9,15 @@ services:
     environment:
       MAGPIE_ADMIN_USERNAME: ${MAGPIE_ADMIN_USERNAME}
       MAGPIE_ADMIN_PASSWORD: ${MAGPIE_ADMIN_PASSWORD}
-      PAVICS_HOST_URL: https://${PAVICS_FQDN_PUBLIC}
-      WPS_OUTPUTS_DIR: ${WPS_OUTPUTS_DIR}
-      WORKSPACE_DIR: ${DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}
+      BIRDHOUSE_HOST_URL: https://${BIRDHOUSE_FQDN_PUBLIC}
+      WPS_OUTPUTS_DIR: ${BIRDHOUSE_WPS_OUTPUTS_DIR}
+      WORKSPACE_DIR: ${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}
       TEST_COWBIRD_JUPYTERHUB_USERNAME: ${TEST_COWBIRD_JUPYTERHUB_USERNAME}
       TEST_COWBIRD_JUPYTERHUB_PASSWORD: ${TEST_COWBIRD_JUPYTERHUB_PASSWORD}
     volumes:
       - ${COWBIRD_JUPYTER_ACCESS_DIR}/test_cowbird_jupyter.py:/test_cowbird_jupyter.py
       - ./optional-components/test-geoserver-secured-access/test-data:/geoserver-test-data:ro
-      - ${DATA_PERSIST_SHARED_ROOT}:/data
+      - ${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}:/data
     command: python /test_cowbird_jupyter.py
     # root access required to create files in the user workspace and other WPS outputs files in the data dir
     user: root:root

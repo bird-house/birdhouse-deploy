@@ -6,7 +6,7 @@ SERVICES['Malleefowl'] = {
         'releaseTime': get_release_time_from_repo_tag("github", "Ouranosinc/malleefowl", "${MALLEEFOWL_VERSION}"),
         'institution': 'Ouranos',
         'researchSubject': 'Climatology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Resource/Cloud Management',
         'tags': ['Climatology']
     },
@@ -19,7 +19,7 @@ SERVICES['Malleefowl'] = {
         'releasenotes': 'https://github.com/Ouranosinc/malleefowl/blob/master/CHANGES.rst',
         'support': 'https://github.com/Ouranosinc/malleefowl/issues',
         'source': 'https://github.com/Ouranosinc/malleefowl',
-        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/malleefowl/',
+        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/malleefowl/',
         'licence': '',
         'provenance': ''
     },
@@ -27,7 +27,7 @@ SERVICES['Malleefowl'] = {
         "Malleefowl": {
             'request': {
                 # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
-                'url': 'http://${PAVICS_FQDN}:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities'
+                'url': 'http://${BIRDHOUSE_FQDN}:8091/wps?service=WPS&version=1.0.0&request=GetCapabilities'
             }
         }
     }

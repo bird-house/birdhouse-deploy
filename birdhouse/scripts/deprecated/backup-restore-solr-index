@@ -15,7 +15,7 @@ else
 fi
 
 if [ -z "$BACKUP_BASEDIR" ]; then
-    BACKUP_BASEDIR="/data"  # all PAVICS deployment have /data
+    BACKUP_BASEDIR="/data"  # all Birdhouse deployment have /data
 fi
 
 if [ -z "$BACKUP_FILENAME" ]; then

@@ -22,7 +22,7 @@
 
     location = /secure-grafana-auth {
         internal;
-        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_VERIFY_PATH}/grafana$request_uri;
+        proxy_pass https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_VERIFY_PATH}/grafana$request_uri;
         proxy_pass_request_body off;
         proxy_set_header Host $host;
         proxy_set_header Content-Length "";
@@ -34,7 +34,7 @@
 
     location = /secure-prometheus-auth {
         internal;
-        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_VERIFY_PATH}/prometheus$request_uri;
+        proxy_pass https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_VERIFY_PATH}/prometheus$request_uri;
         proxy_pass_request_body off;
         proxy_set_header Host $host;
         proxy_set_header Content-Length "";
@@ -46,7 +46,7 @@
 
     location = /secure-alertmanager-auth {
         internal;
-        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_VERIFY_PATH}/alertmanager$request_uri;
+        proxy_pass https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_VERIFY_PATH}/alertmanager$request_uri;
         proxy_pass_request_body off;
         proxy_set_header Host $host;
         proxy_set_header Content-Length "";

@@ -10,7 +10,7 @@ ${JUPYTER_LOGIN_BANNER_TOP_SECTION}
   resources.
 </p>
 <p>
-  Contact <strong>${SUPPORT_EMAIL}</strong> for information on how to
+  Contact <strong>${BIRDHOUSE_SUPPORT_EMAIL}</strong> for information on how to
   <strong>get an account and a private workspace or the password of the
   public demo account</strong>.
 </p>

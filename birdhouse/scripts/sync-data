@@ -53,7 +53,7 @@ for item in ${GEOSERVER_DATA_DIR}/ ${JUPYTERHUB_USER_DATA_DIR}/ ${MAGPIE_PERSIST
     # FIX_WRITE_PERM_EXTRA=1 which does the same and more so could be slower
     # than needed.
 
-    # Assume DATA_PERSIST_ROOT is same between both hosts !
+    # Assume BIRDHOUSE_DATA_PERSIST_ROOT is same between both hosts !
     ${RSYNC_BASE_CMD} "${SOURCE_HOST}:${item}" "${item}"
 done
 

@@ -15,6 +15,6 @@ services:
       - "8983:8983"
       - "48983:9001"
     volumes:
-      - ${DATA_PERSIST_ROOT}/solr:/data
+      - ${BIRDHOUSE_DATA_PERSIST_ROOT}/solr:/data
     restart: always
     logging: *default-logging

@@ -23,6 +23,7 @@ ci/deployment:
   - Vagrantfile
   - birdhouse/**/*.include.sh
   - birdhouse/pavics-compose.sh
+  - birdhouse/birdhouse-compose.sh
 
 ci/tests:
   - "**/test*/**/*"  # eg: optional-components/test...

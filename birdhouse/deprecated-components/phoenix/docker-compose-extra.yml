@@ -23,7 +23,7 @@ services:
       - "9001:9001"
     volumes:
       - ./deprecated-components/phoenix/custom.cfg:/opt/birdhouse/src/phoenix/custom.cfg
-      - ${SSL_CERTIFICATE}:/opt/birdhouse/etc/nginx/cert.pem
+      - ${BIRDHOUSE_SSL_CERTIFICATE}:/opt/birdhouse/etc/nginx/cert.pem
     links:
       - mongodb
     networks:

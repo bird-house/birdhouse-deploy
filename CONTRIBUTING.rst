@@ -3,13 +3,13 @@ Contributing
 
 Contributions are welcome, and they are greatly appreciated! Every little bit helps, and credit will always be given.
 
-Please read the PAVICS `Developer Documentation`_ to get started.
+Please read the Birdhouse `Developer Documentation`_ to get started.
 
 .. _Developer Documentation: https://birdhouse-deploy.readthedocs.io/en/latest/
 
 Policy
 ------
-Since PAVICS is used in production by multiple organizations, this deployment repository also has a policy regarding contributions.
+Since Birdhouse is used in production by multiple organizations, this deployment repository also has a policy regarding contributions.
 
 Policy objectives
 ~~~~~~~~~~~~~~~~~~~~~
@@ -74,7 +74,7 @@ Policy rules
 10. If patches or contributions are made directly in the production fork, they must also be ported back and approved in
     the main branch (no code that does not exist in the main branch should exist in a production fork).
 
-11. The main branch will contain the official versions of PAVICS that will evolve according to semantic versioning.
+11. The main branch will contain the official versions of Birdhouse that will evolve according to semantic versioning.
     These versions should be used by the organizations.
 
 12. If contributions are made directly in a production fork (point 10), a tagged version should use the last common one
@@ -84,8 +84,8 @@ Policy rules
       The tag ``2.1.9`` cannot be applied because this version could possibly exists in the main branch.
       A tag looking like ``2.1.8.orgXrev1`` would be preferred.
 
-PAVICS multi organization git repository management
+Birdhouse multi organization git repository management
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. image:: https://raw.githubusercontent.com/bird-house/birdhouse-deploy/master/docs/source/images/multi_organizations_management.jpg
-  :alt: PAVICS multi organization git repository management
+  :alt: Birdhouse multi organization git repository management

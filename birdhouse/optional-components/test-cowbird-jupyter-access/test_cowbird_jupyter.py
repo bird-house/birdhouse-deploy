@@ -19,14 +19,14 @@ print("Setup configuration parameters...")
 TIMEOUT_DELAY = 5
 MAX_ATTEMPTS = 8
 
-VERIFY_SSL = False
-if not VERIFY_SSL:
+BIRDHOUSE_VERIFY_SSL = False
+if not BIRDHOUSE_VERIFY_SSL:
     urllib3.disable_warnings()  # disable warnings for using https without certificate verification enabled
 HEADERS = {"Accept": "application/json", "Content-Type": "application/json"}
-PAVICS_HOST_URL = os.getenv("PAVICS_HOST_URL")
+BIRDHOUSE_HOST_URL = os.getenv("BIRDHOUSE_HOST_URL")
 
-COWBIRD_URL = f"{PAVICS_HOST_URL}/cowbird"
-MAGPIE_URL = f"{PAVICS_HOST_URL}/magpie"
+COWBIRD_URL = f"{BIRDHOUSE_HOST_URL}/cowbird"
+MAGPIE_URL = f"{BIRDHOUSE_HOST_URL}/magpie"
 
 WPS_OUTPUTS_DIR = os.getenv("WPS_OUTPUTS_DIR")
 WORKSPACE_DIR = os.getenv("WORKSPACE_DIR")
@@ -46,7 +46,7 @@ TEST_MAGPIE_ADMIN_PASSWORD = get_credentials("MAGPIE_ADMIN_PASSWORD")
 TEST_COWBIRD_JUPYTERHUB_USERNAME = os.getenv("TEST_COWBIRD_JUPYTERHUB_USERNAME")
 TEST_COWBIRD_JUPYTERHUB_PASSWORD = os.getenv("TEST_COWBIRD_JUPYTERHUB_PASSWORD")
 
-print("  Verify SSL : {}".format(VERIFY_SSL))
+print("  Verify SSL : {}".format(BIRDHOUSE_VERIFY_SSL))
 print("  Will use Magpie URL:   [{}]".format(MAGPIE_URL))
 
 def response_msg(message, response, is_json=True):
@@ -66,7 +66,7 @@ def magpie_signin(user_name, password):
     signin_url = f"{MAGPIE_URL}/signin"
     data = {"user_name": user_name, "password": password}
     try:
-        resp = requests.request(url=signin_url, headers=HEADERS, method="POST", json=data, timeout=10, verify=VERIFY_SSL)
+        resp = requests.request(url=signin_url, headers=HEADERS, method="POST", json=data, timeout=10, verify=BIRDHOUSE_VERIFY_SSL)
     except Exception as exc:
         raise RuntimeError(f"Failed to sign in to Magpie (url: `{signin_url}`) with user `{data['user_name']}`. "
                            f"Exception : {exc}. ")
@@ -92,7 +92,7 @@ for svc_name, svc_url in [("Magpie", MAGPIE_URL),
     for i in range(MAX_ATTEMPTS):
         time.sleep(i * TIMEOUT_DELAY)
         try:
-            resp = requests.get(svc_url, verify=VERIFY_SSL)
+            resp = requests.get(svc_url, verify=BIRDHOUSE_VERIFY_SSL)
             assert resp.status_code == 200
             print(f"{svc_name} availability checked successfully.")
             break
@@ -103,12 +103,12 @@ for svc_name, svc_url in [("Magpie", MAGPIE_URL),
 
 # ------------------------------------------------------------------
 magpie_admin_session = requests.Session()
-magpie_admin_session.verify = VERIFY_SSL
+magpie_admin_session.verify = BIRDHOUSE_VERIFY_SSL
 magpie_admin_session.headers = HEADERS
 magpie_admin_session.cookies = magpie_signin(TEST_MAGPIE_ADMIN_USERNAME, TEST_MAGPIE_ADMIN_PASSWORD).cookies
 
 test_user_session = requests.Session()
-test_user_session.verify = VERIFY_SSL
+test_user_session.verify = BIRDHOUSE_VERIFY_SSL
 test_user_session.headers = HEADERS
 
 # ------------------------------------------------------------------

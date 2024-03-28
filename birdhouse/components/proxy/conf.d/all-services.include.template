@@ -1,5 +1,5 @@
     location / {
-        ${PROXY_ROOT_LOCATION}
+        ${BIRDHOUSE_PROXY_ROOT_LOCATION}
     }
 
     location /components {
@@ -21,7 +21,7 @@
     }
 
     location /doc {
-        return 302 ${DOC_URL};
+        return 302 ${BIRDHOUSE_DOC_URL};
     }
 
     # for other extra components to extend Nginx

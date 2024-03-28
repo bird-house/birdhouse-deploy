@@ -1,6 +1,6 @@
 providers:
   catalog:
-    url: http://${PAVICS_FQDN}:8086/pywps
+    url: http://${BIRDHOUSE_FQDN}:8086/pywps
     title: Catalog
     public: true
     c4i: false

@@ -30,7 +30,7 @@ services:
     container_name: stac-browser
     image: ghcr.io/crim-ca/stac-browser:docker_image_push
     environment:
-      - CATALOG_URL=https://${PAVICS_FQDN_PUBLIC}/stac/
+      - CATALOG_URL=https://${BIRDHOUSE_FQDN_PUBLIC}/stac/
       - ROOT_PATH=/stac-browser/
 
   stac-db:
