@@ -313,11 +313,10 @@ process_backwards_compatible_variables() {
         fi
       fi
     done
-    if [ "$1" = "pre-components" ]; then
+    if [ ! "$1" = "pre-components" ]; then
       if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
         BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./optional-components/backwards-compatible-overrides"
       fi
-    else
       for default_old_var in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_DEFAULTS}
       do
         old_var="${default_old_var%%=*}"
