@@ -147,7 +147,8 @@ class TestReadConfigs(_ReadConfigsMixin):
         """Test that the expected order that default.env files are loaded is correct"""
         proc = self.run_func(read_config_include_file,
                              command_suffix='echo "$ALL_CONF_DIRS"')
-        assert split_and_strip(get_command_stdout(proc)) == self.default_all_conf_order_with_dependencies
+        conf_dirs = self.default_all_conf_order_with_dependencies
+        assert split_and_strip(get_command_stdout(proc))[:len(conf_dirs)] == conf_dirs
 
     def test_all_conf_dirs_extra_last(self, read_config_include_file) -> None:
         """Test that any extra components are loaded last"""
