@@ -160,7 +160,9 @@ source_conf_files() {
           unset COMPONENT_DEPENDENCIES
           dependencies="$(. "${adir}/default.env" && echo "${COMPONENT_DEPENDENCIES}")"
           if [ -n "${dependencies}" ]; then
+            old_conf_locations="${conf_locations}"
             source_conf_files "${dependencies}" "a dependency of ${adir}"
+            conf_locations="${old_conf_locations}"
             # reset the adir variable in case it was changed in a recursive call
             adir="$(printf '%b' "${_adir_stack}" | tail -1)"
           fi
@@ -265,7 +267,17 @@ set_old_backwards_compatible_variables() {
             BIRDHOUSE_OLD_VARS_OVERRIDDEN="${BIRDHOUSE_OLD_VARS_OVERRIDDEN} ${old_var} "  # space before and after old_var is for grep (below)
             log DEBUG "Variable [${new_var}] is being used to set the deprecated variable [${old_var}]."
         fi
-  done
+    done
+    for hardcoded_var in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_HARDCODED_DEFAULTS}
+    do
+        new_var="${hardcoded_var%%=*}"
+        hardcoded_old_value="${hardcoded_var#*=}"
+        new_value="`eval "echo \\$${new_var}"`"
+        if [ "${new_value}" = "\${__DEFAULT_${new_var}}" ]; then
+            log WARN "Variable [${new_var}] is being set to the previously hardcoded default value [${new_value}]."
+            eval 'export ${new_var}="${hardcoded_old_value}"'
+        fi
+    done
 }
 
 # If BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED is True then allow environment variables listed in
@@ -301,7 +313,8 @@ process_backwards_compatible_variables() {
         fi
       fi
     done
-    for default_old_var in ${BACKWARDS_COMPATIBLE_DEFAULTS}
+    [ "$1" = "pre-components" ] && return
+    for default_old_var in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_DEFAULTS}
     do
       old_var="${default_old_var%%=*}"
       default_old_value="${default_old_var#*=}"
