@@ -274,7 +274,7 @@ set_old_backwards_compatible_variables() {
         hardcoded_old_value="${hardcoded_var#*=}"
         new_value="`eval "echo \\$${new_var}"`"
         if [ "${new_value}" = "\${__DEFAULT_${new_var}}" ]; then
-            log WARN "Variable [${new_var}] is being set to the previously hardcoded default value [${new_value}]."
+            log WARN "Variable [${new_var}] is being set to the previously hardcoded default value [${hardcoded_old_value}]."
             eval 'export ${new_var}="${hardcoded_old_value}"'
         fi
     done
@@ -313,10 +313,10 @@ process_backwards_compatible_variables() {
         fi
       fi
     done
+    if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
+      BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./optional-components/backwards-compatible-overrides"
+    fi
     if [ ! "$1" = "pre-components" ]; then
-      if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
-        BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./optional-components/backwards-compatible-overrides"
-      fi
       for default_old_var in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_DEFAULTS}
       do
         old_var="${default_old_var%%=*}"
