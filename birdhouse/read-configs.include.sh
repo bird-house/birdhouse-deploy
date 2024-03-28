@@ -313,18 +313,20 @@ process_backwards_compatible_variables() {
         fi
       fi
     done
-    [ "$1" = "pre-components" ] && return
-    for default_old_var in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_DEFAULTS}
-    do
-      old_var="${default_old_var%%=*}"
-      default_old_value="${default_old_var#*=}"
-      old_value="`eval "echo \\$${old_var}"`"
-      if [ "${old_value}" = "${default_old_value}" ]; then
-        log WARN "Variable [${old_var}] employs a deprecated default value recommended for override. Check env.local file."
+    if [ "$1" = "pre-components" ]; then
+      if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
+        BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./optional-components/backwards-compatible-overrides"
       fi
-    done
-    if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
-      BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./optional-components/backwards-compatible-overrides"
+    else
+      for default_old_var in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_DEFAULTS}
+      do
+        old_var="${default_old_var%%=*}"
+        default_old_value="${default_old_var#*=}"
+        old_value="`eval "echo \\$${old_var}"`"
+        if [ "${old_value}" = "${default_old_value}" ]; then
+          log WARN "Variable [${old_var}] employs a deprecated default value recommended for override. Check env.local file."
+        fi
+      done
     fi
 }
 
