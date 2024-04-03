@@ -15,7 +15,8 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+- GeoServer: fix invalid media-type specified for the service's endpoint in `service-config.json.template`
 
 [2.1.2](https://github.com/bird-house/birdhouse-deploy/tree/2.1.2) (2024-03-25)
 ------------------------------------------------------------------------------------------------------------------
