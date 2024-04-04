@@ -21,6 +21,9 @@
  
   Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.4.
 
+## Fixes
+- GeoServer: fix invalid media-type specified for the service's endpoint in `service-config.json.template`
+
 
 [2.1.2](https://github.com/bird-house/birdhouse-deploy/tree/2.1.2) (2024-03-25)
 ------------------------------------------------------------------------------------------------------------------
