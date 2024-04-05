@@ -1,6 +1,13 @@
 {
   "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
   "name": "geoserver",
+  "version": "${GEOSERVER_VERSION}",
+  "types": [
+    "data",
+    "wms",
+    "wfs",
+    "wps"
+  ],
   "keywords": [
     "data",
     "service-wms",
@@ -18,6 +25,11 @@
       "rel": "service-doc",
       "type": "text/html",
       "href": "https://docs.geoserver.org/"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${GEOSERVER_IMAGE_URI}"
     }
   ]
 }

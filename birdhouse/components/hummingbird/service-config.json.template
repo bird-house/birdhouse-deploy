@@ -1,6 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
   "name": "hummingbird",
+  "version": "${HUMMINGBIRD_VERSION}",
+  "types": [
+    "wps"
+  ],
   "keywords": [
     "service-wps"
   ],
@@ -20,6 +24,11 @@
       "rel": "service-desc",
       "type": "text/xml",
       "href": "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird?service=WPS&request=GetCapabilities"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${HUMMINGBIRD_IMAGE_URI}"
     }
   ]
 }

@@ -1,6 +1,11 @@
 {
   "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
   "name": "weaver",
+  "version": "${WEAVER_VERSION}",
+  "types": [
+    "ogcapi_processes",
+    "wps"
+  ],
   "keywords": [
     "service-ogcapi_processes"
   ],
@@ -25,6 +30,11 @@
       "rel": "conformance",
       "type": "application/json",
       "href": "https://${PAVICS_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/conformance/"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${WEAVER_IMAGE_URI}"
     }
   ]
 }

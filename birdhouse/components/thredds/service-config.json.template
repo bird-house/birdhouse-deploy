@@ -1,6 +1,11 @@
 {
   "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
   "name": "thredds",
+  "version": "${THREDDS_VERSION}",
+  "types": [
+    "data",
+    "catalog"
+  ],
   "keywords": [
     "data",
     "catalog"
@@ -21,6 +26,11 @@
       "rel": "service-desc",
       "type": "text/xml",
       "href": "https://${PAVICS_FQDN_PUBLIC}/thredds/catalog.xml"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${THREDDS_IMAGE_URI}"
     }
   ]
 }

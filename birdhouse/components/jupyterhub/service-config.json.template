@@ -1,6 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
   "name": "jupyterhub",
+  "version": "${JUPYTERHUB_VERSION}",
+  "types": [
+    "jupyterhub"
+  ],
   "keywords": [
     "jupyterhub"
   ],
@@ -15,6 +19,11 @@
       "rel": "service-doc",
       "type": "text/html",
       "href": "https://jupyter.org/hub"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${JUPYTERHUB_IMAGE_URI}"
     }
   ]
 }

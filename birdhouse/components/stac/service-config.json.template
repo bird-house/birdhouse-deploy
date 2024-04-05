@@ -1,6 +1,11 @@
 {
   "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
   "name": "stac",
+  "version": "${STAC_VERSION}",
+  "types": [
+    "catalog",
+    "data"
+  ],
   "keywords": [
     "catalog"
   ],
@@ -25,11 +30,21 @@
       "rel": "alternate",
       "type": "text/html",
       "href": "https://${PAVICS_FQDN_PUBLIC}/stac-browser/"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${STAC_IMAGE_URI}"
     }
   ]
 }, {
   "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/main/node_registry.schema.json#service",
   "name": "stac-browser",
+  "version": "${STAC_BROWSER_VERSION}",
+  "types": [
+    "catalog",
+    "data"
+  ],
   "keywords": [
     "catalog"
   ],
@@ -49,6 +64,11 @@
       "rel": "alternate",
       "type": "application/json",
       "href": "https://${PAVICS_FQDN_PUBLIC}/stac/"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${STAC_BROWSER_IMAGE_URI}"
     }
   ]
 }

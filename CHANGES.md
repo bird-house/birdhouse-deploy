@@ -15,6 +15,17 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Changes
+
+- Node Services: Add definitions and variables for every service represented by
+  the [DACCS-Climate/Marble-node-registry](https://github.com/DACCS-Climate/Marble-node-registry).
+
+  - Add `version` field using the corresponding `<SERVICE>_VERSION` variables.
+  - Add `types` field restricted by specific values instead of previous `keywords` expected to be extendable.
+  - Add `<SERVICE>_IMAGE_URI` variables to provide `rel: service-meta` link for every service.
+  
+  See [bird-house/birdhouse-deploy#441](https://github.com/bird-house/birdhouse-deploy/issues/441) for more details.
+
 ## Fixes
 - GeoServer: fix invalid media-type specified for the service's endpoint in `service-config.json.template`
 
