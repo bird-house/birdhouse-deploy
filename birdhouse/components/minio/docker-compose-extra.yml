@@ -19,6 +19,6 @@ services:
       - MINIO_ROOT_PASSWORD
     volumes:
       - "${MINIO_DATADIR}:/data"
-    cmd: server /data --address ":${MINIO_API_PORT}" --console-address ":${MINIO_CONSOLE_PORT}"
+    command: server /data --address ":${MINIO_API_PORT}" --console-address ":${MINIO_CONSOLE_PORT}"
     restart: always
     logging: *default-logging
