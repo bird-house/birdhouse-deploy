@@ -28,8 +28,15 @@
   
   See [bird-house/birdhouse-deploy#441](https://github.com/bird-house/birdhouse-deploy/issues/441) for more details.
 
+[2.1.3](https://github.com/bird-house/birdhouse-deploy/tree/2.1.3) (2024-04-09)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 - GeoServer: fix invalid media-type specified for the service's endpoint in `service-config.json.template`
+- Jupyterhub: fix authentication bug when changing settings
+  
+  If the `JUPYTERHUB_AUTHENTICATOR_AUTHORIZATION_URL` variable or `JUPYTERHUB_CRYPT_KEY` is unset without clearing the 
+  jupyterhub database, users could no longer spawn jupyterlab servers. 
 
 [2.1.2](https://github.com/bird-house/birdhouse-deploy/tree/2.1.2) (2024-03-25)
 ------------------------------------------------------------------------------------------------------------------
