@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.1.3](https://github.com/bird-house/birdhouse-deploy/tree/2.1.3) (2024-04-09)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 - GeoServer: fix invalid media-type specified for the service's endpoint in `service-config.json.template`
 - Jupyterhub: fix authentication bug when changing settings
