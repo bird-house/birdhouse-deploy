@@ -25,6 +25,7 @@
   - Add `<SERVICE>_IMAGE_URI` variables to provide `rel: service-meta` link for every service.
   - Update all `$schema` references of service node registry
     to [1.2.0](https://github.com/DACCS-Climate/Marble-node-registry/releases/tag/1.2.0) instead of `main`.
+    During unit tests, specific `$schema` reference in the respective service configuration will be used for validation.
   
   See [bird-house/birdhouse-deploy#441](https://github.com/bird-house/birdhouse-deploy/issues/441) for more details.
 
