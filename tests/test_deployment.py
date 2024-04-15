@@ -2,6 +2,7 @@ import glob
 import json
 import os
 from string import Template
+from typing import Any, Dict, List
 
 import dotenv
 import jsonschema
@@ -22,11 +23,13 @@ def root_dir(request):
 
 @pytest.fixture(scope="module")
 def component_paths(root_dir):
+    # type: (str) -> List[str]
     yield [path for loc in COMPONENT_LOCATIONS for path in glob.glob(os.path.join(root_dir, "birdhouse", loc, "*"))]
 
 
 @pytest.fixture(scope="module")
 def component_service_configs(component_paths):
+    # type: (List[str]) -> List[str]
     yield [
         os.path.join(component_path, "service-config.json.template")
         for component_path in component_paths
@@ -36,6 +39,7 @@ def component_service_configs(component_paths):
 
 @pytest.fixture(scope="module")
 def template_substitutions(component_paths):
+    # type: (List[str]) -> Dict[str, Any]
     templates = {}
     for component in component_paths:
         component_default = os.path.join(component, "default.env")
@@ -79,20 +83,27 @@ def resolved_services_config_schema(request):
         return service_config_schemas
 
 
+def load_templated_service_config(service_config_path, template_variables):
+    # type: (str, Dict[str, Any]) -> List[Dict[str, Any]]
+    """
+    Each service configuration file is expected to be an array of 'service' to allow multiple entries.
+    """
+    with open(service_config_path) as service_config_file:
+        service_config_json = Template(service_config_file.read()).safe_substitute(template_variables)
+        service_configs = json.loads(service_config_json)
+    return service_configs
+
+
 class TestDockerCompose:
     def test_service_config_name_same_as_dirname(self, component_service_configs, template_substitutions):
         invalid_names = []
 
-        for service_config_file in component_service_configs:
-
-            with open(service_config_file) as f:
-                config_info = Template(f.read()).safe_substitute(template_substitutions)
-                service_config_json = "[{}]".format(config_info) if config_info.strip().startswith("{") else config_info
-                service_configs = json.loads(service_config_json)
+        for service_config_path in component_service_configs:
+            service_configs = load_templated_service_config(service_config_path, template_substitutions)
             invalid_config_names = []
             for service_config in service_configs:
                 config_name = service_config.get("name")
-                path_name = os.path.basename(os.path.dirname(service_config_file))
+                path_name = os.path.basename(os.path.dirname(service_config_path))
                 if config_name == path_name:
                     # If at least one service_config in the file contains a matching name, that's ok
                     break
@@ -105,10 +116,7 @@ class TestDockerCompose:
     def test_service_config_valid(self, resolved_services_config_schema, template_substitutions):
         invalid_schemas = []
         for service_config_schema, service_config_path in resolved_services_config_schema:
-            with open(service_config_path) as f:
-                config_info = Template(f.read()).safe_substitute(template_substitutions)
-                service_config_json = "[{}]".format(config_info) if config_info.strip().startswith("{") else config_info
-                service_configs = json.loads(service_config_json)
+            service_configs = load_templated_service_config(service_config_path, template_substitutions)
             for service_config in service_configs:
                 try:
                     jsonschema.validate(instance=service_config, schema=service_config_schema)

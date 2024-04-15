@@ -14,14 +14,9 @@ for adir in ${ALL_CONF_DIRS}; do
   [ -f "${adir}/service-config.json" ] || continue
   # read and strip leading/trailing whitespaces
   SERVICE_CONF="$(cat "${adir}/service-config.json" | sed -z 's/^\s*//;s/\s*$//')"
-  # merge whether config is an array or a single service
-  if [ "$(echo "${SERVICE_CONF}" | head -n 1)" = "[" ]; then
-    # remove the leading/trailing [] to get a pseudo-json to extend the list
-    SERVICE_CONF="$(echo "${SERVICE_CONF}" | sed -z 's/^\s*\[\s*//;s/\s*\]\s*$//')"
-    SERVICES="${SERVICES}$([ -n "${SERVICES}" ] && echo ',') ${SERVICE_CONF}"
-  else
-    SERVICES="${SERVICES}$([ -n "${SERVICES}" ] && echo ',') ${SERVICE_CONF}"
-  fi
+  # remove the leading/trailing [] to get a pseudo-json of nested objects to extend the list
+  SERVICE_CONF="$(echo "${SERVICE_CONF}" | sed -z 's/^\s*\[\s*//;s/\s*\]\s*$//')"
+  SERVICES="${SERVICES}$([ -n "${SERVICES}" ] && echo ',') ${SERVICE_CONF}"
 done
 
 if [ -z "${SERVICES}" ]; then
