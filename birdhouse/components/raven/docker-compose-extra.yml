@@ -9,7 +9,7 @@ x-logging:
 
 services:
   raven:
-    image: pavics/raven:${RAVEN_VERSION}
+    image: ${RAVEN_IMAGE}
     container_name: raven
     environment:
       PYWPS_CFG: /wps.cfg

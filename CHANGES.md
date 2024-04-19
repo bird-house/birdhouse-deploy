@@ -22,6 +22,33 @@
   - See changes in the [Weaver changes 
     file](https://github.com/crim-ca/weaver/blob/ec5f403958de21e1af27ff86da391d0d53ded5d9/CHANGES.rst?plain=1#L23-L249)
 
+[2.2.0](https://github.com/bird-house/birdhouse-deploy/tree/2.2.0) (2024-04-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Node Services: Add definitions and variables for every service represented by
+  the [DACCS-Climate/Marble-node-registry](https://github.com/DACCS-Climate/Marble-node-registry).
+
+  - Add `version` field using the corresponding `<SERVICE>_VERSION` variables.
+  - Add `types` field restricted by specific values instead of previous `keywords` expected to be extendable.
+  - Add `<SERVICE>_IMAGE_URI` variables to provide `rel: service-meta` link for every service.
+  - Update all `$schema` references of service node registry
+    to [1.2.0](https://github.com/DACCS-Climate/Marble-node-registry/releases/tag/1.2.0) instead of `main`.
+    During unit tests, specific `$schema` reference in the respective service configuration will be used for validation.
+  
+  See [bird-house/birdhouse-deploy#441](https://github.com/bird-house/birdhouse-deploy/issues/441) for more details.
+
+[2.1.3](https://github.com/bird-house/birdhouse-deploy/tree/2.1.3) (2024-04-09)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- GeoServer: fix invalid media-type specified for the service's endpoint in `service-config.json.template`
+- Jupyterhub: fix authentication bug when changing settings
+  
+  If the `JUPYTERHUB_AUTHENTICATOR_AUTHORIZATION_URL` variable or `JUPYTERHUB_CRYPT_KEY` is unset without clearing the 
+  jupyterhub database, users could no longer spawn jupyterlab servers. 
+
 [2.1.2](https://github.com/bird-house/birdhouse-deploy/tree/2.1.2) (2024-03-25)
 ------------------------------------------------------------------------------------------------------------------
 
