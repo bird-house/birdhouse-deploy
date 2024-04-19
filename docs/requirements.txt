@@ -1,2 +1,2 @@
 # extra requirements specifically for documentation purposes
-sphinx-mdinclude
+sphinx-mdinclude>=0.5.4
