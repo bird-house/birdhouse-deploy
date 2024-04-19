@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- docs: Fix version of `sphinx-mdinclude` to address incompatible `docutils` operation under ReadTheDocs Sphinx build.
+
+  - See [docutils 0.21 changes](https://docutils.sourceforge.io/RELEASE-NOTES.html#release-0-21-2024-04-09).
+  - See issue [sphinx-mdinclude#47](https://github.com/omnilib/sphinx-mdinclude/issues/47)
+    and PR [sphinx-mdinclude#55](https://github.com/omnilib/sphinx-mdinclude/pull/55).
 
 [2.2.0](https://github.com/bird-house/birdhouse-deploy/tree/2.2.0) (2024-04-18)
 ------------------------------------------------------------------------------------------------------------------
