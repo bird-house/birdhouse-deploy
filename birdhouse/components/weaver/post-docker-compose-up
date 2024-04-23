@@ -120,7 +120,7 @@ RANDOM_NUMBER=${RANDOM:-$(tr -dc 0-9 < /dev/urandom 2>/dev/null | head -c 5)}
 # To know when a docker run was started in case it hangs.
 DOCKER_RUN_TAG="weaver_post_curl_$(date -Isecond | sed 's/:/_/g' | sed 's/+/p/g')_${RANDOM_NUMBER}"
 curl_cmd() {
-    docker run --rm --name "${DOCKER_RUN_TAG}" "${WEAVER_CURL_IMAGE}" "$@"
+    docker run --network birdhouse_default --rm --name "${DOCKER_RUN_TAG}" "${WEAVER_CURL_IMAGE}" "$@"
 }
 
 # pull image if missing to avoid mangling output messages on first call
@@ -317,7 +317,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
         if [ ${ret} -ne 0 ] || [ "${code}" -ne 201 ]; then
             printf "\n%s\n" "${WARN}Failed registration of remote WPS provider [${prov}] on [${prov_url}]${retry_msg}."
             printf "Error:\n%s\n" "${body}"
-            if [ ${retry} -gt ${total} ]; then
+            if [ ${retry} -ge ${total} ]; then
               echo "${ERROR}Maximum retry attempts ${total} reached for WPS provider [${prov}]. Aborting."
               reset_state
               exit 23
