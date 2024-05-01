@@ -9,7 +9,7 @@ x-logging:
 
 services:
   flyingpigeon:
-    image: birdhouse/flyingpigeon:${FLYINGPIGEON_VERSION}
+    image: ${FLYINGPIGEON_IMAGE}
     container_name: flyingpigeon
     environment:
       - PYWPS_CFG=/wps.cfg
