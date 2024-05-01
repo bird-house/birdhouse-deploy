@@ -2,7 +2,7 @@ SERVICES['STAC'] = {
     'info': {
         'name': 'STAC',
         'synopsis': 'STAC is the common name of the REST API that implements the STAC specification, common representation of geospatial information.',
-        'version': "",
+        'version': '${STAC_VERSION}',
         'institution': 'CRIM',
         'releaseTime': "2023-06-16T00:00:00Z",
         'researchSubject': 'Any',

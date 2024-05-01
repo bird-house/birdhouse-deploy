@@ -9,7 +9,7 @@ x-logging:
 
 services:
   jupyterhub:
-    image: ${JUPYTERHUB_DOCKER}:${JUPYTERHUB_VERSION}
+    image: ${JUPYTERHUB_IMAGE}
     container_name: jupyterhub
     hostname: jupyterhub
     environment:
