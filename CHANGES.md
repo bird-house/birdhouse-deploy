@@ -15,6 +15,19 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.2.1](https://github.com/bird-house/birdhouse-deploy/tree/2.2.1) (2024-05-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- bump jupyterhub version to 4.1.5-20240426
+  
+  - This is the latest bugfix update to jupyterhub after the release of version 4.1.0. There haven't been any additional
+    updates for a few weeks now, so we can assume that this version is relatively stable now. See the [jupyterhub 
+    changelog](https://jupyterhub.readthedocs.io/en/stable/reference/changelog.html) for details.
+
 ## Fixes
 
 - docs: Fix version of `sphinx-mdinclude` to address incompatible `docutils` operation under ReadTheDocs Sphinx build.
