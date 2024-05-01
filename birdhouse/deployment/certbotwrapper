@@ -46,13 +46,13 @@ certbotwrapper START_TIME=$START_TIME"
 
 set -x
 
-THIS_FILE="`realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
 SAVED_PWD="`pwd`"
 
 . "$THIS_DIR/../read-configs.include.sh"
 
-# Get PAVICS_FQDN_PUBLIC, PAVICS_FQDN, SUPPORT_EMAIL, SSL_CERTIFICATE.
+# Get PAVICS_FQDN_PUBLIC, PAVICS_FQDN, SUPPORT_EMAIL, SSL_CERTIFICATE, BASH_IMAGE.
 read_configs
 
 CERT_DOMAIN="$PAVICS_FQDN_PUBLIC"

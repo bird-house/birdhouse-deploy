@@ -1,0 +1,5 @@
+    location /${WPS_OUTPUTS_RES_NAME}/ {
+        ${SECURE_DATA_PROXY_AUTH_INCLUDE}
+
+        alias /data/wps_outputs/;
+    }

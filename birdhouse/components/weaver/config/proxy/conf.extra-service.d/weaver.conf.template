@@ -18,7 +18,7 @@
 
     # NOTE:
     #   this is needed only if not using the location already provided by the core configuration
-    #   see 'birdhouse/config/proxy/conf.d/all-services.include.template'
+    #   see 'birdhouse/components/proxy/conf.d/all-services.include.template'
     # location where process job outputs will be accessible
     #location ^~ ${WEAVER_WPS_OUTPUTS_PATH}/ {
     #    alias ${WEAVER_WPS_OUTPUTS_DIR}/;

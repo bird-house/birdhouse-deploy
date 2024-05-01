@@ -25,3 +25,14 @@ List any dependencies that are required for this change.
 Links to other issues or sources.
 
 - [ ] Things to do...
+
+## CI Operations
+
+<!--
+  The test suite can be run using a different DACCS config with ``birdhouse_daccs_configs_branch: branch_name`` in the PR description.
+  To globally skip the test suite regardless of the commit message use ``birdhouse_skip_ci`` set to ``true`` in the PR description.
+  Note that using ``[skip ci]``, ``[ci skip]`` or ``[no ci]`` in the commit message will override ``birdhouse_skip_ci`` from the PR description.
+-->
+
+birdhouse_daccs_configs_branch: master
+birdhouse_skip_ci: false

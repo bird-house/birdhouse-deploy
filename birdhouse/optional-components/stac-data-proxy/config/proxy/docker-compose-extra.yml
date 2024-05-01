@@ -1,0 +1,7 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+    - ./optional-components/stac-data-proxy/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/stac-data-proxy:ro
+    # NOTE: data for hosted STAC assets, not to be confused with 'stac-db' for internal STAC catalog definitions
+    - ${STAC_DATA_PROXY_DIR_PATH}:/stac-data-proxy

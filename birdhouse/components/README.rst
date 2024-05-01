@@ -294,17 +294,18 @@ Prometheus stack is used:
 Usage
 -----
 
-- Grafana to view metric graphs: http://PAVICS_FQDN:3001/d/pf6xQMWGz/docker-and-system-monitoring
-- Prometheus alert rules: http://PAVICS_FQDN:9090/rules
-- AlertManager to manage alerts: http://PAVICS_FQDN:9093
+- Grafana to view metric graphs: https://PAVICS_FQDN/grafana/d/pf6xQMWGz/docker-and-system-monitoring
+- Prometheus alert rules: https://PAVICS_FQDN/prometheus/rules
+- AlertManager to manage alerts: https://PAVICS_FQDN/alertmanager
 
-The paths above are purposely not behind the proxy to not expose them publicly,
-assuming only ports 80 and 443 are publicly exposed on the internet.  All other
-ports are not exposed.
+The paths above are by default only accessible to a user logged in to magpie as an administrator or
+as a member of group ``monitoring``.  These routes provide sensitive information about the
+birdhouse-deploy software stack and the machine that it is running on. It is highly discouraged to
+make these routes available to anyone who does not have proper access permissions.
 
-Only Grafana has authentication, Prometheus alert rules and AlertManager have
-no authentication at all so had they been behind the proxy, anyone will be
-able to access them.
+Add existing users to the ``monitoring`` group to allow them access to the various monitoring WebUI.
+This way, we do not need to share the ``MAGPIE_ADMIN_USERNAME`` user account and do not have to add them to the
+``administrators`` group, which would give them too much permissions.
 
 
 How to Enable the Component
@@ -427,7 +428,7 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 
-  - Add ``"./components/weaver"`` to ``EXTRA_CONF_DIRS``.
+  - Add ``./components/weaver`` to ``EXTRA_CONF_DIRS``.
 
   - Component ``birdhouse/optional-components/all-public-access`` should also be enabled to ensure that `Weaver`_
     can request ``GetCapabilities`` of every WPS provider to be registered. Publicly inaccessible services will not
@@ -505,7 +506,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``"./components/cowbird"`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/cowbird`` to ``EXTRA_CONF_DIRS``.
 
 Customizing the Component
 -------------------------
@@ -519,3 +520,302 @@ define your custom values in ``env.local`` directly.
 
 .. |cowbird-default| replace:: cowbird/default.env
 .. _cowbird-default: ./cowbird/default.env
+
+
+STAC
+====
+
+`STAC`_ is the common name of the REST API that implements the STAC specification, common representation of geospatial 
+information.
+
+.. _STAC: https://stacspec.org/en
+
+Usage
+-----
+
+The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API 
+exposed by the current stack instance. Once this component is enabled, STAC API will be accessible at 
+``https://<PAVICS_FQDN_PUBLIC>/stac`` endpoint and the STAC browser will be available at 
+``https://<PAVICS_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint, 
+define the following in the ``env.local`` file::
+
+  export PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
+
+Here is a sample search query using a CLI::
+
+.. code-block:: shell
+
+    pip install pystac-client
+    stac-client search $PAVIS_FQDN/stac -q "variable_id=txgt_32" "scenario=ssp585"
+
+Calls to the STAC API pass through Twitcher in order to validate authorization. Unauthenticated users will have 
+read-only access by default to STAC API resources while members of the `stac-admin` group can create and modify 
+resources. STAC Browser is not protected by any authorization mechanism.
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/stac`` to ``EXTRA_CONF_DIRS``.
+
+Canarie-API
+===========
+
+An endpoint monitoring tool that shows the current status of other components in the software stack.
+
+Usage
+-----
+
+The service is available at ``https://${PAVICS_FQDN_PUBLIC}/canarie``
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/canarie`` to ``EXTRA_CONF_DIRS``.
+
+data-volume
+===========
+
+Creates a named volume in docker that is shared between WPS and OGCAPI components. This volume will contain data shared
+and used by these services.
+
+Usage
+-----
+
+This component is transparent to the end-user as its role is to share data between other components in the stack.
+
+How to Enable the Component
+---------------------------
+
+- Do not enable this component directly. It will be enabled as a dependency of other components
+
+Finch
+=====
+Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, the number of
+degree-days of cooling, the duration of heatwaves, etc. This returns annual values of the most popular climate indices.
+
+Usage
+-----
+
+The service is available at ``https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch``
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/finch`` to ``EXTRA_CONF_DIRS``.
+
+Geoserver
+=========
+
+GeoServer is the reference implementation of the Open Geospatial Consortium (OGC) Web Feature Service (WFS) and Web
+Coverage Service (WCS) standards, as well as a high performance certified compliant Web Map Service (WMS), compliant
+Catalog Service for the Web (CSW) and implementing Web Processing Service (WPS). GeoServer forms a core component of the
+Geospatial Web.
+
+Usage
+-----
+
+The service is available at ``https://${PAVICS_FQDN_PUBLIC}/geoserver``. For usage and
+configuration options please refer to the `Geoserver documentation`_.
+
+.. _Geoserver documentation: https://docs.geoserver.org
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/geoserver`` to ``EXTRA_CONF_DIRS``.
+
+Hummingbird
+===========
+
+A Web Processing Service for compliance checks used in the climate science community.
+
+Usage
+-----
+
+The service is available at ``https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird``
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/hummingbird`` to ``EXTRA_CONF_DIRS``.
+
+Jupyterhub
+==========
+
+Portal used to launch and manage jupyterlab servers for users. This provides a managed development environment for
+end-users.
+
+Usage
+-----
+
+The service is available at ``https://${PAVICS_FQDN_PUBLIC}/jupyter``. Users are able to log in to Jupyterhub using the
+same user name and password as Magpie. They will then be able to launch a personal jupyterlab server.
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/jupyterhub`` to ``EXTRA_CONF_DIRS``.
+- Set the ``JUPYTERHUB_CRYPT_KEY`` environment variable
+
+Magpie
+======
+
+Magpie is service for AuthN/AuthZ accessible via a REST API. It allows you to manage
+User/Group/Service/Resource/Permission management and integrates with Twitcher.
+
+Usage
+-----
+
+The service is available at ``https://${PAVICS_FQDN_PUBLIC}/magpie``. For usage and configuration options please
+refer to the `Magpie documentation`_.
+
+.. _Magpie documentation: https://pavics-magpie.readthedocs.io
+
+How to Enable the Component
+---------------------------
+
+- This component is enabled by default as it is required to securely run the stack
+
+mongodb
+=======
+
+A NoSQL database used by various other components in the stack as a database backend.
+
+Usage
+-----
+
+This component is directly visible to the end-user. It is used by other components in the stack.
+
+How to Enable the Component
+---------------------------
+
+- Do not enable this component directly. It will be enabled as a dependency of other components.
+
+portainer
+=========
+
+A web based container deployment and management tool.
+
+Usage
+-----
+
+The service is available at ``https://${PAVICS_FQDN_PUBLIC}/portainer/``. For usage and configuration options please
+refer to the `portainer documentation`_.
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/portainer`` to ``EXTRA_CONF_DIRS``.
+
+.. _portainer documentation: https://docs.portainer.io/
+
+
+postgres
+========
+
+A relational database used by various other components in the stack as a database backend.
+
+Usage
+-----
+
+This component is directly visible to the end-user. It is used by other components in the stack.
+
+How to Enable the Component
+---------------------------
+
+- Do not enable this component directly. It will be enabled as a dependency of other components
+
+Proxy
+=====
+
+An nginx reverse proxy that serves all other components in the stack through a single proxy endpoint.
+
+Usage
+-----
+
+This component is transparent to the end-user as its role is to serve data from other components in the software stack.
+
+How to Enable the Component
+---------------------------
+
+- This component is enabled by default
+
+Raven
+=====
+
+A suite of WPS processes to calibrate and run hydrological models, including geographical information retrieval and
+processing as well as time series analysis.
+
+Usage
+-----
+
+The service is available at ``https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven``
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/raven`` to ``EXTRA_CONF_DIRS``.
+
+Thredds
+=======
+
+Climate Data Catalog and Format Renderers. See the `Thredds documentation`_ for details.
+
+.. _Thredds documentation: https://www.unidata.ucar.edu/software/tds/
+
+Usage
+-----
+
+The catalog is available at the ``https://${PAVICS_FQDN_PUBLIC}/thredds`` endpoint.
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/thredds`` to ``EXTRA_CONF_DIRS``.
+
+Twitcher
+========
+
+Twitcher is a security proxy that provides secure access to other components in the stack. The proxy service uses OAuth2
+access tokens to protect the OWS service access using Magpie permissions.
+
+Usage
+-----
+
+Twitcher should always be used in conjunction with Magpie and should work already without any additional configuration.
+For details please refer to the `twitcher documentation`_.
+
+.. _twitcher documentation: https://twitcher.readthedocs.io/en/latest/
+
+How to Enable the Component
+---------------------------
+
+- This component is enabled by default as it is required to securely run the stack
+
+wps_outputs-volume
+==================
+
+Creates a named volume in docker that is shared between WPS and OGCAPI components. This volume will contain the outputs
+of all processes executed by these services.
+
+Usage
+-----
+
+All outputs from these processes will become available at the ``https://${PAVICS_FQDN_PUBLIC}/wpsoutputs`` endpoint.
+
+By default, this endpoint is not protected. To secure access to this endpoint it is highly recommended to enable the
+`./optional-components/secure-data-proxy` component as well.
+
+How to Enable the Component
+---------------------------
+
+- Do not enable this component directly. It will be enabled as a dependency of other components

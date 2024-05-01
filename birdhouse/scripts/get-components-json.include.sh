@@ -17,10 +17,18 @@
 # }
 #
 
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
+
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
+fi
+
 # default value in case of error or missing definitions
 export BIRDHOUSE_DEPLOY_COMPONENTS_JSON='{"components": []}'
 if [ -z "${ALL_CONF_DIRS}" ]; then
-  echo "No components in DEFAULT_CONF_DIRS and EXTRA_CONF_DIRS. Components JSON list will be empty!"
+  log WARN "No components in DEFAULT_CONF_DIRS and EXTRA_CONF_DIRS. Components JSON list will be empty!"
   return
 fi
 
@@ -35,13 +43,13 @@ cd "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" || true  # ignore error for now, empty 
 
 # note: no quotes in 'ls' on purpose to expand glob patterns
 BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN="$( \
-  ls -d1 ./*components/*/ ./config/*/ 2>/dev/null \
+  ls -d1 ./*components/*/ 2>/dev/null \
   | sed -E "s|\./(.*)/|\1|" \
   | sed -E '/^[[:space:]]*$/d' \
   | sed -E 's/^|[[:space:]]+/ -e /' \
 )"
 if [ -z "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" ]; then
-  echo "[WARNING]" \
+  log WARN "" \
     "Could not resolve known birdhouse-deploy components." \
     "Aborting to avoid potentially leaking sensible details." \
     "Components will not be reported on the platform's JSON endpoint."

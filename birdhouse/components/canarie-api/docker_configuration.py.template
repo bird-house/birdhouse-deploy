@@ -1,0 +1,223 @@
+# coding: utf-8
+import datetime
+import os
+import logging
+
+# note:
+#   Can only be dependencies also available in CanarieAPI docker image.
+#   Otherwise, they must be installed after the fact with the entrypoint script.
+import requests_cache  # see entrypoint script
+
+logger = logging.getLogger("canarie-api-config")
+
+MY_SERVER_NAME = 'https://${PAVICS_FQDN_PUBLIC}/canarie'
+
+DATABASE = {
+    'filename': '/opt/local/src/CanarieAPI/stats.db',
+    'access_log': '/var/log/nginx/access_file.log',
+    'log_pid': '/var/run/nginx.pid'
+}
+
+
+# Below is to avoid rate-limiting as much as possible on multiple runs.
+# Because the logparser and monitoring must load the application context and configuration,
+# the requests performed to retrieve version numbers and release times occurs on every cron interval.
+REQUEST_CACHE = "/tmp/canarieapi-config-cache"
+os.makedirs(REQUEST_CACHE, exist_ok=True)
+SESSION = requests_cache.CachedSession(
+    "canarieapi-config-cache",
+    use_temp=True,
+    backend="filesystem",
+    expire_after=datetime.timedelta(days=1),
+    cache_control=False,  # prefer our request cache options, not ones provided by responses
+    stale_if_error=True,
+    allowable_codes=[200],
+    allowable_methods=["GET"],
+)
+
+
+def _get_release_time_from_github_tag(repository_reference: str, tagged_version: str) -> str:
+    repo = repository_reference.split("github.com/")[-1]
+    url = f"https://api.github.com/repos/{repo}/tags"
+    resp = SESSION.get(url, headers={"Accept": "application/json"})
+    if resp.status_code != 200:
+        raise ValueError(
+            f"HTTP status from tags list: {resp.status_code} from [{url}] with detail:\n{resp.text!s}"
+        )
+
+    for tag_info in resp.json():
+        tag_ver = tag_info.get("name")
+        tag_commit_url = tag_info.get("commit", {}).get("url")
+        if tag_ver == tagged_version or tag_ver == "v" + tagged_version and tag_commit_url:
+            break
+    else:
+        raise ValueError(f"No matching version in tagged releases under [{url}].")
+
+    resp = SESSION.get(tag_commit_url, headers={"Accept": "application/json"})
+    if resp.status_code != 200:
+        raise ValueError(
+            f"HTTP status from tag info: {resp.status_code} from [{tag_commit_url}] with detail:\n{resp.text!s}"
+        )
+
+    commit = resp.json()["commit"]
+    commit_date = commit["committer"]["date"]
+    return commit_date
+
+
+def _get_release_time_from_docker_tag(repository_reference: str, tagged_version: str) -> str:
+    ns, repo = repository_reference.split("/", 1)
+    url = f"https://hub.docker.com/v2/namespaces/{ns}/repositories/{repo}/tags/{tagged_version}"
+    resp = SESSION.get(url, headers={"Accept": "application/json"})
+    if resp.status_code != 200:
+        raise ValueError(
+            f"HTTP status from tag info: {resp.status_code} from [{url}] with detail:\n{resp.text!s}"
+        )
+
+    updated = resp.json()["last_updated"]
+    return updated
+
+
+def get_release_time_from_repo_tag(repository_type: str, repository_reference: str, tagged_version: str) -> str:
+    try:
+        if repository_type == "github":
+            release = _get_release_time_from_github_tag(repository_reference, tagged_version)
+        elif repository_type == "docker":
+            release = _get_release_time_from_docker_tag(repository_reference, tagged_version)
+        else:
+            raise ValueError(f"Unknown repository parsing type: [{repository_type}]")
+        if release:
+            logger.error("canarie-api: found version [%s] release time [%s] from [%s: %s]",
+                         tagged_version, release, repository_type, repository_reference)
+            return release
+        raise ValueError("no release time value found")
+    except Exception as exc:
+        logger.error("canarie-api: failed retrieving version [%s] release time from [%s: %s]",
+                     tagged_version, repository_type, repository_reference, exc_info=exc)
+    return "unknown"
+
+
+SERVICES = {
+    'node': {  # partial duplicate of first item from 'PLATFORM' for backward compatibility
+        'info': {
+            'name': 'Node',
+            'synopsis': (
+                'Nodes are data, compute and index endpoints accessed through the platform or external clients. '
+                'The Node service is the backend that allows: data storage, harvesting, indexation and discovery of '
+                'local and federated data; authentication and authorization; server registration and management. '
+                'Node service is therefore composed of several other services.'
+            ),
+            # NOTE:
+            #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
+            #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
+            'version': '2.2.0',
+            'releaseTime': '2024-04-18T15:04:09Z',
+            'institution': '${SERVER_INSTITUTION}',
+            'researchSubject': '${SERVER_SUBJECT}',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'category': 'Resource/Cloud Management',
+            'tags': [tag.strip() for tag in "${SERVER_TAGS}".split(",") if tag.strip()],
+        },
+        'stats': {
+            'method': '.*',
+            'route': '(?!)'  # this will be set by CANARIE_STATS_ROUTES (see below)
+        },
+        'redirect': {
+            'doc': '${SERVER_DOCUMENTATION_URL}',
+            'releasenotes': '${SERVER_RELEASE_NOTES_URL}',
+            'support': '${SERVER_SUPPORT_URL}',
+            'source': 'https://github.com/bird-house/birdhouse-deploy',
+            'tryme': 'https://${PAVICS_FQDN_PUBLIC}',
+            'licence': '${SERVER_LICENSE_URL}',
+            'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
+        },
+        'monitoring': {}  # filled in after processing everything, see end of script
+    }
+}
+
+PLATFORMS = {
+    'server': {
+        'info': {
+            'name': '${SERVER_NAME}',
+            'synopsis': """${SERVER_DESCRIPTION}""".replace("\n", " ").strip(),
+            # NOTE:
+            #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
+            #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
+            'version': '2.2.0',
+            'releaseTime': '2024-04-18T15:04:09Z',
+            'institution': '${SERVER_INSTITUTION}',
+            'researchSubject': '${SERVER_SUBJECT}',
+            'supportEmail': '${SUPPORT_EMAIL}',
+            'tags': [tag.strip() for tag in "${SERVER_TAGS}".split(",") if tag.strip()],
+        },
+        'stats': {
+            'method': '.*',
+            'route': '(?!)'  # this can be set by individual components (eg: the legacy project-api component)
+        },
+        'redirect': {
+            'doc': 'https://pavics-sdi.readthedocs.io/en/latest/arch/backend.html',
+            'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/releases',
+            'support': 'https://github.com/Ouranosinc/pavics-sdi/issues',
+            'source': 'https://github.com/Ouranosinc/pavics-sdi',
+            'tryme': 'https://pavics.ouranos.ca',
+            'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
+            'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html',
+            'factsheet': 'http://www.canarie.ca/software/pavics'
+        },
+        'monitoring': {}
+    }
+}
+
+CANARIE_MONITORING_EXTRA_CONF_DIR = os.environ.get(
+    'CANARIE_MONITORING_EXTRA_CONF_DIR', '/bogus-notexist'
+)
+
+
+def exec_file(filepath, **kwargs):
+    """
+    Backward compatible ``execfile`` equivalent for Python 3.x that allows keyword arguments.
+
+    See https://stackoverflow.com/a/41658338/5936364.
+    """
+    _globals = kwargs.get("globals") or globals()
+    _locals = kwargs.get("locals") or _globals  # as per exec/execfile documentation
+    _globals.update({
+        "__file__": filepath,
+        "__name__": "__main__",
+    })
+    with open(filepath, 'rb') as file:
+        exec(compile(file.read(), filepath, "exec"), _globals, _locals)
+
+
+CANARIE_STATS_ROUTES = []
+
+if os.path.exists(CANARIE_MONITORING_EXTRA_CONF_DIR):
+    # alphabetically sorted for reproducible override precedence
+    for extra_conf in sorted(os.listdir(CANARIE_MONITORING_EXTRA_CONF_DIR)):
+        extra_conf_full_path = f"{CANARIE_MONITORING_EXTRA_CONF_DIR}/{extra_conf}"
+        # only handle files ending with .py
+        if os.path.isfile(extra_conf_full_path) and extra_conf_full_path.endswith(".py"):
+            logger.info("canarie-api: loading extra config '%s'", extra_conf_full_path)
+            exec_file(extra_conf_full_path, locals=locals())
+        else:
+            logger.info("canarie-api: ignoring extra config '%s'", extra_conf_full_path)
+
+
+# For  historical reasons, the "node" service was used to contain all "services" of the current "platform".
+# However, those services should instead be listed directly at the root as individual services of the current platform,
+# to directly obtain their status instead of going through the "node" service sub-page. This also allows us to provide
+# the individual links (docs, release, etc.) for the services themselves. The services can also be represented nested
+# under the "Platform" section as well. This "Platform" section could be extended with other known platforms part of a
+# DACCS network. For backward-compatibility, repopulate the "node" service using moved definitions.
+_NODE = SERVICES["node"]["monitoring"]
+_PLATFORM = PLATFORMS["server"]["monitoring"]
+for svc_name, svc_config in SERVICES.items():
+    if svc_name == "node":
+        continue
+    for mon_name, mon_config in svc_config["monitoring"].items():
+        _NODE.setdefault(mon_name, mon_config)
+        _PLATFORM.setdefault(mon_name, mon_config)  # type: ignore
+
+if CANARIE_STATS_ROUTES:
+    SERVICES['node']['stats']['route'] = '/(' + '|'.join(r.strip('/') for r in CANARIE_STATS_ROUTES) + ')/.*'
+
+# vi: tabstop=8 expandtab shiftwidth=4 softtabstop=4 syntax=python

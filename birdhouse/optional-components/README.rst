@@ -35,7 +35,7 @@ How to enable Emu in ``env.local`` (a copy from env.local.example_
 (:download:`download </birdhouse/env.local.example>`)):
 
 * Add ``./optional-components/emu`` to ``EXTRA_CONF_DIRS``.
-* Optionally set ``EMU_IMAGE``, ``EMU_PORT``,
+* Optionally set ``EMU_IMAGE``,
   ``EMU_NAME``, ``EMU_INTERNAL_PORT``,
   ``EMU_WPS_OUTPUTS_VOL`` in ``env.local`` for further customizations.
   Default values are in `optional-components/emu/default.env <emu/default.env>`_
@@ -163,6 +163,11 @@ How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`dow
 The anonymous user will now have all the permissions described in |magpie-public-perms|_
 (:download:`download </birdhouse/optional-components/all-public-access/all-public-access-magpie-permission.cfg>`).
 
+.. note::
+    If using the ``./components/stac`` feature, the corresponding ``./optional-components/stac-public-access``
+    must be applied as well to obtain similar functionalities to ``./optional-components/all-public-access``.
+    This optional component is kept separate since ``./components/stac`` is not required by default, and therefore
+    cannot be enforced as a component dependency.
 
 .. _magpie-public-perms: ./all-public-access/all-public-access-magpie-permission.cfg
 .. |magpie-public-perms| replace:: optional-components/all-public-access/all-public-access-magpie-permission.cfg
@@ -292,3 +297,147 @@ See |geoserver_secured_pr|_. for more details.
 
 .. _geoserver_secured_pr: https://github.com/bird-house/birdhouse-deploy/pull/242
 .. |geoserver_secured_pr| replace:: Pull Request
+
+
+Test user workspace in JupyterLab when using Cowbird
+----------------------------------------------------
+
+This optional component is used to prepare the related |test_cowbird_jupyter|_ test, where a user workspace is
+validated in a JupyterLab environment spawned from JupyterHub and where Cowbird is used to prepare the user workspace.
+
+The component will start a Docker container specifically made to run a Python script, where the different test
+requirements are initialized. This includes creating a test user, preparing different test files and setting permissions
+correctly. This component also customizes the JupyterHub config according to the test requirements.
+
+.. warning::
+    This component should never be used in non-test environments, as it opens public access for certain endpoints,
+    defines admin-tokens for a JupyterHub user for which credentials are clearly visible in the script, and enforces
+    use of root access for the test preparation container. The component is for validation only. If used in a prod
+    stack, it would create a security vulnerability.
+
+.. _test_cowbird_jupyter: https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/blob/master/notebooks-auth/test_cowbird_jupyter.ipynb
+.. |test_cowbird_jupyter| replace:: notebook
+
+
+Populate STAC catalog with sample data
+--------------------------------------------------------
+
+STAC Populator contains the workflow logic to ingest sample STAC item into the STAC catalog.
+
+Once enabled in the stack, this component will run automatically on stack boot time in order to populate the catalog. 
+On stack initialization, STAC item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds in order 
+to populate the catalog with sample data. Change this timeout as needed, as there are no impact on the stack boot, 
+except time required to feed the catalog.
+
+To enable this optional-component:
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./optional-components/stac-populator`` to ``EXTRA_CONF_DIRS``.
+
+
+Allow public access to STAC catalog
+--------------------------------------------------------
+
+STAC Public Access allows STAC catalog to be accessed by anyone, without authentication.
+
+To enable this optional-component:
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./optional-components/stac-public-access`` to ``EXTRA_CONF_DIRS``.
+
+
+Provide a proxy for local STAC asset hosting
+--------------------------------------------------------
+
+STAC data proxy allows to host the URL location defined by ``PAVICS_FQDN_PUBLIC`` and ``STAC_DATA_PROXY_URL_PATH``
+to provide access to files contained within ``STAC_DATA_PROXY_DIR_PATH``.
+
+The ``STAC_DATA_PROXY_DIR_PATH`` location can be used to hold STAC Assets defined by the current server node
+(in contrast to STAC definitions that would refer to remote locations), such that the node can be the original
+location of new data, or to make a new local replication of remote data.
+
+To enable this optional-component:
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./optional-components/stac-data-proxy`` to ``EXTRA_CONF_DIRS``.
+- Optionally, add any other relevant components to control access as desired (see below).
+
+When using this component, access to the endpoint defined by ``STAC_DATA_PROXY_URL_PATH``, and therefore all
+corresponding files contained under mapped ``STAC_DATA_PROXY_DIR_PATH`` will depend on how this
+feature is combined with ``./optional-components/stac-public-access`` and ``./optional-components/secure-data-proxy``.
+Following are the possible combinations and obtained behaviors:
+
+.. list-table::
+    :header-rows: 1
+
+    * - Enabled Components
+      - Obtained Behaviors
+
+    * - Only ``./optional-components/stac-data-proxy`` is enabled.
+      - All data under ``STAC_DATA_PROXY_URL_PATH`` is publicly accessible without authorization control
+        and specific resource access cannot be managed per content. However, since STAC-API itself is not made public,
+        the STAC Catalog, Collections and Items cannot be accessed publicly
+        (*note*: this is most probably never desired).
+
+    * - Both ``./optional-components/stac-data-proxy`` and ``./optional-components/stac-public-access`` are enabled.
+      - All data under ``STAC_DATA_PROXY_URL_PATH`` is publicly accessible without possibility to manage per-resource
+        access. However, this public access is aligned with publicly accessible STAC-API endpoints and contents.
+
+    * - Both ``./optional-components/stac-data-proxy`` and ``./optional-components/secure-data-proxy`` are enabled.
+      - All data under ``STAC_DATA_PROXY_URL_PATH`` is protected (by default, admin-only), but can be granted access
+        on a per-user, per-group and per-resource basis according to permissions applied by the administrator.
+        Since STAC-API is not made public by default, the administrator can decide whether they grant access only to
+        STAC metadata (Catalog, Collection, Items) with permission applied on the ``stac`` Magpie service, only to
+        assets data with permission under the ``stac-data-proxy``, or both.
+
+    * - All of ``./optional-components/stac-data-proxy``, ``./optional-components/stac-public-access`` and
+        ``./optional-components/secure-data-proxy`` are enabled.
+      - Similar to the previous case, allowing full authorization management control by the administrator, but contents
+        are publicly accessible by default. To revoke access, a Magpie administrator has to apply a ``deny`` permission.
+
+X-Robots-Tag Header
+---------------------------
+
+Applies the ``X-Robots-Tag`` header value defined by the ``X_ROBOTS_TAG_HEADER`` variable globally for the server.
+
+If ``X_ROBOTS_TAG_HEADER`` is not overriden, it uses ``noindex, nofollow`` which will disallow most crawling and
+indexing functionalities from robots. If omitting this optional component entirely, no ``X-Robots-Tag`` header
+will be applied, which is equivalent to the robots default ``X-Robots-Tag: all``, setting no restrictions regarding
+indexing and serving.
+
+.. seealso::
+    https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag#directives
+
+How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.example`_
+(:download:`download </birdhouse/env.local.example>`)):
+
+* Add ``./optional-components/x-robots-tag-header`` to ``EXTRA_CONF_DIRS``.
+* Optionally set ``X_ROBOTS_TAG_HEADER`` to an alternate directive as desired.
+  Default values are in `optional-components/x-robots-tag-header/default.env <x-robots-tag-header/default.env>`_
+  (:download:`download </birdhouse/optional-components/x-robots-tag-header/default.env>`).
+
+.. note::
+    In order to revert the ``X-Robots-Tag`` header on specific endpoints, the following Nginx configuration can be
+    defined (other values than ``all`` are possible as well) under any ``location`` block of the server.
+
+    .. code-block:: nginx
+
+        location /<service-path>/ {
+            add_header X-Robots-Tag: "all";
+            # ... other nginx operations ...
+        }
+
+    Note however that most Nginx configurations are predefined for this stack. Custom definitions would need to be
+    added to apply additional operations. One exception to this case is the *Homepage* location
+    (i.e.: where the ``/`` location will be redirected), which can take advantage of the ``PROXY_ROOT_LOCATION``
+    environment variable to override the endpoint as follows:
+
+    .. code-block:: shell
+
+        export PROXY_ROOT_LOCATION='
+            add_header X-Robots-Tag: "all";
+            alias /data/homepage/;  # or any other desired redirection (e.g.: "return 302 <URL>")
+        '
+
+    .. seealso::
+        See the `env.local.example`_ file for more details about this ``PROXY_ROOT_LOCATION`` behaviour.

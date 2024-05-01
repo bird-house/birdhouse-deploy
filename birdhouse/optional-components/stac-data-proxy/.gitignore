@@ -1,0 +1,2 @@
+config/proxy/conf.extra-service.d/stac-proxy-data.conf
+config/secure-data-proxy/permissions.cfg

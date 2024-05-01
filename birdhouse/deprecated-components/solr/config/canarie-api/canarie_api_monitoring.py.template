@@ -32,7 +32,7 @@ SERVICES['Solr'] = {
         'Solr': {
             'request': {
                 # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
-                'url': 'http://${PAVICS_FQDN}:8983/solr/birdhouse/select'
+                'url': 'http://${PAVICS_FQDN}:8983/solr/${THREDDS_SERVICE_DATA_URL_PATH}/select'
             }
         },
     }
