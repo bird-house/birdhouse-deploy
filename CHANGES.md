@@ -30,6 +30,12 @@
     be automatically resolved.
   - Fix the index used during HTTP request retry to avoid going one step over the intended retry attempts.
 
+- docs: Fix version of `sphinx-mdinclude` to address incompatible `docutils` operation under ReadTheDocs Sphinx build.
+
+  - See [docutils 0.21 changes](https://docutils.sourceforge.io/RELEASE-NOTES.html#release-0-21-2024-04-09).
+  - See issue [sphinx-mdinclude#47](https://github.com/omnilib/sphinx-mdinclude/issues/47)
+    and PR [sphinx-mdinclude#55](https://github.com/omnilib/sphinx-mdinclude/pull/55).
+
 [2.2.0](https://github.com/bird-house/birdhouse-deploy/tree/2.2.0) (2024-04-18)
 ------------------------------------------------------------------------------------------------------------------
 
