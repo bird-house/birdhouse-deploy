@@ -13,9 +13,8 @@ logger = logging.getLogger("canarie-api-config")
 MY_SERVER_NAME = 'https://${PAVICS_FQDN_PUBLIC}/canarie'
 
 DATABASE = {
-    'filename': '/opt/local/src/CanarieAPI/stats.db',
-    'access_log': '/var/log/nginx/access_file.log',
-    'log_pid': '/var/run/nginx.pid'
+    'filename': '/data/stats.db',
+    'access_log': '/logs/${PROXY_LOG_FILE}'
 }
 
 

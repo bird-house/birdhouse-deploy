@@ -1,0 +1,44 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  canarie-api:
+    image: ${CANARIE_IMAGE}
+    container_name: canarie-api
+    volumes:
+      - canarie-data:/data/
+      - ./components/canarie-api/docker_configuration.py:/config/docker_configuration.py:ro
+      - ./components/canarie-api/entrypoint:/entrypoint:ro
+    environment:
+      CANARIE_API_CONFIG_FN: /config/docker_configuration.py
+      CANARIE_MONITORING_EXTRA_CONF_DIR: ${CANARIE_MONITORING_EXTRA_CONF_DIR}
+    restart: always
+    entrypoint: /entrypoint
+    logging: *default-logging
+
+  canarie-api-cron:
+    image: ${CANARIE_IMAGE}
+    container_name: canarie-api-cron
+    command: cron -f
+    depends_on:
+      - canarie-api
+    # The volumes and environment should be the same as the canarie-api container except for the proxy-logs volume
+    volumes:
+      - canarie-data:/data/:ro
+      - ./components/canarie-api/docker_configuration.py:/config/docker_configuration.py:ro
+      - ./components/canarie-api/entrypoint:/entrypoint:ro
+      - proxy-logs:/logs/:ro
+    environment:
+      CANARIE_API_CONFIG_FN: /config/docker_configuration.py
+      CANARIE_MONITORING_EXTRA_CONF_DIR: ${CANARIE_MONITORING_EXTRA_CONF_DIR}
+    logging: *default-logging
+
+volumes:
+  canarie-data:
+  proxy-logs:
