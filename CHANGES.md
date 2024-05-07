@@ -35,6 +35,12 @@
 
 ## Fixes
 
+- Weaver: WPS retry logic on post-compose step.
+  - Apply `--network birdhouse_default` to the Docker `curl` image to allow HTTP requests to properly resolve
+    against the running services (WPS bird providers, Weave and Magpie). In some cases, this network would not
+    be automatically resolved.
+  - Fix the index used during HTTP request retry to avoid going one step over the intended retry attempts.
+
 - docs: Fix version of `sphinx-mdinclude` to address incompatible `docutils` operation under ReadTheDocs Sphinx build.
 
   - See [docutils 0.21 changes](https://docutils.sourceforge.io/RELEASE-NOTES.html#release-0-21-2024-04-09).
