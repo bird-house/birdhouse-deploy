@@ -205,6 +205,7 @@ class TestCreateComposeConfList:
         "./components/stac/config/magpie/docker-compose-extra.yml",
         "./components/stac/config/proxy/docker-compose-extra.yml",
         "./components/stac/config/twitcher/docker-compose-extra.yml",
+        "./components/canarie-api/docker-compose-extra.yml",
         "./components/magpie/config/canarie-api/docker-compose-extra.yml",
         "./components/twitcher/config/canarie-api/docker-compose-extra.yml",
         "./components/cowbird/config/canarie-api/docker-compose-extra.yml",
