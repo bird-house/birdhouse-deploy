@@ -1,5 +1,6 @@
 version: "3.4"
 services:
-  canarie-api:
+  canarie-api: &canarie-volumes
     volumes:
     - ./components/finch/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/finch_canarie_api_monitoring.py:ro
+  canarie-api-cron: *canarie-volumes
