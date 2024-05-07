@@ -32,7 +32,7 @@ services:
       - canarie-data:/data/
       - ./components/canarie-api/docker_configuration.py:/config/docker_configuration.py:ro
       - ./components/canarie-api/entrypoint-cron:/entrypoint:ro
-      - proxy-logs:/logs/:ro
+      - proxy-logs:/logs/:ro  # aligns with the DATABASE["access_log"] value in docker_configuration.py.template
     environment:
       CANARIE_API_CONFIG_FN: /config/docker_configuration.py
       CANARIE_MONITORING_EXTRA_CONF_DIR: ${CANARIE_MONITORING_EXTRA_CONF_DIR}

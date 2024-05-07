@@ -2,4 +2,6 @@
 
 pip install requests-cache
 
-exec /bin/sh -c "gunicorn -b 0.0.0.0:2000 --workers 1 --log-level=DEBUG --timeout 30 -k gevent canarieapi.wsgi"
+exec /bin/sh -c "\
+  gunicorn -b 0.0.0.0:2000 --workers 1 --log-level=DEBUG --timeout 30 -k gevent canarieapi.wsgi \
+"

@@ -17,7 +17,7 @@
 
 ## Changes
 
-- bump canarie-api version to 1.0.0
+- bump canarie-api version to [1.0.0](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.0.0)
 
   - This version of canarie-api permits running the proxy (nginx) container independently of the canarie-api
     application. This makes it easier to monitor the logs of canarie-api and proxy containers simultaneously and
