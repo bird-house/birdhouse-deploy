@@ -18,7 +18,8 @@
 ## Changes
 - Jupyter env: new full build with latest of almost everything
 
-  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/121 for more info.
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#121](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/121)
+  for more info.
 
 
 [2.2.1](https://github.com/bird-house/birdhouse-deploy/tree/2.2.1) (2024-05-01)
