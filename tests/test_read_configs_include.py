@@ -83,17 +83,21 @@ class TestReadConfigs:
     ]
 
     def run_func(
-            self, include_file: str, local_env: Union[str, dict], command_suffix: str = ""
+            self, include_file: str, local_env: Union[str, dict], command_suffix: str = "", exit_on_error: bool = True
     ) -> subprocess.CompletedProcess:
         try:
             with tempfile.NamedTemporaryFile(delete=False, mode="w") as f:
                 set_local_env(f, local_env)
 
-            env = {"BIRDHOUSE_LOCAL_ENV": f.name}
+            env = {**os.environ, "BIRDHOUSE_LOCAL_ENV": f.name}
 
+            command_sequence = [f". {include_file}", "read_configs"]
             if command_suffix:
-                command_suffix = f"&& echo '{ENV_SPLIT_STR}' && {command_suffix}"
-            command = f". {include_file} && read_configs {command_suffix}"
+                command_sequence.extend([f"echo '{ENV_SPLIT_STR}'", f"{command_suffix}"])
+            if exit_on_error:
+                command_sequence.insert(1, "set -e")
+                command_sequence.insert(3, "set +e")
+            command = " ; ".join(command_sequence)
             proc = subprocess.run(
                 command,
                 shell=True,
@@ -185,7 +189,7 @@ class TestReadConfigs:
 
     def test_delayed_eval_quoting(self, read_config_include_file) -> None:
         """Test that the delayed evaluation functions resolve quotation marks and braces properly"""
-        extra = {"EXTRA_TEST_VAR": "\"{'123'}\"", "DELAYED_EVAL": "$DELAYED_EVAL EXTRA_TEST_VAR"}
+        extra = {"EXTRA_TEST_VAR": "\"{'123'}\"", "DELAYED_EVAL": "\"$DELAYED_EVAL EXTRA_TEST_VAR\""}
         proc = self.run_func(read_config_include_file, extra, 'echo "${EXTRA_TEST_VAR}"')
         assert split_and_strip(get_command_stdout(proc))[-1] == "{'123'}"
 
