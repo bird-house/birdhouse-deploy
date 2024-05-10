@@ -15,7 +15,17 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Scripts that read configuration settings and that exit early on error fail unexpectedly
+
+  - Scripts that call `set -e` before reading configuration settings were failing early because some lines are
+    intentionally returning a non-zero value when setting variable defaults. This change modifies lines that may return 
+    a non-zero status but should not cause the script to exit early.
+  - Scripts that were exiting early prior to this change include:
+    - birdhouse/deployment/fix-geoserver-data-dir-perm
+    - birdhouse/deployment/fix-write-perm
+    - birdhouse/deployment/trigger-deploy-notebook
 
 [2.2.1](https://github.com/bird-house/birdhouse-deploy/tree/2.2.1) (2024-05-01)
 ------------------------------------------------------------------------------------------------------------------
