@@ -1,0 +1,14 @@
+#!/bin/sh -x
+
+# hack needed for Boreas and Medus only else cronjob do not fire
+# this hack should still work for other deployments
+# remove if cause problem with newer version of canarieapi
+touch /etc/cron.d/canarieapi-cron
+
+pip install requests-cache
+
+# chain existing cmd
+exec /bin/sh -c "\
+  env >> /etc/environment && \
+  cron -f
+"
