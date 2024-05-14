@@ -89,7 +89,7 @@ class TestReadConfigs:
             with tempfile.NamedTemporaryFile(delete=False, mode="w") as f:
                 set_local_env(f, local_env)
 
-            env = {**os.environ, "BIRDHOUSE_LOCAL_ENV": f.name}
+            env = {"TERM": os.getenv("TERM", ""), "BIRDHOUSE_LOCAL_ENV": f.name}
 
             command_sequence = [f". {include_file}", "read_configs"]
             if command_suffix:
