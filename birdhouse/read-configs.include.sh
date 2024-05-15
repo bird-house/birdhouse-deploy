@@ -208,7 +208,7 @@ check_default_vars() {
       n="${i#\$}"
       v=`eval echo "${i}" 2>/dev/null`
       default="\${__DEFAULT__${n}}"
-      d=`eval echo "${default}" 2>/dev/null` || true
+      d=`eval echo "${default}" 2>/dev/null` || true  # eval may fail if no default variable exists
       if [ ! -z "${d}" ]; then
           if [ "${d}" = "${v}" ]; then
               log WARN \
@@ -225,7 +225,7 @@ check_default_vars() {
         d=`eval echo "$v"`
         n="${i#\$}"
         default="\${__DEFAULT__${n}}"
-        result=`echo "${d}" | grep -c "${default}"` || true
+        result=`echo "${d}" | grep -c "${default}"` || true  # grep may fail if no default variable exists
         if [ -z "`eval "echo ${v}"`" ]
         then
             log DEBUG "Optional variable [${n}] is not set. Check env.local file."
