@@ -13,9 +13,8 @@ logger = logging.getLogger("canarie-api-config")
 MY_SERVER_NAME = 'https://${BIRDHOUSE_FQDN_PUBLIC}/canarie'
 
 DATABASE = {
-    'filename': '/opt/local/src/CanarieAPI/stats.db',
-    'access_log': '/var/log/nginx/access_file.log',
-    'log_pid': '/var/run/nginx.pid'
+    'filename': '/data/stats.db',
+    'access_log': '/logs/${PROXY_LOG_FILE}'
 }
 
 
@@ -109,8 +108,8 @@ SERVICES = {
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '2.2.1',
-            'releaseTime': '2024-05-01T15:04:04Z',
+            'version': '2.3.0',
+            'releaseTime': '2024-05-14T13:43:50Z',
             'institution': '${BIRDHOUSE_INSTITUTION}',
             'researchSubject': '${BIRDHOUSE_SUBJECT}',
             'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
@@ -142,8 +141,8 @@ PLATFORMS = {
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '2.2.1',
-            'releaseTime': '2024-05-01T15:04:04Z',
+            'version': '2.3.0',
+            'releaseTime': '2024-05-14T13:43:50Z',
             'institution': '${BIRDHOUSE_INSTITUTION}',
             'researchSubject': '${BIRDHOUSE_SUBJECT}',
             'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
