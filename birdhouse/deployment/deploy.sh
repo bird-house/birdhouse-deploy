@@ -58,7 +58,6 @@ usage() {
 }
 
 COMPOSE_DIR="$1"
-ENV_LOCAL_FILE="$2"
 
 if [ -z "${COMPOSE_DIR}" ]; then
     echo "ERROR: please provide path to Birdhouse docker-compose dir by setting the COMPOSE_DIR variable." 1>&2
@@ -68,11 +67,7 @@ else
     shift
 fi
 
-if [ -z "${ENV_LOCAL_FILE}" ]; then
-    ENV_LOCAL_FILE="${COMPOSE_DIR}/env.local"
-else
-    shift
-fi
+BIRDHOUSE_LOCAL_ENV=${1:-${BIRDHOUSE_LOCAL_ENV:-"${COMPOSE_DIR}/env.local"}}
 
 # Setup COMPOSE_DIR and PWD for sourcing env.local.
 # Prevent un-expected difference when this script is run inside autodeploy
@@ -86,19 +81,29 @@ read_basic_configs_only
 
 if [ ! -z "${AUTODEPLOY_SILENT}" ]; then
     LOG_FILE="${BIRDHOUSE_LOG_DIR}/autodeploy.log"
+    mkdir -p "${BIRDHOUSE_LOG_DIR}"
     exec >> "${LOG_FILE}" 2>&1
 fi
 
 COMPOSE_DIR="$(realpath "${COMPOSE_DIR}")"
 
+# This `if` block is required when upgrading from a version of the birdhouse-deploy code
+# without birdhouse-compose.sh to one with birdhouse-compose.sh. When pavics-compose.sh
+# is eventually deprecated and removed we can also remove this block.
+if [ -z "${BIRDHOUSE_COMPOSE}" ] && [ ! -f "${COMPOSE_DIR}/birdhouse-compose.sh" ]; then
+  BIRDHOUSE_COMPOSE="${COMPOSE_DIR}/pavics-compose.sh"
+fi
+
+BIRDHOUSE_COMPOSE=${BIRDHOUSE_COMPOSE:-"${COMPOSE_DIR}/birdhouse-compose.sh"}
+
 if [ ! -f "${COMPOSE_DIR}/docker-compose.yml" ] || \
-   [ ! -f "${COMPOSE_DIR}/birdhouse-compose.sh" ]; then
+   [ ! -f "${BIRDHOUSE_COMPOSE}" ]; then
     echo "ERROR: missing docker-compose.yml or birdhouse-compose.sh file in '${COMPOSE_DIR}'" 1>&2
     exit 2
 fi
 
-if [ ! -f "${ENV_LOCAL_FILE}" ]; then
-    echo "ERROR: env.local '${ENV_LOCAL_FILE}' not found, please instantiate from '${COMPOSE_DIR}/env.local.example'" 1>&2
+if [ ! -f "${BIRDHOUSE_LOCAL_ENV}" ]; then
+    echo "ERROR: env.local '${BIRDHOUSE_LOCAL_ENV}' not found, please instantiate from '${COMPOSE_DIR}/env.local.example'" 1>&2
     exit 2
 fi
 
@@ -116,7 +121,7 @@ for adir in "${COMPOSE_DIR}" ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}; do
         cd "${adir}" || exit
 
         # fail fast if unclean checkout
-        if [ ! -z "$(git status -u --porcelain)" ]; then
+        if [ ! -z "$(git status --untracked-files=no --porcelain)" ]; then
             echo "ERROR: unclean repo '${adir}'" 1>&2
             exit 1
         fi
@@ -130,7 +135,7 @@ cd "${COMPOSE_DIR}" || exit
 read_basic_configs_only
 
 # stop all to force reload any changed config that are volume-mount into the containers
-./birdhouse-compose.sh stop
+"${BIRDHOUSE_COMPOSE}" stop
 
 for adir in "${COMPOSE_DIR}" ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}; do
     if [ -d "${adir}" ]; then
@@ -177,7 +182,7 @@ cd "${COMPOSE_DIR}" || exit
 read_basic_configs_only
 
 # restart everything, only changed containers will be destroyed and recreated
-./birdhouse-compose.sh up -d
+"${BIRDHOUSE_COMPOSE}" up -d
 
 set +x
 

@@ -37,6 +37,7 @@ BIRDHOUSE_LOG_DIR=${BIRDHOUSE_LOG_DIR:-"/var/log/birdhouse"}
 
 if [ ! -z "$AUTODEPLOY_SILENT" ]; then
     LOG_FILE="${BIRDHOUSE_LOG_DIR}/autodeploy.log"
+    mkdir -p "${BIRDHOUSE_LOG_DIR}"
     exec >>$LOG_FILE 2>&1
 fi
 
@@ -45,7 +46,6 @@ usage() {
 }
 
 COMPOSE_DIR="$1"
-ENV_LOCAL_FILE="$2"
 
 if [ -z "$COMPOSE_DIR" ]; then
     echo "ERROR: please provide path to Birdhouse docker-compose dir." 1>&2
@@ -55,21 +55,10 @@ else
     shift
 fi
 
-if [ -z "$ENV_LOCAL_FILE" ]; then
-    ENV_LOCAL_FILE="$COMPOSE_DIR/env.local"
-else
-    shift
-fi
-
 COMPOSE_DIR="$(realpath "$COMPOSE_DIR")"
 
 if [ ! -f "$COMPOSE_DIR/docker-compose.yml" ]; then
     echo "ERROR: missing docker-compose.yml in '$COMPOSE_DIR'" 1>&2
-    exit 2
-fi
-
-if [ ! -f "$ENV_LOCAL_FILE" ]; then
-    echo "ERROR: env.local not found at '$ENV_LOCAL_FILE'" 1>&2
     exit 2
 fi
 
@@ -209,7 +198,7 @@ if [ -n "${SHOULD_TRIGGER}" ]; then
     git show "${CURRENT_REMOTE_BRANCH}":./deployment/deploy.sh > "${TMP_SCRIPT}"
 
     chmod a+x "${TMP_SCRIPT}"
-    $TMP_SCRIPT "${COMPOSE_DIR}" "${ENV_LOCAL_FILE}"
+    $TMP_SCRIPT "${COMPOSE_DIR}"
     EXIT_CODE=$?
     rm "${TMP_SCRIPT}"
 fi

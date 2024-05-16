@@ -84,6 +84,9 @@ discover_env_local() {
         BIRDHOUSE_LOCAL_ENV="${COMPOSE_DIR}/env.local"
     fi
 
+    BIRDHOUSE_LOCAL_ENV=$(readlink -f "$BIRDHOUSE_LOCAL_ENV" || realpath "$BIRDHOUSE_LOCAL_ENV")
+    export BIRDHOUSE_LOCAL_ENV
+
     # env.local can be a symlink to the private config repo where the real
     # env.local file is source controlled.
     # Docker volume-mount will need the real dir of the file for symlink to

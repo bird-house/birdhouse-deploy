@@ -20,6 +20,8 @@ VARS='
   $BIRDHOUSE_SUPPORT_EMAIL
   $BIRDHOUSE_DATA_PERSIST_ROOT
   $BIRDHOUSE_DATA_PERSIST_SHARED_ROOT
+  $BIRDHOUSE_LOCAL_ENV
+  $BIRDHOUSE_LOG_DIR
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local
