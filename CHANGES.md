@@ -27,6 +27,27 @@
     - birdhouse/deployment/fix-write-perm
     - birdhouse/deployment/trigger-deploy-notebook
 
+[2.3.0](https://github.com/bird-house/birdhouse-deploy/tree/2.3.0) (2024-05-14)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- bump canarie-api version to [1.0.0](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.0.0)
+
+  - This version of canarie-api permits running the proxy (nginx) container independently of the canarie-api
+    application. This makes it easier to monitor the logs of canarie-api and proxy containers simultaneously and
+    allows for the configuration files for canarie-api to be mapped to the canarie-api containers where appropriate.
+
+[2.2.2](https://github.com/bird-house/birdhouse-deploy/tree/2.2.2) (2024-05-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new full build with latest of almost everything
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#121](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/121)
+  for more info.
+
+
 [2.2.1](https://github.com/bird-house/birdhouse-deploy/tree/2.2.1) (2024-05-01)
 ------------------------------------------------------------------------------------------------------------------
 
