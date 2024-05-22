@@ -216,7 +216,7 @@ check_default_vars() {
       n="${i#\$}"
       v=`eval echo "${i}" 2>/dev/null`
       default="\${__DEFAULT__${n}}"
-      d=`eval echo "${default}" 2>/dev/null`
+      d=`eval echo "${default}" 2>/dev/null` || true  # eval may fail if no default variable exists
       if [ ! -z "${d}" ]; then
           if [ "${d}" = "${v}" ]; then
               log WARN \
@@ -233,7 +233,7 @@ check_default_vars() {
         d=`eval echo "$v"`
         n="${i#\$}"
         default="\${__DEFAULT__${n}}"
-        result=`echo "${d}" | grep -c "${default}"`
+        result=`echo "${d}" | grep -c "${default}"` || true  # grep may fail if no default variable exists
         if [ -z "`eval "echo ${v}"`" ]
         then
             log DEBUG "Optional variable [${n}] is not set. Check env.local file."
@@ -250,7 +250,7 @@ check_default_vars() {
 # BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES to override the equivalent deprecated variables as long as that
 # equivalent deprecated variable is unset.
 set_old_backwards_compatible_variables() {
-    [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ] || return
+    [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ] || return 0
     BIRDHOUSE_OLD_VARS_OVERRIDDEN=""
     # Reverse the variable list so that old variables are overridden in the correct order.
     reverse_backwards_compatible_variables=""
