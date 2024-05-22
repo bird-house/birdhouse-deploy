@@ -46,6 +46,7 @@ usage() {
 }
 
 COMPOSE_DIR="$1"
+BIRDHOUSE_LOCAL_ENV="${2:-${BIRDHOUSE_LOCAL_ENV:-"${COMPOSE_DIR}/env.local"}}"
 
 if [ -z "$COMPOSE_DIR" ]; then
     echo "ERROR: please provide path to Birdhouse docker-compose dir." 1>&2
@@ -59,6 +60,11 @@ COMPOSE_DIR="$(realpath "$COMPOSE_DIR")"
 
 if [ ! -f "$COMPOSE_DIR/docker-compose.yml" ]; then
     echo "ERROR: missing docker-compose.yml in '$COMPOSE_DIR'" 1>&2
+    exit 2
+fi
+
+if [ ! -f "$BIRDHOUSE_LOCAL_ENV" ]; then
+    echo "ERROR: env.local not found at '$BIRDHOUSE_LOCAL_ENV'" 1>&2
     exit 2
 fi
 
@@ -198,7 +204,7 @@ if [ -n "${SHOULD_TRIGGER}" ]; then
     git show "${CURRENT_REMOTE_BRANCH}":./deployment/deploy.sh > "${TMP_SCRIPT}"
 
     chmod a+x "${TMP_SCRIPT}"
-    $TMP_SCRIPT "${COMPOSE_DIR}"
+    $TMP_SCRIPT "${COMPOSE_DIR}" "${BIRDHOUSE_LOCAL_ENV}"
     EXIT_CODE=$?
     rm "${TMP_SCRIPT}"
 fi
