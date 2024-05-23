@@ -32,6 +32,12 @@
     - `ALERTMANAGER_DOCKER`
   - Note that the defaults are the same as the previous hardcoded versions so this change is fully backwards compatible.
 
+- Bump cadvisor version to the latest version: v0.49.1
+  - See the cadvisor repo for all changes: https://github.com/google/cadvisor/compare/v0.36.0...v0.49.1
+  - This updated was prompted by the fact that the previously installed version of cadvisor (v0.36.0) did not support
+    newer versions of docker. When deploying this repo with recent docker version, cadvisor was unable to discover or 
+    monitor running containers.
+
 [2.3.1](https://github.com/bird-house/birdhouse-deploy/tree/2.3.1) (2024-05-21)
 ------------------------------------------------------------------------------------------------------------------
 
