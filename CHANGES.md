@@ -22,6 +22,12 @@
   - See changes in the [Weaver changes 
     file](https://github.com/crim-ca/weaver/blob/ec5f403958de21e1af27ff86da391d0d53ded5d9/CHANGES.rst?plain=1#L23-L249)
 
+- Weaver: WPS retry logic on post-compose step.
+  - Apply `--network birdhouse_default` to the Docker `curl` image to allow HTTP requests to properly resolve
+    against the running services (WPS bird providers, Weave and Magpie). In some cases, this network would not
+    be automatically resolved.
+  - Fix the index used during HTTP request retry to avoid going one step over the intended retry attempts.
+
 [2.3.1](https://github.com/bird-house/birdhouse-deploy/tree/2.3.1) (2024-05-21)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -70,12 +76,6 @@
     changelog](https://jupyterhub.readthedocs.io/en/stable/reference/changelog.html) for details.
 
 ## Fixes
-
-- Weaver: WPS retry logic on post-compose step.
-  - Apply `--network birdhouse_default` to the Docker `curl` image to allow HTTP requests to properly resolve
-    against the running services (WPS bird providers, Weave and Magpie). In some cases, this network would not
-    be automatically resolved.
-  - Fix the index used during HTTP request retry to avoid going one step over the intended retry attempts.
 
 - docs: Fix version of `sphinx-mdinclude` to address incompatible `docutils` operation under ReadTheDocs Sphinx build.
 
