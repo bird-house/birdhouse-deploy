@@ -1,5 +1,6 @@
 version: "3.4"
 services:
-  proxy:
+  canarie-api: &canarie-volumes
     volumes:
     - ./components/raven/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/raven_canarie_api_monitoring.py:ro
+  canarie-api-cron: *canarie-volumes
