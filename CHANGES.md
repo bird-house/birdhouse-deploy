@@ -17,6 +17,26 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.3.2](https://github.com/bird-house/birdhouse-deploy/tree/2.3.2) (2024-05-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Make the monitoring component docker images configurable
+  - The following variables have been added to the `components/monitoring/default.env` file and can be overridden in 
+    `env.local` to change the docker image for one of the services enabled by the monitoring component:
+    - `GRAFANA_VERSION`
+    - `GRAFANA_DOCKER`
+    - `CADVISOR_VERSION`
+    - `CADVISOR_DOCKER`
+    - `PROMETHEUS_VERSION`
+    - `PROMETHEUS_DOCKER`
+    - `NODE_EXPORTER_VERSION`
+    - `NODE_EXPORTER_DOCKER`
+    - `ALERTMANAGER_VERSION`
+    - `ALERTMANAGER_DOCKER`
+  - Note that the defaults are the same as the previous hardcoded versions so this change is fully backwards compatible.
+
 [2.3.1](https://github.com/bird-house/birdhouse-deploy/tree/2.3.1) (2024-05-21)
 ------------------------------------------------------------------------------------------------------------------
 
