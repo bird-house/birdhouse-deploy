@@ -114,6 +114,17 @@
     Note that you'll need to do the same for the ``stac-db`` service as well (assuming that you weren't previously
     overriding the ``STAC_POSTGRES_USER`` with a custom value).
 
+[2.3.3](https://github.com/bird-house/birdhouse-deploy/tree/2.3.3) (2024-05-29)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Bump cadvisor version to the latest version: v0.49.1
+  - See the cadvisor repo for all changes: https://github.com/google/cadvisor/compare/v0.36.0...v0.49.1
+  - This updated was prompted by the fact that the previously installed version of cadvisor (v0.36.0) did not support
+    newer versions of docker. When deploying this repo with recent docker version, cadvisor was unable to discover or 
+    monitor running containers.
+
 [2.3.2](https://github.com/bird-house/birdhouse-deploy/tree/2.3.2) (2024-05-27)
 ------------------------------------------------------------------------------------------------------------------
 
