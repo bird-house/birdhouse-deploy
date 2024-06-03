@@ -28,6 +28,37 @@
     be automatically resolved.
   - Fix the index used during HTTP request retry to avoid going one step over the intended retry attempts.
 
+[2.3.3](https://github.com/bird-house/birdhouse-deploy/tree/2.3.3) (2024-05-29)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Bump cadvisor version to the latest version: v0.49.1
+  - See the cadvisor repo for all changes: https://github.com/google/cadvisor/compare/v0.36.0...v0.49.1
+  - This updated was prompted by the fact that the previously installed version of cadvisor (v0.36.0) did not support
+    newer versions of docker. When deploying this repo with recent docker version, cadvisor was unable to discover or 
+    monitor running containers.
+
+[2.3.2](https://github.com/bird-house/birdhouse-deploy/tree/2.3.2) (2024-05-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Make the monitoring component docker images configurable
+  - The following variables have been added to the `components/monitoring/default.env` file and can be overridden in 
+    `env.local` to change the docker image for one of the services enabled by the monitoring component:
+    - `GRAFANA_VERSION`
+    - `GRAFANA_DOCKER`
+    - `CADVISOR_VERSION`
+    - `CADVISOR_DOCKER`
+    - `PROMETHEUS_VERSION`
+    - `PROMETHEUS_DOCKER`
+    - `NODE_EXPORTER_VERSION`
+    - `NODE_EXPORTER_DOCKER`
+    - `ALERTMANAGER_VERSION`
+    - `ALERTMANAGER_DOCKER`
+  - Note that the defaults are the same as the previous hardcoded versions so this change is fully backwards compatible.
+
 [2.3.1](https://github.com/bird-house/birdhouse-deploy/tree/2.3.1) (2024-05-21)
 ------------------------------------------------------------------------------------------------------------------
 
