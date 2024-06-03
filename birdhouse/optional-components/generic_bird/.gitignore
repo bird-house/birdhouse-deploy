@@ -1,5 +1,6 @@
 wps.cfg
 postgres/credentials.env
+postgres/docker-entrypoint-initdb.d/create-wps-databases.sql.template
 config/canarie-api/canarie_api_monitoring.py
 config/magpie/providers.cfg
 config/magpie/permissions.cfg

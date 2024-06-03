@@ -11,7 +11,7 @@ ENV_SPLIT_STR_ALT: str = "#env for testing alt#"
 
 # Set backwards compatible allowed to False explicitly since the current default
 # is True when not executing through the CLI.
-# tmut may add a bunch of messages to stderr if this is not set. This may cause confusion when trying to debug a
+# tput may add a bunch of messages to stderr if this is not set. This may cause confusion when trying to debug a
 # pytest error since these messages are unrelated to failing tests.
 DEFAULT_BIRDHOUSE_ENV = {"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False", "TERM": os.getenv("TERM", "")}
 
