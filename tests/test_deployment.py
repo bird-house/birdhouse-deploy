@@ -10,7 +10,7 @@ import pytest
 
 COMPONENT_LOCATIONS = ("components", "optional-components", "config")
 TEMPLATE_SUBSTITUTIONS = {
-    "PAVICS_FQDN_PUBLIC": os.environ.get("PAVICS_FQDN_PUBLIC", "example.com"),
+    "BIRDHOUSE_FQDN_PUBLIC": os.environ.get("BIRDHOUSE_FQDN_PUBLIC", "example.com"),
     "WEAVER_MANAGER_NAME": os.environ.get("WEAVER_MANAGER_NAME", "weaver"),
     "TWITCHER_PROTECTED_PATH": os.environ.get("TWITCHER_PROTECTED_PATH", "/twitcher/ows/proxy"),
 }

@@ -28,11 +28,11 @@ fi
 # default value in case of error or missing definitions
 export BIRDHOUSE_DEPLOY_COMPONENTS_JSON='{"components": []}'
 if [ -z "${ALL_CONF_DIRS}" ]; then
-  log WARN "No components in DEFAULT_CONF_DIRS and EXTRA_CONF_DIRS. Components JSON list will be empty!"
+  log WARN "No components in BIRDHOUSE_DEFAULT_CONF_DIRS and BIRDHOUSE_EXTRA_CONF_DIRS. Components JSON list will be empty!"
   return
 fi
 
-# resolve path considering if sourced or executed, and whether from current dir, pavics-compose include or another dir
+# resolve path considering if sourced or executed, and whether from current dir, birdhouse-compose include or another dir
 BIRDHOUSE_DEPLOY_COMPONENTS_ROOT=$(dirname -- "$(realpath "$0")")
 if [ "$(echo "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" | grep -cE "/birdhouse/?\$" 2>/dev/null)" -eq 1 ]; then
   BIRDHOUSE_DEPLOY_COMPONENTS_ROOT=.

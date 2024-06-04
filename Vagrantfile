@@ -24,8 +24,8 @@ Vagrant.configure("2") do |config|
   # Fix /vagrant shared folders (together with vagrant-vbguest) for Centos 7.
   config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 
-  # bridge networking to get real DNS name on local network, PAVICS does not
-  # seems to work with numerical IP address for PAVICS_FQDN
+  # bridge networking to get real DNS name on local network, Birdhouse does not
+  # seems to work with numerical IP address for BIRDHOUSE_FQDN
   if settings.has_key?('hostip')
     if settings.has_key?('network_bridge')
       config.vm.network "public_network", ip: settings['hostip'], bridge: settings['network_bridge']

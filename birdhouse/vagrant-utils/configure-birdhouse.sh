@@ -1,13 +1,13 @@
 #!/bin/sh -x
 
 if [ -f env.local ]; then
-    # Get SSL_CERTIFICATE from existing env.local.
+    # Get BIRDHOUSE_SSL_CERTIFICATE from existing env.local.
     . ./env.local
 fi
 
-if [ -z "$SSL_CERTIFICATE" ]; then
+if [ -z "$BIRDHOUSE_SSL_CERTIFICATE" ]; then
     # Overridable by existing env.local or existing env var.
-    SSL_CERTIFICATE="/home/vagrant/certkey.pem"
+    BIRDHOUSE_SSL_CERTIFICATE="/home/vagrant/certkey.pem"
 fi
 
 if [ ! -f env.local ]; then
@@ -15,13 +15,13 @@ if [ ! -f env.local ]; then
     cat <<EOF >> env.local
 
 # override with values needed for vagrant
-export SSL_CERTIFICATE='$SSL_CERTIFICATE'  # *absolute* path to the nginx ssl certificate, path and key bundle
-export PAVICS_FQDN='${VM_HOSTNAME}.$VM_DOMAIN' # Fully qualified domain name of this Pavics installation
+export BIRDHOUSE_SSL_CERTIFICATE='$BIRDHOUSE_SSL_CERTIFICATE'  # *absolute* path to the nginx ssl certificate, path and key bundle
+export BIRDHOUSE_FQDN='${VM_HOSTNAME}.$VM_DOMAIN' # Fully qualified domain name of this Birdhouse installation
 EOF
 
     if [ -n "$LETSENCRYPT_EMAIL" ]; then
     cat <<EOF >> env.local
-export SUPPORT_EMAIL="$LETSENCRYPT_EMAIL"
+export BIRDHOUSE_SUPPORT_EMAIL="$LETSENCRYPT_EMAIL"
 
 # Modify schedule so test systems do not hit LetsEncrypt at the same time as
 # prod systems to avoid loading LetsEncrypt server (be a nice netizen).
@@ -33,16 +33,16 @@ RENEW_LETSENCRYPT_SSL_NUM_PARENTS_MOUNT="/"
 # Only source if file exist.  Allow for config file to be backward-compat with
 # older version of the repo where the .env file do not exist yet.
 # Keep this sourcing of renew_letsencrypt_ssl_cert_extra_job.env after
-# latest definition of SSL_CERTIFICATE because it needs the valid value of
-# SSL_CERTIFICATE.
+# latest definition of BIRDHOUSE_SSL_CERTIFICATE because it needs the valid value of
+# BIRDHOUSE_SSL_CERTIFICATE.
 if [ -f "$PWD/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env" ]; then
     . $PWD/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env
 fi
 EOF
     elif [ -n "$KITENAME" -a -n "$KITESUBDOMAIN" ]; then
     cat <<EOF >> env.local
-export PAVICS_FQDN_PUBLIC="$KITESUBDOMAIN-$KITENAME"
-export ALLOW_UNSECURE_HTTP="True"
+export BIRDHOUSE_FQDN_PUBLIC="$KITESUBDOMAIN-$KITENAME"
+export BIRDHOUSE_ALLOW_UNSECURE_HTTP="True"
 EOF
     fi
 
@@ -50,7 +50,7 @@ else
     echo "existing env.local file, not overriding"
 fi
 
-if [ ! -f "$SSL_CERTIFICATE" ]; then
+if [ ! -f "$BIRDHOUSE_SSL_CERTIFICATE" ]; then
     . ./env.local
     if [ -n "$LETSENCRYPT_EMAIL" ]; then
 
@@ -64,16 +64,18 @@ if [ ! -f "$SSL_CERTIFICATE" ]; then
     else
         openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem \
             -subj "/C=CA/ST=Quebec/L=Montreal/O=RnD/CN=${VM_HOSTNAME}.$VM_DOMAIN"
-        cp cert.pem "$SSL_CERTIFICATE"
-        cat key.pem >> "$SSL_CERTIFICATE"
-        if [ -z "$VERIFY_SSL" ]; then
+        cp cert.pem "$BIRDHOUSE_SSL_CERTIFICATE"
+        cat key.pem >> "$BIRDHOUSE_SSL_CERTIFICATE"
+        if [ -z "$BIRDHOUSE_VERIFY_SSL" ]; then
             cat <<EOF >> env.local
-export VERIFY_SSL="false"
+export BIRDHOUSE_VERIFY_SSL="false"
 EOF
         fi
     fi
 else
-    echo "existing '$SSL_CERTIFICATE' file, not overriding"
+    echo "existing '$BIRDHOUSE_SSL_CERTIFICATE' file, not overriding"
 fi
 
-./pavics-compose.sh up -d
+export PATH="$(readlink -f ../bin):$PATH"
+
+birdhouse compose up -d

@@ -1,4 +1,4 @@
 PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
 # check if should deploy ${CRON_FREQUENCY_TXT}
-${CRON_SCHEDULE} ${OWNER_PAVICS_CHECKOUT} /usr/local/sbin/triggerdeploy.sh ${PATH_TO_PAVICS_CHECKOUT}/birdhouse >> /var/log/PAVICS/autodeploy.log 2>&1
+${CRON_SCHEDULE} ${BIRDHOUSE_REPO_CHECKOUT_OWNER} /usr/local/sbin/triggerdeploy.sh ${BIRDHOUSE_REPO_CHECKOUT_PATH}/birdhouse >> ${BIRDHOUSE_LOG_DIR}/autodeploy.log 2>&1

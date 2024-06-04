@@ -1,11 +1,19 @@
 import io
 import os
+import re
 import tempfile
 import pytest
 import subprocess
-from typing import Union, Optional
+from typing import Optional, Union
 
 ENV_SPLIT_STR: str = "#env for testing#"
+ENV_SPLIT_STR_ALT: str = "#env for testing alt#"
+
+# Set backwards compatible allowed to False explicitly since the current default
+# is True when not executing through the CLI.
+# tput may add a bunch of messages to stderr if this is not set. This may cause confusion when trying to debug a
+# pytest error since these messages are unrelated to failing tests.
+DEFAULT_BIRDHOUSE_ENV = {"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False", "TERM": os.getenv("TERM", "")}
 
 
 @pytest.fixture(scope="module")
@@ -32,9 +40,11 @@ def read_config_include_file(root_dir) -> str:
 def set_local_env(env_file: io.FileIO, content: Union[str, dict]) -> None:
     env_file.truncate()
     if isinstance(content, dict):
+        content = {**DEFAULT_BIRDHOUSE_ENV, **content}
         env_file.write("\n".join(f"export {k}={v}" for k, v in content.items()))
     else:
-        env_file.write(content)
+        default_content = "\n".join([f"{k}={v}" for k, v in DEFAULT_BIRDHOUSE_ENV.items()])
+        env_file.write(f"{default_content}\n{content}")
 
 
 def split_and_strip(s: str, split_on="\n") -> list[str]:
@@ -61,16 +71,12 @@ class _ReadConfigs:
         if command is None:
             command = self.command
 
-        # tmut may add a bunch of messages to stderr if this is not set. This may cause confusion when trying to debug a
-        # pytest error since these messages are unrelated to failing tests.
-        env = {"TERM": os.getenv("TERM", "")}
-
         command_sequence = [f". {include_file}", command]
         if command_suffix:
             command_sequence.extend([f"echo '{ENV_SPLIT_STR}'", f"{command_suffix}"])
         if exit_on_error:
-            command_sequence.insert(1, "set -e")
-            command_sequence.insert(3, "set +e")
+            command_sequence.insert(1, "set -ex")
+            command_sequence.insert(3, "set +ex")
 
         command = " ; ".join(command_sequence)
 
@@ -79,7 +85,7 @@ class _ReadConfigs:
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            env={**env, **(local_env or {})},
+            env={**DEFAULT_BIRDHOUSE_ENV, **(local_env or {})},
             universal_newlines=True,
         )
         if proc.returncode:
@@ -89,9 +95,22 @@ class _ReadConfigs:
         return proc
 
 
+class _ReadConfigsFromEnvFile(_ReadConfigs):
+    def run_func(self, include_file: str,
+                 local_env: dict,
+                 command_suffix: str = "",
+                 command: Optional[str] = None,
+                 exit_on_error: bool = True) -> subprocess.CompletedProcess:
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, mode="w") as f:
+                set_local_env(f, local_env)
+            return super().run_func(include_file,
+                                    {"BIRDHOUSE_LOCAL_ENV": f.name}, command_suffix, command, exit_on_error)
+        finally:
+            os.unlink(f.name)
 
 
-class TestReadConfigs(_ReadConfigs):
+class TestReadConfigs(_ReadConfigsFromEnvFile):
     command: str = "read_configs"
 
     default_all_conf_order: list[str] = [
@@ -124,18 +143,6 @@ class TestReadConfigs(_ReadConfigs):
         "./components/jupyterhub"
     ]
 
-    def run_func(self, include_file: str,
-                 local_env: dict,
-                 command_suffix: str = "",
-                 command: Optional[str] = None,
-                 exit_on_error: bool = True) -> subprocess.CompletedProcess:
-        try:
-            with tempfile.NamedTemporaryFile(delete=False, mode="w") as f:
-                set_local_env(f, local_env)
-            return super().run_func(include_file, {"BIRDHOUSE_LOCAL_ENV": f.name}, command_suffix, command, exit_on_error)
-        finally:
-            os.unlink(f.name)
-
     def test_return_code(self, read_config_include_file, exit_on_error) -> None:
         """Test that the return code is 0"""
         proc = self.run_func(read_config_include_file, {}, exit_on_error=exit_on_error)
@@ -157,7 +164,7 @@ class TestReadConfigs(_ReadConfigs):
 
     def test_all_conf_dirs_extra_last(self, read_config_include_file, exit_on_error) -> None:
         """Test that any extra components are loaded last"""
-        extra = {"EXTRA_CONF_DIRS": '"./components/finch\n./components/weaver"'}
+        extra = {"BIRDHOUSE_EXTRA_CONF_DIRS": '"./components/finch\n./components/weaver"'}
         proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"', exit_on_error=exit_on_error)
         assert split_and_strip(get_command_stdout(proc))[-2:] == [
             "./components/finch",
@@ -167,7 +174,7 @@ class TestReadConfigs(_ReadConfigs):
     @pytest.mark.usefixtures("run_in_compose_dir")
     def test_dependencies_loaded_first(self, read_config_include_file, exit_on_error) -> None:
         """Test that dependencies are loaded first"""
-        extra = {"EXTRA_CONF_DIRS": '"./optional-components/test-weaver"'}
+        extra = {"BIRDHOUSE_EXTRA_CONF_DIRS": '"./optional-components/test-weaver"'}
         proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"', exit_on_error=exit_on_error)
         print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc))[-2:] == [
@@ -177,37 +184,37 @@ class TestReadConfigs(_ReadConfigs):
 
     def test_non_project_components_included(self, read_config_include_file, exit_on_error) -> None:
         """Test that extra components can be included"""
-        extra = {"EXTRA_CONF_DIRS": '"./blah/other-random-component"'}
+        extra = {"BIRDHOUSE_EXTRA_CONF_DIRS": '"./blah/other-random-component"'}
         proc = self.run_func(read_config_include_file, extra, 'echo "$ALL_CONF_DIRS"', exit_on_error=exit_on_error)
         assert split_and_strip(get_command_stdout(proc))[-1] == "./blah/other-random-component"
 
     @pytest.mark.usefixtures("run_in_compose_dir")
     def test_delayed_eval_default_value(self, read_config_include_file, exit_on_error) -> None:
         """Test delayed eval when value not set in env.local"""
-        extra = {"PAVICS_FQDN": '"fqdn.example.com"',
-                 "EXTRA_CONF_DIRS": '"./components/jupyterhub ./components/geoserver"'}
+        extra = {"BIRDHOUSE_FQDN": '"fqdn.example.com"',
+                 "BIRDHOUSE_EXTRA_CONF_DIRS": '"./components/jupyterhub ./components/geoserver"'}
         proc = self.run_func(read_config_include_file, extra,
-                             'echo "$PAVICS_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"',
+                             'echo "$BIRDHOUSE_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"',
                              exit_on_error=exit_on_error)
         print(proc.stdout)  # useful for debugging when assert fail
-        # By default, PAVICS_FQDN_PUBLIC has same value as PAVICS_FQDN.
+        # By default, BIRDHOUSE_FQDN_PUBLIC has same value as BIRDHOUSE_FQDN.
         assert (split_and_strip(get_command_stdout(proc))[-1] ==
                 "fqdn.example.com - /data/jupyterhub_user_data - /data/geoserver")
 
     @pytest.mark.usefixtures("run_in_compose_dir")
     def test_delayed_eval_custom_value(self, read_config_include_file, exit_on_error) -> None:
         """Test delayed eval when value is set in env.local"""
-        extra = {"PAVICS_FQDN": '"fqdn.example.com"',
-                 "PAVICS_FQDN_PUBLIC": '"public.example.com"',
-                 "EXTRA_CONF_DIRS": '"./components/jupyterhub ./components/geoserver"',
-                 "DATA_PERSIST_ROOT": '"/my-data-root"',  # indirectly change JUPYTERHUB_USER_DATA_DIR
+        extra = {"BIRDHOUSE_FQDN": '"fqdn.example.com"',
+                 "BIRDHOUSE_FQDN_PUBLIC": '"public.example.com"',
+                 "BIRDHOUSE_EXTRA_CONF_DIRS": '"./components/jupyterhub ./components/geoserver"',
+                 "BIRDHOUSE_DATA_PERSIST_ROOT": '"/my-data-root"',  # indirectly change JUPYTERHUB_USER_DATA_DIR
                  "GEOSERVER_DATA_DIR": '"/my-geoserver-data"',
                  }
         proc = self.run_func(read_config_include_file, extra,
-                             'echo "$PAVICS_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"',
+                             'echo "$BIRDHOUSE_FQDN_PUBLIC - $JUPYTERHUB_USER_DATA_DIR - $GEOSERVER_DATA_DIR"',
                              exit_on_error=exit_on_error)
         print(proc.stdout)  # useful for debugging when assert fail
-        # If PAVICS_FQDN_PUBLIC is set in env.local, that value should be effective.
+        # If BIRDHOUSE_FQDN_PUBLIC is set in env.local, that value should be effective.
         assert (split_and_strip(get_command_stdout(proc))[-1] ==
                 "public.example.com - /my-data-root/jupyterhub_user_data - /my-geoserver-data")
 
@@ -217,6 +224,199 @@ class TestReadConfigs(_ReadConfigs):
         proc = self.run_func(read_config_include_file, extra, 'echo "${EXTRA_TEST_VAR}"',
                              exit_on_error=exit_on_error)
         assert split_and_strip(get_command_stdout(proc))[-1] == "{'123'}"
+
+
+class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
+    command = "read_configs"
+
+    # copy of BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES from birdhouse/default.env
+    all_overrides = """
+        PAVICS_FQDN=BIRDHOUSE_FQDN
+        PAVICS_FQDN_PUBLIC=BIRDHOUSE_FQDN_PUBLIC
+        POSTGRES_PAVICS_USERNAME=BIRDHOUSE_POSTGRES_USERNAME
+        POSTGRES_PAVICS_PASSWORD=BIRDHOUSE_POSTGRES_PASSWORD
+        OWNER_PAVICS_CHECKOUT=BIRDHOUSE_REPO_CHECKOUT_OWNER
+        PAVICS_LOG_DIR=BIRDHOUSE_LOG_DIR
+        PAVICS_FRONTEND_IP=BIRDHOUSE_FRONTEND_IP
+        PAVICS_FRONTEND_PORT=BIRDHOUSE_FRONTEND_PORT
+        PAVICS_FRONTEND_PROTO=BIRDHOUSE_FRONTEND_PROTO
+        PAVICS_HOST_URL=BIRDHOUSE_HOST_URL
+        DATA_PERSIST_ROOT=BIRDHOUSE_DATA_PERSIST_ROOT
+        DATA_PERSIST_SHARED_ROOT=BIRDHOUSE_DATA_PERSIST_SHARED_ROOT
+        SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
+        DOC_URL=BIRDHOUSE_DOC_URL
+        SUPPORT_EMAIL=BIRDHOUSE_SUPPORT_EMAIL
+        EXTRA_CONF_DIRS=BIRDHOUSE_EXTRA_CONF_DIRS
+        DEFAULT_CONF_DIRS=BIRDHOUSE_DEFAULT_CONF_DIRS
+        AUTODEPLOY_EXTRA_REPOS=BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS
+        AUTODEPLOY_DEPLOY_KEY_ROOT_DIR=BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR
+        AUTODEPLOY_PLATFORM_FREQUENCY=BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY
+        AUTODEPLOY_NOTEBOOK_FREQUENCY=BIRDHOUSE_AUTODEPLOY_NOTEBOOK_FREQUENCY
+        AUTODEPLOY_EXTRA_SCHEDULER_JOBS=BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS
+        LOGROTATE_DATA_DIR=BIRDHOUSE_LOGROTATE_DATA_DIR
+        ALLOW_UNSECURE_HTTP=BIRDHOUSE_ALLOW_UNSECURE_HTTP
+        DOCKER_NOTEBOOK_IMAGES=JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES
+        ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS=JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS
+        MOUNT_IMAGE_SPECIFIC_NOTEBOOKS=JUPYTERHUB_MOUNT_IMAGE_SPECIFIC_NOTEBOOKS
+        EXTRA_PYWPS_CONFIG=BIRDHOUSE_EXTRA_PYWPS_CONFIG
+        GITHUB_CLIENT_ID=MAGPIE_GITHUB_CLIENT_ID
+        GITHUB_CLIENT_SECRET=MAGPIE_GITHUB_CLIENT_SECRET
+        VERIFY_SSL=BIRDHOUSE_VERIFY_SSL
+        SMTP_SERVER=ALERTMANAGER_SMTP_SERVER
+        COMPOSE_UP_EXTRA_OPTS=BIRDHOUSE_COMPOSE_UP_EXTRA_OPTS
+        WPS_OUTPUTS_DIR=BIRDHOUSE_WPS_OUTPUTS_DIR
+        SERVER_DOC_URL=BIRDHOUSE_DOC_URL
+        SERVER_SUPPORT_EMAIL=BIRDHOUSE_SUPPORT_EMAIL
+        SERVER_SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
+        SERVER_DATA_PERSIST_SHARED_ROOT=BIRDHOUSE_DATA_PERSIST_SHARED_ROOT
+        SERVER_WPS_OUTPUTS_DIR=BIRDHOUSE_WPS_OUTPUTS_DIR
+        SERVER_NAME=BIRDHOUSE_NAME
+        SERVER_DESCRIPTION=BIRDHOUSE_DESCRIPTION
+        SERVER_INSTITUTION=BIRDHOUSE_INSTITUTION
+        SERVER_SUBJECT=BIRDHOUSE_SUBJECT
+        SERVER_TAGS=BIRDHOUSE_TAGS
+        SERVER_DOCUMENTATION_URL=BIRDHOUSE_DOCUMENTATION_URL
+        SERVER_RELEASE_NOTES_URL=BIRDHOUSE_RELEASE_NOTES_URL
+        SERVER_SUPPORT_URL=BIRDHOUSE_SUPPORT_URL
+        SERVER_LICENSE_URL=BIRDHOUSE_LICENSE_URL
+    """
+
+    old_vars = {line.strip().split("=")[0]: "old" for line in all_overrides.splitlines() if line.strip()}
+    new_vars = {line.strip().split("=")[1]: "new" for line in all_overrides.splitlines() if line.strip()}
+
+    def test_allowed_simple_substitution(self, read_config_include_file, exit_on_error) -> None:
+        """
+        Test that a deprecated variable can be used to set the new version if backwards compatible
+        variables are allowed.
+        """
+        extra = {"PAVICS_FQDN": "fqdn.example.com", "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
+        proc = self.run_func(read_config_include_file, extra, 'echo "${BIRDHOUSE_FQDN}"', exit_on_error=exit_on_error)
+        assert split_and_strip(get_command_stdout(proc))[-1] == "fqdn.example.com"
+
+    def test_not_allowed_simple_substitution(self, read_config_include_file, exit_on_error):
+        """
+        Test that a deprecated variable cannot be used to set the new version if backwards compatible
+        variables are not allowed.
+        """
+        extra = {"PAVICS_FQDN": "fqdn.example.com", "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
+        proc = self.run_func(read_config_include_file, extra, 'echo "${BIRDHOUSE_FQDN}"', exit_on_error=exit_on_error)
+        assert not split_and_strip(get_command_stdout(proc))
+
+    def test_allowed_simple_override(self, read_config_include_file, exit_on_error) -> None:
+        """
+        Test that a deprecated variable can be used to override the new version if backwards compatible
+        variables are allowed.
+        """
+        extra = {"PAVICS_FQDN": "pavics.example.com",
+                 "BIRDHOUSE_FQDN": "birdhouse.example.com", "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
+        proc = self.run_func(read_config_include_file, extra, 'echo "${BIRDHOUSE_FQDN}"', exit_on_error=exit_on_error)
+        assert split_and_strip(get_command_stdout(proc))[-1] == "pavics.example.com"
+
+    def test_not_allowed_simple_override(self, read_config_include_file, exit_on_error):
+        """
+        Test that a deprecated variable cannot be used to override the new version if backwards compatible
+        variables are not allowed.
+        """
+        extra = {"PAVICS_FQDN": "pavics.example.com",
+                 "BIRDHOUSE_FQDN": "birdhouse.example.com", "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
+        proc = self.run_func(read_config_include_file, extra, 'echo "${BIRDHOUSE_FQDN}"', exit_on_error=exit_on_error)
+        assert split_and_strip(get_command_stdout(proc))[-1] == "birdhouse.example.com"
+
+    def test_allowed_substitution_all(self, read_config_include_file, exit_on_error):
+        """
+        Test that all deprecated variables can be used to set the new versions if backwards compatible
+        variables are allowed.
+        """
+        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in self.new_vars)}"'
+        proc = self.run_func(read_config_include_file,
+                             {"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True", **self.old_vars},
+                             command_suffix,
+                             exit_on_error=exit_on_error)
+        expected = set()
+        for k in self.new_vars:
+            if k == "BIRDHOUSE_EXTRA_CONF_DIRS":
+                expected.add(f"{k}=old ./optional-components/backwards-compatible-overrides")
+            else:
+                expected.add(f"{k}=old")
+        assert {re.sub(r'[\s\n]+', ' ', val.strip()) for val in
+                get_command_stdout(proc).split(ENV_SPLIT_STR_ALT)} == expected
+
+    def test_not_allowed_substitution_all(self, read_config_include_file, exit_on_error):
+        """
+        Test that all deprecated variables are not used to set the new versions if backwards compatible
+        variables are not allowed.
+        """
+        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in self.new_vars)}"'
+        proc = self.run_func(read_config_include_file,
+                             {"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False", **self.old_vars},
+                             command_suffix,
+                             exit_on_error=exit_on_error)
+        expected = set()
+        for k in self.new_vars:
+            expected.add(f"{k}=new")
+        actual = [re.sub(r'[\s\n]+', ' ', val.strip()) for val in get_command_stdout(proc).split(ENV_SPLIT_STR_ALT)]
+        assert all(val != "new" for val in actual)
+
+    def test_allowed_override_all(self, read_config_include_file, exit_on_error):
+        """
+        Test that all deprecated variables can be used to override the new versions if backwards compatible
+        variables are allowed.
+        """
+        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in self.new_vars)}"'
+        proc = self.run_func(read_config_include_file,
+                             {"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True", **self.old_vars, **self.new_vars},
+                             command_suffix,
+                             exit_on_error=exit_on_error)
+        expected = set()
+        for k in self.new_vars:
+            if k == "BIRDHOUSE_EXTRA_CONF_DIRS":
+                expected.add(f"{k}=old ./optional-components/backwards-compatible-overrides")
+            else:
+                expected.add(f"{k}=old")
+        assert {re.sub(r'[\s\n]+', ' ', val.strip()) for val in
+                get_command_stdout(proc).split(ENV_SPLIT_STR_ALT)} == expected
+
+    def test_not_allowed_override_all(self, read_config_include_file, exit_on_error):
+        """
+        Test that all deprecated variables are not used to override the new versions if backwards compatible
+        variables are not allowed.
+        """
+        command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in self.new_vars)}"'
+        proc = self.run_func(read_config_include_file,
+                             {"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False", **self.old_vars, **self.new_vars},
+                             command_suffix,
+                             exit_on_error=exit_on_error)
+        assert {re.sub(r'[\s\n]+', ' ', val.strip()) for val in
+                get_command_stdout(proc).split(ENV_SPLIT_STR_ALT)} == {f"{k}=new" for k in self.new_vars}
+
+    def test_allowed_set_old_variables_when_unset(self, read_config_include_file, exit_on_error):
+        """
+        Test that new variables can be used to set deprecated variables when the deprecated variable is unset if
+        backwards compatible variables are allowed.
+        """
+        extra = {"BIRDHOUSE_FQDN": "birdhouse.example.com", "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
+        proc = self.run_func(read_config_include_file, extra, 'echo "${PAVICS_FQDN}"', exit_on_error=exit_on_error)
+        assert split_and_strip(get_command_stdout(proc))[-1] == "birdhouse.example.com"
+
+    def test_not_allowed_set_old_variables_when_unset(self, read_config_include_file, exit_on_error):
+        """
+        Test that new variables cannot be used to set deprecated variables when the deprecated variable is unset if
+        backwards compatible variables are not allowed.
+        """
+        extra = {"BIRDHOUSE_FQDN": "birdhouse.example.com", "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
+        proc = self.run_func(read_config_include_file, extra, 'echo "${PAVICS_FQDN}"', exit_on_error=exit_on_error)
+        assert not split_and_strip(get_command_stdout(proc))
+
+    def test_allowed_no_override_old_variables_when_set(self, read_config_include_file, exit_on_error):
+        """
+        Test that new variables cannot be used to override deprecated variables when the deprecated variable is set if
+        backwards compatible variables are allowed.
+        """
+        extra = {"PAVICS_FQDN": "pavics.example.com", "BIRDHOUSE_FQDN": "birdhouse.example.com",
+                 "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
+        proc = self.run_func(read_config_include_file, extra, 'echo "${PAVICS_FQDN}"', exit_on_error=exit_on_error)
+        print(proc.stdout)
+        assert split_and_strip(get_command_stdout(proc))[-1] == "pavics.example.com"
 
 
 class TestCreateComposeConfList(_ReadConfigs):
@@ -289,7 +489,6 @@ class TestCreateComposeConfList(_ReadConfigs):
             'echo "$COMPOSE_CONF_LIST"',
             exit_on_error=exit_on_error
         )
-        print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == [
             "docker-compose.yml",
             "./components/finch/docker-compose-extra.yml",
@@ -320,7 +519,6 @@ class TestCreateComposeConfList(_ReadConfigs):
             'echo "$COMPOSE_CONF_LIST"',
             exit_on_error=exit_on_error
         )
-        print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc), split_on="-f") == [
             "docker-compose.yml",
             "./components/finch/docker-compose-extra.yml",

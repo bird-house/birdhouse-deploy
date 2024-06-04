@@ -14,7 +14,7 @@
       {
         "rel": "service",
         "type": "text/html",
-        "href": "https://${PAVICS_FQDN_PUBLIC}/jupyter"
+        "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/jupyter"
       },
       {
         "rel": "service-doc",

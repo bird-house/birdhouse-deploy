@@ -1,1 +1,2 @@
 credentials.env
+docker-entrypoint-initdb.d/create-wps-databases.sql

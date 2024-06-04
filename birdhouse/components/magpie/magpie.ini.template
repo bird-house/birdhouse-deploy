@@ -28,7 +28,7 @@ pyramid.includes = pyramid_tm ziggurat_foundations.ext.pyramid.sign_in ziggurat_
 #   other overridable variables available in magpie/constants.py
 #
 magpie.port = 2001
-magpie.url = https://${PAVICS_FQDN}/magpie
+magpie.url = https://${BIRDHOUSE_FQDN}/magpie
 magpie.max_restart = 5
 magpie.push_phoenix = true
 # This secret should be the same in Twitcher !
@@ -46,8 +46,8 @@ ziggurat_foundations.sign_in.sign_out_pattern = /signout
 ziggurat_foundations.session_provider_callable = magpie.models:get_session_callable
 
 # github (login provider)
-github.client_id=${GITHUB_CLIENT_ID}
-github.client_secret=${GITHUB_CLIENT_SECRET}
+github.client_id=${MAGPIE_GITHUB_CLIENT_ID}
+github.client_secret=${MAGPIE_GITHUB_CLIENT_SECRET}
 
 # temporary token definition (defaults below if omitted)
 # note: token here refers to uuids employed in temporary URL endpoints, not security auth tokens

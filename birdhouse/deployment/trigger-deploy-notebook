@@ -8,15 +8,24 @@
 # Same notebooks as tested by Jenkins and same notebooks as the Binder
 # https://mybinder.org/v2/gh/Ouranosinc/PAVICS-e2e-workflow-tests/master.
 #
-# This is meant to be run on the same host running PAVICS.
+# This is meant to be run on the same host running Birdhouse.
 #
-# Logs to /var/log/PAVICS/notebookdeploy.log, re-use existing logrotate.
+# Logs to ${BIRDHOUSE_LOG_DIR}/notebookdeploy.log, re-use existing logrotate.
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
 COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
-LOG_FILE="/var/log/PAVICS/notebookdeploy.log"
+# running script manually (not with cron) source env.local file.
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
+
+    # Get JUPYTERHUB_USER_DATA_DIR
+    # Get BASH_IMAGE
+    read_configs
+fi
+
+LOG_FILE="${BIRDHOUSE_LOG_DIR}/notebookdeploy.log"
 exec >>$LOG_FILE 2>&1
 
 cleanup_on_exit() {
@@ -32,15 +41,6 @@ trap cleanup_on_exit EXIT
 START_TIME="$(date -Isecond)"
 echo "==========
 notebookdeploy START_TIME=$START_TIME"
-
-# running script manually (not with cron) source env.local file.
-if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
-    . "${COMPOSE_DIR}/read-configs.include.sh"
-
-    # Get JUPYTERHUB_USER_DATA_DIR
-    # Get BASH_IMAGE
-    read_configs
-fi
 
 set -x
 

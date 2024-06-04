@@ -17,6 +17,108 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.4.0](https://github.com/bird-house/birdhouse-deploy/tree/2.4.0) (2024-06-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Rename variables, constants and files from PAVICS to Birdhouse
+
+  For historical reasons the name PAVICS was used in variable names, constants and filenames in this repo to refer
+  to the software stack in general. This was because, for a long time, the PAVICS deployment of this stack was the
+  only one that was being used in production. However, now that multiple deployments of this software exist in
+  production (that are not named PAVICS), we remove unnecessary references to PAVICS in order to reduce confusion
+  for maintainers and developers who may not be aware of the historical reasons for the PAVICS name.
+
+  This update makes the following changes:
+
+  * The string ``PAVICS`` in environment variables, constant values, and file names have been changed to 
+    ``BIRDHOUSE`` (case has been preserved where possible).
+    * For example:
+      * ``PAVICS_FQDN`` -> ``BIRDHOUSE_FQDN``
+      * ``pavics_compose.sh`` -> ``birdhouse_compose.sh``
+      * ``THREDDS_DATASET_LOCATION_ON_CONTAINER='/pavics-ncml'`` -> ``THREDDS_DATASET_LOCATION_ON_CONTAINER='/birdhouse-ncml'``
+  * Comment strings and documentation that refers to the software stack as ``PAVICS`` have been changed to use
+    ``Birdhouse``.
+  * Recreated the ``pavics-compose.sh`` script that runs ``birdhouse-compose.sh`` in backwards compatible mode.
+    * Backwards compatible mode means that variables in ``env.local`` that contain the string ``PAVICS`` will be used
+      to set the equivalent variable that contains ``BIRDHOUSE``. For example, the ``PAVICS_FQDN`` variable set in
+      the ``env.local`` file will be used to set the value of ``BIRDHOUSE_FQDN``.
+  * Removed unused variables:
+    * `CMIP5_THREDDS_ROOT`
+
+- Create a new CLI entrypoint in ``bin/birdhouse`` that can be used to invoke ``pavics-compose.sh`` or 
+  ``birdhouse-compose.sh`` from one convenient location. This script also includes some useful options and provides
+  a generic entrypoint to the stack that can be extended in the future. In the future, users should treat this
+  entrypoint as the only stable CLI for interacting with the Birdhouse software.
+
+### Migration Guide
+
+  - Update ``env.local`` file to replace all variables that contain ``PAVICS`` with ``BIRDHOUSE``.
+    Variable names have also been updated to ensure that they start with the prefix ``BIRDHOUSE_``.
+    * see [`env.local.example`](./birdhouse/env.local.example) to see new variable names
+    * see the ``BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in [`default.env`](./birdhouse/default.env)) for a 
+      full list of changed environment variable names.
+  - Update any external scripts that access the old variable names directly to use the updated variable names.
+  - Update any external scripts that access any of the following files to use the new file name:
+
+    | old file name           | new file name              |
+    |-------------------------|----------------------------|
+    | pavics-compose.sh       | birdhouse-compose.sh       |
+    | PAVICS-deploy.logrotate | birdhouse-deploy.logrotate |
+    | configure-pavics.sh     | configure-birdhouse.sh     |
+    | trigger-pavicscrawler   | trigger-birdhousecrawler   |
+
+  - Update any external scripts that called ``pavics-compose.sh`` or ``read-configs.include.sh`` to use the CLI 
+    entrypoint in ``bin/birdhouse`` instead.
+  - The following default values have changed. If your deployment was using the old default value, update your 
+    ``env.local`` file to explicitly set the old default values.
+
+    | old variable name                          | new variable name                    | old default value       | new default value          |
+    |--------------------------------------------|--------------------------------------|-------------------------|:---------------------------|
+    | POSTGRES_PAVICS_USERNAME                   | BIRDHOUSE_POSTGRES_USERNAME          | postgres-pavics         | postgres-birdhouse         |
+    | THREDDS_DATASET_LOCATION_ON_CONTAINER      | (no change)                          | /pavics-ncml            | /birdhouse-ncml            |
+    | THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER | (no change)                          | /pavics-data            | /birdhouse-data            |
+    | (hardcoded)                                | BIRDHOUSE_POSTGRES_DB                | pavics                  | birdhouse                  |
+    | PAVICS_LOG_DIR                             | BIRDHOUSE_LOG_DIR                    | /var/log/PAVICS         | /var/log/birdhouse         |
+    | (hardcoded)                                | GRAFANA_DEFAULT_PROVIDER_FOLDER      | Local-PAVICS            | Local-Birdhouse            |
+    | (hardcoded)                                | GRAFANA_DEFAULT_PROVIDER_FOLDER_UUID | local-pavics            | local-birdhouse            |
+    | (hardcoded)                                | GRAFANA_PROMETHEUS_DATASOURCE_UUID   | local_pavics_prometheus | local_birdhouse_prometheus |
+
+    Note that the `PAVICS_LOG_DIR` variable was actually hardcoded as `/var/log/PAVICS` in some scripts. If 
+    `PAVICS_LOG_DIR` was set to anything other than `/var/log/PAVICS` you'll end up with inconsistent log outputs as 
+    previously some logs would have been sent to `PAVICS_LOG_DIR` and others to `/var/log/PAVICS`. We recommend merging
+    these two log files. Going forward, all logs will be sent to `BIRDHOUSE_LOG_DIR`. 
+
+  - Update any jupyter notebooks that make use of the `PAVICS_HOST_URL` environment variable to use the new
+    `BIRDHOUSE_HOST_URL` instead.
+  - Set the ``BIRDHOUSE_POSTGRES_DB`` variable to ``pavics`` in the ``env.local`` file. This value was previously
+    hardcoded to the string ``pavics`` so to maintain backwards compatibility with any existing databases this should be
+    kept the same. If you do want to update to the new database name, you will need to rename the existing database.
+    For example, the following will update the existing database named ``pavics`` to ``birdhouse`` (assuming the old
+    default values for the postgres username):
+
+    ```shell
+    docker exec -it postgres psql -U postgres-pavics -d postgres -c 'ALTER DATABASE pavics RENAME TO birdhouse'
+    ```
+
+    You can then update the ``env.local`` file to the new variable name and restart the stack
+  - Set the ``BIRDHOUSE_POSTGRES_USER`` variable to ``postgres-pavics`` in the ``env.local`` file if you would like to 
+    preserve the old default value. If you would like to change the value of ``BIRDHOUSE_POSTGRES_USER`` then also 
+    update the name for any running postgres instances. For example, the following will update the user named 
+    ``postgres-pavics`` to ``postgres-birdhouse``:
+
+    ```shell
+    docker exec -it postgres psql -U postgres-pavics -d postgres -c 'CREATE USER "tmpsuperuser" WITH SUPERUSER'
+    docker exec -it postgres psql -U tmpsuperuser -d postgres -c 'ALTER ROLE "postgres-pavics" RENAME TO "postgres-birdhouse"'
+    docker exec -it postgres psql -U tmpsuperuser -d postgres -c 'ALTER ROLE "postgres-birdhouse" WITH PASSWORD '\''postgres-qwerty'\'
+    docker exec -it postgres psql -U postgres-birdhouse -d postgres -c 'DROP ROLE "tmpsuperuser"'
+    ```
+
+    Note that the ``postgres-qwerty`` value is meant just for illustration, you should replace this with the value of 
+    the ``BIRDHOUSE_POSTGRES_PASSWORD`` variable.
+    Note that you'll need to do the same for the ``stac-db`` service as well (assuming that you weren't previously
+    overriding the ``STAC_POSTGRES_USER`` with a custom value).
+
 [2.3.3](https://github.com/bird-house/birdhouse-deploy/tree/2.3.3) (2024-05-29)
 ------------------------------------------------------------------------------------------------------------------
 

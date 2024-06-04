@@ -18,7 +18,7 @@ services:
     #   WPS applications themselves are not necessarily completed. Successful HTTP responses ensure they are 'ready'.
     image: ${WEAVER_MANAGER_IMAGE}
     environment:
-      HOSTNAME: ${PAVICS_FQDN}
+      HOSTNAME: ${BIRDHOUSE_FQDN}
       FORWARDED_ALLOW_IPS: "*"
     #env_file:
     #  - ./components/mongodb/credentials.env

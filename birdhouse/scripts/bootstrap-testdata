@@ -2,7 +2,7 @@
 # Bootstrap minimum test data on Thredds.
 # To run testsuite in https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 #
-# Need to open temporary Thredds "testdata/secure/" on PAVICS production to anonymous group.
+# Need to open temporary Thredds "testdata/secure/" on Birdhouse production to anonymous group.
 #
 # To be run locally on the host running Thredds.  Will populate test data files
 # under DATASET_ROOT, customizable by env var.
@@ -11,10 +11,10 @@
 
 
 if [ -z "${DATASET_ROOT}" ]; then
-    DATASET_ROOT="${DATA_PERSIST_ROOT}/${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}"
+    DATASET_ROOT="${BIRDHOUSE_DATA_PERSIST_ROOT}/${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}"
 fi
 
-FROM_SERVER="https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/fileServer/birdhouse"
+FROM_SERVER=${FROM_SERVER:-"https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/fileServer/birdhouse"}
 
 FILE_LIST="
 nrcan/nrcan_canada_daily/tasmin/nrcan_canada_daily_tasmin_2013.nc

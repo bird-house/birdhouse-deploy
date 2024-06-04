@@ -24,7 +24,7 @@ mongodb.db_name = weaver
 
 # --- Weaver Configuration ---
 weaver.configuration = ${WEAVER_CONFIG}
-weaver.url = https://${PAVICS_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}
+weaver.url = https://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}
 
 # --- Weaver requests extension flags ---
 # use request-options for per-request specific disabling instead of globally disabled ssl_verify flag
@@ -49,7 +49,7 @@ weaver.wps = true
 weaver.wps_path = ${WEAVER_WPS_PATH}
 weaver.wps_output = true
 weaver.wps_output_dir = ${WEAVER_WPS_OUTPUTS_DIR}
-weaver.wps_output_url = https://${PAVICS_FQDN_PUBLIC}${WEAVER_WPS_OUTPUTS_PATH}
+weaver.wps_output_url = https://${BIRDHOUSE_FQDN_PUBLIC}${WEAVER_WPS_OUTPUTS_PATH}
 weaver.wps_output_path =
 # default output sub-dir if user not specified (just for good measure, otherwise hook should default to it also)
 # see 'components/weaver/config/magpie/weaver_hooks.py:add_x_wps_output_context' that defines it when user is logged in
@@ -60,7 +60,7 @@ weaver.wps_workdir = ${WEAVER_WPS_WORKDIR}
 weaver.wps_metadata_identification_title=Weaver
 weaver.wps_metadata_identification_abstract=Weaver is an Execution Management Service (EMS) that allows the execution of workflows chaining various applications and Web Processing Services (WPS) inputs and outputs. Remote execution is deferred by the EMS to an Application Deployment and Execution Service (ADES), as defined by Common Workflow Language (CWL) configurations.
 weaver.wps_metadata_identification_keywords=Weaver,WPS,OGC,${WEAVER_CONFIG}
-weaver.wps_metadata_identification_accessconstraints=https://${PAVICS_FQDN_PUBLIC}/magpie
+weaver.wps_metadata_identification_accessconstraints=https://${BIRDHOUSE_FQDN_PUBLIC}/magpie
 weaver.wps_metadata_identification_fees=NONE
 weaver.wps_metadata_provider_name=crim-ca/weaver
 weaver.wps_metadata_provider_url=http://pavics-weaver.readthedocs.org/en/latest/
