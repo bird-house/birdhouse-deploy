@@ -1,0 +1,85 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+x-objstore-config: &objstore-config |
+    --objstore.config=type: S3
+    config:
+      bucket: ${THANOS_MINIO_BUCKET_NAME}
+      access_key: ${MINIO_ROOT_USER}
+      secret_key: ${MINIO_ROOT_PASSWORD}
+      endpoint: minio:9000
+      insecure: true # use http instead of https
+
+services:
+  thanos-sidecar:
+    image: ${THANOS_IMAGE}
+    container_name: thanos-sidecar
+    volumes:
+      - prometheus_longterm_persistence:/prometheus
+    user: nobody # prometheus runs as this user so the sidecar must as well
+    command:
+      - 'sidecar'
+      - '--tsdb.path=/prometheus'
+      - '--prometheus.url=http://prometheus-longterm-metrics:9090/prometheus-longterm-metrics'
+      - '--grpc-address=0.0.0.0:19090'
+      - '--http-address=0.0.0.0:19191'
+      - *objstore-config
+    depends_on:
+      - prometheus-longterm-metrics
+      - minio
+    restart: always
+    logging: *default-logging
+
+  thanos-query:
+    image: ${THANOS_IMAGE}
+    container_name: thanos-query
+    command:
+      - 'query'
+      - '--http-address=0.0.0.0:19192'
+      - '--web.route-prefix=/thanos-query'
+      - '--web.external-prefix=/thanos-query'
+      - '--endpoint=thanos-sidecar:19090'
+    depends_on:
+      - thanos-sidecar
+    restart: always
+    logging: *default-logging
+
+  thanos-compactor:
+    image: ${THANOS_IMAGE}
+    container_name: thanos-compactor
+    command:
+      - 'compact'
+      - '--data-dir=/tmp/data' # temporary workspace (doesn't need to be a volume)
+      - '--wait'
+      - '--wait-interval=${THANOS_COMPACTOR_WAIT_INTERVAL}'
+      - *objstore-config
+    depends_on:
+      - minio
+    restart: always
+    logging: *default-logging
+
+  minio:
+    image: ${MINIO_IMAGE}
+    container_name: minio
+    volumes:
+      - ${MINIO_DATA_STORE}:/data
+      - ./optional-components/thanos/minio-entrypoint:/entrypoint
+    entrypoint: /entrypoint
+    command:
+      - 'minio'
+      - 'server'
+      - '--console-address'
+      - ':9001'
+      - '/data'
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_PROMETHEUS_AUTH_TYPE=public
+      - THANOS_MINIO_BUCKET_NAME=${THANOS_MINIO_BUCKET_NAME}
+      - MINIO_BROWSER_REDIRECT_URL=https://${BIRDHOUSE_FQDN_PUBLIC}/thanos-minio
