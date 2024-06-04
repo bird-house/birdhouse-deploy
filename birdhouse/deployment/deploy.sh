@@ -121,7 +121,7 @@ for adir in "${COMPOSE_DIR}" ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}; do
         cd "${adir}" || exit
 
         # fail fast if unclean checkout
-        if [ ! -z "$(git status --untracked-files=no --porcelain)" ]; then
+        if [ ! -z "$(git status -u --porcelain)" ]; then
             echo "ERROR: unclean repo '${adir}'" 1>&2
             exit 1
         fi
