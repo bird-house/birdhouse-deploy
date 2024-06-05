@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.4.1](https://github.com/bird-house/birdhouse-deploy/tree/2.4.1) (2024-06-05)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 - Weaver: Adjust invalid `data_sources.yml` definitions.
 
