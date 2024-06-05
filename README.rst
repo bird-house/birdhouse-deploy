@@ -42,7 +42,7 @@ for a full-fledged production platform.
 
 
 Birdhouse
-------
+---------
 
 For GitHub navigation, see the following README pages:
 
