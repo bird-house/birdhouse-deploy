@@ -17,6 +17,18 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.4.1](https://github.com/bird-house/birdhouse-deploy/tree/2.4.1) (2024-06-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Weaver: Adjust invalid `data_sources.yml` definitions.
+
+  - Add the missing `data_sources.yml` volume mount for  `weaver-worker`.
+  - When `weaver-worker` runs a `Workflow`, the nested `step` process locations need to be resolved according to the
+    current `"localhost"` instance. However, the Web API running in `weaver` service is not visible from the worker.
+    Since the configuration is shared between `weaver` and `weaver-worker`, use the public endpoint of `weaver` to
+    make process URL resolution consistent, and also provide more useful references in job logs when resolution fails.
+
 [2.4.0](https://github.com/bird-house/birdhouse-deploy/tree/2.4.0) (2024-06-04)
 ------------------------------------------------------------------------------------------------------------------
 
