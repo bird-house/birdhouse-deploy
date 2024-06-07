@@ -443,3 +443,38 @@ How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.examp
 
     .. seealso::
         See the `env.local.example`_ file for more details about this ``BIRDHOUSE_PROXY_ROOT_LOCATION`` behaviour.
+
+Prometheus Long-term Metrics
+----------------------------
+
+This is a second prometheus instance that collects longterm monitoring metrics from the original prometheus instance
+(the one created by the ``components/monitoring`` component).
+
+Longterm metrics are any prometheus rule that have the label ``group: longterm-metrics`` or in other words are
+selectable using prometheus' ``'{group="longterm-metrics"}'`` query filter. To see which longterm metric rules are
+added by default see the ``optional-components/prometheus-longterm-metrics/config/monitoring/prometheus.rules.template``.
+
+To configure this component:
+
+    * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
+    * update the ``PROMETHEUS_LONGTERM_STORE_INTERVAL`` variable to set how often the longterm metrics rules will be
+      calculated. For example, setting it to ``10h`` will calculate these metrics every 10 hours.
+
+Enabling this component creates the additional endpoint ``/prometheus-longterm-metrics``.
+
+Thanos
+------
+
+This enables better storage of longterm metrics collected by the ``optional-components/prometheus-longterm-metrics``
+component. Data will be collected from the ``prometheus-longterm-metrics`` and stored in an S3 object store
+indefinitely.
+
+When enabling this component, please change the default values for the ``MINIO_ROOT_USER`` and ``MINIO_ROOT_PASSWORD``
+by updating the ``env.local`` file. These set the login credentials for the root user that runs the minio_ object
+store.
+
+Enabling this component creates the additional endpoints:
+    * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
+    * ``/thanos-minio``: a minio_ web console to inspect the data stored by minio_.
+
+.. _minio: https://min.io/

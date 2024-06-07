@@ -15,7 +15,41 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Add the `prometheus-longterm-metrics` and `thanos` optional components
+
+  The `prometheus-longterm-metrics` component collects longterm monitoring metrics from the original prometheus instance
+  (the one created by the ``components/monitoring`` component).
+
+  Longterm metrics are any prometheus rule that have the label ``group: longterm-metrics`` or in other words are
+  selectable using prometheus's ``'{group="longterm-metrics"}'`` query filter. To see which longterm metric rules are
+  added by default see the 
+  ``optional-components/prometheus-longterm-metrics/config/monitoring/prometheus.rules.template`` file.
+
+  To configure this component:
+
+  * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
+  * update the ``PROMETHEUS_LONGTERM_STORE_INTERVAL`` variable to set how often the longterm metrics rules will be
+    calculated. For example, setting it to ``10h`` will calculate these metrics every 10 hours.
+
+  Enabling the `prometheus-longterm-metrics` component creates the additional endpoint ``/prometheus-longterm-metrics``.
+
+  The `thanos` component enables better storage of longterm metrics collected by the 
+  ``optional-components/prometheus-longterm-metrics`` component. Data will be collected from the
+  ``prometheus-longterm-metrics`` and stored in an S3 object store indefinitely.
+  
+  When enabling this component, please change the default values for the ``MINIO_ROOT_USER`` and ``MINIO_ROOT_PASSWORD``
+  by updating the ``env.local`` file. These set the login credentials for the root user that runs the 
+  [minio](https://min.io/) object store.
+  
+  Enabling the `thanos` component creates the additional endpoints:
+
+  * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
+  * ``/thanos-minio``: a minio web console to inspect the data stored by minio.
+
+  This also includes an update to the prometheus version from `v2.19.0` to the current latest `v2.52.0`. This is to
+  required to support the interaction between prometheus and thanos.
 
 [2.4.0](https://github.com/bird-house/birdhouse-deploy/tree/2.4.0) (2024-06-04)
 ------------------------------------------------------------------------------------------------------------------
