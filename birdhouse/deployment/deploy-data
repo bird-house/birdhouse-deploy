@@ -151,6 +151,13 @@ for GIT_REPO_URL in $GIT_REPO_URLS; do
         echo "sync '$SRC_DIR' to '$DEST_DIR'"
         DEST_DIR_PARENT="`dirname "$DEST_DIR"`"
         SRC_DIR_ABS_PATH="`pwd`/$SRC_DIR"
+        if [ ! -e "$SRC_DIR_ABS_PATH" ]; then
+            # SRC_DIR could already be absolute.
+            # Support rsync from source outside of current checkout, from other
+            # checkouts in same config file because config file can have
+            # multiple checkouts.
+            SRC_DIR_ABS_PATH="$SRC_DIR"
+        fi
         USER_ID="`id -u`"
         GROUP_ID="`id -g`"
         RSYNC_USER_GRP="$USER_ID:$GROUP_ID"
