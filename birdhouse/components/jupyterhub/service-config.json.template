@@ -1,0 +1,31 @@
+[
+  {
+    "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.2.0/node_registry.schema.json#service",
+    "name": "jupyterhub",
+    "version": "${JUPYTERHUB_VERSION}",
+    "types": [
+      "jupyterhub"
+    ],
+    "keywords": [
+      "jupyterhub"
+    ],
+    "description": "An interactive development environment use to create and share documents that contain live code.",
+    "links": [
+      {
+        "rel": "service",
+        "type": "text/html",
+        "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/jupyter"
+      },
+      {
+        "rel": "service-doc",
+        "type": "text/html",
+        "href": "https://jupyter.org/hub"
+      },
+      {
+        "rel": "service-meta",
+        "type": "application/vnd.oci.image.index.v1+json",
+        "href": "${JUPYTERHUB_IMAGE_URI}"
+      }
+    ]
+  }
+]

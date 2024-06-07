@@ -1,0 +1,36 @@
+[
+  {
+    "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.2.0/node_registry.schema.json#service",
+    "name": "raven",
+    "version": "${RAVEN_VERSION}",
+    "types": [
+      "wps"
+    ],
+    "keywords": [
+      "service-wps"
+    ],
+    "description": "A WPS providing hydrological modeling and analysis services.",
+    "links": [
+      {
+        "rel": "service",
+        "type": "text/xml",
+        "href": "https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven?service=WPS&request=GetCapabilities"
+      },
+      {
+        "rel": "service-doc",
+        "type": "text/html",
+        "href": "https://pavics-raven.readthedocs.io"
+      },
+      {
+        "rel": "service-desc",
+        "type": "text/xml",
+        "href": "https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven?service=WPS&request=GetCapabilities"
+      },
+      {
+        "rel": "service-meta",
+        "type": "application/vnd.oci.image.index.v1+json",
+        "href": "${RAVEN_IMAGE_URI}"
+      }
+    ]
+  }
+]

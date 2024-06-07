@@ -23,7 +23,7 @@
 #
 #   WEAVER_WPS_PROVIDERS:
 #       list of provider names (comma or space delimited), all are assumed to be available at
-#       "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/<provider-name>"
+#       "https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/<provider-name>"
 #   WEAVER_WPS_PROVIDERS_MAX_TIME:
 #       limit script execution up to a maximum of this number of seconds
 #   WEAVER_WPS_PROVIDERS_RETRY_COUNT:
@@ -34,7 +34,7 @@
 # Following configurations are expected to be inherited from bird-house/weaver-component env.local/default.env:
 #   - MAGPIE_ADMIN_USERNAME
 #   - MAGPIE_ADMIN_PASSWORD
-#   - PAVICS_FQDN_PUBLIC
+#   - BIRDHOUSE_FQDN_PUBLIC
 #   - TWITCHER_PROTECTED_PATH
 #   - WEAVER_MANAGER_NAME
 #
@@ -52,7 +52,7 @@
 #
 # Parameters:
 #
-#   PAVICS_LOG_DIR (optional, default=/tmp/pavics-compose):
+#   BIRDHOUSE_LOG_DIR (optional, default=/tmp/birdhouse-compose):
 #     Location to log results from celery healthcheck outputs.
 #
 
@@ -82,8 +82,8 @@ WARN="${PREFIX}${YELLOW}WARNING${NORMAL}: "
 
 echo "${PREFIX}Running: $0"
 
-MAGPIE_URL="https://${PAVICS_FQDN_PUBLIC}/magpie"
-WEAVER_URL="https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
+MAGPIE_URL="https://${BIRDHOUSE_FQDN_PUBLIC}/magpie"
+WEAVER_URL="https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
 WEAVER_WPS_PROVIDERS_MAX_TIME=${WEAVER_WPS_PROVIDERS_MAX_TIME:-120}
 WEAVER_WPS_PROVIDERS_RETRY_AFTER=${WEAVER_WPS_PROVIDERS_RETRY_AFTER:-5}
 WEAVER_WPS_PROVIDERS_RETRY_COUNT=${WEAVER_WPS_PROVIDERS_RETRY_COUNT:-5}
@@ -246,7 +246,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
     if [ -z "${prov}" ]; then
         continue
     fi
-    prov_url="https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${prov}"
+    prov_url="https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${prov}"
     prov_cap="${prov_url}?service=WPS&request=GetCapabilities"
 
     # wait for WPS provider to respond
@@ -333,23 +333,54 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
 done
 echo "${PREFIX}All Weaver remote WPS providers registered successfully!"
 
+if [ x"${WEAVER_UNREGISTER_DROPPED_PROVIDERS}" = x"True" ]; then
+    # Get all registered providers whether they are working or not
+    all_providers_resp=$( \
+        curl_cmd --insecure --silent --location \
+            -m ${REQUEST_TIMEOUT} \
+            -b "${cookie}" \
+            "${WEAVER_URL}/providers?check=false&detail=false" \
+    )
+    # Get all registered working providers
+    working_providers_resp=$( \
+        curl_cmd --insecure --silent --location \
+            -m ${REQUEST_TIMEOUT} \
+            -b "${cookie}" \
+            "${WEAVER_URL}/providers?check=true&detail=false" \
+    )
+    working_providers=$(echo "$working_providers_resp" | tr '\n' ' ' | \
+                        sed -e 's/.*"providers":\[//' -e 's/\].*//' -e 's/[",]/ /g')
+    for prov in $(echo "$all_providers_resp" | sed -e 's/.*"providers":\[//' -e 's/\].*//' -e 's/[",]/ /g'); do
+        # Note: both WEAVER_WPS_PROVIDERS and working_providers are whitespace delimited with no newlines
+        if echo " ${WEAVER_WPS_PROVIDERS} " | grep -qv "[[:space:]]${prov}[[:space:]]" && \
+           echo " ${working_providers} " | grep -qv "[[:space:]]${prov}[[:space:]]"; then
+            # unregister provider that is no longer specified in WEAVER_WPS_PROVIDERS and is no longer working
+            echo "${PREFIX}Unregistering the remote WPS provider matching [${prov}] not in WEAVER_WPS_PROVIDERS."
+            curl_cmd --insecure --silent --location \
+                 -m ${REQUEST_TIMEOUT} \
+                 -b "${cookie}" \
+                 -X DELETE \
+                 "${WEAVER_URL}/providers/${prov}"
+            fi
+    done
+fi
 
 echo "${PREFIX}Starting Weaver WebApp/Worker Celery tasks validation..."
 CUR_SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-PAVICS_COMPOSE="$(realpath "${CUR_SCRIPT_DIR}/../../pavics-compose.sh")"
-PAVICS_LOG_DIR="${PAVICS_LOG_DIR:-/tmp/pavics-compose}"
+BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"$(realpath "${CUR_SCRIPT_DIR}/../../birdhouse-compose.sh")"}"
+BIRDHOUSE_LOG_DIR="${BIRDHOUSE_LOG_DIR:-/tmp/birdhouse-compose}"
 CELERY_HEALTHCHECK="/opt/local/bin/weaver/celery-healthcheck"
-mkdir -p "${PAVICS_LOG_DIR}"
+mkdir -p "${BIRDHOUSE_LOG_DIR}"
 # note: use 'tee' instead of capturing in variable to allow displaying results directly when running command
-${PAVICS_COMPOSE} exec weaver bash "${CELERY_HEALTHCHECK}" | tee "${PAVICS_LOG_DIR}/weaver.log"
+${BIRDHOUSE_COMPOSE} exec weaver bash "${CELERY_HEALTHCHECK}" | tee "${BIRDHOUSE_LOG_DIR}/weaver.log"
 ret_weaver=$?
-out_weaver=$(cat "${PAVICS_LOG_DIR}/weaver.log" | tail -n 1 | grep -c "ERROR")
-${PAVICS_COMPOSE} exec weaver-worker bash "${CELERY_HEALTHCHECK}" | tee "${PAVICS_LOG_DIR}/weaver-worker.log"
+out_weaver=$(cat "${BIRDHOUSE_LOG_DIR}/weaver.log" | tail -n 1 | grep -c "ERROR")
+${BIRDHOUSE_COMPOSE} exec weaver-worker bash "${CELERY_HEALTHCHECK}" | tee "${BIRDHOUSE_LOG_DIR}/weaver-worker.log"
 ret_worker=$?
-out_worker=$(cat "${PAVICS_LOG_DIR}/weaver-worker.log" | tail -n 1 | grep -c "ERROR")
+out_worker=$(cat "${BIRDHOUSE_LOG_DIR}/weaver-worker.log" | tail -n 1 | grep -c "ERROR")
 if [ ${ret_weaver} -ne 0 ] || [ ${ret_worker} -ne 0 ] || [ "${out_weaver}" -ne 0 ] || [ "${out_worker}" -ne 0 ]; then
   echo "${PREFIX}Weaver WebApp and/or Worker Celery tasks were not ready. Restarting both..."
-  ${PAVICS_COMPOSE} restart weaver weaver-worker
+  ${BIRDHOUSE_COMPOSE} restart weaver weaver-worker
 else
   echo "${PREFIX}Weaver WebApp and/or Worker Celery tasks are both ready."
 fi

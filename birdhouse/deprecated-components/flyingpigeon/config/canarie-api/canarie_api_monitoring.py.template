@@ -11,7 +11,7 @@ SERVICES['flyingpigeon'] = {
         'institution': 'bird-house',
         'releaseTime': FLYINGPIGEON_RELEASE,
         'researchSubject': 'Climatology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Processing',
         'tags': ['Climatology', 'WPS', 'OGC'],
     },
@@ -24,7 +24,7 @@ SERVICES['flyingpigeon'] = {
         'releasenotes': 'https://github.com/bird-house/flyingpigeon/blob/master/CHANGES.rst',
         'support': 'https://github.com/bird-house/flyingpigeon/issues',
         'source': 'https://github.com/bird-house/flyingpigeon',
-        'tryme': 'https://${PAVICS_FQDN_PUBLIC}/flyingpigeon/wps?service=WPS&version=1.0.0&request=GetCapabilities',
+        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/flyingpigeon/wps?service=WPS&version=1.0.0&request=GetCapabilities',
         'licence': 'https://github.com/bird-house/flyingpigeon/blob/master/LICENSE.txt',
         'provenance': 'https://github.com/bird-house/flyingpigeon'
     },

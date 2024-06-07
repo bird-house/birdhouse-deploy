@@ -1,7 +1,7 @@
 # Generic variables
 override SHELL       := bash
 override APP_NAME    := birdhouse-deploy
-override APP_VERSION := 1.42.2
+override APP_VERSION := 2.4.1
 
 # utility to remove comments after value of an option variable
 override clean_opt = $(shell echo "$(1)" | $(_SED) -r -e "s/[ '$'\t'']+$$//g")
@@ -213,15 +213,15 @@ version:	## Display project version
 
 ### Execution Targets ###
 
-SCRIPT ?= birdhouse/pavics-compose.sh	## Script to run the stack
+SCRIPT ?= bin/birdhouse	## Script to run the stack
 SCRIPT := $(call clean_opt,$(SCRIPT))
 
 .PHONY: start
 start:		## Start the stack with current env.local definitions
 	@-$(MSG_I) "Starting $(APP_NAME) stack..."
-	@$(SHELL) $(SCRIPT) up -d
+	@$(SHELL) $(SCRIPT) compose up -d
 
 .PHONY: stop
 stop:		## Stop the running stack
 	@-$(MSG_I) "Stopping $(APP_NAME) stack..."
-	@$(SHELL) $(SCRIPT) stop
+	@$(SHELL) $(SCRIPT) compose stop

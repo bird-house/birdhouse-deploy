@@ -4,7 +4,7 @@
 # /tmp/create_magpie_users/config.yml (configurable using MAGPIE_CLI_CONF env
 # var).
 #
-# Should run from checkout on same host running PAVICS to have access to
+# Should run from checkout on same host running Birdhouse to have access to
 # env.local file for Magpie credentials.  Else these can be provided via
 # environment variables.
 #
@@ -35,8 +35,8 @@
 #
 # $ scripts/create-magpie-users
 # + docker run --rm -it --name create_magpie_users -v /tmp/create_magpie_users:/tmp/create_magpie_users:rw pavics/magpie:2.0.0 magpie_cli batch_update_users https://pavics.ouranos.ca/magpie admin 'sanitized' -f /tmp/create_magpie_users/config.yml -o /tmp/create_magpie_users/
-# Constant could not be found: GITHUB_CLIENT_ID (using default: None)
-# Constant could not be found: GITHUB_CLIENT_SECRET (using default: None)
+# Constant could not be found: MAGPIE_GITHUB_CLIENT_ID (using default: None)
+# Constant could not be found: MAGPIE_GITHUB_CLIENT_SECRET (using default: None)
 # Constant could not be found: WSO2_HOSTNAME (using default: None)
 # Constant could not be found: WSO2_CLIENT_ID (using default: None)
 # Constant could not be found: WSO2_CLIENT_SECRET (using default: None)
@@ -65,17 +65,14 @@
 # bogus03      bvNWVWCQi8M6     409 : User name matches an already existing user name.
 #
 
-RED=$(tput setaf 1)
-NORMAL=$(tput sgr0)
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
-THIS_FILE="`realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
-COMPOSE_DIR="`dirname "$THIS_DIR"`"
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
 
-if [ -f "$COMPOSE_DIR/read-configs.include.sh" ]; then
-    . "$COMPOSE_DIR/read-configs.include.sh"
-
-    # Get MAGPIE_VERSION, PAVICS_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
+    # Get MAGPIE_VERSION, BIRDHOUSE_FQDN, MAGPIE_ADMIN_PASSWORD, MAGPIE_ADMIN_USERNAME
     read_configs
 fi
 
@@ -83,7 +80,7 @@ fi
 # Allow override using same name env var.
 
 if [ -z "$MAGPIE_SERVER_URL" ]; then
-    MAGPIE_SERVER_URL="https://$PAVICS_FQDN/magpie"
+    MAGPIE_SERVER_URL="https://$BIRDHOUSE_FQDN/magpie"
 fi
 
 if [ -z "$MAGPIE_CLI_USER" ]; then
@@ -105,7 +102,7 @@ fi
 if [ -z "$MAGPIE_CLI_IMAGE" ]; then
     # MAGPIE_VERSION must be provided by 'default.env', 'env.local' or directly
     if [ -z "${MAGPIE_VERSION}" ]; then
-        echo "${RED}Error${NORMAL}: Required MAGPIE_VERSION is undefined or empty."
+        log ERROR "Required MAGPIE_VERSION is undefined or empty."
         exit 1
     fi
     MAGPIE_CLI_IMAGE="pavics/magpie:${MAGPIE_VERSION}"

@@ -13,26 +13,36 @@ for a full-fledged production platform.
       - | |readthedocs|
     * - releases
       - | |latest-version| |commits-since|
+    * - license
+      - | |license|
+    * - citation
+      - | |citation|
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/bird-house/birdhouse-deploy/1.42.2.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/bird-house/birdhouse-deploy/2.4.1.svg
     :alt: Commits since latest release
-    :target: https://github.com/bird-house/birdhouse-deploy/compare/1.42.2...master
+    :target: https://github.com/bird-house/birdhouse-deploy/compare/2.4.1...master
 
-.. |latest-version| image:: https://img.shields.io/badge/tag-1.42.2-blue.svg?style=flat
+.. |latest-version| image:: https://img.shields.io/badge/tag-2.4.1-blue.svg?style=flat
     :alt: Latest Tag
-    :target: https://github.com/bird-house/birdhouse-deploy/tree/1.42.2
+    :target: https://github.com/bird-house/birdhouse-deploy/tree/2.4.1
 
 .. |readthedocs| image:: https://readthedocs.org/projects/birdhouse-deploy/badge/?version=latest
     :alt: ReadTheDocs Build Status (latest version)
     :target: https://birdhouse-deploy.readthedocs.io/en/latest/?badge=latest
 
+.. |license| image:: https://img.shields.io/github/license/bird-house/birdhouse-deploy
+    :alt: LICENSE
+    :target: https://github.com/bird-house/birdhouse-deploy/blob/master/LICENSE
+
+.. |citation| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.7865537.svg
+    :alt: DOI
+    :target: https://zenodo.org/doi/10.5281/zenodo.7865537
+
 .. end-badges
 
 
-PAVICS
-------
-
-Power Analytics and Visualization for Climate Science - Powered by Birdhouse and other ESGF software
+Birdhouse
+---------
 
 For GitHub navigation, see the following README pages:
 

@@ -1,0 +1,8 @@
+[buildout]
+extends = profiles/docker.cfg
+
+[pywps]
+enable-https = true
+https-port = 443
+https-output-port = 443
+database=postgresql://${BIRDHOUSE_POSTGRES_USERNAME}:${BIRDHOUSE_POSTGRES_PASSWORD}@postgres/hummingbird

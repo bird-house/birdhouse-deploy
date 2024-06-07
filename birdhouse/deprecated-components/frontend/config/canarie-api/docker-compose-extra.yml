@@ -1,5 +1,6 @@
 version: "3.4"
 services:
-  proxy:
+  canarie-api: &canarie-volumes
     volumes:
     - ./deprecated-components/frontend/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/frontend_canarie_api_monitoring.py:ro
+  canarie-api-cron: *canarie-volumes

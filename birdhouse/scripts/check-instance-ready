@@ -1,5 +1,5 @@
 #!/bin/sh
-# Quick smoke test for PAVICS instance.
+# Quick smoke test for Birdhouse instance.
 #
 # This is absolutely not a comprehensive test.
 #
@@ -7,19 +7,19 @@
 # also enabled.
 #
 
-THIS_FILE="`realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
-COMPOSE_DIR="`dirname "$THIS_DIR"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
-if [ -f "$COMPOSE_DIR/read-configs.include.sh" ]; then
-    . "$COMPOSE_DIR/read-configs.include.sh"
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
 
-    # Get PAVICS_FQDN
+    # Get BIRDHOUSE_FQDN
     read_configs
 fi
 
 set -x
-curl --include --silent https://$PAVICS_FQDN/canarie/node/service/stats | head
+curl --include --silent "https://${BIRDHOUSE_FQDN}/canarie/node/service/stats" | head
 
 set +x
 echo "
@@ -27,11 +27,13 @@ The curl above should return the HTTP response code 200 to confirm instance is r
 "
 set -x
 
-HTTP_RESPONSE_CODE="`curl --write-out '%{http_code}' --output /dev/null --silent https://$PAVICS_FQDN/canarie/node/service/stats`"
-if [ $HTTP_RESPONSE_CODE -ne 200 ]; then
+HTTP_RESPONSE_CODE="$( \
+  curl --write-out '%{http_code}' --output /dev/null --silent "https://${BIRDHOUSE_FQDN}/canarie/node/service/stats" \
+)"
+if [ "${HTTP_RESPONSE_CODE}" -ne 200 ]; then
     set +x
     echo "
-HTTP response code received: $HTTP_RESPONSE_CODE (expected 200).
+HTTP response code received: ${HTTP_RESPONSE_CODE} (expected 200).
 
 Will sleep for about 1 minute and try again since the canarie-api refresh every minute.
 
@@ -39,5 +41,5 @@ Will retry only once more and exit immediately.
 "
 set -x
     sleep 65
-    curl --include --silent https://$PAVICS_FQDN/canarie/node/service/stats | head
+    curl --include --silent "https://${BIRDHOUSE_FQDN}/canarie/node/service/stats" | head
 fi

@@ -1,0 +1,15 @@
+[server]
+outputurl = https://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs/raven
+outputpath = /data/wpsoutputs/raven
+
+# default 3mb, fix "Broken pipe" between the proxy and the wps service
+maxrequestsize = 100mb
+
+# default 2, too low for a production server with capable CPUs
+parallelprocesses = 10
+
+[logging]
+level = INFO
+database=postgresql://${BIRDHOUSE_POSTGRES_USERNAME}:${BIRDHOUSE_POSTGRES_PASSWORD}@postgres/raven
+
+${BIRDHOUSE_EXTRA_PYWPS_CONFIG}
