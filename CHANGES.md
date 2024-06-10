@@ -18,6 +18,13 @@
 ## Changes
 - deploy-data: allow more flexibility to deploy files from other checkout in same config file
 
+  Given the config file can specify multiple checkouts, this flexibility will
+  allow one checkout to take files from other checkouts.
+
+  Possible use-case: re-organize the layout of various files from the various
+  checkouts in an intermediate location before rsyncing this intermediate
+  location to the final destination.
+
 
 [2.4.1](https://github.com/bird-house/birdhouse-deploy/tree/2.4.1) (2024-06-05)
 ------------------------------------------------------------------------------------------------------------------
