@@ -18,8 +18,11 @@
 ## Changes
 - deploy-data: allow more flexibility to deploy files from other checkout in same config file
 
-  Given the config file can specify multiple checkouts, this flexibility will
-  allow one checkout to take files from other checkouts.
+  Given the config file can specify multiple checkouts, this flexibility to
+  have `SRC_DIR` be an absolute path will allow one checkout to take files from
+  other checkouts, using absolute path to the other checkouts.  `SRC_DIR` can
+  still be a relative path of the current checkout, as before, to preserve
+  backward-compatibility.
 
   Possible use-case: re-organize the layout of various files from the various
   checkouts in an intermediate location before rsyncing this intermediate
