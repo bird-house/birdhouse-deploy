@@ -17,10 +17,14 @@
 
 ## Changes
 
-- Weaver: bump version to 5.1.1
+- Weaver: bump version to [5.6.0](https://github.com/crim-ca/weaver/tree/5.6.0).
 
-  - See changes in the [Weaver changes 
-    file](https://github.com/crim-ca/weaver/blob/ec5f403958de21e1af27ff86da391d0d53ded5d9/CHANGES.rst?plain=1#L23-L249)
+  - See full changes details in 
+    [Weaver changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html#changes-5-6-0)
+  - In summary:
+    - multiple control setting options to customize some behaviors
+    - improved *OGC API - Processes* standard conformance
+    - improved support of *Common Workflow Language (CWL)* features (secrets, sub-workflow, auth-propagation, etc.)
 
 - Weaver: WPS retry logic on post-compose step.
   - Apply `--network birdhouse_default` to the Docker `curl` image to allow HTTP requests to properly resolve
