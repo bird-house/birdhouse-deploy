@@ -15,7 +15,18 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Weaver: bump version to 5.1.1
+
+  - See changes in the [Weaver changes 
+    file](https://github.com/crim-ca/weaver/blob/ec5f403958de21e1af27ff86da391d0d53ded5d9/CHANGES.rst?plain=1#L23-L249)
+
+- Weaver: WPS retry logic on post-compose step.
+  - Apply `--network birdhouse_default` to the Docker `curl` image to allow HTTP requests to properly resolve
+    against the running services (WPS bird providers, Weave and Magpie). In some cases, this network would not
+    be automatically resolved.
+  - Fix the index used during HTTP request retry to avoid going one step over the intended retry attempts.
 
 [2.4.1](https://github.com/bird-house/birdhouse-deploy/tree/2.4.1) (2024-06-05)
 ------------------------------------------------------------------------------------------------------------------
