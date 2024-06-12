@@ -17,6 +17,23 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.4.2](https://github.com/bird-house/birdhouse-deploy/tree/2.4.2) (2024-06-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- deploy-data: allow more flexibility to deploy files from other checkout in same config file
+
+  Given the config file can specify multiple checkouts, this flexibility to
+  have `SRC_DIR` be an absolute path will allow one checkout to take files from
+  other checkouts, using absolute path to the other checkouts.  `SRC_DIR` can
+  still be a relative path of the current checkout, as before, to preserve
+  backward-compatibility.
+
+  Possible use-case: re-organize the layout of various files from the various
+  checkouts in an intermediate location before rsyncing this intermediate
+  location to the final destination.
+
+
 [2.4.1](https://github.com/bird-house/birdhouse-deploy/tree/2.4.1) (2024-06-05)
 ------------------------------------------------------------------------------------------------------------------
 
