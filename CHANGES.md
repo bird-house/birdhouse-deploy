@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.4.2](https://github.com/bird-house/birdhouse-deploy/tree/2.4.2) (2024-06-12)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 - deploy-data: allow more flexibility to deploy files from other checkout in same config file
 
