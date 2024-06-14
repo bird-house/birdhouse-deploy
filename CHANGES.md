@@ -17,10 +17,10 @@
 
 ## Changes
 
-- Weaver: bump version to [5.6.0](https://github.com/crim-ca/weaver/tree/5.6.0).
+- Weaver: bump version to [5.6.1](https://github.com/crim-ca/weaver/tree/5.6.1).
 
   - See full changes details in 
-    [Weaver changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html#changes-5-6-0)
+    [Weaver changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html#changes-5-6-1)
   - In summary:
     - multiple control setting options to customize some behaviors
     - improved *OGC API - Processes* standard conformance
