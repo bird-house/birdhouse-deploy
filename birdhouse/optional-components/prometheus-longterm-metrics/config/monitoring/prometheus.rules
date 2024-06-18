@@ -13,7 +13,3 @@ groups:
           expr: sum by(instance) (rate(node_network_transmit_bytes_total[1h]) + rate(node_network_receive_bytes_total[1h]))
           labels:
             group: longterm-metrics
-    - name: longterm-metrics-daily
-      interval: 24h
-      rules:
-
