@@ -11,9 +11,9 @@ x-objstore-config: &objstore-config |
     --objstore.config=type: S3
     config:
       bucket: ${THANOS_MINIO_BUCKET_NAME}
-      access_key: ${MINIO_ROOT_USER}
-      secret_key: ${MINIO_ROOT_PASSWORD}
-      endpoint: minio:9000
+      access_key: ${THANOS_MINIO_ROOT_USER}
+      secret_key: ${THANOS_MINIO_ROOT_PASSWORD}
+      endpoint: thanos-minio:9000
       insecure: true # use http instead of https
 
 services:
@@ -32,7 +32,7 @@ services:
       - *objstore-config
     depends_on:
       - prometheus-longterm-metrics
-      - minio
+      - thanos-minio
     restart: always
     logging: *default-logging
 
@@ -60,15 +60,15 @@ services:
       - '--wait-interval=${THANOS_COMPACTOR_WAIT_INTERVAL}'
       - *objstore-config
     depends_on:
-      - minio
+      - thanos-minio
     restart: always
     logging: *default-logging
 
-  minio:
-    image: ${MINIO_IMAGE}
-    container_name: minio
+  thanos-minio:
+    image: ${THANOS_MINIO_IMAGE}
+    container_name: thanos-minio
     volumes:
-      - ${MINIO_DATA_STORE}:/data
+      - ${THANOS_MINIO_DATA_STORE}:/data
       - ./optional-components/thanos/minio-entrypoint:/entrypoint
     entrypoint: /entrypoint
     command:
@@ -78,8 +78,8 @@ services:
       - ':9001'
       - '/data'
     environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_ROOT_USER=${THANOS_MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${THANOS_MINIO_ROOT_PASSWORD}
       - MINIO_PROMETHEUS_AUTH_TYPE=public
       - THANOS_MINIO_BUCKET_NAME=${THANOS_MINIO_BUCKET_NAME}
       - MINIO_BROWSER_REDIRECT_URL=https://${BIRDHOUSE_FQDN_PUBLIC}/thanos-minio

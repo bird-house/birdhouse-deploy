@@ -40,7 +40,7 @@
   ``optional-components/prometheus-longterm-metrics`` component. Data will be collected from the
   ``prometheus-longterm-metrics`` and stored in an S3 object store indefinitely.
   
-  When enabling this component, please change the default values for the ``MINIO_ROOT_USER`` and ``MINIO_ROOT_PASSWORD``
+  When enabling this component, please change the default values for the ``THANOS_MINIO_ROOT_USER`` and ``THANOS_MINIO_ROOT_PASSWORD``
   by updating the ``env.local`` file. These set the login credentials for the root user that runs the 
   [minio](https://min.io/) object store.
   

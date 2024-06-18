@@ -1,2 +1,3 @@
+prometheus.yml
 config/magpie/config.yml
 config/proxy/conf.extra-service.d/monitoring.conf
