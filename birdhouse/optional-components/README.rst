@@ -454,11 +454,13 @@ Longterm metrics are any prometheus rule that have the label ``group: longterm-m
 selectable using prometheus' ``'{group="longterm-metrics"}'`` query filter. To see which longterm metric rules are
 added by default see the ``optional-components/prometheus-longterm-metrics/config/monitoring/prometheus.rules.template``.
 
+If you do not want the default longterm-metric rules included, set the ``PROMETHEUS_LONGTERM_RULES_FILE`` to anything
+other than ``True`` in your ``env.local`` file. You may want to do this if you've created your own set of rules in
+another component that you would like to use instead of the default ones.
+
 To configure this component:
 
     * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
-    * update the ``PROMETHEUS_LONGTERM_STORE_INTERVAL`` variable to set how often the longterm metrics rules will be
-      calculated. For example, setting it to ``10h`` will calculate these metrics every 10 hours.
 
 Enabling this component creates the additional endpoint ``/prometheus-longterm-metrics``.
 

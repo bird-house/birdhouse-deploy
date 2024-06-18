@@ -27,11 +27,12 @@
   added by default see the 
   ``optional-components/prometheus-longterm-metrics/config/monitoring/prometheus.rules.template`` file.
 
+  If you do not want the default longterm-metric rules included, set the ``PROMETHEUS_LONGTERM_RULES_FILE`` to anything 
+  other than ``True`` in your ``env.local`` file.
+
   To configure this component:
 
   * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
-  * update the ``PROMETHEUS_LONGTERM_STORE_INTERVAL`` variable to set how often the longterm metrics rules will be
-    calculated. For example, setting it to ``10h`` will calculate these metrics every 10 hours.
 
   Enabling the `prometheus-longterm-metrics` component creates the additional endpoint ``/prometheus-longterm-metrics``.
 

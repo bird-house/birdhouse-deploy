@@ -3,4 +3,4 @@ version: "3.4"
 services:
   prometheus:
     volumes:
-      - ./optional-components/prometheus-longterm-metrics/config/monitoring/prometheus.rules:/etc/prometheus/prometheus-longterm-metrics.rules:ro
+      - ./optional-components/prometheus-longterm-metrics/config/monitoring/${PROMETHEUS_LONGTERM_RULES_FILE}:/etc/prometheus/prometheus-longterm-metrics.rules:ro

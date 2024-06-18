@@ -1,0 +1,4 @@
+# This file is intentionally left blank in order to allow a user to choose whether to enable the default rules that are
+# set in the prometheus.rules file.
+# By setting the PROMETHEUS_LONGTERM_ENABLE_DEFAULT_RULES environment variable to True, the rules in prometheus.rules
+# will be added. By setting that value to anything else, this file will be added instead.

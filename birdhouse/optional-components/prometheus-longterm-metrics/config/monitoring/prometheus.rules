@@ -1,0 +1,19 @@
+groups:
+    - name: longterm-metrics-hourly
+      interval: 1h
+      rules:
+        # percentage of the time, over the last hour, that all CPUs were working
+        # 1 means all CPUs were working all the time, 0 means they were all idle all the time
+        - record: instance:cpu_load:avg_rate1h
+          expr: avg by(instance) (rate(node_cpu_seconds_total{mode!="idle"}[1h]))
+          labels:
+            group: longterm-metrics
+        # total number of bytes that were sent or received over the network in the last hour
+        - record: instance:network_bytes_transmitted:sum_rate1h
+          expr: sum by(instance) (rate(node_network_transmit_bytes_total[1h]) + rate(node_network_receive_bytes_total[1h]))
+          labels:
+            group: longterm-metrics
+    - name: longterm-metrics-daily
+      interval: 24h
+      rules:
+
