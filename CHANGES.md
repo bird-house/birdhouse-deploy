@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.5.0](https://github.com/bird-house/birdhouse-deploy/tree/2.5.0) (2024-06-20)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Weaver: bump version to [5.6.1](https://github.com/crim-ca/weaver/tree/5.6.1).
