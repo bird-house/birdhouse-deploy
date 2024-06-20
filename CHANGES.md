@@ -17,6 +17,26 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.5.0](https://github.com/bird-house/birdhouse-deploy/tree/2.5.0) (2024-06-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: bump version to [5.6.1](https://github.com/crim-ca/weaver/tree/5.6.1).
+
+  - See full changes details in 
+    [Weaver changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html#changes-5-6-1)
+  - In summary:
+    - multiple control setting options to customize some behaviors
+    - improved *OGC API - Processes* standard conformance
+    - improved support of *Common Workflow Language (CWL)* features (secrets, sub-workflow, auth-propagation, etc.)
+
+- Weaver: WPS retry logic on post-compose step.
+  - Apply `--network birdhouse_default` to the Docker `curl` image to allow HTTP requests to properly resolve
+    against the running services (WPS bird providers, Weave and Magpie). In some cases, this network would not
+    be automatically resolved.
+  - Fix the index used during HTTP request retry to avoid going one step over the intended retry attempts.
+
 [2.4.2](https://github.com/bird-house/birdhouse-deploy/tree/2.4.2) (2024-06-12)
 ------------------------------------------------------------------------------------------------------------------
 
