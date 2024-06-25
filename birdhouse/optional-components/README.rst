@@ -451,18 +451,26 @@ This is a second prometheus instance that collects longterm monitoring metrics f
 (the one created by the ``components/monitoring`` component).
 
 Longterm metrics are any prometheus rule that have the label ``group: longterm-metrics`` or in other words are
-selectable using prometheus' ``'{group="longterm-metrics"}'`` query filter. To see which longterm metric rules are
-added by default see the ``optional-components/prometheus-longterm-metrics/config/monitoring/prometheus.rules.template``.
+selectable using prometheus' ``'{group="longterm-metrics"}'`` query filter. To add some default longterm metrics rules
+also enable the ``prometheus-longterm-rules`` component.
 
-If you do not want the default longterm-metric rules included, set the ``PROMETHEUS_LONGTERM_RULES_FILE`` to anything
-other than ``True`` in your ``env.local`` file. You may want to do this if you've created your own set of rules in
-another component that you would like to use instead of the default ones.
+You may also choose to create your own set of rules in another component that you would like to use instead of the
+default ones.
 
 To configure this component:
 
     * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
 
 Enabling this component creates the additional endpoint ``/prometheus-longterm-metrics``.
+
+Prometheus Long-term Rules
+--------------------------
+
+This adds some default longterm metrics rules to the `prometheus` component for use by the `prometheus-longterm-metrics`
+component. These rules all have the label ``group: longterm-metrics``.
+
+To see which rules are added, check out the
+`optional-components/prometheus-longterm-rules/config/monitoring/prometheus.rules` file.
 
 Thanos
 ------
