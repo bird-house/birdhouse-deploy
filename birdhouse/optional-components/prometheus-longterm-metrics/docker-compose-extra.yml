@@ -9,7 +9,7 @@ x-logging:
 
 services:
   prometheus-longterm-metrics:
-    image: ${PROMETHEUS_IMAGE}
+    image: ${PROMETHEUS_LONGTERM_IMAGE}
     container_name: prometheus-longterm-metrics
     volumes:
       - ./optional-components/prometheus-longterm-metrics/prometheus.yml:/etc/prometheus/prometheus.yml:ro

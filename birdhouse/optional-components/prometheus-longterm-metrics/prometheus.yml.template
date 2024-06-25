@@ -14,5 +14,4 @@ scrape_configs:
         - '{group="longterm-metrics"}'
 
     static_configs:
-      - targets:
-        - 'prometheus:9090'
+      - targets: ${PROMETHEUS_LONGTERM_TARGETS}
