@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.5.1](https://github.com/bird-house/birdhouse-deploy/tree/2.5.1) (2024-07-10)
+------------------------------------------------------------------------------------------------------------------
+
 - Cowbird: bump version to [2.4.0](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#240-2024-07-09).
 
   - Includes multiple dependency updates for latest security and performance improvements.
