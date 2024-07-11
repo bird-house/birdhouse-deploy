@@ -10,7 +10,7 @@ x-logging:
 services:
   stac:
     container_name: stac
-    image: ghcr.io/crim-ca/stac-app:main
+    image: ${STAC_IMAGE}
     depends_on:
       - stac-db
     environment:
@@ -28,9 +28,9 @@ services:
 
   stac-browser:
     container_name: stac-browser
-    image: ghcr.io/crim-ca/stac-browser:docker_image_push
+    image: ${STAC_BROWSER_IMAGE}
     environment:
-      - CATALOG_URL=https://${PAVICS_FQDN_PUBLIC}/stac/
+      - CATALOG_URL=https://${BIRDHOUSE_FQDN_PUBLIC}/stac/
       - ROOT_PATH=/stac-browser/
 
   stac-db:

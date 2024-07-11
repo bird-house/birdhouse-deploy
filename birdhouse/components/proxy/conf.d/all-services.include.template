@@ -1,0 +1,28 @@
+    location / {
+        ${BIRDHOUSE_PROXY_ROOT_LOCATION}
+    }
+
+    location /components {
+        default_type application/json;
+        root /static;
+        try_files /components.json =404;
+    }
+
+    location /services {
+        default_type application/json;
+        root /static;
+        try_files /services.json =404;
+    }
+
+    location /version {
+        default_type application/json;
+        root /static;
+        try_files /version.json =404;
+    }
+
+    location /doc {
+        return 302 ${BIRDHOUSE_DOC_URL};
+    }
+
+    # for other extra components to extend Nginx
+    include /etc/nginx/conf.extra-service.d/*/*.conf;

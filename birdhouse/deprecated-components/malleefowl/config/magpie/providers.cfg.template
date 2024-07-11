@@ -1,6 +1,6 @@
 providers:
   malleefowl:
-    url: http://${PAVICS_FQDN}:8091/wps
+    url: http://${BIRDHOUSE_FQDN}:8091/wps
     title: Malleefowl
     public: true
     c4i: false

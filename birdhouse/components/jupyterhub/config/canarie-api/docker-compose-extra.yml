@@ -1,0 +1,6 @@
+version: "3.4"
+services:
+  canarie-api: &canarie-volumes
+    volumes:
+    - ./components/jupyterhub/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/jupyterhub_canarie_api_monitoring.py:ro
+  canarie-api-cron: *canarie-volumes

@@ -1,0 +1,11 @@
+/var/log/birdhouse/*.log {
+    # keep at least 6 weeks' worth of logs (do not rotate
+    # until the file is > 500k)
+    rotate 6
+    weekly
+    missingok
+    minsize 500k
+    copytruncate
+    compress
+    dateext
+}

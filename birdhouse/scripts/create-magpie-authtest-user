@@ -7,16 +7,17 @@
 # Options:
 #   -d: delete user 'authtest' instead of creating it
 
-THIS_FILE="`realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
 TMP_CONFIG_FILE="/tmp/create-magpie-authtest-user.yml"
 
 # Test user is added to 'thredds-secure-authtest-group' to obtain access to 'secure' directory under 'thredds' service.
 # Those permissions are defined in 'optional-components/secure-thredds/secure-access-magpie-permission.cfg'
-# which should also be included in 'EXTRA_CONF_DIRS' of your custom 'env.local' file.
+# which should also be included in 'BIRDHOUSE_EXTRA_CONF_DIRS' of your custom 'env.local' file.
 # This user is also automatically added to 'anonymous' group without the need of explicit membership here.
-cat <<__OEF__ > $TMP_CONFIG_FILE
+cat <<__OEF__ > "${TMP_CONFIG_FILE}"
 users:
    - username: authtest
      password: authtest1234
@@ -25,6 +26,6 @@ users:
 __OEF__
 
 set -x
-cat $TMP_CONFIG_FILE
-MAGPIE_CLI_CONF="$TMP_CONFIG_FILE" $THIS_DIR/create-magpie-users "$@"
-rm -v $TMP_CONFIG_FILE
+cat "${TMP_CONFIG_FILE}"
+MAGPIE_CLI_CONF="${TMP_CONFIG_FILE}" "${COMPOSE_DIR}/scripts/create-magpie-users" "$@"
+rm -v "${TMP_CONFIG_FILE}"

@@ -12,7 +12,7 @@ services:
     container_name: malleefowl
     environment:
       HOSTNAME: $HOSTNAME
-      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+      BIRDHOUSE_FQDN_PUBLIC: $BIRDHOUSE_FQDN_PUBLIC
       HTTP_PORT: 8091
       HTTPS_PORT: 28091
       OUTPUT_PORT: 38091
@@ -22,7 +22,7 @@ services:
       - "38091:38091"
       - "48091:9001"
     volumes:
-      - ${DATA_PERSIST_ROOT}/datasets:/data
+      - ${BIRDHOUSE_DATA_PERSIST_ROOT}/datasets:/data
       - ./deprecated-components/malleefowl/custom.cfg:/opt/birdhouse/src/malleefowl/custom.cfg
     depends_on:
       - postgres
