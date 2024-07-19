@@ -17,6 +17,39 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.5.2](https://github.com/bird-house/birdhouse-deploy/tree/2.5.2) (2024-07-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- GeoServer: upgrade to 2.25.2 to fix vulnerabilities
+
+  See:
+  * https://nsfocusglobal.com/remote-code-execution-vulnerability-between-geoserver-and-geotools-cve-2024-36401-cve-2024-36404-notification/
+  * https://github.com/geoserver/geoserver/security/advisories/GHSA-6jj6-gm7p-fcvv
+  * https://github.com/geotools/geotools/security/advisories/GHSA-w3pj-wh35-fq8w
+
+  This change will upgrade to GeoServer 2.25.2 and GeoTools 31.2 (the version of `gt-complex.jar`).
+
+  ```shell
+  $ docker exec -u 0 geoserver find / -iname '**gt-complex**'
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/gt-complex-31.2.jar
+  ```
+
+  The previous version was GeoServer 2.22.2 and GeoTools 28.2.
+
+  ```shell
+  $ docker exec -u 0 geoserver find / -iname '**gt-complex**'
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/gt-complex-28.2.jar
+  ```
+
+  Also enable
+  * OGC-API plugins https://docs.geoserver.org/stable/en/user/community/ogc-api/features/index.html
+    so we can slowly transition from the WPS plugin.
+  * STAC Datastore plugin https://docs.geoserver.org/latest/en/user/community/stac-datastore/index.html
+    so we can test integration with our STAC component.
+
+
 [2.5.1](https://github.com/bird-house/birdhouse-deploy/tree/2.5.1) (2024-07-10)
 ------------------------------------------------------------------------------------------------------------------
 
