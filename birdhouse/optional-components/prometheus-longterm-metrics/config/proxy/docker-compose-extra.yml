@@ -1,0 +1,6 @@
+version: "3.4"
+
+services:
+  proxy:
+    volumes:
+      - ./optional-components/prometheus-longterm-metrics/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/prometheus-longterm-metrics:ro

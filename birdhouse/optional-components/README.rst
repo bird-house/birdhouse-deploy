@@ -443,3 +443,48 @@ How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.examp
 
     .. seealso::
         See the `env.local.example`_ file for more details about this ``BIRDHOUSE_PROXY_ROOT_LOCATION`` behaviour.
+
+Prometheus Long-term Metrics
+----------------------------
+
+This is a second prometheus instance that collects longterm monitoring metrics from the original prometheus instance
+(the one created by the ``components/monitoring`` component).
+
+Longterm metrics are any prometheus rule that have the label ``group: longterm-metrics`` or in other words are
+selectable using prometheus' ``'{group="longterm-metrics"}'`` query filter. To add some default longterm metrics rules
+also enable the ``prometheus-longterm-rules`` component.
+
+You may also choose to create your own set of rules in another component that you would like to use instead of the
+default ones.
+
+To configure this component:
+
+    * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
+
+Enabling this component creates the additional endpoint ``/prometheus-longterm-metrics``.
+
+Prometheus Long-term Rules
+--------------------------
+
+This adds some default longterm metrics rules to the `prometheus` component for use by the `prometheus-longterm-metrics`
+component. These rules all have the label ``group: longterm-metrics``.
+
+To see which rules are added, check out the
+`optional-components/prometheus-longterm-rules/config/monitoring/prometheus.rules` file.
+
+Thanos
+------
+
+This enables better storage of longterm metrics collected by the ``optional-components/prometheus-longterm-metrics``
+component. Data will be collected from the ``prometheus-longterm-metrics`` and stored in an S3 object store
+indefinitely.
+
+When enabling this component, please change the default values for the ``THANOS_MINIO_ROOT_USER`` and
+``THANOS_MINIO_ROOT_PASSWORD`` by updating the ``env.local`` file. These set the login credentials for the root user
+that runs the minio_ object store.
+
+Enabling this component creates the additional endpoints:
+    * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
+    * ``/thanos-minio``: a minio_ web console to inspect the data stored by minio_.
+
+.. _minio: https://min.io/
