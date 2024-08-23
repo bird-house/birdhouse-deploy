@@ -15,7 +15,17 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- xclim-testdata: adapt repository cloning script to the new data structure
+
+  The `xclim-testdata` repo has been restructured to include the data in a `data` subdirectory.
+  This change updates the cloning script to account for this new structure and to ensure that the
+  user experience is consistent with the previous version.
+
+  See:
+  * [xclim-testdata PR/29](https://github.com/Ouranosinc/xclim-testdata/pull/29)
+  * [xclim PR/1889](https://github.com/Ouranosinc/xclim/pull/1889)
 
 [2.5.2](https://github.com/bird-house/birdhouse-deploy/tree/2.5.2) (2024-07-19)
 ------------------------------------------------------------------------------------------------------------------
