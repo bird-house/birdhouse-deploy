@@ -5,11 +5,11 @@
 # Will deploy:
 #
 # * cron job to periodically check if a deployment is needed
-#   (/etc/cron.d/PAVICS-deploy), update check frequency here
+#   (/etc/cron.d/birdhouse-deploy), update check frequency here
 #
 # * script called by cron job (/usr/local/sbin/triggerdeploy.sh)
 #
-# * deploy check logs can be found in /var/log/PAVICS/autodeploy.log
+# * deploy check logs can be found in ${BIRDHOUSE_LOG_DIR}/autodeploy.log
 #
 #
 # 2 cron frequency presets are available:
@@ -24,7 +24,7 @@
 #
 
 usage() {
-    echo "USAGE: $0 pavics-checkout owner-pavics-checkout [daily | 5-mins]"
+    echo "USAGE: $0 birdhouse-checkout owner-birdhouse-checkout [daily | 5-mins]"
 }
 
 if [ -z "$1" ]; then
@@ -34,9 +34,10 @@ if [ -z "$1" ]; then
 fi
 
 
-REPO_ROOT="`realpath "$1"`"; shift  # path to PAVICS checkout
-REPO_OWNER="$1"; shift  #  user owning (have write access) the PAVICS checkout
+REPO_ROOT="`realpath "$1"`"; shift  # path to Birdhouse checkout
+REPO_OWNER="$1"; shift  #  user owning (have write access) the Birdhouse checkout
 CRON_FREQUENCY="$1"
+COMPOSE_DIR="${COMPOSE_DIR:-"${REPO_ROOT}/birdhouse"}"
 
 # defaults, overridable
 if [ -z "$CRON_FREQUENCY_TXT" ]; then
@@ -60,7 +61,7 @@ elif [ -n "$CRON_FREQUENCY" ]; then
 fi
 
 if [ ! -e "$REPO_ROOT/birdhouse/deployment/triggerdeploy.sh" ]; then
-    echo "ERROR: bad/wrong pavics-checkout '$REPO_ROOT' " 1>&2
+    echo "ERROR: bad/wrong birdhouse-checkout '$REPO_ROOT' " 1>&2
     usage
     exit 2
 fi
@@ -71,14 +72,18 @@ set -x
 sudo cp -v $REPO_ROOT/birdhouse/deployment/triggerdeploy.sh /usr/local/sbin/
 
 
-CRON_FILE="/etc/cron.d/PAVICS-deploy"
+CRON_FILE=${CRON_FILE:-"/etc/cron.d/birdhouse-deploy"}
+
+. "${COMPOSE_DIR}/read-configs.include.sh"
+
+read_basic_configs_only
 
 export CRON_FREQUENCY_TXT="$CRON_FREQUENCY_TXT"
 export CRON_SCHEDULE="$CRON_SCHEDULE"
-export OWNER_PAVICS_CHECKOUT="$REPO_OWNER"
-export PATH_TO_PAVICS_CHECKOUT="$REPO_ROOT"
+export BIRDHOUSE_REPO_CHECKOUT_OWNER="$REPO_OWNER"
+export BIRDHOUSE_REPO_CHECKOUT_PATH="$REPO_ROOT"
 
-[ ! -d "/var/log/PAVICS" ] && echo "WARNING: The logging directory doesn't exist. Run 'install-logrotate-config'."
+[ ! -d "${BIRDHOUSE_LOG_DIR}" ] && echo "WARNING: The logging directory doesn't exist. Run 'install-logrotate-config'."
 
 cat $REPO_ROOT/birdhouse/deployment/cron.template | envsubst | sudo tee $CRON_FILE
 sudo chown root:root $CRON_FILE

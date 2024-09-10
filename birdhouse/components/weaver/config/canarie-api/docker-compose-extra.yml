@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   # extend proxy configuration with weaver endpoints
-  proxy:
+  canarie-api: &canarie-volumes
     volumes:
       # NOTE:
       #   Prefix '0_' to the mounted file name to ensure it is loaded first by 'birdhouse/components/canarie-api/docker_configuration.py'
@@ -12,3 +12,4 @@ services:
       #   stack in order to apply the corresponding public endpoint conditionally.
       - ./components/weaver/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/0_weaver_config.py:ro
       - ./components/weaver/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/weaver_canarie_api_monitoring.py:ro
+  canarie-api-cron: *canarie-volumes

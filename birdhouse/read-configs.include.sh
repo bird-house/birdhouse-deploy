@@ -11,7 +11,7 @@
 # values.
 #
 # USAGE:
-#  # Set variable COMPOSE_DIR to the dir containing pavics-compose.sh and
+#  # Set variable COMPOSE_DIR to the dir containing birdhouse-compose.sh and
 #  # docker-compose.yml.
 #
 #  # Source the script providing function read_configs.
@@ -30,29 +30,32 @@
 # WARNING: cannot use 'log' calls within this function until the following logging script gets resolved and sourced.
 discover_compose_dir() {
     if [ -z "${COMPOSE_DIR}" ] || [ ! -e "${COMPOSE_DIR}" ]; then
-        if [ -f "./pavics-compose.sh" ]; then
+        if [ -n "${BIRDHOUSE_COMPOSE}" ] && [ -f "${BIRDHOUSE_COMPOSE}" ]; then
+            # Parent of the BIRDHOUSE_COMPOSE file is the COMPOSE_DIR
+            COMPOSE_DIR=$(dirname "${COMPOSE_DIR}")
+        elif [ -f "./birdhouse-compose.sh" ]; then
             # Current dir is COMPOSE_DIR
             COMPOSE_DIR="$(realpath .)"
-        elif [ -f "../pavics-compose.sh" ]; then
+        elif [ -f "../birdhouse-compose.sh" ]; then
             # Parent dir is COMPOSE_DIR
             # Case of all the scripts under deployment/ or scripts/
             COMPOSE_DIR="$(realpath ..)"
-        elif [ -f "../birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../birdhouse/birdhouse-compose.sh" ]; then
             # Sibling dir is COMPOSE_DIR
             # Case of all the tests under tests/
             COMPOSE_DIR="$(realpath ../birdhouse)"
-        elif [ -f "./birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "./birdhouse/birdhouse-compose.sh" ]; then
             # Child dir is COMPOSE_DIR
             COMPOSE_DIR="$(realpath birdhouse)"
         # Below assume checkout is named birdhouse-deploy, which might not
         # always be true.
-        elif [ -f "../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../birdhouse-deploy/birdhouse/birdhouse-compose.sh" ]; then
             # Case of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../birdhouse-deploy/birdhouse")"
-        elif [ -f "../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../../birdhouse-deploy/birdhouse/birdhouse-compose.sh" ]; then
             # Case of subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../../birdhouse-deploy/birdhouse")"
-        elif [ -f "../../../birdhouse-deploy/birdhouse/pavics-compose.sh" ]; then
+        elif [ -f "../../../birdhouse-deploy/birdhouse/birdhouse-compose.sh" ]; then
             # Case of sub-subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../../../birdhouse-deploy/birdhouse")"
         fi
@@ -60,9 +63,9 @@ discover_compose_dir() {
     fi
     # Perform last-chance validation in case 'COMPOSE_DIR' was incorrectly set explicitly
     # and that 'read-configs.include.sh' was sourced directly from an invalid location.
-    if [ ! -f "${COMPOSE_DIR}/pavics-compose.sh" ]; then
+    if [ ! -f "${COMPOSE_DIR}/birdhouse-compose.sh" ]; then
         echo \
-          "CRITICAL: [${COMPOSE_DIR}/pavics-compose.sh] not found," \
+          "CRITICAL: [${COMPOSE_DIR}/birdhouse-compose.sh] not found," \
           "please set variable 'COMPOSE_DIR' to a valid location." \
           "Many features depend on this variable." 1>&2
         return 2
@@ -80,6 +83,9 @@ discover_env_local() {
     if [ -z "${BIRDHOUSE_LOCAL_ENV}" ]; then
         BIRDHOUSE_LOCAL_ENV="${COMPOSE_DIR}/env.local"
     fi
+
+    BIRDHOUSE_LOCAL_ENV=$(readlink -f "$BIRDHOUSE_LOCAL_ENV" || realpath "$BIRDHOUSE_LOCAL_ENV")
+    export BIRDHOUSE_LOCAL_ENV
 
     # env.local can be a symlink to the private config repo where the real
     # env.local file is source controlled.
@@ -145,7 +151,7 @@ source_conf_files() {
           # Allowing not existing conf dir also helps for smooth
           # transition of component path when they are new/renamed/deleted.
           #
-          # New component names can be added to EXTRA_CONF_DIRS before the
+          # New component names can be added to BIRDHOUSE_EXTRA_CONF_DIRS before the
           # corresponding PR are merged and old component names can be removed
           # after the corresponding PR are merge without any impact on the
           # autodeploy process.
@@ -157,7 +163,9 @@ source_conf_files() {
           unset COMPONENT_DEPENDENCIES
           dependencies="$(. "${adir}/default.env" && echo "${COMPONENT_DEPENDENCIES}")"
           if [ -n "${dependencies}" ]; then
+            old_conf_locations="${conf_locations}"
             source_conf_files "${dependencies}" "a dependency of ${adir}"
+            conf_locations="${old_conf_locations}"
             # reset the adir variable in case it was changed in a recursive call
             adir="$(printf '%b' "${_adir_stack}" | tail -1)"
           fi
@@ -177,15 +185,15 @@ source_conf_files() {
 }
 
 read_components_default_env() {
-    # EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS normally set by env.local so should read_env_local() first.
+    # BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS normally set by env.local so should read_env_local() first.
 
-    # EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS relative paths are relative to COMPOSE_DIR.
+    # BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS relative paths are relative to COMPOSE_DIR.
     if [ -d "${COMPOSE_DIR}" ]; then
         cd "${COMPOSE_DIR}" >/dev/null || true
     fi
 
-    source_conf_files "${DEFAULT_CONF_DIRS}" 'DEFAULT_CONF_DIRS'
-    source_conf_files "${EXTRA_CONF_DIRS}" 'EXTRA_CONF_DIRS'
+    source_conf_files "${BIRDHOUSE_DEFAULT_CONF_DIRS}" 'BIRDHOUSE_DEFAULT_CONF_DIRS'
+    source_conf_files "${BIRDHOUSE_EXTRA_CONF_DIRS}" 'BIRDHOUSE_EXTRA_CONF_DIRS'
 
     # Return to previous pwd.
     if [ -d "${COMPOSE_DIR}" ]; then
@@ -208,7 +216,7 @@ check_default_vars() {
       n="${i#\$}"
       v=`eval echo "${i}" 2>/dev/null`
       default="\${__DEFAULT__${n}}"
-      d=`eval echo "${default}" 2>/dev/null`
+      d=`eval echo "${default}" 2>/dev/null` || true  # eval may fail if no default variable exists
       if [ ! -z "${d}" ]; then
           if [ "${d}" = "${v}" ]; then
               log WARN \
@@ -225,7 +233,7 @@ check_default_vars() {
         d=`eval echo "$v"`
         n="${i#\$}"
         default="\${__DEFAULT__${n}}"
-        result=`echo "${d}" | grep -c "${default}"`
+        result=`echo "${d}" | grep -c "${default}"` || true  # grep may fail if no default variable exists
         if [ -z "`eval "echo ${v}"`" ]
         then
             log DEBUG "Optional variable [${n}] is not set. Check env.local file."
@@ -235,6 +243,93 @@ check_default_vars() {
             log WARN "Optional variable [${n}] employs a default recommended for override. Check env.local file."
         fi
     done
+}
+
+
+# If BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED is True then allow environment variables listed in
+# BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES to override the equivalent deprecated variables as long as that
+# equivalent deprecated variable is unset.
+set_old_backwards_compatible_variables() {
+    [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ] || return 0
+    BIRDHOUSE_OLD_VARS_OVERRIDDEN=""
+    # Reverse the variable list so that old variables are overridden in the correct order.
+    reverse_backwards_compatible_variables=""
+    for back_compat_vars in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES}
+    do
+        reverse_backwards_compatible_variables="${back_compat_vars} ${reverse_backwards_compatible_variables}"
+    done
+    for back_compat_vars in ${reverse_backwards_compatible_variables}
+    do
+        old_var="${back_compat_vars%%=*}"
+        new_var="${back_compat_vars#*=}"
+        old_var_set="`eval "echo \\${${old_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
+        new_var_set="`eval "echo \\${${new_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
+        if [ "${new_var_set}" = "set" ] && [ ! "${old_var_set}" = "set" ]; then
+            new_value="`eval "echo \\$${new_var}"`"
+            eval 'export ${old_var}="${new_value}"'
+            BIRDHOUSE_OLD_VARS_OVERRIDDEN="${BIRDHOUSE_OLD_VARS_OVERRIDDEN} ${old_var} "  # space before and after old_var is for grep (below)
+            log DEBUG "Variable [${new_var}] is being used to set the deprecated variable [${old_var}]."
+        fi
+    done
+    for hardcoded_var in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_HARDCODED_DEFAULTS}
+    do
+        new_var="${hardcoded_var%%=*}"
+        hardcoded_old_value="${hardcoded_var#*=}"
+        new_value="`eval "echo \\$${new_var}"`"
+        if [ "${new_value}" = "\${__DEFAULT_${new_var}}" ]; then
+            log WARN "Variable [${new_var}] is being set to the previously hardcoded default value [${hardcoded_old_value}]."
+            eval 'export ${new_var}="${hardcoded_old_value}"'
+        fi
+    done
+}
+
+# If BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED is True then allow environment variables listed in
+# BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES to override the equivalent non-deprecated variable.
+# Otherwise, warn the user about deprecated variables that may still exist in the BIRDHOUSE_LOCAL_ENV
+# file without overriding.
+# If the first argument to this function is "pre-components", only the variables from
+# BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES_PRE_COMPONENTS will be processed.
+process_backwards_compatible_variables() {
+    for back_compat_vars in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES}
+    do
+      old_var="${back_compat_vars%%=*}"
+      echo "${BIRDHOUSE_OLD_VARS_OVERRIDDEN}" | grep -q "[[:space:]]${old_var}[[:space:]]" && continue
+      if [ "$1" = "pre-components" ] && \
+        ! echo "${BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES_PRE_COMPONENTS}" | grep -q "^[[:space:]]*${old_var}[[:space:]]*$"; then
+          continue
+      fi
+
+      new_var="${back_compat_vars#*=}"
+      old_var_set="`eval "echo \\${${old_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
+      if [ "${old_var_set}" = "set" ]; then
+        old_value="`eval "echo \\$${old_var}"`"
+        if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
+          log WARN "Deprecated variable [${old_var}] is overriding [${new_var}]. Check env.local file."
+          eval 'export ${new_var}="${old_value}"'
+        else
+          new_value="`eval "echo \\$${new_var}"`"
+          if [ x"${old_value}" = x"${new_value}" ]; then
+            log WARN "Deprecated variable [${old_var}] can be removed as it has been superseded by [${new_var}]. Check env.local file."
+          else
+            log WARN "Deprecated variable [${old_var}] is present but ignored in favour of [${new_var}]. Check env.local file."
+          fi
+        fi
+      fi
+    done
+    if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
+      BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./optional-components/backwards-compatible-overrides"
+    fi
+    if [ ! "$1" = "pre-components" ]; then
+      for default_old_var in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_DEFAULTS}
+      do
+        old_var="${default_old_var%%=*}"
+        default_old_value="${default_old_var#*=}"
+        old_value="`eval "echo \\$${old_var}"`"
+        if [ "${old_value}" = "${default_old_value}" ]; then
+          log WARN "Variable [${old_var}] employs a deprecated default value recommended for override. Check env.local file."
+        fi
+      done
+    fi
 }
 
 
@@ -328,16 +423,31 @@ create_compose_conf_list() {
   fi
 }
 
+# If unset, BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED is set to True to enable backwards compatible mode by default if this
+# file is not being run through a supported interface.
+set_backwards_compatible_as_default() {
+  if [ ! "${__BIRDHOUSE_SUPPORTED_INTERFACE}" = 'True' ]; then
+    log WARN "This file [$(readlink -f "$0" || realpath "$0")] is being executed through a non-supported interface for the Birdhouse software. This file may be moved or updated without warning."
+    if [ ! "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED+set}" = 'set' ];then
+      BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
+      log WARN "The BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED variable is being set to 'True' by default. To avoid this behaviour set this variable or execute this file through a supported interface."
+    fi
+  fi
+}
 
 # Main function to read all config files in appropriate order and call
 # process_delayed_eval() at the appropriate moment.
 read_configs() {
+    set_backwards_compatible_as_default
     discover_compose_dir
     discover_env_local
     read_default_env
-    read_env_local  # for EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, need discover_env_local
-    read_components_default_env  # uses EXTRA_CONF_DIRS and DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
+    read_env_local  # for BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, need discover_env_local
+    process_backwards_compatible_variables pre-components
+    read_components_default_env  # uses BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
+    set_old_backwards_compatible_variables
     read_env_local  # again to override components default.env, need discover_env_local
+    process_backwards_compatible_variables
     check_default_vars
     process_delayed_eval
 }
@@ -347,10 +457,13 @@ read_configs() {
 # of various components.  Use only when you know what you are doing.  Else use
 # read_configs() to be safe.
 read_basic_configs_only() {
+    set_backwards_compatible_as_default
     discover_compose_dir
     discover_env_local
     read_default_env
+    set_old_backwards_compatible_variables
     read_env_local  # need discover_env_local
+    process_backwards_compatible_variables
     check_default_vars
     process_delayed_eval
 }

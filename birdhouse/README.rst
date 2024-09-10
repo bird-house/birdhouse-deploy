@@ -12,7 +12,7 @@ Requirements
 * Hostname of Docker host must exist on the network.  Must use bridge
   networking if Docker host is a Virtual Machine.
 
-* User running ``pavics-compose.sh`` below must not be ``root`` but a regular user
+* User running ``BIRDHOUSE_COMPOSE`` below must not be ``root`` but a regular user
   belonging to the ``docker`` group.
 
 * Install latest docker-ce and docker-compose for the chosen distro (not the
@@ -25,6 +25,47 @@ Requirements
   over the internet before requesting a certificate with Let's Encrypt. Let's Encrypt
   will need to access your hostname at port 80 and 443 in order to verify and provide
   the SSL certificate.
+
+Command Line Interface (CLI)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The command line interface for interacting with the Birdhouse software can be found in
+`bin/birdhouse <bin/birdhouse>`_ (:download:`download </bin/birdhouse`).
+
+This CLI provides utilities to manage the Birdhouse software like a docker compose project, display build information,
+etc. It also provides a mechanism to execute commands in the Birdhouse configuration environment so that you can ensure
+that external scripts run with the current configuration settings enabled.
+
+For a full description of the CLI usage run the CLI with the ``--help`` flag:
+
+.. code-block:: shell
+
+  ./bin/birdhouse --help
+
+For convenience we recommend adding the ``birdhouse-deploy/bin/`` directory to your ``PATH``:
+
+.. code-block:: shell
+
+  export PATH="$(readlink -f ./bin):$PATH"
+
+  # Now instead of running (from the root directory of this project):
+
+  ./bin/birdhouse --help
+
+  # you can run (from anywhere):
+
+  birdhouse --help
+
+  # To ensure that your PATH variable always includes this directory in login shells:
+
+  echo "export PATH=$(readlink -f ./bin)"':$PATH' >> ~/.profile
+
+.. warning::
+  It is no longer recommended to call scripts other than
+  `bin/birdhouse <bin/birdhouse>`_ (:download:`download </bin/birdhouse`) directly. In previous versions, we recommended
+  interacting with the platform by calling scripts (like ``birdhouse-compose.sh`` or ``read-configs.include.sh``)
+  directly. These scripts have been left in place for backwards compatibility **for now** but may be moved or modified
+  in some future version. We recommend updating any external scripts to use the CLI as soon as possible.
 
 Quick-start
 ^^^^^^^^^^^
@@ -39,29 +80,29 @@ Quick-start
   
   $EDITOR env.local
   # Set the following variables at the minimun:
-  #SSL_CERTIFICATE='/path/to/cert.pem'
-  #PAVICS_FQDN='<full qualified hostname of the current host>'
+  #BIRDHOUSE_SSL_CERTIFICATE='/path/to/cert.pem'
+  #BIRDHOUSE_FQDN='<full qualified hostname of the current host>'
   # Only needed if using LetsEncrypt SSL certificate
-  #SUPPORT_EMAIL='a real email to receivez LetsEncrypt renewal notification'
+  #BIRDHOUSE_SUPPORT_EMAIL='a real email to receivez LetsEncrypt renewal notification'
 
-  # Get the SSL Cert from LetsEncrypt, written to path of var SSL_CERTIFICATE.
+  # Get the SSL Cert from LetsEncrypt, written to path of var BIRDHOUSE_SSL_CERTIFICATE.
   FORCE_CERTBOT_E2E=1 FORCE_CERTBOT_E2E_NO_START_PROXY=1 deployment/certbotwrapper
 
   # Start the full stack.
-  ./pavics-compose.sh up -d
+  ./bin/birdhouse compose up -d
 
 Further explanations
 ^^^^^^^^^^^^^^^^^^^^
 
-To run ``docker-compose`` for PAVICS, the `pavics-compose.sh <pavics-compose.sh>`_ (:download:`download </birdhouse/pavics-compose.sh>`) wrapper script must be used.
-This script will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration files
-".template", and run ``docker-compose`` with all the command line arguments given to `pavics-compose.sh <pavics-compose.sh>`_ (:download:`download </birdhouse/pavics-compose.sh>`).
+To run ``docker-compose`` for Birdhouse, the `bin/birdhouse <bin/birdhouse>`_ (:download:`download </bin/birdhouse`) file can be run with the ``compose`` argument.
+This will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration files
+".template", and run ``docker-compose`` with all the command line arguments after the ``compose`` argument.
 See `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`) for more details on what can go into the ``env.local`` file.
 
 If the file `env.local` is somewhere else, symlink it here, next to `docker-compose.yml <docker-compose.yml>`_ (:download:`download </birdhouse/docker-compose.yml>`) because many scripts assume this location.
 
 To follow infrastructure-as-code, it is encouraged to source control the above
-`env.local` file and any override needed to customized this PAVICS deployment
+`env.local` file and any override needed to customized this Birdhouse deployment
 for your organization.  For an example of possible override, see how the `emu service <optional-components/emu/docker-compose-extra.yml>`_ (:download:`download </birdhouse/optional-components/emu/docker-compose-extra.yml>`)
 (`README <optional-components/README.rst#emu-wps-service-for-testing>`_) can be optionally added to the deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_.
 Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repo.
@@ -71,9 +112,10 @@ Suggested deployment layout:
 .. code-block::
 
    ├── birdhouse-deploy/  # this repo
+   │   ├── bin/
+   │   │   ├── birdhouse
    │   ├── birdhouse/
    │   │   ├── env.local  # relative symlink to env.local.real below
-   │   │   ├── pavics-compose.sh
    │   │   ├── (...)
    ├── private-config/    # your private config and override: sibling level of this repo
    │   ├── docker-compose-extra.yml
@@ -83,9 +125,9 @@ Suggested deployment layout:
 The automatic deployment is able to handle multiple repos, so will trigger if
 this repo or your private-personalized-config repo changes, giving you
 automated continuous deployment.  See the continuous deployment setup section
-below and the variable ``AUTODEPLOY_EXTRA_REPOS`` in `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`).
+below and the variable ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`` in `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`).
 
-The automatic deployment of the PAVICS platform, of the Jupyter tutorial
+The automatic deployment of the Birdhouse platform, of the Jupyter tutorial
 notebooks and of the automatic deployment mechanism itself can all be
 enabled by following the `scheduling instructions <components/README.rst#scheduler>`_.
 
@@ -96,7 +138,7 @@ To launch all the containers, use the following command:
 
 .. code-block::
 
-   ./pavics-compose.sh up -d
+   ./bin/birdhouse compose up -d
 
 If you get a ``'No applicable error code, please check error log'`` error from the WPS processes, please make sure that the WPS databases exists in the
 postgres instance. See `create-wps-pgsql-databases.sh <scripts/create-wps-pgsql-databases.sh>`_ (:download:`download </birdhouse/scripts/create-wps-pgsql-databases.sh>`).
@@ -148,9 +190,9 @@ instructions below.
 Manual instructions:
 
 * Go to
-  ``https://<PAVICS_FQDN>/magpie/ui/login`` and login with the ``MAGPIE_ADMIN_USERNAME`` user. The password should be in ``env.local``.
+  ``https://<BIRDHOUSE_FQDN>/magpie/ui/login`` and login with the ``MAGPIE_ADMIN_USERNAME`` user. The password should be in ``env.local``.
 
-* Then go to ``https://<PAVICS_FQDN>/magpie/ui/users/add``.
+* Then go to ``https://<BIRDHOUSE_FQDN>/magpie/ui/users/add``.
 
 * Fill in:
 
@@ -175,7 +217,7 @@ to prepare your new instance.  Further documentation inside the script.
 Optional components
 `all-public-access <./optional-components#give-public-access-to-all-resources-for-testing-purposes>`_
 and `secure-thredds <./optional-components/#control-secured-access-to-resources-example>`_
-also need to be enabled in ``env.local`` using ``EXTRA_CONF_DIRS`` variable.
+also need to be enabled in ``env.local`` using ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable.
 
 ESGF login is also needed for
 https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebooks/esgf-dap.ipynb
@@ -183,7 +225,7 @@ part of test suite.  ESGF credentials can be given to Jenkins via
 https://github.com/Ouranosinc/jenkins-config/blob/aafaf6c33ea60faede2a32850604c07c901189e8/env.local.example#L11-L13
 
 The canarie monitoring link
-``https://<PAVICS_FQDN>/canarie/node/service/stats`` can be used to confirm the
+``https://<BIRDHOUSE_FQDN>/canarie/node/service/stats`` can be used to confirm the
 instance is ready to run the automated end-to-end test suite.  That link should
 return the HTTP response code ``200``.
 
@@ -192,7 +234,7 @@ Vagrant instructions
 --------------------
 
 Vagrant allows us to quickly spin up a VM to easily reproduce the runtime
-environment for testing or to have multiple flavors of PAVICS with slightly
+environment for testing or to have multiple flavors of Birdhouse with slightly
 different combinations of the parts all running simultaneously in their
 respective VM, allowing us to see the differences in behavior.
 
@@ -222,16 +264,16 @@ Starting and managing the lifecycle of the VM:
 .. code-block::
 
    # start everything, this is the only command needed to bring up the entire
-   # PAVICS platform
+   # Birdhouse platform
    vagrant up
 
    # get bridged IP address
    vagrant ssh -c "ip addr show enp0s8|grep 'inet '"
 
    # get inside the VM
-   # useful to manage the PAVICS platform as if Vagrant is not there
-   # and use pavics-compose.sh as before
-   # ex: cd /vagrant/birdhouse; ./pavics-compose.sh ps
+   # useful to manage the Birdhouse platform as if Vagrant is not there
+   # and use `birdhouse compose` as before
+   # ex: birdhouse compose ps
    vagrant ssh
 
    # power-off VM

@@ -19,8 +19,8 @@
 #
 # Sample <repo_root>/autodeploy/conditional-trigger content:
 # ====================
-# if [ -n "`echo "$GIT_CHANGED_FILES" | grep pavics-config/`" ]; then
-#     # Only changes under pavics-config/ will need to trigger autodeploy.
+# if [ -n "`echo "$GIT_CHANGED_FILES" | grep birdhouse-config/`" ]; then
+#     # Only changes under birdhouse-config/ will need to trigger autodeploy.
 #     echo "trigger autodeploy"
 #     exit 0
 # else
@@ -33,8 +33,11 @@
 #
 #   Follow same instructions in deploy.sh.
 
+BIRDHOUSE_LOG_DIR=${BIRDHOUSE_LOG_DIR:-"/var/log/birdhouse"}
+
 if [ ! -z "$AUTODEPLOY_SILENT" ]; then
-    LOG_FILE="/var/log/PAVICS/autodeploy.log"
+    LOG_FILE="${BIRDHOUSE_LOG_DIR}/autodeploy.log"
+    mkdir -p "${BIRDHOUSE_LOG_DIR}"
     exec >>$LOG_FILE 2>&1
 fi
 
@@ -43,18 +46,12 @@ usage() {
 }
 
 COMPOSE_DIR="$1"
-ENV_LOCAL_FILE="$2"
+BIRDHOUSE_LOCAL_ENV="${2:-${BIRDHOUSE_LOCAL_ENV:-"${COMPOSE_DIR}/env.local"}}"
 
 if [ -z "$COMPOSE_DIR" ]; then
-    echo "ERROR: please provide path to PAVICS docker-compose dir." 1>&2
+    echo "ERROR: please provide path to Birdhouse docker-compose dir." 1>&2
     usage
     exit 2
-else
-    shift
-fi
-
-if [ -z "$ENV_LOCAL_FILE" ]; then
-    ENV_LOCAL_FILE="$COMPOSE_DIR/env.local"
 else
     shift
 fi
@@ -66,8 +63,8 @@ if [ ! -f "$COMPOSE_DIR/docker-compose.yml" ]; then
     exit 2
 fi
 
-if [ ! -f "$ENV_LOCAL_FILE" ]; then
-    echo "ERROR: env.local not found at '$ENV_LOCAL_FILE'" 1>&2
+if [ ! -f "$BIRDHOUSE_LOCAL_ENV" ]; then
+    echo "ERROR: env.local not found at '$BIRDHOUSE_LOCAL_ENV'" 1>&2
     exit 2
 fi
 
@@ -80,8 +77,8 @@ cd $COMPOSE_DIR
 should_trigger() {
     EXTRA_REPO="$(git rev-parse --show-toplevel)"
 
-    DEPLOY_KEY="${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/$(basename "$EXTRA_REPO")_deploy_key"
-    DEFAULT_DEPLOY_KEY="${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/id_rsa_git_ssh_read_only"
+    DEPLOY_KEY="${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/$(basename "$EXTRA_REPO")_deploy_key"
+    DEFAULT_DEPLOY_KEY="${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}/id_rsa_git_ssh_read_only"
     if [ ! -e "$DEPLOY_KEY" ] && [ -e "${DEFAULT_DEPLOY_KEY}" ]; then
         DEPLOY_KEY="${DEFAULT_DEPLOY_KEY}"
     fi
@@ -179,13 +176,13 @@ triggerdeploy START_TIME=${START_TIME}"
 
 . "${COMPOSE_DIR}/read-configs.include.sh"
 
-# Read AUTODEPLOY_EXTRA_REPOS
+# Read BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS
 read_basic_configs_only
 
 set -x
 
 SHOULD_TRIGGER=""
-for adir in "${COMPOSE_DIR}" ${AUTODEPLOY_EXTRA_REPOS}; do
+for adir in "${COMPOSE_DIR}" ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}; do
     if [ -d "${adir}" ]; then
         cd "${adir}" || exit
 
@@ -207,7 +204,7 @@ if [ -n "${SHOULD_TRIGGER}" ]; then
     git show "${CURRENT_REMOTE_BRANCH}":./deployment/deploy.sh > "${TMP_SCRIPT}"
 
     chmod a+x "${TMP_SCRIPT}"
-    $TMP_SCRIPT "${COMPOSE_DIR}" "${ENV_LOCAL_FILE}"
+    $TMP_SCRIPT "${COMPOSE_DIR}" "${BIRDHOUSE_LOCAL_ENV}"
     EXIT_CODE=$?
     rm "${TMP_SCRIPT}"
 fi

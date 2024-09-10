@@ -1,47 +1,54 @@
 ---
 - name: logrotate
-  comment: Rotate log files under /var/log/PAVICS
+  comment: Rotate log files under ${BIRDHOUSE_LOG_DIR}
   schedule: '@daily'
   command: bash -c 'cp /etc/logrotate.conf.orig /etc/logrotate.conf && chown root:root /etc/logrotate.conf && chmod 644 /etc/logrotate.conf && /usr/sbin/logrotate -v /etc/logrotate.conf'
   dockerargs: >-
     --rm --name logrotate
-    --volume /var/log/PAVICS:/var/log/PAVICS:rw
-    --volume ${LOGROTATE_DATA_DIR}:/var/lib:rw
-    --volume ${COMPOSE_DIR}/deployment/PAVICS-deploy.logrotate:/etc/logrotate.conf.orig:ro
+    --volume ${BIRDHOUSE_LOG_DIR}:/var/log/birdhouse:rw
+    --volume ${BIRDHOUSE_LOGROTATE_DATA_DIR}:/var/lib:rw
+    --volume ${COMPOSE_DIR}/deployment/birdhouse-deploy.logrotate:/etc/logrotate.conf.orig:ro
   image: 'stakater/logrotate:3.13.0'
 
 - name: notebookdeploy
   comment: Auto-deploy tutorial notebooks
-  schedule: '${AUTODEPLOY_NOTEBOOK_FREQUENCY}'
+  schedule: '${BIRDHOUSE_AUTODEPLOY_NOTEBOOK_FREQUENCY}'
   command: '${COMPOSE_DIR}/deployment/trigger-deploy-notebook'
   dockerargs: >-
     --rm --name notebookdeploy
     --volume /var/run/docker.sock:/var/run/docker.sock:ro
-    --volume /var/log/PAVICS:/var/log/PAVICS:rw
+    --volume ${BIRDHOUSE_LOG_DIR}:${BIRDHOUSE_LOG_DIR}:rw
     --volume ${COMPOSE_DIR}:${COMPOSE_DIR}:ro
     --volume ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}:rw
     --volume /tmp/notebookdeploy:/tmp/notebookdeploy:rw
+    --volume ${BIRDHOUSE_LOCAL_ENV}:${BIRDHOUSE_LOCAL_ENV}
     --env COMPOSE_DIR=${COMPOSE_DIR}
     --env TMP_BASE_DIR=/tmp/notebookdeploy
+    --env BIRDHOUSE_LOCAL_ENV=${BIRDHOUSE_LOCAL_ENV}
+    --env BIRDHOUSE_COMPOSE=${BIRDHOUSE_COMPOSE}
     --env JUPYTERHUB_USER_DATA_DIR=${JUPYTERHUB_USER_DATA_DIR}${AUTODEPLOY_NOTEBOOK_EXTRA_DOCKER_ARGS}
   image: 'docker:19.03.6-git'
 
 - name: autodeploy
-  comment: Auto-deploy entire PAVICS platform
-  schedule: '${AUTODEPLOY_PLATFORM_FREQUENCY}'
+  comment: Auto-deploy entire Birdhouse platform
+  schedule: '${BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY}'
   command: '${COMPOSE_DIR}/deployment/triggerdeploy.sh ${COMPOSE_DIR}'
   dockerargs: >-
-    --rm --name autodeploy${AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES}
+    --rm --name autodeploy${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES}
     --volume /var/run/docker.sock:/var/run/docker.sock:ro
-    --volume /var/log/PAVICS:/var/log/PAVICS:rw
+    --volume ${BIRDHOUSE_LOG_DIR}:${BIRDHOUSE_LOG_DIR}:rw
     --volume ${COMPOSE_DIR}/..:${COMPOSE_DIR}/..:rw
-    --volume ${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:ro
+    --volume ${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:ro
     --volume ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}:rw
+    --volume ${BIRDHOUSE_LOCAL_ENV}:${BIRDHOUSE_LOCAL_ENV}
     --env COMPOSE_DIR=${COMPOSE_DIR}
-    --env AUTODEPLOY_DEPLOY_KEY_ROOT_DIR=${AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}
+    --env BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR=${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}
     --env JUPYTERHUB_USER_DATA_DIR=${JUPYTERHUB_USER_DATA_DIR}
     --env CODE_OWNERSHIP=${CODE_OWNERSHIP}
+    --env BIRDHOUSE_LOCAL_ENV=${BIRDHOUSE_LOCAL_ENV}
+    --env BIRDHOUSE_COMPOSE=${BIRDHOUSE_COMPOSE}
+    --env BIRDHOUSE_LOG_DIR=${BIRDHOUSE_LOG_DIR}
     --env AUTODEPLOY_SILENT=true${AUTODEPLOY_PLATFORM_EXTRA_DOCKER_ARGS}
   image: 'pavics/docker-compose-git:docker-18.09.7-compose-1.25.1'
 
-${AUTODEPLOY_EXTRA_SCHEDULER_JOBS}
+${BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS}

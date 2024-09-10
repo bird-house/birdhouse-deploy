@@ -5,7 +5,7 @@ deploy:
   checkout_name: xclim-testdata
   dir_maps:
   # rsync content below source_dir into dest_dir
-  - source_dir: .
+  - source_dir: ./data
     dest_dir: /data/datasets/testdata/xclim
     # only sync .nc files
     rsync_extra_opts: --include=*/ --include=*.nc --exclude=*

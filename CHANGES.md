@@ -19,7 +19,275 @@
 
 - Update Thredds to supported version
 
-  Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.4.
+  Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.5.
+
+- xclim-testdata: adapt repository cloning script to the new data structure
+
+  The `xclim-testdata` repo has been restructured to include the data in a `data` subdirectory.
+  This change updates the cloning script to account for this new structure and to ensure that the
+  user experience is consistent with the previous version.
+
+  See:
+  * [xclim-testdata PR/29](https://github.com/Ouranosinc/xclim-testdata/pull/29)
+  * [xclim PR/1889](https://github.com/Ouranosinc/xclim/pull/1889)
+
+[2.5.2](https://github.com/bird-house/birdhouse-deploy/tree/2.5.2) (2024-07-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- GeoServer: upgrade to 2.25.2 to fix vulnerabilities
+
+  See:
+  * https://nsfocusglobal.com/remote-code-execution-vulnerability-between-geoserver-and-geotools-cve-2024-36401-cve-2024-36404-notification/
+  * https://github.com/geoserver/geoserver/security/advisories/GHSA-6jj6-gm7p-fcvv
+  * https://github.com/geotools/geotools/security/advisories/GHSA-w3pj-wh35-fq8w
+
+  This change will upgrade to GeoServer 2.25.2 and GeoTools 31.2 (the version of `gt-complex.jar`).
+
+  ```shell
+  $ docker exec -u 0 geoserver find / -iname '**gt-complex**'
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/gt-complex-31.2.jar
+  ```
+
+  The previous version was GeoServer 2.22.2 and GeoTools 28.2.
+
+  ```shell
+  $ docker exec -u 0 geoserver find / -iname '**gt-complex**'
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/gt-complex-28.2.jar
+  ```
+
+  Also enable
+  * OGC-API plugins https://docs.geoserver.org/stable/en/user/community/ogc-api/features/index.html
+    so we can slowly transition from the WPS plugin.
+  * STAC Datastore plugin https://docs.geoserver.org/latest/en/user/community/stac-datastore/index.html
+    so we can test integration with our STAC component.
+
+
+[2.5.1](https://github.com/bird-house/birdhouse-deploy/tree/2.5.1) (2024-07-10)
+------------------------------------------------------------------------------------------------------------------
+
+- Cowbird: bump version to [2.4.0](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#240-2024-07-09).
+
+  - Includes multiple dependency updates for latest security and performance improvements.
+
+[2.5.0](https://github.com/bird-house/birdhouse-deploy/tree/2.5.0) (2024-06-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: bump version to [5.6.1](https://github.com/crim-ca/weaver/tree/5.6.1).
+
+  - See full changes details in 
+    [Weaver changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html#changes-5-6-1)
+  - In summary:
+    - multiple control setting options to customize some behaviors
+    - improved *OGC API - Processes* standard conformance
+    - improved support of *Common Workflow Language (CWL)* features (secrets, sub-workflow, auth-propagation, etc.)
+
+- Weaver: WPS retry logic on post-compose step.
+  - Apply `--network birdhouse_default` to the Docker `curl` image to allow HTTP requests to properly resolve
+    against the running services (WPS bird providers, Weave and Magpie). In some cases, this network would not
+    be automatically resolved.
+  - Fix the index used during HTTP request retry to avoid going one step over the intended retry attempts.
+
+[2.4.2](https://github.com/bird-house/birdhouse-deploy/tree/2.4.2) (2024-06-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- deploy-data: allow more flexibility to deploy files from other checkout in same config file
+
+  Given the config file can specify multiple checkouts, this flexibility to
+  have `SRC_DIR` be an absolute path will allow one checkout to take files from
+  other checkouts, using absolute path to the other checkouts.  `SRC_DIR` can
+  still be a relative path of the current checkout, as before, to preserve
+  backward-compatibility.
+
+  Possible use-case: re-organize the layout of various files from the various
+  checkouts in an intermediate location before rsyncing this intermediate
+  location to the final destination.
+
+
+[2.4.1](https://github.com/bird-house/birdhouse-deploy/tree/2.4.1) (2024-06-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Weaver: Adjust invalid `data_sources.yml` definitions.
+
+  - Add the missing `data_sources.yml` volume mount for  `weaver-worker`.
+  - When `weaver-worker` runs a `Workflow`, the nested `step` process locations need to be resolved according to the
+    current `"localhost"` instance. However, the Web API running in `weaver` service is not visible from the worker.
+    Since the configuration is shared between `weaver` and `weaver-worker`, use the public endpoint of `weaver` to
+    make process URL resolution consistent, and also provide more useful references in job logs when resolution fails.
+
+[2.4.0](https://github.com/bird-house/birdhouse-deploy/tree/2.4.0) (2024-06-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Rename variables, constants and files from PAVICS to Birdhouse
+
+  For historical reasons the name PAVICS was used in variable names, constants and filenames in this repo to refer
+  to the software stack in general. This was because, for a long time, the PAVICS deployment of this stack was the
+  only one that was being used in production. However, now that multiple deployments of this software exist in
+  production (that are not named PAVICS), we remove unnecessary references to PAVICS in order to reduce confusion
+  for maintainers and developers who may not be aware of the historical reasons for the PAVICS name.
+
+  This update makes the following changes:
+
+  * The string ``PAVICS`` in environment variables, constant values, and file names have been changed to 
+    ``BIRDHOUSE`` (case has been preserved where possible).
+    * For example:
+      * ``PAVICS_FQDN`` -> ``BIRDHOUSE_FQDN``
+      * ``pavics_compose.sh`` -> ``birdhouse_compose.sh``
+      * ``THREDDS_DATASET_LOCATION_ON_CONTAINER='/pavics-ncml'`` -> ``THREDDS_DATASET_LOCATION_ON_CONTAINER='/birdhouse-ncml'``
+  * Comment strings and documentation that refers to the software stack as ``PAVICS`` have been changed to use
+    ``Birdhouse``.
+  * Recreated the ``pavics-compose.sh`` script that runs ``birdhouse-compose.sh`` in backwards compatible mode.
+    * Backwards compatible mode means that variables in ``env.local`` that contain the string ``PAVICS`` will be used
+      to set the equivalent variable that contains ``BIRDHOUSE``. For example, the ``PAVICS_FQDN`` variable set in
+      the ``env.local`` file will be used to set the value of ``BIRDHOUSE_FQDN``.
+  * Removed unused variables:
+    * `CMIP5_THREDDS_ROOT`
+
+- Create a new CLI entrypoint in ``bin/birdhouse`` that can be used to invoke ``pavics-compose.sh`` or 
+  ``birdhouse-compose.sh`` from one convenient location. This script also includes some useful options and provides
+  a generic entrypoint to the stack that can be extended in the future. In the future, users should treat this
+  entrypoint as the only stable CLI for interacting with the Birdhouse software.
+
+### Migration Guide
+
+  - Update ``env.local`` file to replace all variables that contain ``PAVICS`` with ``BIRDHOUSE``.
+    Variable names have also been updated to ensure that they start with the prefix ``BIRDHOUSE_``.
+    * see [`env.local.example`](./birdhouse/env.local.example) to see new variable names
+    * see the ``BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in [`default.env`](./birdhouse/default.env)) for a 
+      full list of changed environment variable names.
+  - Update any external scripts that access the old variable names directly to use the updated variable names.
+  - Update any external scripts that access any of the following files to use the new file name:
+
+    | old file name           | new file name              |
+    |-------------------------|----------------------------|
+    | pavics-compose.sh       | birdhouse-compose.sh       |
+    | PAVICS-deploy.logrotate | birdhouse-deploy.logrotate |
+    | configure-pavics.sh     | configure-birdhouse.sh     |
+    | trigger-pavicscrawler   | trigger-birdhousecrawler   |
+
+  - Update any external scripts that called ``pavics-compose.sh`` or ``read-configs.include.sh`` to use the CLI 
+    entrypoint in ``bin/birdhouse`` instead.
+  - The following default values have changed. If your deployment was using the old default value, update your 
+    ``env.local`` file to explicitly set the old default values.
+
+    | old variable name                          | new variable name                    | old default value       | new default value          |
+    |--------------------------------------------|--------------------------------------|-------------------------|:---------------------------|
+    | POSTGRES_PAVICS_USERNAME                   | BIRDHOUSE_POSTGRES_USERNAME          | postgres-pavics         | postgres-birdhouse         |
+    | THREDDS_DATASET_LOCATION_ON_CONTAINER      | (no change)                          | /pavics-ncml            | /birdhouse-ncml            |
+    | THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER | (no change)                          | /pavics-data            | /birdhouse-data            |
+    | (hardcoded)                                | BIRDHOUSE_POSTGRES_DB                | pavics                  | birdhouse                  |
+    | PAVICS_LOG_DIR                             | BIRDHOUSE_LOG_DIR                    | /var/log/PAVICS         | /var/log/birdhouse         |
+    | (hardcoded)                                | GRAFANA_DEFAULT_PROVIDER_FOLDER      | Local-PAVICS            | Local-Birdhouse            |
+    | (hardcoded)                                | GRAFANA_DEFAULT_PROVIDER_FOLDER_UUID | local-pavics            | local-birdhouse            |
+    | (hardcoded)                                | GRAFANA_PROMETHEUS_DATASOURCE_UUID   | local_pavics_prometheus | local_birdhouse_prometheus |
+
+    Note that the `PAVICS_LOG_DIR` variable was actually hardcoded as `/var/log/PAVICS` in some scripts. If 
+    `PAVICS_LOG_DIR` was set to anything other than `/var/log/PAVICS` you'll end up with inconsistent log outputs as 
+    previously some logs would have been sent to `PAVICS_LOG_DIR` and others to `/var/log/PAVICS`. We recommend merging
+    these two log files. Going forward, all logs will be sent to `BIRDHOUSE_LOG_DIR`. 
+
+  - Update any jupyter notebooks that make use of the `PAVICS_HOST_URL` environment variable to use the new
+    `BIRDHOUSE_HOST_URL` instead.
+  - Set the ``BIRDHOUSE_POSTGRES_DB`` variable to ``pavics`` in the ``env.local`` file. This value was previously
+    hardcoded to the string ``pavics`` so to maintain backwards compatibility with any existing databases this should be
+    kept the same. If you do want to update to the new database name, you will need to rename the existing database.
+    For example, the following will update the existing database named ``pavics`` to ``birdhouse`` (assuming the old
+    default values for the postgres username):
+
+    ```shell
+    docker exec -it postgres psql -U postgres-pavics -d postgres -c 'ALTER DATABASE pavics RENAME TO birdhouse'
+    ```
+
+    You can then update the ``env.local`` file to the new variable name and restart the stack
+  - Set the ``BIRDHOUSE_POSTGRES_USER`` variable to ``postgres-pavics`` in the ``env.local`` file if you would like to 
+    preserve the old default value. If you would like to change the value of ``BIRDHOUSE_POSTGRES_USER`` then also 
+    update the name for any running postgres instances. For example, the following will update the user named 
+    ``postgres-pavics`` to ``postgres-birdhouse``:
+
+    ```shell
+    docker exec -it postgres psql -U postgres-pavics -d postgres -c 'CREATE USER "tmpsuperuser" WITH SUPERUSER'
+    docker exec -it postgres psql -U tmpsuperuser -d postgres -c 'ALTER ROLE "postgres-pavics" RENAME TO "postgres-birdhouse"'
+    docker exec -it postgres psql -U tmpsuperuser -d postgres -c 'ALTER ROLE "postgres-birdhouse" WITH PASSWORD '\''postgres-qwerty'\'
+    docker exec -it postgres psql -U postgres-birdhouse -d postgres -c 'DROP ROLE "tmpsuperuser"'
+    ```
+
+    Note that the ``postgres-qwerty`` value is meant just for illustration, you should replace this with the value of 
+    the ``BIRDHOUSE_POSTGRES_PASSWORD`` variable.
+    Note that you'll need to do the same for the ``stac-db`` service as well (assuming that you weren't previously
+    overriding the ``STAC_POSTGRES_USER`` with a custom value).
+
+[2.3.3](https://github.com/bird-house/birdhouse-deploy/tree/2.3.3) (2024-05-29)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Bump cadvisor version to the latest version: v0.49.1
+  - See the cadvisor repo for all changes: https://github.com/google/cadvisor/compare/v0.36.0...v0.49.1
+  - This updated was prompted by the fact that the previously installed version of cadvisor (v0.36.0) did not support
+    newer versions of docker. When deploying this repo with recent docker version, cadvisor was unable to discover or 
+    monitor running containers.
+
+[2.3.2](https://github.com/bird-house/birdhouse-deploy/tree/2.3.2) (2024-05-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Make the monitoring component docker images configurable
+  - The following variables have been added to the `components/monitoring/default.env` file and can be overridden in 
+    `env.local` to change the docker image for one of the services enabled by the monitoring component:
+    - `GRAFANA_VERSION`
+    - `GRAFANA_DOCKER`
+    - `CADVISOR_VERSION`
+    - `CADVISOR_DOCKER`
+    - `PROMETHEUS_VERSION`
+    - `PROMETHEUS_DOCKER`
+    - `NODE_EXPORTER_VERSION`
+    - `NODE_EXPORTER_DOCKER`
+    - `ALERTMANAGER_VERSION`
+    - `ALERTMANAGER_DOCKER`
+  - Note that the defaults are the same as the previous hardcoded versions so this change is fully backwards compatible.
+
+[2.3.1](https://github.com/bird-house/birdhouse-deploy/tree/2.3.1) (2024-05-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Scripts that read configuration settings and that exit early on error fail unexpectedly
+
+  - Scripts that call `set -e` before reading configuration settings were failing early because some lines are
+    intentionally returning a non-zero value when setting variable defaults. This change modifies lines that may return 
+    a non-zero status but should not cause the script to exit early.
+  - Scripts that were exiting early prior to this change include:
+    - birdhouse/deployment/fix-geoserver-data-dir-perm
+    - birdhouse/deployment/fix-write-perm
+    - birdhouse/deployment/trigger-deploy-notebook
+
+[2.3.0](https://github.com/bird-house/birdhouse-deploy/tree/2.3.0) (2024-05-14)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- bump canarie-api version to [1.0.0](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.0.0)
+
+  - This version of canarie-api permits running the proxy (nginx) container independently of the canarie-api
+    application. This makes it easier to monitor the logs of canarie-api and proxy containers simultaneously and
+    allows for the configuration files for canarie-api to be mapped to the canarie-api containers where appropriate.
+
+[2.2.2](https://github.com/bird-house/birdhouse-deploy/tree/2.2.2) (2024-05-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new full build with latest of almost everything
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#121](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/121)
+  for more info.
+
 
 [2.2.1](https://github.com/bird-house/birdhouse-deploy/tree/2.2.1) (2024-05-01)
 ------------------------------------------------------------------------------------------------------------------
