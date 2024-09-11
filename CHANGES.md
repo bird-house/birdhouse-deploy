@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.5.3](https://github.com/bird-house/birdhouse-deploy/tree/2.5.3) (2024-09-11)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Magpie/Twitcher: update Python packages and base Docker image to address security vulnerabilities 
