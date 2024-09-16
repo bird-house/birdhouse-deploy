@@ -371,6 +371,7 @@ AlertManager for Alert Dashboard and Silencing
 .. image:: monitoring/images/alertmanager-dashboard.png
 .. image:: monitoring/images/alertmanager-silence-alert.png
 
+.. _monitoring-customize-the-component
 
 Customizing the Component
 -------------------------
@@ -388,6 +389,23 @@ Customizing the Component
   ``ALERTMANAGER_EXTRA_GLOBAL``, ``ALERTMANAGER_EXTRA_ROUTES`` (can route to
   Slack or other services accepting webhooks), ``ALERTMANAGER_EXTRA_RECEIVERS``.
 
+
+Longterm Storage of Prometheus Metrics
+--------------------------------------
+
+Prometheus stores metrics for 90 days by default. This may be sufficient for some use cases but you may wish to store
+some metrics for longer. In order to store certain metrics for a longer than 90 days, you can enable the following
+additional components:
+
+- :ref:`prometheus-longterm-metrics`: a second Prometheus instance used to collect the metrics that you want to store longterm
+- :ref:`thanos`: a service that enables more efficient storage of the metrics collected by the :ref:`prometheus-longterm-metrics`
+  component.
+
+.. note::
+    A separate prometheus instance is necessary since the retention time for prometheus metrics is set at the 
+    instance level. This means that increasing the retention time must be done for all metrics at once which is undesirable
+    because you probably don't need to store every metric for a long period of time and you'll end up using a lot more
+    disk space than needed.
 
 Weaver
 ======

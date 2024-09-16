@@ -27,9 +27,6 @@
   added by default see the 
   ``optional-components/prometheus-longterm-metrics/config/monitoring/prometheus.rules.template`` file.
 
-  If you do not want the default longterm-metric rules included, set the ``PROMETHEUS_LONGTERM_RULES_FILE`` to anything 
-  other than ``True`` in your ``env.local`` file.
-
   To configure this component:
 
   * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
@@ -44,13 +41,13 @@
   by updating the ``env.local`` file. These set the login credentials for the root user that runs the 
   [minio](https://min.io/) object store.
   
-  Enabling the `thanos` component creates the additional endpoints:
+- Enabling the `thanos` component creates the additional endpoints:
 
   * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
   * ``/thanos-minio``: a minio web console to inspect the data stored by minio.
 
-  This also includes an update to the prometheus version from `v2.19.0` to the current latest `v2.52.0`. This is to
-  required to support the interaction between prometheus and thanos.
+- Update the prometheus version from `v2.19.0` to the current latest `v2.52.0`. This is required to support the interaction between 
+  prometheus and thanos.
 
 [2.5.3](https://github.com/bird-house/birdhouse-deploy/tree/2.5.3) (2024-09-11)
 ------------------------------------------------------------------------------------------------------------------

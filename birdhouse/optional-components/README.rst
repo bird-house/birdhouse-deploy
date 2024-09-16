@@ -444,6 +444,8 @@ How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.examp
     .. seealso::
         See the `env.local.example`_ file for more details about this ``BIRDHOUSE_PROXY_ROOT_LOCATION`` behaviour.
 
+.. _prometheus-longterm-metrics
+
 Prometheus Long-term Metrics
 ----------------------------
 
@@ -454,14 +456,16 @@ Longterm metrics are any prometheus rule that have the label ``group: longterm-m
 selectable using prometheus' ``'{group="longterm-metrics"}'`` query filter. To add some default longterm metrics rules
 also enable the ``prometheus-longterm-rules`` component.
 
-You may also choose to create your own set of rules in another component that you would like to use instead of the
-default ones.
+You may also choose to create your own set of rules instead of, or as well as, the default ones. See how to 
+:ref:`add additional rules here <monitoring-customize-the-component>`.
 
 To configure this component:
 
     * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
 
 Enabling this component creates the additional endpoint ``/prometheus-longterm-metrics``.
+
+.. _prometheus-longterm-rules
 
 Prometheus Long-term Rules
 --------------------------
@@ -471,6 +475,8 @@ component. These rules all have the label ``group: longterm-metrics``.
 
 To see which rules are added, check out the
 `optional-components/prometheus-longterm-rules/config/monitoring/prometheus.rules` file.
+
+.. _thanos
 
 Thanos
 ------
