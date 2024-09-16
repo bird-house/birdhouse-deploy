@@ -31,7 +31,11 @@ Links to other issues or sources.
 <!--
   The test suite can be run using a different DACCS config with ``birdhouse_daccs_configs_branch: branch_name`` in the PR description.
   To globally skip the test suite regardless of the commit message use ``birdhouse_skip_ci`` set to ``true`` in the PR description.
-  Note that using ``[skip ci]``, ``[ci skip]`` or ``[no ci]`` in the commit message will override ``birdhouse_skip_ci`` from the PR description.
+
+  Using ``[<cmd>]`` (with the brackets) where ``<cmd> = skip ci`` in the commit message will override ``birdhouse_skip_ci`` from the PR description.
+  Such commit command can be used to override the PR description behavior for a specific commit update.
+  However, a commit message cannot 'force run' a PR which the description turns off the CI.
+  To run the CI, the PR should instead be updated with a ``true`` value, and a running message can be posted in following PR comments to trigger tests once again.
 -->
 
 birdhouse_daccs_configs_branch: master

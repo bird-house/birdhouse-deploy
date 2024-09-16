@@ -2,7 +2,7 @@
 # Employed by default for looking at files available directly (e.g.: pre-fetched)
 localhost:
     netloc: "localhost"
-    ades: "http://localhost:4001"
+    ades: "https://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}"
     default: true
 
 # Weaver self-reference, but using the exposed endpoint on the birdhouse instance

@@ -52,6 +52,117 @@
   This also includes an update to the prometheus version from `v2.19.0` to the current latest `v2.52.0`. This is to
   required to support the interaction between prometheus and thanos.
 
+[2.5.3](https://github.com/bird-house/birdhouse-deploy/tree/2.5.3) (2024-09-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Magpie/Twitcher: update Python packages and base Docker image to address security vulnerabilities 
+
+  - [Magpie 4.1.1](https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst#411-2024-07-23)
+    (relates to [Ouranosinc/Magpie#622](https://github.com/Ouranosinc/Magpie/pull/622)).
+  - [Twitcher 0.10.0](https://github.com/bird-house/twitcher/blob/master/CHANGES.rst#0100-2024-07-22)
+    (relates to [bird-house/twitcher#136](https://github.com/bird-house/twitcher/pull/136)).
+
+- xclim-testdata: adapt repository cloning script to the new data structure
+
+  The `xclim-testdata` repo has been restructured to include the data in a `data` subdirectory.
+  This change updates the cloning script to account for this new structure and to ensure that the
+  user experience is consistent with the previous version.
+
+  See:
+  * [xclim-testdata PR/29](https://github.com/Ouranosinc/xclim-testdata/pull/29)
+  * [xclim PR/1889](https://github.com/Ouranosinc/xclim/pull/1889)
+
+[2.5.2](https://github.com/bird-house/birdhouse-deploy/tree/2.5.2) (2024-07-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- GeoServer: upgrade to 2.25.2 to fix vulnerabilities
+
+  See:
+  * https://nsfocusglobal.com/remote-code-execution-vulnerability-between-geoserver-and-geotools-cve-2024-36401-cve-2024-36404-notification/
+  * https://github.com/geoserver/geoserver/security/advisories/GHSA-6jj6-gm7p-fcvv
+  * https://github.com/geotools/geotools/security/advisories/GHSA-w3pj-wh35-fq8w
+
+  This change will upgrade to GeoServer 2.25.2 and GeoTools 31.2 (the version of `gt-complex.jar`).
+
+  ```shell
+  $ docker exec -u 0 geoserver find / -iname '**gt-complex**'
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/gt-complex-31.2.jar
+  ```
+
+  The previous version was GeoServer 2.22.2 and GeoTools 28.2.
+
+  ```shell
+  $ docker exec -u 0 geoserver find / -iname '**gt-complex**'
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/gt-complex-28.2.jar
+  ```
+
+  Also enable
+  * OGC-API plugins https://docs.geoserver.org/stable/en/user/community/ogc-api/features/index.html
+    so we can slowly transition from the WPS plugin.
+  * STAC Datastore plugin https://docs.geoserver.org/latest/en/user/community/stac-datastore/index.html
+    so we can test integration with our STAC component.
+
+
+[2.5.1](https://github.com/bird-house/birdhouse-deploy/tree/2.5.1) (2024-07-10)
+------------------------------------------------------------------------------------------------------------------
+
+- Cowbird: bump version to [2.4.0](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#240-2024-07-09).
+
+  - Includes multiple dependency updates for latest security and performance improvements.
+
+[2.5.0](https://github.com/bird-house/birdhouse-deploy/tree/2.5.0) (2024-06-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: bump version to [5.6.1](https://github.com/crim-ca/weaver/tree/5.6.1).
+
+  - See full changes details in 
+    [Weaver changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html#changes-5-6-1)
+  - In summary:
+    - multiple control setting options to customize some behaviors
+    - improved *OGC API - Processes* standard conformance
+    - improved support of *Common Workflow Language (CWL)* features (secrets, sub-workflow, auth-propagation, etc.)
+
+- Weaver: WPS retry logic on post-compose step.
+  - Apply `--network birdhouse_default` to the Docker `curl` image to allow HTTP requests to properly resolve
+    against the running services (WPS bird providers, Weave and Magpie). In some cases, this network would not
+    be automatically resolved.
+  - Fix the index used during HTTP request retry to avoid going one step over the intended retry attempts.
+
+[2.4.2](https://github.com/bird-house/birdhouse-deploy/tree/2.4.2) (2024-06-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- deploy-data: allow more flexibility to deploy files from other checkout in same config file
+
+  Given the config file can specify multiple checkouts, this flexibility to
+  have `SRC_DIR` be an absolute path will allow one checkout to take files from
+  other checkouts, using absolute path to the other checkouts.  `SRC_DIR` can
+  still be a relative path of the current checkout, as before, to preserve
+  backward-compatibility.
+
+  Possible use-case: re-organize the layout of various files from the various
+  checkouts in an intermediate location before rsyncing this intermediate
+  location to the final destination.
+
+
+[2.4.1](https://github.com/bird-house/birdhouse-deploy/tree/2.4.1) (2024-06-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Weaver: Adjust invalid `data_sources.yml` definitions.
+
+  - Add the missing `data_sources.yml` volume mount for  `weaver-worker`.
+  - When `weaver-worker` runs a `Workflow`, the nested `step` process locations need to be resolved according to the
+    current `"localhost"` instance. However, the Web API running in `weaver` service is not visible from the worker.
+    Since the configuration is shared between `weaver` and `weaver-worker`, use the public endpoint of `weaver` to
+    make process URL resolution consistent, and also provide more useful references in job logs when resolution fails.
+
 [2.4.0](https://github.com/bird-house/birdhouse-deploy/tree/2.4.0) (2024-06-04)
 ------------------------------------------------------------------------------------------------------------------
 
