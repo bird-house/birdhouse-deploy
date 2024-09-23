@@ -18,9 +18,11 @@ To upgrade to version 2.4 from an earlier version, please follow these steps:
 
   - Update ``env.local`` file to replace all variables that contain ``PAVICS`` with ``BIRDHOUSE``.
     Variable names have also been updated to ensure that they start with the prefix ``BIRDHOUSE_``.
-    * see `birdhouse/env.local.example <birdhouse/env.local.example>`_ (:download:`download </birdhouse/env.local.example`) to see new variable names
-    * see the ``BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in `birdhouse/default.env <birdhouse/default.env>`_ (:download:`download </birdhouse/default.env`))
+
+    * see `birdhouse/env.local.example <birdhouse/env.local.example>`_ to see new variable names
+    * see the ``BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in `birdhouse/default.env <birdhouse/default.env>`_)
       for a full list of changed environment variable names.
+
   - Update any external scripts that access the old variable names directly to use the updated variable names.
   - Update any external scripts that access any of the following files to use the new file name:
 
