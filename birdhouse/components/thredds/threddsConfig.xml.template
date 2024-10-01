@@ -92,7 +92,7 @@ https://www.unidata.ucar.edu/software/tds/current/reference/ThreddsConfigXMLFile
   </NCISO>
 
   <!--
-  https://www.unidata.ucar.edu/software/tds/current/reference/ThreddsConfigXMLFile.html#DiskCache
+  https://docs.unidata.ucar.edu/tds/current/userguide/tds_config_ref.html#cdm-library-disk-cache
 
   These elements control where the CDM/NetCDF-Java library writes temporary
   files, for example when it needs to unzip files, or write GRIB index files,

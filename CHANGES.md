@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Update Thredds to supported version
+
+  Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.5.
+
 
 [2.5.3](https://github.com/bird-house/birdhouse-deploy/tree/2.5.3) (2024-09-11)
 ------------------------------------------------------------------------------------------------------------------
