@@ -1,0 +1,7 @@
+version: "3.4"
+
+services:
+  magpie:
+    volumes:
+      - ./optional-components/prometheus-longterm-metrics/config/magpie/config.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/prometheus-longterm-metrics.yml:ro
+      - ./optional-components/prometheus-longterm-metrics/config/magpie/config.yml:${MAGPIE_PROVIDERS_CONFIG_PATH}/prometheus-longterm-metrics.yml:ro

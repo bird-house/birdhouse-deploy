@@ -1,0 +1,17 @@
+global:
+  external_labels:
+    instance_name: prometheus-longterm-metrics
+
+scrape_configs:
+  - job_name: 'federate'
+    scrape_interval: ${PROMETHEUS_LONGTERM_SCRAPE_INTERVAL}
+
+    honor_labels: true
+    metrics_path: '/prometheus/federate'
+
+    params:
+      'match[]':
+        - '{group="longterm-metrics"}'
+
+    static_configs:
+      - targets: ${PROMETHEUS_LONGTERM_TARGETS}
