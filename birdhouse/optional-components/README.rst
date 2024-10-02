@@ -449,7 +449,7 @@ How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.examp
 Prometheus Long-term Metrics
 ----------------------------
 
-This is a second prometheus instance that collects longterm monitoring metrics from the original prometheus instance
+This is a second prometheus instance that collects longterm monitoring metrics from the monitoring Prometheus instance
 (the one created by the ``components/monitoring`` component).
 
 Longterm metrics are any prometheus rule that have the label ``group: longterm-metrics`` or in other words are
@@ -462,6 +462,24 @@ You may also choose to create your own set of rules instead of, or as well as, t
 To configure this component:
 
     * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
+
+If the monitoring Prometheus instance that this Prometheus instance is tracking is not deployed on the same machine
+(or at a non-default network address on the same machine), you may configure the network location of the monitoring 
+Prometheus instance by setting the ``PROMETHEUS_LONGTERM_TARGETS`` variable. For example, if the monitoring Prometheus 
+instance's API is available at `https://example.com/prometheus:9090` the you can set the variable: 
+
+.. code::
+
+    export PROMETHEUS_LONGTERM_TARGETS='["https://example.com/prometheus:9090"]'
+
+.. note::
+
+    You may list multiple monitoring Prometheus instances to track in this way by adding more URLs to the list.
+
+.. warning::
+
+    Deploying the longterm metrics Prometheus instance on a separate machine from the monitoring Prometheus component
+    is untested and may require serious troubleshooting to work properly.
 
 Enabling this component creates the additional endpoint ``/prometheus-longterm-metrics``.
 
@@ -492,5 +510,10 @@ that runs the minio_ object store.
 Enabling this component creates the additional endpoints:
     * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
     * ``/thanos-minio``: a minio_ web console to inspect the data stored by minio_.
+
+.. note::
+
+    The `thanos` component must be deployed on the same machine as the `prometheus-longterm-metrics` component since
+    `thanos` needs access to the data stored by prometheus on disk (in docker this is acheived by sharing a named volume).
 
 .. _minio: https://min.io/
