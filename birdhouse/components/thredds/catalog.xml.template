@@ -27,24 +27,14 @@
         <include wildcard="*.md" />
         <include wildcard="*.rst" />
         <include wildcard="*.csv" />
+        ${THREDDS_SERVICE_DATA_EXTRA_FILE_FILTERS}
       </filter>
 
     </datasetScan>
 
     <datasetScan name="${THREDDS_DATASET_LOCATION_NAME}" ID="${THREDDS_DATASET_URL_PATH}" path="${THREDDS_DATASET_URL_PATH}" location="${THREDDS_DATASET_LOCATION_ON_CONTAINER}">
 
-      <metadata inherited="true">
-        <serviceName>all</serviceName>
-      </metadata>
-
-      <filter>
-        <include wildcard="*.nc" />
-        <include wildcard="*.ncml" />
-        <include wildcard="*.txt" />
-        <include wildcard="*.md" />
-        <include wildcard="*.rst" />
-        <include wildcard="*.csv" />
-      </filter>
+      ${THREDDS_DATASET_DATASETSCAN_BODY}
 
     </datasetScan>
 
