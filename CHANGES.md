@@ -17,27 +17,27 @@
 
 ## Changes
 
-- THREDDS: add more options to configure catalog.xml
-  - Currently the default THREDDS configuration creates two default datasets, the Service Data dataset and the 
-    Main dataset. The Service Data dataset is used internally and hosts WPS outputs. The Main dataset is the
+- THREDDS: add more options to configure `catalog.xml`
+  - The default THREDDS configuration creates two default datasets, the *Service Data* dataset and the 
+    *Main* dataset. The *Service Data* dataset is used internally and hosts WPS outputs. The *Main* dataset is the
     place where users can access data served by THREDDS. Both of these are configured to serve files with the following 
     extensions: .nc .ncml .txt .md .rst .csv
 
   - In order to allow the THREDDS server to serve files with additional extensions, this introduces two new
-    variables: 
+    variables:
     - `THREDDS_SERVICE_DATA_EXTRA_FILE_FILTERS`: this allows users to specify additional [filter 
-        elements](https://docs.unidata.ucar.edu/tds/current/userguide/tds_dataset_scan_ref.html#including-only-desired-files) to the Service Data dataset. This is especially useful if a WPS 
+        elements](https://docs.unidata.ucar.edu/tds/current/userguide/tds_dataset_scan_ref.html#including-only-desired-files) to the *Service Data* dataset. This is especially useful if a WPS 
         outputs files with an extension other than the default (eg: .h5) to the `wps_outputs/` directory.
-    - `THREDDS_DATASET_DATASETSCAN_BODY`: this allows users to specify the whole body of the main dataset's 
+    - `THREDDS_DATASET_DATASETSCAN_BODY`: this allows users to specify the whole body of the *Main* dataset's 
        [`<datasetScan>`](https://docs.unidata.ucar.edu/tds/current/userguide/tds_dataset_scan_ref.html) element.
        This allows users to fully customize how this dataset serves files.
 
-  - We limit the configuration options for the Service Data dataset more than the main dataset because the Service
-    Data dataset requires a basic configuration in order to properly serve WPS outputs. Making significant changes
+  - We limit the configuration options for the *Service Data* dataset more than the *Main* dataset because the *Service
+    Data* dataset requires a basic configuration in order to properly serve WPS outputs. Making significant changes
     to this configuration could have unexpected negative impacts on WPS usage.
 
   - The defaults for these new variables are fully backwards compatible. Without changing these variables, the THREDDS
-    server should behave exactly the same as before. 
+    server should behave exactly the same as before.
 
 [2.5.3](https://github.com/bird-house/birdhouse-deploy/tree/2.5.3) (2024-09-11)
 ------------------------------------------------------------------------------------------------------------------
