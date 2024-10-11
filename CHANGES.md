@@ -36,8 +36,16 @@
     Data* dataset requires a basic configuration in order to properly serve WPS outputs. Making significant changes
     to this configuration could have unexpected negative impacts on WPS usage.
 
+  - In order to allow customization of the Magpie THREDDS configuration in case new file extensions are added we introduce
+    two additional variables:
+    - `THREDDS_MAGPIE_EXTRA_METADATA_PREFIXES`: additional file prefixes (ie. regular expression match patterns) that Magpie
+      should treat as metadata (accessible with "browse" permissions).
+    - `THREDDS_MAGPIE_EXTRA_DATA_PREFIXES`: additional file prefixes (ie. regular expression match patterns) that Magpie
+      should treat as data (accessible with "read" permissions).
+
   - The defaults for these new variables are fully backwards compatible. Without changing these variables, the THREDDS
-    server should behave exactly the same as before.
+    server should behave exactly the same as before except that .md files and .rst files are now considered metadata
+    files according to the Magpie configuration, meaning that they can now be viewed with "browse" permissions.
 
 [2.5.3](https://github.com/bird-house/birdhouse-deploy/tree/2.5.3) (2024-09-11)
 ------------------------------------------------------------------------------------------------------------------
