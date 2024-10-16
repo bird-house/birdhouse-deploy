@@ -21,7 +21,12 @@
       </metadata>
 
       <filter>
-        ${THREDDS_DEFAULT_FILE_FILTERS}
+        <include wildcard="*.nc" />
+        <include wildcard="*.ncml" />
+        <include wildcard="*.txt" />
+        <include wildcard="*.md" />
+        <include wildcard="*.rst" />
+        <include wildcard="*.csv" />
         ${THREDDS_SERVICE_DATA_EXTRA_FILE_FILTERS}
       </filter>
 
