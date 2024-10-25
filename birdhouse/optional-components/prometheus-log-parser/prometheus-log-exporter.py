@@ -1,7 +1,7 @@
 import argparse
 import asyncio
 from collections import defaultdict
-from contextlib import AsyncExitStack
+from enum import Enum
 import glob
 import importlib
 import os
@@ -9,6 +9,13 @@ import sys
 from typing import Callable
 import prometheus_client
 from anyio import AsyncFile, open_file, run
+
+
+class FileStates(Enum):
+    NOCHANGE = 0
+    TRUNCATED = 1
+    DELETED = 2
+    DIFFERENT = 3
 
 
 def load_exporter_configs(exporters_dir: str) -> dict[str, list[Callable]]:
@@ -21,22 +28,46 @@ def load_exporter_configs(exporters_dir: str) -> dict[str, list[Callable]]:
     return dict(configs)
 
 
-async def track_file(log_io: AsyncFile[str], line_parsers: list[Callable], poll_delay: int) -> None:
-    while True:
-        async for line in log_io:
-            for line_parser in line_parsers:
-                line_parser(line)
-        await asyncio.sleep(poll_delay)
+async def check_file_state(log_io: AsyncFile[str]):
+    try:
+        same_name_file_stat = os.stat(log_io.name)
+    except FileNotFoundError:
+        return FileStates.DELETED
+    file_stat = os.stat(log_io.fileno())
+    if same_name_file_stat == file_stat:
+        if await log_io.tell() > file_stat.st_size:
+            return FileStates.TRUNCATED
+        else:
+            return FileStates.NOCHANGE
+    return FileStates.DIFFERENT
+
+
+async def track_file(log_file: str, line_parsers: list[Callable], poll_delay: int) -> None:
+    try:
+        log_io = await open_file(log_file)
+        while True:
+            file_state = await check_file_state(log_io)
+            if file_state == FileStates.NOCHANGE:
+                async for line in log_io:
+                    for line_parser in line_parsers:
+                        line_parser(line)
+            elif file_state == FileStates.TRUNCATED:
+                await log_io.seek(0)
+            elif file_state == FileStates.DIFFERENT:
+                await log_io.aclose()
+                log_io = await open_file(log_file)
+            # if file is deleted, do nothing and wait to see if it is recreated later on
+            await asyncio.sleep(poll_delay)
+    finally:
+        await log_io.aclose()
 
 
 async def export_metrics(configs: dict[str, list[Callable]], poll_delay: int) -> None:
     tasks = []
-    async with AsyncExitStack() as stack:
-        for log_file, line_parsers in configs.items():
-            f = await stack.enter_async_context(await open_file(log_file))
-            tasks.append(asyncio.ensure_future(track_file(f, line_parsers, poll_delay)))
+    for log_file, line_parsers in configs.items():
+        tasks.append(asyncio.ensure_future(track_file(log_file, line_parsers, poll_delay)))
 
-        await asyncio.gather(*tasks)
+    await asyncio.gather(*tasks)
 
 
 def main(port: int, exporters_dir: str, poll_delay: int) -> None:
