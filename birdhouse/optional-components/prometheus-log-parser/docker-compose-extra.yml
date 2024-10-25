@@ -1,0 +1,24 @@
+version: "3.4"
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  prometheus-log-parser:
+    image: ${PROMETHEUS_LOG_PARSER_IMAGE}
+    container_name: prometheus-log-parser
+    entrypoint: ["sh", "/entrypoint.sh"]
+    command: ["python", "/prometheus-log-exporter.py"]
+    volumes:
+      - ./optional-components/prometheus-log-parser/requirements.txt:/requirements.txt:ro
+      - ./optional-components/prometheus-log-parser/entrypoint.sh:/entrypoint.sh:ro
+      - ./optional-components/prometheus-log-parser/prometheus-log-exporter.py:/prometheus-log-exporter.py:ro
+    environment:
+      - PROMETHEUS_LOG_PARSER_CLIENT_PORT=${PROMETHEUS_LOG_PARSER_CLIENT_PORT}
+      - PROMETHEUS_LOG_PARSER_EXPORTERS_DIR=${PROMETHEUS_LOG_PARSER_EXPORTERS_DIR}
+      - PROMETHEUS_LOG_PARSER_POLL_DELAY=${PROMETHEUS_LOG_PARSER_POLL_DELAY}
+    restart: always
+    logging: *default-logging

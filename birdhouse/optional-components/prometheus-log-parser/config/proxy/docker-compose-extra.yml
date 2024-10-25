@@ -1,0 +1,13 @@
+version: "3.4"
+services:
+  proxy:
+    volumes:
+      - proxy-logs:${PROXY_LOG_DIR}
+  prometheus-log-parser:
+    volumes:
+      - proxy-logs:/var/log/proxy
+    environment:
+      - PROXY_LOG_FILE=${PROXY_LOG_FILE}
+
+volumes:
+  proxy-logs:

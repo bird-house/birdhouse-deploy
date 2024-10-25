@@ -1,0 +1,5 @@
+version: "3.4"
+services:
+  prometheus-log-parser:
+    volumes:
+      - ./optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py:${PROMETHEUS_LOG_PARSER_EXPORTERS_DIR}/thredds-prometheus-log-exporter.py:ro
