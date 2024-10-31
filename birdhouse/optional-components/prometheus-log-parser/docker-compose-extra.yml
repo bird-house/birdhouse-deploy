@@ -18,7 +18,8 @@ services:
       - ./optional-components/prometheus-log-parser/prometheus-log-exporter.py:/prometheus-log-exporter.py:ro
     environment:
       - PROMETHEUS_LOG_PARSER_CLIENT_PORT=${PROMETHEUS_LOG_PARSER_CLIENT_PORT}
-      - PROMETHEUS_LOG_PARSER_EXPORTERS_DIR=${PROMETHEUS_LOG_PARSER_EXPORTERS_DIR}
-      - PROMETHEUS_LOG_PARSER_POLL_DELAY=${PROMETHEUS_LOG_PARSER_POLL_DELAY}
+      - LOG_PARSER_EXPORTERS_DIR=${PROMETHEUS_LOG_PARSER_EXPORTERS_DIR}
+      - LOG_PARSER_POLL_DELAY=${PROMETHEUS_LOG_PARSER_POLL_DELAY}
+      - LOG_PARSER_TAIL=${PROMETHEUS_LOG_PARSER_TAIL}
     restart: always
     logging: *default-logging

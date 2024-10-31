@@ -41,4 +41,4 @@ def parse_line(line):
             body_byte_sent = int(body_byte_sent) / 1024
             Counter.labels(**labels).inc(body_byte_sent)
 
-PROMETHEUS_LOG_EXPORTER_CONFIG = {f"/var/log/proxy/{os.getenv('PROXY_LOG_FILE')}": [parse_line]}
+LOG_PARSER_CONFIG = {f"/var/log/proxy/{os.getenv('PROXY_LOG_FILE')}": [parse_line]}
