@@ -10,15 +10,10 @@ services:
   prometheus-log-parser:
     image: ${PROMETHEUS_LOG_PARSER_IMAGE}
     container_name: prometheus-log-parser
-    entrypoint: ["sh", "/entrypoint.sh"]
-    command: ["python", "/prometheus-log-exporter.py"]
-    volumes:
-      - ./optional-components/prometheus-log-parser/requirements.txt:/requirements.txt:ro
-      - ./optional-components/prometheus-log-parser/entrypoint.sh:/entrypoint.sh:ro
-      - ./optional-components/prometheus-log-parser/prometheus-log-exporter.py:/prometheus-log-exporter.py:ro
+    entrypoint: ["log-parser-prometheus"]
     environment:
       - PROMETHEUS_LOG_PARSER_CLIENT_PORT=${PROMETHEUS_LOG_PARSER_CLIENT_PORT}
-      - LOG_PARSER_EXPORTERS_DIR=${PROMETHEUS_LOG_PARSER_EXPORTERS_DIR}
+      - LOG_PARSER_PARSERS=${PROMETHEUS_LOG_PARSER_PARSERS_DIR}
       - LOG_PARSER_POLL_DELAY=${PROMETHEUS_LOG_PARSER_POLL_DELAY}
       - LOG_PARSER_TAIL=${PROMETHEUS_LOG_PARSER_TAIL}
     restart: always
