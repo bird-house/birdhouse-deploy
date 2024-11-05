@@ -1,0 +1,6 @@
+scrape_configs:
+  - job_name: log_parser
+    honor_labels: true
+    static_configs:
+      - targets:
+        - prometheus-log-parser:${PROMETHEUS_LOG_PARSER_CLIENT_PORT}

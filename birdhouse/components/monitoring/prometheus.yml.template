@@ -20,6 +20,9 @@ scrape_configs:
   - targets:
     - ${BIRDHOUSE_FQDN}:9100
 
+scrape_config_files:
+  - "/etc/prometheus/scrape_config.d/*.yml"
+
 rule_files:
 - "/etc/prometheus/*.rules"
 
