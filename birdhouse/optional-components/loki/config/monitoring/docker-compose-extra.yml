@@ -1,0 +1,8 @@
+version: "3.4"
+services:
+  grafana:
+    volumes:
+      - ./optional-components/loki/config/monitoring/loki_datasources.yml:/etc/grafana/provisioning/datasources/loki_datasources.yml:ro
+  prometheus:
+    volumes:
+      - ./optional-components/loki/config/monitoring/scrape_configs.yml:/etc/prometheus/scrape_config.d/promtail.yml:ro

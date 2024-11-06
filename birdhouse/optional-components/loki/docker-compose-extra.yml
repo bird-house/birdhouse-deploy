@@ -1,0 +1,27 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  loki:
+    image: ${LOKI_IMAGE}
+    container_name: loki
+    command: -config.file=/etc/loki/loki-config.yml
+    volumes:
+      - ./optional-components/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+
+  promtail:
+    image: ${LOKI_PROMTAIL_IMAGE}
+    container_name: promtail
+    volumes:
+      - promtail_positions:/tmp/promtail_positions
+      - ./optional-components/loki/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+    command: -config.file=/etc/promtail/promtail-config.yml
+
+volumes:
+  promtail_positions:

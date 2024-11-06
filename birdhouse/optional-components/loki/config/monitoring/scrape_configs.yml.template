@@ -1,0 +1,6 @@
+scrape_configs:
+  - job_name: promtail
+    honor_labels: true
+    static_configs:
+      - targets:
+        - promtail:${LOKI_PROMTAIL_PORT}
