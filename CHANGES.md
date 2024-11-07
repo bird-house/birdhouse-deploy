@@ -23,8 +23,7 @@
   It can also generate prometheus metrics from the logs that it parses that can be ingested by the monitoring Prometheus instance
   (the one created by the ``components/monitoring`` component).
 
-  Promtail can be deployed separately from loki if you just want to generate prometheus metrics. However, loki requires that
-  promtail be enabled as well (enabling loki will enable promtail by default).
+  Promtail can be deployed separately from loki if you just want to generate prometheus metrics.
 
   For instructions on how to configure these components and start generating metrics see the documentation in
   `optional-components/README.md`.

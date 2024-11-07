@@ -505,8 +505,6 @@ Loki
 `Loki <loki>`_ is a component of the Grafana stack (see the monitoring component at ``components/monitoring``) that ships logs
 parsed by `promtail`_ to Grafana.
 
-Loki depends on `promtail`_ which means that `promtail`_ will be enabled by default if loki is enabled.
-
 To view logs exported by loki:
 
     * Navigate to the ``https://<BIRDHOUSE_FQDN>/grafana/explore`` search page
