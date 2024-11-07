@@ -1,12 +1,12 @@
 server:
-  http_listen_port: ${LOKI_PROMTAIL_PORT}
+  http_listen_port: ${PROMTAIL_PORT}
   grpc_listen_port: 0
 
 positions:
   filename: /tmp/positions.yaml
 
 clients:
-  - url: http://loki:${LOKI_PORT}/loki/api/v1/push
+${PROMTAIL_LOKI_CLIENT_URL_BLOCK}
 
 scrape_configs: [{
   job_name: system,
@@ -14,8 +14,8 @@ scrape_configs: [{
     targets: [localhost],
     labels: {
       job: varlogs,
-      __path__: '${LOKI_PROMTAIL_LOG_DIR}/**/*.log'
+      __path__: '${PROMTAIL_LOG_DIR}/**/*.log'
     }
   ],
-  pipeline_stages: [${LOKI_VARLOGS_PIPELINE_STAGES}]
+  pipeline_stages: [${PROMTAIL_VARLOGS_PIPELINE_STAGES}]
   }]

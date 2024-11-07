@@ -3,4 +3,4 @@ scrape_configs:
     honor_labels: true
     static_configs:
       - targets:
-        - promtail:${LOKI_PROMTAIL_PORT}
+        - promtail:${PROMTAIL_PORT}

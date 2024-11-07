@@ -14,14 +14,3 @@ services:
     command: -config.file=/etc/loki/loki-config.yml
     volumes:
       - ./optional-components/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
-
-  promtail:
-    image: ${LOKI_PROMTAIL_IMAGE}
-    container_name: promtail
-    volumes:
-      - promtail_positions:/tmp/promtail_positions
-      - ./optional-components/loki/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
-    command: -config.file=/etc/promtail/promtail-config.yml
-
-volumes:
-  promtail_positions:

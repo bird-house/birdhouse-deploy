@@ -5,9 +5,7 @@ services:
       - proxy-logs:${PROXY_LOG_DIR}
   promtail:
     volumes:
-      - proxy-logs:${LOKI_PROMTAIL_LOG_DIR}/proxy
-    environment:
-      - PROXY_LOG_FILE=${PROXY_LOG_FILE}
+      - proxy-logs:${PROMTAIL_LOG_DIR}/proxy
 
 volumes:
   proxy-logs:

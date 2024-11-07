@@ -1,0 +1,20 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  promtail:
+    image: ${PROMTAIL_IMAGE}
+    container_name: promtail
+    volumes:
+      - promtail_positions:/tmp/promtail_positions
+      - ./optional-components/promtail/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+    command: -config.file=/etc/promtail/promtail-config.yml
+
+volumes:
+  promtail_positions:
