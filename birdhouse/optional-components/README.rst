@@ -443,3 +443,76 @@ How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.examp
 
     .. seealso::
         See the `env.local.example`_ file for more details about this ``BIRDHOUSE_PROXY_ROOT_LOCATION`` behaviour.
+
+.. _promtail
+
+Promtail
+--------
+
+`Promtail <promtail_docs>`_ is a component of the Grafana stack (see the monitoring component at ``components/monitoring``) that
+parses and ships logs to Grafana through `Loki <loki>`_.
+
+It can also generate prometheus style metrics from the logs that it parses that can be ingested by the monitoring Prometheus instance
+(the one created by the ``components/monitoring`` component).
+
+By default promtail will try to parse all logs (all files ending in ``.log``) mounted to the directory defined by the ``PROMTAIL_LOG_DIR``
+variable on the ``promtail`` container. To create rules to process logs and generate metrics from them, update the
+``PROMTAIL_VARLOGS_PIPELINE_STAGES`` variable to contain `pipeline stages configuration <promtail_pipeline_stages_docs>`_.
+
+We do not recommend updating ``PROMTAIL_VARLOGS_PIPELINE_STAGES`` in the ``env.local`` file, instead create a new optional component that
+updates this variable or update this variable in the ``default.env`` file of an existing component.
+
+Promtail can also be deployed with `loki`_ if you wish the parsed logs to be visible through the Grafana dashboard. This is not necessary
+if you simply wish to generate prometheus metrics.
+
+Best practices for writing metrics in pipeline stages
+
+* create metrics with the ``birdhouse_`` prefix. This will make it easy to distinguish your custom metrics from the rest of the prometheus
+  metrics that promtail generates.
+* use the ``labelallow`` stage to select which labels will be added to your metric. Promtail will add additional labels that you may not
+  want by default if you don't remove them.
+* use the ``selector`` field to select logs with a specific filename. If you don't, your pipeline rules may be applied to additional log
+  files by accident.
+
+If you are writing additional pipeline stages and you want to test out your changes without bringing up the whole birdhouse stack:
+
+.. code-block:: shell
+
+    birdhouse compose config  # creates all template files including the promtail-config.yml file to be tested
+    birdhouse compose run --rm promtail -config.file=/etc/promtail/promtail-config.yml --dry-run --inspect # does a dry-run using the new config and reports errors (if any)
+
+To view metrics exported by promtail:
+
+    * Navigate to the ``https://<BIRDHOUSE_FQDN>/prometheus/graph`` search page
+    * search for the name of the metric you are looking for (if you've used the ``birdhouse_`` prefix as recommended above, the metric name
+      will start with ``birdhouse_``).
+
+.. warning::
+
+    If you are using promtail without `loki`_, the promtail logs will generate a lot of error messages complaining that it can't connect
+    to the loki client. This is expected since `promtail is not intended to be run independent of loki <promtail_no_loki_issue>`_.
+    Promtail should still be able to generate prometheus logs without loki.
+
+.. _promtail_docs: https://grafana.com/docs/loki/latest/send-data/promtail/
+.. _promtail_pipeline_stages_docs: https://grafana.com/docs/loki/latest/send-data/promtail/stages/
+.. _promtail_no_loki_issue: https://github.com/grafana/loki/issues/6992
+
+.. _loki
+
+Loki
+----
+
+`Loki <loki>`_ is a component of the Grafana stack (see the monitoring component at ``components/monitoring``) that ships logs
+parsed by `promtail`_ to Grafana.
+
+Loki depends on `promtail`_ which means that `promtail`_ will be enabled by default if loki is enabled.
+
+To view logs exported by loki:
+
+    * Navigate to the ``https://<BIRDHOUSE_FQDN>/grafana/explore`` search page
+    * Select "Loki" from the explore dropdown
+    * Select "Logs" from the button beside the searchbar
+    * Search for your logs using a `LogQL <logql_docs>`_ query in the search bar (to get all logs use ``{host=~ ".+"}``)
+
+.. _loki_docs: https://grafana.com/docs/loki/latest/
+.. _logql_docs: https://grafana.com/docs/loki/latest/query/

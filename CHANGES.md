@@ -15,7 +15,23 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+- Add the `promtail` and `loki` optional components
+
+  Promtail and loki are components of the Grafana stack (see the monitoring component at `components/monitoring`) that
+  parses and ships logs to Grafana through loki.
+
+  It can also generate prometheus metrics from the logs that it parses that can be ingested by the monitoring Prometheus instance
+  (the one created by the ``components/monitoring`` component).
+
+  Promtail can be deployed separately from loki if you just want to generate prometheus metrics. However, loki requires that
+  promtail be enabled as well (enabling loki will enable promtail by default).
+
+  For instructions on how to configure these components and start generating metrics see the documentation in
+  `optional-components/README.md`.
+
+- Update the prometheus version to the current latest `v2.53.3`. This is required to support
+  loading multiple prometheus scrape configuration files with the `scrape_config_files`
+  configuration option.
 
 [2.5.4](https://github.com/bird-house/birdhouse-deploy/tree/2.5.4) (2024-10-31)
 ------------------------------------------------------------------------------------------------------------------
