@@ -469,7 +469,7 @@ To view all metrics exported by the log parser:
 
 For developers, to create a new parser that can be used to track log files:
 
-    1. create a python file that is can be mounted as a volume to the ``PROMETHEUS_LOG_PARSER_PARSERS_DIR``
+    1. create a python file that can be mounted as a volume to the ``PROMETHEUS_LOG_PARSER_PARSERS_DIR``
        directory on the ``prometheus-log-parser`` container.
     2. mount any log files that you want to parse as a volume on the ``prometheus-log-parser`` container.
     3. the python script must contain a variable named ``LOG_PARSER_CONFIG`` which is a
