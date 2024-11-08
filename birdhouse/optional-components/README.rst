@@ -472,15 +472,18 @@ For developers, to create a new parser that can be used to track log files:
     1. create a python file that can be mounted as a volume to the ``PROMETHEUS_LOG_PARSER_PARSERS_DIR``
        directory on the ``prometheus-log-parser`` container.
     2. mount any log files that you want to parse as a volume on the ``prometheus-log-parser`` container.
-    3. the python script must contain a variable named ``LOG_PARSER_CONFIG`` which is a
-       dictionary where keys are paths to log files (mounted in the container) and values are a list of
-       "line parser" functions.
+    3. the python script should create at least one `prometheus metric using the prometheus_client 
+       library <prometheus_python_metrics>`_ and must contain a global constant named ``LOG_PARSER_CONFIG`` 
+       which is a dictionary where keys are paths to log files (mounted in the container) and values are a 
+       list of "line parser" functions.
        * a "line parser" is any function that takes a string as a single argument (a single line from a
          log file). These functions are where you'd write the code that parses the line and converts it
          into a prometheus metric.
+       * your line parser function should update one of the prometheus metrics you created previously. 
 
     For an example of a working log parser, see
-    `optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py`_
+    `birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py`_
     (:download:`download <birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py>`).
 
 .. _log-parser: https://github.com/DACCS-Climate/log-parser/
+.. _prometheus_python_metrics: https://prometheus.github.io/client_python/instrumenting/
