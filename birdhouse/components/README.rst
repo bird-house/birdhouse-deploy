@@ -416,7 +416,7 @@ longer than 90 days:
   - `recording rules`_ are added to the monitoring Prometheus instance (the one deployed by this `monitoring` component). These
     rules are any that have the `longterm-metrics` label. 
   - The metrics described by these rules are collected/calculated by the monitoring Prometheus instance. The monitoring Prometheus
-    instance treats these rules the same as 
+    instance treats these rules the same as any other (ie. only stores them for 90 days by default).
   - To enable some example longterm `recording rules`_, enable the :ref:`prometheus-longterm-rules` component. You can also choose 
     to create your own rules (see :ref:`prometheus-longterm-metrics` for details on how to create these longterm metrics rules). 
 2. 
