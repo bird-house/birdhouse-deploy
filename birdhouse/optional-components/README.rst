@@ -443,3 +443,47 @@ How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.examp
 
     .. seealso::
         See the `env.local.example`_ file for more details about this ``BIRDHOUSE_PROXY_ROOT_LOCATION`` behaviour.
+
+.. _prometheus-log-parser
+
+Prometheus Log Parser
+---------------------
+
+Parses log files from other components and converts their logs to prometheus metrics that are then ingested by the
+monitoring Prometheus instance (the one created by the :ref:`Monitoring` component).
+
+For more information on how this component reads log files and converts them to prometheus components see
+the log-parser_ documentation.
+
+To configure this component:
+
+    * set the ``PROMETHEUS_LOG_PARSER_POLL_DELAY`` variable to a number of seconds to set how often the log parser
+      checks if new lines have been added to log files (default: 1)
+    * set the ``PROMETHEUS_LOG_PARSER_TAIL`` variable to ``"true"`` to only parse new lines in log files. If unset,
+      this will parse all existing lines in the log file as well (default: ``"true"``)
+
+To view all metrics exported by the log parser:
+
+    * Navigate to the ``https://<BIRDHOUSE_FQDN>/prometheus/graph`` search page
+    * Put ``{job="log_parser"}`` in the search bar and click the "Execute" button
+
+For developers, to create a new parser that can be used to track log files:
+
+    1. create a python file that can be mounted as a volume to the ``PROMETHEUS_LOG_PARSER_PARSERS_DIR``
+       directory on the ``prometheus-log-parser`` container.
+    2. mount any log files that you want to parse as a volume on the ``prometheus-log-parser`` container.
+    3. the python script should create at least one `prometheus metric using the prometheus_client 
+       library <prometheus_python_metrics>`_ and must contain a global constant named ``LOG_PARSER_CONFIG`` 
+       which is a dictionary where keys are paths to log files (mounted in the container) and values are a 
+       list of "line parser" functions.
+       * a "line parser" is any function that takes a string as a single argument (a single line from a
+         log file). These functions are where you'd write the code that parses the line and converts it
+         into a prometheus metric.
+       * your line parser function should update one of the prometheus metrics you created previously. 
+
+    For an example of a working log parser, see
+    `birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py`_
+    (:download:`download <birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py>`).
+
+.. _log-parser: https://github.com/DACCS-Climate/log-parser/
+.. _prometheus_python_metrics: https://prometheus.github.io/client_python/instrumenting/

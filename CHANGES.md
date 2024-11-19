@@ -17,6 +17,36 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.6.0](https://github.com/bird-house/birdhouse-deploy/tree/2.6.0) (2024-11-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add the `prometheus-log-parser` optional component
+
+  This component parses log files from other components and converts their logs to prometheus
+  metrics that are then ingested by the monitoring Prometheus instance (the one created by the
+  `components/monitoring` component).
+
+  For more information on how this component reads log files and converts them to prometheus components see
+  the [log-parser](https://github.com/DACCS-Climate/log-parser/) documentation.
+
+  To configure this component:
+
+  * set the `PROMETHEUS_LOG_PARSER_POLL_DELAY` variable to a number of seconds to set how often the log parser
+    checks if new lines have been added to log files (default: 1)
+  * set the `PROMETHEUS_LOG_PARSER_TAIL` variable to `"true"` to only parse new lines in log files. If unset,
+    this will parse all existing lines in the log file as well (default: `"true"`)
+
+  To view all metrics exported by the log parser:
+
+  * Navigate to the `https://<BIRDHOUSE_FQDN>/prometheus/graph` search page
+  * Put `{job="log_parser"}` in the search bar and click the "Execute" button
+
+- Update the prometheus version to the current latest `v2.53.3`. This is required to support   
+  loading multiple prometheus scrape configuration files with the `scrape_config_files`
+  configuration option.
+
 [2.5.5](https://github.com/bird-house/birdhouse-deploy/tree/2.5.5) (2024-11-14)
 ------------------------------------------------------------------------------------------------------------------
 
