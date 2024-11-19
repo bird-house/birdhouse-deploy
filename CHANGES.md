@@ -46,8 +46,80 @@
   * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
   * ``/thanos-minio``: a minio web console to inspect the data stored by minio.
 
-- Update the prometheus version from `v2.19.0` to the current latest `v2.52.0`. This is required to support the interaction between 
-  prometheus and thanos.
+[2.6.0](https://github.com/bird-house/birdhouse-deploy/tree/2.6.0) (2024-11-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add the `prometheus-log-parser` optional component
+
+  This component parses log files from other components and converts their logs to prometheus
+  metrics that are then ingested by the monitoring Prometheus instance (the one created by the
+  `components/monitoring` component).
+
+  For more information on how this component reads log files and converts them to prometheus components see
+  the [log-parser](https://github.com/DACCS-Climate/log-parser/) documentation.
+
+  To configure this component:
+
+  * set the `PROMETHEUS_LOG_PARSER_POLL_DELAY` variable to a number of seconds to set how often the log parser
+    checks if new lines have been added to log files (default: 1)
+  * set the `PROMETHEUS_LOG_PARSER_TAIL` variable to `"true"` to only parse new lines in log files. If unset,
+    this will parse all existing lines in the log file as well (default: `"true"`)
+
+  To view all metrics exported by the log parser:
+
+  * Navigate to the `https://<BIRDHOUSE_FQDN>/prometheus/graph` search page
+  * Put `{job="log_parser"}` in the search bar and click the "Execute" button
+
+- Update the prometheus version to the current latest `v2.53.3`. This is required to support   
+  loading multiple prometheus scrape configuration files with the `scrape_config_files`
+  configuration option.
+
+[2.5.5](https://github.com/bird-house/birdhouse-deploy/tree/2.5.5) (2024-11-14)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new full build with latest of everything
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#137](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/137)
+  for more info.
+
+
+[2.5.4](https://github.com/bird-house/birdhouse-deploy/tree/2.5.4) (2024-10-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- THREDDS: add more options to configure `catalog.xml`
+  - The default THREDDS configuration creates two default datasets, the *Service Data* dataset and the 
+    *Main* dataset. The *Service Data* dataset is used internally and hosts WPS outputs. The *Main* dataset is the
+    place where users can access data served by THREDDS. Both of these are configured to serve files with the following 
+    extensions: .nc .ncml .txt .md .rst .csv
+
+  - In order to allow the THREDDS server to serve files with additional extensions, this introduces two new
+    variables:
+    - `THREDDS_SERVICE_DATA_EXTRA_FILE_FILTERS`: this allows users to specify additional [filter 
+        elements](https://docs.unidata.ucar.edu/tds/current/userguide/tds_dataset_scan_ref.html#including-only-desired-files) to the *Service Data* dataset. This is especially useful if a WPS 
+        outputs files with an extension other than the default (eg: .h5) to the `wps_outputs/` directory.
+    - `THREDDS_DATASET_DATASETSCAN_BODY`: this allows users to specify the whole body of the *Main* dataset's 
+       [`<datasetScan>`](https://docs.unidata.ucar.edu/tds/current/userguide/tds_dataset_scan_ref.html) element.
+       This allows users to fully customize how this dataset serves files.
+
+  - We limit the configuration options for the *Service Data* dataset more than the *Main* dataset because the *Service
+    Data* dataset requires a basic configuration in order to properly serve WPS outputs. Making significant changes
+    to this configuration could have unexpected negative impacts on WPS usage.
+
+  - In order to allow customization of the Magpie THREDDS configuration in case new file extensions are added we introduce
+    two additional variables:
+    - `THREDDS_MAGPIE_EXTRA_METADATA_PREFIXES`: additional file prefixes (ie. regular expression match patterns) that Magpie
+      should treat as metadata (accessible with "browse" permissions).
+    - `THREDDS_MAGPIE_EXTRA_DATA_PREFIXES`: additional file prefixes (ie. regular expression match patterns) that Magpie
+      should treat as data (accessible with "read" permissions).
+
+  - The defaults for these new variables are fully backwards compatible. Without changing these variables, the THREDDS
+    server should behave exactly the same as before except that .md files and .rst files are now considered metadata
+    files according to the Magpie configuration, meaning that they can now be viewed with "browse" permissions.
 
 [2.5.3](https://github.com/bird-house/birdhouse-deploy/tree/2.5.3) (2024-09-11)
 ------------------------------------------------------------------------------------------------------------------

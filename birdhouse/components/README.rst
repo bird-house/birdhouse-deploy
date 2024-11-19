@@ -276,6 +276,7 @@ Here is a sample setup to test autodeploy:
   # then remove the running scheduler container
   birdhouse compose up -d --remove-orphans
 
+.. _Monitoring:
 
 Monitoring
 ==========
