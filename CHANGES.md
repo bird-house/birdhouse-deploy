@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.6.0](https://github.com/bird-house/birdhouse-deploy/tree/2.6.0) (2024-11-19)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Add the `prometheus-log-parser` optional component
