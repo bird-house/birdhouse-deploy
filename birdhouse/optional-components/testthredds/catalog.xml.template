@@ -11,7 +11,8 @@
         <service name="iso" serviceType="ISO" base="/${TESTTHREDDS_CONTEXT_ROOT}/iso/"/>
         <service name="wcs" serviceType="WCS" base="/${TESTTHREDDS_CONTEXT_ROOT}/wcs/" />
         <service name="wms" serviceType="WMS" base="/${TESTTHREDDS_CONTEXT_ROOT}/wms/" />
-        <service name="subsetServer" serviceType="NetcdfSubset" base="/${TESTTHREDDS_CONTEXT_ROOT}/ncss/" />
+        <service name="ncssGrid" serviceType="NetcdfSubset" base="${TWITCHER_PROTECTED_PATH}/thredds/ncss/grid/" />
+        <service name="ncssPoint" serviceType="NetcdfSubset" base="${TWITCHER_PROTECTED_PATH}/thredds/ncss/point/" />
     </service>
 
     <datasetScan name="TestDatasets" ID="testdatasets" path="testdatasets" location="/pavics-testdata">
