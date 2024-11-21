@@ -33,6 +33,7 @@ providers:
           dodsC,
           wcs,
           wms,
-          ncss,
+          ncss/grid,
+          ncss/point,
           ${THREDDS_MAGPIE_EXTRA_DATA_PREFIXES}
         ]
