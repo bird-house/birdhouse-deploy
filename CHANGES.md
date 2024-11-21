@@ -15,7 +15,20 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Fix regressions introduced by PR #359 "Flexible locations for data served by thredds"
+
+  In [PR #359](https://github.com/bird-house/birdhouse-deploy/pull/359/):
+
+  `secure-thredds/config/magpie/permissions.cfg` started to use variable but was never renamed to `.template`
+  so those variable never get template expanded
+  (commit [317d96c3](https://github.com/bird-house/birdhouse-deploy/commit/317d96c39db7a6d79d1568a7094441ccdedc55ae)).
+
+  `bootstrap-testdata` default value was removed but did not source `read-configs.include.sh` so the variable
+   stayed blank (commit [4ab0fc74](https://github.com/bird-house/birdhouse-deploy/commit/4ab0fc74cb8fa601d75ecfc2a94749b23f60109c)).
+   The default value was there initially so the script can be used in standalone situation (not inside a checkout).
+
 
 [2.6.0](https://github.com/bird-house/birdhouse-deploy/tree/2.6.0) (2024-11-19)
 ------------------------------------------------------------------------------------------------------------------
