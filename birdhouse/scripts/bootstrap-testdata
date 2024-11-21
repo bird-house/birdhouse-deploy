@@ -25,7 +25,7 @@ fi
 if [ -z "${DATASET_ROOT}" ]; then
     # Default for when unable to source read-configs.include.sh (ie when
     # used standalone outside of the checkout).
-    DATASET_ROOT="${THREDDS_SERVICE_DATA_LOCATION_ON_HOST:=/data/datasets}"
+    DATASET_ROOT="${THREDDS_SERVICE_DATA_LOCATION_ON_HOST:-${BIRDHOUSE_DATA_PERSIST_ROOT:-/data}/datasets}"
 fi
 
 FROM_SERVER=${FROM_SERVER:-"https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/fileServer/birdhouse"}
