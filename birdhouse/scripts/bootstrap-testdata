@@ -2,7 +2,7 @@
 # Bootstrap minimum test data on Thredds.
 # To run testsuite in https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 #
-# Need to open temporary Thredds "testdata/secure/" on PAVICS production to anonymous group.
+# Need to open temporary Thredds "testdata/secure/" on Birdhouse production to anonymous group.
 #
 # To be run locally on the host running Thredds.  Will populate test data files
 # under DATASET_ROOT, customizable by env var.
@@ -10,11 +10,25 @@
 # Need write-access to DATASET_ROOT (/data/datasets/).
 
 
-if [ -z "$DATASET_ROOT" ]; then
-    DATASET_ROOT="${DATA_PERSIST_ROOT}/${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
+
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
+
+    # Get THREDDS_SERVICE_DATA_LOCATION_ON_HOST
+    read_configs
 fi
 
-FROM_SERVER="https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/fileServer/birdhouse"
+
+if [ -z "${DATASET_ROOT}" ]; then
+    # Default for when unable to source read-configs.include.sh (ie when
+    # used standalone outside of the checkout).
+    DATASET_ROOT="${THREDDS_SERVICE_DATA_LOCATION_ON_HOST:=/data/datasets}"
+fi
+
+FROM_SERVER=${FROM_SERVER:-"https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/fileServer/birdhouse"}
 
 FILE_LIST="
 nrcan/nrcan_canada_daily/tasmin/nrcan_canada_daily_tasmin_2013.nc
@@ -31,14 +45,16 @@ cccma/CanESM2/historical/fx/atmos/r0i0p0/sftlf/sftlf_fx_CanESM2_historical_r0i0p
 testdata/xclim/NRCANdaily/nrcan_canada_daily_tasmin_1990.nc
 "
 
-cd "$DATASET_ROOT"
+cd "${DATASET_ROOT}" || exit 1
 
-for afile in $FILE_LIST; do
-    if [ ! -f "$afile" ]; then
-        PARENT_DIRS="`dirname "$afile"`"
-        if [ ! -d "$PARENT_DIRS" ]; then
-            mkdir -p "$PARENT_DIRS"
+for afile in ${FILE_LIST}; do
+    if [ ! -f "${afile}" ]; then
+        PARENT_DIRS="$(dirname "${afile}")"
+        if [ ! -d "${PARENT_DIRS}" ]; then
+            mkdir -p "${PARENT_DIRS}"
         fi
-        curl "$FROM_SERVER/$afile" --output "$afile"
+        set -e  # Fail on error.
+        curl "${FROM_SERVER}/${afile}" --output "${afile}"
+        set +e
     fi
 done
