@@ -17,7 +17,7 @@ COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
     . "${COMPOSE_DIR}/read-configs.include.sh"
 
-    # Get THREDDS_SERVICE_DATA_LOCATION_ON_HOST
+    # Get THREDDS_SERVICE_DATA_LOCATION_ON_HOST, BIRDHOUSE_DATA_PERSIST_ROOT
     read_configs
 fi
 
