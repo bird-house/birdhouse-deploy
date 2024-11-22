@@ -105,8 +105,8 @@ fi
 
 create_compose_conf_list # this sets COMPOSE_CONF_LIST
 log INFO "Displaying resolved compose configurations:"
-echo "COMPOSE_CONF_LIST="
-echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
+log INFO "COMPOSE_CONF_LIST="
+log INFO ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
 
 if [ x"$1" = x"info" ]; then
   log INFO "Stopping before execution of docker-compose command."

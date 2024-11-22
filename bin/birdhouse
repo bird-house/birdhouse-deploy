@@ -7,7 +7,7 @@ COMPOSE_DIR="$(dirname "${THIS_DIR}")/birdhouse"
 export BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"${COMPOSE_DIR}/birdhouse-compose.sh"}"
 export __BIRDHOUSE_SUPPORTED_INTERFACE=True
 
-USAGE="USAGE: $0 [-h|--help] [-b|--backwards-compatible] [-e|--env-file local-env-file] {info|compose|configs}"
+USAGE="USAGE: $0 [-h|--help] [-b|--backwards-compatible] [-e|--env-file local-env-file] {[--log-stdout] | [--log-file log-file-path]} {info|compose|configs}"
 HELP="$USAGE
 
 Manage the Birdhouse software stack.
@@ -21,6 +21,8 @@ Options:
   -h, --help                   Print this message and exit
   -b, --backwards-compatible   Run in backwards compatible mode
   -e, --env-file string        Override the local environment file, default is ${COMPOSE_DIR}/env.local
+  --log-stdout                 Write logs to stdout, default is to write to stderr
+  --log-file string            Write logs to this file path, default is to write to stderr
 "
 
 CONFIGS_USAGE="USAGE: $0 configs [-h|--help] [-d|--default] {[-p|--print-config-command] | [-c|--command command]}"
@@ -194,6 +196,26 @@ parse_args() {
       shift
       parse_args "$@"
       ;;
+    --log-stdout)
+      shift
+      [ "${LOG_FILE}" = 'True' ] && parse_args 'invalid arg that triggers usage message'
+      export BIRDHOUSE_LOG_FD=1 # The argument here takes precedence over the env variable
+      LOG_STDOUT=True
+      parse_args "$@"
+      ;;
+    --log-file=*)
+      arg_value="${1#*=}"
+      shift
+      parse_args --log-file "${arg_value}" "$@"
+      ;;
+    --log-file)
+      shift
+      [ "${LOG_STDOUT}" = 'True' ] && parse_args 'invalid arg that triggers usage message'
+      export BIRDHOUSE_LOG_FILE=$(realpath "$1") # The argument here takes precedence over the env variable
+      LOG_FILE=True
+      shift
+      parse_args "$@"
+      ;;
     info)
       shift
       "${BIRDHOUSE_COMPOSE}" info "$@"
@@ -212,7 +234,7 @@ parse_args() {
       echo "$HELP"
       ;;
     -??*)
-      parse_multiple_short_flags parse_configs_args "$@"
+      parse_multiple_short_flags parse_args "$@"
       ;;
     *)
       >&2 echo "$USAGE"
