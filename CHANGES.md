@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.6.1](https://github.com/bird-house/birdhouse-deploy/tree/2.6.1) (2024-11-22)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Fix regressions introduced by PR #359 "Flexible locations for data served by thredds"
