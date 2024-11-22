@@ -10,8 +10,22 @@
 # Need write-access to DATASET_ROOT (/data/datasets/).
 
 
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
+
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
+
+    # Get THREDDS_SERVICE_DATA_LOCATION_ON_HOST, BIRDHOUSE_DATA_PERSIST_ROOT
+    read_configs
+fi
+
+
 if [ -z "${DATASET_ROOT}" ]; then
-    DATASET_ROOT="${BIRDHOUSE_DATA_PERSIST_ROOT}/${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}"
+    # Default for when unable to source read-configs.include.sh (ie when
+    # used standalone outside of the checkout).
+    DATASET_ROOT="${DATASET_ROOT:-${THREDDS_SERVICE_DATA_LOCATION_ON_HOST:-${BIRDHOUSE_DATA_PERSIST_ROOT:-/data}/datasets}}"
 fi
 
 FROM_SERVER=${FROM_SERVER:-"https://pavics.ouranos.ca/twitcher/ows/proxy/thredds/fileServer/birdhouse"}
@@ -39,6 +53,8 @@ for afile in ${FILE_LIST}; do
         if [ ! -d "${PARENT_DIRS}" ]; then
             mkdir -p "${PARENT_DIRS}"
         fi
+        set -e  # Fail on error.
         curl "${FROM_SERVER}/${afile}" --output "${afile}"
+        set +e
     fi
 done
