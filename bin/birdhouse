@@ -203,12 +203,12 @@ parse_args() {
       LOG_STDOUT=True
       parse_args "$@"
       ;;
-    --log-file=*)
+    -l=|--log-file=*)
       arg_value="${1#*=}"
       shift
       parse_args --log-file "${arg_value}" "$@"
       ;;
-    --log-file)
+    -l|--log-file)
       shift
       [ "${LOG_STDOUT}" = 'True' ] && parse_args 'invalid arg that triggers usage message'
       export BIRDHOUSE_LOG_FILE=$(realpath "$1") # The argument here takes precedence over the env variable
