@@ -21,7 +21,7 @@ services:
     image: ${NODE_EXPORTER_IMAGE}
     container_name: node-exporter
     volumes:
-      - /:/host:ro,rslave
+      - /:/host:ro
     network_mode: "host"
     pid: "host"
     command: --path.rootfs=/host

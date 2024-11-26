@@ -123,6 +123,11 @@ if [ x"$1" = x"up" ]; then
       log INFO "Executing '$COMPONENT_PRE_COMPOSE_UP'"
       sh ${SHELL_EXEC_FLAGS} "$COMPONENT_PRE_COMPOSE_UP"
     fi
+    COMPONENT_PRE_COMPOSE_UP_INCLUDE="$adir/pre-docker-compose-up.include"
+    if [ -f "$COMPONENT_PRE_COMPOSE_UP_INCLUDE" ]; then
+      log INFO "Sourcing '$COMPONENT_PRE_COMPOSE_UP_INCLUDE'"
+      . "$COMPONENT_PRE_COMPOSE_UP_INCLUDE"
+    fi
   done
 fi
 
