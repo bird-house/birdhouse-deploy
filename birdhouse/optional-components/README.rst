@@ -487,3 +487,11 @@ For developers, to create a new parser that can be used to track log files:
 
 .. _log-parser: https://github.com/DACCS-Climate/log-parser/
 .. _prometheus_python_metrics: https://prometheus.github.io/client_python/instrumenting/
+
+
+Local Dev Test
+--------------
+
+.. code:: shell
+
+  echo '127.0.0.1    host.docker.internal' | sudo tee -a /etc/hosts 

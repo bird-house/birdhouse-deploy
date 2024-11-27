@@ -107,10 +107,10 @@ c.DockerSpawner.environment = {
     # Post on Panel forum:
     # https://discourse.holoviz.org/t/how-to-customize-the-display-url-from-panel-serve-for-use-behind-jupyterhub-with-jupyter-server-proxy/3571
     # Issue about Panel Preview: https://github.com/holoviz/panel/issues/3440
-    "BIRDHOUSE_HOST_URL": "https://${BIRDHOUSE_FQDN_PUBLIC}",
+    "BIRDHOUSE_HOST_URL": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}",
     # https://docs.dask.org/en/stable/configuration.html
     # https://jupyterhub-on-hadoop.readthedocs.io/en/latest/dask.html
-    "DASK_DISTRIBUTED__DASHBOARD__LINK": "https://${BIRDHOUSE_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
+    "DASK_DISTRIBUTED__DASHBOARD__LINK": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
 }
 
 host_user_data_dir = join(os.environ['WORKSPACE_DIR'], "{username}")

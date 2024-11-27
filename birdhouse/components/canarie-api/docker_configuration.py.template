@@ -10,7 +10,7 @@ import requests_cache  # see entrypoint script
 
 logger = logging.getLogger("canarie-api-config")
 
-MY_SERVER_NAME = 'https://${BIRDHOUSE_FQDN_PUBLIC}/canarie'
+MY_SERVER_NAME = '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/canarie'
 
 DATABASE = {
     'filename': '/data/stats.db',
@@ -125,7 +125,7 @@ SERVICES = {
             'releasenotes': '${BIRDHOUSE_RELEASE_NOTES_URL}',
             'support': '${BIRDHOUSE_SUPPORT_URL}',
             'source': 'https://github.com/bird-house/birdhouse-deploy',
-            'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}',
+            'tryme': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}',
             'licence': '${BIRDHOUSE_LICENSE_URL}',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
         },
@@ -157,7 +157,7 @@ PLATFORMS = {
             'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/releases',
             'support': 'https://github.com/Ouranosinc/pavics-sdi/issues',
             'source': 'https://github.com/Ouranosinc/pavics-sdi',
-            'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}',
+            'tryme': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}',
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html',
             'factsheet': 'http://www.canarie.ca/software/pavics'
