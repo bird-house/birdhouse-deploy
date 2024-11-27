@@ -321,22 +321,6 @@ correctly. This component also customizes the JupyterHub config according to the
 .. |test_cowbird_jupyter| replace:: notebook
 
 
-Populate STAC catalog with sample data
---------------------------------------------------------
-
-STAC Populator contains the workflow logic to ingest sample STAC item into the STAC catalog.
-
-Once enabled in the stack, this component will run automatically on stack boot time in order to populate the catalog. 
-On stack initialization, STAC item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds in order 
-to populate the catalog with sample data. Change this timeout as needed, as there are no impact on the stack boot, 
-except time required to feed the catalog.
-
-To enable this optional-component:
-
-- Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./optional-components/stac-populator`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
-
-
 Allow public access to STAC catalog
 --------------------------------------------------------
 

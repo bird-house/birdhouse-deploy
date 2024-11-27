@@ -22,6 +22,10 @@
   Update description of the `configs` subcommand to better describe it.
   The description when calling `bin/birdhouse -h` now matches the description when calling `bin/birdhouse configs -h`
 
+- Deprecate `stac-populator` optional component
+
+  This component has not been functional since it was deprecated in https://github.com/crim-ca/stac-populator/pull/12
+
 [2.6.1](https://github.com/bird-house/birdhouse-deploy/tree/2.6.1) (2024-11-22)
 ------------------------------------------------------------------------------------------------------------------
 
