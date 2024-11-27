@@ -1,5 +1,18 @@
 #!/usr/bin/env sh
 
+error=
+if [ "${BIRDHOUSE_FQDN}" != "host.docker.internal" ]; then 
+    log ERROR 'BIRDHOUSE_FQDN should be set to 'host.docker.internal' when the local-dev-test optional component is enabled'
+    error=True
+fi
+
+if [ "${BIRDHOUSE_HTTP_ONLY}" != "True" ]; then 
+    log ERROR 'BIRDHOUSE_HTTP_ONLY should be set to 'True' when the local-dev-test optional component is enabled'
+    error=True
+fi
+
+[ "$error" = 'True' ] && exit 1
+
 # Note: filename is not docker-compose-extra.yml so that it won't get added prematurely to COMPOSE_CONF_LIST
 THIS_COMPOSE_FILE="${COMPOSE_DIR}/optional-components/local-dev-test/docker-compose-extra-ignore.yml"
 echo 'version: "3.4"' > "${THIS_COMPOSE_FILE}"
@@ -8,14 +21,6 @@ echo "services:" >> "${THIS_COMPOSE_FILE}"
 for service in $(PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} config --services); do
     printf ' %s:\n  extra_hosts:\n   - "host.docker.internal:host-gateway"\n' $service >> "${THIS_COMPOSE_FILE}"
 done
-
-if [ "${BIRDHOUSE_FQDN}" != "host.docker.internal" ]; then 
-    log WARN 'BIRDHOUSE_FQDN should be set to 'host.docker.internal' when the local-dev-test optional component is enabled'
-fi
-
-if [ "${BIRDHOUSE_HTTP_ONLY}" != "True" ]; then 
-    log WARN 'BIRDHOUSE_HTTP_ONLY should be set to 'True' when the local-dev-test optional component is enabled'
-fi
 
 COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f ${THIS_COMPOSE_FILE}"
 
