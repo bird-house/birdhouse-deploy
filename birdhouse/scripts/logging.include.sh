@@ -36,7 +36,7 @@ fi
 
 
 log_dest() {
-    read log_line
+    read log_line || true
     if [ -n "${log_line}" ]; then
         if [ -n "${BIRDHOUSE_LOG_FILE}" ]; then
             echo "$log_line" >> "${BIRDHOUSE_LOG_FILE}"

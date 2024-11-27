@@ -13,6 +13,7 @@ TEMPLATE_SUBSTITUTIONS = {
     "BIRDHOUSE_FQDN_PUBLIC": os.environ.get("BIRDHOUSE_FQDN_PUBLIC", "example.com"),
     "WEAVER_MANAGER_NAME": os.environ.get("WEAVER_MANAGER_NAME", "weaver"),
     "TWITCHER_PROTECTED_PATH": os.environ.get("TWITCHER_PROTECTED_PATH", "/twitcher/ows/proxy"),
+    "BIRDHOUSE_PROXY_SCHEME": os.environ.get("BIRDHOUSE_PROXY_SCHEME", "http")
 }
 
 
