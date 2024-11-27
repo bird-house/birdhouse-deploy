@@ -22,6 +22,13 @@
   Update description of the `configs` subcommand to better describe it.
   The description when calling `bin/birdhouse -h` now matches the description when calling `bin/birdhouse configs -h`
 
+## Fixes
+
+- Correct docker image for `stac-populator` optional component
+
+  This sets the docker image for the `stac-populator` component to a version that actually contains the code
+  that is executed when `stac-populator` is called. The previous image no longer contained the relevant code.
+
 [2.6.1](https://github.com/bird-house/birdhouse-deploy/tree/2.6.1) (2024-11-22)
 ------------------------------------------------------------------------------------------------------------------
 
