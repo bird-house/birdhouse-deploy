@@ -540,7 +540,7 @@ exposed by the current stack instance. Once this component is enabled, STAC API 
 ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint,
 define the following in the ``env.local`` file::
 
-  export BIRDHOUSE_PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
+  export BIRDHOUSE_PROXY_ROOT_LOCATION='return 302 ${BIRDHOUSE_PROXY_SCHEME}://\$host/stac-browser;'
 
 Here is a sample search query using a CLI::
 
