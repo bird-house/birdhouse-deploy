@@ -29,6 +29,13 @@
   before without the need for manual intervention by a system administrator who would otherwise need to manually
   create the symlink for them.
 
+## Changes
+
+- Fix help string description for `bin/birdhouse configs` command
+
+  Update description of the `configs` subcommand to better describe it.
+  The description when calling `bin/birdhouse -h` now matches the description when calling `bin/birdhouse configs -h`
+
 [2.6.1](https://github.com/bird-house/birdhouse-deploy/tree/2.6.1) (2024-11-22)
 ------------------------------------------------------------------------------------------------------------------
 
