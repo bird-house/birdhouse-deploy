@@ -15,7 +15,7 @@ Manage the Birdhouse software stack.
 Commands:
   info      Print build information
   compose   Run a \"docker compose\" command for the Birdhouse project
-  configs   Print a command that can be used to load configuration settings as environment variables
+  configs   Load or execute commands in the Birdhouse configuration environment
 
 Options:
   -h, --help                   Print this message and exit
