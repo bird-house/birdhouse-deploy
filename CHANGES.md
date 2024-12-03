@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.6.2](https://github.com/bird-house/birdhouse-deploy/tree/2.6.2) (2024-12-03)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Fix help string description for `bin/birdhouse configs` command
@@ -33,6 +38,13 @@
   volume and then Jupyterhub tries to mount the public share folder within that volume. Since the parent volume
   is read-only, the second volume mount fails.
 
+
+## Fixes
+
+- Correct docker image for `stac-populator` optional component
+
+  This sets the docker image for the `stac-populator` component to a version that actually contains the code
+  that is executed when `stac-populator` is called. The previous image no longer contained the relevant code.
 
 [2.6.1](https://github.com/bird-house/birdhouse-deploy/tree/2.6.1) (2024-11-22)
 ------------------------------------------------------------------------------------------------------------------
