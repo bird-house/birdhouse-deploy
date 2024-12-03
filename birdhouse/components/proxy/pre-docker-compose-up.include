@@ -3,8 +3,7 @@
 # Note: filename is not docker-compose-extra.yml so that it won't get added prematurely to COMPOSE_CONF_LIST
 
 if [ x"$BIRDHOUSE_HTTP_ONLY" != x"True" ]; then
-    THIS_COMPOSE_FILE="${COMPOSE_DIR}/optional-components/local-dev-test/docker-compose-extra-ssl-cert.yml"
-    echo "services:" > "${THIS_COMPOSE_FILE}"
+    THIS_COMPOSE_FILE="${COMPOSE_DIR}/components/proxy/docker-compose-ssl-cert.yml"
 
     COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f ${THIS_COMPOSE_FILE}"
 
