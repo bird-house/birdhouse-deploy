@@ -1,5 +1,5 @@
 
-    location /stac {
+    location /stac/ {
         # We need the first `/stac` for service resolution.
         # We need the second `/stac` for API redirect in STAC (see `root-path` and `ROUTER_PREFIX`).
         # See https://github.com/stac-utils/stac-fastapi/issues/427
@@ -8,12 +8,19 @@
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Host $host:$server_port;
+        #proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
         include /etc/nginx/conf.d/cors.include;
     }
 
     # Automatically redirect to /stac/stac and exclude redirect when already using /stac 
     location ~ ^${TWITCHER_PROTECTED_PATH}/stac(?!/stac) {
+        #proxy_set_header Host $host;
+        #proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #proxy_set_header X-Forwarded-Host $host:$server_port;
+        #proxy_set_header X-Forwarded-Proto $scheme;
+        #proxy_buffering off;
+        #include /etc/nginx/conf.d/cors.include;
         return 302 ${TWITCHER_PROTECTED_PATH}/stac/stac/;
     }
 
