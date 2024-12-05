@@ -1,5 +1,5 @@
 
-    location /stac/ {
+    location /stac {
         # We need the first `/stac` for service resolution.
         # We need the second `/stac` for API redirect in STAC (see `root-path` and `ROUTER_PREFIX`).
         # See https://github.com/stac-utils/stac-fastapi/issues/427

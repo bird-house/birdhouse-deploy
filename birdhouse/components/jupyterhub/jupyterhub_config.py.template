@@ -200,10 +200,11 @@ c.Spawner.args = [
     "--FileContentsManager.always_delete_dir=True",
     ]
 
+## Note that JUPYTERHUB_DOCKER_EXTRA_HOSTS may be set by default in the local-dev-test component
 c.DockerSpawner.extra_host_config = {
     # start init pid 1 process to reap defunct processes
     'init': True,
-    'extra_hosts': dict(host_mapping.split(":") for host_mapping in "${JUPYTERHUB_DOCKER_EXTRA_HOSTS}".split())
+    'extra_hosts': dict(host_mapping.split(":") for host_mapping in os.getenv("JUPYTERHUB_DOCKER_EXTRA_HOSTS", "").split())
     }
 
 c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}     # noqa
