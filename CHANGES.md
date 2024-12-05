@@ -22,6 +22,53 @@
   Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.5.
 
 
+[2.6.2](https://github.com/bird-house/birdhouse-deploy/tree/2.6.2) (2024-12-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Fix help string description for `bin/birdhouse configs` command
+
+  Update description of the `configs` subcommand to better describe it.
+  The description when calling `bin/birdhouse -h` now matches the description when calling `bin/birdhouse configs -h`
+  
+- Jupyterhub: Update recommended paths for public share folders
+
+  The recommended public share folders in the `env.local.example` file create a conflict with the default
+  `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` path when both are enabled and mounted on a Jupyterlab container.
+  This change updates the recommended paths for the public share folders to avoid this conflict and adds a
+  warning helping users to avoid this conflict.
+
+  Note: the conflict arises when `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` is mounted to a container as read-only
+  volume and then Jupyterhub tries to mount the public share folder within that volume. Since the parent volume
+  is read-only, the second volume mount fails.
+
+
+## Fixes
+
+- Correct docker image for `stac-populator` optional component
+
+  This sets the docker image for the `stac-populator` component to a version that actually contains the code
+  that is executed when `stac-populator` is called. The previous image no longer contained the relevant code.
+
+[2.6.1](https://github.com/bird-house/birdhouse-deploy/tree/2.6.1) (2024-11-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix regressions introduced by PR #359 "Flexible locations for data served by thredds"
+
+  In [PR #359](https://github.com/bird-house/birdhouse-deploy/pull/359/):
+
+  `secure-thredds/config/magpie/permissions.cfg` started to use variable but was never renamed to `.template`
+  so those variable never get template expanded
+  (commit [317d96c3](https://github.com/bird-house/birdhouse-deploy/commit/317d96c39db7a6d79d1568a7094441ccdedc55ae)).
+
+  `bootstrap-testdata` default value was removed but did not source `read-configs.include.sh` so the variable
+   stayed blank (commit [4ab0fc74](https://github.com/bird-house/birdhouse-deploy/commit/4ab0fc74cb8fa601d75ecfc2a94749b23f60109c)).
+   The default value was there initially so the script can be used in standalone situation (not inside a checkout).
+
+
 [2.6.0](https://github.com/bird-house/birdhouse-deploy/tree/2.6.0) (2024-11-19)
 ------------------------------------------------------------------------------------------------------------------
 
