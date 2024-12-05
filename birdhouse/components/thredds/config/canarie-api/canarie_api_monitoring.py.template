@@ -40,7 +40,7 @@ SERVICES['Thredds'] = {
         'name': 'Thredds',
         'synopsis': 'Climate Data Catalog and Format Renderers',
         'version': "${THREDDS_VERSION}",
-        'releaseTime': get_release_time_from_repo_tag("docker", "${THREDDS_DOCKER}", "${THREDDS_VERSION}"),
+        'releaseTime': get_release_time_from_repo_tag("docker", "${THREDDS_DOCKER}", "${THREDDS_TAGGED}"),
         'institution': 'Ouranos',
         'researchSubject': 'Catalog',
         'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
