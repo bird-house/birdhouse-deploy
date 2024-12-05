@@ -11,7 +11,8 @@
         <service name="iso" serviceType="ISO" base="/twitcher/ows/proxy/thredds/iso/"/>
         <service name="wcs" serviceType="WCS" base="/twitcher/ows/proxy/thredds/wcs/" />
         <service name="wms" serviceType="WMS" base="/twitcher/ows/proxy/thredds/wms/" />
-        <service name="subsetServer" serviceType="NetcdfSubset" base="/twitcher/ows/proxy/thredds/ncss/" />
+        <service name="ncssGrid" serviceType="NetcdfSubset" base="${TWITCHER_PROTECTED_PATH}/thredds/ncss/grid/" />
+        <service name="ncssPoint" serviceType="NetcdfSubset" base="${TWITCHER_PROTECTED_PATH}/thredds/ncss/point/" />
     </service>
 
     <datasetScan name="${THREDDS_SERVICE_DATA_LOCATION_NAME}" ID="${THREDDS_SERVICE_DATA_URL_PATH}" path="${THREDDS_SERVICE_DATA_URL_PATH}" location="${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}">
