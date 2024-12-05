@@ -42,10 +42,10 @@
 
   - added a configuration variable `BIRDHOUSE_HTTP_ONLY` which is not set by default. If set to `True` the `proxy` component will only serve content over `http` (not `https`).
   - added the following configuration variables. These should not be set directly unless you really know what you're doing:
-    - `BIRDHOUSE_PROXY_SCHEME`: default is `http` if `BIRDHOUSE_HTTP_ONLY` is `True`, otherwise `https`
-    - `PROXY_INCLUDE_HTTPS`: default is unset if `BIRDHOUSE_HTTP_ONLY` is `True`, otherwise `include /etc/nginx/conf.d/https.include;`
+    - `BIRDHOUSE_PROXY_SCHEME`: default remains `https`. If `BIRDHOUSE_HTTP_ONLY` is `True` then the default becomes `http`
+    - `PROXY_INCLUDE_HTTPS`: default remains `include /etc/nginx/conf.d/https.include;`. If `BIRDHOUSE_HTTP_ONLY` is `True`, the default is that the variable is unset. 
   - changed the default values for the following configuration variables:
-    - `BIRDHOUSE_ALLOW_UNSECURE_HTTP`: default is now `True` if `BIRDHOUSE_HTTP_ONLY` is `True`
+    - `BIRDHOUSE_ALLOW_UNSECURE_HTTP`: default remains `""`. If `BIRDHOUSE_HTTP_ONLY` is `True` then the default becomes `True`.
   - logs are written to stderr by default. Previously they were written to stdout.
     - this allows us to call scripts and programmatically use their outputs. Previously log entries would need to be 
       manually filtered out before program outputs could be used.
