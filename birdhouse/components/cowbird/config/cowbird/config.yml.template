@@ -21,7 +21,7 @@ handlers:
     admin_password: ${GEOSERVER_ADMIN_PASSWORD}
   Catalog:
     active: true
-    url: https://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/ows/proxy/catalog
+    url: ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/ows/proxy/catalog
     workspace_dir: ${WORKSPACE_DIR}
   Thredds:
     active: true
