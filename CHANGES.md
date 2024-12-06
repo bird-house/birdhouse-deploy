@@ -15,7 +15,19 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- canarie-api: fix new Thredds v5 monitoring URL
+
+  Fix the error below at the URL https://HOST/canarie/node/service/stats:
+  Bad return code from http://thredds:8080//twitcher/ows/proxy/thredds/catalog.html (Expecting 200, Got 404
+
+  Old URL: http://thredds:8080//twitcher/ows/proxy/thredds/catalog.html
+  New URL: http://thredds:8080/twitcher/ows/proxy/thredds/catalog/catalog.html
+
+  An oversight from the previous PR
+  https://github.com/bird-house/birdhouse-deploy/pull/413
+
 
 [2.6.3](https://github.com/bird-house/birdhouse-deploy/tree/2.6.3) (2024-12-05)
 ------------------------------------------------------------------------------------------------------------------
