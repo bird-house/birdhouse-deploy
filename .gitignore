@@ -30,3 +30,4 @@ venv/
 ## Testing
 .pytest_cache/
 *.log
+birdhouse/data/

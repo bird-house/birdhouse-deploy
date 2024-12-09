@@ -103,7 +103,7 @@ read_default_env() {
 
         . "${COMPOSE_DIR}/default.env"
     else
-        log WARN "'${COMPOSE_DIR}/default.env' not found" 1>&2
+        log WARN "'${COMPOSE_DIR}/default.env' not found"
     fi
 }
 
@@ -123,7 +123,7 @@ read_env_local() {
         eval "${saved_shell_options}"
 
     else
-        log WARN "'${BIRDHOUSE_LOCAL_ENV}' not found" 1>&2
+        log WARN "'${BIRDHOUSE_LOCAL_ENV}' not found"
     fi
 
 }
@@ -155,7 +155,7 @@ source_conf_files() {
           # corresponding PR are merged and old component names can be removed
           # after the corresponding PR are merge without any impact on the
           # autodeploy process.
-          log WARN "'${adir}' in ${conf_locations} does not exist" 1>&2
+          log WARN "'${adir}' in ${conf_locations} does not exist"
       fi
       if [ -f "${adir}/default.env" ]; then
           # Source config settings of dependencies first if they haven't been sourced previously.

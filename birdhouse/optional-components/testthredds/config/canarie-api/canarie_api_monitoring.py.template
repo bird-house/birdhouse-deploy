@@ -1,7 +1,7 @@
 SERVICES['node']['monitoring'].update({
     '${TESTTHREDDS_NAME}-public': {
         'request': {
-            'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}/${TESTTHREDDS_CONTEXT_ROOT}/catalog.html'
+            'url': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${TESTTHREDDS_CONTEXT_ROOT}/catalog.html'
         },
     },
     '${TESTTHREDDS_NAME}': {

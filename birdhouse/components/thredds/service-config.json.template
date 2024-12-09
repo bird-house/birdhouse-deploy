@@ -16,7 +16,7 @@
       {
         "rel": "service",
         "type": "text/html",
-        "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/thredds/"
+        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds/"
       },
       {
         "rel": "service-doc",
@@ -26,7 +26,7 @@
       {
         "rel": "service-desc",
         "type": "text/xml",
-        "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/thredds/catalog.xml"
+        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds/catalog.xml"
       },
       {
         "rel": "service-meta",

@@ -3,7 +3,7 @@ import copy
 service_public = "Thredds-public"
 service_public_cfg = {
     'request': {
-        'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}/thredds/catalog.html',
+        'url': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds/catalog.html',
     },
 }
 

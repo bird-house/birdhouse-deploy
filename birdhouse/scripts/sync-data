@@ -28,7 +28,7 @@ SOURCE_HOST="$1"; shift
 FORCE_MODE="$1"
 
 if [ -z "$SOURCE_HOST" ]; then
-    log ERROR "no source host provided" 1>&2
+    log ERROR "no source host provided"
     exit 2
 fi
 

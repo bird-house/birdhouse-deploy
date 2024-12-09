@@ -15,7 +15,7 @@
       {
         "rel": "service",
         "type": "application/json",
-        "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/"
+        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/"
       },
       {
         "rel": "service-doc",
@@ -25,12 +25,12 @@
       {
         "rel": "service-desc",
         "type": "application/json",
-        "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/"
+        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/"
       },
       {
         "rel": "conformance",
         "type": "application/json",
-        "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/conformance/"
+        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/conformance/"
       },
       {
         "rel": "service-meta",

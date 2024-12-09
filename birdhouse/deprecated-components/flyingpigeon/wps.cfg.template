@@ -1,5 +1,5 @@
 [server]
-outputurl = https://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs/flyingpigeon
+outputurl = ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs/flyingpigeon
 outputpath = /data/wpsoutputs/flyingpigeon
 maxsingleinputsize = 2097152000.0
 
