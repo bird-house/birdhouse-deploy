@@ -38,6 +38,23 @@
 
   Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.5.
 
+  This Thredds v5 actually have 2 minors issues
+  * Magpie Allow or Deny exception under top-level Allow or Deny do not work on NCSS only,
+    see [Ouranosinc/Magpie#633](https://github.com/Ouranosinc/Magpie/issues/633).
+  * Performance problem with WMS only, see [Unidata/tds#406](https://github.com/Unidata/tds/issues/406).
+
+  They are considered minor and not blocking the release because
+  * Magpie top-level Allow or Deny still work across the board,
+    exception under top-level also works across the board,
+    except for NCSS only and NCSS is not widely used.
+  * WMS is not widely used, similar to NCSS.
+
+  Other features from this newer Thredds
+  * Security fixes (newer Tomcat) and if there is a critical vulnerability,
+    we won't be able to stay on v4 series because it is not even available on
+    DockerHub anymore as Unidata has dropped support.
+  * New experimental Zarr support.
+
 
 [2.6.2](https://github.com/bird-house/birdhouse-deploy/tree/2.6.2) (2024-12-03)
 ------------------------------------------------------------------------------------------------------------------
