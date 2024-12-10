@@ -32,13 +32,13 @@ Options:
   -h, --help                                              Print this message and exit
   -b, --backwards-compatible                              Run in backwards compatible mode
   -e, --env-file string                                   Override the local environment file, default is ${COMPOSE_DIR}/env.local
-  -s, --log-stdout                                        Write logs to stdout, default is to write to stderr
-  -s, --log-stdout {DEBUG|INFO|WARN|ERROR|CRITICAL}       Write logs to stdout for the given log level only, default is determined by --log-stdout (this option can be repeated)
-  -l, --log-file path                                     Write logs to this file path, default is to write to stderr
-  -l, --log-file {DEBUG|INFO|WARN|ERROR|CRITICAL} path    Write logs to this file path for the given log level only default is determined by --log-file (this option can be repeated)
-  -q, --quiet                                             Do not write logs to stdout or stderr. Logs will still be written to a file if --log-file is set
-  -q, --quiet {DEBUG|INFO|WARN|ERROR|CRITICAL}            Do not write logs to stdout or stderr for the given log level only, default is determined by --quiet (this option can be repeated)
-  
+  -s, --log-stdout                                        Write logs to stdout for all log levels, default is to write to stderr
+  -s, --log-stdout {DEBUG|INFO|WARN|ERROR|CRITICAL}       Write logs to stdout for the given log level only (this option can be repeated)
+  -l, --log-file path                                     Write logs to this file path for all log levels
+  -l, --log-file {DEBUG|INFO|WARN|ERROR|CRITICAL} path    Write logs to this file path for the given log level only (this option can be repeated), this takes precedence over the --log-file option for all log levels
+  -q, --quiet                                             Do not write logs to stdout or stderr for all log levels. Logs will still be written to a file if --log-file is set
+  -q, --quiet {DEBUG|INFO|WARN|ERROR|CRITICAL}            Do not write logs to stdout or stderr for the given log level only (this option can be repeated), Logs will still be written to a file if --log-file is set
+  -L, --log-level {DEBUG|INFO|WARN|ERROR}                 Set log level, default is INFO
 "
 
 CONFIGS_USAGE="USAGE: $THIS_BASENAME configs [-h|--help] [-d|--default] {[-p|--print-config-command] | [-c|--command command]}"
