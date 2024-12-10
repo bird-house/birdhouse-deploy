@@ -19,14 +19,14 @@ SERVICES['Jupyter'] = {
         'releasenotes': 'https://github.com/Ouranosinc/jupyterhub/tags',  # no CHANGES file available
         'support': 'https://github.com/Ouranosinc/jupyterhub/issues',
         'source': 'https://github.com/Ouranosinc/jupyterhub',
-        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/jupyter/',
+        'tryme': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/jupyter/',
         'licence': 'https://github.com/Ouranosinc/jupyterhub/blob/${JUPYTERHUB_VERSION}/LICENSE',
         'provenance': ''
     },
     "monitoring": {
         "Jupyter": {
             'request': {
-                'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}/jupyter/hub/login'
+                'url': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/jupyter/hub/login'
             },
         }
     }

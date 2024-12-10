@@ -1,5 +1,5 @@
 [server]
-outputurl = https://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs/finch
+outputurl = ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs/finch
 outputpath = /data/wpsoutputs/finch
 
 # default 3mb, fix "Broken pipe" between the proxy and the wps service

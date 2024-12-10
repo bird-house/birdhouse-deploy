@@ -30,7 +30,7 @@ services:
     container_name: stac-browser
     image: ${STAC_BROWSER_IMAGE}
     environment:
-      - CATALOG_URL=https://${BIRDHOUSE_FQDN_PUBLIC}/stac/
+      - CATALOG_URL=${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/stac/
       - ROOT_PATH=/stac-browser/
 
   stac-db:

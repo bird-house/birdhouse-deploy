@@ -20,7 +20,7 @@
       {
         "rel": "service",
         "type": "text/html",
-        "href": "https://${BIRDHOUSE_FQDN_PUBLIC}/geoserver/"
+        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/geoserver/"
       },
       {
         "rel": "service-doc",

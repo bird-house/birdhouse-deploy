@@ -291,6 +291,42 @@ Starting and managing the lifecycle of the VM:
    # not needed normally during tight development loop
    vagrant provision
 
+Deploy locally for development or test purposes
+-----------------------------------------------
+
+If you are developing this code base or want to test out a new feature locally on a machine, you
+may want to deploy the Birdhouse stack locally. This will allow you to run Birdhouse without the need
+for an SSL certificate or to expose ports 80 and 443 publicly.
+
+To deploy locally, enable the :ref:`local-dev-test` component. This will allow you to access the Birdhouse
+software in a browser on your local machine using the URL ``http://host.docker.internal``.
+
+Deploy locally with ``https``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The local deployment strategy described above will send all information over ``http`` instead of using ``https``.
+
+If there are any features that you want to test locally using ``https``, you can deploy locally using a self-signed
+SSL certificate.
+
+You may also need to add the following to the ``docker compose`` settings for the ``twitcher`` component if you're 
+not able to access protected URLs:
+
+.. code:: yaml
+
+  services:
+    twitcher:
+      environment:
+        REQUESTS_CA_BUNDLE: "${BIRDHOUSE_SSL_CERTIFICATE}"
+      volumes:
+        - "${BIRDHOUSE_SSL_CERTIFICATE}:${BIRDHOUSE_SSL_CERTIFICATE}:ro"
+
+
+.. warning::
+
+  Self-signed certificates are not fully supported by the components of the Birdhouse stack and some features may
+  not be fully functional when self-signed certificates are enabled. For example, accessing other components through
+  the JupyterLab interface may fail with an ``SSLError``.
 
 Framework tests
 ---------------

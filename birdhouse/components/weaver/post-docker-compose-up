@@ -23,7 +23,7 @@
 #
 #   WEAVER_WPS_PROVIDERS:
 #       list of provider names (comma or space delimited), all are assumed to be available at
-#       "https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/<provider-name>"
+#       "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/<provider-name>"
 #   WEAVER_WPS_PROVIDERS_MAX_TIME:
 #       limit script execution up to a maximum of this number of seconds
 #   WEAVER_WPS_PROVIDERS_RETRY_COUNT:
@@ -82,8 +82,8 @@ WARN="${PREFIX}${YELLOW}WARNING${NORMAL}: "
 
 echo "${PREFIX}Running: $0"
 
-MAGPIE_URL="https://${BIRDHOUSE_FQDN_PUBLIC}/magpie"
-WEAVER_URL="https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
+MAGPIE_URL="${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/magpie"
+WEAVER_URL="${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
 WEAVER_WPS_PROVIDERS_MAX_TIME=${WEAVER_WPS_PROVIDERS_MAX_TIME:-120}
 WEAVER_WPS_PROVIDERS_RETRY_AFTER=${WEAVER_WPS_PROVIDERS_RETRY_AFTER:-5}
 WEAVER_WPS_PROVIDERS_RETRY_COUNT=${WEAVER_WPS_PROVIDERS_RETRY_COUNT:-5}
@@ -246,7 +246,7 @@ for prov in ${WEAVER_WPS_PROVIDERS}; do
     if [ -z "${prov}" ]; then
         continue
     fi
-    prov_url="https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${prov}"
+    prov_url="${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${prov}"
     prov_cap="${prov_url}?service=WPS&request=GetCapabilities"
 
     # wait for WPS provider to respond

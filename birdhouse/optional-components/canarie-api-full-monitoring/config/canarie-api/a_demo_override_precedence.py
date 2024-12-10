@@ -5,7 +5,7 @@
 # SERVICES['node']['monitoring'].update({
 #     'Thredds-public': {
 #         'request': {
-#             'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}/toto',
+#             'url': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/toto',
 #         },
 #     },
 # })

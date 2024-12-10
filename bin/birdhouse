@@ -2,12 +2,23 @@
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
+THIS_BASENAME="$(basename "${THIS_FILE}")"
 COMPOSE_DIR="$(dirname "${THIS_DIR}")/birdhouse"
 
 export BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"${COMPOSE_DIR}/birdhouse-compose.sh"}"
 export __BIRDHOUSE_SUPPORTED_INTERFACE=True
 
-USAGE="USAGE: $0 [-h|--help] [-b|--backwards-compatible] [-e|--env-file local-env-file] {info|compose|configs}"
+USAGE="USAGE: $THIS_BASENAME [-h|--help] 
+                             [-b|--backwards-compatible]
+                             [-e|--env-file local-env-file]
+                             [-q|--quiet] [-q|--quiet {DEBUG|INFO|WARN|ERROR|CRITICAL}]
+                             [-s|--log-stdout] [-s|--log-stdout {DEBUG|INFO|WARN|ERROR|CRITICAL}]
+                             [-l|--log-file log-file-path]
+                             [-l|--log-file {DEBUG|INFO|WARN|ERROR|CRITICAL} log-file-path]
+                             [-L|--log-level {DEBUG|INFO|WARN|ERROR|CRITICAL}]
+                             {info|compose|configs}"
+USAGE=$(echo $USAGE | tr "\n" " ")
+
 HELP="$USAGE
 
 Manage the Birdhouse software stack.
@@ -18,12 +29,19 @@ Commands:
   configs   Load or execute commands in the Birdhouse configuration environment
 
 Options:
-  -h, --help                   Print this message and exit
-  -b, --backwards-compatible   Run in backwards compatible mode
-  -e, --env-file string        Override the local environment file, default is ${COMPOSE_DIR}/env.local
+  -h, --help                                              Print this message and exit
+  -b, --backwards-compatible                              Run in backwards compatible mode
+  -e, --env-file string                                   Override the local environment file, default is ${COMPOSE_DIR}/env.local
+  -s, --log-stdout                                        Write logs to stdout for all log levels, default is to write to stderr
+  -s, --log-stdout {DEBUG|INFO|WARN|ERROR|CRITICAL}       Write logs to stdout for the given log level only (this option can be repeated)
+  -l, --log-file path                                     Write logs to this file path for all log levels
+  -l, --log-file {DEBUG|INFO|WARN|ERROR|CRITICAL} path    Write logs to this file path for the given log level only (this option can be repeated), this takes precedence over the --log-file option for all log levels
+  -q, --quiet                                             Do not write logs to stdout or stderr for all log levels. Logs will still be written to a file if --log-file is set
+  -q, --quiet {DEBUG|INFO|WARN|ERROR|CRITICAL}            Do not write logs to stdout or stderr for the given log level only (this option can be repeated), Logs will still be written to a file if --log-file is set
+  -L, --log-level {DEBUG|INFO|WARN|ERROR}                 Set log level, default is INFO
 "
 
-CONFIGS_USAGE="USAGE: $0 configs [-h|--help] [-d|--default] {[-p|--print-config-command] | [-c|--command command]}"
+CONFIGS_USAGE="USAGE: $THIS_BASENAME configs [-h|--help] [-d|--default] {[-p|--print-config-command] | [-c|--command command]}"
 CONFIGS_HELP="$CONFIGS_USAGE
 
 Load or execute commands in the Birdhouse configuration environment.
@@ -32,15 +50,16 @@ Options:
   -d, --default                Only load/print a command for the default configuration settings, not those specified by the local environment file
   -p, --print-config-command   Print a command that can be used to load configuration settings as environment variables
   -c, --command string         Execute the given command after loading configuration settings
-  -q, --quiet                  Suppress stdout when loading configuration settings for the '--command' option.
+Deprecated Options:
+  -q, --quiet                  Suppress stdout when loading configuration settings for the '--command' option. [DEPRECATED: use the --quiet option directly under birdhouse instead]
 
 Example Usage:
 
-  $ ${0} configs -c 'echo \${BIRDHOUSE_FQDN}'
+  $ ${THIS_BASENAME} configs -c 'echo \${BIRDHOUSE_FQDN}'
   example.com  # This is the value of BIRDHOUSE_FQDN as determined by the current configuration settings
-  $ ${0} configs -p
+  $ ${THIS_BASENAME} configs -p
   . /path/to/configs/file/to/source && read_configs
-  $ eval \$(${0} configs)
+  $ eval \$(${THIS_BASENAME} configs)
   $ echo \${BIRDHOUSE_FQDN}
   example.com  # This is the value of BIRDHOUSE_FQDN as determined by the current configuration settings
 "
@@ -148,7 +167,7 @@ parse_configs_args() {
         print_config_command
       elif [ "${CONFIGS_CMD+set}" = 'set' ]; then
         if [ "${CONFIGS_QUIET}" = "True" ]; then
-          eval "$(print_config_command)" > /dev/null
+          eval "$(print_config_command)" 2> /dev/null
         else
           eval "$(print_config_command)"
         fi
@@ -161,6 +180,15 @@ parse_configs_args() {
       >&2 echo "$CONFIGS_USAGE"
       exit 1
       ;;
+  esac
+}
+
+# Echos "True" if the first argument is a valid log level
+check_log_dest_override() {
+  case "$1" in 
+    DEBUG|INFO|WARN|ERROR|CRITICAL)
+      echo True
+    ;;
   esac
 }
 
@@ -194,6 +222,54 @@ parse_args() {
       shift
       parse_args "$@"
       ;;
+    -q|--quiet)
+      shift
+      if [ "$(check_log_dest_override "$1")" ]; then
+        export BIRDHOUSE_LOG_DEST_OVERRIDE="${BIRDHOUSE_LOG_DEST_OVERRIDE}:$1:quiet:"
+        shift
+      else
+        export BIRDHOUSE_LOG_QUIET=True # The argument here takes precedence over the env variable
+      fi
+      parse_args "$@"
+      ;;
+    -s|--log-stdout)
+      shift
+      if [ "$(check_log_dest_override "$1")" ]; then
+        export BIRDHOUSE_LOG_DEST_OVERRIDE="${BIRDHOUSE_LOG_DEST_OVERRIDE}:$1:fd:1"
+        shift
+      else
+        export BIRDHOUSE_LOG_FD=1 # The argument here takes precedence over the env variable
+      fi
+      parse_args "$@"
+      ;;
+    -l=*|--log-file=*)
+      arg_value="${1#*=}"
+      shift
+      parse_args --log-file "${arg_value}" "$@"
+      ;;
+    -l|--log-file)
+      shift
+      # Note: cannot log to a file named DEBUG, INFO, WARN, ERROR, or CRITICAL
+      if [ "$(check_log_dest_override "$1")" ]; then
+        export BIRDHOUSE_LOG_DEST_OVERRIDE="${BIRDHOUSE_LOG_DEST_OVERRIDE}:$1:file:$(realpath -- "$2")"
+        shift
+      else
+        export BIRDHOUSE_LOG_FILE=$(realpath -- "$1") # The argument here takes precedence over the env variable
+      fi
+      shift
+      parse_args "$@"
+      ;;
+    -L=*|--log-level=*)
+      arg_value="${1#*=}"
+      shift
+      parse_args --log-level "${arg_value}" "$@"
+      ;;
+    -L|--log-level)
+      shift
+      export BIRDHOUSE_LOG_LEVEL="$1" # The argument here takes precedence over the env variable
+      shift
+      parse_args "$@"
+      ;;
     info)
       shift
       "${BIRDHOUSE_COMPOSE}" info "$@"
@@ -212,7 +288,7 @@ parse_args() {
       echo "$HELP"
       ;;
     -??*)
-      parse_multiple_short_flags parse_configs_args "$@"
+      parse_multiple_short_flags parse_args "$@"
       ;;
     *)
       >&2 echo "$USAGE"
