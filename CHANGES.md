@@ -29,12 +29,78 @@
   before without the need for manual intervention by a system administrator who would otherwise need to manually
   create the symlink for them.
 
+[2.6.4](https://github.com/bird-house/birdhouse-deploy/tree/2.6.4) (2024-12-09)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- canarie-api: fix new Thredds v5 monitoring URL
+
+  Fix the error below at the URL https://HOST/canarie/node/service/stats:
+  Bad return code from http://thredds:8080//twitcher/ows/proxy/thredds/catalog.html (Expecting 200, Got 404
+
+  Old URL: http://thredds:8080//twitcher/ows/proxy/thredds/catalog.html
+  New URL: http://thredds:8080/twitcher/ows/proxy/thredds/catalog/catalog.html
+
+  An oversight from the previous PR
+  https://github.com/bird-house/birdhouse-deploy/pull/413
+
+
+[2.6.3](https://github.com/bird-house/birdhouse-deploy/tree/2.6.3) (2024-12-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update Thredds to supported version
+
+  Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.5.
+
+  This Thredds v5 actually have 2 minors issues
+  * Magpie Allow or Deny exception under top-level Allow or Deny do not work on NCSS only,
+    see [Ouranosinc/Magpie#633](https://github.com/Ouranosinc/Magpie/issues/633).
+  * Performance problem with WMS only, see [Unidata/tds#406](https://github.com/Unidata/tds/issues/406).
+
+  They are considered minor and not blocking the release because
+  * Magpie top-level Allow or Deny still work across the board,
+    exception under top-level also works across the board,
+    except for NCSS only and NCSS is not widely used.
+  * WMS is not widely used, similar to NCSS.
+
+  Other features from this newer Thredds
+  * Security fixes (newer Tomcat) and if there is a critical vulnerability,
+    we won't be able to stay on v4 series because it is not even available on
+    DockerHub anymore as Unidata has dropped support.
+  * New experimental Zarr support.
+
+
+[2.6.2](https://github.com/bird-house/birdhouse-deploy/tree/2.6.2) (2024-12-03)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Fix help string description for `bin/birdhouse configs` command
 
   Update description of the `configs` subcommand to better describe it.
   The description when calling `bin/birdhouse -h` now matches the description when calling `bin/birdhouse configs -h`
+  
+- Jupyterhub: Update recommended paths for public share folders
+
+  The recommended public share folders in the `env.local.example` file create a conflict with the default
+  `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` path when both are enabled and mounted on a Jupyterlab container.
+  This change updates the recommended paths for the public share folders to avoid this conflict and adds a
+  warning helping users to avoid this conflict.
+
+  Note: the conflict arises when `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` is mounted to a container as read-only
+  volume and then Jupyterhub tries to mount the public share folder within that volume. Since the parent volume
+  is read-only, the second volume mount fails.
+
+
+## Fixes
+
+- Correct docker image for `stac-populator` optional component
+
+  This sets the docker image for the `stac-populator` component to a version that actually contains the code
+  that is executed when `stac-populator` is called. The previous image no longer contained the relevant code.
 
 [2.6.1](https://github.com/bird-house/birdhouse-deploy/tree/2.6.1) (2024-11-22)
 ------------------------------------------------------------------------------------------------------------------
