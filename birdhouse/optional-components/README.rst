@@ -488,6 +488,7 @@ For developers, to create a new parser that can be used to track log files:
 .. _log-parser: https://github.com/DACCS-Climate/log-parser/
 .. _prometheus_python_metrics: https://prometheus.github.io/client_python/instrumenting/
 
+.. _local-dev-test
 
 Local Dev Test
 --------------
