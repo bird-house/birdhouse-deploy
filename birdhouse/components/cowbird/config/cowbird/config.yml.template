@@ -14,7 +14,7 @@ handlers:
     admin_password: ${MAGPIE_ADMIN_PASSWORD}
   Geoserver:
     active: true
-    url: http://${BIRDHOUSE_FQDN_PUBLIC}/geoserver
+    url: http://geoserver:8080/geoserver
     workspace_dir: ${WORKSPACE_DIR}
     admin_user: ${GEOSERVER_ADMIN_USER}
     admin_password: ${GEOSERVER_ADMIN_PASSWORD}
