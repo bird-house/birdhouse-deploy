@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Fix incorrect Geoserver URL in Cowbird configuration
+
+  The Geoserver URL in the Cowbird configuration was incorrect as it used a non-standard port.
+  This change removes the port so that the URL will resolve properly. This allows Cowbird to execute
+  webhooks that target Geoserver.
 
 [2.6.4](https://github.com/bird-house/birdhouse-deploy/tree/2.6.4) (2024-12-09)
 ------------------------------------------------------------------------------------------------------------------

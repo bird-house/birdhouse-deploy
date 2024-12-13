@@ -14,8 +14,7 @@ handlers:
     admin_password: ${MAGPIE_ADMIN_PASSWORD}
   Geoserver:
     active: true
-    # FIXME: replace by the protected/proxy endpoint once component is made available
-    url: http://${BIRDHOUSE_FQDN_PUBLIC}:8765/geoserver
+    url: http://${BIRDHOUSE_FQDN_PUBLIC}/geoserver
     workspace_dir: ${WORKSPACE_DIR}
     admin_user: ${GEOSERVER_ADMIN_USER}
     admin_password: ${GEOSERVER_ADMIN_PASSWORD}
