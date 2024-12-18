@@ -294,17 +294,32 @@ Starting and managing the lifecycle of the VM:
 Deploy locally for development or test purposes
 -----------------------------------------------
 
-If you are developing this code base or want to test out a new feature locally on a machine, you
-may want to deploy the Birdhouse stack locally. This will allow you to run Birdhouse without the need
-for an SSL certificate or to expose ports 80 and 443 publicly.
+If you are developing this code base or want to test out a new feature locally on a machine, you may want to deploy 
+the Birdhouse stack locally.
 
-To deploy locally, enable the :ref:`local-dev-test` component. This will allow you to access the Birdhouse
-software in a browser on your local machine using the URL ``http://host.docker.internal``.
+There are two strategies available to deploy the Birdhouse stack locally:
 
-Deploy locally with ``https``
+- `Use HTTP scheme deployment`_
+- `Use a Self-Signed SSL certificate`_ 
+
+Use HTTP scheme deployment
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To deploy locally, enable the :ref:`local-dev-test` component. Also set the following two variables in your local
+environment file:
+
+- ``export BIRDHOUSE_FQDN=host.docker.internal``
+- ``export BIRDHOUSE_HTTP_ONLY=True``
+
+This will allow you to access the Birdhouse software in a browser on your local machine using 
+the URL ``http://host.docker.internal`` without the need for an SSL certificate or to expose ports 80 and 443 
+publicly.
+
+Use a Self-Signed SSL certificate
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The local deployment strategy described above will send all information over ``http`` instead of using ``https``.
+The `Use HTTP scheme deployment`_ strategy described above will send all information over ``http`` instead of using 
+``https``.
 
 If there are any features that you want to test locally using ``https``, you can deploy locally using a self-signed
 SSL certificate.
