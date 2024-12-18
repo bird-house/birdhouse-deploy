@@ -17,6 +17,17 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.6.5](https://github.com/bird-house/birdhouse-deploy/tree/2.6.5) (2024-12-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix incorrect Geoserver URL in Cowbird configuration
+
+  The Geoserver URL in the Cowbird configuration was incorrect as it used a non-standard port.
+  This changes the URL to the one used by docker compose internally. This allows Cowbird to execute
+  webhooks that target Geoserver.
+
 [2.6.4](https://github.com/bird-house/birdhouse-deploy/tree/2.6.4) (2024-12-09)
 ------------------------------------------------------------------------------------------------------------------
 
