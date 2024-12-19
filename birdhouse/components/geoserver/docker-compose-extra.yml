@@ -21,7 +21,7 @@ services:
       MAXIMUM_MEMORY: 8G
       # https://github.com/kartoza/docker-geoserver#proxy-base-url
       HTTP_PROXY_NAME: ${BIRDHOUSE_FQDN_PUBLIC}
-      HTTP_SCHEME: https
+      HTTP_SCHEME: ${BIRDHOUSE_PROXY_SCHEME}
     volumes:
       # run deployment/fix-geoserver-data-dir-perm on existing
       # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image

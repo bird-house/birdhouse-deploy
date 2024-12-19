@@ -42,14 +42,14 @@ SERVICES['Twitcher'] = {
         'releasenotes': 'https://github.com/bird-house/twitcher/blob/master/CHANGES.rst',
         'support': 'https://github.com/bird-house/twitcher/issues',
         'source': 'https://github.com/bird-house/twitcher',
-        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/',
+        'tryme': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/',
         'licence': 'https://github.com/bird-house/twitcher/blob/master/LICENSE.txt',
         'provenance': 'https://ouranosinc.github.io/pavics-sdi/provenance/index.html'
     },
     "monitoring": {
         "Twitcher": {
             'request': {
-                'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/'
+                'url': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/'
             }
         }
     }

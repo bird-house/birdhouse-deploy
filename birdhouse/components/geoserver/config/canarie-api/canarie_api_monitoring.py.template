@@ -24,14 +24,14 @@ SERVICES['GeoServer'] = {
         'releasenotes': 'https://geoserver.org/release/${GEOSERVER_VERSION}/',
         'support': 'https://github.com/kartoza/docker-geoserver/issues',
         'source': 'https://github.com/kartoza/docker-geoserver',
-        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/geoserver/',
+        'tryme': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/geoserver/',
         'licence': 'https://github.com/geoserver/geoserver/blob/${GEOSERVER_VERSION}/LICENSE.txt',
         'provenance': 'https://github.com/kartoza/docker-geoserver'
     },
     "monitoring": {
         "GeoServer": {
             'request': {
-                'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}/geoserver/web/'
+                'url': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/geoserver/web/'
             }
         }
     }

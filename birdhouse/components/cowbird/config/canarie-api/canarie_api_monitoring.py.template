@@ -19,7 +19,7 @@ SERVICES['Cowbird'] = {
         'releasenotes': 'https://github.com/Ouranosinc/cowbird//blob/master/CHANGES.rst',
         'support': 'https://github.com/Ouranosinc/cowbird//issues',
         'source': 'https://github.com/Ouranosinc/cowbird/',
-        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/cowbird/',
+        'tryme': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/cowbird/',
         'licence': 'https://github.com/Ouranosinc/cowbird//blob/${COWBIRD_VERSION}/LICENSE',
         'provenance': 'https://github.com/Ouranosinc/cowbird/'
     },
