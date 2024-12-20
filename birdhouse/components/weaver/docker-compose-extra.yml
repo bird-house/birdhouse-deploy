@@ -19,6 +19,10 @@ services:
     image: ${WEAVER_MANAGER_IMAGE}
     environment:
       HOSTNAME: ${BIRDHOUSE_FQDN}
+      # 'HTTP_HOST' and 'SCRIPT_NAMe' are used to guide pyramid in the resolution of resources, such as
+      # when invoking the 'static_url' endpoint, so it can be made aware of reverse-proxy context
+      HTTP_HOST: ${BIRDHOUSE_FQDN}
+      SCRIPT_NAME: /${WEAVER_MANAGER_NAME}
       FORWARDED_ALLOW_IPS: "*"
     #env_file:
     #  - ./components/mongodb/credentials.env

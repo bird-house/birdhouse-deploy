@@ -15,7 +15,28 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Weaver: update `weaver` component default version to [6.1.0](https://github.com/crim-ca/weaver/tree/6.1.0).
+
+  ### Relevant changes
+  * Add support of *OGC API - Processes - Part 3: Workflows and Chaining* with *Nested Process* ad-hoc workflow.
+  * Add support of *OGC API - Processes - Part 3: Workflows and Chaining* with *Remote Collection* (STAC and OGC).
+  * Add support of *OGC API - Processes - Part 4: Job Management* endpoints for job "pending" creation and execution.
+  * Add support of *OGC API - Processes - Part 4: Job Management* endpoints for job provenance as *W3C PROV* metadata.
+  * Multiple alignment and fixes related to latest *OGC API - Processes - Part 1: Core* definitions regarding handling
+    of input parameters and headers when submitting jobs to obtain alternate result representations and behavior.
+  * Add HTML responses by default via web browsers or as requested by `Accept` headers or `f` query parameter.
+  * Add improved CWL schema validation with `Weaver`-specific definitions where applicable
+    (see https://github.com/crim-ca/weaver/tree/master/weaver/schemas/cwl).
+
+- Weaver: modifications to `proxy` configurations for `weaver`
+
+  * Add `WEAVER_ALT_PREFIX` optional variable that auto-configures `WEAVER_ALT_PREFIX_PROXY_LOCATION`,
+    which allows setting an alternate endpoint to redirect requests to `weaver`.
+    It uses `/ogcapi` by default which is a very common expectation from servers supporting OGC standards.
+  * Use the `TWITCHER_VERIFY_PATH` approach to accelerate access of `weaver` resources authorization.
+  * Modify proxy pass definitions and URL prefixes to resolve correctly with HTML resources.
 
 [2.7.0](https://github.com/bird-house/birdhouse-deploy/tree/2.7.0) (2024-12-19)
 ------------------------------------------------------------------------------------------------------------------

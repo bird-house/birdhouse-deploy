@@ -109,6 +109,13 @@ permissions:
     group: anonymous
     action: create
 
+  # HTML rendering files
+  - service: ${WEAVER_MANAGER_NAME}
+    resource: /static
+    permission: read
+    group: anonymous
+    action: create
+
   # Process deployment (write) and listing (read)
   # use 'read-match' to allow only listing, and not describe underlying processes (require 'read' on them individually)
   - service: ${WEAVER_MANAGER_NAME}
