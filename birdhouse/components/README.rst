@@ -448,6 +448,16 @@ Customizing the Component
     Further ``docker-compose-extra.yml`` could be needed to define
     any other ``volumes`` entries where these component would need to be mounted to.
 
+  - Optionally, set ``WEAVER_ALT_PREFIX`` with any desired prefix location to use as alternate alias
+    for the ``/weaver/`` endpoint. The ``/weaver/`` endpoint will remain available.
+    The ``WEAVER_ALT_PREFIX`` alias defines an *additional* equivalent location to access the service.
+    By default ``/ogcapi`` is employed as a common value for this suite of OGC standards.
+
+    Note that custom prefix values, if specified, should start with a leading ``/``, and leave out any trailing ``/``.
+    The prefix can also use multiple levels as desired (e.g.: ``/my/custom/path``).
+
+    If the original ``/weaver/`` endpoint is deemed sufficient, and you would rather omit this additional alias
+    entirely, the ``WEAVER_ALT_PREFIX`` variable should be explicitly set to an empty value.
 
 
 .. _finch: https://github.com/bird-house/finch
