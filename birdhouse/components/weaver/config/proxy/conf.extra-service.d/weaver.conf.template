@@ -14,8 +14,10 @@
         proxy_set_header X-Forwarded-Host $host:$server_port;
     }
 
-    location = /${WEAVER_MANAGER_NAME} { return 302 /${WEAVER_MANAGER_NAME}/; }
-    location ~ ^/${WEAVER_MANAGER_NAME}(.*)$ {
+    location = /${WEAVER_MANAGER_NAME} {
+        return 302 /${WEAVER_MANAGER_NAME}/$is_args$args;
+    }
+    location ~ ^/${WEAVER_MANAGER_NAME}/(.*)$ {
         auth_request /weaver-auth;
         auth_request_set $auth_status $upstream_status;
 
@@ -24,7 +26,7 @@
         #   This is needed to help UI elements resolve the full URI path with proxy service prefixes since the
         #   generated locations returned that must be interpreted/retrieved by the client/browser would otherwise
         #   not be aware of the proxy redirection path prefix, leading to unresolved resources.
-        proxy_pass http://weaver:4001/${WEAVER_MANAGER_NAME}$1;
+        proxy_pass http://weaver:4001/${WEAVER_MANAGER_NAME}$1$is_args$args;
         proxy_set_header Host $http_host;
         proxy_set_header X-Original-URI $request_uri;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -38,9 +40,11 @@
     #   the same 'magpie' permissions on the 'weaver' service defined by "WEAVER_MANAGER_NAME".
     #   This allows verification of the same service user/group permissions references regardless
     #   whether the *shortcut* Weaver endpoint, the alias or the explicit 'twitcher' proxy route is used.
-    location = ${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME} { return 302 /${WEAVER_MANAGER_NAME}/; }
-    location ~ ^${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}(.*)\$ {
-        return 302 /${WEAVER_MANAGER_NAME}$1;
+    location = ${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME} {
+        return 301 /${WEAVER_MANAGER_NAME}/$is_args$args;
+    }
+    location ${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}/ {
+        return 301 /${WEAVER_MANAGER_NAME}/$is_args$args;
     }
 
     # optional alternate endpoint to access weaver (see 'components/weaver/default.env')
