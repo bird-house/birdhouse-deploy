@@ -15,7 +15,7 @@
     }
 
     location = /${WEAVER_MANAGER_NAME} {
-        return 302 /${WEAVER_MANAGER_NAME}/$is_args$args;
+        return 301 /${WEAVER_MANAGER_NAME}/$is_args$args;
     }
     location ~ ^/${WEAVER_MANAGER_NAME}/(.*)$ {
         auth_request /weaver-auth;
