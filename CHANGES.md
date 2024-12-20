@@ -38,6 +38,16 @@
   * Use the `TWITCHER_VERIFY_PATH` approach to accelerate access of `weaver` resources authorization.
   * Modify proxy pass definitions and URL prefixes to resolve correctly with HTML resources.
 
+[2.7.1](https://github.com/bird-house/birdhouse-deploy/tree/2.7.1) (2024-12-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Updated Cowbird to version 2.5.0
+
+  This update fixes an issue where Magpie reports a webhook failure on almost every action.
+  See a full description of the issue in https://github.com/Ouranosinc/cowbird/pull/78.
+
 [2.7.0](https://github.com/bird-house/birdhouse-deploy/tree/2.7.0) (2024-12-19)
 ------------------------------------------------------------------------------------------------------------------
 
