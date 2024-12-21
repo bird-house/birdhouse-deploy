@@ -17,7 +17,7 @@
 
 ## Changes
 
-- Weaver: update `weaver` component default version to [6.1.0](https://github.com/crim-ca/weaver/tree/6.1.0).
+- Weaver: update `weaver` component default version to [6.1.1](https://github.com/crim-ca/weaver/tree/6.1.1).
 
   ### Relevant changes
   * Add support of *OGC API - Processes - Part 3: Workflows and Chaining* with *Nested Process* ad-hoc workflow.
