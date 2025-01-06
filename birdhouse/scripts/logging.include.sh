@@ -1,6 +1,10 @@
 #!/bin/sh
 
-BIRDHOUSE_COLOR=${BIRDHOUSE_COLOR:-1}
+# support NO_COLOR flag (https://no-color.org/)
+if [ -z "${BIRDHOUSE_COLOR}" ] && [ "${NO_COLOR}" != '1' ]; then
+    BIRDHOUSE_COLOR=1
+fi 
+
 if [ "${BIRDHOUSE_COLOR}" -eq "1" ]; then
     BLUE=$(tput setaf 12)
     GRAY=$(tput setaf 8)
@@ -15,7 +19,7 @@ fi
 
 BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL:-INFO}
 BIRDHOUSE_LOG_FD=${BIRDHOUSE_LOG_FD:-2}
-if [ "${__BIRDHOUSE_SUPPORTED_INTERFACE}" != 'True' ]; then
+if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = 'True' ] || [ "${__BIRDHOUSE_SUPPORTED_INTERFACE}" != 'True' ]; then
     # logs were previously written to stdout for DEBUG and INFO
     # logs were previously intended to be written to stderr for WARN, ERROR, and CRITICAL
     # (this supports backwards compatible scripts that don't use the interface)

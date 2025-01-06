@@ -91,12 +91,14 @@ done
 export BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
-find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
-  while read FILE
-  do
-    DEST=${FILE%.template}
-    cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
-  done
+if [ x"$1" = x"up" ]; then
+  find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
+    while read FILE
+    do
+      DEST=${FILE%.template}
+      cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
+    done
+fi
 
 SHELL_EXEC_FLAGS=
 if [ "${BIRDHOUSE_LOG_LEVEL}" = "DEBUG" ]; then
