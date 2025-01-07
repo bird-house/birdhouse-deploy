@@ -22,7 +22,4 @@ def test_admin_can_log_in(magpie_url, stack_env):
         },
     )
     response.raise_for_status()
-    assert any(
-        cookie.domain == stack_env["BIRDHOUSE_FQDN_PUBLIC"]
-        for cookie in response.cookies
-    )
+    assert any(cookie.domain == stack_env["BIRDHOUSE_FQDN_PUBLIC"] for cookie in response.cookies)

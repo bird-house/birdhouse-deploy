@@ -37,9 +37,7 @@ def check_stack_not_running(request):
     project_name = os.getenv("COMPOSE_PROJECT_NAME", "birdhouse")
     lines = proc.stdout.splitlines()
     if test_project_name in lines or project_name in lines:
-        pytest.fail(
-            "Birdhouse is currently running. Please stop the software before running tests."
-        )
+        pytest.fail("Birdhouse is currently running. Please stop the software before running tests.")
 
 
 @pytest.fixture(scope="session")
@@ -70,9 +68,7 @@ def load_stack_env(cli_path, local_env_file, stack_info):
     )
     if proc.returncode:
         pytest.fail(f"Unable to get environment variables. Error:\n{proc.stderr}")
-    env_vars = dict(
-        line.split("=", 1) for line in proc.stdout.split("\x00") if "=" in line
-    )
+    env_vars = dict(line.split("=", 1) for line in proc.stdout.split("\x00") if "=" in line)
     print(env_vars["MAGPIE_ADMIN_USERNAME"])
     stack_info["env_vars"] = env_vars
 
@@ -84,15 +80,11 @@ def stack_env(stack_info):
 
 @pytest.fixture(scope="module")
 def birdhouse_url(stack_env):
-    return (
-        f"{stack_env['BIRDHOUSE_PROXY_SCHEME']}://{stack_env['BIRDHOUSE_FQDN_PUBLIC']}"
-    )
+    return f"{stack_env['BIRDHOUSE_PROXY_SCHEME']}://{stack_env['BIRDHOUSE_FQDN_PUBLIC']}"
 
 
 @pytest.fixture(scope="module", autouse=True)
-def start_stack(
-    request, cli_path, local_env_file, tmp_data_persist_root, stack_info, pytestconfig
-):
+def start_stack(request, cli_path, local_env_file, tmp_data_persist_root, stack_info, pytestconfig):
     """
     Starts the birdhouse stack at the beginning of the test session.
 
@@ -139,8 +131,7 @@ def start_stack(
     while start + timeout > time.time():
         proc = subprocess.run(
             'docker inspect --format \'{{if .State.Health}}{"health": {{json .State.Health.Status}}, '
-            '"name": {{json .Name}}}{{end}}\' '
-            + containers_proc.stdout.replace("\n", " "),
+            '"name": {{json .Name}}}{{end}}\' ' + containers_proc.stdout.replace("\n", " "),
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -153,13 +144,9 @@ def start_stack(
             if status.strip():
                 status = json.loads(status)
                 if status["health"] != "healthy":
-                    health_stats.append(
-                        f"name: '{status['name'].strip().strip('/')}', status: '{status['health']}'"
-                    )
+                    health_stats.append(f"name: '{status['name'].strip().strip('/')}', status: '{status['health']}'")
         if any(health_stats):
-            msg = "Waiting on the following containers to be healthy:\n" + "\n".join(
-                health_stats
-            )
+            msg = "Waiting on the following containers to be healthy:\n" + "\n".join(health_stats)
             print(msg, file=sys.stderr)
         else:
             break
@@ -179,8 +166,7 @@ def stop_stack(request, stack_info, pytestconfig):
     flags = "-s" if pytestconfig.option.capture == "no" else ""
     if stack_info["started"] and not request.config.getoption("--no-stop-stack", None):
         proc = subprocess.run(
-            f"{stack_info['cli_path']} {flags} -e '{stack_info['local_env_file']}' "
-            "compose down -v --remove-orphans",
+            f"{stack_info['cli_path']} {flags} -e '{stack_info['local_env_file']}' " "compose down -v --remove-orphans",
             shell=True,
             stderr=subprocess.PIPE,
             universal_newlines=True,

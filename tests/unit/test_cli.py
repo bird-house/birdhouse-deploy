@@ -124,9 +124,7 @@ def test_compose_backwards_compatible(cli_path, run, printenv_script, flag):
 
 
 @pytest.mark.parametrize("flag", ["--env-file ", "-e ", "--env-file=", "-e="])
-def test_compose_set_env_file(
-    cli_path, run, printenv_script, local_env_file, tmp_path, flag
-):
+def test_compose_set_env_file(cli_path, run, printenv_script, local_env_file, tmp_path, flag):
     other_local_env_file = tmp_path / "env.local.other"
     with open(local_env_file) as f:
         other_local_env_file.write_text(f.read())
@@ -176,10 +174,7 @@ def test_configs_set_env_file(cli_path, run, local_env_file, tmp_path, flag):
         other_local_env_file.write_text(f.read())
     proc = run(f"{cli_path} {flag}{other_local_env_file} configs -p")
     assert f"BIRDHOUSE_LOCAL_ENV='{other_local_env_file}'" in proc.stdout
-    assert (
-        f"BIRDHOUSE_LOCAL_ENV='{local_env_file}'"
-        in proc.stdout.split(str(other_local_env_file))[-1]
-    )
+    assert f"BIRDHOUSE_LOCAL_ENV='{local_env_file}'" in proc.stdout.split(str(other_local_env_file))[-1]
 
 
 @pytest.mark.parametrize("flag", ["-s", "--log-stdout"])
@@ -245,18 +240,14 @@ def test_log_level(cli_path, run, logging_script, level):
 @pytest.mark.parametrize("level", LOG_LEVELS)
 def test_log_override_stdout(cli_path, run, logging_script, level):
     proc = run(f"{cli_path} -L DEBUG -s {level} compose", compose=logging_script)
-    check_log_output(
-        [level_ for level_ in LOG_CHECK_LEVELS if level_ != level], proc.stderr
-    )
+    check_log_output([level_ for level_ in LOG_CHECK_LEVELS if level_ != level], proc.stderr)
     check_log_output([level], proc.stdout)
 
 
 @pytest.mark.parametrize("level", LOG_LEVELS)
 def test_log_override_quiet(cli_path, run, logging_script, level):
     proc = run(f"{cli_path} -L DEBUG -q {level} compose", compose=logging_script)
-    check_log_output(
-        [level_ for level_ in LOG_CHECK_LEVELS if level_ != level], proc.stderr
-    )
+    check_log_output([level_ for level_ in LOG_CHECK_LEVELS if level_ != level], proc.stderr)
     check_log_output([], proc.stdout)
 
 
@@ -275,8 +266,7 @@ def test_log_override_file(cli_path, run, logging_script, tmp_path, level):
 def test_configs_log_override_multiple(cli_path, run, logging_script, tmp_path):
     log_file = tmp_path / "test.log"
     proc = run(
-        f"{cli_path} -L DEBUG -l DEBUG {log_file} -s INFO "
-        f"-q WARN -l ERROR {log_file} -q ERROR compose",
+        f"{cli_path} -L DEBUG -l DEBUG {log_file} -s INFO " f"-q WARN -l ERROR {log_file} -q ERROR compose",
         compose=logging_script,
     )
     check_log_output(["DEBUG"], proc.stderr)

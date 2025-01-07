@@ -15,7 +15,32 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Add integration test framework
+
+  This update adds a framework for testing the deployed stack using pytest. This will allow developers to check
+  that their changes are consistent with the existing stack and to add additionally tests when new functionality
+  is introduced. 
+
+  Changes to implement this include:
+
+  - existing unit tests are moved to the `tests/unit/` directory
+  - new integration tests are written in the `tests/integration/` directory. More tests will be added in the
+    future!
+  - `conftest.py` scripts updated to bring the stack up/down in a consistent way for the integration tests.
+  - unit tests updated to accomodate new testing infrastructure as needed.
+  - unit tests updated to test logging outputs better
+  - `birdhouse` interface script updated to support testing infrastructure (this should not change anything for
+    other end-users).
+  - additional documentation added to `birdhouse` interface to improve user experience.
+  - docker healthchecks added to more components so that the readiness of the stack can be determined with or
+    without the use of the `canarie-api` component.
+
+  Next steps:
+
+  - add more integration tests as needed
+  - add a framework for testing migrating the stack from one version to another
 
 [2.7.1](https://github.com/bird-house/birdhouse-deploy/tree/2.7.1) (2024-12-20)
 ------------------------------------------------------------------------------------------------------------------

@@ -2,6 +2,7 @@ import os
 import pathlib
 import pytest
 
+
 # These are used for integration tests only but are defined here so that tests run from the top level tests/
 # directory will execute without error.
 def pytest_addoption(parser):
@@ -27,6 +28,7 @@ def pytest_addoption(parser):
         help="Number of seconds to wait for the stack to be healthy after it starts up",
     )
 
+
 @pytest.fixture(scope="module")
 def root_dir(request):
     # implement this for every testing subfolder
@@ -35,6 +37,4 @@ def root_dir(request):
 
 @pytest.fixture(scope="module")
 def local_env_file(root_dir):
-    yield pathlib.Path(
-        os.getenv("TEST_BIRDHOUSE_LOCAL_ENV", root_dir / "tests" / "env.local.test")
-    )
+    yield pathlib.Path(os.getenv("TEST_BIRDHOUSE_LOCAL_ENV", root_dir / "tests" / "env.local.test"))
