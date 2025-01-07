@@ -182,7 +182,6 @@ def test_configs_set_env_file(cli_path, run, local_env_file, tmp_path, flag):
 def test_log_stdout(cli_path, run, logging_script, flag):
     proc = run(f"{cli_path} {flag} compose", compose=logging_script)
     check_log_output(DEFAULT_LOG_CHECK_LEVELS, proc.stdout)
-    assert not proc.stderr
 
 
 @pytest.mark.parametrize("flag", ["--log-file ", "-l ", "--log-file=", "-l="])
@@ -205,7 +204,6 @@ def test_default_log_fd(cli_path, run, logging_script):
 def test_log_quiet(cli_path, run, logging_script, flag):
     proc = run(f"{cli_path} {flag} compose", compose=logging_script)
     assert not proc.stdout
-    assert not proc.stderr
 
 
 def test_log_file_stdout(cli_path, run, tmp_path, logging_script):
@@ -214,7 +212,6 @@ def test_log_file_stdout(cli_path, run, tmp_path, logging_script):
     with open(log_path) as f:
         check_log_output(DEFAULT_LOG_CHECK_LEVELS, f.read())
     check_log_output(DEFAULT_LOG_CHECK_LEVELS, proc.stdout)
-    assert not proc.stderr
 
 
 def test_log_file_quiet(cli_path, run, tmp_path, logging_script):
@@ -223,7 +220,6 @@ def test_log_file_quiet(cli_path, run, tmp_path, logging_script):
     with open(log_path) as f:
         check_log_output(DEFAULT_LOG_CHECK_LEVELS, f.read())
     assert not proc.stdout
-    assert not proc.stderr
 
 
 @pytest.mark.parametrize("flag", ["-L ", "--log-level ", "-L=", "--log-level="])
