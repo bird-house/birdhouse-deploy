@@ -1,5 +1,12 @@
 #!/bin/bash
 
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
+
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
+fi
 
 function usage(){
   cat <<EOF
@@ -60,7 +67,7 @@ case $2 in
     docker run -ti --rm -v birdhouse_data:/data  birdhouse/bird-base sqlite3 $DB
     ;;
   *)
-    echo "Error, unknown operation: $2"
+    log ERROR "unknown operation: $2"
     usage
     ;;
 esac

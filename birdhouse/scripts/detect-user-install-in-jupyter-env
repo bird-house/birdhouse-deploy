@@ -7,10 +7,14 @@
 # version is pinned at the user installed version.
 #
 
-THIS_FILE="`realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
-. "$THIS_DIR/../read-configs.include.sh"
+if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+    . "${COMPOSE_DIR}/read-configs.include.sh"
+fi
+
 
 # Get JUPYTERHUB_USER_DATA_DIR
 read_configs
@@ -19,16 +23,16 @@ set -x
 
 START_TIME="`date -Isecond`"
 
-cd $JUPYTERHUB_USER_DATA_DIR
+cd "${JUPYTERHUB_USER_DATA_DIR}" || exit
 
 # Fresh new user do not have .local/lib and .local/bin yet so these commands
 # will return error and it is normal.
-ls -a */.home/.local/lib/python*/site-packages
-ls -a */.home/.local/bin
+ls -a -- */.home/.local/lib/python*/site-packages
+ls -a -- */.home/.local/bin
 
 set +x
 
-echo "
+log INFO "
 Errors like
   ls: cannot access */.home/.local/lib/python*/site-packages: No such file or directory
   ls: cannot access */.home/.local/bin: No such file or directory

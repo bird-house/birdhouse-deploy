@@ -8,13 +8,11 @@
 # global.xml will exist and this script will not execute.  Without
 # FIRST_RUN_ONLY, this script will always execute.
 
-THIS_FILE="`realpath "$0"`"
-THIS_DIR="`dirname "$THIS_FILE"`"
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
-# Go to repo root.
-cd $THIS_DIR/../..
-
-. birdhouse/read-configs.include.sh
+. "${COMPOSE_DIR}/read-configs.include.sh"
 
 # Get BASH_IMAGE
 # Get GEOSERVER_DATA_DIR
@@ -22,15 +20,15 @@ read_configs
 
 set -x
 
-DATA_DIR="$GEOSERVER_DATA_DIR"
+DATA_DIR="${GEOSERVER_DATA_DIR}"
 
 if [ -n "$1" ]; then
     DATA_DIR="$1"; shift
 fi
 
 docker run --rm --name fix-geoserver-data-dir-perm \
-    --volume ${DATA_DIR}:/datadir \
+    --volume "${DATA_DIR}":/datadir \
     --env FIRST_RUN_ONLY \
-    $BASH_IMAGE \
+    "${BASH_IMAGE}" \
     bash -xc 'if [ -z "$FIRST_RUN_ONLY" -o ! -f /datadir/global.xml ]; \
     then chown -R 1000:10001 /datadir; else echo "No execute."; fi'

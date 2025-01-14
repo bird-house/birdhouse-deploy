@@ -1,0 +1,37 @@
+[
+  {
+    "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.2.0/node_registry.schema.json#service",
+    "name": "geoserver",
+    "version": "${GEOSERVER_VERSION}",
+    "types": [
+      "data",
+      "wms",
+      "wfs",
+      "wps"
+    ],
+    "keywords": [
+      "data",
+      "service-wms",
+      "service-wfs",
+      "service-wps"
+    ],
+    "description": "GeoServer is a server that allows users to view and edit geospatial data.",
+    "links": [
+      {
+        "rel": "service",
+        "type": "text/html",
+        "href": "https://${PAVICS_FQDN_PUBLIC}/geoserver/"
+      },
+      {
+        "rel": "service-doc",
+        "type": "text/html",
+        "href": "https://docs.geoserver.org/"
+      },
+      {
+        "rel": "service-meta",
+        "type": "application/vnd.oci.image.index.v1+json",
+        "href": "${GEOSERVER_IMAGE_URI}"
+      }
+    ]
+  }
+]

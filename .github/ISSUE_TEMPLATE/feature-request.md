@@ -3,7 +3,7 @@ name: Feature Request
 about: Suggest an idea, new feature or enhancement to existing functionalities.
 title: ":bulb: [Feature]"
 labels: enhancement 
-assignees: tlvu
+assignees: tlvu, fmigneault, mishaschwartz
 
 ---
 
@@ -33,4 +33,3 @@ assignees: tlvu
 
   @tag them below
 -->
-

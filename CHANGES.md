@@ -17,6 +17,239 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.2.2](https://github.com/bird-house/birdhouse-deploy/tree/2.2.2) (2024-05-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new full build with latest of almost everything
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#121](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/121)
+  for more info.
+
+
+[2.2.1](https://github.com/bird-house/birdhouse-deploy/tree/2.2.1) (2024-05-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- bump jupyterhub version to 4.1.5-20240426
+  
+  - This is the latest bugfix update to jupyterhub after the release of version 4.1.0. There haven't been any additional
+    updates for a few weeks now, so we can assume that this version is relatively stable now. See the [jupyterhub 
+    changelog](https://jupyterhub.readthedocs.io/en/stable/reference/changelog.html) for details.
+
+## Fixes
+
+- docs: Fix version of `sphinx-mdinclude` to address incompatible `docutils` operation under ReadTheDocs Sphinx build.
+
+  - See [docutils 0.21 changes](https://docutils.sourceforge.io/RELEASE-NOTES.html#release-0-21-2024-04-09).
+  - See issue [sphinx-mdinclude#47](https://github.com/omnilib/sphinx-mdinclude/issues/47)
+    and PR [sphinx-mdinclude#55](https://github.com/omnilib/sphinx-mdinclude/pull/55).
+
+[2.2.0](https://github.com/bird-house/birdhouse-deploy/tree/2.2.0) (2024-04-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Node Services: Add definitions and variables for every service represented by
+  the [DACCS-Climate/Marble-node-registry](https://github.com/DACCS-Climate/Marble-node-registry).
+
+  - Add `version` field using the corresponding `<SERVICE>_VERSION` variables.
+  - Add `types` field restricted by specific values instead of previous `keywords` expected to be extendable.
+  - Add `<SERVICE>_IMAGE_URI` variables to provide `rel: service-meta` link for every service.
+  - Update all `$schema` references of service node registry
+    to [1.2.0](https://github.com/DACCS-Climate/Marble-node-registry/releases/tag/1.2.0) instead of `main`.
+    During unit tests, specific `$schema` reference in the respective service configuration will be used for validation.
+  
+  See [bird-house/birdhouse-deploy#441](https://github.com/bird-house/birdhouse-deploy/issues/441) for more details.
+
+[2.1.3](https://github.com/bird-house/birdhouse-deploy/tree/2.1.3) (2024-04-09)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- GeoServer: fix invalid media-type specified for the service's endpoint in `service-config.json.template`
+- Jupyterhub: fix authentication bug when changing settings
+  
+  If the `JUPYTERHUB_AUTHENTICATOR_AUTHORIZATION_URL` variable or `JUPYTERHUB_CRYPT_KEY` is unset without clearing the 
+  jupyterhub database, users could no longer spawn jupyterlab servers. 
+
+[2.1.2](https://github.com/bird-house/birdhouse-deploy/tree/2.1.2) (2024-03-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Weaver: celery-healthcheck: update regular expression
+
+  The `celery-healthcheck` file which checks if celery node is online when weaver starts up was using an outdated
+  regular expression to check if a node was online or not. This has been fixed so that this script can now reliably
+  check whether the node is available or not.
+
+[2.1.1](https://github.com/bird-house/birdhouse-deploy/tree/2.1.1) (2024-03-06)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- logging: decrease logging level for empty optional vars from WARN to DEBUG
+
+  To avoid drowning real WARN messages.  Many optional vars can be valid if empty.
+
+- config: add sample config to configure docker-compose to remove orphans
+
+  To remove orphans containers when components are disabled.  Also link to full
+  documentations if other env var can be used.
+
+- compose script: allow to pass extra options to `up` operation
+
+  The previous docker-compose built-in env var was not working so had to add
+  this homegrown solution.
+
+  When disabling components, their existing containers will not be removed
+  unless option `--remove-orphans` is given together with  `./pavics-compose.sh up -d`.
+
+  This change allow any additional options, not just `--remove-orphans`.
+
+- compose script: exit early when any errors occurred during invocation
+
+  Before, all the `post-docker-compose-up` would still execute after
+  `docker-compose` has an error.
+
+
+[2.1.0](https://github.com/bird-house/birdhouse-deploy/tree/2.1.0) (2024-02-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Compose script utilities:
+  * Add `BIRDHOUSE_COLOR` option and various logging/messaging definitions in `birdhouse/scripts/logging.include.sh`.
+  * Replace all explicit color "logging" related `echo` in scripts by a utility `log {LEVEL} {message}` function
+    that employs variables `LOG_DEBUG`, `LOG_INFO`, `LOG_WARN`, `LOG_ERROR` and `LOG_CRITICAL` as applicable per
+    respective messages to report logging messages in a standard approach.
+    Colors can be disabled with `BIRDHOUSE_COLOR=0` and logging level can be set with `BIRDHOUSE_LOG_LEVEL={LEVEL}`
+    where all levels above or equal to the configured one will be displayed (default logging level is `INFO`).
+  * Unify all `birdhouse/scripts` utilities to employ the same `COMPOSE_DIR` variable (auto-resolved or explicitly set)
+    in order to include or source any relevant dependencies they might have within the `birdhouse-deploy` repository.
+  * Add `info` option (ie: `pavics-compose.sh info`) that will stop processing just before `docker-compose` call.
+    This can be used to perform a "dry-run" of the command and validate that was is loaded is as expected, by inspecting
+    provided log messages.
+  * Replace older backtick (``` ` ```) executions by `$(...)` representation except for `eval` calls that require
+    them for backward compatibility of `sh` on some server instances.
+  * Modify the `sh -x` calls to scripts listed in `COMPONENT_PRE_COMPOSE_UP` and `COMPONENT_POST_COMPOSE_UP` to employ
+    the `-x` flag (showing commands) only when `BIRDHOUSE_LOG_LEVEL=DEBUG`.
+
+- Defaults:
+  * Add multiple `SERVER_[...]` variables with defaults using previously hard coded values referring to PAVICS.
+    These variables use a special combination of `DELAYED_EVAL` and `OPTIONAL_VARS` definitions that can make use
+    of a variable formatted as `<ANY_NAME>='${__DEFAULT__<ANY_NAME>}'` that will print a warning messages indicating
+    that the default is employed, although *STRONGLY* recommended to be overridden. This allows a middle ground between
+    backward-compatible `env.local` while flagging potentially misused configurations.
+
+## Fixes
+- Canarie-API: updated references
+  * Use the new `SERVER_[...]` variables.
+  * Replace the LICENSE URL of the server node pointing
+    at [Ouranosinc/pavics-sdi](https://github.com/Ouranosinc/pavics-sdi) instead
+    of intended [bird-house/birdhouse-deploy](https://github.com/bird-house/birdhouse-deploy).
+- Magpie: ensure that the `MAGPIE_ADMIN_USERNAME` variable is respected
+  * When determining the `JUPYTERHUB_ADMIN_USERS` variable
+  * Double check that it is being respected everywhere else
+- env.local.example: fix `JUPYTERHUB_CONFIG_OVERRIDE` comment section
+
+  `JUPYTERHUB_CONFIG_OVERRIDE` was disconnected from its sample code.
+
+[2.0.6](https://github.com/bird-house/birdhouse-deploy/tree/2.0.6) (2024-02-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: add option to automatically unregister old providers
+
+  Introduces the `WEAVER_UNREGISTER_DROPPED_PROVIDERS` variable. If set to "True", Weaver providers that are no longer 
+  working (not responding when deployed) and are not named in `WEAVER_WPS_PROVIDERS` will be unregistered. This is  
+  useful when deploying Weaver with fewer providers than a previous deployment.
+
+  For example, if the stack is deployed with the Weaver, Finch, and Raven components. Then later deployed with just
+  Weaver and Raven, the Finch provider will be unregistered from weaver.
+
+  Previously, the Finch provider would have remained as a Weaver provider despite the fact that it has been removed from
+  the stack.
+
+[2.0.5](https://github.com/bird-house/birdhouse-deploy/tree/2.0.5) (2024-01-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new incremental build for compatibility with upcoming Thredds v5
+
+  See https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/134 for more info.
+
+
+[2.0.4](https://github.com/bird-house/birdhouse-deploy/tree/2.0.4) (2024-01-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Allow users to log in to Jupyterhub with their email address
+
+  Previously, JupyterHub's `MagpieAuthenticator` class treated the email address entered into the username field as
+  the username itself. This led to a mismatch between the username in JupyterHub and the username in Magpie.
+  To resolve this, we update the JupyterHub docker image to a version where this bug is fixed. 
+
+  See https://github.com/Ouranosinc/jupyterhub/pull/26 and https://github.com/Ouranosinc/Magpie/issues/598 for 
+  reference.
+
+[2.0.3](https://github.com/bird-house/birdhouse-deploy/tree/2.0.3) (2024-01-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Autodeploy broken due to instanciated left-over files in ./config/ dir
+
+  The `.gitignore` syntax was wrong.  Regression from v2.0.0.
+
+
+[2.0.2](https://github.com/bird-house/birdhouse-deploy/tree/2.0.2) (2023-12-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Cowbird README file disappears now that cowbird is a default component
+
+  The settings to enable the Cowbird README file (added in version 1.41.0) assumed that the cowbird component would
+  be loaded after the juptyerhub component. Now that the cowbird component is part of the `DEFAULT_CONF_DIRS` and
+  therefore will always be loaded first, this updates the settings so that the README file will be enabled given the new
+  component load order.
+
+[2.0.1](https://github.com/bird-house/birdhouse-deploy/tree/2.0.1) (2023-12-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Code documentation: provide an additional reason to not exit early if a directory listed in the `EXTRA_CONF_DIRS` variable does not exist.
+
+## Fixes
+- Twitcher: unable to change log level because of typo in qualname config
+
+
+[2.0.0](https://github.com/bird-house/birdhouse-deploy/tree/2.0.0) (2023-12-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `DEFAULT_CONF_DIRS` to the minimal components required to deploy the stack
+
+  Changes `DEFAULT_CONF_DIRS` to refer exclusively to the proxy, magpie, twitcher, stac, and cowbird components.
+  Also moves all components that were previously under the `birdhouse/config` directory to the `birdhouse/components`
+  directory. This removes the arbitrary distinction between these groups of components that didn't have any functional
+  or logical reason.
+
+  Because this change updates the default components, this is not backwards compatible unless the following changes are
+  made to the local environment file (`birdhouse/env.local` by default):
+
+  - add any components no longer in the `DEFAULT_CONF_DIRS` list to the `EXTRA_CONF_DIRS` list.
+    For example, to keep the jupyterhub component enabled, add `./components/jupyterhub` to the `EXTRA_CONF_DIRS` list.
+
+  - update the `PROXY_ROOT_LOCATION` to redirect the root path `/` to an enabled component. By default, this will
+    redirect to Magpie's landing page, unless jupyterhub is enabled, in which case it will redirect to jupyterhub's
+    landing page.
+    If any other behaviour is desired, `PROXY_ROOT_LOCATION` should be updated in the `env.local` file.
+
 [1.42.2](https://github.com/bird-house/birdhouse-deploy/tree/1.42.2) (2023-12-08)
 ------------------------------------------------------------------------------------------------------------------
 

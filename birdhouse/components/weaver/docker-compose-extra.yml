@@ -16,12 +16,12 @@ services:
     #   Weaver is started, they will all be able to request them and register the providers correctly.
     #   This is needed because simply adding 'depends_on' only ensures that containers are 'running', but startup of
     #   WPS applications themselves are not necessarily completed. Successful HTTP responses ensure they are 'ready'.
-    image: pavics/weaver:${WEAVER_VERSION}-manager
+    image: ${WEAVER_MANAGER_IMAGE}
     environment:
       HOSTNAME: ${PAVICS_FQDN}
       FORWARDED_ALLOW_IPS: "*"
     #env_file:
-    #  - ./config/mongodb/credentials.env
+    #  - ./components/mongodb/credentials.env
     depends_on:
       - weaver-mongodb
     links:
@@ -42,12 +42,12 @@ services:
 
   # Image 'worker' is the job runner of Weaver, possibly spawning Docker applications according to process definition
   weaver-worker:
-    image: pavics/weaver:${WEAVER_VERSION}-worker
+    image: ${WEAVER_WORKER_IMAGE}
     container_name: ${WEAVER_WORKER_NAME}
     environment:
       DOCKER_HOST: "tcp://docker-proxy:2375"
     #env_file:
-    #  - ./config/mongodb/credentials.env
+    #  - ./components/mongodb/credentials.env
     depends_on:
       # no 'default' network here such that the worker is not accessible from proxy/http
       - weaver-mongodb
