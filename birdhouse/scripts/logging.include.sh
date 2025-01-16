@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # support NO_COLOR flag (https://no-color.org/)
-if [ -z "${BIRDHOUSE_COLOR}" ] && [ "${NO_COLOR}" != '1' ]; then
+if [ -z "${BIRDHOUSE_COLOR}" ] && [ -z "${NO_COLOR}" ]; then
     BIRDHOUSE_COLOR=1
 fi 
 
