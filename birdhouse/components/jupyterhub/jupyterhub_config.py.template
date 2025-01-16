@@ -107,10 +107,10 @@ c.DockerSpawner.environment = {
     # Post on Panel forum:
     # https://discourse.holoviz.org/t/how-to-customize-the-display-url-from-panel-serve-for-use-behind-jupyterhub-with-jupyter-server-proxy/3571
     # Issue about Panel Preview: https://github.com/holoviz/panel/issues/3440
-    "BIRDHOUSE_HOST_URL": "https://${BIRDHOUSE_FQDN_PUBLIC}",
+    "BIRDHOUSE_HOST_URL": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}",
     # https://docs.dask.org/en/stable/configuration.html
     # https://jupyterhub-on-hadoop.readthedocs.io/en/latest/dask.html
-    "DASK_DISTRIBUTED__DASHBOARD__LINK": "https://${BIRDHOUSE_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
+    "DASK_DISTRIBUTED__DASHBOARD__LINK": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
 }
 
 host_user_data_dir = join(os.environ['WORKSPACE_DIR'], "{username}")
@@ -199,9 +199,11 @@ c.Spawner.args = [
     "--FileContentsManager.always_delete_dir=True",
     ]
 
+## Note that JUPYTERHUB_DOCKER_EXTRA_HOSTS may be set by default in the local-dev-test component
 c.DockerSpawner.extra_host_config = {
     # start init pid 1 process to reap defunct processes
     'init': True,
+    'extra_hosts': dict(host_mapping.split(":") for host_mapping in os.getenv("JUPYTERHUB_DOCKER_EXTRA_HOSTS", "").split())
     }
 
 c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}     # noqa

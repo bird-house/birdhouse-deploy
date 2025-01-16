@@ -3,7 +3,7 @@ import copy
 service_public = "Malleefowl-public"
 service_public_cfg = {
     'request': {
-        'url': 'https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/malleefowl?service=WPS&version=1.0.0&request=GetCapabilities'
+        'url': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/malleefowl?service=WPS&version=1.0.0&request=GetCapabilities'
     }
 }
 
