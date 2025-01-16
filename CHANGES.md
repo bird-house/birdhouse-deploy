@@ -15,7 +15,16 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Add resolver for http nginx configuration
+
+  Nginx requires a resolver to be explicity defined when using `proxy_pass` with a variable in the argument passed
+  to `proxy_pass`. This resolver is defined explicitly for the https server block but not for the http server block.
+
+  This adds the explicit resolver for the http server block as well so that `proxy_pass` works when called using using
+  http URLs as well.
+  
 
 [2.7.1](https://github.com/bird-house/birdhouse-deploy/tree/2.7.1) (2024-12-20)
 ------------------------------------------------------------------------------------------------------------------
