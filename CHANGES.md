@@ -15,7 +15,24 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.7.2](https://github.com/bird-house/birdhouse-deploy/tree/2.7.2) (2025-01-16)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
+
+- Jupyterhub: allow users created before Cowbird was enabled to spawn jupyterlab
+
+  Users created before Cowbird was enabled will not have a "workspace directory" created. A workspace directory
+  is a symlink to the directory that contains their Jupyterhub data.
+  
+  When Cowbird is enabled, Jupyterhub checks if the workspace directory exists and raises an error if it doesn't.
+  
+  This change allows Jupyterhub to create the symlink if it doesn't exist instead of raising an error. 
+  This means that users without a "workspace directory" will be able to continue using Jupyterhub as they did 
+  before without the need for manual intervention by a system administrator who would otherwise need to manually
+  create the symlink for them.
 
 - Add resolver for http nginx configuration
 
