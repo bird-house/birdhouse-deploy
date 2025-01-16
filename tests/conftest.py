@@ -37,4 +37,4 @@ def root_dir(request):
 
 @pytest.fixture(scope="module")
 def local_env_file(root_dir):
-    yield pathlib.Path(os.getenv("TEST_BIRDHOUSE_LOCAL_ENV", root_dir / "tests" / "env.local.test"))
+    yield pathlib.Path(os.getenv("TEST_BIRDHOUSE_LOCAL_ENV", root_dir / "tests" / "test.env"))

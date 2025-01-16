@@ -23,7 +23,7 @@ services:
     restart: always
     logging: *default-logging
     healthcheck:
-      test: ["CMD", "curl", "--fail", "${BIRDHOUSE_FQDN_PUBLIC}"]
+      test: ["CMD", "curl", "--fail", "http://localhost"]
       interval: 60s
       timeout: 5s
       retries: 3

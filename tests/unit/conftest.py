@@ -9,4 +9,4 @@ def root_dir(request):
 
 @pytest.fixture(scope="module")
 def local_env_file(root_dir):
-    yield root_dir / "tests" / "env.local.test"
+    yield root_dir / "tests" / "test.env"
