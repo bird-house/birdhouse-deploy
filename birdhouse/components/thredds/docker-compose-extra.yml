@@ -36,7 +36,12 @@ services:
           "--fail",
           "http://localhost:8080${TWITCHER_PROTECTED_PATH}/thredds/catalog.html"
         ]
-
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
+      
 volumes:
   thredds_persistence:
     external:
