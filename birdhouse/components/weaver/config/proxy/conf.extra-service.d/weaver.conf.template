@@ -43,7 +43,7 @@
     location = ${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME} {
         return 301 /${WEAVER_MANAGER_NAME}/$is_args$args;
     }
-    location ${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}/ {
+    location ~ ^${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}/(.*)$ {
         return 301 /${WEAVER_MANAGER_NAME}/$is_args$args;
     }
 
