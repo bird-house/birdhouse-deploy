@@ -36,6 +36,8 @@
   - additional documentation added to `birdhouse` interface to improve user experience.
   - docker healthchecks added to more components so that the readiness of the stack can be determined with or
     without the use of the `canarie-api` component.
+  - deprecates the `optional-components/wps-healthchecks` component since the healthchecks are now added by default
+    to all WPS components.
 
   Next steps:
 
