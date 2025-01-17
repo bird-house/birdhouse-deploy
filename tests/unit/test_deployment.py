@@ -13,13 +13,8 @@ TEMPLATE_SUBSTITUTIONS = {
     "BIRDHOUSE_FQDN_PUBLIC": os.environ.get("BIRDHOUSE_FQDN_PUBLIC", "example.com"),
     "WEAVER_MANAGER_NAME": os.environ.get("WEAVER_MANAGER_NAME", "weaver"),
     "TWITCHER_PROTECTED_PATH": os.environ.get("TWITCHER_PROTECTED_PATH", "/twitcher/ows/proxy"),
-    "BIRDHOUSE_PROXY_SCHEME": os.environ.get("BIRDHOUSE_PROXY_SCHEME", "https")
+    "BIRDHOUSE_PROXY_SCHEME": os.environ.get("BIRDHOUSE_PROXY_SCHEME", "http"),
 }
-
-
-@pytest.fixture(scope="module")
-def root_dir(request):
-    yield os.path.dirname(os.path.dirname(request.fspath))
 
 
 @pytest.fixture(scope="module")
@@ -64,7 +59,7 @@ def resolved_services_config_schema(request):
     branch = os.environ.get("DACCS_NODE_REGISTRY_BRANCH", None)
     default_schema = {
         "$ref": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry"
-                f"/{branch or 'main'}/node_registry.schema.json#service"
+        f"/{branch or 'main'}/node_registry.schema.json#service"
     }
     if branch:
         return [(default_schema, path) for path in service_config_paths]
@@ -116,7 +111,10 @@ class TestDockerCompose:
     @pytest.mark.online
     def test_service_config_valid(self, resolved_services_config_schema, template_substitutions):
         invalid_schemas = []
-        for service_config_schema, service_config_path in resolved_services_config_schema:
+        for (
+            service_config_schema,
+            service_config_path,
+        ) in resolved_services_config_schema:
             service_configs = load_templated_service_config(service_config_path, template_substitutions)
             for service_config in service_configs:
                 try:

@@ -19,6 +19,13 @@ services:
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
     restart: always
     logging: *default-logging
-
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "print('connected')"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
+    
 networks:
   mongodb: {}

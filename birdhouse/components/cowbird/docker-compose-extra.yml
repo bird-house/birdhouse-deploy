@@ -45,6 +45,13 @@ services:
       - "${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}:${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}"
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://0.0.0.0:7000"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
 
   cowbird-worker:
     image: pavics/cowbird:${COWBIRD_VERSION}-worker
@@ -74,6 +81,7 @@ services:
       - "${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}:${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}"
     restart: always
     logging: *default-logging
+    # TODO: create a stable healthcheck for this service (`inspect ping` or `status` is not reliable)
 
   # Dedicated database for Cowbird, since other 'mongodb' image does not employ the same version.
   cowbird-mongodb:
@@ -85,6 +93,13 @@ services:
       - ${COWBIRD_MONGODB_DATA_DIR}:/data/db
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "print('connected')"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
 
 networks:
   cowbird-mongodb: {}

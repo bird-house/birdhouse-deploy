@@ -38,6 +38,38 @@
   * Use the `TWITCHER_VERIFY_PATH` approach to accelerate access of `weaver` resources authorization.
   * Modify proxy pass definitions and URL prefixes to resolve correctly with HTML resources.
 
+[2.7.3](https://github.com/bird-house/birdhouse-deploy/tree/2.7.3) (2025-01-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add integration test framework
+
+  This update adds a framework for testing the deployed stack using pytest. This will allow developers to check
+  that their changes are consistent with the existing stack and to add additionally tests when new functionality
+  is introduced. 
+
+  Changes to implement this include:
+
+  - existing unit tests are moved to the `tests/unit/` directory
+  - new integration tests are written in the `tests/integration/` directory. More tests will be added in the
+    future!
+  - `conftest.py` scripts updated to bring the stack up/down in a consistent way for the integration tests.
+  - unit tests updated to accomodate new testing infrastructure as needed.
+  - unit tests updated to test logging outputs better
+  - `birdhouse` interface script updated to support testing infrastructure (this should not change anything for
+    other end-users).
+  - additional documentation added to `birdhouse` interface to improve user experience.
+  - docker healthchecks added to more components so that the readiness of the stack can be determined with or
+    without the use of the `canarie-api` component.
+  - deprecates the `optional-components/wps-healthchecks` component since the healthchecks are now added by default
+    to all WPS components.
+
+  Next steps:
+
+  - add more integration tests as needed
+  - add a framework for testing migrating the stack from one version to another
+
 [2.7.2](https://github.com/bird-house/birdhouse-deploy/tree/2.7.2) (2025-01-16)
 ------------------------------------------------------------------------------------------------------------------
 

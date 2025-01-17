@@ -19,3 +19,10 @@ services:
       - LOG_PARSER_LOG_LEVEL=${PROMETHEUS_LOG_PARSER_LOG_LEVEL}
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://0.0.0.0:8000"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s

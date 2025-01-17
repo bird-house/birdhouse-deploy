@@ -31,10 +31,12 @@ services:
     restart: always
     logging: *default-logging
     healthcheck:
-      test: curl --fail --silent http://localhost:8080/ || exit 1
+      test: curl --fail --silent http://localhost:8080/geoserver || exit 1
       interval: 1m30s
       timeout: 10s
       retries: 3
+      start_period: 30s
+      start_interval: 5s
 
   postgis:
     image: pavics/postgis:2.2

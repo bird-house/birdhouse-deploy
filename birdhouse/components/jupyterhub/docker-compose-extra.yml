@@ -46,6 +46,13 @@ services:
     command: bash -c "jupyterhub upgrade-db && jupyterhub"
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/jupyter"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
 
 # need external network so the folder name is not prefixed to network name
 networks:

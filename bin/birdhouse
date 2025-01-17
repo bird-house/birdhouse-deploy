@@ -10,12 +10,11 @@ export __BIRDHOUSE_SUPPORTED_INTERFACE=True
 
 USAGE="USAGE: $THIS_BASENAME [-h|--help] 
                              [-b|--backwards-compatible]
-                             [-e|--env-file local-env-file]
-                             [-q|--quiet] [-q|--quiet {DEBUG|INFO|WARN|ERROR|CRITICAL}]
-                             [-s|--log-stdout] [-s|--log-stdout {DEBUG|INFO|WARN|ERROR|CRITICAL}]
-                             [-l|--log-file log-file-path]
-                             [-l|--log-file {DEBUG|INFO|WARN|ERROR|CRITICAL} log-file-path]
-                             [-L|--log-level {DEBUG|INFO|WARN|ERROR|CRITICAL}]
+                             [-e|--env-file path]
+                             [-q|--quiet [level]]
+                             [-s|--log-stdout [level]]
+                             [-l|--log-file [level] path]
+                             [-L|--log-level level]
                              {info|compose|configs}"
 USAGE=$(echo $USAGE | tr "\n" " ")
 
@@ -25,13 +24,13 @@ Manage the Birdhouse software stack.
 
 Commands:
   info      Print build information
-  compose   Run a \"docker compose\" command for the Birdhouse project
+  compose   Run a \"docker compose\" command for the Birdhouse project (run '${THIS_BASENAME} compose --help' for more options)
   configs   Load or execute commands in the Birdhouse configuration environment
 
 Options:
   -h, --help                                              Print this message and exit
   -b, --backwards-compatible                              Run in backwards compatible mode
-  -e, --env-file string                                   Override the local environment file, default is ${COMPOSE_DIR}/env.local
+  -e, --env-file path                                     Override the local environment file, default is ${COMPOSE_DIR}/env.local
   -s, --log-stdout                                        Write logs to stdout for all log levels, default is to write to stderr
   -s, --log-stdout {DEBUG|INFO|WARN|ERROR|CRITICAL}       Write logs to stdout for the given log level only (this option can be repeated)
   -l, --log-file path                                     Write logs to this file path for all log levels
@@ -41,12 +40,13 @@ Options:
   -L, --log-level {DEBUG|INFO|WARN|ERROR}                 Set log level, default is INFO
 "
 
-CONFIGS_USAGE="USAGE: $THIS_BASENAME configs [-h|--help] [-d|--default] {[-p|--print-config-command] | [-c|--command command]}"
+CONFIGS_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] configs [-h|--help] [-d|--default] {[-p|--print-config-command] | [-c|--command command]}"
 CONFIGS_HELP="$CONFIGS_USAGE
 
 Load or execute commands in the Birdhouse configuration environment.
 
 Options:
+  -h, --help                   Print this message and exit
   -d, --default                Only load/print a command for the default configuration settings, not those specified by the local environment file
   -p, --print-config-command   Print a command that can be used to load configuration settings as environment variables
   -c, --command string         Execute the given command after loading configuration settings
@@ -78,6 +78,7 @@ READ_CONFIGS_CMD=read_configs
 #   $ echo $BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED
 #   True
 print_config_command() {
+  option="$1"
   configs_cmd_prefix="export __BIRDHOUSE_SUPPORTED_INTERFACE=True ;"
   configs_cmd_suffix="unset __BIRDHOUSE_SUPPORTED_INTERFACE ;"
   if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED+set}" = 'set' ]; then
@@ -98,6 +99,9 @@ print_config_command() {
     configs_cmd_suffix="${configs_cmd_suffix} unset BIRDHOUSE_LOCAL_ENV ;"
   fi
 
+  if [ "${option}" = "no-suffix" ]; then
+    configs_cmd_suffix=
+  fi
   echo "${configs_cmd_prefix} . ${COMPOSE_DIR}/read-configs.include.sh; ${READ_CONFIGS_CMD} ; ${configs_cmd_suffix}"
 }
 
@@ -167,9 +171,9 @@ parse_configs_args() {
         print_config_command
       elif [ "${CONFIGS_CMD+set}" = 'set' ]; then
         if [ "${CONFIGS_QUIET}" = "True" ]; then
-          eval "$(print_config_command)" 2> /dev/null
+          eval "$(print_config_command no-suffix)" 2> /dev/null
         else
-          eval "$(print_config_command)"
+          eval "$(print_config_command no-suffix)"
         fi
         exec /usr/bin/env sh -c "${CONFIGS_CMD}"
       else
@@ -285,7 +289,7 @@ parse_args() {
       parse_configs_args "$@"
       ;;
     -h|--help)
-      echo "$HELP"
+      echo "$HELP" | more
       ;;
     -??*)
       parse_multiple_short_flags parse_args "$@"

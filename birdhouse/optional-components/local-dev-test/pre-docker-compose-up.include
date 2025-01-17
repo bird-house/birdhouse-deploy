@@ -18,7 +18,7 @@ THIS_COMPOSE_FILE="${COMPOSE_DIR}/optional-components/local-dev-test/docker-comp
 echo 'version: "3.4"' > "${THIS_COMPOSE_FILE}"
 echo "services:" >> "${THIS_COMPOSE_FILE}"
 
-for service in $(PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} config --services); do
+for service in $(PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} config --services 2> /dev/null); do
     printf ' %s:\n  extra_hosts:\n   - "host.docker.internal:host-gateway"\n' $service >> "${THIS_COMPOSE_FILE}"
 done
 
