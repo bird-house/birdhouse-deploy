@@ -18,6 +18,8 @@ server {
     listen       80;
     server_name  localhost;
 
+    resolver 127.0.0.11;
+
     ${PROXY_INCLUDE_FOR_PORT_80}
 
     # redirect server error pages to the static page /50x.html

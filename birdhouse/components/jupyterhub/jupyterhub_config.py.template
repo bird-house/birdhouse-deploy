@@ -159,8 +159,7 @@ def create_dir_hook(spawner):
         # to have working volume mounts with the DockerSpawner.
         workspace_user_dir = join(os.environ['WORKSPACE_DIR'], username)
         if not os.path.exists(workspace_user_dir):
-            raise FileNotFoundError(f"The user {username}'s workspace doesn't exist in the workspace directory, "
-                                    "but should have been created by Cowbird already.")
+            os.symlink(jupyterhub_user_dir, workspace_user_dir, target_is_directory=True)
         subprocess.call(["chown", f"{os.environ['USER_WORKSPACE_UID']}:{os.environ['USER_WORKSPACE_GID']}",
                          workspace_user_dir])
 

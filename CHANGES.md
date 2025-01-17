@@ -38,6 +38,32 @@
   * Use the `TWITCHER_VERIFY_PATH` approach to accelerate access of `weaver` resources authorization.
   * Modify proxy pass definitions and URL prefixes to resolve correctly with HTML resources.
 
+[2.7.2](https://github.com/bird-house/birdhouse-deploy/tree/2.7.2) (2025-01-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Jupyterhub: allow users created before Cowbird was enabled to spawn jupyterlab
+
+  Users created before Cowbird was enabled will not have a "workspace directory" created. A workspace directory
+  is a symlink to the directory that contains their Jupyterhub data.
+  
+  When Cowbird is enabled, Jupyterhub checks if the workspace directory exists and raises an error if it doesn't.
+  
+  This change allows Jupyterhub to create the symlink if it doesn't exist instead of raising an error. 
+  This means that users without a "workspace directory" will be able to continue using Jupyterhub as they did 
+  before without the need for manual intervention by a system administrator who would otherwise need to manually
+  create the symlink for them.
+
+- Add resolver for http nginx configuration
+
+  Nginx requires a resolver to be explicity defined when using `proxy_pass` with a variable in the argument passed
+  to `proxy_pass`. This resolver is defined explicitly for the https server block but not for the http server block.
+
+  This adds the explicit resolver for the http server block as well so that `proxy_pass` works when called using using
+  http URLs as well.
+  
+
 [2.7.1](https://github.com/bird-house/birdhouse-deploy/tree/2.7.1) (2024-12-20)
 ------------------------------------------------------------------------------------------------------------------
 
