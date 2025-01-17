@@ -44,7 +44,7 @@
         return 301 /${WEAVER_MANAGER_NAME}/$is_args$args;
     }
     location ~ ^${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}/(.*)$ {
-        return 301 /${WEAVER_MANAGER_NAME}/$is_args$args;
+        return 308 /${WEAVER_MANAGER_NAME}/$1$is_args$args;
     }
 
     # optional alternate endpoint to access weaver (see 'components/weaver/default.env')
