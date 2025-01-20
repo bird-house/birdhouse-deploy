@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Weaver: adjust missing `WEAVER_MANAGER_NAME` in healthchecks expecting matching `SCRIPT_NAME` configuration
+
+  * Weaver's own `healthcheck` definition did not resolve to the expected endpoint.
+  * Canarie-API `monitoring` endpoint for Weaver did not resolve to the expected endpoint.
 
 [2.8.0](https://github.com/bird-house/birdhouse-deploy/tree/2.8.0) (2025-01-17)
 ------------------------------------------------------------------------------------------------------------------

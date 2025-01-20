@@ -26,7 +26,7 @@ SERVICES['Weaver'] = {
     "monitoring": {
         "Weaver": {
             'request': {
-                'url': 'http://weaver:4001/'
+                'url': 'http://weaver:4001/${WEAVER_MANAGER_NAME}/'
             },
             'response': {
                 'text': '\{.*"message":.*"Weaver Information".*\}'
