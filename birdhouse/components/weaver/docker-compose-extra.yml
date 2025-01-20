@@ -44,7 +44,12 @@ services:
     restart: always
     logging: *default-logging
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:4001')"]
+      test: [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://localhost:4001/${WEAVER_MANAGER_NAME}/')"
+      ]
       interval: 60s
       timeout: 5s
       retries: 3
