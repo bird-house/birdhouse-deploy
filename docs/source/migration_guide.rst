@@ -3,6 +3,21 @@
 Migration Guide
 ===============
 
+Version 2.9
+-----------
+
+Version 2.9 updates JupyterHub to version 5.
+
+To upgrade to version 2.9 from an earlier version:
+
+- If your local environment file sets the `c.DockerSpawner.image_whitelist` config option in the
+  `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` environnment variable. Change `c.DockerSpawner.image_whitelist`
+  to `c.DockerSpawner.allowed_images`.
+
+  If you have changed any of the default `jupyterhub` settings you may need to consult the [JupyterHub upgrade
+  guide](https://jupyterhub.readthedocs.io/en/latest/howto/upgrading-v5.html) to see if any of those settings
+  have been changed.
+
 Version 2.4
 -----------
 

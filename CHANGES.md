@@ -27,13 +27,6 @@
   - If your local environment file sets the `c.DockerSpawner.image_whitelist` config option in the 
     `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` environnment variable. Change `c.DockerSpawner.image_whitelist` 
     to `c.DockerSpawner.allowed_images`.
-  - Update the jupyterhub database with the following command after you have started up the stack:
-    ```
-    birdhouse compose exec jupyterhub jupyterhub upgrade-db
-    ```
-    You can also simply delete the `jupyterhub_data_persistence` volume if you're not storing any custom
-    information there and if you haven't manually set `c.Authenticator.allow_all` to `False` (ensure that
-    the stack is stopped and all jupyterlab containers have been stopped and removed first).
 
   If you have changed any of the default `jupyterhub` settings you may need to consult the [JupyterHub upgrade
   guide](https://jupyterhub.readthedocs.io/en/latest/howto/upgrading-v5.html) to see if any of those settings

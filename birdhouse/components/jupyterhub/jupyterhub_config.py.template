@@ -176,9 +176,9 @@ c.Spawner.disable_user_config = True
 
 c.DockerSpawner.default_url = '/lab'
 c.DockerSpawner.remove = True  # delete containers when servers are stopped
+c.DockerSpawner.allowed_images = {c.DockerSpawner.image: c.DockerSpawner.image} # v5.0+
 ${JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS}    # noqa
 
-c.DockerSpawner.allowed_images = {c.DockerSpawner.image: c.DockerSpawner.image} # v5.0+
 c.DockerSpawner.pull_policy = "always"  # for images not using pinned version
 c.DockerSpawner.debug = True
 c.JupyterHub.log_level = logging.DEBUG
