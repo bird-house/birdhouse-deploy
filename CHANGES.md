@@ -26,6 +26,7 @@
 ## Changes
 
 - Allow to override certbot image in `env.local` to easily test newer version
+  and update to latest version.
 
 
 [2.8.1](https://github.com/bird-house/birdhouse-deploy/tree/2.8.1) (2025-01-20)
