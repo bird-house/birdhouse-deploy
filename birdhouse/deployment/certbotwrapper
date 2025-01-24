@@ -52,7 +52,8 @@ SAVED_PWD="`pwd`"
 
 . "$THIS_DIR/../read-configs.include.sh"
 
-# Get PAVICS_FQDN_PUBLIC, PAVICS_FQDN, SUPPORT_EMAIL, SSL_CERTIFICATE, BASH_IMAGE.
+# Get PAVICS_FQDN_PUBLIC, PAVICS_FQDN, SUPPORT_EMAIL, SSL_CERTIFICATE,
+# BASH_IMAGE, CERTBOT_IMAGE.
 read_configs
 
 CERT_DOMAIN="$PAVICS_FQDN_PUBLIC"
@@ -84,7 +85,7 @@ docker run --rm --name certbot \
   -v "/var/lib/letsencrypt:/var/lib/letsencrypt" \
   -v "/var/log/letsencrypt:/var/log/letsencrypt" \
   -p 443:443 -p 80:80 \
-  certbot/certbot:v1.3.0 \
+  $CERTBOT_IMAGE \
   $CERTBOT_OPTS \
   "$@"
 RC=$?
