@@ -17,6 +17,63 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.3.3](https://github.com/bird-house/birdhouse-deploy/tree/2.3.3) (2024-05-29)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Bump cadvisor version to the latest version: v0.49.1
+  - See the cadvisor repo for all changes: https://github.com/google/cadvisor/compare/v0.36.0...v0.49.1
+  - This updated was prompted by the fact that the previously installed version of cadvisor (v0.36.0) did not support
+    newer versions of docker. When deploying this repo with recent docker version, cadvisor was unable to discover or 
+    monitor running containers.
+
+[2.3.2](https://github.com/bird-house/birdhouse-deploy/tree/2.3.2) (2024-05-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Make the monitoring component docker images configurable
+  - The following variables have been added to the `components/monitoring/default.env` file and can be overridden in 
+    `env.local` to change the docker image for one of the services enabled by the monitoring component:
+    - `GRAFANA_VERSION`
+    - `GRAFANA_DOCKER`
+    - `CADVISOR_VERSION`
+    - `CADVISOR_DOCKER`
+    - `PROMETHEUS_VERSION`
+    - `PROMETHEUS_DOCKER`
+    - `NODE_EXPORTER_VERSION`
+    - `NODE_EXPORTER_DOCKER`
+    - `ALERTMANAGER_VERSION`
+    - `ALERTMANAGER_DOCKER`
+  - Note that the defaults are the same as the previous hardcoded versions so this change is fully backwards compatible.
+
+[2.3.1](https://github.com/bird-house/birdhouse-deploy/tree/2.3.1) (2024-05-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Scripts that read configuration settings and that exit early on error fail unexpectedly
+
+  - Scripts that call `set -e` before reading configuration settings were failing early because some lines are
+    intentionally returning a non-zero value when setting variable defaults. This change modifies lines that may return 
+    a non-zero status but should not cause the script to exit early.
+  - Scripts that were exiting early prior to this change include:
+    - birdhouse/deployment/fix-geoserver-data-dir-perm
+    - birdhouse/deployment/fix-write-perm
+    - birdhouse/deployment/trigger-deploy-notebook
+
+[2.3.0](https://github.com/bird-house/birdhouse-deploy/tree/2.3.0) (2024-05-14)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- bump canarie-api version to [1.0.0](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.0.0)
+
+  - This version of canarie-api permits running the proxy (nginx) container independently of the canarie-api
+    application. This makes it easier to monitor the logs of canarie-api and proxy containers simultaneously and
+    allows for the configuration files for canarie-api to be mapped to the canarie-api containers where appropriate.
+
 [2.2.2](https://github.com/bird-house/birdhouse-deploy/tree/2.2.2) (2024-05-11)
 ------------------------------------------------------------------------------------------------------------------
 
