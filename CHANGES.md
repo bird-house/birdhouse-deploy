@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.8.2](https://github.com/bird-house/birdhouse-deploy/tree/2.8.2) (2025-01-30)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Generic_bird broken because a DELAYED_EVAL is missing
