@@ -17,6 +17,23 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.8.2](https://github.com/bird-house/birdhouse-deploy/tree/2.8.2) (2025-01-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Generic_bird broken because a DELAYED_EVAL is missing
+
+  * Generic_bird consumes `FINCH_IMAGE` which is a delayed eval variable so
+    generic_bird variable should also be a delayed eval variable.
+
+
+## Changes
+
+- Allow to override certbot image in `env.local` to easily test newer version
+  and update to latest version.
+
+
 [2.8.1](https://github.com/bird-house/birdhouse-deploy/tree/2.8.1) (2025-01-20)
 ------------------------------------------------------------------------------------------------------------------
 
