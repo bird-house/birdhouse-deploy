@@ -22,7 +22,7 @@
   This implements all changes between JupyterHub version 
   [4.1.6 and 5.2.1](https://jupyterhub.readthedocs.io/en/stable/reference/changelog.html).
 
-  This update requires the following manual upgrade steps:
+  **Breaking backward incompatible change**: This update requires the following manual upgrade steps:
 
   - If your local environment file sets the `c.DockerSpawner.image_whitelist` config option in the 
     `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` environnment variable. Change `c.DockerSpawner.image_whitelist` 
