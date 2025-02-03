@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.9.0](https://github.com/bird-house/birdhouse-deploy/tree/2.9.0) (2025-02-03)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - JupyterHub: update `jupyterhub` component default version to [5.2.1](https://github.com/Ouranosinc/jupyterhub/releases/tag/5.2.1-20241114)
