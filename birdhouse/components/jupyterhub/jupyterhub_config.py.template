@@ -177,6 +177,7 @@ c.Spawner.disable_user_config = True
 c.DockerSpawner.default_url = '/lab'
 c.DockerSpawner.remove = True  # delete containers when servers are stopped
 ${JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS}    # noqa
+
 c.DockerSpawner.pull_policy = "always"  # for images not using pinned version
 c.DockerSpawner.debug = True
 c.JupyterHub.log_level = logging.DEBUG
@@ -223,6 +224,13 @@ blocked_users = {'authtest', '${CATALOG_USERNAME}', 'anonymous'}
 c.Authenticator.blacklist = blocked_users  # v0.9+
 c.Authenticator.blocked_users = blocked_users  # v1.2+
 
+# Allow all users who can authenticate through Magpie to log in to JupyterHub.
+# This allows us to manage users on Magpie without having to also update the 
+# JupyterHub database manually to match Magpie permissions.
+#
+# Note that users on the blocked_users list will still be denied even though
+# they can authenticate through Magpie.
+c.Authenticator.allow_all = True # v5.0+
 
 # ------------------------------------------------------------------------------
 # Shutdown idle user server based on configured timeouts.
