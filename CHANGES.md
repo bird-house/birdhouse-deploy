@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.9.1](https://github.com/bird-house/birdhouse-deploy/tree/2.9.1) (2025-02-10)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - STAC: update `stac` component to version [1.0.0](https://github.com/crim-ca/stac-app/releases/tag/1.0.0)
