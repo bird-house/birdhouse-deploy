@@ -19,6 +19,10 @@ services:
     image: ${WEAVER_MANAGER_IMAGE}
     environment:
       HOSTNAME: ${BIRDHOUSE_FQDN}
+      # 'HTTP_HOST' and 'SCRIPT_NAME' are used to guide pyramid in the resolution of resources, such as
+      # when invoking the 'static_url' endpoint, so it can be made aware of reverse-proxy context
+      HTTP_HOST: ${BIRDHOUSE_FQDN}
+      SCRIPT_NAME: /${WEAVER_MANAGER_NAME}
       FORWARDED_ALLOW_IPS: "*"
     #env_file:
     #  - ./components/mongodb/credentials.env
@@ -39,6 +43,18 @@ services:
       - ${WEAVER_WPS_OUTPUTS_DIR}:${WEAVER_WPS_OUTPUTS_DIR}
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://localhost:4001/${WEAVER_MANAGER_NAME}/')"
+      ]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
 
   # Image 'worker' is the job runner of Weaver, possibly spawning Docker applications according to process definition
   weaver-worker:
@@ -89,6 +105,7 @@ services:
       interval: 60s
       timeout: 20s
       retries: 2
+      start_interval: 5s
 
   # Dedicated database for Weaver, since other 'mongodb' image does not employ the same version.
   weaver-mongodb:
@@ -100,6 +117,13 @@ services:
       - ${WEAVER_MONGODB_DATA_DIR}:/data/db
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "print('connected')"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
 
   # Image 'docker-proxy' is the connector between docker image 'worker' jobs and their sibling docker executions
   docker-proxy:

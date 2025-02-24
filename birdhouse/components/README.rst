@@ -500,6 +500,16 @@ Customizing the Component
     Further ``docker-compose-extra.yml`` could be needed to define
     any other ``volumes`` entries where these component would need to be mounted to.
 
+  - Optionally, set ``WEAVER_ALT_PREFIX`` with any desired prefix location to use as alternate alias
+    for the ``/weaver/`` endpoint. The ``/weaver/`` endpoint will remain available.
+    The ``WEAVER_ALT_PREFIX`` alias defines an *additional* equivalent location to access the service.
+    By default ``/ogcapi`` is employed as a common value for this suite of OGC standards.
+
+    Note that custom prefix values, if specified, should start with a leading ``/``, and leave out any trailing ``/``.
+    The prefix can also use multiple levels as desired (e.g.: ``/my/custom/path``).
+
+    If the original ``/weaver/`` endpoint is deemed sufficient, and you would rather omit this additional alias
+    entirely, the ``WEAVER_ALT_PREFIX`` variable should be explicitly set to an empty value.
 
 
 .. _finch: https://github.com/bird-house/finch
@@ -592,7 +602,7 @@ exposed by the current stack instance. Once this component is enabled, STAC API 
 ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint,
 define the following in the ``env.local`` file::
 
-  export BIRDHOUSE_PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
+  export BIRDHOUSE_PROXY_ROOT_LOCATION='return 302 ${BIRDHOUSE_PROXY_SCHEME}://\$host/stac-browser;'
 
 Here is a sample search query using a CLI::
 
@@ -619,7 +629,7 @@ An endpoint monitoring tool that shows the current status of other components in
 Usage
 -----
 
-The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}/canarie``
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/canarie``
 
 How to Enable the Component
 ---------------------------
@@ -651,7 +661,7 @@ degree-days of cooling, the duration of heatwaves, etc. This returns annual valu
 Usage
 -----
 
-The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch``
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch``
 
 How to Enable the Component
 ---------------------------
@@ -670,7 +680,7 @@ Geospatial Web.
 Usage
 -----
 
-The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}/geoserver``. For usage and
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/geoserver``. For usage and
 configuration options please refer to the `Geoserver documentation`_.
 
 .. _Geoserver documentation: https://docs.geoserver.org
@@ -689,7 +699,7 @@ A Web Processing Service for compliance checks used in the climate science commu
 Usage
 -----
 
-The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird``
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird``
 
 How to Enable the Component
 ---------------------------
@@ -706,7 +716,7 @@ end-users.
 Usage
 -----
 
-The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}/jupyter``. Users are able to log in to Jupyterhub using the
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/jupyter``. Users are able to log in to Jupyterhub using the
 same user name and password as Magpie. They will then be able to launch a personal jupyterlab server.
 
 How to Enable the Component
@@ -725,7 +735,7 @@ User/Group/Service/Resource/Permission management and integrates with Twitcher.
 Usage
 -----
 
-The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}/magpie``. For usage and configuration options please
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/magpie``. For usage and configuration options please
 refer to the `Magpie documentation`_.
 
 .. _Magpie documentation: https://pavics-magpie.readthedocs.io
@@ -758,7 +768,7 @@ A web based container deployment and management tool.
 Usage
 -----
 
-The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}/portainer/``. For usage and configuration options please
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/portainer/``. For usage and configuration options please
 refer to the `portainer documentation`_.
 
 How to Enable the Component
@@ -809,7 +819,7 @@ processing as well as time series analysis.
 Usage
 -----
 
-The service is available at ``https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven``
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven``
 
 How to Enable the Component
 ---------------------------
@@ -827,7 +837,7 @@ Climate Data Catalog and Format Renderers. See the `Thredds documentation`_ for 
 Usage
 -----
 
-The catalog is available at the ``https://${BIRDHOUSE_FQDN_PUBLIC}/thredds`` endpoint.
+The catalog is available at the ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds`` endpoint.
 
 How to Enable the Component
 ---------------------------
@@ -863,7 +873,7 @@ of all processes executed by these services.
 Usage
 -----
 
-All outputs from these processes will become available at the ``https://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs`` endpoint.
+All outputs from these processes will become available at the ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs`` endpoint.
 
 By default, this endpoint is not protected. To secure access to this endpoint it is highly recommended to enable the
 `./optional-components/secure-data-proxy` component as well.

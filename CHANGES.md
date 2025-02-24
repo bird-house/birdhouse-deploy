@@ -46,6 +46,311 @@
   * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
   * ``/thanos-minio``: a minio web console to inspect the data stored by minio.
 
+[2.9.1](https://github.com/bird-house/birdhouse-deploy/tree/2.9.1) (2025-02-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: update `stac` component to version [1.0.0](https://github.com/crim-ca/stac-app/releases/tag/1.0.0)
+
+  This update makes the `/queryables` endpoint run much more quickly by stashing the queryables data in the
+  database instead of building it from scratch every time the `/queryables` endpoint was accessed.
+
+  It also adds two new endpoints `PATCH /queryables` and `PATCH /summaries` which automatically update the
+  queryables and collection summaries based on the data that is currently present in the database. See the
+  [documentation](https://github.com/crim-ca/stac-app/blob/040d350ade758871b6e95db9c86c04202433ef0e/README.md)
+  for more details.
+
+[2.9.0](https://github.com/bird-house/birdhouse-deploy/tree/2.9.0) (2025-02-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- JupyterHub: update `jupyterhub` component default version to [5.2.1](https://github.com/Ouranosinc/jupyterhub/releases/tag/5.2.1-20241114)
+
+  This implements all changes between JupyterHub version 
+  [4.1.6 and 5.2.1](https://jupyterhub.readthedocs.io/en/stable/reference/changelog.html).
+
+  **Breaking backward incompatible change**: This update requires the following manual upgrade steps:
+
+  - If your local environment file sets the `c.DockerSpawner.image_whitelist` config option in the 
+    `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` environnment variable. Change `c.DockerSpawner.image_whitelist` 
+    to `c.DockerSpawner.allowed_images`.
+
+  If you have changed any of the default `jupyterhub` settings you may need to consult the [JupyterHub upgrade
+  guide](https://jupyterhub.readthedocs.io/en/latest/howto/upgrading-v5.html) to see if any of those settings
+  have been changed.
+
+[2.8.2](https://github.com/bird-house/birdhouse-deploy/tree/2.8.2) (2025-01-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Generic_bird broken because a DELAYED_EVAL is missing
+
+  * Generic_bird consumes `FINCH_IMAGE` which is a delayed eval variable so
+    generic_bird variable should also be a delayed eval variable.
+
+
+## Changes
+
+- Allow to override certbot image in `env.local` to easily test newer version
+  and update to latest version.
+
+
+[2.8.1](https://github.com/bird-house/birdhouse-deploy/tree/2.8.1) (2025-01-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Weaver: adjust missing `WEAVER_MANAGER_NAME` in healthchecks expecting matching `SCRIPT_NAME` configuration
+
+  * Weaver's own `healthcheck` definition did not resolve to the expected endpoint.
+  * Canarie-API `monitoring` endpoint for Weaver did not resolve to the expected endpoint.
+
+[2.8.0](https://github.com/bird-house/birdhouse-deploy/tree/2.8.0) (2025-01-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: update `weaver` component default version to [6.1.1](https://github.com/crim-ca/weaver/tree/6.1.1).
+
+  ### Relevant changes
+  * Add support of *OGC API - Processes - Part 3: Workflows and Chaining* with *Nested Process* ad-hoc workflow.
+  * Add support of *OGC API - Processes - Part 3: Workflows and Chaining* with *Remote Collection* (STAC and OGC).
+  * Add support of *OGC API - Processes - Part 4: Job Management* endpoints for job "pending" creation and execution.
+  * Add support of *OGC API - Processes - Part 4: Job Management* endpoints for job provenance as *W3C PROV* metadata.
+  * Multiple alignment and fixes related to latest *OGC API - Processes - Part 1: Core* definitions regarding handling
+    of input parameters and headers when submitting jobs to obtain alternate result representations and behavior.
+  * Add HTML responses by default via web browsers or as requested by `Accept` headers or `f` query parameter.
+  * Add improved CWL schema validation with `Weaver`-specific definitions where applicable
+    (see https://github.com/crim-ca/weaver/tree/master/weaver/schemas/cwl).
+
+- Weaver: modifications to `proxy` configurations for `weaver`
+
+  * Add `WEAVER_ALT_PREFIX` optional variable that auto-configures `WEAVER_ALT_PREFIX_PROXY_LOCATION`,
+    which allows setting an alternate endpoint to redirect requests to `weaver`.
+    It uses `/ogcapi` by default which is a very common expectation from servers supporting OGC standards.
+  * Use the `TWITCHER_VERIFY_PATH` approach to accelerate access of `weaver` resources authorization.
+  * Modify proxy pass definitions and URL prefixes to resolve correctly with HTML resources.
+
+[2.7.3](https://github.com/bird-house/birdhouse-deploy/tree/2.7.3) (2025-01-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add integration test framework
+
+  This update adds a framework for testing the deployed stack using pytest. This will allow developers to check
+  that their changes are consistent with the existing stack and to add additionally tests when new functionality
+  is introduced. 
+
+  Changes to implement this include:
+
+  - existing unit tests are moved to the `tests/unit/` directory
+  - new integration tests are written in the `tests/integration/` directory. More tests will be added in the
+    future!
+  - `conftest.py` scripts updated to bring the stack up/down in a consistent way for the integration tests.
+  - unit tests updated to accomodate new testing infrastructure as needed.
+  - unit tests updated to test logging outputs better
+  - `birdhouse` interface script updated to support testing infrastructure (this should not change anything for
+    other end-users).
+  - additional documentation added to `birdhouse` interface to improve user experience.
+  - docker healthchecks added to more components so that the readiness of the stack can be determined with or
+    without the use of the `canarie-api` component.
+  - deprecates the `optional-components/wps-healthchecks` component since the healthchecks are now added by default
+    to all WPS components.
+
+  Next steps:
+
+  - add more integration tests as needed
+  - add a framework for testing migrating the stack from one version to another
+
+[2.7.2](https://github.com/bird-house/birdhouse-deploy/tree/2.7.2) (2025-01-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Jupyterhub: allow users created before Cowbird was enabled to spawn jupyterlab
+
+  Users created before Cowbird was enabled will not have a "workspace directory" created. A workspace directory
+  is a symlink to the directory that contains their Jupyterhub data.
+  
+  When Cowbird is enabled, Jupyterhub checks if the workspace directory exists and raises an error if it doesn't.
+  
+  This change allows Jupyterhub to create the symlink if it doesn't exist instead of raising an error. 
+  This means that users without a "workspace directory" will be able to continue using Jupyterhub as they did 
+  before without the need for manual intervention by a system administrator who would otherwise need to manually
+  create the symlink for them.
+
+- Add resolver for http nginx configuration
+
+  Nginx requires a resolver to be explicity defined when using `proxy_pass` with a variable in the argument passed
+  to `proxy_pass`. This resolver is defined explicitly for the https server block but not for the http server block.
+
+  This adds the explicit resolver for the http server block as well so that `proxy_pass` works when called using using
+  http URLs as well.
+  
+
+[2.7.1](https://github.com/bird-house/birdhouse-deploy/tree/2.7.1) (2024-12-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Updated Cowbird to version 2.5.0
+
+  This update fixes an issue where Magpie reports a webhook failure on almost every action.
+  See a full description of the issue in https://github.com/Ouranosinc/cowbird/pull/78.
+
+[2.7.0](https://github.com/bird-house/birdhouse-deploy/tree/2.7.0) (2024-12-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Enable local deployment to improve development and testing
+
+  The Birdhouse stack can now be deployed locally and accessed on a browser on the host machine without the need 
+  for an SSL certificate. This is useful for local development and for running tests against the full stack while developing and in CI environments.
+
+  To enable this, add the new `optional-components/local-dev-test` component to `BIRDHOUSE_EXTRA_CONF_DIRS` and
+  set the following environment variables in the local environment file:
+
+  * `export BIRDHOUSE_FQDN=host.docker.internal`
+  * `export BIRDHOUSE_HTTP_ONLY=True`
+
+  You should also add ``host.docker.internal`` to your ``/etc/hosts`` file pointing to the loopback address so 
+  that URLs generated by Birdhouse that refer to ``host.docker.internal`` will resolve properly in a browser:
+
+  ```
+  echo '127.0.0.1    host.docker.internal' | sudo tee -a /etc/hosts
+  ```
+
+  After deploying the stack, you can now interact with the Birdhouse software at ``http://host.docker.internal`` 
+  from the machine that is the docker host.
+
+  In order to implement the changes above, the following non-breaking changes have been made to the deployment code:
+
+  - added a configuration variable `BIRDHOUSE_HTTP_ONLY` which is not set by default. If set to `True` the `proxy` component will only serve content over `http` (not `https`).
+  - added the following configuration variables. These should not be set directly unless you really know what you're doing:
+    - `BIRDHOUSE_PROXY_SCHEME`: default remains `https`. If `BIRDHOUSE_HTTP_ONLY` is `True` then the default becomes `http`
+    - `PROXY_INCLUDE_HTTPS`: default remains `include /etc/nginx/conf.d/https.include;`. If `BIRDHOUSE_HTTP_ONLY` is `True`, the default is that the variable is unset. 
+  - changed the default values for the following configuration variables:
+    - `BIRDHOUSE_ALLOW_UNSECURE_HTTP`: default remains `""`. If `BIRDHOUSE_HTTP_ONLY` is `True` then the default becomes `True`.
+  - logs are written to stderr by default. Previously they were written to stdout.
+    - this allows us to call scripts and programmatically use their outputs. Previously log entries would need to be 
+      manually filtered out before program outputs could be used.
+    - added the `--log-stdout` and `--log-file` flags to the `bin/birdhouse` interface to allow redirecting logs to 
+      stdout or to a specific file instead.
+    - log redirection can also now be set using environment variables:
+      - `BIRDHOUSE_LOG_FD` can be used to redirect logs to a file descriptor (ex: `BIRDHOUSE_LOG_FD=3`)
+      - `BIRDHOUSE_LOG_FILE` can be used to redirect logs to file (ex: `BIRDHOUSE_LOG_FILE=/some/file/on/disk.log`)
+      - Note that the variables here should not be set in the local environment file since that file is sourced **after**
+        some logs are written. Instead, set these by exporting them in the parent process that calls `bin/birdhouse`.
+    - for backwards compatibility, if scripts are not called through the `bin/birdhouse` interface, logs will still be 
+      written to stdout.
+
+[2.6.5](https://github.com/bird-house/birdhouse-deploy/tree/2.6.5) (2024-12-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix incorrect Geoserver URL in Cowbird configuration
+
+  The Geoserver URL in the Cowbird configuration was incorrect as it used a non-standard port.
+  This changes the URL to the one used by docker compose internally. This allows Cowbird to execute
+  webhooks that target Geoserver.
+
+[2.6.4](https://github.com/bird-house/birdhouse-deploy/tree/2.6.4) (2024-12-09)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- canarie-api: fix new Thredds v5 monitoring URL
+
+  Fix the error below at the URL https://HOST/canarie/node/service/stats:
+  Bad return code from http://thredds:8080//twitcher/ows/proxy/thredds/catalog.html (Expecting 200, Got 404
+
+  Old URL: http://thredds:8080//twitcher/ows/proxy/thredds/catalog.html
+  New URL: http://thredds:8080/twitcher/ows/proxy/thredds/catalog/catalog.html
+
+  An oversight from the previous PR
+  https://github.com/bird-house/birdhouse-deploy/pull/413
+
+
+[2.6.3](https://github.com/bird-house/birdhouse-deploy/tree/2.6.3) (2024-12-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update Thredds to supported version
+
+  Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.5.
+
+  This Thredds v5 actually have 2 minors issues
+  * Magpie Allow or Deny exception under top-level Allow or Deny do not work on NCSS only,
+    see [Ouranosinc/Magpie#633](https://github.com/Ouranosinc/Magpie/issues/633).
+  * Performance problem with WMS only, see [Unidata/tds#406](https://github.com/Unidata/tds/issues/406).
+
+  They are considered minor and not blocking the release because
+  * Magpie top-level Allow or Deny still work across the board,
+    exception under top-level also works across the board,
+    except for NCSS only and NCSS is not widely used.
+  * WMS is not widely used, similar to NCSS.
+
+  Other features from this newer Thredds
+  * Security fixes (newer Tomcat) and if there is a critical vulnerability,
+    we won't be able to stay on v4 series because it is not even available on
+    DockerHub anymore as Unidata has dropped support.
+  * New experimental Zarr support.
+
+
+[2.6.2](https://github.com/bird-house/birdhouse-deploy/tree/2.6.2) (2024-12-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Fix help string description for `bin/birdhouse configs` command
+
+  Update description of the `configs` subcommand to better describe it.
+  The description when calling `bin/birdhouse -h` now matches the description when calling `bin/birdhouse configs -h`
+  
+- Jupyterhub: Update recommended paths for public share folders
+
+  The recommended public share folders in the `env.local.example` file create a conflict with the default
+  `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` path when both are enabled and mounted on a Jupyterlab container.
+  This change updates the recommended paths for the public share folders to avoid this conflict and adds a
+  warning helping users to avoid this conflict.
+
+  Note: the conflict arises when `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` is mounted to a container as read-only
+  volume and then Jupyterhub tries to mount the public share folder within that volume. Since the parent volume
+  is read-only, the second volume mount fails.
+
+
+## Fixes
+
+- Correct docker image for `stac-populator` optional component
+
+  This sets the docker image for the `stac-populator` component to a version that actually contains the code
+  that is executed when `stac-populator` is called. The previous image no longer contained the relevant code.
+
+[2.6.1](https://github.com/bird-house/birdhouse-deploy/tree/2.6.1) (2024-11-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix regressions introduced by PR #359 "Flexible locations for data served by thredds"
+
+  In [PR #359](https://github.com/bird-house/birdhouse-deploy/pull/359/):
+
+  `secure-thredds/config/magpie/permissions.cfg` started to use variable but was never renamed to `.template`
+  so those variable never get template expanded
+  (commit [317d96c3](https://github.com/bird-house/birdhouse-deploy/commit/317d96c39db7a6d79d1568a7094441ccdedc55ae)).
+
+  `bootstrap-testdata` default value was removed but did not source `read-configs.include.sh` so the variable
+   stayed blank (commit [4ab0fc74](https://github.com/bird-house/birdhouse-deploy/commit/4ab0fc74cb8fa601d75ecfc2a94749b23f60109c)).
+   The default value was there initially so the script can be used in standalone situation (not inside a checkout).
+
+
 [2.6.0](https://github.com/bird-house/birdhouse-deploy/tree/2.6.0) (2024-11-19)
 ------------------------------------------------------------------------------------------------------------------
 

@@ -22,3 +22,10 @@ services:
       - ./components/postgres/credentials.env
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s

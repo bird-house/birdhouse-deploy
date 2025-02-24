@@ -1,5 +1,5 @@
 [server]
-outputurl = https://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs/raven
+outputurl = ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs/raven
 outputpath = /data/wpsoutputs/raven
 
 # default 3mb, fix "Broken pipe" between the proxy and the wps service

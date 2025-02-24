@@ -19,7 +19,7 @@ SERVICES['Malleefowl'] = {
         'releasenotes': 'https://github.com/Ouranosinc/malleefowl/blob/master/CHANGES.rst',
         'support': 'https://github.com/Ouranosinc/malleefowl/issues',
         'source': 'https://github.com/Ouranosinc/malleefowl',
-        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/malleefowl/',
+        'tryme': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/malleefowl/',
         'licence': '',
         'provenance': ''
     },

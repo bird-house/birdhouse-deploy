@@ -1,5 +1,5 @@
 [server]
-outputurl = https://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs
+outputurl = ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs
 outputpath = /data/wpsoutputs
 
 [logging]

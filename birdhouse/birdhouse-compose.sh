@@ -91,12 +91,14 @@ done
 export BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
-find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
-  while read FILE
-  do
-    DEST=${FILE%.template}
-    cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
-  done
+if [ x"$1" = x"up" ]; then
+  find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
+    while read FILE
+    do
+      DEST=${FILE%.template}
+      cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
+    done
+fi
 
 SHELL_EXEC_FLAGS=
 if [ "${BIRDHOUSE_LOG_LEVEL}" = "DEBUG" ]; then
@@ -105,8 +107,8 @@ fi
 
 create_compose_conf_list # this sets COMPOSE_CONF_LIST
 log INFO "Displaying resolved compose configurations:"
-echo "COMPOSE_CONF_LIST="
-echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
+log INFO "COMPOSE_CONF_LIST="
+log INFO ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
 
 if [ x"$1" = x"info" ]; then
   log INFO "Stopping before execution of docker-compose command."
@@ -115,7 +117,7 @@ fi
 
 COMPOSE_EXTRA_OPTS=""
 
-if [ x"$1" = x"up" ]; then
+if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ]; then
   COMPOSE_EXTRA_OPTS="${BIRDHOUSE_COMPOSE_UP_EXTRA_OPTS}"
   for adir in $ALL_CONF_DIRS; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
@@ -123,12 +125,17 @@ if [ x"$1" = x"up" ]; then
       log INFO "Executing '$COMPONENT_PRE_COMPOSE_UP'"
       sh ${SHELL_EXEC_FLAGS} "$COMPONENT_PRE_COMPOSE_UP"
     fi
+    COMPONENT_PRE_COMPOSE_UP_INCLUDE="$adir/pre-docker-compose-up.include"
+    if [ -f "$COMPONENT_PRE_COMPOSE_UP_INCLUDE" ]; then
+      log INFO "Sourcing '$COMPONENT_PRE_COMPOSE_UP_INCLUDE'"
+      . "$COMPONENT_PRE_COMPOSE_UP_INCLUDE"
+    fi
   done
 fi
 
 log INFO "Executing docker-compose with extra options: $* ${COMPOSE_EXTRA_OPTS}"
-# the PROXY_SECURE_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-PROXY_SECURE_PORT=443 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} $* ${COMPOSE_EXTRA_OPTS}
+# the PROXY_HTTP_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
+PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} $* ${COMPOSE_EXTRA_OPTS}
 ERR=$?
 if [ ${ERR} -gt 0 ]; then
   log ERROR "docker-compose error, exit code ${ERR}"
@@ -148,11 +155,11 @@ while [ $# -gt 0 ]
 do
   if [ x"$1" = x"up" ]; then
     # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
-    PROXY_SECURE_PORT=443 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} restart proxy
+    PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} restart proxy
 
     # run postgres post-startup setup script
     # Note: this must run before the post-docker-compose-up scripts since some may expect postgres databases to exist
-    postgres_id=$(PROXY_SECURE_PORT=443 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres 2> /dev/null)
+    postgres_id=$(PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres 2> /dev/null)
     if [ ! -z "$postgres_id" ]; then
       docker exec ${postgres_id} /postgres-setup.sh
     fi

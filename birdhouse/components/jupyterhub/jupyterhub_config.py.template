@@ -107,10 +107,10 @@ c.DockerSpawner.environment = {
     # Post on Panel forum:
     # https://discourse.holoviz.org/t/how-to-customize-the-display-url-from-panel-serve-for-use-behind-jupyterhub-with-jupyter-server-proxy/3571
     # Issue about Panel Preview: https://github.com/holoviz/panel/issues/3440
-    "BIRDHOUSE_HOST_URL": "https://${BIRDHOUSE_FQDN_PUBLIC}",
+    "BIRDHOUSE_HOST_URL": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}",
     # https://docs.dask.org/en/stable/configuration.html
     # https://jupyterhub-on-hadoop.readthedocs.io/en/latest/dask.html
-    "DASK_DISTRIBUTED__DASHBOARD__LINK": "https://${BIRDHOUSE_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
+    "DASK_DISTRIBUTED__DASHBOARD__LINK": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
 }
 
 host_user_data_dir = join(os.environ['WORKSPACE_DIR'], "{username}")
@@ -159,8 +159,7 @@ def create_dir_hook(spawner):
         # to have working volume mounts with the DockerSpawner.
         workspace_user_dir = join(os.environ['WORKSPACE_DIR'], username)
         if not os.path.exists(workspace_user_dir):
-            raise FileNotFoundError(f"The user {username}'s workspace doesn't exist in the workspace directory, "
-                                    "but should have been created by Cowbird already.")
+            os.symlink(jupyterhub_user_dir, workspace_user_dir, target_is_directory=True)
         subprocess.call(["chown", f"{os.environ['USER_WORKSPACE_UID']}:{os.environ['USER_WORKSPACE_GID']}",
                          workspace_user_dir])
 
@@ -178,6 +177,7 @@ c.Spawner.disable_user_config = True
 c.DockerSpawner.default_url = '/lab'
 c.DockerSpawner.remove = True  # delete containers when servers are stopped
 ${JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS}    # noqa
+
 c.DockerSpawner.pull_policy = "always"  # for images not using pinned version
 c.DockerSpawner.debug = True
 c.JupyterHub.log_level = logging.DEBUG
@@ -200,9 +200,11 @@ c.Spawner.args = [
     "--FileContentsManager.always_delete_dir=True",
     ]
 
+## Note that JUPYTERHUB_DOCKER_EXTRA_HOSTS may be set by default in the local-dev-test component
 c.DockerSpawner.extra_host_config = {
     # start init pid 1 process to reap defunct processes
     'init': True,
+    'extra_hosts': dict(host_mapping.split(":") for host_mapping in os.getenv("JUPYTERHUB_DOCKER_EXTRA_HOSTS", "").split())
     }
 
 c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}     # noqa
@@ -222,6 +224,13 @@ blocked_users = {'authtest', '${CATALOG_USERNAME}', 'anonymous'}
 c.Authenticator.blacklist = blocked_users  # v0.9+
 c.Authenticator.blocked_users = blocked_users  # v1.2+
 
+# Allow all users who can authenticate through Magpie to log in to JupyterHub.
+# This allows us to manage users on Magpie without having to also update the 
+# JupyterHub database manually to match Magpie permissions.
+#
+# Note that users on the blocked_users list will still be denied even though
+# they can authenticate through Magpie.
+c.Authenticator.allow_all = True # v5.0+
 
 # ------------------------------------------------------------------------------
 # Shutdown idle user server based on configured timeouts.

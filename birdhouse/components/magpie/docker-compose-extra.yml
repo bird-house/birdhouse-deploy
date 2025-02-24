@@ -12,7 +12,7 @@ services:
     image: pavics/magpie:${MAGPIE_VERSION}
     container_name: magpie
     environment:
-      TWITCHER_PROTECTED_URL: https://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}
+      TWITCHER_PROTECTED_URL: ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}
       # target directories to allow loading multiple config files of corresponding category
       # each compose override should volume mount its files inside the matching directories
       # (note: DO NOT use 'MAGPIE_CONFIG_PATH' that would disable multi-config loading capability)
@@ -35,6 +35,13 @@ services:
       - ./components/magpie/magpie.ini:/opt/local/src/magpie/config/magpie.ini
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://0.0.0.0:2001"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
 
   postgres-magpie:
     image: postgres:9.6
@@ -49,3 +56,10 @@ services:
       - ./components/magpie/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s

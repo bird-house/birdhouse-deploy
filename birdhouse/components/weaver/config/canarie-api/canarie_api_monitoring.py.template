@@ -19,14 +19,14 @@ SERVICES['Weaver'] = {
         'releasenotes': 'https://github.com/crim-ca/weaver/blob/master/CHANGES.rst',
         'support': 'https://github.com/crim-ca/weaver/issues',
         'source': 'https://github.com/crim-ca/weaver',
-        'tryme': 'https://${BIRDHOUSE_FQDN_PUBLIC}/weaver/',
+        'tryme': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/',
         'licence': 'https://github.com/crim-ca/weaver/blob/${WEAVER_VERSION}/LICENSE.txt',
         'provenance': 'https://github.com/crim-ca/weaver'
     },
     "monitoring": {
         "Weaver": {
             'request': {
-                'url': 'http://weaver:4001/'
+                'url': 'http://weaver:4001/${WEAVER_MANAGER_NAME}/'
             },
             'response': {
                 'text': '\{.*"message":.*"Weaver Information".*\}'
