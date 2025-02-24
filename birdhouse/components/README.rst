@@ -372,6 +372,7 @@ AlertManager for Alert Dashboard and Silencing
 .. image:: monitoring/images/alertmanager-dashboard.png
 .. image:: monitoring/images/alertmanager-silence-alert.png
 
+.. _monitoring-customize-the-component
 
 Customizing the Component
 -------------------------
@@ -389,6 +390,57 @@ Customizing the Component
   ``ALERTMANAGER_EXTRA_GLOBAL``, ``ALERTMANAGER_EXTRA_ROUTES`` (can route to
   Slack or other services accepting webhooks), ``ALERTMANAGER_EXTRA_RECEIVERS``.
 
+
+Longterm Storage of Prometheus Metrics
+--------------------------------------
+
+Prometheus stores metrics for 90 days by default. This may be sufficient for some use cases but you may wish to store
+some metrics for longer. In order to store certain metrics for a longer than 90 days, you can enable the following
+additional components:
+
+- :ref:`prometheus-longterm-metrics`: a second Prometheus instance used to collect the metrics that you want to store longterm
+- :ref:`thanos`: a service that enables more efficient storage of the metrics collected by the :ref:`prometheus-longterm-metrics`
+  component.
+- :ref:`prometheus-longterm-rules`: adds some example rules to the monitoring Prometheus instance (the one deployed by this `monitoring` 
+  component) that can be stored longterm by the `prometheus-longterm-metrics` component. 
+
+.. note::
+    A separate prometheus instance is necessary since the retention time for prometheus metrics is set at the 
+    instance level. This means that increasing the retention time must be done for all metrics at once which is undesirable
+    because you probably don't need to store every metric for a long period of time and you'll end up using a lot more
+    disk space than needed.
+
+If some or all of these additional components are enabled, they interact in the following way to store certain metrics for
+longer than 90 days:
+
+1. 
+  - `recording rules`_ are added to the monitoring Prometheus instance (the one deployed by this `monitoring` component). These
+    rules are any that have the `longterm-metrics` label. 
+  - The metrics described by these rules are collected/calculated by the monitoring Prometheus instance. The monitoring Prometheus
+    instance treats these rules the same as any other (ie. only stores them for 90 days by default).
+  - To enable some example longterm `recording rules`_, enable the :ref:`prometheus-longterm-rules` component. You can also choose 
+    to create your own rules (see :ref:`prometheus-longterm-metrics` for details on how to create these longterm metrics rules). 
+2. 
+  - The :ref:`prometheus-longterm-metrics` Prometheus instance collects/copies only the rules with the `longterm-metrics` label from the 
+    monitoring Prometheus instance.
+  - The :ref:`prometheus-longterm-metrics` Prometheus instance stores only these metrics for a custom duration (can be longer than
+    90 days).
+3. 
+  - The :ref:`thanos` component can be deployed alongside the :ref:`prometheus-longterm-metrics` Prometheus instance in order to store
+    the metrics that the :ref:`prometheus-longterm-metrics` Prometheus instance has already collected.
+  - The :ref:`thanos` component collects the metrics collected by the :ref:`prometheus-longterm-metrics` Prometheus instance and
+    stores them in an S3 object store. 
+  - The :ref:`thanos` object store stores the metrics more efficiently, meaning that metrics can be stored for even longer and they'll
+    take up less disk space than if they were just stored by the :ref:`prometheus-longterm-metrics` Prometheus instance. 
+
+.. note::
+
+  It is possible to deploy the :ref:`prometheus-longterm-metrics` Prometheus instance and the :ref:`thanos` instance on a different
+  machine than the monitoring Prometheus instance. However, note that both the :ref:`prometheus-longterm-metrics` and :ref:`thanos`
+  components *must* be deployed on the same machine (if both are in use). Also note that this is untested and may require serious 
+  troubleshooting to work properly.
+
+.. _recording rules: https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/
 
 Weaver
 ======

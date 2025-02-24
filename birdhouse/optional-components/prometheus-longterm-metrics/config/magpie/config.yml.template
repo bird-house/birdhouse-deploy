@@ -1,0 +1,28 @@
+providers:
+  prometheus-longterm-metrics:
+    # below URL is only used to fill in the required location in Magpie
+    # actual auth validation is performed with Twitcher 'verify' endpoint without accessing this proxied URL
+    url: http://proxy:80
+    title: PrometheusLongtermMetrics
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+
+permissions:
+  - service: prometheus-longterm-metrics
+    permission: read
+    group: administrators
+    action: create
+  - service: prometheus-longterm-metrics
+    permission: write
+    group: administrators
+    action: create
+  - service: prometheus-longterm-metrics
+    permission: read
+    group: monitoring
+    action: create
+  - service: prometheus-longterm-metrics
+    permission: write
+    group: monitoring
+    action: create

@@ -1,0 +1,32 @@
+version: "3.4"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  prometheus-longterm-metrics:
+    image: ${PROMETHEUS_LONGTERM_IMAGE}
+    container_name: prometheus-longterm-metrics
+    volumes:
+      - ./optional-components/prometheus-longterm-metrics/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_longterm_persistence:/prometheus:rw
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --storage.tsdb.retention.time=${PROMETHEUS_LONGTERM_RETENTION_TIME}
+      - --web.external-url=https://${BIRDHOUSE_FQDN_PUBLIC}/prometheus-longterm-metrics/
+      - --storage.tsdb.min-block-duration=${PROMETHEUS_LONGTERM_TSDB_MIN_BLOCK_DURATION}
+      - --storage.tsdb.max-block-duration=${PROMETHEUS_LONGTERM_TSDB_MAX_BLOCK_DURATION}
+    restart: always
+    logging: *default-logging
+
+volumes:
+  prometheus_longterm_persistence:
+    external:
+      name: prometheus_longterm_persistence

@@ -17,6 +17,40 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.10.0](https://github.com/bird-house/birdhouse-deploy/tree/2.10.0) (2025-02-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add the `prometheus-longterm-metrics` and `thanos` optional components
+
+  The `prometheus-longterm-metrics` component collects longterm monitoring metrics from the original prometheus instance
+  (the one created by the ``components/monitoring`` component).
+
+  Longterm metrics are any prometheus rule that have the label ``group: longterm-metrics`` or in other words are
+  selectable using prometheus's ``'{group="longterm-metrics"}'`` query filter. To see which longterm metric rules are
+  added by default see the 
+  ``optional-components/prometheus-longterm-metrics/config/monitoring/prometheus.rules.template`` file.
+
+  To configure this component:
+
+  * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
+
+  Enabling the `prometheus-longterm-metrics` component creates the additional endpoint ``/prometheus-longterm-metrics``.
+
+  The `thanos` component enables better storage of longterm metrics collected by the 
+  ``optional-components/prometheus-longterm-metrics`` component. Data will be collected from the
+  ``prometheus-longterm-metrics`` and stored in an S3 object store indefinitely.
+  
+  When enabling this component, please change the default values for the ``THANOS_MINIO_ROOT_USER`` and ``THANOS_MINIO_ROOT_PASSWORD``
+  by updating the ``env.local`` file. These set the login credentials for the root user that runs the 
+  [minio](https://min.io/) object store.
+  
+- Enabling the `thanos` component creates the additional endpoints:
+
+  * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
+  * ``/thanos-minio``: a minio web console to inspect the data stored by minio.
+
 [2.9.1](https://github.com/bird-house/birdhouse-deploy/tree/2.9.1) (2025-02-10)
 ------------------------------------------------------------------------------------------------------------------
 
