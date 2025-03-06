@@ -15,7 +15,14 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Deprecate the `docker-compose` command as default
+
+  Sets the default compose command to `docker compose` using the new `DOCKER_COMPOSE` environment variable.
+  This uses compose v2 by default (instead of v1 which is very old and has been deprecated for a while).
+  For backwards compatibility, you can set `DOCKER_COMPOSE=docker-compose` in the local environment file to 
+  use the previous default.
 
 [2.10.0](https://github.com/bird-house/birdhouse-deploy/tree/2.10.0) (2025-02-24)
 ------------------------------------------------------------------------------------------------------------------
