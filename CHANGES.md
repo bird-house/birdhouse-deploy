@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Update STAC app version to 1.0.1
+
+  This update includes a bug fix which treats date-time values as ranges instead of strings when building 
+  JSON schemas for use in queryables or collection summaries.
+  See https://github.com/crim-ca/stac-app/pull/24 for more details.
 
 [2.10.0](https://github.com/bird-house/birdhouse-deploy/tree/2.10.0) (2025-02-24)
 ------------------------------------------------------------------------------------------------------------------
