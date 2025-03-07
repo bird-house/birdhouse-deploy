@@ -15,7 +15,29 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Make scheduler jobs configurable
+
+  The scheduler component automatically enables three jobs (autodeploy, logrotate, notebookdeploy). If someone wants
+  to use the scheduler component but does not want these jobs, there is no obvious way to disable any one of these
+  jobs.
+
+  This change makes it possible to enable/disable jobs as required by the user and adds documentation to explain how 
+  to do this.
+
+  **Breaking Change**:
+  - the three jobs that were automatically enabled previously are now no longer enabled by default.
+  - to re-enable these three jobs, source the relevant `*.env` files at the end of your local environment file
+    (see documentation for further details)
+
+  What about... ?
+    - just schedule these jobs for a non-existant day like February 31st?
+      - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
+    - just set the schedule to the `'#'` string?
+      - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
+                However, this is not obvious to the user and is unreliable since it is not documented.
+
 
 [2.10.0](https://github.com/bird-house/birdhouse-deploy/tree/2.10.0) (2025-02-24)
 ------------------------------------------------------------------------------------------------------------------

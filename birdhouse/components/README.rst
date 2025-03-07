@@ -8,6 +8,76 @@ Birdhouse Components
 Scheduler
 =========
 
+The scheduler component runs specific jobs on a schedule. This is similar to using the `cron`
+service but this runs in docker containers and is specifically designed to interact with the
+Birdhouse stack.
+
+Scheduler jobs can be enabled by sourcing specific ``*.env`` files in the ``components/scheduler``
+directory. The jobs that come included with the Birdhouse code are as follows:
+
+* Enable automatic deployment:
+  * additional description of this can be found in the :ref:`Automated Deployment` section.
+  * to enable this component add the following to your local environment file:
+    .. code-block:: shell
+      . $COMPOSE_DIR/components/scheduler/autodeploy_job.env
+
+* Automatically rotate logs:
+  * to enable this component add the following to your local environment file:
+    .. code-block:: shell
+      . $COMPOSE_DIR/components/scheduler/logrotate_job.env
+
+* Automatically update tutorial Jupyter notebooks:
+  * note that this only can be enabled if the ``jupyterhub`` component is also enabled
+  * to enable this component add the following to your local environment file:
+    .. code-block:: shell
+      . $COMPOSE_DIR/components/scheduler/notebookdeploy_job.env
+
+* Automatically renew LetsEncrypt SSL certificate:
+  * to enable this component add the following to your local environment file:
+    .. code-block:: shell
+      . $COMPOSE_DIR/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env
+
+* Automatically deploy xclim test data to THREDDS:
+  * note that this only can be enabled if the ``thredds`` component is also enabled
+  * to enable this component add the following to your local environment file:
+    .. code-block:: shell
+      . $COMPOSE_DIR/components/scheduler/deploy_xclim_testdata_to_thredds.env
+      . $COMPOSE_DIR/components/scheduler/deploy_data_job.env
+
+* Automatically deploy raven test data to THREDDS:
+  * note that this only can be enabled if the ``thredds`` component is also enabled
+  * to enable this component add the following to your local environment file:
+    .. code-block:: shell
+      . $COMPOSE_DIR/components/scheduler/deploy_raven_testdata_to_thredds.env
+      . $COMPOSE_DIR/components/scheduler/deploy_data_job.env
+
+For additional configuration options for all these jobs see the ``env.local.example`` file
+as well as the individual ``*.env`` files listed above.
+
+Configuration options for these jobs should be included in the local environment file and should
+be set **before** sourcing the relevant ``*.env`` files.
+
+To add custom jobs to the scheduler component, update the ``BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS``
+environment variable in the local environment file to contain a YAML string that describes the job to run.
+
+For example a simple additional job might look like:
+
+.. code-block:: shell
+
+  export BIRDHOUSE_SCHEDULER_NOTEBOOKDEPLOY_JOB="
+  - name: example job
+    comment: basic job that echos 'something' every hour
+    schedule: '1 * * * *'
+    command: 'echo something'
+    dockerargs: >-
+      --rm --name example
+  "
+
+.. _Automated Deployment:
+
+Automated Deployment
+--------------------
+
 This component provides automated unattended continuous deployment for the
 "Birdhouse stack" (all the git repos in var ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``), for the
 tutorial notebooks on the Jupyter environment and for the automated deployment
@@ -41,7 +111,7 @@ script deploy.sh_ (:download:`download <../deployment/deploy.sh>`).
 
 
 Usage
------
+^^^^^
 
 Given the unattended nature, there is no UI.  Logs are used to keep trace.
 
@@ -54,7 +124,7 @@ Given the unattended nature, there is no UI.  Logs are used to keep trace.
 
 
 How to Enable the Component
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Edit ``env.local`` (a copy of env.local.example_ (:download:`download <../env.local.example>`))
 
@@ -66,7 +136,7 @@ How to Enable the Component
 
 
 Old way to deploy the automatic deployment
-------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Superseded by this new ``scheduler`` component.  Keeping for reference only.
 
@@ -108,7 +178,7 @@ created by the old install scripts: ``sudo rm /etc/cron.d/Birdhouse-deploy
 
 
 Comparison between the old and new autodeploy mechanism
--------------------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Maximum backward-compatibility has been kept with the old install scripts style:
 
@@ -136,7 +206,7 @@ Features missing in old install scripts or how the new mechanism improves on the
   traceable and reproducible.
 
 How to test platform autodeploy is not broken by a PR
------------------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There are 2 tests that need to be performed:
 
