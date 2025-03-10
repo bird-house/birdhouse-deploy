@@ -83,7 +83,8 @@ For example a simple additional job might look like:
 
 .. code-block:: shell
 
-  export BIRDHOUSE_SCHEDULER_NOTEBOOKDEPLOY_JOB="
+  export BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS="
+  $BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS
   - name: example job
     comment: basic job that echos 'something' every hour
     schedule: '1 * * * *'
