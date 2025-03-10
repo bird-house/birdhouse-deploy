@@ -59,7 +59,6 @@ Automatically deploy xclim test data to THREDDS
 
 .. code-block:: shell
   . $COMPOSE_DIR/components/scheduler/deploy_xclim_testdata_to_thredds.env
-  . $COMPOSE_DIR/components/scheduler/deploy_data_job.env
 
 Automatically deploy raven test data to THREDDS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -70,7 +69,6 @@ Automatically deploy raven test data to THREDDS
 
 .. code-block:: shell
   . $COMPOSE_DIR/components/scheduler/deploy_raven_testdata_to_thredds.env
-  . $COMPOSE_DIR/components/scheduler/deploy_data_job.env
 
 For additional configuration options for all these jobs see the ``env.local.example`` file
 as well as the individual ``*.env`` files listed above.
