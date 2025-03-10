@@ -1,3 +1,3 @@
 if [ -z "${BIRDHOUSE_SCHEDULER_NOTEBOOKDEPLOY_JOB}${BIRDHOUSE_SCHEDULER_AUTODEPLOY_JOB}${BIRDHOUSE_SCHEDULER_LOGROTATE_JOB}${BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS}" ] ; then
-    log WARN 'The scheduler job has been enabled but no jobs are configured to be run. Please enable some jobs or disable the scheduler'
+    log WARN 'The components/scheduler job has been enabled but no jobs are configured to be run. Please enable some jobs or disable this component.'
 fi

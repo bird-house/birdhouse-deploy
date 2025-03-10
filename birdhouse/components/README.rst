@@ -15,41 +15,62 @@ Birdhouse stack.
 Scheduler jobs can be enabled by sourcing specific ``*.env`` files in the ``components/scheduler``
 directory. The jobs that come included with the Birdhouse code are as follows:
 
-* Enable automatic deployment:
-  * additional description of this can be found in the :ref:`Automated Deployment` section.
-  * to enable this component add the following to your local environment file:
-    .. code-block:: shell
-      . $COMPOSE_DIR/components/scheduler/autodeploy_job.env
+Enable automatic deployment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Automatically rotate logs:
-  * to enable this component add the following to your local environment file:
-    .. code-block:: shell
-      . $COMPOSE_DIR/components/scheduler/logrotate_job.env
+* additional description of this can be found in the :ref:`Automated Deployment` section.
 
-* Automatically update tutorial Jupyter notebooks:
-  * note that this only can be enabled if the ``jupyterhub`` component is also enabled
-  * to enable this component add the following to your local environment file:
-    .. code-block:: shell
-      . $COMPOSE_DIR/components/scheduler/notebookdeploy_job.env
+* to enable this component add the following to your local environment file:
 
-* Automatically renew LetsEncrypt SSL certificate:
-  * to enable this component add the following to your local environment file:
-    .. code-block:: shell
-      . $COMPOSE_DIR/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env
+.. code-block:: shell
+  . $COMPOSE_DIR/components/scheduler/autodeploy_job.env
 
-* Automatically deploy xclim test data to THREDDS:
-  * note that this only can be enabled if the ``thredds`` component is also enabled
-  * to enable this component add the following to your local environment file:
-    .. code-block:: shell
-      . $COMPOSE_DIR/components/scheduler/deploy_xclim_testdata_to_thredds.env
-      . $COMPOSE_DIR/components/scheduler/deploy_data_job.env
+Automatically rotate logs
+^^^^^^^^^^^^^^^^^^^^^^^^^
+* to enable this component add the following to your local environment file:
 
-* Automatically deploy raven test data to THREDDS:
-  * note that this only can be enabled if the ``thredds`` component is also enabled
-  * to enable this component add the following to your local environment file:
-    .. code-block:: shell
-      . $COMPOSE_DIR/components/scheduler/deploy_raven_testdata_to_thredds.env
-      . $COMPOSE_DIR/components/scheduler/deploy_data_job.env
+.. code-block:: shell
+  . $COMPOSE_DIR/components/scheduler/logrotate_job.env
+
+Automatically update tutorial Jupyter notebooks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* note that this only can be enabled if the ``jupyterhub`` component is also enabled
+
+* to enable this component add the following to your local environment file:
+
+.. code-block:: shell
+  . $COMPOSE_DIR/components/scheduler/notebookdeploy_job.env
+
+Automatically renew LetsEncrypt SSL certificate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* to enable this component add the following to your local environment file:
+
+.. code-block:: shell
+  . $COMPOSE_DIR/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env
+
+Automatically deploy xclim test data to THREDDS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* note that this only can be enabled if the ``thredds`` component is also enabled
+
+* to enable this component add the following to your local environment file:
+
+.. code-block:: shell
+  . $COMPOSE_DIR/components/scheduler/deploy_xclim_testdata_to_thredds.env
+  . $COMPOSE_DIR/components/scheduler/deploy_data_job.env
+
+Automatically deploy raven test data to THREDDS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* note that this only can be enabled if the ``thredds`` component is also enabled
+
+* to enable this component add the following to your local environment file:
+
+.. code-block:: shell
+  . $COMPOSE_DIR/components/scheduler/deploy_raven_testdata_to_thredds.env
+  . $COMPOSE_DIR/components/scheduler/deploy_data_job.env
 
 For additional configuration options for all these jobs see the ``env.local.example`` file
 as well as the individual ``*.env`` files listed above.
