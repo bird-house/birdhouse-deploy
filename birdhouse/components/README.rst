@@ -26,6 +26,7 @@ Enable automatic deployment
 * to enable this component add the following to your local environment file:
 
 .. code-block:: shell
+
   . $COMPOSE_DIR/components/scheduler/autodeploy_job.env
 
 Automatically rotate logs
@@ -33,6 +34,7 @@ Automatically rotate logs
 * to enable this component add the following to your local environment file:
 
 .. code-block:: shell
+
   . $COMPOSE_DIR/components/scheduler/logrotate_job.env
 
 Automatically update tutorial Jupyter notebooks
@@ -43,6 +45,7 @@ Automatically update tutorial Jupyter notebooks
 * to enable this component add the following to your local environment file:
 
 .. code-block:: shell
+
   . $COMPOSE_DIR/components/scheduler/notebookdeploy_job.env
 
 Automatically renew LetsEncrypt SSL certificate
@@ -51,6 +54,7 @@ Automatically renew LetsEncrypt SSL certificate
 * to enable this component add the following to your local environment file:
 
 .. code-block:: shell
+
   . $COMPOSE_DIR/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env
 
 Automatically deploy xclim test data to THREDDS
@@ -61,6 +65,7 @@ Automatically deploy xclim test data to THREDDS
 * to enable this component add the following to your local environment file:
 
 .. code-block:: shell
+
   . $COMPOSE_DIR/components/scheduler/deploy_xclim_testdata_to_thredds.env
 
 Automatically deploy raven test data to THREDDS
@@ -71,6 +76,7 @@ Automatically deploy raven test data to THREDDS
 * to enable this component add the following to your local environment file:
 
 .. code-block:: shell
+
   . $COMPOSE_DIR/components/scheduler/deploy_raven_testdata_to_thredds.env
 
 For additional configuration options for all these jobs see the ``env.local.example`` file
