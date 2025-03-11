@@ -12,6 +12,9 @@ The scheduler component runs specific jobs on a schedule. This is similar to usi
 service but this runs in docker containers and is specifically designed to interact with the
 Birdhouse stack.
 
+Available jobs
+-------------
+
 Scheduler jobs can be enabled by sourcing specific ``*.env`` files in the ``components/scheduler``
 directory. The jobs that come included with the Birdhouse code are as follows:
 
@@ -61,7 +64,7 @@ Automatically deploy xclim test data to THREDDS
   . $COMPOSE_DIR/components/scheduler/deploy_xclim_testdata_to_thredds.env
 
 Automatically deploy raven test data to THREDDS
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * note that this only can be enabled if the ``thredds`` component is also enabled
 
@@ -76,6 +79,9 @@ as well as the individual ``*.env`` files listed above.
 Configuration options for these jobs should be included in the local environment file and should
 be set **before** sourcing the relevant ``*.env`` files.
 
+Custom jobs
+-----------
+
 To add custom jobs to the scheduler component, update the ``BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS``
 environment variable in the local environment file to contain a YAML string that describes the job to run.
 
@@ -83,7 +89,8 @@ For example a simple additional job might look like:
 
 .. code-block:: shell
 
-  export BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS="
+  if [ -z "$(echo "$BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS" | grep 'example job')" ]; then
+    export BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS="
   $BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS
   - name: example job
     comment: basic job that echos 'something' every hour
@@ -92,6 +99,11 @@ For example a simple additional job might look like:
     dockerargs: >-
       --rm --name example
   "
+  fi
+
+Note in the example above, the code first checks to make sure that there isn't already a job named ``example job``.
+This is because the local environment file may be read multiple times when it is loaded so it is crucial to ensure that
+jobs are not accidentally duplicated.
 
 .. _Automated Deployment:
 
