@@ -15,7 +15,23 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+# Changes
+
+- Update Docker Compose syntax to version 2 in all docker compose files
+
+  The version 1 compose specification that docker uses is out of date and no longer maintained by docker.
+  We currently have a mix of version 1 syntax and version 2 (specifically 2.20.2+) syntax in our docker compose
+  files.
+
+  This means that the stack will not properly run with a docker compose version <2.20.2. For any version >2.20.2 
+  the stack runs properly but displays lots of deprecation warnings about deprecated version strings and external
+  volume and network definitions.
+
+  This PR updates all version 1 syntax so that these deprecation warnings are not displayed. Documentation has 
+  been updated to make this dependency on a modern version of docker explicit.
+
+  **Breaking Change**: as of birdhouse-deploy version 2.7.3, the stack could not be deployed with a docker compose
+  version <2.20.2. However, that was not specified in the release notes so we're stating it here.
 
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------
