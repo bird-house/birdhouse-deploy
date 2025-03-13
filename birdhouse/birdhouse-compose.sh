@@ -120,7 +120,7 @@ fi
 
 log INFO "Executing docker-compose with extra options: $* ${COMPOSE_EXTRA_OPTS}"
 # the PROXY_HTTP_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} $* ${COMPOSE_EXTRA_OPTS}
+PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} $* ${COMPOSE_EXTRA_OPTS}
 ERR=$?
 if [ ${ERR} -gt 0 ]; then
   log ERROR "docker-compose error, exit code ${ERR}"
@@ -140,11 +140,11 @@ while [ $# -gt 0 ]
 do
   if [ x"$1" = x"up" ]; then
     # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
-    PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} restart proxy
+    PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} restart proxy
 
     # run postgres post-startup setup script
     # Note: this must run before the post-docker-compose-up scripts since some may expect postgres databases to exist
-    postgres_id=$(PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} docker-compose ${COMPOSE_CONF_LIST} ps -q postgres 2> /dev/null)
+    postgres_id=$(PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} ps -q postgres 2> /dev/null)
     if [ ! -z "$postgres_id" ]; then
       docker exec ${postgres_id} /postgres-setup.sh
     fi
