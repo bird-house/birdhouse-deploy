@@ -17,6 +17,13 @@
 
 ## Changes
 
+- Deprecate the `docker-compose` command as default
+
+  Sets the default compose command to `docker compose` using the new `DOCKER_COMPOSE` environment variable.
+  This uses compose v2 by default (instead of v1 which is very old and has been deprecated for a while).
+  For backwards compatibility, you can set `DOCKER_COMPOSE=docker-compose` in the local environment file to 
+  use the previous default.
+
 - Make scheduler jobs configurable
 
   The scheduler component automatically enables three jobs (autodeploy, logrotate, notebookdeploy). If someone wants
@@ -37,7 +44,6 @@
     - just set the schedule to the `'#'` string?
       - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
                 However, this is not obvious to the user and is unreliable since it is not documented.
-
 
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------
