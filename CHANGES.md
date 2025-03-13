@@ -33,10 +33,17 @@
   This change makes it possible to enable/disable jobs as required by the user and adds documentation to explain how 
   to do this.
 
+  This change also converts existing jobs to be optional components. This makes the jobs more in-line with the way the
+  stack is deployed (since version 1.24.0) and ensures that settings set as environment variables in the local environment
+  file are not so sensitive to the order that they were declared in.
+
   **Breaking Change**:
   - the three jobs that were automatically enabled previously are now no longer enabled by default.
-  - to re-enable these three jobs, source the relevant `*.env` files at the end of your local environment file
-    (see documentation for further details)
+  - to re-enable these three jobs, source the relevant component in the `optional-components` subdirectory.
+
+  **Deprecations**
+  - setting additional scheduler jobs using the `BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS` variable. Users should 
+    create additional jobs by adding them as custom components instead.
 
   What about... ?
     - just schedule these jobs for a non-existant day like February 31st?

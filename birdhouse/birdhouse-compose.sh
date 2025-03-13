@@ -22,6 +22,7 @@ VARS='
   $BIRDHOUSE_DATA_PERSIST_SHARED_ROOT
   $BIRDHOUSE_LOCAL_ENV
   $BIRDHOUSE_LOG_DIR
+  $COMPOSE_DIR
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local
@@ -81,14 +82,6 @@ then
   log WARN "the sysctl net.ipv4.tcp_tw_reuse is not enabled. " \
        "It it suggested to set it to 1, otherwise the birdhousecrawler may fail."
 fi
-
-export BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES=""
-for adir in ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}; do
-  # 4 spaces in front of '--volume' is important
-  BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES="${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES}
-    --volume ${adir}:${adir}:rw"
-done
-export BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
 if [ x"$1" = x"up" ]; then

@@ -1,24 +1,18 @@
-if echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q 'jupyterhub[[:space:]]*$'; then
-
-export BIRDHOUSE_SCHEDULER_NOTEBOOKDEPLOY_JOB="
 - name: notebookdeploy
   comment: Auto-deploy tutorial notebooks
   schedule: '${BIRDHOUSE_AUTODEPLOY_NOTEBOOK_FREQUENCY}'
-  command: '\${COMPOSE_DIR}/deployment/trigger-deploy-notebook'
+  command: '${COMPOSE_DIR}/deployment/trigger-deploy-notebook'
   dockerargs: >-
     --rm --name notebookdeploy
     --volume /var/run/docker.sock:/var/run/docker.sock:ro
     --volume ${BIRDHOUSE_LOG_DIR}:${BIRDHOUSE_LOG_DIR}:rw
-    --volume \${COMPOSE_DIR}:\${COMPOSE_DIR}:ro
-    --volume \${JUPYTERHUB_USER_DATA_DIR}:\${JUPYTERHUB_USER_DATA_DIR}:rw
+    --volume ${COMPOSE_DIR}:${COMPOSE_DIR}:ro
+    --volume ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}:rw
     --volume /tmp/notebookdeploy:/tmp/notebookdeploy:rw
     --volume ${BIRDHOUSE_LOCAL_ENV}:${BIRDHOUSE_LOCAL_ENV}
-    --env COMPOSE_DIR=\${COMPOSE_DIR}
+    --env COMPOSE_DIR=${COMPOSE_DIR}
     --env TMP_BASE_DIR=/tmp/notebookdeploy
     --env BIRDHOUSE_LOCAL_ENV=${BIRDHOUSE_LOCAL_ENV}
     --env BIRDHOUSE_COMPOSE=${BIRDHOUSE_COMPOSE}
-    --env JUPYTERHUB_USER_DATA_DIR=\${JUPYTERHUB_USER_DATA_DIR}${AUTODEPLOY_NOTEBOOK_EXTRA_DOCKER_ARGS}
+    --env JUPYTERHUB_USER_DATA_DIR=${JUPYTERHUB_USER_DATA_DIR} ${SCHEDULER_JOB_NOTEBOOKDEPLOY_LOCAL_ENV_DIR_VOLUME} ${AUTODEPLOY_NOTEBOOK_EXTRA_DOCKER_ARGS}
   image: 'docker:19.03.6-git'
-"
-
-fi

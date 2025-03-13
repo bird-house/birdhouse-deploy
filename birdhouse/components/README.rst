@@ -15,81 +15,67 @@ Birdhouse stack.
 Available jobs
 -------------
 
-Scheduler jobs can be enabled by sourcing specific ``*.env`` files in the ``components/scheduler``
-directory. The jobs that come included with the Birdhouse code are as follows:
+Scheduler jobs can be enabled by enabling optional components. Birdhouse comes with a variety of
+these jobs in the ``optional-components`` directory. To enable any of these jobs, add the relevant
+component directory to the ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable in your local environment file.
 
-Enable automatic deployment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+* Enable automatic deployment
 
-* additional description of this can be found in the :ref:`Automated Deployment` section.
+  * additional description of this can be found in the :ref:`Automated Deployment` section
 
-* to enable this component add the following to your local environment file:
+  * component location: ``optional-components/scheduler-job-autodeploy``
 
-.. code-block:: shell
+* Automatically rotate logs
 
-  . $COMPOSE_DIR/components/scheduler/autodeploy_job.env
+  * rotate and manage the birdhouse log files located in the directory specified by ``BIRDHOUSE_LOG_DIR``.
 
-Automatically rotate logs
-^^^^^^^^^^^^^^^^^^^^^^^^^
-* to enable this component add the following to your local environment file:
+  * component location: ``optional-components/scheduler-job-logrotate``
 
-.. code-block:: shell
+* Automatically update tutorial Jupyter notebooks
 
-  . $COMPOSE_DIR/components/scheduler/logrotate_job.env
+  * update tutorial notebooks that are displayed to users who run Jupyterlab servers through the ``jupyterhub`` component.
 
-Automatically update tutorial Jupyter notebooks
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  * this requires that the ``jupyterhub`` component is also enabled
 
-* note that this only can be enabled if the ``jupyterhub`` component is also enabled
+  * component location: ``optional-components/scheduler-job-notebookdeploy``
 
-* to enable this component add the following to your local environment file:
+* Automatically renew LetsEncrypt SSL certificate
+  * renew a SSL certificate issued by LetsEncrypt on a schedule
+  * component location: ``optional-components/scheduler-job-renew_letsencrypt_ssl_cert``
 
-.. code-block:: shell
+* Automatically deploy xclim test data to THREDDS
 
-  . $COMPOSE_DIR/components/scheduler/notebookdeploy_job.env
+  * adds xclim test data to the thredds server and keeps it up to date (for test purposes).
 
-Automatically renew LetsEncrypt SSL certificate
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  * this requires that the ``thredds`` component is also enabled
 
-* to enable this component add the following to your local environment file:
+  * component location: ``optional-components/scheduler-job-deploy_xclim_testdata``
 
-.. code-block:: shell
+* Automatically deploy raven test data to THREDDS
 
-  . $COMPOSE_DIR/components/scheduler/renew_letsencrypt_ssl_cert_extra_job.env
+  * adds test data used by the raven WPS component to the thredds server and keeps it up to date (for test purposes).
 
-Automatically deploy xclim test data to THREDDS
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* note that this only can be enabled if the ``thredds`` component is also enabled
-
-* to enable this component add the following to your local environment file:
-
-.. code-block:: shell
-
-  . $COMPOSE_DIR/components/scheduler/deploy_xclim_testdata_to_thredds.env
-
-Automatically deploy raven test data to THREDDS
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* note that this only can be enabled if the ``thredds`` component is also enabled
-
-* to enable this component add the following to your local environment file:
-
-.. code-block:: shell
-
-  . $COMPOSE_DIR/components/scheduler/deploy_raven_testdata_to_thredds.env
+  * this requires that the ``thredds`` and ``raven`` components also be enabled
+  
+  * component location: ``optional-components/scheduler-job-deploy_raven_testdata``
 
 For additional configuration options for all these jobs see the ``env.local.example`` file
-as well as the individual ``*.env`` files listed above.
-
-Configuration options for these jobs should be included in the local environment file and should
-be set **before** sourcing the relevant ``*.env`` files.
+as well as the individual ``default.env`` files in each of the component directories.
 
 Custom jobs
 -----------
 
-To add custom jobs to the scheduler component, update the ``BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS``
+To add custom jobs to the scheduler component, create a new component that mounts a ``.yml`` configuration file
+to the ``/scheduler-job-configs/`` directory inside the ``scheduler`` container.
+
+See the components listed above as examples on how to build a similar scheduler job component. For more information
+about the syntax of the configuration files see the `documentation <https://github.com/Ouranosinc/docker-crontab/>`_.
+
+The old way to add additional jobs is to update the ``BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS``
 environment variable in the local environment file to contain a YAML string that describes the job to run.
+
+Note that this method is deprecated and may be removed in the future. Please update all jobs defined in the
+``BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS`` variable to components.
 
 For example a simple additional job might look like:
 

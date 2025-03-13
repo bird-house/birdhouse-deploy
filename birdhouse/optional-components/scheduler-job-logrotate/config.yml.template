@@ -1,4 +1,3 @@
-export BIRDHOUSE_SCHEDULER_LOGROTATE_JOB="
 - name: logrotate
   comment: Rotate log files under ${BIRDHOUSE_LOG_DIR}
   schedule: '@daily'
@@ -7,6 +6,5 @@ export BIRDHOUSE_SCHEDULER_LOGROTATE_JOB="
     --rm --name logrotate
     --volume ${BIRDHOUSE_LOG_DIR}:/var/log/birdhouse:rw
     --volume ${BIRDHOUSE_LOGROTATE_DATA_DIR}:/var/lib:rw
-    --volume \${COMPOSE_DIR}/deployment/birdhouse-deploy.logrotate:/etc/logrotate.conf.orig:ro
+    --volume ${COMPOSE_DIR}/deployment/birdhouse-deploy.logrotate:/etc/logrotate.conf.orig:ro
   image: 'stakater/logrotate:3.13.0'
-"
