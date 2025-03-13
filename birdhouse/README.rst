@@ -7,7 +7,7 @@ Docker instructions
 Requirements
 ^^^^^^^^^^^^
 
-* Centos 7, RockyLinux 8, Ubuntu 18.04, 20.04, 22.04, known to work.
+* Centos 7, RockyLinux 8, Ubuntu 20.04, 22.04 known to work.
 
 * Hostname of Docker host must exist on the network.  Must use bridge
   networking if Docker host is a Virtual Machine.
@@ -23,7 +23,7 @@ Requirements
 
     * docker engine
     * docker CLI
-    * docker compose plugin (v2.20.2+ is required)
+    * docker compose plugin (``v2.20.2+`` is required)
   
 * Have a real SSL Certificate, self-signed SSL Certificate do not work properly.
   Let's Encrypt offers free SSL Certificate.

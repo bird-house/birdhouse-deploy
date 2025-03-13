@@ -26,19 +26,25 @@
 
 - Update Docker Compose syntax to version 2 in all docker compose files
 
+  **Breaking Change**: as of birdhouse-deploy version [2.7.3](https://github.com/bird-house/birdhouse-deploy/tree/2.7.3), 
+  the stack could not be deployed with a docker compose version <`2.20.2`. However, that was not specified in the release 
+  notes so we're stating it here.
+  The incompatibility is due to the addition of various additional keys under 
+  [healthcheck](https://docs.docker.com/reference/compose-file/services/#healthcheck) in the docker compose files
+  including `interval`, `timeout`, `start_period`, and `start_interval`.
+
   The version 1 compose specification that docker uses is out of date and no longer maintained by docker.
-  We currently have a mix of version 1 syntax and version 2 (specifically 2.20.2+) syntax in our docker compose
+  We currently have a mix of version 1 syntax and version 2 (specifically `2.20.2`+) syntax in our docker compose
   files.
 
-  This means that the stack will not properly run with a docker compose version <2.20.2. For any version >2.20.2 
-  the stack runs properly but displays lots of deprecation warnings about deprecated version strings and external
-  volume and network definitions.
+  This means that the stack will not properly run with a docker compose version <`2.20.2`. For any version >`2.20.2` 
+  the stack runs properly but displays lots of deprecation warnings about deprecated 
+  [version strings](https://docs.docker.com/reference/compose-file/version-and-name/), [external
+  volumes](https://docs.docker.com/reference/compose-file/volumes/#external) and [external 
+  network](https://docs.docker.com/reference/compose-file/networks/#external) definitions.
 
   This PR updates all version 1 syntax so that these deprecation warnings are not displayed. Documentation has 
   been updated to make this dependency on a modern version of docker explicit.
-
-  **Breaking Change**: as of birdhouse-deploy version 2.7.3, the stack could not be deployed with a docker compose
-  version <2.20.2. However, that was not specified in the release notes so we're stating it here.
 
 
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
