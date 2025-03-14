@@ -68,21 +68,6 @@ read_configs # this sets ALL_CONF_DIRS
 
 check_required_vars || exit $?
 
-## check fails when root access is required to access this file.. workaround possible by going through docker daemon... but
-# will add delay
-# if [ ! -f $BIRDHOUSE_SSL_CERTIFICATE ]
-# then
-#   log ERROR "SSL certificate file $BIRDHOUSE_SSL_CERTIFICATE is missing"
-#   exit 1
-# fi
-
-TIMEWAIT_REUSE=$(/sbin/sysctl -n  net.ipv4.tcp_tw_reuse)
-if [ "${TIMEWAIT_REUSE}" -eq 0 ]
-then
-  log WARN "the sysctl net.ipv4.tcp_tw_reuse is not enabled. " \
-       "It it suggested to set it to 1, otherwise the birdhousecrawler may fail."
-fi
-
 # we apply all the templates
 if [ x"$1" = x"up" ]; then
   find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |

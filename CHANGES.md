@@ -24,6 +24,14 @@
   For backwards compatibility, you can set `DOCKER_COMPOSE=docker-compose` in the local environment file to 
   use the previous default.
 
+- Remove deprecated catalog crawler code
+
+  Code related to the solr catalog in the `birdhouse-compose.sh` file has been deprecated for a while and 
+  is not currently usable with the current stack anyway so it is removed
+
+  Also there is commented out old code that relates to the presence of an SSL certificate which is not use 
+  and no longer relevant as of version 2.7.0.
+
 - Make scheduler jobs configurable
 
   The scheduler component automatically enables three jobs (autodeploy, logrotate, notebookdeploy). If someone wants
