@@ -18,6 +18,24 @@ To upgrade to version 2.9 from an earlier version:
   guide](https://jupyterhub.readthedocs.io/en/latest/howto/upgrading-v5.html) to see if any of those settings
   have been changed.
 
+Version 2.7.3
+-------------
+
+Version 2.7.3 introduced docker compose syntax that is incompatible with docker compose versions older than ``2.20.2``.
+
+- If your docker compose version is older than ``2.20.2`` you should update to the latest version of docker compose 
+  as soon as possible.
+
+- You may also want to update any docker compose version 1 syntax at this time to avoid deprecation warnings right now
+  (and deployment failures in the future if the version 1 syntax eventually is no longer supported).
+
+  Version 1 syntax may include:
+
+    * top level ``version`` keys
+
+    * declaring volumes and networks as external with the ``external: <name>`` syntax 
+      (where name is the name of the volume or network) instead of ``external: true``.
+
 Version 2.4
 -----------
 
