@@ -69,7 +69,7 @@ read_configs # this sets ALL_CONF_DIRS
 check_required_vars || exit $?
 
 # we apply all the templates
-if [ x"$1" = x"up" ]; then
+if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ]; then
   find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
     while read FILE
     do

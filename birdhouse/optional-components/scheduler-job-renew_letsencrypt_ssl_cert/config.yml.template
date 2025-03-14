@@ -12,4 +12,4 @@
     --env FORCE_CERTBOT_E2E=1
     --env CERTBOT_RENEW=1
     --env CERTBOTWRAPPER_LOGFILE=/var/log/birdhouse/renew_letsencrypt_ssl.log ${SCHEDULER_JOB_RENEW_SSL_CERT_LOCAL_ENV_DIR_VOLUME}
-  image: 'pavics/docker-compose-git:docker-18.09.7-compose-1.25.1'
+  image: '${SCHEDULER_JOB_RENEW_SSL_IMAGE}'
