@@ -54,6 +54,11 @@
   This PR updates all version 1 syntax so that these deprecation warnings are not displayed. Documentation has 
   been updated to make this dependency on a modern version of docker explicit.
 
+  **Migration Steps**: 
+    - if you are using a version of docker compose <`2.20.2` update your docker compose version
+    - if you deploy any external components that use any of the old docker compose syntax you may want to update
+      those docker compose files as well so that you aren't bombarded by deprecation warnings whenever you start
+      the birdhouse stack.  
 
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------
