@@ -59,7 +59,6 @@ discover_compose_dir() {
             # Case of sub-subdir of sibling checkout at same level as birdhouse-deploy.
             COMPOSE_DIR="$(realpath "../../../birdhouse-deploy/birdhouse")"
         fi
-        export COMPOSE_DIR
     fi
     # Perform last-chance validation in case 'COMPOSE_DIR' was incorrectly set explicitly
     # and that 'read-configs.include.sh' was sourced directly from an invalid location.
@@ -70,6 +69,7 @@ discover_compose_dir() {
           "Many features depend on this variable." 1>&2
         return 2
     fi
+    export COMPOSE_DIR
 }
 
 
