@@ -76,13 +76,23 @@ done
 export BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
-if [ x"$1" = x"up" ]; then
+BIRDHOUSE_COMPOSE_TEMPLATE_FORCE="${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE:-false}"
+if [ x"$1" = x"up" ] || [ x"${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE}" = x"true" ]; then
+  log INFO "Updating template files found across 'ALL_CONF_DIRS'."
   find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
-    while read FILE
-    do
-      DEST=${FILE%.template}
-      cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
-    done
+  while read FILE
+  do
+    DEST=${FILE%.template}
+    if [ -d "${DEST}" ]; then
+      # purposely using 'rmdir' to get an error if the contents are not empty
+      # this is only to handle docker-compose early generation of volume mounts
+      log WARN "Removing invalid directory for template file [${DEST}]"
+      rmdir "${DEST}"
+    fi
+    cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
+  done
+else
+  log DEBUG "Skipping template files update (\"$1\" not \"up\" and not forced by BIRDHOUSE_COMPOSE_TEMPLATE_FORCE)"
 fi
 
 SHELL_EXEC_FLAGS=

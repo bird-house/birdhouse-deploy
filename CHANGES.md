@@ -17,6 +17,15 @@
 
 ## Changes
 
+- Improve handling of `.template` files generation
+
+  * Add `BIRDHOUSE_COMPOSE_TEMPLATE_FORCE` variable that allows enforing the generation of the `.template` files
+    instead of only when compose `up` command is passed by default.
+  * Add automatic removal of empty directories conflicting with `.template` destinations. 
+    This occurs only if a `docker compose` command ran early, and it generated volume mount directories to the
+    yet non-existing files.
+  * Add logs when template generation occurs, is skipped, or edge case directories are removed.
+
 - Deprecate the `docker-compose` command as default
 
   Sets the default compose command to `docker compose` using the new `DOCKER_COMPOSE` environment variable.
