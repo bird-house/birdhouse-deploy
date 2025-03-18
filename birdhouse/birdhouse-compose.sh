@@ -78,7 +78,7 @@ export BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 # we apply all the templates
 BIRDHOUSE_COMPOSE_TEMPLATE_FORCE="${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE:-false}"
 if [ x"$1" = x"up" ] || [ x"${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE}" = x"true" ]; then
-  log INFO "Updating template files found across 'ALL_CONF_DIRS'."
+  log INFO "Updating template files found across 'BIRDHOUSE_EXTRA_CONF_DIRS' (enabled and default components)."
   find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
   while read FILE
   do
@@ -87,7 +87,12 @@ if [ x"$1" = x"up" ] || [ x"${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE}" = x"true" ]; th
       # purposely using 'rmdir' to get an error if the contents are not empty
       # this is only to handle docker-compose early generation of volume mounts
       log WARN "Removing invalid directory for template file [${DEST}]"
-      rmdir "${DEST}"
+      if ! rmdir "${DEST}" 2>/dev/null; then
+        log ERROR "Cannot remove non-empty directory [${DEST}]." \
+                  "This directory should not exist as it conflicts with destination of [${FILE}]." \
+                  "Please remove it and try starting up the birdhouse stack again."
+        exit 1
+      fi
     fi
     cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
   done
