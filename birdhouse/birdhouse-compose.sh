@@ -76,7 +76,6 @@ done
 export BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS_AS_DOCKER_VOLUMES
 
 # we apply all the templates
-BIRDHOUSE_COMPOSE_TEMPLATE_FORCE="${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE:-false}"
 if [ x"$1" = x"up" ] || [ x"${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE}" = x"true" ]; then
   log INFO "Updating template files found across 'BIRDHOUSE_EXTRA_CONF_DIRS' (enabled and default components)."
   find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
@@ -96,6 +95,7 @@ if [ x"$1" = x"up" ] || [ x"${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE}" = x"true" ]; th
     fi
     cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
   done
+  [ "$?" -eq 1 ] && exit 1  # re-raise the subshell error of the while loop
 else
   log DEBUG "Skipping template files update (\"$1\" not \"up\" and not forced by BIRDHOUSE_COMPOSE_TEMPLATE_FORCE)"
 fi
