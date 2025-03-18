@@ -59,6 +59,21 @@ component directory to the ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable in your local 
   
   * component location: ``optional-components/scheduler-job-deploy_raven_testdata``
 
+* Automatically remove old files
+
+  * Removes THREDDS log files and WPS output files older than a specific number of days
+
+  * In order to remove THREDDS log files the ``thredds`` component needs to be enabled.
+
+    * Set the ``THREDDS_DELETE_FILES_OLDER_THAN_DAYS`` variable in the local environment file to an integer specifying
+      how old a THREDDS log file needs to be before it is deleted.
+
+  * In order to remove WPS output files, at least one of the WPS components needs to be enabled.
+
+    * Set the ``WPS_OUTPUTS_DELETE_FILES_OLDER_THAN_DAYS`` variable in the local environment file to an integer specifying
+      how old a WPS output file needs to be before it is deleted.
+
+
 For additional configuration options for all these jobs see the ``env.local.example`` file
 as well as the individual ``default.env`` files in each of the component directories.
 

@@ -1,0 +1,4 @@
+services:
+  scheduler:
+    volumes: 
+      - ./optional-components/scheduler-job-clean_old_files/config.yml:/scheduler-job-configs/clean_old_files.yml:ro

@@ -60,6 +60,13 @@
       - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
                 However, this is not obvious to the user and is unreliable since it is not documented.
 
+- Introduce a scheduler job to delete old files that may accumulate over time
+
+  Creates the `optional-component-clean_old_files` job that deletes old THREDDS log files and WPS output files.
+  To set the oldest file that will be kept for each of these options, set the `THREDDS_DELETE_FILES_OLDER_THAN_DAYS`
+  and/or the `WPS_OUTPUTS_DELETE_FILES_OLDER_THAN_DAYS` variables in the local environment files (see 
+  `env.local.example` or the `scheduler` documentation for details).
+
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------
 

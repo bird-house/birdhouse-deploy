@@ -1,0 +1,3 @@
+if [ -z "$SCHEDULER_JOB_CLEAN_OLD_FILES_OPTIONS" ]; then
+  log WARN 'The scheduler-job-clean_old_files component is enabled but no files are scheduled to be deleted. Please reconfigure this component or disable it.'
+fi
