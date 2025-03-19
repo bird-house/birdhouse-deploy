@@ -163,8 +163,8 @@ Disk: at least 100 TB, depending how much data is hosted on Thredds and Geoserve
 In general, the more users, the more cpu cores and memory needed.  The more data, more memory and bigger and faster disks needed.
 
 
-Note
-----
+Note about WPS request timeout
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * All WPS requests should be completed within ``proxy_read_timeout`` of the
   Nginx proxy, see `nginx.conf`_ (:download:`download <birdhouse/components/proxy/nginx.conf>`).
