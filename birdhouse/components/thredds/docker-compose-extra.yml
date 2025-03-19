@@ -1,4 +1,3 @@
-version: "3.4"
 
 x-logging: &default-logging
   driver: "json-file"
@@ -44,5 +43,5 @@ services:
       
 volumes:
   thredds_persistence:
-    external:
-      name: thredds_persistence
+    external: true
+    name: thredds_persistence

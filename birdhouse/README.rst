@@ -7,7 +7,7 @@ Docker instructions
 Requirements
 ^^^^^^^^^^^^
 
-* Centos 7, RockyLinux 8, Ubuntu 18.04, 20.04, 22.04, known to work.
+* Centos 7, RockyLinux 8, Ubuntu 20.04, 22.04 known to work.
 
 * Hostname of Docker host must exist on the network.  Must use bridge
   networking if Docker host is a Virtual Machine.
@@ -15,8 +15,15 @@ Requirements
 * User running ``BIRDHOUSE_COMPOSE`` below must not be ``root`` but a regular user
   belonging to the ``docker`` group.
 
-* Install latest docker-ce and docker-compose for the chosen distro (not the
-  version from the distro).
+* `Install latest version of docker <https://docs.docker.com/engine/install/>`_ for the chosen distro 
+   (not the version from the distro).
+
+  * Please ensure the latest versions of the following packages and any of their dependencies
+    are installed for your distro:
+
+    * docker engine
+    * docker CLI
+    * docker compose plugin (``v2.20.2+`` is required)
   
 * Have a real SSL Certificate, self-signed SSL Certificate do not work properly.
   Let's Encrypt offers free SSL Certificate.
@@ -156,8 +163,8 @@ Disk: at least 100 TB, depending how much data is hosted on Thredds and Geoserve
 In general, the more users, the more cpu cores and memory needed.  The more data, more memory and bigger and faster disks needed.
 
 
-Note
-----
+Note about WPS request timeout
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * All WPS requests should be completed within ``proxy_read_timeout`` of the
   Nginx proxy, see `nginx.conf`_ (:download:`download <birdhouse/components/proxy/nginx.conf>`).

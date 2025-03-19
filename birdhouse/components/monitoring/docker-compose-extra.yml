@@ -1,4 +1,3 @@
-version: "3.4"
 
 services:
   # https://github.com/google/cadvisor/blob/master/docs/running.md
@@ -123,13 +122,13 @@ services:
 
 volumes:
   prometheus_persistence:
-    external:
-      name: prometheus_persistence
+    external: true
+    name: prometheus_persistence
   grafana_persistence:
-    external:
-      name: grafana_persistence
+    external: true
+    name: grafana_persistence
   alertmanager_persistence:
-    external:
-      name: alertmanager_persistence
+    external: true
+    name: alertmanager_persistence
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
