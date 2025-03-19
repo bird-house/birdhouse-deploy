@@ -340,7 +340,7 @@ check_required_vars() {
         v="${i}"
         if [ -z "`eval "echo ${v}"`" ]
         then
-            log ERROR "Required variable $v is not set. Check env.local file."
+            log ERROR "Required variable ${v#$} is not set. Check env.local file."
             return 1
         fi
     done
