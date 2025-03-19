@@ -59,7 +59,7 @@ Example Usage:
   example.com  # This is the value of BIRDHOUSE_FQDN as determined by the current configuration settings
   $ ${THIS_BASENAME} configs -p
   . /path/to/configs/file/to/source && read_configs
-  $ eval \$(${THIS_BASENAME} configs)
+  $ eval \$(${THIS_BASENAME} configs -p)
   $ echo \${BIRDHOUSE_FQDN}
   example.com  # This is the value of BIRDHOUSE_FQDN as determined by the current configuration settings
 "
