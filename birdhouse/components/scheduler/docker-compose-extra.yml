@@ -1,4 +1,3 @@
-version: "3.4"
 
 services:
   scheduler:
@@ -10,7 +9,7 @@ services:
     environment:
       COMPOSE_DIR: ${PWD}
       BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR: ${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}
-      CODE_OWNERSHIP: ${BIRDHOUSE_AUTODEPLOY_CODE_OWNERSHIP}
+      CODE_OWNERSHIP: ${BIRDHOUSE_AUTODEPLOY_CODE_OWNERSHIP:-}
     restart: always
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2

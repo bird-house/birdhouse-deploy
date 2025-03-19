@@ -102,6 +102,7 @@ echo 'export PATH="$PATH:/usr/local/bin"' | sudo tee /etc/profile.d/usr_local_pa
 # Pin docker-compose to a specific version to match autodeploy version of
 # docker-compose.  Otherwise, alternating between the different versions will
 # keep recreating all the containers for no reasons.
+# TODO: this no longer works for versions of birdhouse deploy >2.7.3... update this and the autodeploy job to require docker compose version 2.20.2+
 LATEST_COMPOSE_VERSION="1.26.2"
 sudo curl -L "https://github.com/docker/compose/releases/download/$LATEST_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose

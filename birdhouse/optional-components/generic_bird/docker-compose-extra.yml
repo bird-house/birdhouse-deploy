@@ -1,4 +1,3 @@
-version: "3.4"
 services:
   generic_bird:
     image: ${GENERIC_BIRD_IMAGE}
