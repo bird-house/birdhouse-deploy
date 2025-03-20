@@ -1,4 +1,3 @@
-version: "3.4"
 
 services:
   # extend proxy with endpoint and config for Cowbird API access

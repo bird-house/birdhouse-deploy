@@ -69,13 +69,28 @@ read_configs # this sets ALL_CONF_DIRS
 check_required_vars || exit $?
 
 # we apply all the templates
-if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ]; then
+if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ] || [ x"${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE}" = x"true" ]; then
+  log INFO "Updating template files found across 'BIRDHOUSE_EXTRA_CONF_DIRS' (enabled and default components)."
   find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
-    while read FILE
-    do
-      DEST=${FILE%.template}
-      cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
-    done
+  while read FILE
+  do
+    DEST=${FILE%.template}
+    if [ -d "${DEST}" ]; then
+      # purposely using 'rmdir' to get an error if the contents are not empty
+      # this is only to handle docker-compose early generation of volume mounts
+      log WARN "Removing invalid directory for template file [${DEST}]"
+      if ! rmdir "${DEST}" 2>/dev/null; then
+        log ERROR "Cannot remove non-empty directory [${DEST}]." \
+                  "This directory should not exist as it conflicts with destination of [${FILE}]." \
+                  "Please remove it and try starting up the birdhouse stack again."
+        exit 1
+      fi
+    fi
+    cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
+  done
+  [ "$?" -eq 1 ] && exit 1  # re-raise the subshell error of the while loop
+else
+  log DEBUG "Skipping template files update (\"$1\" not \"up\", \"restart\", or forced by BIRDHOUSE_COMPOSE_TEMPLATE_FORCE)"
 fi
 
 SHELL_EXEC_FLAGS=

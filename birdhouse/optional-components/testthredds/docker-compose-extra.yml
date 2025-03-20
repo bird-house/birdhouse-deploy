@@ -1,4 +1,3 @@
-version: "3.4"
 services:
   testthredds:
     image: ${TESTTHREDDS_IMAGE}

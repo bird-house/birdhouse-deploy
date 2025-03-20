@@ -1,4 +1,3 @@
-version: "3.4"
 
 services:
   # extend Magpie permissions to grant access to Cowbird API via secured Twitcher proxy
