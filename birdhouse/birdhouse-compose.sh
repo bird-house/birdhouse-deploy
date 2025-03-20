@@ -23,6 +23,7 @@ VARS='
   $BIRDHOUSE_LOCAL_ENV
   $BIRDHOUSE_LOG_DIR
   $COMPOSE_DIR
+  $COMPOSE_PROJECT_NAME
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local

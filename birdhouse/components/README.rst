@@ -73,6 +73,7 @@ component directory to the ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable in your local 
     * Set the ``WPS_OUTPUTS_DELETE_FILES_OLDER_THAN_DAYS`` variable in the local environment file to an integer specifying
       how old a WPS output file needs to be before it is deleted.
 
+  * component location: ``optional-components/scheduler-job-clean_old_files``
 
 For additional configuration options for all these jobs see the ``env.local.example`` file
 as well as the individual ``default.env`` files in each of the component directories.
