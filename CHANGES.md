@@ -101,9 +101,11 @@
 - Introduce a scheduler job to delete old files that may accumulate over time
 
   Creates the `optional-component-clean_old_files` job that deletes old THREDDS log files and WPS output files.
-  To set the oldest file that will be kept for each of these options, set the `THREDDS_DELETE_FILES_OLDER_THAN_DAYS`
-  and/or the `WPS_OUTPUTS_DELETE_FILES_OLDER_THAN_DAYS` variables in the local environment files (see 
-  `env.local.example` or the `scheduler` documentation for details).
+  Allows individual cleanup jobs to be enabled for each of `raven`, `finch`, `hummingbird`, and `thredds` components.
+  Allows the user to configure how old a file must be before it is deleted (age in days) and how to calculate the age
+  of the file (time since last modified, time since last accessed, time since created).
+  
+  (see `env.local.example` or the `scheduler` documentation for details).
 
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------
