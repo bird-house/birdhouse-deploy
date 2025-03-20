@@ -2,4 +2,3 @@ services:
   scheduler:
     volumes: 
       - ./optional-components/scheduler-job-clean_old_files/${__SCHEDULER_JOB_CLEAN_OLD_FILES_RAVEN_CONFIG_LOC:-blank.config.yml}:/scheduler-job-configs/clean_old_files_raven.yml:ro}
-# TODO: mount an empty config file instead
