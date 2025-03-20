@@ -17,11 +17,11 @@
 
 ## Fixes
 
-- Wrong compose up extra arguments given to compose restart
+- Wrong compose `up` extra arguments given to compose `restart`
 
   * For example, when setting `BIRDHOUSE_COMPOSE_UP_EXTRA_OPTS="--remove-orphans"` in
     `env.local`, that `--remove-orphans` flag is not supposed to be used with
-    compose restart.  Fix regression from
+    compose `restart`.  Fix regression from
     [PR #492](https://github.com/bird-house/birdhouse-deploy/pull/492).
 
 
