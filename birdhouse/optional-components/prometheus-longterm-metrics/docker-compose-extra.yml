@@ -27,5 +27,5 @@ services:
 
 volumes:
   prometheus_longterm_persistence:
-    external:
-      name: prometheus_longterm_persistence
+    external: true
+    name: prometheus_longterm_persistence

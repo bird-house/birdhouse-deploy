@@ -70,6 +70,13 @@
       those docker compose files as well so that you aren't bombarded by deprecation warnings whenever you start
       the birdhouse stack.  
 
+- Remove deprecated version field from generated docker-compose files
+
+  The `env-local` optional component generates a docker compose file that contained a version field which are
+  deprecated. This fixes the issue by removing the code that generates the deprecated field.
+
+  Also updates a declaration of an external volume in `prometheus-longterm-metrics` to use the compose v2 syntax.
+
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------
 
