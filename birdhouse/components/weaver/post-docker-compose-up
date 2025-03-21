@@ -60,7 +60,7 @@
 # this is important, otherwise curl logs will leak tokens!
 old_state="$(set +o)"
 # if this script needs live debugging, comment out following line and call the script with (sh -x <script>)
-# set +x
+set +x
 
 reset_state() {
   set +vx; eval "${old_state}"
