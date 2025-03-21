@@ -76,10 +76,17 @@
 
     The `COMPOSE_DIR` variable cannnot be discovered properly if:
     
-    - the `bin/birdhouse` script is called from with the `configs --print-config-command` options.
+    - the `bin/birdhouse` script is called with the `configs --print-config-command` options.
     - the result of that call is `eval`ed in order to load the birdhouse configuration settings into 
       the calling process's environment.
     - this is done from a directory outside of the birdhouse-deploy source code directory.
+
+    For example:
+
+    ```sh
+    cd /
+    eval $(birdhouse configs --print-config-command)
+    ```
 
     This is fixed by explicitly giving a value for the `COMPOSE_DIR` variable when using the `--print-config-command`
     option. The value is already correctly set in the `bin/birdhouse` script so it is easy to pass that 
