@@ -70,6 +70,21 @@
       those docker compose files as well so that you aren't bombarded by deprecation warnings whenever you start
       the birdhouse stack.  
 
+- Stop build when a build step fails
+
+  If a command exits with a non-zero exit code when deploying the stack (i.e. running `birdhouse-compose.sh`) the
+  build process should stop and report that an unexpected error occurs.
+
+  This is enforced by setting the `-e` flag when `birdhouse-compose.sh` is run by default. Several commands have been
+  updated so that they are followed by `|| true` so that if they exit with a non-zero status it will not stop the
+  script.
+
+  Also a new environment variable `BIRDHOUSE_DEBUG_MODE` is introduced which can be set to `true` to set the `-x`
+  flag which will write every command that is run by `birdhouse-compose.sh` to stderr. Previously, setting the
+  `BIRDHOUSE_LOG_LEVEL` to `DEBUG` would set the `-x` flag whenever `pre-docker-compose-up` and `post-docker-compose-up`
+  scripts are executed. Please use the `BIRDHOUSE_DEBUG_MODE` instead from now on. `BIRDHOUSE_LOG_LEVEL` should
+  only be used to set the log level of the birdhouse logger.
+
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------
 
