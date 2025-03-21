@@ -60,7 +60,7 @@
 # this is important, otherwise curl logs will leak tokens!
 old_state="$(set +o)"
 # if this script needs live debugging, comment out following line and call the script with (sh -x <script>)
-set +x
+# set +x
 
 reset_state() {
   set +vx; eval "${old_state}"
@@ -374,10 +374,10 @@ mkdir -p "${BIRDHOUSE_LOG_DIR}"
 # note: use 'tee' instead of capturing in variable to allow displaying results directly when running command
 ${BIRDHOUSE_COMPOSE} exec weaver bash "${CELERY_HEALTHCHECK}" | tee "${BIRDHOUSE_LOG_DIR}/weaver.log"
 ret_weaver=$?
-out_weaver=$(cat "${BIRDHOUSE_LOG_DIR}/weaver.log" | tail -n 1 | grep -c "ERROR")
+out_weaver=$(cat "${BIRDHOUSE_LOG_DIR}/weaver.log" | tail -n 1 | grep -c "ERROR") || true
 ${BIRDHOUSE_COMPOSE} exec weaver-worker bash "${CELERY_HEALTHCHECK}" | tee "${BIRDHOUSE_LOG_DIR}/weaver-worker.log"
 ret_worker=$?
-out_worker=$(cat "${BIRDHOUSE_LOG_DIR}/weaver-worker.log" | tail -n 1 | grep -c "ERROR")
+out_worker=$(cat "${BIRDHOUSE_LOG_DIR}/weaver-worker.log" | tail -n 1 | grep -c "ERROR") || true
 if [ ${ret_weaver} -ne 0 ] || [ ${ret_worker} -ne 0 ] || [ "${out_weaver}" -ne 0 ] || [ "${out_worker}" -ne 0 ]; then
   echo "${PREFIX}Weaver WebApp and/or Worker Celery tasks were not ready. Restarting both..."
   ${BIRDHOUSE_COMPOSE} restart weaver weaver-worker

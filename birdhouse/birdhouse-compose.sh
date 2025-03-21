@@ -13,6 +13,34 @@
 # list of all variables to be substituted in templates
 #   some of these variables *could* employ provided values in 'default.env',
 #   but they must ultimately be defined one way or another for the server to work
+
+SHELL_EXEC_FLAGS=-e
+if [ x"${BIRDHOUSE_DEBUG_MODE}" = x"true" ]; then
+  SHELL_EXEC_FLAGS=-ex
+fi
+
+set ${SHELL_EXEC_FLAGS}
+
+exit_handler() {
+  exit_code="$?"
+  [ "$exit_code" -eq 0 ] && exit
+  [ "$BIRDHOUSE_EXPECTED_EXIT" = "true" ] && exit "$exit_code"
+  err_msg="An unexpected error occurred. See additional messages on stderr for details or rerun this command with BIRDHOUSE_DEBUG_MODE=true."
+  if command -v log >/dev/null; then
+    log ERROR "$err_msg"
+  else
+    >&2 echo "The following error occurred before logging could be initialized: $err_msg"
+  fi
+}
+
+expect_exit() {
+  exit_code="${1:-$?}"
+  export BIRDHOUSE_EXPECTED_EXIT=true
+  exit "${exit_code}"
+}
+
+trap 'exit_handler' EXIT
+
 VARS='
   $BIRDHOUSE_COMPOSE
   $BIRDHOUSE_FQDN
@@ -100,15 +128,10 @@ else
   log DEBUG "Skipping template files update (\"$1\" not \"up\", \"restart\", or forced by BIRDHOUSE_COMPOSE_TEMPLATE_FORCE)"
 fi
 
-SHELL_EXEC_FLAGS=
-if [ "${BIRDHOUSE_LOG_LEVEL}" = "DEBUG" ]; then
-  SHELL_EXEC_FLAGS=-x
-fi
-
 create_compose_conf_list # this sets COMPOSE_CONF_LIST
 log INFO "Displaying resolved compose configurations:"
 log INFO "COMPOSE_CONF_LIST="
-log INFO ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f'
+log INFO "$(echo ${COMPOSE_CONF_LIST} | tr ' ' '\n' | grep -v '^-f')"
 
 if [ x"$1" = x"info" ]; then
   log INFO "Stopping before execution of docker-compose command."
@@ -135,53 +158,40 @@ fi
 
 log INFO "Executing docker-compose with extra options: $* ${COMPOSE_EXTRA_OPTS}"
 # the PROXY_HTTP_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} $* ${COMPOSE_EXTRA_OPTS}
-ERR=$?
-if [ ${ERR} -gt 0 ]; then
-  log ERROR "docker-compose error, exit code ${ERR}"
-  exit ${ERR}
-fi
+PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} $* ${COMPOSE_EXTRA_OPTS} || expect_exit
 
 # execute post-compose function if exists and no error occurred
-type post-compose 2>&1 | grep 'post-compose is a function' > /dev/null
-if [ $? -eq 0 ]
+if type post-compose 2>&1 | grep 'post-compose is a function' > /dev/null
 then
-  [ ${ERR} -gt 0 ] && { log ERROR "Error occurred with docker-compose, not running post-compose"; exit $?; }
   post-compose $*
 fi
 
+if [ x"$1" = x"up" ]; then
+  # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
+  PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} restart proxy
 
-while [ $# -gt 0 ]
-do
-  if [ x"$1" = x"up" ]; then
-    # we restart the proxy after an up to make sure nginx continue to work if any container IP address changes
-    PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} restart proxy
-
-    # run postgres post-startup setup script
-    # Note: this must run before the post-docker-compose-up scripts since some may expect postgres databases to exist
-    postgres_id=$(PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} ps -q postgres 2> /dev/null)
-    if [ ! -z "$postgres_id" ]; then
-      docker exec ${postgres_id} /postgres-setup.sh
-    fi
-
-    for adir in $ALL_CONF_DIRS; do
-      COMPONENT_POST_COMPOSE_UP="$adir/post-docker-compose-up"
-      if [ -x "$COMPONENT_POST_COMPOSE_UP" ]; then
-        log INFO "Executing '$COMPONENT_POST_COMPOSE_UP'"
-        sh ${SHELL_EXEC_FLAGS} "$COMPONENT_POST_COMPOSE_UP"
-      fi
-    done
-
-    # Note: This command should stay last, as it can take a while depending on network and drive speeds
-    # immediately cache the new notebook images for faster startup by JupyterHub
-    for IMAGE in ${JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES}
-    do
-      docker pull $IMAGE
-    done
-
+  # run postgres post-startup setup script
+  # Note: this must run before the post-docker-compose-up scripts since some may expect postgres databases to exist
+  postgres_id=$(PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} ps -q postgres 2> /dev/null)
+  if [ ! -z "$postgres_id" ]; then
+    docker exec ${postgres_id} /postgres-setup.sh
   fi
-  shift
-done
+
+  for adir in $ALL_CONF_DIRS; do
+    COMPONENT_POST_COMPOSE_UP="$adir/post-docker-compose-up"
+    if [ -x "$COMPONENT_POST_COMPOSE_UP" ]; then
+      log INFO "Executing '$COMPONENT_POST_COMPOSE_UP'"
+      sh ${SHELL_EXEC_FLAGS} "$COMPONENT_POST_COMPOSE_UP"
+    fi
+  done
+
+  # Note: This command should stay last, as it can take a while depending on network and drive speeds
+  # immediately cache the new notebook images for faster startup by JupyterHub
+  for IMAGE in ${JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES}
+  do
+    docker pull $IMAGE
+  done
+fi
 
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2
