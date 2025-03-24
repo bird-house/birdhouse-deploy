@@ -15,6 +15,21 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Wrong compose `up` extra arguments given to compose `restart`
+
+  * For example, when setting `BIRDHOUSE_COMPOSE_UP_EXTRA_OPTS="--remove-orphans"` in
+    `env.local`, that `--remove-orphans` flag is not supposed to be used with
+    compose `restart`.  Fix regression from
+    [PR #492](https://github.com/bird-house/birdhouse-deploy/pull/492).
+
+
 ## Changes
 
 - Improve handling of `.template` files generation
