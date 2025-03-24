@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Wrong compose `up` extra arguments given to compose `restart`
