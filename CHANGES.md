@@ -15,6 +15,8 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Fixes
+
 - Remove deprecated version field from generated docker-compose files
 
   The `env-local` optional component generates a docker compose file that contained a version field which are
@@ -22,6 +24,11 @@
 
   Also updates a declaration of an external volume in `prometheus-longterm-metrics` to use the compose v2 syntax.
 
+- Fix bug where generated docker compose file is appended to not written
+
+  Fixes a bug introduced when the version string was removed from the generated docker compose file. The previous
+  line used `>` which truncated the file before writing. Now that the previous line is removed, the truncation 
+  logic needed to be applied elsewhere. 
 
 [2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
 ------------------------------------------------------------------------------------------------------------------
