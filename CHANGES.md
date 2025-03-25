@@ -17,6 +17,68 @@
 
 ## Changes
 
+- Make scheduler jobs configurable
+
+  The scheduler component automatically enables three jobs (autodeploy, logrotate, notebookdeploy). If someone wants
+  to use the scheduler component but does not want these jobs, there is no obvious way to disable any one of these
+  jobs.
+
+  This change makes it possible to enable/disable jobs as required by the user and adds documentation to explain how 
+  to do this.
+
+  This change also converts existing jobs to be optional components. This makes the jobs more in-line with the way the
+  stack is deployed (since version 1.24.0) and ensures that settings set as environment variables in the local environment
+  file are not so sensitive to the order that they were declared in.
+
+  **Breaking Change**:
+  - the three jobs that were automatically enabled previously are now no longer enabled by default.
+  - to re-enable these three jobs, source the relevant component in the `optional-components` subdirectory.
+
+  **Deprecations**
+  - setting additional scheduler jobs using the `BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS` variable. Users should 
+    create additional jobs by adding them as custom components instead.
+
+  What about... ?
+    - just schedule these jobs for a non-existant day like February 31st?
+      - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
+    - just set the schedule to the `'#'` string?
+      - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
+                However, this is not obvious to the user and is unreliable since it is not documented.
+
+- Introduce a scheduler job to delete old files that may accumulate over time
+
+  Creates the `optional-component-clean_old_files` job that deletes old THREDDS log files and WPS output files.
+  Allows individual cleanup jobs to be enabled for each of `raven`, `finch`, `hummingbird`, and `thredds` components.
+  Allows the user to configure how old a file must be before it is deleted (age in days) and how to calculate the age
+  of the file (time since last modified, time since last accessed, time since created).
+  
+  (see `env.local.example` or the `scheduler` documentation for details).
+
+## Fixes
+
+- Remove deprecated version field from generated docker-compose files
+
+  The `env-local` optional component generates a docker compose file that contained a version field which are
+  deprecated. This fixes the issue by removing the code that generates the deprecated field.
+
+  Also updates a declaration of an external volume in `prometheus-longterm-metrics` to use the compose v2 syntax.
+
+
+[2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Wrong compose `up` extra arguments given to compose `restart`
+
+  * For example, when setting `BIRDHOUSE_COMPOSE_UP_EXTRA_OPTS="--remove-orphans"` in
+    `env.local`, that `--remove-orphans` flag is not supposed to be used with
+    compose `restart`.  Fix regression from
+    [PR #492](https://github.com/bird-house/birdhouse-deploy/pull/492).
+
+
+## Changes
+
 - Improve handling of `.template` files generation
 
   * Change the templating mechanism to run by default for the docker compose `restart` command instead of only `up`.
@@ -69,43 +131,6 @@
     - if you deploy any external components that use any of the old docker compose syntax you may want to update
       those docker compose files as well so that you aren't bombarded by deprecation warnings whenever you start
       the birdhouse stack.  
-
-- Make scheduler jobs configurable
-
-  The scheduler component automatically enables three jobs (autodeploy, logrotate, notebookdeploy). If someone wants
-  to use the scheduler component but does not want these jobs, there is no obvious way to disable any one of these
-  jobs.
-
-  This change makes it possible to enable/disable jobs as required by the user and adds documentation to explain how 
-  to do this.
-
-  This change also converts existing jobs to be optional components. This makes the jobs more in-line with the way the
-  stack is deployed (since version 1.24.0) and ensures that settings set as environment variables in the local environment
-  file are not so sensitive to the order that they were declared in.
-
-  **Breaking Change**:
-  - the three jobs that were automatically enabled previously are now no longer enabled by default.
-  - to re-enable these three jobs, source the relevant component in the `optional-components` subdirectory.
-
-  **Deprecations**
-  - setting additional scheduler jobs using the `BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS` variable. Users should 
-    create additional jobs by adding them as custom components instead.
-
-  What about... ?
-    - just schedule these jobs for a non-existant day like February 31st?
-      - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
-    - just set the schedule to the `'#'` string?
-      - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
-                However, this is not obvious to the user and is unreliable since it is not documented.
-
-- Introduce a scheduler job to delete old files that may accumulate over time
-
-  Creates the `optional-component-clean_old_files` job that deletes old THREDDS log files and WPS output files.
-  Allows individual cleanup jobs to be enabled for each of `raven`, `finch`, `hummingbird`, and `thredds` components.
-  Allows the user to configure how old a file must be before it is deleted (age in days) and how to calculate the age
-  of the file (time since last modified, time since last accessed, time since created).
-  
-  (see `env.local.example` or the `scheduler` documentation for details).
 
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------
