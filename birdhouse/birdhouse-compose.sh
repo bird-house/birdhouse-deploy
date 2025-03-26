@@ -23,6 +23,7 @@ VARS='
   $BIRDHOUSE_LOCAL_ENV
   $BIRDHOUSE_LOG_DIR
   $COMPOSE_DIR
+  $COMPOSE_PROJECT_NAME
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local
@@ -128,9 +129,9 @@ if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ]; then
   done
 fi
 
-log INFO "Executing docker-compose with extra options: $* ${COMPOSE_EXTRA_OPTS}"
+log INFO "Executing docker-compose with extra options: $@ ${COMPOSE_EXTRA_OPTS}"
 # the PROXY_HTTP_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} $* ${COMPOSE_EXTRA_OPTS}
+PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} "$@" ${COMPOSE_EXTRA_OPTS}
 ERR=$?
 if [ ${ERR} -gt 0 ]; then
   log ERROR "docker-compose error, exit code ${ERR}"
@@ -142,7 +143,7 @@ type post-compose 2>&1 | grep 'post-compose is a function' > /dev/null
 if [ $? -eq 0 ]
 then
   [ ${ERR} -gt 0 ] && { log ERROR "Error occurred with docker-compose, not running post-compose"; exit $?; }
-  post-compose $*
+  post-compose "$@"
 fi
 
 

@@ -1,0 +1,4 @@
+services:
+  scheduler:
+    volumes: 
+      - ./optional-components/scheduler-job-backup/config/cowbird/config.yml:/scheduler-job-configs/backup-cowbird.yml:ro

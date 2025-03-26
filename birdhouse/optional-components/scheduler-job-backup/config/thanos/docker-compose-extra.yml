@@ -1,0 +1,4 @@
+services:
+  scheduler:
+    volumes: 
+      - ./optional-components/scheduler-job-backup/config/thanos/config.yml:/scheduler-job-configs/backup-thanos.yml:ro

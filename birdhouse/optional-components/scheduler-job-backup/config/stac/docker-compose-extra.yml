@@ -1,0 +1,4 @@
+services:
+  scheduler:
+    volumes: 
+      - ./optional-components/scheduler-job-backup/config/stac/config.yml:/scheduler-job-configs/backup-stac.yml:ro

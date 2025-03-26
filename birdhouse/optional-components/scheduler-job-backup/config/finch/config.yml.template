@@ -1,0 +1,7 @@
+- name: backup_finch
+  comment: Backup stateful data for finch service
+  schedule: '${SCHEDULER_JOB_BACKUP_FREQUENCY}'
+  command: "${SCHEDULER_JOB_BIRDHOUSE_EXE_LOC} compose run --rm -v ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup postgres sh -c 'mkdir -p /scheduler-backup/finch; PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -h postgres -U ${POSTGRES_USER} -d finch > /scheduler-backup/finch/postgres.dump'"
+  dockerargs: >-
+    --name backup_finch ${SCHEDULER_JOB_BACKUP_COMMON_ARGS}
+  image: '${SCHEDULER_JOB_BACKUP_IMAGE}'

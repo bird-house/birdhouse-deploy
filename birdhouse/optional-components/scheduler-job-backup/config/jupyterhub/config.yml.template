@@ -1,0 +1,9 @@
+- name: backup_jupyterhub
+  comment: Backup stateful data for jupyterhub service
+  schedule: '${SCHEDULER_JOB_BACKUP_FREQUENCY}'
+  command: "sh -c 'rm -r /scheduler-backup/jupyterhub; cp -r /persist /scheduler-backup/jupyterhub'"
+  dockerargs: >-
+    --name backup_jupyterhub 
+    --volume jupyterhub_data_persistence:/persist 
+    --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup
+  image: '${SCHEDULER_JOB_BACKUP_COPY_FILE_IMAGE}'
