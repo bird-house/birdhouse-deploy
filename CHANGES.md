@@ -23,6 +23,12 @@
   Also updates a declaration of an external volume in `prometheus-longterm-metrics` to use the compose v2 syntax.
 
 
+- Make sure that authentication routes use the correct scheme
+
+  Two components that were added after the `BIRDHOUSE_PROXY_SCHEME` environment variable was introduced did not
+  use it when checking whether a user was authenticated to view a resource using ``twitcher``'s verify route.
+  This is now fixed so that the proper scheme is used.
+
 [2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
 ------------------------------------------------------------------------------------------------------------------
 
