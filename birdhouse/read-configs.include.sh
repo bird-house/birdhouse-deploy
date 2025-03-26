@@ -302,7 +302,7 @@ process_backwards_compatible_variables() {
       new_var="${back_compat_vars#*=}"
       old_var_set="`eval "echo \\${${old_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
       if [ "${old_var_set}" = "set" ]; then
-        old_value="`eval "echo \\$${old_var}"`"
+        old_value="`eval "echo \\"\\$${old_var}\\""`"
         if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
           log WARN "Deprecated variable [${old_var}] is overriding [${new_var}]. Check env.local file."
           eval 'export ${new_var}="${old_value}"'
