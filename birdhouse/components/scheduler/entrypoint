@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cat /scheduler-job-configs/*.yml > /opt/crontab/config.yml
+
+eval /docker-entrypoint "$@"
