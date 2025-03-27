@@ -67,7 +67,7 @@ else
     shift
 fi
 
-BIRDHOUSE_LOCAL_ENV="${1:-${BIRDHOUSE_LOCAL_ENV:-"${COMPOSE_DIR}/env.local"}}"
+BIRDHOUSE_LOCAL_ENV="${2:-${BIRDHOUSE_LOCAL_ENV:-"${COMPOSE_DIR}/env.local"}}"
 
 # Setup COMPOSE_DIR and PWD for sourcing env.local.
 # Prevent un-expected difference when this script is run inside autodeploy

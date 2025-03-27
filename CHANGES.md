@@ -22,6 +22,10 @@
 
   Also updates a declaration of an external volume in `prometheus-longterm-metrics` to use the compose v2 syntax.
 
+- Fix setting `BIRDHOUSE_LOCAL_ENV` in `deploy.sh` to the wrong argument
+
+  The `deploy.sh` script was setting the `BIRDHOUSE_LOCAL_ENV` variable to the first argument to the script instead
+  of the second one. This is now fixed.
 
 [2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
 ------------------------------------------------------------------------------------------------------------------
