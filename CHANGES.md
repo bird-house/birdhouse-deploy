@@ -15,6 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+- Fix bug where generated docker compose file is appended to not written
+
+  Fixes a bug introduced when the version string was removed from the generated docker compose file. The previous
+  line used `>` which truncated the file before writing. Now that the previous line is removed, the truncation 
+  logic needed to be applied elsewhere. 
+
+[2.11.1](https://github.com/bird-house/birdhouse-deploy/tree/2.11.1) (2025-03-27)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Remove deprecated version field from generated docker-compose files
@@ -24,11 +33,25 @@
 
   Also updates a declaration of an external volume in `prometheus-longterm-metrics` to use the compose v2 syntax.
 
-- Fix bug where generated docker compose file is appended to not written
+- Fix bug where compose directory can't be found in `bin/birdhouse` script
 
-  Fixes a bug introduced when the version string was removed from the generated docker compose file. The previous
-  line used `>` which truncated the file before writing. Now that the previous line is removed, the truncation 
-  logic needed to be applied elsewhere. 
+    The `COMPOSE_DIR` variable cannnot be discovered properly if:
+    
+    - the `bin/birdhouse` script is called with the `configs --print-config-command` options.
+    - the result of that call is `eval`ed in order to load the birdhouse configuration settings into 
+      the calling process's environment.
+    - this is done from a directory outside of the birdhouse-deploy source code directory.
+
+    For example:
+
+    ```sh
+    cd /
+    eval $(birdhouse configs --print-config-command)
+    ```
+
+    This is fixed by explicitly giving a value for the `COMPOSE_DIR` variable when using the `--print-config-command`
+    option. The value is already correctly set in the `bin/birdhouse` script so it is easy to pass that 
+    value on to the user. 
 
 [2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
 ------------------------------------------------------------------------------------------------------------------
