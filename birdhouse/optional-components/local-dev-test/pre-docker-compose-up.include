@@ -15,7 +15,6 @@ fi
 
 # Note: filename is not docker-compose-extra.yml so that it won't get added prematurely to COMPOSE_CONF_LIST
 THIS_COMPOSE_FILE="${COMPOSE_DIR}/optional-components/local-dev-test/docker-compose-extra-ignore.yml"
-echo 'version: "3.4"' > "${THIS_COMPOSE_FILE}"
 echo "services:" >> "${THIS_COMPOSE_FILE}"
 
 for service in $(PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} config --services 2> /dev/null); do

@@ -139,9 +139,11 @@ if [ x"$1" = x"info" ]; then
 fi
 
 COMPOSE_EXTRA_OPTS=""
+if [ x"$1" = x"up" ]; then
+  COMPOSE_EXTRA_OPTS="${BIRDHOUSE_COMPOSE_UP_EXTRA_OPTS}"
+fi
 
 if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ]; then
-  COMPOSE_EXTRA_OPTS="${BIRDHOUSE_COMPOSE_UP_EXTRA_OPTS}"
   for adir in $ALL_CONF_DIRS; do
     COMPONENT_PRE_COMPOSE_UP="$adir/pre-docker-compose-up"
     if [ -x "$COMPONENT_PRE_COMPOSE_UP" ]; then
