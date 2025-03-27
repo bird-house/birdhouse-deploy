@@ -15,6 +15,48 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Fixes
+
+- Remove deprecated version field from generated docker-compose files
+
+  The `env-local` optional component generates a docker compose file that contained a version field which are
+  deprecated. This fixes the issue by removing the code that generates the deprecated field.
+
+  Also updates a declaration of an external volume in `prometheus-longterm-metrics` to use the compose v2 syntax.
+
+- Fix bug where compose directory can't be found in `bin/birdhouse` script
+
+    The `COMPOSE_DIR` variable cannnot be discovered properly if:
+    
+    - the `bin/birdhouse` script is called with the `configs --print-config-command` options.
+    - the result of that call is `eval`ed in order to load the birdhouse configuration settings into 
+      the calling process's environment.
+    - this is done from a directory outside of the birdhouse-deploy source code directory.
+
+    For example:
+
+    ```sh
+    cd /
+    eval $(birdhouse configs --print-config-command)
+    ```
+
+    This is fixed by explicitly giving a value for the `COMPOSE_DIR` variable when using the `--print-config-command`
+    option. The value is already correctly set in the `bin/birdhouse` script so it is easy to pass that 
+    value on to the user. 
+
+[2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Wrong compose `up` extra arguments given to compose `restart`
+
+  * For example, when setting `BIRDHOUSE_COMPOSE_UP_EXTRA_OPTS="--remove-orphans"` in
+    `env.local`, that `--remove-orphans` flag is not supposed to be used with
+    compose `restart`.  Fix regression from
+    [PR #492](https://github.com/bird-house/birdhouse-deploy/pull/492).
+
+
 ## Changes
 
 - Improve handling of `.template` files generation
@@ -69,28 +111,6 @@
     - if you deploy any external components that use any of the old docker compose syntax you may want to update
       those docker compose files as well so that you aren't bombarded by deprecation warnings whenever you start
       the birdhouse stack.  
-
-## Fixes
-
-  - Fix bug where compose directory can't be found in `bin/birdhouse` script
-
-    The `COMPOSE_DIR` variable cannnot be discovered properly if:
-    
-    - the `bin/birdhouse` script is called with the `configs --print-config-command` options.
-    - the result of that call is `eval`ed in order to load the birdhouse configuration settings into 
-      the calling process's environment.
-    - this is done from a directory outside of the birdhouse-deploy source code directory.
-
-    For example:
-
-    ```sh
-    cd /
-    eval $(birdhouse configs --print-config-command)
-    ```
-
-    This is fixed by explicitly giving a value for the `COMPOSE_DIR` variable when using the `--print-config-command`
-    option. The value is already correctly set in the `bin/birdhouse` script so it is easy to pass that 
-    value on to the user. 
 
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------
