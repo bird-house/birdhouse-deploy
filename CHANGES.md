@@ -15,6 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.11.1](https://github.com/bird-house/birdhouse-deploy/tree/2.11.1) (2025-03-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
 - Remove deprecated version field from generated docker-compose files
 
   The `env-local` optional component generates a docker compose file that contained a version field which are
@@ -22,6 +29,25 @@
 
   Also updates a declaration of an external volume in `prometheus-longterm-metrics` to use the compose v2 syntax.
 
+- Fix bug where compose directory can't be found in `bin/birdhouse` script
+
+    The `COMPOSE_DIR` variable cannnot be discovered properly if:
+    
+    - the `bin/birdhouse` script is called with the `configs --print-config-command` options.
+    - the result of that call is `eval`ed in order to load the birdhouse configuration settings into 
+      the calling process's environment.
+    - this is done from a directory outside of the birdhouse-deploy source code directory.
+
+    For example:
+
+    ```sh
+    cd /
+    eval $(birdhouse configs --print-config-command)
+    ```
+
+    This is fixed by explicitly giving a value for the `COMPOSE_DIR` variable when using the `--print-config-command`
+    option. The value is already correctly set in the `bin/birdhouse` script so it is easy to pass that 
+    value on to the user. 
 
 [2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
 ------------------------------------------------------------------------------------------------------------------
