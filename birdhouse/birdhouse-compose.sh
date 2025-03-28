@@ -14,10 +14,13 @@
 #   some of these variables *could* employ provided values in 'default.env',
 #   but they must ultimately be defined one way or another for the server to work
 
-SHELL_EXEC_FLAGS=-e
-if [ x"${BIRDHOUSE_DEBUG_MODE}" = x"true" ]; then
-  SHELL_EXEC_FLAGS=-ex
-fi
+
+BIRDHOUSE_COMPOSE_DEBUG_MODE="${BIRDHOUSE_COMPOSE_DEBUG_MODE:-false}"
+BIRDHOUSE_COMPOSE_FAIL_FAST="${BIRDHOUSE_COMPOSE_FAIL_FAST:-true}"
+
+SHELL_EXEC_FLAGS=""
+[ "$BIRDHOUSE_COMPOSE_DEBUG_MODE" = "$true" ] && SHELL_EXEC_FLAGS="$SHELL_EXEC_FLAGS -x"
+[ "$BIRDHOUSE_COMPOSE_FAIL_FAST" = "$true" ] && SHELL_EXEC_FLAGS="$SHELL_EXEC_FLAGS -e"
 
 set ${SHELL_EXEC_FLAGS}
 
