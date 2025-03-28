@@ -3,6 +3,17 @@
 Migration Guide
 ===============
 
+Version 2.12
+--------------
+
+Version 2.12 deprecates the `portainer` component
+
+If you are currently using the `portainer` component in your stack change the entry in the
+`BIRDHOUSE_EXTRA_CONF_DIRS` variable from `./components/portainer` to `./deprecated-components/portainer`.
+
+Consider using a different solution than `portainer` going forward since this component may be removed 
+completely in future versions.
+
 Version 2.9
 -----------
 
