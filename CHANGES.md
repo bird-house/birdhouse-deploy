@@ -49,6 +49,9 @@
     option. The value is already correctly set in the `bin/birdhouse` script so it is easy to pass that 
     value on to the user. 
 
+- Fix various bugs with backward-compatibility mode
+
+
 [2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -116,6 +119,7 @@
     - if you deploy any external components that use any of the old docker compose syntax you may want to update
       those docker compose files as well so that you aren't bombarded by deprecation warnings whenever you start
       the birdhouse stack.  
+
 
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------

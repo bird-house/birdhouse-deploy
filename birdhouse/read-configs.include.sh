@@ -302,7 +302,7 @@ process_backwards_compatible_variables() {
       new_var="${back_compat_vars#*=}"
       old_var_set="`eval "echo \\${${old_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
       if [ "${old_var_set}" = "set" ]; then
-        old_value="`eval "echo \\$${old_var}"`"
+        old_value="`eval "echo \\"\\$${old_var}\\""`"
         if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
           log WARN "Deprecated variable [${old_var}] is overriding [${new_var}]. Check env.local file."
           eval 'export ${new_var}="${old_value}"'
@@ -442,11 +442,15 @@ read_configs() {
     discover_compose_dir
     discover_env_local
     read_default_env
+
+    ### This section is different than read_basic_configs_only() below.
     read_env_local  # for BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, need discover_env_local
     process_backwards_compatible_variables pre-components
     read_components_default_env  # uses BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
-    set_old_backwards_compatible_variables
+    ### END This section is different than read_basic_configs_only() below.
+
     read_env_local  # again to override components default.env, need discover_env_local
+    set_old_backwards_compatible_variables
     process_backwards_compatible_variables
     check_default_vars
     process_delayed_eval
@@ -461,8 +465,8 @@ read_basic_configs_only() {
     discover_compose_dir
     discover_env_local
     read_default_env
-    set_old_backwards_compatible_variables
     read_env_local  # need discover_env_local
+    set_old_backwards_compatible_variables
     process_backwards_compatible_variables
     check_default_vars
     process_delayed_eval
