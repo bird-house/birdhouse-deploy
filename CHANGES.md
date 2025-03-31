@@ -54,6 +54,23 @@
   
   (see `env.local.example` or the `scheduler` documentation for details).
 
+[2.11.2](https://github.com/bird-house/birdhouse-deploy/tree/2.11.2) (2025-03-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Make sure that authentication routes use the correct scheme
+
+  Two components that were added after the `BIRDHOUSE_PROXY_SCHEME` environment variable was introduced did not
+  use it when checking whether a user was authenticated to view a resource using ``twitcher``'s verify route.
+  This is now fixed so that the proper scheme is used.
+
+- Fix bug where generated docker compose file is appended to not written
+
+  Fixes a bug introduced when the version string was removed from the generated docker compose file. The previous
+  line used `>` which truncated the file before writing. Now that the previous line is removed, the truncation 
+  logic needed to be applied elsewhere. 
+
 [2.11.1](https://github.com/bird-house/birdhouse-deploy/tree/2.11.1) (2025-03-27)
 ------------------------------------------------------------------------------------------------------------------
 
