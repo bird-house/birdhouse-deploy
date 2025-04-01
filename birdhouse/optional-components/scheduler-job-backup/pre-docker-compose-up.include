@@ -1,0 +1,5 @@
+if [ ! -f "${SCHEDULER_JOB_BACKUP_RESTIC_ENV_FILE}" ]; then
+  log WARN "Cannot find restic environment file at '$SCHEDULER_JOB_BACKUP_RESTIC_ENV_FILE'. Backups will fail! Please set the SCHEDULER_JOB_BACKUP_RESTIC_ENV_FILE variable to an absolute path to the restic environment file."
+fi
+
+grep '^[[:space:]]*RESTIC_PASSWORD_COMMAND=' "${SCHEDULER_JOB_BACKUP_RESTIC_ENV_FILE}" && log WARN "Restic environment file at '$SCHEDULER_JOB_BACKUP_RESTIC_ENV_FILE' contains the RESTIC_PASSWORD_COMMAND variable. This will be ignored in this implementation of restic. Please use RESTIC_PASSWORD or RESTIC_PASSWORD_FILE instead"

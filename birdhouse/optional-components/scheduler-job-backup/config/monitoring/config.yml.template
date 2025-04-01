@@ -1,6 +1,6 @@
 - name: backup_monitoring_prometheus
   comment: Backup stateful data for monitoring prometheus service
-  schedule: '${SCHEDULER_JOB_BACKUP_FREQUENCY}'
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "-c 'snapshot=\"/prometheus/snapshots/$(curl -X POST http://prometheus:9090/prometheus/api/v1/admin/tsdb/snapshot | grep -o \"[[:digit:]]\\{8\\}T[[:digit:]]\\{1,\\}Z-[[:alnum:]]\\{1,\\}\")\"  ; rm -r /scheduler-backup/prometheus; cp -r \"${snapshot}\" /scheduler-backup/prometheus; rm -r \"${snapshot}\"'"
   dockerargs: >-
     --name backup_monitoring_prometheus 
@@ -13,7 +13,7 @@
 
 - name: backup_monitoring_grafana
   comment: Backup stateful data for monitoring grafana service
-  schedule: '${SCHEDULER_JOB_BACKUP_FREQUENCY}'
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "sh -c 'rm -r /scheduler-backup/grafana; cp -r /persist /scheduler-backup/grafana'"
   dockerargs: >-
     --name backup_monitoring_grafana 
@@ -23,7 +23,7 @@
 
 - name: backup_monitoring_alertmanager
   comment: Backup stateful data for monitoring alertmanager service
-  schedule: '${SCHEDULER_JOB_BACKUP_FREQUENCY}'
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "sh -c 'rm -r /scheduler-backup/alertmanager; cp -r /persist /scheduler-backup/alertmanager'"
   dockerargs: >-
     --name backup_monitoring_alertmanager 

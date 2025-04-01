@@ -1,9 +1,20 @@
 - name: backup_local_environment_file
   comment: Backup local environment file
-  schedule: '${SCHEDULER_JOB_BACKUP_FREQUENCY}'
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "sh -c 'mkdir -p /scheduler-backup/birdhouse; cp ${BIRDHOUSE_LOCAL_ENV} /scheduler-backup/birdhouse/env.local'"
   dockerargs: >-
     --name backup_local_environment_file
+    --rm
     --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup
     --volume ${BIRDHOUSE_LOCAL_ENV}:${BIRDHOUSE_LOCAL_ENV}
   image: '${SCHEDULER_JOB_BACKUP_COPY_FILE_IMAGE}'
+
+- name: backup_store_with_restic
+  comment: Store backup data with restic service
+  schedule: '{SCHEDULER_JOB_BACKUP_STORE_FREQUENCY}'
+  command: 'sh /backup.sh'
+  dockerargs: >-
+    --name backup_store_with_restic 
+    --rm
+    --volume ${SCHEDULER_JOB_BACKUP_RESTIC_ENV_FILE}:/restic-env
+  image: '${SCHEDULER_JOB_BACKUP_DOCKER_IMAGE}'

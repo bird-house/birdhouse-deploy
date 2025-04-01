@@ -1,6 +1,6 @@
 - name: backup_prometheus-longterm-metrics
   comment: Backup stateful data for prometheus-longterm-metrics service
-  schedule: '${SCHEDULER_JOB_BACKUP_FREQUENCY}'
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "-c 'snapshot=\"/prometheus/snapshots/$(curl -X POST http://prometheus-longterm-metrics:9090/prometheus-longterm-metrics/api/v1/admin/tsdb/snapshot | grep -o \"[[:digit:]]\\{8\\}T[[:digit:]]\\{1,\\}Z-[[:alnum:]]\\{1,\\}\")\"  ; rm -r /scheduler-backup/prometheus-longterm-metrics; cp -r \"${snapshot}\" /scheduler-backup/prometheus-longterm-metrics; rm -r \"${snapshot}\"'"
   dockerargs: >-
     --name backup_prometheus-longterm-metrics_prometheus 

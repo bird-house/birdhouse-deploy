@@ -1,7 +1,7 @@
 - name: backup_stac
   comment: Backup stateful data for stac service
-  schedule: '${SCHEDULER_JOB_BACKUP_FREQUENCY}'
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "${SCHEDULER_JOB_BIRDHOUSE_EXE_LOC} compose run --rm -v ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup stac-db sh -c 'mkdir -p /scheduler-backup/stac; pg_dump -h stac-db > /scheduler-backup/stac/postgres.dump'"
   dockerargs: >-
     --name backup_stac ${SCHEDULER_JOB_BACKUP_COMMON_ARGS}
-  image: '${SCHEDULER_JOB_BACKUP_IMAGE}'
+  image: '${SCHEDULER_JOB_BACKUP_DOCKER_IMAGE}'

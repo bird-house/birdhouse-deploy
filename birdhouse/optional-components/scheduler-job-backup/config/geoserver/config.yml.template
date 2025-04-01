@@ -1,8 +1,8 @@
 - name: backup_geoserver
   comment: Backup stateful data for geoserver service
-  schedule: '${SCHEDULER_JOB_BACKUP_FREQUENCY}'
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "sh -c 'mkdir -p /scheduler-backup/geoserver; ${SCHEDULER_JOB_BIRDHOUSE_EXE_LOC} compose exec --user=postgres postgis pg_dumpall > /scheduler-backup/geoserver/postgis.dump'"
   dockerargs: >-
     --name backup_geoserver
     --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup ${SCHEDULER_JOB_BACKUP_COMMON_ARGS}
-  image: '${SCHEDULER_JOB_BACKUP_IMAGE}'
+  image: '${SCHEDULER_JOB_BACKUP_DOCKER_IMAGE}'
