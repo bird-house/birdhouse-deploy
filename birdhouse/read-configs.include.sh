@@ -357,7 +357,7 @@ process_delayed_eval() {
           # only eval each variable once (in case it was added to the list multiple times)
           continue
         fi
-        v="`eval "echo \\$${i}"`"
+        v="`eval "echo \\"\\$${i}\\""`"
         value=`eval "echo \"${v}\""`
         eval 'export ${i}="${value}"'
         log DEBUG "delayed eval '$(env | grep -e "^${i}=")'"
