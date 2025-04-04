@@ -9,12 +9,14 @@
     --volume ${BIRDHOUSE_LOCAL_ENV}:${BIRDHOUSE_LOCAL_ENV}
   image: '${SCHEDULER_JOB_BACKUP_COPY_FILE_IMAGE}'
 
-- name: backup_store_with_restic
+- name: store_backups_to_restic_repository
   comment: Store backup data with restic service
-  schedule: '{SCHEDULER_JOB_BACKUP_STORE_FREQUENCY}'
+  schedule: '${SCHEDULER_JOB_BACKUP_STORE_FREQUENCY}'
   command: 'sh /backup.sh'
   dockerargs: >-
-    --name backup_store_with_restic 
+    --name store_backups_to_restic_repository 
     --rm
-    --volume ${SCHEDULER_JOB_BACKUP_RESTIC_ENV_FILE}:/restic-env
+    --volume "${SCHEDULER_JOB_BACKUP_RESTIC_ENV_FILE}:/restic.env"
+    --volume "${COMPOSE_DIR}/optional-components/scheduler-job-backup/backup.sh:/backup.sh:ro"
+    ${SCHEDULER_JOB_BACKUP_COMMON_ARGS}
   image: '${SCHEDULER_JOB_BACKUP_DOCKER_IMAGE}'

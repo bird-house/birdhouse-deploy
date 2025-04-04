@@ -1,7 +1,7 @@
-- name: backup_postgres
+- name: ${SCHEDULER_JOB_BACKUP_PREFIX}postgres
   comment: Backup stateful data for postgres service
   schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "${SCHEDULER_JOB_BIRDHOUSE_EXE_LOC} compose run --rm -v ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup postgres sh -c 'mkdir -p /scheduler-backup/postgres; PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -h postgres -U ${POSTGRES_USER} -d ${POSTGRES_DB} > /scheduler-backup/postgres/postgres.dump'"
   dockerargs: >-
-    --name backup_postgres ${SCHEDULER_JOB_BACKUP_COMMON_ARGS}
+    --name ${SCHEDULER_JOB_BACKUP_PREFIX}postgres ${SCHEDULER_JOB_BACKUP_COMMON_ARGS}
   image: '${SCHEDULER_JOB_BACKUP_DOCKER_IMAGE}'

@@ -1,7 +1,7 @@
-- name: backup_thanos
+- name: ${SCHEDULER_JOB_BACKUP_PREFIX}thanos
   comment: Backup stateful data for magpie service
   schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "${SCHEDULER_JOB_BIRDHOUSE_EXE_LOC} compose run --rm -v ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup thanos-minio sh -c 'rm -r /scheduler-backup/thanos; cp -r /data /scheduler-backup/thanos'"
   dockerargs: >-
-    --name backup_thanos ${SCHEDULER_JOB_BACKUP_COMMON_ARGS}
+    --name ${SCHEDULER_JOB_BACKUP_PREFIX}thanos ${SCHEDULER_JOB_BACKUP_COMMON_ARGS}
   image: '${SCHEDULER_JOB_BACKUP_DOCKER_IMAGE}'

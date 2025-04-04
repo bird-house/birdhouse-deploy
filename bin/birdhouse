@@ -65,6 +65,18 @@ Example Usage:
   example.com  # This is the value of BIRDHOUSE_FQDN as determined by the current configuration settings
 "
 
+BACKUP_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] backup [-h|--help] [-d|--dry-run]"
+
+BACKUP_HELP="$BACKUP_USAGE
+
+Backup stateful data from a running birdhouse environment.
+
+Options:
+  -h, --help                   Print this message and exit
+  -d, --dry-run                Print information about which data will be backed up. Do not actually perform backup.
+  -s, --start-stack            Start the stack before backing up data. Otherwise the stack must be started prior to running this command.
+"
+
 READ_CONFIGS_CMD=read_configs
 
 # Print a command that can be used to load configuration settings as environment variables.
@@ -188,6 +200,81 @@ parse_configs_args() {
   esac
 }
 
+backup() {
+  eval "$(print_config_command no-suffix)"
+  BIRDHOUSE_STACK_RUNNING=$(docker ps --filter label=com.docker.compose.project --format '{{.Label "com.docker.compose.project"}}' | grep -q "${COMPOSE_PROJECT_NAME:-birdhouse}" && echo "true")
+  if [ "$BIRDHOUSE_BACKUP_START_STACK" = "true" ]; then
+    if [ "$BIRDHOUSE_STACK_RUNNING" = "true" ]; then
+      log ERROR 'The birdhouse stack is already running. Stop the stack first or run this command without the --start-stack option to backup the currently running stack.'
+      exit 1
+    fi
+    log INFO 'Starting the birdhouse stack before backing up.'
+    BIRDHOUSE_STOP_STACK=true
+    "${BIRDHOUSE_COMPOSE}" up -d
+  elif [ "$BIRDHOUSE_STACK_RUNNING" != "true" ]; then
+    log ERROR 'The birdhouse stack is not running. Start the stack first or run this command with the --start-stack option.'
+    exit 1
+  fi
+  if docker ps --filter label=com.docker.compose.project=birdhouse --filter name='scheduler' --format '{{.Names}}' | grep -q '^scheduler$'; then
+    ENABLED_BACKUP_JOBS="$(docker exec scheduler jq -r ".[] | select(.name | startswith(\"${SCHEDULER_JOB_BACKUP_PREFIX}\")) | \"\(.name): \(.comment)\"" /opt/crontab/config.json)"
+    if [ -z "$ENABLED_BACKUP_JOBS" ]; then
+      log ERROR 'No backup jobs are enabled. Please ensure that the optional-components/scheduler-job-backup component is added to the BIRDHOUSE_EXTRA_CONF_DIRS in your local environment file.'
+      exit 1
+    fi
+    if [ "$BIRDHOUSE_BACKUP_DRY_RUN" = "true" ]; then
+      echo "Dry-run: this would run backup jobs with the following name and description:"
+      echo "$ENABLED_BACKUP_JOBS"
+      docker exec scheduler jq -r '.[] | select(.name == "store_backups_to_restic_repository") | "\(.name): \(.comment)"' /opt/crontab/config.json
+      echo
+      echo "Restic configuration options can be found in the restic environment file at '$SCHEDULER_JOB_BACKUP_RESTIC_ENV_FILE'"
+    else
+      "${BIRDHOUSE_COMPOSE}" restart scheduler
+      log INFO 'Running backup jobs to extract stateful data from the stack.'
+      docker exec scheduler sh -c "for job in /opt/crontab/jobs/$(echo ${SCHEDULER_JOB_BACKUP_PREFIX} | sed 's/_/-/g')*.sh; do bash \$job; done"
+      log INFO 'Running backup job to backup data'
+      docker exec scheduler sh -c 'bash /opt/crontab/jobs/store-backups-to-restic-repository.sh'
+    fi
+  else
+    log ERROR 'The scheduler component must be enabled in order to run backups. Please enable this component by adding components/scheduler and optional-components/scheduler-job-backup to the BIRDHOUSE_EXTRA_CONF_DIRS variable in your local environment file.'
+  fi
+  if [ "$BIRDHOUSE_STOP_STACK" = "true" ]; then
+    log INFO 'Stopping the birdhouse stack.'
+    "${BIRDHOUSE_COMPOSE}" down
+  fi 
+}
+
+# Parse backup args
+parse_backup_args() {
+  case "$1" in
+    -d|--dry-run)
+      shift
+      BIRDHOUSE_BACKUP_DRY_RUN=true
+      parse_backup_args "$@"
+      ;;
+    -h|--help)
+      echo "${BACKUP_HELP}" | more
+      exit
+      ;;
+    -s|--start-stack)
+      shift
+      BIRDHOUSE_BACKUP_START_STACK=true
+      parse_backup_args "$@"
+      ;;
+    -??*)
+      parse_multiple_short_flags parse_backup_args "$@"
+      ;;
+    '')
+      backup
+      exit
+      ;;
+    *)
+      echo "$@"
+      >&2 echo "$BACKUP_USAGE"
+      exit 1
+      ;;
+    esac
+}
+
 # Echos "True" if the first argument is a valid log level
 check_log_dest_override() {
   case "$1" in 
@@ -288,6 +375,10 @@ parse_args() {
     configs)
       shift
       parse_configs_args "$@"
+      ;;
+    backup)
+      shift
+      parse_backup_args "$@"
       ;;
     -h|--help)
       echo "$HELP" | more
