@@ -1,4 +1,4 @@
 services:
   scheduler:
     volumes: 
-      - ./optional-components/scheduler-job-backup/config/prometheus-longterm-metrics/config.yml:/scheduler-job-configs/backup-prometheus-longterm-metrics.yml:ro
+      - ./optional-components/scheduler-job-backup/config/prometheus-longterm-metrics/${_SCHEDULER_JOB_BACKUP_STATEFUL_DATA_FILE}:/scheduler-job-configs/backup-prometheus-longterm-metrics.yml:ro

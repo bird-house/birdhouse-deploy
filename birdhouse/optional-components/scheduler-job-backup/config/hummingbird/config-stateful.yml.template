@@ -1,5 +1,5 @@
 - name: ${SCHEDULER_JOB_BACKUP_PREFIX}hummingbird
-  comment: Backup stateful data for hummingbird service
+  comment: Backup database from the hummingbird service
   schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "${SCHEDULER_JOB_BIRDHOUSE_EXE_LOC} compose run --rm -v ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup postgres sh -c 'mkdir -p /scheduler-backup/hummingbird; PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -h postgres -U ${POSTGRES_USER} -d hummingbird > /scheduler-backup/hummingbird/postgres.dump'"
   dockerargs: >-

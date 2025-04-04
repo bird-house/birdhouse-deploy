@@ -1,4 +1,4 @@
 services:
   scheduler:
     volumes: 
-      - ./optional-components/scheduler-job-backup/config/finch/config.yml:/scheduler-job-configs/backup-finch.yml:ro
+      - ./optional-components/scheduler-job-backup/config/finch/${_SCHEDULER_JOB_BACKUP_STATEFUL_DATA_FILE}:/scheduler-job-configs/backup-finch.yml:ro

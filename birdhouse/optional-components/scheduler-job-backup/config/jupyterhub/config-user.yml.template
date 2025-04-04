@@ -1,0 +1,9 @@
+- name: ${SCHEDULER_JOB_BACKUP_PREFIX}jupyterhub-user-data
+  comment: Backup user data from jupyterhub service
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
+  command: "sh -c 'rm -rf /scheduler-backup/jupyterhub-user-data; cp -r /user-data /scheduler-backup/jupyterhub-user-data'"
+  dockerargs: >-
+    --name ${SCHEDULER_JOB_BACKUP_PREFIX}jupyterhub-user-data --rm
+    --volume ${JUPYTERHUB_USER_DATA_DIR}:/user-data
+    --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup
+  image: '${SCHEDULER_JOB_BACKUP_COPY_FILE_IMAGE}'

@@ -1,0 +1,32 @@
+- name: ${SCHEDULER_JOB_BACKUP_PREFIX}monitoring_prometheus
+  comment: Backup monitoring data and session files from the monitoring prometheus service
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
+  command: "-c 'snapshot=\"/prometheus/snapshots/$(curl -X POST http://prometheus:9090/prometheus/api/v1/admin/tsdb/snapshot | grep -o \"[[:digit:]]\\{8\\}T[[:digit:]]\\{1,\\}Z-[[:alnum:]]\\{1,\\}\")\"  ; rm -rf /scheduler-backup/prometheus; cp -r \"${snapshot}\" /scheduler-backup/prometheus; rm -rf \"${snapshot}\"'"
+  dockerargs: >-
+    --name ${SCHEDULER_JOB_BACKUP_PREFIX}monitoring_prometheus --rm
+    --entrypoint=sh
+    --user=root
+    --volume prometheus_persistence:/prometheus 
+    --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup
+    --network "${COMPOSE_PROJECT_NAME}_default"
+  image: '${SCHEDULER_JOB_BACKUP_CURL_IMAGE}'
+
+- name: ${SCHEDULER_JOB_BACKUP_PREFIX}monitoring_grafana
+  comment: Backup monitoring data and session files from the monitoring grafana service
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
+  command: "sh -c 'rm -rf /scheduler-backup/grafana; cp -r /persist /scheduler-backup/grafana'"
+  dockerargs: >-
+    --name ${SCHEDULER_JOB_BACKUP_PREFIX}monitoring_grafana --rm
+    --volume grafana_persistence:/persist 
+    --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup
+  image: '${SCHEDULER_JOB_BACKUP_COPY_FILE_IMAGE}'
+
+- name: ${SCHEDULER_JOB_BACKUP_PREFIX}monitoring_alertmanager
+  comment: Backup nflog and silences data from the monitoring alertmanager service
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
+  command: "sh -c 'rm -rf /scheduler-backup/alertmanager; cp -r /persist /scheduler-backup/alertmanager'"
+  dockerargs: >-
+    --name ${SCHEDULER_JOB_BACKUP_PREFIX}monitoring_alertmanager --rm
+    --volume alertmanager_persistence:/persist 
+    --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup
+  image: '${SCHEDULER_JOB_BACKUP_COPY_FILE_IMAGE}'

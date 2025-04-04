@@ -1,5 +1,5 @@
 - name: ${SCHEDULER_JOB_BACKUP_PREFIX}magpie
-  comment: Backup stateful data for magpie service
+  comment: Backup database from the magpie service
   schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "${SCHEDULER_JOB_BIRDHOUSE_EXE_LOC} compose run --rm -v ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup postgres-magpie sh -c 'mkdir -p /scheduler-backup/magpie; PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -h ${MAGPIE_POSTGRES_HOST} -U ${POSTGRES_USER} -d ${POSTGRES_DB} > /scheduler-backup/magpie/postgres.dump'"
   dockerargs: >-

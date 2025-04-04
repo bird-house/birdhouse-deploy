@@ -1,5 +1,5 @@
 - name: ${SCHEDULER_JOB_BACKUP_PREFIX}weaver
-  comment: Backup stateful data for weaver service
+  comment: Backup database from the weaver service
   schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
   command: "${SCHEDULER_JOB_BIRDHOUSE_EXE_LOC} compose run --rm -v ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup weaver-mongodb sh -c 'mongodump --host=weaver-mongodb --out=/scheduler-backup/weaver/'"
   dockerargs: >-

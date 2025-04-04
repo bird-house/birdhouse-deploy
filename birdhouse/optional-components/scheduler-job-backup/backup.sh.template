@@ -29,15 +29,18 @@ extra_args() {
 _RESTIC_COMMAND="docker run --rm --env-file /restic.env --env 'RESTIC_PASSWORD_COMMAND=' -v ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup $(extra_args) ${SCHEDULER_JOB_BACKUP_RESTIC_IMAGE}"
 
 # initialize the restic repository if it doesn't exist 
-if ! $_RESTIC_COMMAND cat config 2>&1 > /dev/null; then
+if ! $_RESTIC_COMMAND cat config 2>/dev/null > /dev/null; then
     $_RESTIC_COMMAND init
 fi
 
 # backup the scheduler data to the repository
-$_RESTIC_COMMAND --verbose backup /scheduler-backup
+$_RESTIC_COMMAND --verbose backup ${SCHEDULER_JOB_BACKUP_RESTIC_BACKUP_ARGS} /scheduler-backup
 
 # forget old snapshots if a policy is enabled
 if [ -n "${SCHEDULER_JOB_BACKUP_RESTIC_FORGET_POLICY}" ]; then
-    $_RESTIC_COMMAND --verbose forget ${SCHEDULER_JOB_BACKUP_RESTIC_FORGET_POLICY}
+    $_RESTIC_COMMAND --verbose forget ${SCHEDULER_JOB_BACKUP_RESTIC_FORGET_ARGS}
     $_RESTIC_COMMAND --verbose prune
 fi
+
+# delete volume that contains temporary copy of files to backup
+docker volume rm "${SCHEDULER_JOB_BACKUP_VOLUME}"
