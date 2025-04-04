@@ -265,7 +265,7 @@ set_old_backwards_compatible_variables() {
         old_var_set="`eval "echo \\${${old_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
         new_var_set="`eval "echo \\${${new_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
         if [ "${new_var_set}" = "set" ] && [ ! "${old_var_set}" = "set" ]; then
-            new_value="`eval "echo \\$${new_var}"`"
+            new_value="`eval "echo \\"\\$${new_var}\\""`"
             eval 'export ${old_var}="${new_value}"'
             BIRDHOUSE_OLD_VARS_OVERRIDDEN="${BIRDHOUSE_OLD_VARS_OVERRIDDEN} ${old_var} "  # space before and after old_var is for grep (below)
             log DEBUG "Variable [${new_var}] is being used to set the deprecated variable [${old_var}]."
@@ -275,7 +275,7 @@ set_old_backwards_compatible_variables() {
     do
         new_var="${hardcoded_var%%=*}"
         hardcoded_old_value="${hardcoded_var#*=}"
-        new_value="`eval "echo \\$${new_var}"`"
+        new_value="`eval "echo \\"\\$${new_var}\\""`"
         if [ "${new_value}" = "\${__DEFAULT_${new_var}}" ]; then
             log WARN "Variable [${new_var}] is being set to the previously hardcoded default value [${hardcoded_old_value}]."
             eval 'export ${new_var}="${hardcoded_old_value}"'
@@ -307,7 +307,7 @@ process_backwards_compatible_variables() {
           log WARN "Deprecated variable [${old_var}] is overriding [${new_var}]. Check env.local file."
           eval 'export ${new_var}="${old_value}"'
         else
-          new_value="`eval "echo \\$${new_var}"`"
+          new_value="`eval "echo \\"\\$${new_var}\\""`"
           if [ x"${old_value}" = x"${new_value}" ]; then
             log WARN "Deprecated variable [${old_var}] can be removed as it has been superseded by [${new_var}]. Check env.local file."
           else
@@ -324,7 +324,7 @@ process_backwards_compatible_variables() {
       do
         old_var="${default_old_var%%=*}"
         default_old_value="${default_old_var#*=}"
-        old_value="`eval "echo \\$${old_var}"`"
+        old_value="`eval "echo \\"\\$${old_var}\\""`"
         if [ "${old_value}" = "${default_old_value}" ]; then
           log WARN "Variable [${old_var}] employs a deprecated default value recommended for override. Check env.local file."
         fi
