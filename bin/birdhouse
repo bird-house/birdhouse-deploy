@@ -3,6 +3,7 @@
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
 THIS_BASENAME="$(basename "${THIS_FILE}")"
+COMPOSE_DIR_PREV="${COMPOSE_DIR}"
 COMPOSE_DIR="$(dirname "${THIS_DIR}")/birdhouse"
 
 export BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"${COMPOSE_DIR}/birdhouse-compose.sh"}"
@@ -79,8 +80,8 @@ READ_CONFIGS_CMD=read_configs
 #   True
 print_config_command() {
   option="$1"
-  configs_cmd_prefix="export __BIRDHOUSE_SUPPORTED_INTERFACE=True ;"
-  configs_cmd_suffix="unset __BIRDHOUSE_SUPPORTED_INTERFACE ;"
+  configs_cmd_prefix="export __BIRDHOUSE_SUPPORTED_INTERFACE=True ; export COMPOSE_DIR=${COMPOSE_DIR} ;"
+  configs_cmd_suffix="unset __BIRDHOUSE_SUPPORTED_INTERFACE ; COMPOSE_DIR='${COMPOSE_DIR_PREV}' ; "
   if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED+set}" = 'set' ]; then
     configs_cmd_prefix="${configs_cmd_prefix} export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}' ;"
   fi

@@ -15,6 +15,61 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.13.0](https://github.com/bird-house/birdhouse-deploy/tree/2.13.0) (2025-04-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Fix various bugs with backward-compatibility mode
+
+
+- Deprecate `portainer` component
+
+  The portainer component is not currently being used and is not actually usable outside of a very specific
+  host machine configuration. This change deprecates the component by moving it to the `deprecated-components`
+  directory. It can still be enabled from that path if desired.
+
+[2.12.0](https://github.com/bird-house/birdhouse-deploy/tree/2.12.0) (2025-04-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- THREDDS: provide service information page details
+
+  - Add multiple metadata variables
+    (`THREDDS_ORGANIZATION_[...]`, `THREDDS_SUPPORT_[...]`, `THREDDS_ABSTRACT` and `THREDDS_KEYWORDS`)
+    allowing customization of the THREDDS server information page.
+  - Add a cross-reference to the `service-config.json` to the service information `/thredds/info/serverInfo.html` page.
+  - Resolve the Magpie `ServiceTHREDDS` configuration disallowing access
+    to `/twitcher/ows/proxy/thredds/info/serverInfo.html` by default.
+    Every content under the THREDDS `/info/` prefix will be considered a Magpie `BROWSE` permission of "metadata".
+    It is up to the organization to make this endpoint visible, either using `optional-components/all-public-access`
+    or a similar custom Magpie permission definition.
+
+[2.11.2](https://github.com/bird-house/birdhouse-deploy/tree/2.11.2) (2025-03-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Make sure that authentication routes use the correct scheme
+
+  Two components that were added after the `BIRDHOUSE_PROXY_SCHEME` environment variable was introduced did not
+  use it when checking whether a user was authenticated to view a resource using ``twitcher``'s verify route.
+  This is now fixed so that the proper scheme is used.
+
+- Fix bug where generated docker compose file is appended to not written
+
+  Fixes a bug introduced when the version string was removed from the generated docker compose file. The previous
+  line used `>` which truncated the file before writing. Now that the previous line is removed, the truncation 
+  logic needed to be applied elsewhere. 
+
+[2.11.1](https://github.com/bird-house/birdhouse-deploy/tree/2.11.1) (2025-03-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
 - Remove deprecated version field from generated docker-compose files
 
   The `env-local` optional component generates a docker compose file that contained a version field which are
@@ -22,8 +77,25 @@
 
   Also updates a declaration of an external volume in `prometheus-longterm-metrics` to use the compose v2 syntax.
 
+- Fix bug where compose directory can't be found in `bin/birdhouse` script
 
-- Fix various bugs with backward-compatibility mode
+    The `COMPOSE_DIR` variable cannnot be discovered properly if:
+    
+    - the `bin/birdhouse` script is called with the `configs --print-config-command` options.
+    - the result of that call is `eval`ed in order to load the birdhouse configuration settings into 
+      the calling process's environment.
+    - this is done from a directory outside of the birdhouse-deploy source code directory.
+
+    For example:
+
+    ```sh
+    cd /
+    eval $(birdhouse configs --print-config-command)
+    ```
+
+    This is fixed by explicitly giving a value for the `COMPOSE_DIR` variable when using the `--print-config-command`
+    option. The value is already correctly set in the `bin/birdhouse` script so it is easy to pass that 
+    value on to the user. 
 
 
 [2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
