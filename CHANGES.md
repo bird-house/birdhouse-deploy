@@ -45,6 +45,34 @@
       - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
                 However, this is not obvious to the user and is unreliable since it is not documented.
 
+[2.13.0](https://github.com/bird-house/birdhouse-deploy/tree/2.13.0) (2025-04-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Deprecate `portainer` component
+
+  The portainer component is not currently being used and is not actually usable outside of a very specific
+  host machine configuration. This change deprecates the component by moving it to the `deprecated-components`
+  directory. It can still be enabled from that path if desired.
+
+[2.12.0](https://github.com/bird-house/birdhouse-deploy/tree/2.12.0) (2025-04-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- THREDDS: provide service information page details
+
+  - Add multiple metadata variables
+    (`THREDDS_ORGANIZATION_[...]`, `THREDDS_SUPPORT_[...]`, `THREDDS_ABSTRACT` and `THREDDS_KEYWORDS`)
+    allowing customization of the THREDDS server information page.
+  - Add a cross-reference to the `service-config.json` to the service information `/thredds/info/serverInfo.html` page.
+  - Resolve the Magpie `ServiceTHREDDS` configuration disallowing access
+    to `/twitcher/ows/proxy/thredds/info/serverInfo.html` by default.
+    Every content under the THREDDS `/info/` prefix will be considered a Magpie `BROWSE` permission of "metadata".
+    It is up to the organization to make this endpoint visible, either using `optional-components/all-public-access`
+    or a similar custom Magpie permission definition.
+
 [2.11.2](https://github.com/bird-house/birdhouse-deploy/tree/2.11.2) (2025-03-31)
 ------------------------------------------------------------------------------------------------------------------
 
