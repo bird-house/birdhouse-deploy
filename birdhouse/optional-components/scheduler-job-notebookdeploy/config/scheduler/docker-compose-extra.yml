@@ -1,0 +1,4 @@
+services:
+  scheduler:
+    volumes: 
+      - ./optional-components/scheduler-job-notebookdeploy/config.yml:/scheduler-job-configs/notebookdeploy.yml:ro

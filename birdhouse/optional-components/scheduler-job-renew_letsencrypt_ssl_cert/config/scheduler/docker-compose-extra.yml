@@ -1,0 +1,4 @@
+services:
+  scheduler:
+    volumes: 
+      - ./optional-components/scheduler-job-renew_letsencrypt_ssl_cert/config.yml:/scheduler-job-configs/renew_letsencrypt_ssl_cert.yml:ro

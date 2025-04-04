@@ -1,0 +1,11 @@
+__BIRDHOUSE_SCHEDULER_JOBS="$(PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} config 2> /dev/null | grep 'target: /scheduler-job-configs/' | grep -v /scheduler-job-configs/extra-scheduler-jobs.yml)"
+
+if [ -z "${BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS}" ]; then
+    if [ -z "${__BIRDHOUSE_SCHEDULER_JOBS}" ]; then
+            log WARN 'The components/scheduler job has been enabled but no jobs are configured to be run. Please enable some jobs or disable this component.'
+    fi
+else
+    log WARN 'Deprecation warning: additional scheduler jobs are being set using the BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS. Please convert these jobs to components.'
+fi
+
+unset __BIRDHOUSE_SCHEDULER_JOBS
