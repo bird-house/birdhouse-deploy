@@ -16,7 +16,7 @@ for adir in ${ALL_CONF_DIRS}; do
   SERVICE_CONF="$(cat "${adir}/service-config.json" | sed -z 's/^\s*//;s/\s*$//')"
   # remove the leading/trailing [] to get a pseudo-json of nested objects to extend the list
   SERVICE_CONF="$(echo "${SERVICE_CONF}" | sed -z 's/^\s*\[\s*//;s/\s*\]\s*$//')"
-  SERVICES="${SERVICES}$([ -n "${SERVICES}" ] && echo ',') ${SERVICE_CONF}"
+  SERVICES="${SERVICES}$([ -n "${SERVICES}" ] && echo ',' || echo '') ${SERVICE_CONF}"
 done
 
 if [ -z "${SERVICES}" ]; then
