@@ -23,6 +23,40 @@
   host machine configuration. This change deprecates the component by moving it to the `deprecated-components`
   directory. It can still be enabled from that path if desired.
 
+[2.12.0](https://github.com/bird-house/birdhouse-deploy/tree/2.12.0) (2025-04-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- THREDDS: provide service information page details
+
+  - Add multiple metadata variables
+    (`THREDDS_ORGANIZATION_[...]`, `THREDDS_SUPPORT_[...]`, `THREDDS_ABSTRACT` and `THREDDS_KEYWORDS`)
+    allowing customization of the THREDDS server information page.
+  - Add a cross-reference to the `service-config.json` to the service information `/thredds/info/serverInfo.html` page.
+  - Resolve the Magpie `ServiceTHREDDS` configuration disallowing access
+    to `/twitcher/ows/proxy/thredds/info/serverInfo.html` by default.
+    Every content under the THREDDS `/info/` prefix will be considered a Magpie `BROWSE` permission of "metadata".
+    It is up to the organization to make this endpoint visible, either using `optional-components/all-public-access`
+    or a similar custom Magpie permission definition.
+
+[2.11.2](https://github.com/bird-house/birdhouse-deploy/tree/2.11.2) (2025-03-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Make sure that authentication routes use the correct scheme
+
+  Two components that were added after the `BIRDHOUSE_PROXY_SCHEME` environment variable was introduced did not
+  use it when checking whether a user was authenticated to view a resource using ``twitcher``'s verify route.
+  This is now fixed so that the proper scheme is used.
+
+- Fix bug where generated docker compose file is appended to not written
+
+  Fixes a bug introduced when the version string was removed from the generated docker compose file. The previous
+  line used `>` which truncated the file before writing. Now that the previous line is removed, the truncation 
+  logic needed to be applied elsewhere. 
+
 [2.11.1](https://github.com/bird-house/birdhouse-deploy/tree/2.11.1) (2025-03-27)
 ------------------------------------------------------------------------------------------------------------------
 
