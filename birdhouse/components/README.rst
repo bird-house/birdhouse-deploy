@@ -863,26 +863,6 @@ How to Enable the Component
 
 - Do not enable this component directly. It will be enabled as a dependency of other components.
 
-portainer
-=========
-
-A web based container deployment and management tool.
-
-Usage
------
-
-The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/portainer/``. For usage and configuration options please
-refer to the `portainer documentation`_.
-
-How to Enable the Component
----------------------------
-
-- Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/portainer`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
-
-.. _portainer documentation: https://docs.portainer.io/
-
-
 postgres
 ========
 

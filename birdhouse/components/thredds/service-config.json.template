@@ -32,6 +32,11 @@
         "rel": "service-meta",
         "type": "application/vnd.oci.image.index.v1+json",
         "href": "${THREDDS_IMAGE_URI}"
+      },
+      {
+        "rel": "about",
+        "type": "text/html",
+        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds/info/serverInfo.html"
       }
     ]
   }
