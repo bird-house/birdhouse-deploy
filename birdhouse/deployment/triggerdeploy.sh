@@ -204,6 +204,8 @@ if [ -n "${SHOULD_TRIGGER}" ]; then
     git show "${CURRENT_REMOTE_BRANCH}":./deployment/deploy.sh > "${TMP_SCRIPT}"
 
     chmod a+x "${TMP_SCRIPT}"
+
+    log_trace_vars_cmd "triggerdeploy should_trigger"
     $TMP_SCRIPT "${COMPOSE_DIR}" "${BIRDHOUSE_LOCAL_ENV}"
     EXIT_CODE=$?
     rm "${TMP_SCRIPT}"

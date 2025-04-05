@@ -23,6 +23,13 @@
 #  read_configs
 
 
+log_trace_vars_cmd() {
+    [ -n "$BIRDHOUSE_DEBUG_VARS_TRACE_CMD" ] && echo "TRACE_VARS:  $1:  `eval "$BIRDHOUSE_DEBUG_VARS_TRACE_CMD"`"
+}
+
+log_trace_vars_cmd "read-configs.include.sh sourced"
+
+
 # Derive COMPOSE_DIR from the most probable locations.
 # This is NOT meant to be exhaustive.
 # Assume the checkout is named "birdhouse-deploy", which might NOT be true.
@@ -105,6 +112,7 @@ read_default_env() {
     else
         log WARN "'${COMPOSE_DIR}/default.env' not found"
     fi
+    log_trace_vars_cmd "after read_default_env"
 }
 
 
@@ -125,6 +133,7 @@ read_env_local() {
     else
         log WARN "'${BIRDHOUSE_LOCAL_ENV}' not found"
     fi
+    log_trace_vars_cmd "after read_env_local"
 
 }
 
@@ -199,6 +208,7 @@ read_components_default_env() {
     if [ -d "${COMPOSE_DIR}" ]; then
         cd - >/dev/null || true
     fi
+    log_trace_vars_cmd "after read_components_default_env"
 }
 
 
@@ -281,6 +291,7 @@ set_old_backwards_compatible_variables() {
             eval 'export ${new_var}="${hardcoded_old_value}"'
         fi
     done
+    log_trace_vars_cmd "after set_old_backwards_compatible_variables"
 }
 
 # If BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED is True then allow environment variables listed in
@@ -330,6 +341,7 @@ process_backwards_compatible_variables() {
         fi
       done
     fi
+    log_trace_vars_cmd "after process_backwards_compatible_variables"
 }
 
 
@@ -365,6 +377,7 @@ process_delayed_eval() {
           ${ALREADY_EVALED}
           $i"
     done
+    log_trace_vars_cmd "after process_delayed_eval"
 }
 
 
@@ -438,6 +451,7 @@ set_backwards_compatible_as_default() {
 # Main function to read all config files in appropriate order and call
 # process_delayed_eval() at the appropriate moment.
 read_configs() {
+    log_trace_vars_cmd "start read_configs"
     set_backwards_compatible_as_default
     discover_compose_dir
     discover_env_local
@@ -461,6 +475,7 @@ read_configs() {
 # of various components.  Use only when you know what you are doing.  Else use
 # read_configs() to be safe.
 read_basic_configs_only() {
+    log_trace_vars_cmd "start read_basic_configs_only"
     set_backwards_compatible_as_default
     discover_compose_dir
     discover_env_local
