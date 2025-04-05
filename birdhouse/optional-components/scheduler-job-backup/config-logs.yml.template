@@ -1,0 +1,19 @@
+- name: ${SCHEDULER_JOB_BACKUP_PREFIX}birdhouse_logs
+  comment: Backup birdhouse logs
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
+  command: "sh -c 'rm -rf /scheduler-backup/birdhouse-logs; cp -r ${BIRDHOUSE_LOG_DIR} /scheduler-backup/birdhouse-logs'"
+  dockerargs: >-
+    --name ${SCHEDULER_JOB_BACKUP_PREFIX}birdhouse_logs --rm
+    --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup
+    --volume ${BIRDHOUSE_LOG_DIR}:${BIRDHOUSE_LOG_DIR}
+  image: '${SCHEDULER_JOB_BACKUP_COPY_FILE_IMAGE}'
+
+- name: ${SCHEDULER_JOB_BACKUP_PREFIX}docker_container_logs
+  comment: Backup docker container logs
+  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
+  command: >- 
+    sh -c 'rm -rf /scheduler-backup/docker-container-logs; mkdir -p /scheduler-backup/docker-container-logs; ${SCHEDULER_JOB_BIRDHOUSE_EXE_LOC} compose logs | while read -r line; do echo "${line#*|}" >> "$(printf "/scheduler-backup/docker-container-logs/%s.log" ${line%%|*})"; done'
+  dockerargs: >-
+    --name ${SCHEDULER_JOB_BACKUP_PREFIX}docker_container_logs
+    --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup ${SCHEDULER_JOB_BACKUP_COMMON_ARGS}
+  image: '${SCHEDULER_JOB_BACKUP_DOCKER_IMAGE}'

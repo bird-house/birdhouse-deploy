@@ -59,6 +59,8 @@ component directory to the ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable in your local 
   
   * component location: ``optional-components/scheduler-job-deploy_raven_testdata``
 
+* Automatically backup files
+
 - how to configure forget option
 - how to create a new backup job
 

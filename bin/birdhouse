@@ -211,9 +211,13 @@ backup() {
     log INFO 'Starting the birdhouse stack before backing up.'
     BIRDHOUSE_STOP_STACK=true
     "${BIRDHOUSE_COMPOSE}" up -d
-  elif [ "$BIRDHOUSE_STACK_RUNNING" != "true" ]; then
-    log ERROR 'The birdhouse stack is not running. Start the stack first or run this command with the --start-stack option.'
-    exit 1
+  else 
+    if [ "$BIRDHOUSE_STACK_RUNNING" = "true" ]; then
+      log WARN 'Running backups on the currently running stack. If you have updated the local environment file since you last started the stack, you may want to restart the stack for the changes to take effect.'
+    else
+      log ERROR 'The birdhouse stack is not running. Start the stack first or run this command with the --start-stack option.'
+      exit 1
+    fi
   fi
   if docker ps --filter label=com.docker.compose.project=birdhouse --filter name='scheduler' --format '{{.Names}}' | grep -q '^scheduler$'; then
     ENABLED_BACKUP_JOBS="$(docker exec scheduler jq -r ".[] | select(.name | startswith(\"${SCHEDULER_JOB_BACKUP_PREFIX}\")) | \"\(.name): \(.comment)\"" /opt/crontab/config.json)"
@@ -228,7 +232,6 @@ backup() {
       echo
       echo "Restic configuration options can be found in the restic environment file at '$SCHEDULER_JOB_BACKUP_RESTIC_ENV_FILE'"
     else
-      "${BIRDHOUSE_COMPOSE}" restart scheduler
       log INFO 'Running backup jobs to extract stateful data from the stack.'
       docker exec scheduler sh -c "for job in /opt/crontab/jobs/$(echo ${SCHEDULER_JOB_BACKUP_PREFIX} | sed 's/_/-/g')*.sh; do bash \$job; done"
       log INFO 'Running backup job to backup data'
