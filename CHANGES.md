@@ -20,10 +20,122 @@
 [2.13.0](https://github.com/bird-house/birdhouse-deploy/tree/2.13.0) (2025-04-04)
 ------------------------------------------------------------------------------------------------------------------
 
-## Changes
+## Fixes
 
 - Fix various bugs with backward-compatibility mode
 
+  - Missing template expansion for old variable names
+
+    This bug only affect external repos still using old variable names for
+    template expansion.
+
+  - Lost new lines when new value is transfered to old value and vice-versa
+
+    Example: if `ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS` (old var) is set in
+    `env.local`, the new matching var `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` is
+    automatically set but lost the new lines from the old var.
+
+    This is bad because subsequently, when new var
+    `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` is used in
+    `components/jupyterhub/jupyterhub_config.py.template` for template expansion,
+    it will generate badly formatted code since the new lines are lost.
+
+    The reverse case: external repos still using old vars for template
+    expansion but in `env.local` the new var is used, the value transfered
+    from the new var to the old var is missing all the new lines and also
+    generate broken code.
+
+  - Wrong old value overriding new value during child invocation
+
+    This bug is mostly visible with child invocation.  First level
+    invocation, to be affected, need to use the old var name, which means
+    external repos only because the current repo has all switched to use the
+    new var names.
+
+    Previously `set_old_backwards_compatible_variables` was called before
+    `read_env_local` which means old var names were initialized with default
+    values only, not the updated values from `env.local`.  On child
+    invocation, since the old var already exists, it overrides the new var
+    even if the new var is properly set in `env.local`.
+
+    For the autodeploy process, `triggerdeploy.sh` is the first level
+    invocation and `autodeploy.sh` is the child invocation.  It blows up in
+    the child invocation when `BIRDHOUSE_LOG_DIR` resets to the default value
+    even when it is sets properly in `env.local`.
+
+    Most other scripts do not have a child invocation so they all work fine
+    and that's why this back-compat bug is discovered so late.
+
+- Fix process_delayed_eval() losing new lines after being eval'ed
+
+  Example: if `AUTODEPLOY_PLATFORM_EXTRA_DOCKER_ARGS` is set in `env.local` and
+  added to `DELAYED_EVAL` in `env.local` because it uses other variables,
+  the new lines and the 4 front spaces must be kept for proper yaml syntax when
+  template expanding in `components/scheduler/config.yml.template`.
+
+- Autodeploy: fix SSL certificate not visible during scheduler job
+
+  The autodeploy triggered by the scheduler job runs in a docker image.  All
+  the files it uses must be volume-mount into the container, including the SSL
+  certificate file.
+
+  When the SSL certificate is a symlink to a file outside of the birdhouse-deploy
+  checkout, it won't "resolve".
+
+  This bug do not affect `birdhouse-compose.sh` because it do not run in a
+  container but directly on the host so it has access to all the files without
+  needing specific volume-mount.
+
+  This bug do not affect the current docker-compose image used by autodeploy
+  but is found by the upcoming docker-compose image that seems much more strict.
+
+## Changes
+
+- Add variable `BIRDHOUSE_DEBUG_VARS_TRACE_CMD` to help debug back-compat vars
+
+  This new `BIRDHOUSE_DEBUG_VARS_TRACE_CMD` was useful to debug autodeploy
+  failure, tracing why `BIRDHOUSE_LOG_DIR` resets to the bad default value in
+  child invocation (`deploy.sh`).
+
+  Example usage to debug autodeploy failure because `BIRDHOUSE_SSL_CERTIFICATE`
+  resets to the default value when `SSL_CERTIFICATE` is properly set in `env.local`.:
+  ```
+  BIRDHOUSE_DEBUG_VARS_TRACE_CMD='echo "
+      BIRDHOUSE_SSL_CERTIFICATE=\"$BIRDHOUSE_SSL_CERTIFICATE\"
+         SERVER_SSL_CERTIFICATE=\"$SERVER_SSL_CERTIFICATE\"
+                SSL_CERTIFICATE=\"$SSL_CERTIFICATE\""' ../bin/birdhouse -b -L DEBUG configs -c 'echo "$BIRDHOUSE_SSL_CERTIFICATE"'
+  ```
+
+  Matching output:
+  ```
+  TRACE_VARS:  after read_env_local:
+    BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+       SERVER_SSL_CERTIFICATE=""
+              SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+
+  TRACE_VARS:  after set_old_backwards_compatible_variables:
+      BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+         SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+
+  TRACE_VARS:  after process_backwards_compatible_variables:
+      BIRDHOUSE_SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+         SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+  ```
+
+  Since in `BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES` we previously had
+  ```
+    SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
+    SERVER_SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
+  ```
+  then in the first level invocation (`triggerdeploy.sh` or the `birdhouse configs`
+  above) the values of `BIRDHOUSE_SSL_CERTIFICATE` is good.
+
+  But then in the child invocation (`deploy.sh`), `SSL_CERTIFICATE` will first
+  override `BIRDHOUSE_SSL_CERTIFICATE` to the good value, then
+  `SERVER_SSL_CERTIFICATE` will override `BIRDHOUSE_SSL_CERTIFICATE` to the bad
+  default value.
 
 - Deprecate `portainer` component
 
