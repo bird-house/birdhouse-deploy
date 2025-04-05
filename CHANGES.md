@@ -109,16 +109,16 @@
   Matching output:
   ```
   TRACE_VARS:  after read_env_local:
-    BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
-       SERVER_SSL_CERTIFICATE=""
-              SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+      BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+         SERVER_SSL_CERTIFICATE=""
+                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
 
   TRACE_VARS:  after set_old_backwards_compatible_variables:
       BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
          SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
                 SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
 
-  TRACE_VARS:  after process_backwards_compatible_variables:
+  TRACE_VARS:  after process_backwards_compatible_variables:  <-- error introduced at this step
       BIRDHOUSE_SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
          SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
                 SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
@@ -142,6 +142,7 @@
   The portainer component is not currently being used and is not actually usable outside of a very specific
   host machine configuration. This change deprecates the component by moving it to the `deprecated-components`
   directory. It can still be enabled from that path if desired.
+
 
 [2.12.0](https://github.com/bird-house/birdhouse-deploy/tree/2.12.0) (2025-04-03)
 ------------------------------------------------------------------------------------------------------------------

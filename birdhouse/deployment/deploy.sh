@@ -132,10 +132,8 @@ done
 
 cd "${COMPOSE_DIR}" || exit
 
-set +x
-
+set +x  # avoid excessive forced logging
 read_basic_configs_only
-
 set -x
 
 # stop all to force reload any changed config that are volume-mount into the containers
@@ -181,12 +179,10 @@ cd "${COMPOSE_DIR}" || exit
 # reload again after git pull because this file could be changed by the pull
 . "${COMPOSE_DIR}/read-configs.include.sh"
 
-set +x
-
+set +x  # avoid excessive forced logging
 # reload again after default.env since env.local can override default.env
 # (ex: JUPYTERHUB_USER_DATA_DIR)
 read_basic_configs_only
-
 set -x
 
 # restart everything, only changed containers will be destroyed and recreated
