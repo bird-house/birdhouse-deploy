@@ -23,6 +23,39 @@
 #  read_configs
 
 
+# Help debug variables "evolving" through the various transformations.
+#
+# This is especially useful in debugging the backward-compatible variable support
+# feature, to find out exactly when a variable got the wrong value through
+# the transformation pipeline.
+#
+# Example usage from command-line
+#   BIRDHOUSE_DEBUG_VARS_TRACE_CMD='echo "
+#       BIRDHOUSE_SSL_CERTIFICATE=\"$BIRDHOUSE_SSL_CERTIFICATE\"
+#          SERVER_SSL_CERTIFICATE=\"$SERVER_SSL_CERTIFICATE\"
+#                 SSL_CERTIFICATE=\"$SSL_CERTIFICATE\""' ../bin/birdhouse -b -L DEBUG configs -c 'echo "$BIRDHOUSE_SSL_CERTIFICATE"'
+#
+# Sample matching output
+#   TRACE_VARS:  after read_env_local:
+#       BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+#          SERVER_SSL_CERTIFICATE=""
+#                 SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+#   TRACE_VARS:  after set_old_backwards_compatible_variables:
+#       BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+#          SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+#                 SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+#   TRACE_VARS:  after process_backwards_compatible_variables:  <-- error introduced at this step
+#       BIRDHOUSE_SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+#          SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+#                 SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+log_trace_vars_cmd() {
+    [ -n "$BIRDHOUSE_DEBUG_VARS_TRACE_CMD" ] && echo "TRACE_VARS:  $1:  `eval "$BIRDHOUSE_DEBUG_VARS_TRACE_CMD"`"
+}
+
+# Need to be first in this file.
+log_trace_vars_cmd "read-configs.include.sh sourced"
+
+
 # Derive COMPOSE_DIR from the most probable locations.
 # This is NOT meant to be exhaustive.
 # Assume the checkout is named "birdhouse-deploy", which might NOT be true.
@@ -105,6 +138,7 @@ read_default_env() {
     else
         log WARN "'${COMPOSE_DIR}/default.env' not found"
     fi
+    log_trace_vars_cmd "after read_default_env"
 }
 
 
@@ -125,6 +159,7 @@ read_env_local() {
     else
         log WARN "'${BIRDHOUSE_LOCAL_ENV}' not found"
     fi
+    log_trace_vars_cmd "after read_env_local"
 
 }
 
@@ -199,6 +234,7 @@ read_components_default_env() {
     if [ -d "${COMPOSE_DIR}" ]; then
         cd - >/dev/null || true
     fi
+    log_trace_vars_cmd "after read_components_default_env"
 }
 
 
@@ -265,7 +301,7 @@ set_old_backwards_compatible_variables() {
         old_var_set="`eval "echo \\${${old_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
         new_var_set="`eval "echo \\${${new_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
         if [ "${new_var_set}" = "set" ] && [ ! "${old_var_set}" = "set" ]; then
-            new_value="`eval "echo \\$${new_var}"`"
+            new_value="`eval "echo \\"\\$${new_var}\\""`"  # should keep new lines and leading empty spaces
             eval 'export ${old_var}="${new_value}"'
             BIRDHOUSE_OLD_VARS_OVERRIDDEN="${BIRDHOUSE_OLD_VARS_OVERRIDDEN} ${old_var} "  # space before and after old_var is for grep (below)
             log DEBUG "Variable [${new_var}] is being used to set the deprecated variable [${old_var}]."
@@ -275,12 +311,13 @@ set_old_backwards_compatible_variables() {
     do
         new_var="${hardcoded_var%%=*}"
         hardcoded_old_value="${hardcoded_var#*=}"
-        new_value="`eval "echo \\$${new_var}"`"
+        new_value="`eval "echo \\"\\$${new_var}\\""`"  # should keep new lines and leading empty spaces
         if [ "${new_value}" = "\${__DEFAULT_${new_var}}" ]; then
             log WARN "Variable [${new_var}] is being set to the previously hardcoded default value [${hardcoded_old_value}]."
             eval 'export ${new_var}="${hardcoded_old_value}"'
         fi
     done
+    log_trace_vars_cmd "after set_old_backwards_compatible_variables"
 }
 
 # If BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED is True then allow environment variables listed in
@@ -302,12 +339,12 @@ process_backwards_compatible_variables() {
       new_var="${back_compat_vars#*=}"
       old_var_set="`eval "echo \\${${old_var}+set}"`"  # will equal 'set' if the variable is set, null otherwise
       if [ "${old_var_set}" = "set" ]; then
-        old_value="`eval "echo \\$${old_var}"`"
+        old_value="`eval "echo \\"\\$${old_var}\\""`"  # should keep new lines and leading empty spaces
         if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
           log WARN "Deprecated variable [${old_var}] is overriding [${new_var}]. Check env.local file."
           eval 'export ${new_var}="${old_value}"'
         else
-          new_value="`eval "echo \\$${new_var}"`"
+          new_value="`eval "echo \\"\\$${new_var}\\""`"  # should keep new lines and leading empty spaces
           if [ x"${old_value}" = x"${new_value}" ]; then
             log WARN "Deprecated variable [${old_var}] can be removed as it has been superseded by [${new_var}]. Check env.local file."
           else
@@ -324,12 +361,13 @@ process_backwards_compatible_variables() {
       do
         old_var="${default_old_var%%=*}"
         default_old_value="${default_old_var#*=}"
-        old_value="`eval "echo \\$${old_var}"`"
+        old_value="`eval "echo \\"\\$${old_var}\\""`"  # should keep new lines and leading empty spaces
         if [ "${old_value}" = "${default_old_value}" ]; then
           log WARN "Variable [${old_var}] employs a deprecated default value recommended for override. Check env.local file."
         fi
       done
     fi
+    log_trace_vars_cmd "after process_backwards_compatible_variables"
 }
 
 
@@ -357,7 +395,7 @@ process_delayed_eval() {
           # only eval each variable once (in case it was added to the list multiple times)
           continue
         fi
-        v="`eval "echo \\$${i}"`"
+        v="`eval "echo \\"\\$${i}\\""`"  # should keep new lines and leading empty spaces
         value=`eval "echo \"${v}\""`
         eval 'export ${i}="${value}"'
         log DEBUG "delayed eval '$(env | grep -e "^${i}=")'"
@@ -365,6 +403,7 @@ process_delayed_eval() {
           ${ALREADY_EVALED}
           $i"
     done
+    log_trace_vars_cmd "after process_delayed_eval"
 }
 
 
@@ -438,15 +477,20 @@ set_backwards_compatible_as_default() {
 # Main function to read all config files in appropriate order and call
 # process_delayed_eval() at the appropriate moment.
 read_configs() {
+    log_trace_vars_cmd "start read_configs"
     set_backwards_compatible_as_default
     discover_compose_dir
     discover_env_local
     read_default_env
+
+    ### This section is different than read_basic_configs_only() below, the rest should be IDENTICAL.
     read_env_local  # for BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, need discover_env_local
     process_backwards_compatible_variables pre-components
     read_components_default_env  # uses BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
-    set_old_backwards_compatible_variables
+    ### END This section is different than read_basic_configs_only() below, the rest should be IDENTICAL.
+
     read_env_local  # again to override components default.env, need discover_env_local
+    set_old_backwards_compatible_variables  # after read_env_local to use updated value and not default value
     process_backwards_compatible_variables
     check_default_vars
     process_delayed_eval
@@ -457,12 +501,13 @@ read_configs() {
 # of various components.  Use only when you know what you are doing.  Else use
 # read_configs() to be safe.
 read_basic_configs_only() {
+    log_trace_vars_cmd "start read_basic_configs_only"
     set_backwards_compatible_as_default
     discover_compose_dir
     discover_env_local
     read_default_env
-    set_old_backwards_compatible_variables
     read_env_local  # need discover_env_local
+    set_old_backwards_compatible_variables  # after read_env_local to use updated value and not default value
     process_backwards_compatible_variables
     check_default_vars
     process_delayed_eval
