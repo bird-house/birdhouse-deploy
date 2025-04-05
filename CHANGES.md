@@ -45,7 +45,8 @@
     from the new var to the old var is missing all the new lines and also
     generate broken code.
 
-  - Wrong old value overriding new value during child invocation
+  - Wrong old var overriding new var during child invocation, even when new
+    var is set properly in `env.local`.
 
     This bug is mostly visible with child invocation.  First level
     invocation, to be affected, need to use the old var name, which means
@@ -61,12 +62,12 @@
     For the autodeploy process, `triggerdeploy.sh` is the first level
     invocation and `autodeploy.sh` is the child invocation.  It blows up in
     the child invocation when `BIRDHOUSE_LOG_DIR` resets to the default value
-    even when it is sets properly in `env.local`.
+    even when `BIRDHOUSE_LOG_DIR` (new var) is sets properly in `env.local`.
 
     Most other scripts do not have a child invocation so they all work fine
     and that's why this back-compat bug is discovered so late.
 
-- Fix process_delayed_eval() losing new lines after being eval'ed
+- Fix process_delayed_eval() losing new lines and leading empty space after being eval'ed
 
   Example: if `AUTODEPLOY_PLATFORM_EXTRA_DOCKER_ARGS` is set in `env.local` and
   added to `DELAYED_EVAL` in `env.local` because it uses other variables,
@@ -95,10 +96,12 @@
 
   This new `BIRDHOUSE_DEBUG_VARS_TRACE_CMD` was useful to debug autodeploy
   failure, tracing why `BIRDHOUSE_LOG_DIR` resets to the bad default value in
-  child invocation (`deploy.sh`).
+  child invocation (`deploy.sh`) even when `BIRDHOUSE_LOG_DIR` (new var) is
+  set properly in `env.local`.
 
   Example usage to debug autodeploy failure because `BIRDHOUSE_SSL_CERTIFICATE`
-  resets to the default value when `SSL_CERTIFICATE` is properly set in `env.local`.:
+  resets to the default value when `SSL_CERTIFICATE` (old var) is properly
+  set in `env.local`:
   ```
   BIRDHOUSE_DEBUG_VARS_TRACE_CMD='echo "
       BIRDHOUSE_SSL_CERTIFICATE=\"$BIRDHOUSE_SSL_CERTIFICATE\"
