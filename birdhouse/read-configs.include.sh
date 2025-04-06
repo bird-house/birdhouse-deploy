@@ -287,7 +287,6 @@ check_default_vars() {
 # equivalent deprecated variable is unset.
 set_old_backwards_compatible_variables() {
     [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ] || return 0
-    BIRDHOUSE_OLD_VARS_OVERRIDDEN=""
     # Reverse the variable list so that old variables are overridden in the correct order.
     reverse_backwards_compatible_variables=""
     for back_compat_vars in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES}
@@ -303,7 +302,6 @@ set_old_backwards_compatible_variables() {
         if [ "${new_var_set}" = "set" ] && [ ! "${old_var_set}" = "set" ]; then
             new_value="`eval "echo \\"\\$${new_var}\\""`"  # should keep new lines and leading empty spaces
             eval 'export ${old_var}="${new_value}"'
-            BIRDHOUSE_OLD_VARS_OVERRIDDEN="${BIRDHOUSE_OLD_VARS_OVERRIDDEN} ${old_var} "  # space before and after old_var is for grep (below)
             log DEBUG "Variable [${new_var}] is being used to set the deprecated variable [${old_var}]."
         fi
     done
@@ -330,7 +328,6 @@ process_backwards_compatible_variables() {
     for back_compat_vars in ${BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES}
     do
       old_var="${back_compat_vars%%=*}"
-      echo "${BIRDHOUSE_OLD_VARS_OVERRIDDEN}" | grep -q "[[:space:]]${old_var}[[:space:]]" && continue
       if [ "$1" = "pre-components" ] && \
         ! echo "${BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES_PRE_COMPONENTS}" | grep -q "^[[:space:]]*${old_var}[[:space:]]*$"; then
           continue

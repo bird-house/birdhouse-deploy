@@ -67,6 +67,32 @@
     Most other scripts do not have a child invocation so they all work fine
     and that's why this back-compat bug is discovered so late.
 
+  - New var reset to default in child invocation even when old var is set properly in `env.local`
+
+    This bug happens for child invocation only.
+
+    Example: in autodeploy, `triggerdeploy.sh` is the first level invocation
+    and `deploy.sh` is the child invocation.  `SSL_CERTIFICATE` (old var) is
+    properly set in `env.local` but `BIRDHOUSE_SSL_CERTIFICATE` (new var)
+    resets to default value in `deploy.sh` and breaks autodepploy.
+
+    See more details in the sample debugging usage of `BIRDHOUSE_DEBUG_VARS_TRACE_CMD`.
+
+    The fix is to connect the chain of mapping
+    `SSL_CERTIFICATE` -> `SERVER_SSL_CERTIFICATE` -> `BIRDHOUSE_SSL_CERTIFICATE` so
+    that `SSL_CERTIFICATE` will first override `SERVER_SSL_CERTIFICATE` with the
+    good value, then `SERVER_SSL_CERTIFICATE` will override `BIRDHOUSE_SSL_CERTIFICATE`
+    with the good value originally from `SSL_CERTIFICATE`.
+
+    In `process_backwards_compatible_variables()`, it has to change to process
+    **all** old vars and not just those old vars not set in
+    `set_old_backwards_compatible_variables()`.
+
+    Technically this is safe because all the old vars set in
+    `set_old_backwards_compatible_variables()` are set from new var values or
+    default values so setting "new_var = old_value" back in
+    `process_backwards_compatible_variables()` is basically setting the same value again.
+
 - Fix process_delayed_eval() losing new lines and leading empty space after being eval'ed
 
   Example: if `AUTODEPLOY_PLATFORM_EXTRA_DOCKER_ARGS` is set in `env.local` and
