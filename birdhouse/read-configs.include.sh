@@ -349,6 +349,21 @@ process_backwards_compatible_variables() {
           fi
         fi
       fi
+
+      if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ] && [ ! "$1" = "pre-components" ]; then
+        # Enable corresponding old var for template expansion if new var is in template expansion.
+        if echo "${VARS}" | grep -q "\s\$${new_var}\b"; then
+          VARS="${VARS}
+  \$${old_var}"
+          log DEBUG "Back-compat template expansion: Added [${old_var}] to VARS."
+        fi
+        if echo "${OPTIONAL_VARS}" | grep -q "\s\$${new_var}\b"; then
+          OPTIONAL_VARS="${OPTIONAL_VARS}
+  \$${old_var}"
+          log DEBUG "Back-compat template expansion: Added [${old_var}] to OPTIONAL_VARS."
+        fi
+        # END: Enable corresponding old var for template expansion if new var is in template expansion.
+      fi
     done
     if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
       BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./optional-components/backwards-compatible-overrides"
@@ -509,3 +524,6 @@ read_basic_configs_only() {
     check_default_vars
     process_delayed_eval
 }
+
+
+# vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2

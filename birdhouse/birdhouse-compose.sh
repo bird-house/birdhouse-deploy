@@ -24,15 +24,6 @@ VARS='
   $BIRDHOUSE_LOG_DIR
 '
 
-# For backward-compatibility.
-OLD_VARS='
-  $PAVICS_FQDN
-  $DOC_URL
-  $SUPPORT_EMAIL
-  $DATA_PERSIST_ROOT
-  $DATA_PERSIST_SHARED_ROOT
-'
-
 # list of vars to be substituted in template but they do not have to be set in env.local
 #   their default values are from 'default.env', so they do not have to be defined in 'env.local' if values are adequate
 #   they usually are intended to provide additional features or extended customization of their behavior
@@ -50,22 +41,6 @@ OPTIONAL_VARS='
   $BIRDHOUSE_RELEASE_NOTES_URL
   $BIRDHOUSE_SUPPORT_URL
   $BIRDHOUSE_LICENSE_URL
-'
-
-# For backward-compatibility.
-OLD_OPTIONAL_VARS='
-  $PAVICS_FQDN_PUBLIC
-  $SSL_CERTIFICATE
-  $EXTRA_PYWPS_CONFIG
-  $SERVER_NAME
-  $SERVER_DESCRIPTION
-  $SERVER_INSTITUTION
-  $SERVER_SUBJECT
-  $SERVER_TAGS
-  $SERVER_DOCUMENTATION_URL
-  $SERVER_RELEASE_NOTES_URL
-  $SERVER_SUPPORT_URL
-  $SERVER_LICENSE_URL
 '
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
@@ -119,13 +94,6 @@ if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ] || [ x"${BIRDHOUSE_COMPOSE_TEMPLA
       fi
     fi
     cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
-
-    if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then
-      cp "${DEST}" "${DEST}.tmp"
-      cat "${DEST}.tmp" | envsubst "$OLD_VARS" | envsubst "$OLD_OPTIONAL_VARS" > "${DEST}"
-      rm "${DEST}.tmp"
-    fi
-
   done
   [ "$?" -eq 1 ] && exit 1  # re-raise the subshell error of the while loop
 else
