@@ -363,6 +363,14 @@ process_backwards_compatible_variables() {
           log DEBUG "Back-compat template expansion: Added [${old_var}] to OPTIONAL_VARS."
         fi
         # END: Enable corresponding old var for template expansion if new var is in template expansion.
+
+        # Enable corresponding old var for delayed eval if new var is in delayed eval.
+        if echo "${DELAYED_EVAL}" | grep -q "\s${new_var}\b"; then
+          DELAYED_EVAL="${DELAYED_EVAL}
+  ${old_var}"
+          log DEBUG "Back-compat delayed eval: Added [${old_var}] to DELAYED_EVAL."
+        fi
+        # END: Enable corresponding old var for delayed eval if new var is in delayed eval.
       fi
     done
     if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ]; then

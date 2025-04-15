@@ -24,6 +24,11 @@
     This bug only affect external repos still using old variable names for
     template expansion.
 
+  - Missing delayed eval for old variable names
+
+    This bug only affect external repos still using old variable names for
+    delayed eval.
+
   - Lost new lines when new value is transfered to old value and vice-versa
 
     Example: if `ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS` (old var) is set in
