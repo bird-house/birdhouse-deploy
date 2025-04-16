@@ -49,7 +49,7 @@
 #          SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
 #                 SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
 log_trace_vars_cmd() {
-    [ -n "$BIRDHOUSE_DEBUG_VARS_TRACE_CMD" ] && echo "TRACE_VARS:  $1:  `eval "$BIRDHOUSE_DEBUG_VARS_TRACE_CMD"`"
+    [ -n "$BIRDHOUSE_DEBUG_VARS_TRACE_CMD" ] && echo "TRACE_VARS:  $1:  `eval "$BIRDHOUSE_DEBUG_VARS_TRACE_CMD"`" || true
 }
 
 # Need to be first in this file.
