@@ -565,6 +565,29 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         print(proc.stdout)
         assert split_and_strip(get_command_stdout(proc))[-1] == "pavics.example.com"
 
+    def test_formatting_preserved_from_old_to_new_var(self, read_config_include_file, exit_on_error):
+        """
+        Test that formatting (new lines, leading spaces, quotes) are preserved when old var
+        value is transfered to new var.  This is important during template expansion.
+        """
+        expected = ("\n"
+                    "    # python code requires keeping formatting  \n"
+                    "    {'user': 'pass'}\n")
+
+        extra = {
+            "ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS": f"\"{expected}\"",
+            # "JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS":  not set matching new var
+            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
+        }
+        proc = self.run_func(
+            read_config_include_file,
+            extra,
+            'echo "${JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS}"',
+            exit_on_error=exit_on_error,
+        )
+        print(proc.stdout)
+        assert "\n".join(get_command_stdout(proc).split("\n")[-4:]) == expected
+
 
 class TestCreateComposeConfList(_ReadConfigs):
     command: str = " create_compose_conf_list"
