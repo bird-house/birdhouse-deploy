@@ -45,8 +45,8 @@ def set_local_env(env_file: io.FileIO, content: Union[str, dict]) -> None:
         env_file.write(f"{default_content}\n{content}")
 
 
-def split_and_strip(s: str, split_on="\n") -> list[str]:
-    return [cline for line in s.split(split_on) if (cline := line.strip())]
+def split_and_strip(s: str, split_on="\n", strip=True) -> list[str]:
+    return [cline for line in s.split(split_on) if (cline := line.strip() if strip else line)]
 
 
 def get_read_config_stdout(proc: subprocess.CompletedProcess) -> str:
@@ -278,6 +278,24 @@ class TestReadConfigs(_ReadConfigsFromEnvFile):
             exit_on_error=exit_on_error,
         )
         assert split_and_strip(get_command_stdout(proc))[-1] == "{'123'}"
+
+    def test_delayed_eval_preserve_new_lines_leading_spaces(self, read_config_include_file, exit_on_error) -> None:
+        """Test that the delayed evaluation functions preserve the original formatting of the string"""
+        extra = {
+            "SAMPLE_EXTRA_DOCKER_ARGS": "\"\n"
+            "    --env SOME_ENV_VAR='${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir'\n"
+            "    --volume '${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir:${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir:ro'\"",
+            "DELAYED_EVAL": '"$DELAYED_EVAL SAMPLE_EXTRA_DOCKER_ARGS"',
+        }
+        proc = self.run_func(
+            read_config_include_file,
+            extra,
+            'echo "${SAMPLE_EXTRA_DOCKER_ARGS}"',
+            exit_on_error=exit_on_error,
+        )
+        assert ("\n".join(split_and_strip(get_command_stdout(proc), strip=False)[-2:])
+                == "    --env SOME_ENV_VAR='/data/somedir'\n"
+                   "    --volume '/data/somedir:/data/somedir:ro'")
 
 
 class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
