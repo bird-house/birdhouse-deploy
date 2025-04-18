@@ -565,24 +565,27 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         print(proc.stdout)
         assert split_and_strip(get_command_stdout(proc))[-1] == "pavics.example.com"
 
-    def test_formatting_preserved_from_old_to_new_var(self, read_config_include_file, exit_on_error):
+    @pytest.mark.parametrize("from_name,to_name",
+        (("ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS", "JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS"),
+         ("JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS", "ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS")))
+    def test_formatting_preserved_from_old_to_new_var_vice_versa(self, read_config_include_file,
+                                                                 exit_on_error, from_name, to_name):
         """
         Test that formatting (new lines, leading spaces, quotes) are preserved when old var
-        value is transfered to new var.  This is important during template expansion.
+        value is transfered to new var and vice-versa.  This is important during template expansion.
         """
         expected = ("\n"
                     "    # python code requires keeping formatting  \n"
                     "    {'user': 'pass'}\n")
 
         extra = {
-            "ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS": f"\"{expected}\"",
-            # "JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS":  not set matching new var
+            from_name: f"\"{expected}\"",
             "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
         }
         proc = self.run_func(
             read_config_include_file,
             extra,
-            'echo "${JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS}"',
+            f'echo "${to_name}"',
             exit_on_error=exit_on_error,
         )
         print(proc.stdout)
