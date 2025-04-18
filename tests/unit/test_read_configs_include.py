@@ -41,7 +41,7 @@ def set_local_env(env_file: io.FileIO, content: Union[str, dict]) -> None:
         content = {**DEFAULT_BIRDHOUSE_ENV, **content}
         env_file.write("\n".join(f"export {k}={v}" for k, v in content.items()))
     else:
-        default_content = "\n".join([f"{k}={v}" for k, v in DEFAULT_BIRDHOUSE_ENV.items()])
+        default_content = "\n".join([f"export {k}={v}" for k, v in DEFAULT_BIRDHOUSE_ENV.items()])
         env_file.write(f"{default_content}\n{content}")
 
 
