@@ -463,11 +463,10 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
             command_suffix,
             exit_on_error=exit_on_error,
         )
-        expected = set()
-        for k in self.new_vars:
-            expected.add(f"{k}=new")
         actual = [re.sub(r"[\s\n]+", " ", val.strip()) for val in get_command_stdout(proc).split(ENV_SPLIT_STR_ALT)]
-        assert all(val != "new" for val in actual)
+        # "val" is like "NEW_VAR=" without the "new" value because it is initially unset and
+        # old var are not allowed to override so it stays unset.
+        assert all("new" not in val for val in actual)
 
     def test_allowed_override_all(self, read_config_include_file, exit_on_error):
         """
