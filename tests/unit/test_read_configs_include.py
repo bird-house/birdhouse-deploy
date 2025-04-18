@@ -635,13 +635,13 @@ BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
             exit_on_error=exit_on_error,
         )
         print(proc.stdout)
-        output = get_command_stdout(proc)
+        vars_content = get_command_stdout(proc)
         # Custom mapping newly inserted.
-        assert "  $MY_NEW_VAR" in output
-        assert "  $MY_OLD_VAR" in output
+        assert "  $MY_NEW_VAR" in vars_content
+        assert "  $MY_OLD_VAR" in vars_content
         # Built-in mapping for VARS in birdhouse/default.env
-        assert "  $BIRDHOUSE_LOG_DIR" in output
-        assert "  $PAVICS_LOG_DIR" in output
+        assert "  $BIRDHOUSE_LOG_DIR" in vars_content
+        assert "  $PAVICS_LOG_DIR" in vars_content
 
         proc = self.run_func(
             read_config_include_file,
@@ -650,13 +650,73 @@ BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
             exit_on_error=exit_on_error,
         )
         print(proc.stdout)
-        output = get_command_stdout(proc)
+        optional_vars_content = get_command_stdout(proc)
         # Custom mapping newly inserted.
-        assert "  $MY_NEW_VAR" in output
-        assert "  $MY_OLD_VAR" in output
+        assert "  $MY_NEW_VAR" in optional_vars_content
+        assert "  $MY_OLD_VAR" in optional_vars_content
         # Built-in mapping for OPTIONAL_VARS in birdhouse/default.env.
-        assert "  $BIRDHOUSE_FQDN_PUBLIC" in output
-        assert "  $PAVICS_FQDN_PUBLIC" in output
+        assert "  $BIRDHOUSE_FQDN_PUBLIC" in optional_vars_content
+        assert "  $PAVICS_FQDN_PUBLIC" in optional_vars_content
+
+    @pytest.mark.parametrize("var_name", ("PAVICS_FQDN", "BIRDHOUSE_FQDN"))
+    def test_delayed_eval_enabled_for_built_in_old_var(self, read_config_include_file,
+                                                       exit_on_error, var_name):
+        """
+        Test that delayed eval is enabled for corresponding old var if new var is enabled.
+        """
+        expected = "fqdn.example.com"
+        extra = {
+            var_name: expected,
+            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
+        }
+        proc = self.run_func(
+            read_config_include_file,
+            extra,
+            'echo "${PAVICS_FQDN_PUBLIC} - ${BIRDHOUSE_FQDN_PUBLIC}"',
+            exit_on_error=exit_on_error,
+        )
+        # By default, old var PAVICS_FQDN_PUBLIC is same value as old var PAVICS_FQDN.
+        # New var BIRDHOUSE_FQDN_PUBLIC is same value as new var BIRDHOUSE_FQDN.
+        # If BIRDHOUSE_FQDN is unset, it is set to the same value as PAVICS_FQDN.
+        # If PAVICS_FQDN is unset, it is set to the same value as BIRDHOUSE_FQDN.
+        assert split_and_strip(get_command_stdout(proc))[-1] == f"{expected} - {expected}"
+
+    @pytest.mark.parametrize("var_name", ("CUSTOM_DELAYED_OLD_VAR", "CUSTOM_DELAYED_NEW_VAR"))
+    def test_delayed_eval_enabled_for_custom_old_var(self, read_config_include_file,
+                                                     exit_on_error, var_name):
+        """
+        Test that delayed eval is enabled for corresponding old var if new var is enabled.
+
+        This case is useful for external repos depending on each other and the "base" external
+        repo also rename variable and do not wish to break other "downstream" external repos.
+
+        This case is also for components not in BIRDHOUSE_DEFAULT_CONF_DIRS that also append to DELAYED_EVAL.
+        """
+        env_local = f'''
+# Add custom backward compatible var mapping.
+BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES="$BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES
+    CUSTOM_DELAYED_OLD_VAR=CUSTOM_DELAYED_NEW_VAR"
+
+# Add new custom var to DELAYED_EVAL.
+DELAYED_EVAL="
+  $DELAYED_EVAL
+  CUSTOM_DELAYED_NEW_VAR"
+
+# Custom old var depends on another built-in old var and new var.
+{var_name}='$DATA_PERSIST_ROOT - $ANOTHER_NEW_VAR'
+
+ANOTHER_NEW_VAR=some_val
+
+BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
+'''
+
+        proc = self.run_func(
+            read_config_include_file,
+            env_local,
+            'echo "${CUSTOM_DELAYED_OLD_VAR} == ${CUSTOM_DELAYED_NEW_VAR}"',
+            exit_on_error=exit_on_error,
+        )
+        assert split_and_strip(get_command_stdout(proc))[-1] == "/data - some_val == /data - some_val"
 
 
 class TestCreateComposeConfList(_ReadConfigs):
