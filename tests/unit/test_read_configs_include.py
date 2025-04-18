@@ -594,6 +594,70 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         print(proc.stdout)
         assert "\n".join(get_command_stdout(proc).split("\n")[-4:]) == expected
 
+    def test_template_expansion_enabled_for_old_var(self, read_config_include_file, exit_on_error):
+        """
+        Test that template expansion is enabled for corresponding old var if new var is enabled.
+        """
+
+        env_local = '''
+# Add custom backward compatible var mapping.
+BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES="$BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES
+    MY_OLD_VAR=MY_NEW_VAR"
+
+# Add new var to template expansion
+VARS="$VARS
+  \$MY_NEW_VAR"
+
+# Add new var to template expansion
+OPTIONAL_VARS="$OPTIONAL_VARS
+  \$MY_NEW_VAR"
+
+BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
+'''
+
+        expected=("\n"
+                  "    MY_OLD_VAR=MY_NEW_VAR\n"  # Added twice because env.local read twice in read_configs.
+                  "    MY_OLD_VAR=MY_NEW_VAR\n")
+        proc = self.run_func(
+            read_config_include_file,
+            env_local,
+            'echo "$BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES"',
+            exit_on_error=exit_on_error,
+        )
+        print(proc.stdout)
+        selected_output = "\n".join(get_command_stdout(proc).split("\n")[-4:])
+        assert selected_output == expected
+
+        proc = self.run_func(
+            read_config_include_file,
+            env_local,
+            f'echo "$VARS"',
+            exit_on_error=exit_on_error,
+        )
+        print(proc.stdout)
+        output = get_command_stdout(proc)
+        # Custom mapping newly inserted.
+        assert "  $MY_NEW_VAR" in output
+        assert "  $MY_OLD_VAR" in output
+        # Built-in mapping for VARS in birdhouse/default.env
+        assert "  $BIRDHOUSE_LOG_DIR" in output
+        assert "  $PAVICS_LOG_DIR" in output
+
+        proc = self.run_func(
+            read_config_include_file,
+            env_local,
+            f'echo "$OPTIONAL_VARS"',
+            exit_on_error=exit_on_error,
+        )
+        print(proc.stdout)
+        output = get_command_stdout(proc)
+        # Custom mapping newly inserted.
+        assert "  $MY_NEW_VAR" in output
+        assert "  $MY_OLD_VAR" in output
+        # Built-in mapping for OPTIONAL_VARS in birdhouse/default.env.
+        assert "  $BIRDHOUSE_FQDN_PUBLIC" in output
+        assert "  $PAVICS_FQDN_PUBLIC" in output
+
 
 class TestCreateComposeConfList(_ReadConfigs):
     command: str = " create_compose_conf_list"
