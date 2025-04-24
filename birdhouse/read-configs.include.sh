@@ -352,12 +352,12 @@ process_backwards_compatible_variables() {
 
       if [ x"${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = x"True" ] && [ ! "$1" = "pre-components" ]; then
         # Enable corresponding old var for template expansion if new var is in template expansion.
-        if echo "${VARS}" | grep -q "\s\$${new_var}\b"; then
+        if echo "${VARS}" | grep -q "[[:space:]]\$${new_var}[[:space:]]*"; then
           VARS="${VARS}
   \$${old_var}"
           log DEBUG "Back-compat template expansion: Added [${old_var}] to VARS."
         fi
-        if echo "${OPTIONAL_VARS}" | grep -q "\s\$${new_var}\b"; then
+        if echo "${OPTIONAL_VARS}" | grep -q "[[:space:]]\$${new_var}[[:space:]]*"; then
           OPTIONAL_VARS="${OPTIONAL_VARS}
   \$${old_var}"
           log DEBUG "Back-compat template expansion: Added [${old_var}] to OPTIONAL_VARS."
@@ -365,7 +365,7 @@ process_backwards_compatible_variables() {
         # END: Enable corresponding old var for template expansion if new var is in template expansion.
 
         # Enable corresponding old var for delayed eval if new var is in delayed eval.
-        if echo "${DELAYED_EVAL}" | grep -q "\s${new_var}\b"; then
+        if echo "${DELAYED_EVAL}" | grep -q "[[:space:]]${new_var}[[:space:]]*"; then
           DELAYED_EVAL="${DELAYED_EVAL}
   ${old_var}"
           log DEBUG "Back-compat delayed eval: Added [${old_var}] to DELAYED_EVAL."
