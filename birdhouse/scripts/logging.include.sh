@@ -58,7 +58,15 @@ export LOG_CRITICAL="${REG_BG_BOLD}CRITICAL${NORMAL}: "  # to report misuse of f
 log_dest() {
     level=$1
     option=$2
-    read log_line || true
+    log_line=
+    while IFS= read -r line; do
+        [ -z "${line}" ] && continue
+        if [ -z "${log_line}" ]; then
+            log_line="$line"
+        else
+            log_line="${log_line}\n          ${line}"
+        fi
+    done
     if [ -n "${log_line}" ]; then
         log_quiet="${BIRDHOUSE_LOG_QUIET}"
         log_fd="${BIRDHOUSE_LOG_FD}"
@@ -84,12 +92,12 @@ log_dest() {
             done
         fi
         if [ "${log_quiet}" = "True" ]; then
-            echo "$log_line" >> "${log_file:-/dev/null}"
+            printf "${log_line}\n" >> "${log_file:-/dev/null}"
         else
             if [ -n "${log_file}" ]; then
-                echo "$log_line" | tee -a "${log_file}" 1>&"${log_fd}"
+                printf "${log_line}\n" | tee -a "${log_file}" 1>&"${log_fd}"
             else
-                echo "$log_line" 1>&"${log_fd}"
+                printf "${log_line}\n" 1>&"${log_fd}"
             fi
         fi
     fi

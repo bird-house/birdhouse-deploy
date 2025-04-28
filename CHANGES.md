@@ -15,7 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Log multiple lines
+
+  Allow the `log` command (defined in `scripts/logging.include.sh`) to log messages that span multiple lines.
 
 [2.13.0](https://github.com/bird-house/birdhouse-deploy/tree/2.13.0) (2025-04-04)
 ------------------------------------------------------------------------------------------------------------------
