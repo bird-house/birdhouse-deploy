@@ -60,7 +60,6 @@ log_dest() {
     option=$2
     log_line=
     while IFS= read -r line; do
-        [ -z "${line}" ] && continue
         if [ -z "${log_line}" ]; then
             log_line="$line"
         else
