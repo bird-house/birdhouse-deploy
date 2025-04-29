@@ -5,7 +5,7 @@ if [ -z "${BIRDHOUSE_COLOR}" ] && [ -z "${NO_COLOR}" ]; then
     BIRDHOUSE_COLOR=1
 fi 
 
-if [ "${BIRDHOUSE_COLOR}" -eq "1" ]; then
+if [ "${BIRDHOUSE_COLOR}" = "1" ]; then
     BLUE=$(tput setaf 12)
     GRAY=$(tput setaf 8)
     CYAN=$(tput setaf 6)
@@ -25,6 +25,7 @@ if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}" = 'True' ] || [ "${__BIRDHOUSE_S
     # (this supports backwards compatible scripts that don't use the interface)
     BIRDHOUSE_LOG_DEST_OVERRIDE=${BIRDHOUSE_LOG_DEST_OVERRIDE:-"DEBUG:fd:1:INFO:fd:1:WARN:fd:2:ERROR:fd:2:CRITICAL:fd:2"}
 fi
+# These logging prefixes are right-padded with space characters to ensure that each prefix is a fixed width of 10 characters.
 export LOG_DEBUG="${GRAY}DEBUG${NORMAL}:    "
 export LOG_INFO="${BLUE}INFO${NORMAL}:     "
 export LOG_WARN="${YELLOW}WARNING${NORMAL}:  "
@@ -63,6 +64,7 @@ log_dest() {
         if [ -z "${log_line}" ]; then
             log_line="$line"
         else
+            # pad the next line by 10 space characters so that it aligns with the first line in the message.
             log_line="${log_line}\n          ${line}"
         fi
     done
@@ -135,28 +137,26 @@ log() {
                 echo "${LOG_CRITICAL}Invalid: log message is missing." | log_dest CRITICAL
                 exit 2
             fi
-            {
-                case "${BIRDHOUSE_LOG_LEVEL}-${level}" in
-                    DEBUG-DEBUG)
-                        echo "${LOG_DEBUG}$*"
-                    ;;
-                    DEBUG-INFO|INFO-INFO)
-                        echo "${LOG_INFO}$*"
-                    ;;
-                    DEBUG-WARN|INFO-WARN|WARN-WARN)
-                        echo "${LOG_WARN}$*"
-                    ;;
-                    *-ERROR)
-                        echo "${LOG_ERROR}$*"
-                    ;;
-                    *-DEBUG|*-INFO|*-WARN)
-                    ;;
-                    *)
-                        echo "${LOG_CRITICAL}Invalid log level: [${level}]" | log_dest CRITICAL
-                        exit 2
-                    ;;
-                esac
-            } | log_dest ${level}
+            case "${BIRDHOUSE_LOG_LEVEL}-${level}" in
+                DEBUG-DEBUG)
+                    echo "${LOG_DEBUG}$*" | log_dest DEBUG
+                ;;
+                DEBUG-INFO|INFO-INFO)
+                    echo "${LOG_INFO}$*" | log_dest INFO
+                ;;
+                DEBUG-WARN|INFO-WARN|WARN-WARN)
+                    echo "${LOG_WARN}$*" | log_dest WARN
+                ;;
+                *-ERROR)
+                    echo "${LOG_ERROR}$*" | log_dest ERROR
+                ;;
+                *-DEBUG|*-INFO|*-WARN)
+                ;;
+                *)
+                    echo "${LOG_CRITICAL}Invalid log level: [${level}]" | log_dest CRITICAL
+                    exit 2
+                ;;
+            esac
         ;;
         *)
             echo "${LOG_CRITICAL}Invalid log level setting: [BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL}]." | log_dest CRITICAL
