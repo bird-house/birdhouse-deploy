@@ -3,6 +3,24 @@
 # Extract Jupyter users from Magpie DB so we can send announcements to all
 # Jupyter users.
 #
+# Environment variable EXTRACT_JUPYTER_USERS_FROM_MAGPIE_DB_QUERY can be set to
+# customize the query in env.local.
+#
+#   Example: list all users, except those in group1 and group2
+#
+#     EXTRACT_JUPYTER_USERS_FROM_MAGPIE_DB_QUERY="${EXTRACT_JUPYTER_USERS_FROM_MAGPIE_DB_QUERY:-"
+#     SELECT users.email,users.user_name
+#     FROM users
+#     WHERE users.id NOT IN
+#       (SELECT users_groups.user_id
+#        FROM users_groups
+#        WHERE users_groups.group_id IN
+#           (SELECT id FROM groups
+#            WHERE group_name IN ('group1', 'group2')
+#           )
+#       )
+#     "}"
+#
 # Sample output:
 #
 # $ ./scripts/extract-jupyter-users-from-magpie-db  > /tmp/out
@@ -24,6 +42,10 @@ THIS_DIR="$(dirname "${THIS_FILE}")"
 COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
 if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
+
+    # Not working: Silence warnings in this simple script.
+    #export BIRDHOUSE_LOG_QUIET=True
+
     . "${COMPOSE_DIR}/read-configs.include.sh"
 
     # Get POSTGRES_MAGPIE_USERNAME, MAGPIE_DB_NAME.
@@ -32,5 +54,5 @@ fi
 
 set -x
 
-echo "SELECT email,user_name FROM users ORDER BY email" | \
+echo "${EXTRACT_JUPYTER_USERS_FROM_MAGPIE_DB_QUERY:="SELECT email,user_name FROM users ORDER BY email"}" | \
   docker exec -i postgres-magpie psql -U "${POSTGRES_MAGPIE_USERNAME}" "${MAGPIE_DB_NAME}"
