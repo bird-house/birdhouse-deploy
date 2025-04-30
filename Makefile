@@ -1,3 +1,10 @@
+# Ensure that directory of this Makefile is found correctly
+#	This handles when called directly ('make' with this directory), from another directory (make -C '<>' ...),
+#	when 'include <>' within another Makefile points to this one (leading to the list of Makefiles),
+#	and when the previous Makefile including this one is itself called from elsewhere with 'make -C'.
+override BIRDHOUSE_MAKE_CUR := $(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+override BIRDHOUSE_MAKE_DIR := $(shell realpath -P $$(dirname $(BIRDHOUSE_MAKE_CUR)))
+
 # Generic variables
 override SHELL       := bash
 override APP_NAME    := birdhouse-deploy
@@ -213,7 +220,7 @@ version:	## Display project version
 
 ### Execution Targets ###
 
-SCRIPT ?= bin/birdhouse	## Script to run the stack
+SCRIPT ?= $(BIRDHOUSE_MAKE_DIR)/bin/birdhouse	## Script to run the stack
 SCRIPT := $(call clean_opt,$(SCRIPT))
 
 .PHONY: start
