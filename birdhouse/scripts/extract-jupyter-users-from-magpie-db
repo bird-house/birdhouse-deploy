@@ -19,6 +19,7 @@
 #            WHERE group_name IN ('group1', 'group2')
 #           )
 #       )
+#     ORDER BY users.email
 #     "}"
 #
 # Sample output:
