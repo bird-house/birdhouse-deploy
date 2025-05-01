@@ -15,7 +15,18 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Forward correct headers through `twitcher` for the `stac` service
+
+  The nginx configuration for `twitcher` was creating a `Forwarded` header to help `stac` construct a `base_url`
+  behind the reverse proxy. However, with newer versions of `stac-fastapi` (the application running the `stac`
+  service), the `Forwarded` header is being parsed incorrectly which means that the `base_url` was incorrectly
+  formed.
+
+  This change removes the problematic `Forwarded` header and instead send the information to the `stac` application
+  using the `X-Forwarded-Port`, `X-Forwarded-Proto`, and `X-Forwarded-Host` headers. This technique allows `stac` 
+  to generate the correct `base_url` for all versions (up to the current version 5). 
 
 [2.13.1](https://github.com/bird-house/birdhouse-deploy/tree/2.13.1) (2025-04-28)
 ------------------------------------------------------------------------------------------------------------------
