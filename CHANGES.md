@@ -23,6 +23,28 @@
   the `birdhouse-deploy` directory, the invoked script path would be invalid. Path resolution is improved
   to allow calls from anywhere, as well as, including the Makefile within an external one seamlessly.
 
+[2.13.1](https://github.com/bird-house/birdhouse-deploy/tree/2.13.1) (2025-04-28)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyter env: new full build with significant changes to the Anaconda environment dependency composition.
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#147](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/147)
+  for more info.
+
+
+[2.13.0](https://github.com/bird-house/birdhouse-deploy/tree/2.13.0) (2025-04-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Deprecate `portainer` component
+
+  The portainer component is not currently being used and is not actually usable outside of a very specific
+  host machine configuration. This change deprecates the component by moving it to the `deprecated-components`
+  directory. It can still be enabled from that path if desired.
+
 [2.12.0](https://github.com/bird-house/birdhouse-deploy/tree/2.12.0) (2025-04-03)
 ------------------------------------------------------------------------------------------------------------------
 
