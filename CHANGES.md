@@ -15,6 +15,8 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Fixes
+
 - Makefile: Ensure the `bin/birdhouse` path employed by default resolves from anywhere.
 
   Previously, if `make -C path/to/birdhouse-deploy {target}` was invoked from anywhere else than within
