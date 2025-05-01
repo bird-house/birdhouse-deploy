@@ -9,17 +9,17 @@
 #   Example: list all users, except those in group1 and group2
 #
 #     EXTRACT_JUPYTER_USERS_FROM_MAGPIE_DB_QUERY="${EXTRACT_JUPYTER_USERS_FROM_MAGPIE_DB_QUERY:-"
-#     SELECT users.email,users.user_name
+#     SELECT email,user_name
 #     FROM users
-#     WHERE users.id NOT IN
-#       (SELECT users_groups.user_id
+#     WHERE id NOT IN
+#       (SELECT user_id
 #        FROM users_groups
-#        WHERE users_groups.group_id IN
+#        WHERE group_id IN
 #           (SELECT id FROM groups
 #            WHERE group_name IN ('group1', 'group2')
 #           )
 #       )
-#     ORDER BY users.email
+#     ORDER BY email
 #     "}"
 #
 # Sample output:
