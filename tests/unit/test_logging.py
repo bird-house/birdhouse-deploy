@@ -5,17 +5,25 @@ import subprocess
 import pytest
 
 LOG_LEVELS = ("DEBUG", "INFO", "WARN", "ERROR")
+UNSET_VARS = {
+    "BIRDHOUSE_LOG_FD",
+    "BIRDHOUSE_LOG_FILE",
+    "BIRDHOUSE_LOG_LEVEL",
+    "BIRDHOUSE_LOG_DEST_OVERRIDE",
+    "BIRDHOUSE_LOG_QUIET",
+}
 
 
 @pytest.fixture
 def run(root_dir):
-    def _(command, expect_error=False, log_level="INFO", supported_interface=True, **kwargs):
+    def _(command, expect_error=False, log_level=None, supported_interface=True, **kwargs):
         kwargs["env"] = {
-            **kwargs.get("env", os.environ),
-            "BIRDHOUSE_LOG_LEVEL": log_level,
+            **kwargs.get("env", {k: v for k, v in os.environ.items() if k not in UNSET_VARS}),
             "__BIRDHOUSE_SUPPORTED_INTERFACE": str(supported_interface),
             "TERM": os.getenv("TERM", "linux"),
         }
+        if log_level:
+            kwargs["env"]["BIRDHOUSE_LOG_LEVEL"] = log_level
         command = f". {root_dir / 'birdhouse' / 'scripts' / 'logging.include.sh'}; {command}"
         proc = subprocess.run(
             str(command),
@@ -39,7 +47,7 @@ def test_filter_default_info(run, message_level):
     """
     Test that log messages are only shown by default when the log message level is at least INFO.
     """
-    proc = run(f"log {message_level} test", log_level="")
+    proc = run(f"log {message_level} test")
     error_msg = f"Log message with level '{message_level}' should{{}} be logged when log level is INFO"
     if LOG_LEVELS.index(message_level) < 1:
         assert not proc.stderr, error_msg.format(" not")
