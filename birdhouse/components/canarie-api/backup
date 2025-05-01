@@ -1,0 +1,15 @@
+#!/bin/sh
+
+backup_application() {
+  _do_backup() {
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup --entrypoint sh canarie-api -c 'cp -a /data/ /backup/canarie-api'
+  }
+  do_backup 'canarie-api sqlite database' _do_backup 'canarie-api' 
+}
+
+restore_application() {
+  _do_restore() { 
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup --entrypoint sh canarie-api -c 'rm -fr /data/* && cp -a /backup/canarie-api/* /data'
+  }
+  do_restore 'canarie-api sqlite database' _do_restore 'canarie-api' 'canarie-api'
+}

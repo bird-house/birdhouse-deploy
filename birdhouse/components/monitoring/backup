@@ -1,0 +1,50 @@
+#!/bin/sh
+
+_description='prometheus monitoring data and session files
+grafana monitoring data and session files
+alertmanager monitoring nflog and silences data'
+
+backup_application() {
+  _do_backup() {
+    docker run  --network "${COMPOSE_PROJECT_NAME}_default" \
+                --rm \
+                --entrypoint=sh \
+                --user=root \
+                --volume prometheus_persistence:/persist \
+                --volume ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+                ${CURL_IMAGE} \
+                -c 'snapshot="/persist/snapshots/$(curl -X POST http://prometheus:9090/prometheus/api/v1/admin/tsdb/snapshot | grep -o "[[:digit:]]\\{8\\}T[[:digit:]]\\{1,\\}Z-[[:alnum:]]\\{1,\\}")"; mkdir -p /backup/monitoring; cp -a "${snapshot}" /backup/monitoring/prometheus;'
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v grafana_persistence:/persist \
+               "${BASH_IMAGE}" \
+               sh -c 'mkdir -p /backup/monitoring; cp -a /persist /backup/monitoring/grafana;'
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v alertmanager_persistence:/persist \
+               "${BASH_IMAGE}" \
+               sh -c 'mkdir -p /backup/monitoring; cp -a /persist /backup/monitoring/alertmanager'
+  }
+  do_backup "$_description" _do_backup 'grafana alertmanager'
+}
+
+restore_application() {
+  _do_restore() { 
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+                --volume prometheus_persistence:/persist \
+               "${BASH_IMAGE}" \
+               sh -c 'rm -fr /persist/* && cp -a /backup/monitoring/prometheus/* /persist/'
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v grafana_persistence:/persist \
+               "${BASH_IMAGE}" \
+               sh -c 'rm -fr /persist/* && cp -a /backup/monitoring/grafana/* /persist/'
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v alertmanager_persistence:/persist \
+               "${BASH_IMAGE}" \
+               sh -c 'rm -fr /persist/* && cp -a /backup/monitoring/alertmanager/* /persist/'
+  }
+  do_restore "$_description" _do_restore 'monitoring' 'prometheus grafana alertmanager'
+}

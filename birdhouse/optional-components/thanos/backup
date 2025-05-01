@@ -1,0 +1,19 @@
+#!/bin/sh
+
+_get_thanos_containers() {
+  [ "${BIRDHOUSE_BACKUP_DRY_RUN}" = 'true' ] || ${BIRDHOUSE_EXE} --quiet compose ps --format '{{.Name}}' | grep '^thanos-'
+}
+
+backup_application() {
+  _do_backup() {
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup thanos-minio sh -c 'cp -a /data /backup/thanos'
+  }
+  do_backup 'thanos backup metrics' _do_backup "$(_get_thanos_containers)"
+}
+
+restore_application() {
+  _do_restore() { 
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup thanos-minio sh -c 'rm -fr /data/* && cp -a /backup/thanos/* /data/'
+  }
+  do_restore 'thanos backup metrics' _do_restore 'thanos' "$(_get_thanos_containers)"
+}

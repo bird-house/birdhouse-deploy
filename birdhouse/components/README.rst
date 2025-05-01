@@ -61,8 +61,9 @@ component directory to the ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable in your local 
 
 * Automatically backup files
 
-- how to configure forget option
-- how to create a new backup job
+  * automatically backs up application data, user data, and logs to a restic repository (default) or a docker volume
+
+  * component location: ``optional-components/scheduler-job-backup``
 
 For additional configuration options for all these jobs see the ``env.local.example`` file
 as well as the individual ``default.env`` files in each of the component directories.

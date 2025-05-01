@@ -1,0 +1,49 @@
+#!/bin/sh
+
+_get_jupyterhub_containers() {
+  [ "${BIRDHOUSE_BACKUP_DRY_RUN}" = 'true' ] || ${BIRDHOUSE_EXE} --quiet compose ps --format '{{.Name}}' | grep '^jupyter'
+}
+
+backup_application() {
+  _do_backup() {
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v jupyterhub_data_persistence:/persist \
+               "${BASH_IMAGE}" \
+               sh -c 'mkdir -p /backup/jupyterhub; cp -a /persist/jupyterhub.sqlite /backup/jupyterhub/'  
+  }
+  do_backup 'jupyterhub sqlite database' _do_backup "$(_get_jupyterhub_containers)" 
+}
+
+restore_application() {
+  _do_restore() {
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v jupyterhub_data_persistence:/persist \
+               "${BASH_IMAGE}" \
+               cp -a /backup/jupyterhub/jupyterhub.sqlite /persist/jupyterhub.sqlite
+  }
+  do_restore 'jupyterhub sqlite database' _do_restore 'jupyterhub' "$(_get_jupyterhub_containers)"
+}
+
+backup_user() {
+  _do_backup() {
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${JUPYTERHUB_USER_DATA_DIR}:/user-data \
+               "${BASH_IMAGE}" \
+               sh -c 'cp -a /user-data /backup/jupyterhub-user-data'
+  }
+  do_backup 'jupyterhub user workspaces' _do_backup "$(_get_jupyterhub_containers)"
+}
+
+restore_user() {
+  _do_restore() {
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${JUPYTERHUB_USER_DATA_DIR}:/user-data \
+               "${BASH_IMAGE}" \
+               sh -c 'rm -fr /user-data/* && cp -a /backup/jupyterhub-user-data/* /user-data/'
+  }
+  do_restore 'jupyterhub user workspaces' _do_restore 'jupyterhub-user-data' "$(_get_jupyterhub_containers)"
+}

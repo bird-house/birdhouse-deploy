@@ -1,9 +1,0 @@
-- name: ${SCHEDULER_JOB_BACKUP_PREFIX}cowbird-user-data
-  comment: Backup user data managed by the cowbird service
-  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
-  command: "sh -c 'rm -rf /scheduler-backup/cowbird-user-data; cp -r /user-data /scheduler-backup/cowbird-user-data'"
-  dockerargs: >-
-    --name ${SCHEDULER_JOB_BACKUP_PREFIX}cowbird-user-data --rm
-    --volume ${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}:/user-data
-    --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup
-  image: '${SCHEDULER_JOB_BACKUP_COPY_FILE_IMAGE}'

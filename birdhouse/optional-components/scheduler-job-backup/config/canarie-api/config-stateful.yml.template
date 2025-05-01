@@ -1,7 +1,0 @@
-- name: ${SCHEDULER_JOB_BACKUP_PREFIX}canarie-api
-  comment: Backup database from the canarie-api service
-  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
-  command: "${SCHEDULER_JOB_BIRDHOUSE_EXE_LOC} compose run --rm -v ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup --entrypoint sh canarie-api -c 'cp -r /data /scheduler-backup/canarie-api'"
-  dockerargs: >-
-    --name ${SCHEDULER_JOB_BACKUP_PREFIX}canarie-api ${SCHEDULER_JOB_BACKUP_COMMON_ARGS}
-  image: '${SCHEDULER_JOB_BACKUP_DOCKER_IMAGE}'

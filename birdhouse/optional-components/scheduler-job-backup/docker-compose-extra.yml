@@ -1,6 +1,4 @@
 services:
   scheduler:
     volumes: 
-      - ./optional-components/scheduler-job-backup/${_SCHEDULER_JOB_BACKUP_LOCAL_ENV_FILE}:/scheduler-job-configs/backup-local-env-file.yml:ro
-      - ./optional-components/scheduler-job-backup/${_SCHEDULER_JOB_STORE_WITH_RESTIC_FILE}:/scheduler-job-configs/backup-store-backups-to-restic-repository.yml:ro
-      - ./optional-components/scheduler-job-backup/${_SCHEDULER_JOB_BACKUP_BIRDHOUSE_LOGS}:/scheduler-job-configs/backup-birdhouse-logs.yml:ro
+      - ./optional-components/scheduler-job-backup/config.yml:/scheduler-job-configs/backup.yml:ro

@@ -1,9 +1,0 @@
-- name: ${SCHEDULER_JOB_BACKUP_PREFIX}jupyterhub
-  comment: Backup database and session files from jupyterhub service
-  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
-  command: "sh -c 'rm -rf /scheduler-backup/jupyterhub; cp -r /persist /scheduler-backup/jupyterhub'"
-  dockerargs: >-
-    --name ${SCHEDULER_JOB_BACKUP_PREFIX}jupyterhub --rm 
-    --volume jupyterhub_data_persistence:/persist 
-    --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup
-  image: '${SCHEDULER_JOB_BACKUP_COPY_FILE_IMAGE}'

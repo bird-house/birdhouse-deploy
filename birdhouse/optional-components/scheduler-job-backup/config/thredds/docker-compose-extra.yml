@@ -1,4 +1,0 @@
-services:
-  scheduler:
-    volumes: 
-      - ./optional-components/scheduler-job-backup/config/thredds/${_SCHEDULER_JOB_BACKUP_COMPONENT_LOGS}:/scheduler-job-configs/backup-thredds-logs.yml:ro

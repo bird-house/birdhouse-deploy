@@ -24,6 +24,11 @@ VARS='
   $BIRDHOUSE_LOG_DIR
   $COMPOSE_DIR
   $COMPOSE_PROJECT_NAME
+  $BIRDHOUSE_EXE
+  $BIRDHOUSE_BACKUP_RESTIC_ENV_FILE
+  $BIRDHOUSE_BACKUP_VOLUME
+  $RESTIC_IMAGE
+  $DOCKER_CLI_IMAGE
 '
 
 # list of vars to be substituted in template but they do not have to be set in env.local
@@ -44,6 +49,12 @@ OPTIONAL_VARS='
   $BIRDHOUSE_SUPPORT_URL
   $BIRDHOUSE_LICENSE_URL
   $BASH_IMAGE
+  $BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS
+  $BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS
+  $BIRDHOUSE_BACKUP_SSH_KEY_DIR
+  $BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED
+  $BIRDHOUSE_LOG_LEVEL
+  $BIRDHOUSE_LOG_QUIET
 '
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
@@ -71,28 +82,32 @@ read_configs # this sets ALL_CONF_DIRS
 check_required_vars || exit $?
 
 # we apply all the templates
-if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ] || [ x"${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE}" = x"true" ]; then
-  log INFO "Updating template files found across 'BIRDHOUSE_EXTRA_CONF_DIRS' (enabled and default components)."
-  find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
-  while read FILE
-  do
-    DEST=${FILE%.template}
-    if [ -d "${DEST}" ]; then
-      # purposely using 'rmdir' to get an error if the contents are not empty
-      # this is only to handle docker-compose early generation of volume mounts
-      log WARN "Removing invalid directory for template file [${DEST}]"
-      if ! rmdir "${DEST}" 2>/dev/null; then
-        log ERROR "Cannot remove non-empty directory [${DEST}]." \
-                  "This directory should not exist as it conflicts with destination of [${FILE}]." \
-                  "Please remove it and try starting up the birdhouse stack again."
-        exit 1
+if [ "${BIRDHOUSE_COMPOSE_TEMPLATE_SKIP}" != 'true' ]; then
+  if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ] || [ x"${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE}" = x"true" ]; then
+    log INFO "Updating template files found across 'BIRDHOUSE_EXTRA_CONF_DIRS' (enabled and default components)."
+    find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
+    while read FILE
+    do
+      DEST=${FILE%.template}
+      if [ -d "${DEST}" ]; then
+        # purposely using 'rmdir' to get an error if the contents are not empty
+        # this is only to handle docker-compose early generation of volume mounts
+        log WARN "Removing invalid directory for template file [${DEST}]"
+        if ! rmdir "${DEST}" 2>/dev/null; then
+          log ERROR "Cannot remove non-empty directory [${DEST}]." \
+                    "This directory should not exist as it conflicts with destination of [${FILE}]." \
+                    "Please remove it and try starting up the birdhouse stack again."
+          exit 1
+        fi
       fi
-    fi
-    cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
-  done
-  [ "$?" -eq 1 ] && exit 1  # re-raise the subshell error of the while loop
+      cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
+    done
+    [ "$?" -eq 1 ] && exit 1  # re-raise the subshell error of the while loop
+  else
+    log DEBUG "Skipping template files update (\"$1\" not \"up\", \"restart\", or forced by BIRDHOUSE_COMPOSE_TEMPLATE_FORCE)"
+  fi
 else
-  log DEBUG "Skipping template files update (\"$1\" not \"up\", \"restart\", or forced by BIRDHOUSE_COMPOSE_TEMPLATE_FORCE)"
+  log DEBUG "Skipping template files update with BIRDHOUSE_COMPOSE_TEMPLATE_SKIP=true"
 fi
 
 SHELL_EXEC_FLAGS=
@@ -132,6 +147,7 @@ fi
 
 log INFO "Executing docker-compose with extra options: $@ ${COMPOSE_EXTRA_OPTS}"
 # the PROXY_HTTP_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
+# Use "$@" instead of $* so that quoted arguments are respected and passed to the docker compose command as expected 
 PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} "$@" ${COMPOSE_EXTRA_OPTS}
 ERR=$?
 if [ ${ERR} -gt 0 ]; then

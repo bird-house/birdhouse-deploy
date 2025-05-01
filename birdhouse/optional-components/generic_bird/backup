@@ -1,0 +1,15 @@
+#!/bin/sh
+
+backup_application() {
+  _do_backup() {
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup postgres_generic_bird sh -c 'mkdir -p /backup/generic_bird; PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -h postgres_generic_bird -U ${POSTGRES_USER} -d ${POSTGRES_DB} -Fc > /backup/generic_bird/postgres.dump'
+  }
+  do_backup 'generic_bird postgres database' _do_backup 'generic_bird' 
+}
+
+restore_application() {
+  _do_restore() {
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup postgres_generic_bird sh -c 'export PGPASSWORD=${POSTGRES_PASSWORD}; dropdb -h postgres_generic_bird -U ${POSTGRES_USER} ${POSTGRES_DB}; pg_restore -h postgres_generic_bird -U ${POSTGRES_USER} -C -d postgres /backup/generic_bird/postgres.dump'
+  }
+  do_restore 'generic_bird postgres database' _do_restore 'generic_bird' 'generic_bird'
+}

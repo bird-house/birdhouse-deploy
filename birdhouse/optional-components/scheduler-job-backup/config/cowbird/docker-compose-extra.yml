@@ -1,5 +1,0 @@
-services:
-  scheduler:
-    volumes: 
-      - ./optional-components/scheduler-job-backup/config/cowbird/${_SCHEDULER_JOB_BACKUP_STATEFUL_DATA_FILE}:/scheduler-job-configs/backup-cowbird.yml:ro
-      - ./optional-components/scheduler-job-backup/config/cowbird/${_SCHEDULER_JOB_BACKUP_USER_DATA_FILE}:/scheduler-job-configs/backup-cowbird-user-data.yml:ro

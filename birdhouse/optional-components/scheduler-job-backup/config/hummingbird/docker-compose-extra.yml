@@ -1,4 +1,0 @@
-services:
-  scheduler:
-    volumes: 
-      - ./optional-components/scheduler-job-backup/config/hummingbird/${_SCHEDULER_JOB_BACKUP_STATEFUL_DATA_FILE}:/scheduler-job-configs/backup-hummingbird.yml:ro

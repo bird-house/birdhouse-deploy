@@ -1,0 +1,37 @@
+#!/bin/sh
+
+backup_application() {
+  _do_backup() {
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup --entrypoint sh cowbird-mongodb -c "mongodump --host=cowbird-mongodb --out=/backup/cowbird/"
+  }
+  do_backup 'cowbird mongodb database' _do_backup 'cowbird cowbird-worker' 
+}
+
+restore_application() {
+  _do_restore() { 
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup --entrypoint sh cowbird-mongodb -c "mongorestore --host cowbird-mongodb --drop --dir /backup/cowbird"
+  }
+  do_restore 'cowbird mongodb database' _do_restore 'cowbird' 'cowbird cowbird-worker'
+}
+
+backup_user() {
+  _do_backup() {
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}:/user-data \
+               "${BASH_IMAGE}" \
+               sh -c 'cp -a /user-data /backup/cowbird-user-data'
+  }
+  do_backup 'cowbird user workspaces' _do_backup 'cowbird cowbird-worker jupyterhub'
+}
+
+restore_user() {
+  _do_restore() {
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}:/user-data \
+               "${BASH_IMAGE}" \
+               sh -c 'rm -fr /user-data/* && cp -a /backup/cowbird-user-data/* /user-data/'
+  }
+  do_restore 'cowbird user workspaces' _do_restore 'cowbird-user-data' 'cowbird cowbird-worker jupyterhub'
+}

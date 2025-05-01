@@ -1,9 +1,0 @@
-- name: ${SCHEDULER_JOB_BACKUP_PREFIX}thredds_logs
-  comment: Backup THREDDS logs
-  schedule: '${SCHEDULER_JOB_BACKUP_EXTRACT_FREQUENCY}'
-  command: "sh -c 'rm -rf /scheduler-backup/thredds-logs; cp -r /thredds/logs /scheduler-backup/thredds-logs'"
-  dockerargs: >-
-    --name ${SCHEDULER_JOB_BACKUP_PREFIX}thredds_logs --rm
-    --volume ${SCHEDULER_JOB_BACKUP_VOLUME}:/scheduler-backup
-    --volume thredds_persistence:/thredds
-  image: '${SCHEDULER_JOB_BACKUP_COPY_FILE_IMAGE}'
