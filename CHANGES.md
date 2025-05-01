@@ -54,6 +54,17 @@
   
   (see `env.local.example` or the `scheduler` documentation for details).
 
+[2.13.1](https://github.com/bird-house/birdhouse-deploy/tree/2.13.1) (2025-04-28)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyter env: new full build with significant changes to the Anaconda environment dependency composition.
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#147](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/147)
+  for more info.
+
+
 [2.13.0](https://github.com/bird-house/birdhouse-deploy/tree/2.13.0) (2025-04-04)
 ------------------------------------------------------------------------------------------------------------------
 
