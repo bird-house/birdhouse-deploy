@@ -39,7 +39,7 @@ def test_filter_default_info(run, message_level):
     """
     Test that log messages are only shown by default when the log message level is at least INFO.
     """
-    proc = run(f"log {message_level} test")
+    proc = run(f"log {message_level} test", log_level="")
     error_msg = f"Log message with level '{message_level}' should{{}} be logged when log level is INFO"
     if LOG_LEVELS.index(message_level) < 1:
         assert not proc.stderr, error_msg.format(" not")
