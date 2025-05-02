@@ -44,8 +44,8 @@ COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 
 if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
 
-    # Not working: Silence warnings in this simple script.
-    #export BIRDHOUSE_LOG_QUIET=True
+    # Silence warnings in this simple script.
+    export BIRDHOUSE_LOG_QUIET=True
 
     . "${COMPOSE_DIR}/read-configs.include.sh"
 
