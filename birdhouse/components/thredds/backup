@@ -8,9 +8,9 @@ backup_logs() {
                "${BASH_IMAGE}" \
                sh -c 'cp -a /persist/logs /backup/thredds-logs'
   }
-  do_backup 'thredds application logs' _do_backup 'thredds'
+  backup_create_runner 'thredds application logs' _do_backup 'thredds'
 }
 
 restore_logs() {
-  BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER=true do_restore 'thredds application logs' : 'thredds-logs'
+  BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER=true backup_restore_runner 'thredds application logs' : 'thredds-logs'
 }

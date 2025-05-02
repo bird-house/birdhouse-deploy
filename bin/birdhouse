@@ -125,7 +125,7 @@ Example Usage:
 
   $ birdhouse backup create -a '*' -u '*' -l '*' --birdhouse-logs --local-env-file # backs up everything
   $ birdhouse backup create -a magpie # backs up application data for the magpie component
-  $ birdhouse backup create -a cowbird -u cowbird -s finch # backs up application data for cowbird and finch and the user data for cowbird
+  $ birdhouse backup create -a cowbird -u cowbird -a finch # backs up application data for cowbird and finch and the user data for cowbird
 "
 
 BACKUP_RESTORE_HELP="$BACKUP_RESTORE_USAGE
@@ -321,12 +321,12 @@ ensure_birdhouse_running() {
   "$@"
 }
 
-# Backup or restore component data. This is called by the do_backup_restore function.
+# Backup or restore component data. This is called by the do_backup_create_restore function.
 # The BIRDHOUSE_BACKUP_RESTORE_COMMAND variable determines whether this will backup or restore.
 # The first argument determines whether to run a backup or restore job (must be one of 'backup' or 'restore')
 # The second argument determines which components will be backed up or restored. This argument is either a
 # space delimited string containing the names of components or the string '*' (selects all enabled components).
-do_component_backup_restore() {
+do_component_backup_create_restore() {
   backup_restore_type="$1"
   confdirs=
   if echo " ${2} " | grep -q ' \* '; then
@@ -347,7 +347,7 @@ do_component_backup_restore() {
     if [ -n "${backup_script}" ] && [ -f "${backup_script}" ]; then
       (  # run this in a subprocess so that sourcing the backup_script does not modify this environment
        . "${backup_script}"
-       . "${THIS_DIR}/lib/backup-restore.include.sh"
+       . "${COMPOSE_DIR}/scripts/backup.include.sh"
        $(command -v ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_${backup_restore_type} || true)
       )
     elif [ "${backup_restore_all}" != 'true' ]; then
@@ -364,7 +364,7 @@ do_component_backup_restore() {
 # The BIRDHOUSE_BACKUP_LOGS variable determines whether the birdhouse and docker logs will be affected
 # The BIRDHOUSE_BACKUP_LOCAL_ENV_FILE variable determines whether the local environment file will be affected
 # If BIRDHOUSE_BACKUP_DRY_RUN is true, only print a report of what will happen instead of actually backing up or restoring data.
-do_backup_restore() {
+do_backup_create_restore() {
   if [ "$BIRDHOUSE_BACKUP_DRY_RUN" = "true" ]; then 
     echo "Dry-run: this would run ${BIRDHOUSE_BACKUP_RESTORE_COMMAND} jobs for the following:"
   else
@@ -372,12 +372,12 @@ do_backup_restore() {
     docker volume rm "${BIRDHOUSE_BACKUP_VOLUME}"
   fi
 
-  do_component_backup_restore application "${BIRDHOUSE_BACKUP_APPLICATION_COMPONENTS}"
-  do_component_backup_restore user "${BIRDHOUSE_BACKUP_USER_COMPONENTS}"
-  do_component_backup_restore logs "${BIRDHOUSE_BACKUP_LOGS_COMPONENTS}"
+  do_component_backup_create_restore application "${BIRDHOUSE_BACKUP_APPLICATION_COMPONENTS}"
+  do_component_backup_create_restore user "${BIRDHOUSE_BACKUP_USER_COMPONENTS}"
+  do_component_backup_create_restore logs "${BIRDHOUSE_BACKUP_LOGS_COMPONENTS}"
 
-  [ "${BIRDHOUSE_BACKUP_LOGS}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${THIS_DIR}/lib/backup-restore.include.sh"; ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_logs)
-  [ "${BIRDHOUSE_BACKUP_LOCAL_ENV_FILE}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${THIS_DIR}/lib/backup-restore.include.sh"; ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_local_env_file)
+  [ "${BIRDHOUSE_BACKUP_LOGS}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${COMPOSE_DIR}/scripts/backup.include.sh"; ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_logs)
+  [ "${BIRDHOUSE_BACKUP_LOCAL_ENV_FILE}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${COMPOSE_DIR}/scripts/backup.include.sh"; ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_local_env_file)
 
   [ "$BIRDHOUSE_BACKUP_DRY_RUN" = "true" ] || BIRDHOUSE_COMPOSE_TEMPLATE_SKIP=true "${THIS_FILE}" --quiet compose restart proxy 
 
@@ -522,7 +522,7 @@ parse_backup_create_args() {
       ;;
     '')
       BIRDHOUSE_BACKUP_RESTORE_COMMAND=backup
-      ensure_birdhouse_running do_backup_restore
+      ensure_birdhouse_running do_backup_create_restore
       exit
       ;;
     *)
@@ -556,7 +556,7 @@ parse_backup_restore_args() {
     '')
       [ -n "$BIRDHOUSE_RESTORE_SNAPSHOT" ] || parse_backup_restore_args 'invalid arg that triggers usage message'
       BIRDHOUSE_BACKUP_RESTORE_COMMAND=restore
-      ensure_birdhouse_running do_backup_restore
+      ensure_birdhouse_running do_backup_create_restore
       exit
       ;;
     *)

@@ -13,7 +13,7 @@ backup_application() {
                 ${CURL_IMAGE} \
                 -c 'snapshot="/persist/snapshots/$(curl -X POST http://prometheus-longterm-metrics:9090/prometheus-longterm-metrics/api/v1/admin/tsdb/snapshot | grep -o "[[:digit:]]\\{8\\}T[[:digit:]]\\{1,\\}Z-[[:alnum:]]\\{1,\\}")"; cp -a "${snapshot}" /backup/prometheus-longterm-metrics;'
   }
-  do_backup 'prometheus-longterm-metrics data and session files' _do_backup
+  backup_create_runner 'prometheus-longterm-metrics data and session files' _do_backup
 }
 
 restore_application() {
@@ -24,5 +24,5 @@ restore_application() {
                "${BASH_IMAGE}" \
                sh -c 'rm -fr /persist/* && cp -a /backup/prometheus-longterm-metrics/* /persist/'
   }
-  do_restore 'prometheus-longterm-metrics data and session files' _do_restore 'prometheus-longterm-metrics' 'prometheus-longterm-metrics'
+  backup_restore_runner 'prometheus-longterm-metrics data and session files' _do_restore 'prometheus-longterm-metrics' 'prometheus-longterm-metrics'
 }

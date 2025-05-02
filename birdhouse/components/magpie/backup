@@ -4,12 +4,12 @@ backup_application() {
   _do_backup() {
     ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup postgres-magpie sh -c 'mkdir -p /backup/magpie; PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -h ${MAGPIE_POSTGRES_HOST} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -Fc > /backup/magpie/postgres.dump'
   }
-  do_backup 'magpie postgres database' _do_backup 'magpie twitcher' 
+  backup_create_runner 'magpie postgres database' _do_backup 'magpie twitcher' 
 }
 
 restore_application() {
   _do_restore() { 
     ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup postgres-magpie sh -c 'export PGPASSWORD=${POSTGRES_PASSWORD}; dropdb -h ${MAGPIE_POSTGRES_HOST} -U ${POSTGRES_USER} ${POSTGRES_DB}; pg_restore -h ${MAGPIE_POSTGRES_HOST} -U ${POSTGRES_USER} -C -d postgres /backup/magpie/postgres.dump'
   }
-  do_restore 'magpie postgres database' _do_restore 'magpie' 'magpie twitcher'
+  backup_restore_runner 'magpie postgres database' _do_restore 'magpie' 'magpie twitcher'
 }

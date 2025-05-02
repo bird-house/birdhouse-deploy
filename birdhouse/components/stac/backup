@@ -5,12 +5,12 @@ backup_application() {
 
     ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup stac-db sh -c 'mkdir -p /backup/stac; pg_dump -h stac-db -d ${PGDATABASE} -Fc > /backup/stac/postgres.dump'
   }
-  do_backup 'stac postgis database' _do_backup 'stac' 
+  backup_create_runner 'stac postgis database' _do_backup 'stac' 
 }
 
 restore_application() {
   _do_restore() { 
     ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup stac-db sh -c 'dropdb -h stac-db ${PGDATABASE}; pg_restore -h stac-db -C -d postgres /backup/stac/postgres.dump'
   }
-  do_restore 'stac postgis database' _do_restore 'stac' 'stac'
+  backup_restore_runner 'stac postgis database' _do_restore 'stac' 'stac'
 }

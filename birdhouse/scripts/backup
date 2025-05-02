@@ -10,7 +10,7 @@ backup_logs() {
                                                        "${BASH_IMAGE}" \
                                                        sh -c 'mkdir -p '/backup/birdhouse-logs/docker-container-logs'; while read -r line; do echo "${line#*|}" >> "$(printf "/backup/birdhouse-logs/docker-container-logs/%s.log" ${line%%|*})"; done'
   }
-  do_backup 'birdhouse logs and docker container logs' _do_backup
+  backup_create_runner 'birdhouse logs and docker container logs' _do_backup
 }
 
 backup_local_env_file() {
@@ -21,14 +21,14 @@ backup_local_env_file() {
                "${BASH_IMAGE}" \
                sh -c 'mkdir -p /backup/birdhouse/; cp -a /birdhouse-local-env /backup/birdhouse/env.local'
   }
-  do_backup 'birdhouse local environment file' _do_backup
+  backup_create_runner 'birdhouse local environment file' _do_backup
 
 }
 
 restore_logs() {
-  BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER=true do_restore 'birdhouse logs and docker container logs' : 'birdhouse-logs' 
+  BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER=true backup_restore_runner 'birdhouse logs and docker container logs' : 'birdhouse-logs' 
 }
 
 restore_local_env_file() {
-  BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER=true do_restore 'birdhouse local environment file' : 'birdhouse'
+  BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER=true backup_restore_runner 'birdhouse local environment file' : 'birdhouse'
 }

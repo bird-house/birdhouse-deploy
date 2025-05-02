@@ -12,7 +12,7 @@ backup_application() {
                "${BASH_IMAGE}" \
                sh -c 'mkdir -p /backup/jupyterhub; cp -a /persist/jupyterhub.sqlite /backup/jupyterhub/'  
   }
-  do_backup 'jupyterhub sqlite database' _do_backup "$(_get_jupyterhub_containers)" 
+  backup_create_runner 'jupyterhub sqlite database' _do_backup "$(_get_jupyterhub_containers)" 
 }
 
 restore_application() {
@@ -23,7 +23,7 @@ restore_application() {
                "${BASH_IMAGE}" \
                cp -a /backup/jupyterhub/jupyterhub.sqlite /persist/jupyterhub.sqlite
   }
-  do_restore 'jupyterhub sqlite database' _do_restore 'jupyterhub' "$(_get_jupyterhub_containers)"
+  backup_restore_runner 'jupyterhub sqlite database' _do_restore 'jupyterhub' "$(_get_jupyterhub_containers)"
 }
 
 backup_user() {
@@ -34,7 +34,7 @@ backup_user() {
                "${BASH_IMAGE}" \
                sh -c 'cp -a /user-data /backup/jupyterhub-user-data'
   }
-  do_backup 'jupyterhub user workspaces' _do_backup "$(_get_jupyterhub_containers)"
+  backup_create_runner 'jupyterhub user workspaces' _do_backup "$(_get_jupyterhub_containers)"
 }
 
 restore_user() {
@@ -45,5 +45,5 @@ restore_user() {
                "${BASH_IMAGE}" \
                sh -c 'rm -fr /user-data/* && cp -a /backup/jupyterhub-user-data/* /user-data/'
   }
-  do_restore 'jupyterhub user workspaces' _do_restore 'jupyterhub-user-data' "$(_get_jupyterhub_containers)"
+  backup_restore_runner 'jupyterhub user workspaces' _do_restore 'jupyterhub-user-data' "$(_get_jupyterhub_containers)"
 }

@@ -25,7 +25,7 @@ backup_application() {
                "${BASH_IMAGE}" \
                sh -c 'mkdir -p /backup/monitoring; cp -a /persist /backup/monitoring/alertmanager'
   }
-  do_backup "$_description" _do_backup 'grafana alertmanager'
+  backup_create_runner "$_description" _do_backup 'grafana alertmanager'
 }
 
 restore_application() {
@@ -46,5 +46,5 @@ restore_application() {
                "${BASH_IMAGE}" \
                sh -c 'rm -fr /persist/* && cp -a /backup/monitoring/alertmanager/* /persist/'
   }
-  do_restore "$_description" _do_restore 'monitoring' 'prometheus grafana alertmanager'
+  backup_restore_runner "$_description" _do_restore 'monitoring' 'prometheus grafana alertmanager'
 }
