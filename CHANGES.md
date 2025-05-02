@@ -15,6 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Changes
+
+- Update `stac` service to use `crim-ca/stac-app:1.1.0` image
+
+  This updates the version of `stac-fastapi` to version 5 (currently the latest) and resolves and issue
+  where paging links did not work properly.
+
+  See more details [here](https://github.com/crim-ca/stac-app/pull/27).
+
 ## Fixes
 
 - Forward correct headers through `twitcher` for the `stac` service
