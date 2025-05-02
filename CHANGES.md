@@ -54,6 +54,28 @@
   
   (see `env.local.example` or the `scheduler` documentation for details).
 
+
+[2.13.2](https://github.com/bird-house/birdhouse-deploy/tree/2.13.2) (2025-05-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Log multiple lines
+
+  Allow the `log` command (defined in `scripts/logging.include.sh`) to log messages that span multiple lines.
+  This also adds unit tests for the `scripts/logging.include.sh` file.
+
+## Fixes
+
+- Logging bug fixes:
+
+  - Setting `NO_COLOR` or setting `BIRDHOUSE_COLOR` to a non-integer value raised an error since `BIRDHOUSE_COLOR`
+    was tested with the numeric comparison `-eq`. This has now been fixed.
+
+  - Providing an invalid log message level (e.g. `log BADLEVEL message`) would log a critical error message but not
+    exit unless the `set -o pipefail` option was set. This has been updated so that the script will exit as intended
+    even if the `pipefail` option is not set.
+
 [2.13.1](https://github.com/bird-house/birdhouse-deploy/tree/2.13.1) (2025-04-28)
 ------------------------------------------------------------------------------------------------------------------
 
