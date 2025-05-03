@@ -17,6 +17,17 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.13.3](https://github.com/bird-house/birdhouse-deploy/tree/2.13.3) (2025-05-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Makefile: Ensure the `bin/birdhouse` path employed by default resolves from anywhere.
+
+  Previously, if `make -C path/to/birdhouse-deploy {target}` was invoked from anywhere else than within
+  the `birdhouse-deploy` directory, the invoked script path would be invalid. Path resolution is improved
+  to allow calls from anywhere, as well as, including the Makefile within an external one seamlessly.
+
 [2.13.2](https://github.com/bird-house/birdhouse-deploy/tree/2.13.2) (2025-05-02)
 ------------------------------------------------------------------------------------------------------------------
 
