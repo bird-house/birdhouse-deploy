@@ -146,6 +146,52 @@
   This became apparent when this script is run by the `optional-components/scheduler-job-backup` job which runs
   in an alpine based docker container.
 
+[2.13.5](https://github.com/bird-house/birdhouse-deploy/tree/2.13.5) (2025-05-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Script `extract-jupyter-users-from-magpie-db`: allow to customize the query
+
+  An example query is provided if we want to list all users, except if they
+  belong to some groups.
+
+
+[2.13.4](https://github.com/bird-house/birdhouse-deploy/tree/2.13.4) (2025-05-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `stac` service to use `crim-ca/stac-app:1.1.0` image
+
+  This updates the version of `stac-fastapi` to version 5 (currently the latest) and resolves and issue
+  where paging links did not work properly.
+
+  See more details [here](https://github.com/crim-ca/stac-app/pull/27).
+
+## Fixes
+
+- Forward correct headers through `twitcher` for the `stac` service
+
+  The nginx configuration for `twitcher` was creating a `Forwarded` header to help `stac` construct a `base_url`
+  behind the reverse proxy. However, with newer versions of `stac-fastapi` (the application running the `stac`
+  service), the `Forwarded` header is being parsed incorrectly which means that the `base_url` was incorrectly
+  formed.
+
+  This change removes the problematic `Forwarded` header and instead send the information to the `stac` application
+  using the `X-Forwarded-Port`, `X-Forwarded-Proto`, and `X-Forwarded-Host` headers. This technique allows `stac` 
+  to generate the correct `base_url` for all versions (up to the current version 5). 
+
+[2.13.3](https://github.com/bird-house/birdhouse-deploy/tree/2.13.3) (2025-05-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Makefile: Ensure the `bin/birdhouse` path employed by default resolves from anywhere.
+
+  Previously, if `make -C path/to/birdhouse-deploy {target}` was invoked from anywhere else than within
+  the `birdhouse-deploy` directory, the invoked script path would be invalid. Path resolution is improved
+  to allow calls from anywhere, as well as, including the Makefile within an external one seamlessly.
 
 [2.13.2](https://github.com/bird-house/birdhouse-deploy/tree/2.13.2) (2025-05-02)
 ------------------------------------------------------------------------------------------------------------------
