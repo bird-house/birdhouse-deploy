@@ -77,7 +77,8 @@ BACKUP_CREATE_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] backup [ba
                                                                                                      [[-u|--component-user-data component], ...] 
                                                                                                      [[-l|--component-logs-data component], ...]                                                                                                     
                                                                                                      [--birdhouse-logs] 
-                                                                                                     [--local-env-file]"
+                                                                                                     [--local-env-file]
+                                                                                                     [--no-restic]"
 BACKUP_CREATE_USAGE=$(echo $BACKUP_CREATE_USAGE | tr "\n" " ")
 
 BACKUP_RESTORE_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] backup [backup options] restore -s|--snapshot snaphot
@@ -116,6 +117,7 @@ Options:
   -l, --component-logs-data           Backup logs data for a given component (e.g. thredds). This can be specified multiple times. Use '*' to select all components.
   --birdhouse-logs                    Backup birdhouse logs and docker container logs
   --local-env-file                    Backup local environment file
+  --no-restic                         Do not save this backup as a restic snapshot. This will only backup the data to the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
 
 Note:
   Not all components store application application data, user data, or log data. Depending on the component, some or none of these
@@ -381,7 +383,7 @@ do_backup_create_restore() {
 
   [ "$BIRDHOUSE_BACKUP_DRY_RUN" = "true" ] || BIRDHOUSE_COMPOSE_TEMPLATE_SKIP=true "${THIS_FILE}" --quiet compose restart proxy 
 
-  if [ "${BIRDHOUSE_BACKUP_RESTORE_COMMAND}" = 'backup' ] && [ "$BIRDHOUSE_BACKUP_DRY_RUN" != "true" ]; then
+  if [ "${BIRDHOUSE_BACKUP_RESTORE_COMMAND}" = 'backup' ] && [ "$BIRDHOUSE_BACKUP_DRY_RUN" != "true" ] && [ "$BIRDHOUSE_BACKUP_RESTORE_NO_RESTIC" != "true" ]; then
     # initialize the restic repository if it doesn't exist 
     if ! do_restic cat config 2>/dev/null > /dev/null; then
       do_restic init || exit $?
@@ -519,6 +521,11 @@ parse_backup_create_args() {
     -h|--help)
       echo "${BACKUP_CREATE_HELP}" | more
       exit
+      ;;
+    --no-restic)
+      shift
+      export BIRDHOUSE_BACKUP_RESTORE_NO_RESTIC=true
+      parse_backup_create_args "$@"
       ;;
     '')
       BIRDHOUSE_BACKUP_RESTORE_COMMAND=backup
