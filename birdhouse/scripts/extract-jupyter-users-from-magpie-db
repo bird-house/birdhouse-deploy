@@ -49,11 +49,11 @@ if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
 
     . "${COMPOSE_DIR}/read-configs.include.sh"
 
-    # Get POSTGRES_MAGPIE_USERNAME, MAGPIE_DB_NAME.
+    # Get EXTRACT_JUPYTER_USERS_FROM_MAGPIE_DB_QUERY
     read_configs
 fi
 
 set -x
 
 echo "${EXTRACT_JUPYTER_USERS_FROM_MAGPIE_DB_QUERY:="SELECT email,user_name FROM users ORDER BY email"}" | \
-  docker exec -i postgres-magpie psql -U "${POSTGRES_MAGPIE_USERNAME}" "${MAGPIE_DB_NAME}"
+  docker exec -i postgres-magpie sh -c 'psql -U "${POSTGRES_USER}" "${POSTGRES_DB}"'
