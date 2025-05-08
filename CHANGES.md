@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.13.5](https://github.com/bird-house/birdhouse-deploy/tree/2.13.5) (2025-05-08)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Script `extract-jupyter-users-from-magpie-db`: allow to customize the query
