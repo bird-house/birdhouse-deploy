@@ -1,0 +1,4 @@
+services:
+  scheduler:
+    volumes: 
+      - ./optional-components/scheduler-job-logrotate/config.yml:/scheduler-job-configs/logrotate.yml:ro
