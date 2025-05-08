@@ -477,6 +477,83 @@ Release Procedure
 
   * Run ``git push --tags`` to upload the new version.
 
+.. backups::
+
+Backups
+-------
+
+Backups of data used by the birdhouse stack can be generated using the ``bin/birdhouse backup`` command
+and its various subcommands.
+
+This allows users to backup and restore:
+
+* application data, user data, and log data for all components
+* birdhouse logs
+* docker container logs
+* local environement file
+
+Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository and can be restored
+either to a named volume (determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable) or in the case
+of user data and application data, it can directly overwrite the current data with the backup.
+
+For details about the backup and restore commands run any of the following:
+
+.. code-block:: shell
+
+    bin/birdhouse backup --help
+    bin/birdhouse backup create --help
+    bin/birdhouse backup restore --help
+
+Configure the restic repository
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository which can be 
+configured by creating a file at the location determined by the ``BIRDHOUSE_BACKUP_RESTIC_ENV_FILE`` configuration
+variable (default: ``birdhouse/restic.env``). 
+
+This file contains environment variables which are used by restic to determine how to create and access the 
+repository where backups are stored. 
+
+A list of all environment variables that are used by restic can be found in the 
+`documentation <https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables>`_.
+
+Restic supports backing up data locally, remotely using the SFTP protocol, as well as remotely to a variety of 
+repository types including AWS, Azure, S3, restic REST server, and many more.
+
+Depending on which repository type and access method you want to use, different environment variables may be required.
+
+Some basic examples can be found in the ``birdhouse/restic.env.example`` file but please refer to the 
+`documentation <https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables>`_ for all available
+options.
+
+Additional configuration options
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following configuration variables can be set in the local environment file to further configure
+the backup and restore jobs.
+
+* ``BIRDHOUSE_BACKUP_SSH_KEY_DIR``
+
+  * The location of a directory that contains an SSH key used to access a remote machine where the restic repository
+    is hosted. Required if accessing a restic repository using the sftp protocol.
+
+* ``BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS``
+
+  * Additional options to pass to the restic backup command when running the birdhouse backup create command.
+
+  * For example: ``'--skip-if-unchanged --exclude-file "file-i-do-not-want-backedup.py"``
+
+* ``BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS``
+
+  * Additional options to pass to the ``restic forget`` command after running the backup job. 
+  
+  * This allows you to ensure that restic deletes old backups according to your backup retention policy.
+
+  * If this is set, then restic will also run the ``restic prune`` command after every backup to clean up 
+    old backup files.
+
+  * For example, to store backups daily for 1 week, weekly for 1 month, and monthly for a year:
+    ``'--keep-daily=7 --keep-weekly=4 --keep-monthly=12'``
 
 .. _nginx.conf: ./components/proxy/nginx.conf
 .. _default.env: ./default.env
