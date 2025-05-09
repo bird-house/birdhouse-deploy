@@ -34,6 +34,20 @@
   - Various bug fixes and security vulnerability fixes.
 
   For full changelog details, see [Weaver Changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html).
+  
+- Cowbird: Update version [`2.5.1`](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#251-2025-05-06) 
+  for security fixes.
+
+[2.13.5](https://github.com/bird-house/birdhouse-deploy/tree/2.13.5) (2025-05-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Script `extract-jupyter-users-from-magpie-db`: allow to customize the query
+
+  An example query is provided if we want to list all users, except if they
+  belong to some groups.
+
 
 [2.13.4](https://github.com/bird-house/birdhouse-deploy/tree/2.13.4) (2025-05-05)
 ------------------------------------------------------------------------------------------------------------------
