@@ -70,7 +70,7 @@
       is hosted. Required if accessing a restic repository using the sftp protocol.
   - `BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS`: 
     - Additional options to pass to the `restic backup` command when running the `birdhouse backup create` command.
-       For example: `BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS='--skip-if-unchanged --exclude-file "file-i-do-not-want-backedup.py"`
+       For example: `BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS='--skip-if-unchanged --exclude-file "file-i-do-not-want-backedup.txt"`
   - `BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS`:
     - Additional options to pass to the `restic forget` command after running the backup job. This allows you to ensure 
       that restic deletes old backups according to your backup retention policy. If this is set, then restic will also 

@@ -541,7 +541,7 @@ the backup and restore jobs.
 
   * Additional options to pass to the restic backup command when running the birdhouse backup create command.
 
-  * For example: ``'--skip-if-unchanged --exclude-file "file-i-do-not-want-backedup.py"``
+  * For example: ``'--skip-if-unchanged --exclude-file "file-i-do-not-want-backedup.txt"``
 
 * ``BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS``
 
