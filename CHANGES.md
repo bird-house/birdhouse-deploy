@@ -15,8 +15,31 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.14.0](https://github.com/bird-house/birdhouse-deploy/tree/2.14.0) (2025-05-12)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
+- Weaver: update `weaver` component default version to [6.6.0](https://github.com/crim-ca/weaver/tree/6.6.0).
+
+  Notable changes include:
+  
+  - Added HTML representation of job status.
+  - Added alternate job `Profile` representations for interoperability with other clients like *WPS* and *openEO*.
+  - Adjust job `status` value for `successful` instead of `succeeded` in accordance to latest OGC API standard edits.
+    If clients were defined with explicit checks of the older value, they can request that job representation using
+    query parameters `?profile=wps&f=json`. Otherwise, it is preferable that scripts are updated to allow either value
+    to ensure the statuses are resolved correctly regardless of Weaver version employed by the server.
+  - Docker build employs [Provenance](https://docs.docker.com/build/metadata/attestations/slsa-provenance)
+    and [Software Bill of Materials (SBOM)](https://docs.docker.com/build/metadata/attestations/sbom) for
+    traceable dependencies, validation of references, and trust for replicable execution pipelines.
+  - Update Python 3.11 to Python 3.12 in the distributed Docker image.
+  - Various bug fixes and security vulnerability fixes.
+
+  For full changelog details, see [Weaver Changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html).
+  
 - Cowbird: Update version [`2.5.1`](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#251-2025-05-06) 
   for security fixes.
 
