@@ -90,21 +90,21 @@ def test_help_with_invalid_arg(cli_path, run):
 def test_usage_no_args(cli_path, run):
     proc = run(cli_path, expect_error=True)
     assert "USAGE:" in proc.stderr
-    assert len(proc.stderr.splitlines()) == 1
+    assert len(proc.stderr.splitlines()) == 2
     assert not proc.stdout
 
 
 def test_usage_invalid_arg(cli_path, run):
     proc = run(f"{cli_path} some-arg-that-does-not-go-here", expect_error=True)
     assert "USAGE:" in proc.stderr
-    assert len(proc.stderr.splitlines()) == 1
+    assert len(proc.stderr.splitlines()) == 2
     assert not proc.stdout
 
 
 def test_usage_some_invalid_arg(cli_path, run):
     proc = run(f"{cli_path} -b some-arg-that-does-not-go-here", expect_error=True)
     assert "USAGE:" in proc.stderr
-    assert len(proc.stderr.splitlines()) == 1
+    assert len(proc.stderr.splitlines()) == 2
     assert not proc.stdout
 
 
@@ -140,7 +140,7 @@ def test_configs_no_args(cli_path, run):
     proc = run(f"{cli_path} configs", expect_error=True)
     assert "USAGE:" in proc.stderr
     assert "configs" in proc.stderr
-    assert len(proc.stderr.splitlines()) == 1
+    assert len(proc.stderr.splitlines()) == 2
     assert not proc.stdout
 
 
@@ -156,7 +156,7 @@ def test_configs_invalid_args(cli_path, run):
     proc = run(f"{cli_path} configs some-arg-that-does-not-go-here", expect_error=True)
     assert "USAGE:" in proc.stderr
     assert "configs" in proc.stderr
-    assert len(proc.stderr.splitlines()) == 1
+    assert len(proc.stderr.splitlines()) == 2
     assert not proc.stdout
 
 
