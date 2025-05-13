@@ -59,6 +59,14 @@ component directory to the ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable in your local 
   
   * component location: ``optional-components/scheduler-job-deploy_raven_testdata``
 
+* Automatically backup files
+
+  * automatically backs up application data, user data, and logs to a restic repository (default) or a docker volume
+
+  * this uses the ``bin/birdhouse backup create`` command (see additional information in the :ref:`backups`_ documentation).
+
+  * component location: ``optional-components/scheduler-job-backup``
+
 For additional configuration options for all these jobs see the ``env.local.example`` file
 as well as the individual ``default.env`` files in each of the component directories.
 

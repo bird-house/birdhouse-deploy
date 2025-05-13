@@ -1,0 +1,19 @@
+- name: store_backups_to_restic_repository
+  comment: Store backup data with restic service
+  schedule: '${SCHEDULER_JOB_BACKUP_FREQUENCY}'
+  command: '${BIRDHOUSE_EXE} backup create ${SCHEDULER_JOB_BACKUP_ARGS}'
+  dockerargs: >-
+    --name store_backups_to_restic_repository --rm
+    --volume /var/run/docker.sock:/var/run/docker.sock:ro
+    --volume ${COMPOSE_DIR}/..:${COMPOSE_DIR}/..:rw
+    --volume ${BIRDHOUSE_LOCAL_ENV}:${BIRDHOUSE_LOCAL_ENV}
+    --volume ${BIRDHOUSE_BACKUP_SSH_KEY_DIR}:${BIRDHOUSE_BACKUP_SSH_KEY_DIR}
+    --volume "${BIRDHOUSE_BACKUP_RESTIC_ENV_FILE}:${BIRDHOUSE_BACKUP_RESTIC_ENV_FILE}"
+    --env BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}
+    --env BIRDHOUSE_LOCAL_ENV=${BIRDHOUSE_LOCAL_ENV}
+    --env BIRDHOUSE_COMPOSE=${BIRDHOUSE_COMPOSE}
+    --env BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL}
+    --env BIRDHOUSE_LOG_QUIET=${BIRDHOUSE_LOG_QUIET}
+    --env BIRDHOUSE_COLOR=0
+    ${SCHEDULER_JOB_BACKUP_LOG_FILE_EXTRAS}
+  image: '${DOCKER_CLI_IMAGE}'

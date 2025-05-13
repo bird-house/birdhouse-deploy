@@ -1,0 +1,15 @@
+#!/bin/sh
+
+backup_application() {
+  _do_backup() {
+    ${BIRDHOUSE_EXE} --quiet compose exec --user=postgres postgis pg_dump -d gis -Fc | docker run -i --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup ${BASH_IMAGE} sh -c 'mkdir -p /backup/geoserver; tee /backup/geoserver/postgres.dump > /dev/null'
+  }
+  backup_create_runner 'geoserver postgis database' _do_backup 'geoserver' 
+}
+
+restore_application() {
+  _do_restore() { 
+    docker run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup ${BASH_IMAGE} cat /backup/geoserver/postgres.dump | ${BIRDHOUSE_EXE} --quiet compose exec -T --user=postgres postgis sh -c 'dropdb gis; pg_restore -C -d postgres'
+  }
+  backup_restore_runner 'geoserver postgis database' _do_restore 'geoserver' 'geoserver'
+}
