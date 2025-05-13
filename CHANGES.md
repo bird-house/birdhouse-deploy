@@ -39,11 +39,46 @@
     create additional jobs by adding them as custom components instead.
 
   What about... ?
-    - just schedule these jobs for a non-existant day like February 31st?
+    - just schedule these jobs for a non-existant day linvalid arg that triggers usage messageike February 31st?
       - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
     - just set the schedule to the `'#'` string?
       - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
                 However, this is not obvious to the user and is unreliable since it is not documented.
+
+- Introduce a scheduler job to delete old files that may accumulate over time
+
+  Creates the `optional-component-clean_old_files` job that deletes old THREDDS log files and WPS output files.
+  Allows individual cleanup jobs to be enabled for each of `raven`, `finch`, `hummingbird`, and `thredds` components.
+  Allows the user to configure how old a file must be before it is deleted (age in days) and how to calculate the age
+  of the file (time since last modified, time since last accessed, time since created).
+  
+  (see `env.local.example` or the `scheduler` documentation for details).
+
+[2.14.0](https://github.com/bird-house/birdhouse-deploy/tree/2.14.0) (2025-05-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: update `weaver` component default version to [6.6.0](https://github.com/crim-ca/weaver/tree/6.6.0).
+
+  Notable changes include:
+  
+  - Added HTML representation of job status.
+  - Added alternate job `Profile` representations for interoperability with other clients like *WPS* and *openEO*.
+  - Adjust job `status` value for `successful` instead of `succeeded` in accordance to latest OGC API standard edits.
+    If clients were defined with explicit checks of the older value, they can request that job representation using
+    query parameters `?profile=wps&f=json`. Otherwise, it is preferable that scripts are updated to allow either value
+    to ensure the statuses are resolved correctly regardless of Weaver version employed by the server.
+  - Docker build employs [Provenance](https://docs.docker.com/build/metadata/attestations/slsa-provenance)
+    and [Software Bill of Materials (SBOM)](https://docs.docker.com/build/metadata/attestations/sbom) for
+    traceable dependencies, validation of references, and trust for replicable execution pipelines.
+  - Update Python 3.11 to Python 3.12 in the distributed Docker image.
+  - Various bug fixes and security vulnerability fixes.
+
+  For full changelog details, see [Weaver Changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html).
+  
+- Cowbird: Update version [`2.5.1`](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#251-2025-05-06) 
+  for security fixes.
 
 [2.13.5](https://github.com/bird-house/birdhouse-deploy/tree/2.13.5) (2025-05-08)
 ------------------------------------------------------------------------------------------------------------------
