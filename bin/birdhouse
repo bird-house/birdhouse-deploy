@@ -243,16 +243,16 @@ parse_configs_args() {
       ;;
     -p|--print-config-command)
       # Cannot be called with the --command or --print-log-command argument as well
-      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'invalid arg that triggers usage message'
-      [ "${LOG_INCLUDE_PRINT}" = 'True' ] && parse_configs_args 'invalid arg that triggers usage message'
+      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'Choose one of --print-config-command and --command'
+      [ "${LOG_INCLUDE_PRINT}" = 'True' ] && parse_configs_args 'Choose one of --print-config-command and --print-log-command'
       CONFIGS_PRINT=True
       shift
       parse_configs_args "$@"
       ;;
     --print-log-command)
       # Cannot be called with the --print-config-command or --command option as well
-      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'invalid arg that triggers usage message'
-      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'invalid arg that triggers usage message'
+      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'Choose one of --print-log-command and --command'
+      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'Choose one of --print-log-command and --print-config-command'
       LOG_INCLUDE_PRINT=True
       shift
       parse_configs_args "$@"
@@ -264,8 +264,8 @@ parse_configs_args() {
       ;;
     -c|--command)
       # Cannot be called with the --print-config-command or --print-log-command option as well
-      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'invalid arg that triggers usage message'
-      [ "${LOG_INCLUDE_PRINT}" = 'True' ] && parse_configs_args 'invalid arg that triggers usage message'
+      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'Choose one of --command and --print-config-command'
+      [ "${LOG_INCLUDE_PRINT}" = 'True' ] && parse_configs_args 'Choose one of --command and --print-log-command'
       shift
       CONFIGS_CMD="$1"
       shift
@@ -292,10 +292,11 @@ parse_configs_args() {
         fi
         exec /usr/bin/env sh -c "${CONFIGS_CMD}"
       else
-        parse_configs_args 'invalid arg that triggers usage message'
+        parse_configs_args 'Choose one of --command, --print-config-command, and --print-log-command'
       fi
       ;;
     *)
+      >&2 echo "$@"
       >&2 echo "$CONFIGS_USAGE"
       exit 1
       ;;
@@ -463,7 +464,7 @@ parse_backup_args() {
       do_restic "$@"
       ;;
     *)
-      echo "$@"
+      >&2 echo "$@"
       >&2 echo "$BACKUP_USAGE"
       exit 1
       ;;
@@ -536,7 +537,7 @@ parse_backup_create_args() {
       ;;
     *)
       if ! parse_backup_restore_common_args parse_backup_create_args "$@"; then
-        echo "$@"
+        >&2 echo "$@"
         >&2 echo "$BACKUP_CREATE_USAGE"
         exit 1
       fi      
@@ -563,14 +564,14 @@ parse_backup_restore_args() {
       parse_backup_restore_args "$@"
       ;;
     '')
-      [ -n "$BIRDHOUSE_RESTORE_SNAPSHOT" ] || parse_backup_restore_args 'invalid arg that triggers usage message'
+      [ -n "$BIRDHOUSE_RESTORE_SNAPSHOT" ] || parse_backup_restore_args 'Use the --snapshot option to specify a snapshot to restore.'
       BIRDHOUSE_BACKUP_RESTORE_COMMAND=restore
       ensure_birdhouse_running do_backup_create_restore
       exit
       ;;
     *)
       if ! parse_backup_restore_common_args parse_backup_restore_args "$@"; then
-        echo "$@"
+        >&2 echo "$@"
         >&2 echo "$BACKUP_RESTORE_USAGE"
         exit 1
       fi  
@@ -690,6 +691,7 @@ parse_args() {
       parse_multiple_short_flags parse_args "$@"
       ;;
     *)
+      >&2 echo "$@"
       >&2 echo "$USAGE"
       exit 1
       ;;
