@@ -1,0 +1,41 @@
+generate_scheduler_job_deploy_data_template() {
+  job_id="$1"
+  name="$(eval "echo \"\$SCHEDULER_JOB_${job_id}_DEPLOY_DATA_JOB_NAME\"")"
+  comment="$(eval "echo \"\$SCHEDULER_JOB_${job_id}_DEPLOY_DATA_JOB_COMMENT\"")"
+  schedule="$(eval "echo \"\$SCHEDULER_JOB_${job_id}_DEPLOY_DATA_JOB_SCHEDULE\"")"
+  config_file="$(eval "echo \"\$SCHEDULER_JOB_${job_id}_DEPLOY_DATA_JOB_CONFIG_FILE\"")"
+  checkout_cache="$(eval "echo \"\$SCHEDULER_JOB_${job_id}_DEPLOY_DATA_JOB_CHECKOUT_CACHE\"")"
+  log_file_name="$(eval "echo \"\$SCHEDULER_JOB_${job_id}_DEPLOY_DATA_JOB_LOG_FILENAME\"")"
+  extra_args="$(eval "echo \"\$SCHEDULER_JOB_${job_id}_DEPLOY_DATA_JOB_EXTRA_ARGS\"")"
+
+  error_msg = "No XXX found for deploy data job with id '$job_id'"
+  [ -z "$name" ] && log ERROR "$(sed $error_msg | 's/XXX/name/')" && return 1
+  [ -z "$schedule" ] && log ERROR "$(sed $error_msg | 's/XXX/schedule/')" && return 1
+  [ -z "$config_file" ] && log ERROR "$(sed $error_msg | 's/XXX/config_file/')" && return 1
+  [ -z "$checkout_cache" ] && log ERROR "$(sed $error_msg | 's/XXX/checkout_cache/')" && return 1
+
+  echo "
+- name: '${name}'
+  comment: '${comment}'
+  schedule: '${schedule}'
+  command: '/deploy-data ${config_file}'
+  dockerargs: >-
+    --rm --name '${name}'
+    --volume /var/run/docker.sock:/var/run/docker.sock:ro
+    --volume ${COMPOSE_DIR}/deployment/deploy-data:/deploy-data:ro
+    --volume ${config_file}:${config_file}:ro
+    --volume ${checkout_cache}:${checkout_cache}:rw
+    --volume ${BIRDHOUSE_LOG_DIR}:${BIRDHOUSE_LOG_DIR}:rw
+    --env DEPLOY_DATA_CHECKOUT_CACHE=${checkout_cache}
+    --env DEPLOY_DATA_LOGFILE=${log_file_name:-"deploy-data-${name}.log"} ${SCHEDULER_JOB_DEPLOY_EXTRA_DOCKER_ARGS} ${extra_args}
+  image: '${SCHEDULER_JOB_DEPLOY_DATA_JOB_IMAGE}'
+"
+}
+
+SCHEDULER_JOB_DEPLOY_DATA_JOB_CONFIG_FILE="${COMPOSE_DIR}/optional-components/scheduler-job-deploy_data/config.yml"
+
+echo > "$SCHEDULER_JOB_DEPLOY_DATA_JOB_CONFIG_FILE"
+
+for job_id in $SCHEDULER_JOB_DEPLOY_DATA_JOB_IDS; do
+  generate_scheduler_job_deploy_data_template "$job_id" >> "$SCHEDULER_JOB_DEPLOY_DATA_JOB_CONFIG_FILE"
+done

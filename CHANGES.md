@@ -45,6 +45,29 @@
       - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
                 However, this is not obvious to the user and is unreliable since it is not documented.
 
+- Create template component for data deploy jobs
+
+  New data deploy scheduler jobs no longer need to copy/paste lots of boilerplate code to create a new job.  
+  Instead they can simply define specific environment variables and then the can now use the 
+  `optional-components/scheduler-job-deploy_data` job will automatically generate a new data deploy job.
+
+  For example, if `XXXX` is added to the `SCHEDULER_JOB_DEPLOY_DATA_JOB_IDS` variable and the following 
+  variables are defined:
+
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_NAME`
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_COMMENT`
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_CHECKOUT_CACHE`
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_LOG_FILENAME`
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_SCHEDULE`
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_CONFIG_FILE`
+
+  a deploy data job will be automatically created.
+
+  See `optional-components/scheduler-job-deploy_raven_testdata/default.env` and 
+  `optional-components/scheduler-job-deploy_raven_testdata/default.env` for examples.
+
+  See `birdhouse/deployment/deploy-data` for details on how the deploy data job works.
+
 [2.14.0](https://github.com/bird-house/birdhouse-deploy/tree/2.14.0) (2025-05-12)
 ------------------------------------------------------------------------------------------------------------------
 
