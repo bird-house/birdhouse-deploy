@@ -1,0 +1,3 @@
+if ! echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q 'jupyterhub[[:space:]]*$'; then
+  log WARN 'The scheduler-job-notebookdeploy component is enabled but the jupyterhub component is not. This WILL cause problems. Please disable the scheduler-job-notebookdeploy component.'
+fi
