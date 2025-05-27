@@ -17,34 +17,6 @@
 
 ## Changes
 
-- Make scheduler jobs configurable
-
-  The scheduler component automatically enables three jobs (autodeploy, logrotate, notebookdeploy). If someone wants
-  to use the scheduler component but does not want these jobs, there is no obvious way to disable any one of these
-  jobs.
-
-  This change makes it possible to enable/disable jobs as required by the user and adds documentation to explain how 
-  to do this.
-
-  This change also converts existing jobs to be optional components. This makes the jobs more in-line with the way the
-  stack is deployed (since version 1.24.0) and ensures that settings set as environment variables in the local environment
-  file are not so sensitive to the order that they were declared in.
-
-  **Breaking Change**:
-  - the three jobs that were automatically enabled previously are now no longer enabled by default.
-  - to re-enable these three jobs, source the relevant component in the `optional-components` subdirectory.
-
-  **Deprecations**
-  - setting additional scheduler jobs using the `BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS` variable. Users should 
-    create additional jobs by adding them as custom components instead.
-
-  What about... ?
-    - just schedule these jobs for a non-existant day like February 31st?
-      - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
-    - just set the schedule to the `'#'` string?
-      - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
-                However, this is not obvious to the user and is unreliable since it is not documented.
-
 - Add `backup` command in `bin/birdhouse` to backup and restore data to a restic repository
 
   This allows users to backup and restore:
@@ -146,6 +118,39 @@
   This became apparent when this script is run by the `optional-components/scheduler-job-backup` job which runs
   in an alpine based docker container.
 
+
+[2.15.0](https://github.com/bird-house/birdhouse-deploy/tree/2.15.0) (2025-05-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Make scheduler jobs configurable
+
+  The scheduler component automatically enables three jobs (autodeploy, logrotate, notebookdeploy). If someone wants
+  to use the scheduler component but does not want these jobs, there is no obvious way to disable any one of these
+  jobs.
+
+  This change makes it possible to enable/disable jobs as required by the user and adds documentation to explain how 
+  to do this.
+
+  This change also converts existing jobs to be optional components. This makes the jobs more in-line with the way the
+  stack is deployed (since version 1.24.0) and ensures that settings set as environment variables in the local environment
+  file are not so sensitive to the order that they were declared in.
+
+  **Breaking Change**:
+  - the three jobs that were automatically enabled previously are now no longer enabled by default.
+  - to re-enable these three jobs, source the relevant component in the `optional-components` subdirectory.
+
+  **Deprecations**
+  - setting additional scheduler jobs using the `BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS` variable. Users should 
+    create additional jobs by adding them as custom components instead.
+
+  What about... ?
+    - just schedule these jobs for a non-existant day like February 31st?
+      - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
+    - just set the schedule to the `'#'` string?
+      - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
+                However, this is not obvious to the user and is unreliable since it is not documented.
 
 [2.14.0](https://github.com/bird-house/birdhouse-deploy/tree/2.14.0) (2025-05-12)
 ------------------------------------------------------------------------------------------------------------------
