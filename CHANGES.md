@@ -15,6 +15,18 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+- Introduce a scheduler job to delete old files that may accumulate over time
+
+  Creates the `optional-component-clean_old_files` job that deletes old THREDDS log files and WPS output files.
+  Allows individual cleanup jobs to be enabled for each of `raven`, `finch`, `hummingbird`, and `thredds` components.
+  Allows the user to configure how old a file must be before it is deleted (age in days) and how to calculate the age
+  of the file (time since last modified, time since last accessed, time since created).
+  
+  (see `env.local.example` or the `scheduler` documentation for details).
+
+[2.15.0](https://github.com/bird-house/birdhouse-deploy/tree/2.15.0) (2025-05-27)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Make scheduler jobs configurable
@@ -44,15 +56,6 @@
     - just set the schedule to the `'#'` string?
       - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
                 However, this is not obvious to the user and is unreliable since it is not documented.
-
-- Introduce a scheduler job to delete old files that may accumulate over time
-
-  Creates the `optional-component-clean_old_files` job that deletes old THREDDS log files and WPS output files.
-  Allows individual cleanup jobs to be enabled for each of `raven`, `finch`, `hummingbird`, and `thredds` components.
-  Allows the user to configure how old a file must be before it is deleted (age in days) and how to calculate the age
-  of the file (time since last modified, time since last accessed, time since created).
-  
-  (see `env.local.example` or the `scheduler` documentation for details).
 
 [2.14.0](https://github.com/bird-house/birdhouse-deploy/tree/2.14.0) (2025-05-12)
 ------------------------------------------------------------------------------------------------------------------
