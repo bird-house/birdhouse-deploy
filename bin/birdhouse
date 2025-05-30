@@ -158,6 +158,7 @@ Note:
 Example Usage:
 
   $ birdhouse backup restore latest -a '*' -u '*' -l '*' --birdhouse-logs --local-env-file # restores everything from the latest snapshot
+  $ birdhouse restic snapshots # list available snapshots including their ids
   $ birdhouse backup restore XX123ABC -a magpie # restores application data for the magpie component from the snapshot with id XX123ABC
   $ birdhouse backup restore latest -u jupyterhub --no-clobber # restore user data for jupyterhub but don't overwrite current jupyterhub user data
 "
