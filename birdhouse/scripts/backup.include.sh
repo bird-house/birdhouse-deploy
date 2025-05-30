@@ -1,7 +1,7 @@
 # This file includes functions that are intended to be sourced by the do_backup_restore function (in bin/birdhouse)
 # It assumes that various environment variables are set including:
 #  - BIRDHOUSE_EXE
-#  - BIRDHOUSE_BACKUP_VOLUME
+#  - BIRDHOUSE_BACKUP_DIR
 #  - BIRDHOUSE_RESTORE_SNAPSHOT
 #  - BIRDHOUSE_BACKUP_DRY_RUN
 
@@ -18,7 +18,7 @@ backup_create_runner() {
     log INFO "Stopping containers: ${stop_containers}"
     ${BIRDHOUSE_EXE} --quiet compose stop ${stop_containers}
   fi
-  log INFO "Backing up ${description} to the ${BIRDHOUSE_BACKUP_VOLUME} volume"
+  log INFO "Backing up ${description} to the ${BIRDHOUSE_BACKUP_DIR} directory"
   ${command} && log INFO "Backup of ${description} complete" || log ERROR "Backup of ${description} failed"
   if [ -n "${stop_containers}" ]; then
     log INFO "Restarting containers: ${stop_containers}"
@@ -29,14 +29,14 @@ backup_create_runner() {
 backup_restore_runner() {
   description="$1"
   command="$2"
-  volume_dest="$3"
+  dest="$3"
   stop_containers="$4"
   [ -z "${description}" ] && log ERROR "No description provided for this restore job. A description is required. Skipping this restore." && return 1
   [ -z "${command}" ] && log ERROR "No command provided for the restore job with description: '${description}'. A command is required. Skipping this restore." && return 1
-  [ -z "${volume_dest}" ] && log ERROR "No volume destination provided for the restore job with description: '${description}'. A volume destination is required. Skipping this restore." && return 1
+  [ -z "${dest}" ] && log ERROR "No destination provided for the restore job with description: '${description}'. A destination is required. Skipping this restore." && return 1
   [ "${BIRDHOUSE_BACKUP_DRY_RUN}" = 'true' ] && echo "${description}" && return 0
-  ${BIRDHOUSE_EXE} --quiet backup restic restore "${BIRDHOUSE_RESTORE_SNAPSHOT}:/backup/${volume_dest}" --delete --target "/backup/${volume_dest}" || return $?
-  log INFO "${description} has been restored to the ${BIRDHOUSE_BACKUP_VOLUME} volume in the '${volume_dest}' folder."
+  ${BIRDHOUSE_EXE} --quiet backup restic restore "${BIRDHOUSE_RESTORE_SNAPSHOT}:/backup/${dest}" --delete --target "/backup/${dest}" || return $?
+  log INFO "${description} has been restored to the ${BIRDHOUSE_BACKUP_DIR} directory in the '${dest}' folder."
   if [ "${BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER}" != 'true' ]; then
     if [ -n "${stop_containers}" ]; then
       log INFO "Stopping containers: ${stop_containers}"

@@ -1,12 +1,12 @@
 backup_logs() {
   _do_backup() {
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                -v ${BIRDHOUSE_LOG_DIR}:/birdhouse-logs \
                "${BASH_IMAGE}" \
                sh -c 'mkdir -p /backup/birdhouse-logs; cp -a /birdhouse-logs/ /backup/birdhouse-logs/application-logs'
     ${BIRDHOUSE_EXE} --quiet compose logs | docker run -i --rm \
-                                                       -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+                                                       -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                                                        "${BASH_IMAGE}" \
                                                        sh -c 'mkdir -p '/backup/birdhouse-logs/docker-container-logs'; while read -r line; do echo "${line#*|}" >> "$(printf "/backup/birdhouse-logs/docker-container-logs/%s.log" ${line%%|*})"; done'
   }
@@ -16,7 +16,7 @@ backup_logs() {
 backup_local_env_file() {
   _do_backup() {
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                -v ${BIRDHOUSE_LOCAL_ENV}:/birdhouse-local-env \
                "${BASH_IMAGE}" \
                sh -c 'mkdir -p /backup/birdhouse/; cp -a /birdhouse-local-env /backup/birdhouse/env.local'

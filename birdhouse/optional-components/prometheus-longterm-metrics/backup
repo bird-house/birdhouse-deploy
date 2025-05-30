@@ -9,7 +9,7 @@ backup_application() {
                 --entrypoint=sh \
                 --user=root \
                 --volume prometheus_longterm_persistence:/persist \
-                --volume ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+                --volume ${BIRDHOUSE_BACKUP_DIR}:/backup \
                 ${CURL_IMAGE} \
                 -c 'snapshot="/persist/snapshots/$(curl -X POST http://prometheus-longterm-metrics:9090/prometheus-longterm-metrics/api/v1/admin/tsdb/snapshot | grep -o "[[:digit:]]\\{8\\}T[[:digit:]]\\{1,\\}Z-[[:alnum:]]\\{1,\\}")"; cp -a "${snapshot}" /backup/prometheus-longterm-metrics;'
   }
@@ -19,7 +19,7 @@ backup_application() {
 restore_application() {
   _do_restore() { 
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                -v prometheus_longterm_persistence:/persist \
                "${BASH_IMAGE}" \
                sh -c 'rm -fr /persist/* && cp -a /backup/prometheus-longterm-metrics/* /persist/'

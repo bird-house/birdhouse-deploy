@@ -11,16 +11,16 @@ backup_application() {
                 --entrypoint=sh \
                 --user=root \
                 --volume prometheus_persistence:/persist \
-                --volume ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+                --volume ${BIRDHOUSE_BACKUP_DIR}:/backup \
                 ${CURL_IMAGE} \
                 -c 'snapshot="/persist/snapshots/$(curl -X POST http://prometheus:9090/prometheus/api/v1/admin/tsdb/snapshot | grep -o "[[:digit:]]\\{8\\}T[[:digit:]]\\{1,\\}Z-[[:alnum:]]\\{1,\\}")"; mkdir -p /backup/monitoring; cp -a "${snapshot}" /backup/monitoring/prometheus;'
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                -v grafana_persistence:/persist \
                "${BASH_IMAGE}" \
                sh -c 'mkdir -p /backup/monitoring; cp -a /persist /backup/monitoring/grafana;'
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                -v alertmanager_persistence:/persist \
                "${BASH_IMAGE}" \
                sh -c 'mkdir -p /backup/monitoring; cp -a /persist /backup/monitoring/alertmanager'
@@ -31,17 +31,17 @@ backup_application() {
 restore_application() {
   _do_restore() { 
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                 --volume prometheus_persistence:/persist \
                "${BASH_IMAGE}" \
                sh -c 'rm -fr /persist/* && cp -a /backup/monitoring/prometheus/* /persist/'
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                -v grafana_persistence:/persist \
                "${BASH_IMAGE}" \
                sh -c 'rm -fr /persist/* && cp -a /backup/monitoring/grafana/* /persist/'
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                -v alertmanager_persistence:/persist \
                "${BASH_IMAGE}" \
                sh -c 'rm -fr /persist/* && cp -a /backup/monitoring/alertmanager/* /persist/'

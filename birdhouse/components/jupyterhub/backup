@@ -7,7 +7,7 @@ _get_jupyterhub_containers() {
 backup_application() {
   _do_backup() {
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                -v jupyterhub_data_persistence:/persist \
                "${BASH_IMAGE}" \
                sh -c 'mkdir -p /backup/jupyterhub; cp -a /persist/jupyterhub.sqlite /backup/jupyterhub/'  
@@ -18,7 +18,7 @@ backup_application() {
 restore_application() {
   _do_restore() {
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                -v jupyterhub_data_persistence:/persist \
                "${BASH_IMAGE}" \
                cp -a /backup/jupyterhub/jupyterhub.sqlite /persist/jupyterhub.sqlite
@@ -29,7 +29,7 @@ restore_application() {
 backup_user() {
   _do_backup() {
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                -v ${JUPYTERHUB_USER_DATA_DIR}:/user-data \
                "${BASH_IMAGE}" \
                sh -c 'cp -a /user-data /backup/jupyterhub-user-data'
@@ -40,7 +40,7 @@ backup_user() {
 restore_user() {
   _do_restore() {
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
                -v ${JUPYTERHUB_USER_DATA_DIR}:/user-data \
                "${BASH_IMAGE}" \
                sh -c 'rm -fr /user-data/* && cp -a /backup/jupyterhub-user-data/* /user-data/'

@@ -2,14 +2,14 @@
 
 backup_application() {
   _do_backup() {
-    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup postgres sh -c 'mkdir -p /backup/raven; PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -h postgres -U ${POSTGRES_USER} -d raven -Fc > /backup/raven/postgres.dump'
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_DIR}:/backup postgres sh -c 'mkdir -p /backup/raven; PGPASSWORD=${POSTGRES_PASSWORD} pg_dump -h postgres -U ${POSTGRES_USER} -d raven -Fc > /backup/raven/postgres.dump'
   }
   backup_create_runner 'raven postgres database' _do_backup 'raven' 
 }
 
 restore_application() {
   _do_restore() { 
-    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup postgres sh -c 'export PGPASSWORD=${POSTGRES_PASSWORD}; dropdb -h postgres -U ${POSTGRES_USER} raven; pg_restore -h postgres -U ${POSTGRES_USER} -C -d postgres /backup/raven/postgres.dump'
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_DIR}:/backup postgres sh -c 'export PGPASSWORD=${POSTGRES_PASSWORD}; dropdb -h postgres -U ${POSTGRES_USER} raven; pg_restore -h postgres -U ${POSTGRES_USER} -C -d postgres /backup/raven/postgres.dump'
   }
   backup_restore_runner 'raven postgres database' _do_restore 'raven' 'raven'
 }

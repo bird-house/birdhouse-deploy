@@ -117,7 +117,7 @@ Options:
   -l, --component-logs-data           Backup logs data for a given component (e.g. thredds). This can be specified multiple times. Use '*' to select all components.
   --birdhouse-logs                    Backup birdhouse logs and docker container logs
   --local-env-file                    Backup local environment file
-  --no-restic                         Do not save this backup as a restic snapshot. This will only backup the data to the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
+  --no-restic                         Do not save this backup as a restic snapshot. This will only backup the data to the directory specified by the BIRDHOUSE_BACKUP_DIR variable.
 
 Note:
   Not all components store application application data, user data, or log data. Depending on the component, some or none of these
@@ -143,7 +143,7 @@ Options:
   -l, --component-logs-data           Restore logs data for a given component (e.g. thredds). This can be specified multiple times. Use '*' to select all components.
   --birdhouse-logs                    Restore birdhouse logs and docker container logs
   --local-env-file                    Restore local environment file
-  --no-clobber                        Do not overwrite current files with restored backup. This will only recover the data to the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
+  --no-clobber                        Do not overwrite current files with restored backup. This will only recover the data to the directory specified by the BIRDHOUSE_BACKUP_DIR variable.
 
 
 Note:
@@ -152,7 +152,7 @@ Note:
 
 Note:
   Log data and the local environment file will never overwrite current files with the restored backup. 
-  The data will be restored to the the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
+  The data will be restored to the the directory specified by the BIRDHOUSE_BACKUP_DIR variable.
   In other words, restoring logs and the local environment file will behave as if the '--no-clobber' flag was provided.
 
 Example Usage:
@@ -372,8 +372,8 @@ do_backup_create_restore() {
   if [ "$BIRDHOUSE_BACKUP_DRY_RUN" = "true" ]; then 
     echo "Dry-run: this would run ${BIRDHOUSE_BACKUP_RESTORE_COMMAND} jobs for the following:"
   else
-    # start with a clean backup volume so that snapshots only contain the data that is requested to be backed up/restored
-    docker volume rm "${BIRDHOUSE_BACKUP_VOLUME}"
+    # start with a clean backup directory so that snapshots only contain the data that is requested to be backed up/restored
+    docker run --rm -v "${BIRDHOUSE_BACKUP_DIR}:/backup:rw" ${BASH_IMAGE} bash -c 'rm -r /backup/*'
   fi
 
   do_component_backup_create_restore application "${BIRDHOUSE_BACKUP_APPLICATION_COMPONENTS}"
@@ -441,7 +441,7 @@ extra_args() {
 # Run a restic command.
 do_restic() {
   source_env
-  restic_cmd="docker run --rm --env-file='${BIRDHOUSE_BACKUP_RESTIC_ENV_FILE}' --env 'RESTIC_PASSWORD_COMMAND=' -v '${BIRDHOUSE_BACKUP_SSH_KEY_DIR}:/root/.ssh:ro' -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup $(extra_args) ${RESTIC_IMAGE} $@"
+  restic_cmd="docker run --rm --env-file='${BIRDHOUSE_BACKUP_RESTIC_ENV_FILE}' --env 'RESTIC_PASSWORD_COMMAND=' -v '${BIRDHOUSE_BACKUP_SSH_KEY_DIR}:/root/.ssh:ro' -v ${BIRDHOUSE_BACKUP_DIR}:/backup $(extra_args) ${RESTIC_IMAGE} $@"
   log DEBUG "Running restic command: ${restic_cmd}"
   eval "${restic_cmd}"
 }

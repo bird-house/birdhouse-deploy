@@ -25,7 +25,7 @@
     - docker container logs
     - local environement file
   
-  Restoring data either involves restoring it to a named volume (determined by `BIRDHOUSE_BACKUP_VOLUME`) or in the case
+  Restoring data either involves restoring it to a directory (determined by `BIRDHOUSE_BACKUP_DIR`) or in the case
   of user data and application data, to overwrite the current data with the backup.
 
   For full details run the `bin/birdhouse backup --help` command.
