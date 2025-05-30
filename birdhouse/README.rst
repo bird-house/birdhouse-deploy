@@ -555,6 +555,19 @@ the backup and restore jobs.
   * For example, to store backups daily for 1 week, weekly for 1 month, and monthly for a year:
     ``'--keep-daily=7 --keep-weekly=4 --keep-monthly=12'``
 
+* ``BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS``
+
+  * Additional options to pass to the ``docker run`` command that runs the restic commands.
+
+  * This can be useful if you want to mount additional directories to the container running restic
+    in order to back up data not directly managed by Birdhouse.
+
+    * For example, to backup files in a directory named `/home/other_project/` you could run:
+      ``BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS='-v /home/other_project:/backup2' birdhouse backup restic backup /backup2``
+
+  * Warning! Using this option may overwrite other docker options that are required for restic to run properly.
+    Make sure you are familiar with restic commands and know what you are doing before using this feature.
+
 .. _nginx.conf: ./components/proxy/nginx.conf
 .. _default.env: ./default.env
 .. _`.bumpversion.cfg`: ../.bumpversion.cfg
