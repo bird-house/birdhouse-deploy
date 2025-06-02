@@ -14,35 +14,10 @@
 #   some of these variables *could* employ provided values in 'default.env',
 #   but they must ultimately be defined one way or another for the server to work
 
+THIS_FILE="$(readlink -f "$0" || realpath "$0")"
+THIS_DIR="$(dirname "${THIS_FILE}")"
 
-BIRDHOUSE_COMPOSE_DEBUG_MODE="${BIRDHOUSE_COMPOSE_DEBUG_MODE:-false}"
-BIRDHOUSE_COMPOSE_FAIL_FAST="${BIRDHOUSE_COMPOSE_FAIL_FAST:-true}"
-
-SHELL_EXEC_FLAGS=""
-[ "$BIRDHOUSE_COMPOSE_DEBUG_MODE" = "$true" ] && SHELL_EXEC_FLAGS="$SHELL_EXEC_FLAGS -x"
-[ "$BIRDHOUSE_COMPOSE_FAIL_FAST" = "$true" ] && SHELL_EXEC_FLAGS="$SHELL_EXEC_FLAGS -e"
-
-set ${SHELL_EXEC_FLAGS}
-
-exit_handler() {
-  exit_code="$?"
-  [ "$exit_code" -eq 0 ] && exit
-  [ "$BIRDHOUSE_EXPECTED_EXIT" = "true" ] && exit "$exit_code"
-  err_msg="An unexpected error occurred. See additional messages on stderr for details or rerun this command with BIRDHOUSE_DEBUG_MODE=true."
-  if command -v log >/dev/null; then
-    log ERROR "$err_msg"
-  else
-    >&2 echo "The following error occurred before logging could be initialized: $err_msg"
-  fi
-}
-
-expect_exit() {
-  exit_code="${1:-$?}"
-  export BIRDHOUSE_EXPECTED_EXIT=true
-  exit "${exit_code}"
-}
-
-trap 'exit_handler' EXIT
+. "${THIS_DIR}/scripts/error-handling.include.sh"
 
 VARS='
   $BIRDHOUSE_COMPOSE
@@ -73,9 +48,6 @@ OPTIONAL_VARS='
   $BIRDHOUSE_SUPPORT_URL
   $BIRDHOUSE_LICENSE_URL
 '
-
-THIS_FILE="$(readlink -f "$0" || realpath "$0")"
-THIS_DIR="$(dirname "${THIS_FILE}")"
 
 export BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"${THIS_FILE}"}"
 
