@@ -493,7 +493,7 @@ This allows users to backup and restore:
 * local environement file
 
 Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository and can be restored
-either to a named volume (determined by the ``BIRDHOUSE_BACKUP_DIR`` configuration variable) or in the case
+either to a directory (determined by the ``BIRDHOUSE_BACKUP_DIR`` configuration variable) or in the case
 of user data and application data, it can directly overwrite the current data with the backup.
 
 For details about the backup and restore commands run any of the following:
@@ -525,6 +525,31 @@ Depending on which repository type and access method you want to use, different 
 Some basic examples can be found in the ``birdhouse/restic.env.example`` file but please refer to the 
 `documentation <https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables>`_ for all available
 options.
+
+Additional backup/restore workflows
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When running the ``backup create`` command, the files to be backed up are first written to a working directory 
+(determined by the ``BIRDHOUSE_BACKUP_DIR`` configuration variable). Then they are backed up from there to 
+the restic repository.
+
+Alternatively, you can specify the ``--no-restic`` command line option to skip the step that backs up the files to 
+the restic repository. You can then choose to access the files to backup directly in the working directory.
+
+This allows users to inspect the files, integrate them into a different custom backup solution, etc.
+
+Similarly, when restoring files from restic with the ``backup restore`` command, the files are first restored
+to the same working directory before being copied to the appropriate location in the birdhouse stack. 
+
+For example, restoring the ``magpie`` database will first restore the backup file from restic to the working
+directory and then overwrite the ``magpie`` database with the information contained in the backup file.
+
+If you want to skip the step that overwrites the current data in the birdhouse stack, you can specify the 
+``--no-clobber`` command line option. This will still restore the files to the working directory.
+
+.. note::
+    Even without the ``--no-restic`` and ``--no-clobber`` options, the files will be written
+    to the working directory every time you run backup and restore.
 
 Additional configuration options
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -564,6 +589,10 @@ the backup and restore jobs.
 
     * For example, to backup files in a directory named `/home/other_project/` you could run:
       ``BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS='-v /home/other_project:/backup2' birdhouse backup restic backup /backup2``
+
+    * Note: in the example above, ``birdhouse backup restic`` runs the ``restic`` command in a docker container.
+      The ``backup /backup2`` arguments tell the ``restic`` command to backup the ``/backup2`` folder to a restic
+      repository. See the ``restic`` documentation for details regarding all the available restic command options.
 
   * Warning! Using this option may overwrite other docker options that are required for restic to run properly.
     Make sure you are familiar with restic commands and know what you are doing before using this feature.

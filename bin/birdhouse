@@ -244,16 +244,16 @@ parse_configs_args() {
       ;;
     -p|--print-config-command)
       # Cannot be called with the --command or --print-log-command argument as well
-      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'Choose one of --print-config-command and --command'
-      [ "${LOG_INCLUDE_PRINT}" = 'True' ] && parse_configs_args 'Choose one of --print-config-command and --print-log-command'
+      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'Choose either --print-config-command or --command'
+      [ "${LOG_INCLUDE_PRINT}" = 'True' ] && parse_configs_args 'Choose either --print-config-command or --print-log-command'
       CONFIGS_PRINT=True
       shift
       parse_configs_args "$@"
       ;;
     --print-log-command)
       # Cannot be called with the --print-config-command or --command option as well
-      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'Choose one of --print-log-command and --command'
-      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'Choose one of --print-log-command and --print-config-command'
+      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'Choose either --print-log-command or --command'
+      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'Choose either --print-log-command or --print-config-command'
       LOG_INCLUDE_PRINT=True
       shift
       parse_configs_args "$@"
@@ -265,8 +265,8 @@ parse_configs_args() {
       ;;
     -c|--command)
       # Cannot be called with the --print-config-command or --print-log-command option as well
-      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'Choose one of --command and --print-config-command'
-      [ "${LOG_INCLUDE_PRINT}" = 'True' ] && parse_configs_args 'Choose one of --command and --print-log-command'
+      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'Choose either --command or --print-config-command'
+      [ "${LOG_INCLUDE_PRINT}" = 'True' ] && parse_configs_args 'Choose either --command or --print-log-command'
       shift
       CONFIGS_CMD="$1"
       shift
@@ -293,7 +293,7 @@ parse_configs_args() {
         fi
         exec /usr/bin/env sh -c "${CONFIGS_CMD}"
       else
-        parse_configs_args 'Choose one of --command, --print-config-command, and --print-log-command'
+        parse_configs_args 'Choose either --command, --print-config-command, or --print-log-command'
       fi
       ;;
     *)
