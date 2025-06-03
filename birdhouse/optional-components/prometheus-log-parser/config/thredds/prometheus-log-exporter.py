@@ -4,8 +4,9 @@ import re
 import prometheus_client
 
 
-# This matches a request to the THREDDS data services as defined in birdhouse/components/thredds/catalog.xml.template 
-THREDDS_REQ_URI_REGEX = r'\/[^\s]+\/thredds\/(?P<tds_service>dodsC|fileServer|ncss)\/(?P<dataset>[^\s]*)(?:\?(?P<variable>\w+))?'
+# This matches a request to the THREDDS data services as defined in birdhouse/components/thredds/catalog.xml.template
+THREDDS_REQ_URI_REGEX = (r'\/[^\s]+\/thredds\/(?P<tds_service>dodsC|fileServer|ncss)\/(?P<dataset>[^\s\?]*)(?:\?('
+                         r'?P<variable>\w+))?.*')
 
 # This matches the nginx log_fomat as defined in birdhouse/components/proxy/nginx.conf.template
 REGEX = re.compile(
@@ -37,8 +38,8 @@ def parse_line(line):
     match = REGEX.match(line)
     if match:
         labels = {label: match.group(label) or "" for label in LABEL_KEYS}
-        if body_byte_sent := match.group("body_byte_sent") is not None:
-            body_byte_sent = int(body_byte_sent) / 1024
-            counter.labels(**labels).inc(body_byte_sent)
+        if body_byte_sent := match.group("body_byte_sent"):
+            body_kb_sent = int(body_byte_sent) / 1024
+            counter.labels(**labels).inc(body_kb_sent)
 
 LOG_PARSER_CONFIG = {f"/var/log/proxy/{os.getenv('PROXY_LOG_FILE')}": [parse_line]}
