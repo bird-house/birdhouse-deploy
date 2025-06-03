@@ -5,8 +5,10 @@ import prometheus_client
 
 
 # This matches a request to the THREDDS data services as defined in birdhouse/components/thredds/catalog.xml.template
-THREDDS_REQ_URI_REGEX = (r'\/[^\s]+\/thredds\/(?P<tds_service>dodsC|fileServer|ncss)\/(?P<dataset>[^\s\?]*)(?:\?('
-                         r'?P<variable>\w+))?.*')
+THREDDS_REQ_URI_REGEX = (r'\/[^\s]+\/thredds\/'
+                         r'(?P<tds_service>dodsC|fileServer|ncss)\/'
+                         r'(?P<dataset>[^\s\?]*)'
+                         r'(?:\?(?P<variable>\w+))?.*')
 
 # This matches the nginx log_fomat as defined in birdhouse/components/proxy/nginx.conf.template
 REGEX = re.compile(
