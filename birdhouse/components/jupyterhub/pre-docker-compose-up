@@ -1,8 +1,7 @@
 #!/bin/sh
 
 # this is external in docker-compose.yml so have to create here
-# no error if already exist, just an error message
-docker network create jupyterhub_network
+docker network create jupyterhub_network || true
 
 # no error if already exist
 # create externally so nothing will delete these data volume automatically
