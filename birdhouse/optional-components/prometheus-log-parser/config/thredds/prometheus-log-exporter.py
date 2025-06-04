@@ -27,7 +27,7 @@ REGEX = re.compile(
     r'\"(?P<user_agent>[^\"]+)\"\s'
     r'\"(?P<forward_for>[^\"]+)\"')
 
-LABEL_KEYS = ("remote_addr", "date", "tds_service", "dataset", "variable")
+LABEL_KEYS = ("remote_addr", "tds_service", "dataset", "variable")
 
 counter = prometheus_client.Counter(
     name="thredds_transfer_size_kb",
