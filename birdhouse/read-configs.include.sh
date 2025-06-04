@@ -75,6 +75,7 @@ discover_compose_dir() {
 
 # error out appropriately without closing shell according to 'sh <script>' or '. <script>' call
 discover_compose_dir || return $? 2>/dev/null || exit $?
+. "${COMPOSE_DIR}/scripts/error-handling.include.sh"
 . "${COMPOSE_DIR}/scripts/logging.include.sh"
 log INFO "Resolved docker-compose directory: [${COMPOSE_DIR}]"
 
