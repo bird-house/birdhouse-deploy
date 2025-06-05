@@ -69,9 +69,17 @@ groups:
             group: longterm-metrics
 
         # --- Users ---
-        # Number of Jupyter containers
-        - record: instance:jupyter_containers_count:last_1h
-          expr: count(rate(container_last_seen{name=~"jupyter-.+"}[1h]))
+        # To aggregate user numbers over a month or a year, we need to keep the name labels.
+
+        # JupyterLab container kb writes to disk in the last hour
+        - record: name:jupyter_writes_to_disk_kb:last_1h
+          expr: (sum by(name) (increase(container_fs_writes_bytes_total{name=~"jupyter-.+"}[1h])) > 0) / 1024
+          labels:
+            group: longterm-metrics
+
+        # JupyterLab container CPU usage (> 1 minute per hour)
+        - record: name:jupyter_cpu_seconds:last_1h
+          expr: (sum by(name) (increase(container_cpu_user_seconds_total{name=~"jupyter-.+"}[1h])) > 60)
           labels:
             group: longterm-metrics
 
@@ -111,6 +119,12 @@ groups:
         # Swap memory size
         - record: instance:node_memory_SwapTotal_bytes:last_1d
           expr: avg by(instance) (min_over_time(node_memory_SwapTotal_bytes[1d]))
+          labels:
+            group: longterm-metrics
+
+        # JupyterLab container open
+        - record: name:jupyter_container_seen:last_1d
+          expr: round(sum by(name) (rate(container_last_seen{name=~"jupyter-.+"}[1d]) > 0.9))
           labels:
             group: longterm-metrics
 
