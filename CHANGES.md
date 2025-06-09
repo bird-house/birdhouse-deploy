@@ -167,6 +167,164 @@
   default value.
 
 
+- Fix bugs in Prometheus log parser meant to measure download volume. 
+
+[2.15.1](https://github.com/bird-house/birdhouse-deploy/tree/2.15.1) (2025-06-04)
+------------------------------------------------------------------------------------------------------------------
+
+- Stop build when a build step fails
+
+  If a command exits with a non-zero exit code when deploying the stack (i.e. running `birdhouse-compose.sh`) the
+  build process should stop and report that an unexpected error occurs.
+
+  This is enforced by setting the `-e` flag when `birdhouse-compose.sh` is run by default. Several commands have been
+  updated so that they are followed by `|| true` so that if they exit with a non-zero status it will not stop the
+  script.
+
+  Also a new environment variable `BIRDHOUSE_DEBUG_MODE` is introduced which can be set to `true` to set the `-x`
+  flag which will write every command that is run by `birdhouse-compose.sh` to stderr. Previously, setting the
+  `BIRDHOUSE_LOG_LEVEL` to `DEBUG` would set the `-x` flag whenever `pre-docker-compose-up` and `post-docker-compose-up`
+  scripts are executed. Please use the `BIRDHOUSE_DEBUG_MODE` instead from now on. `BIRDHOUSE_LOG_LEVEL` should
+  only be used to set the log level of the birdhouse logger.
+
+[2.15.0](https://github.com/bird-house/birdhouse-deploy/tree/2.15.0) (2025-05-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Make scheduler jobs configurable
+
+  The scheduler component automatically enables three jobs (autodeploy, logrotate, notebookdeploy). If someone wants
+  to use the scheduler component but does not want these jobs, there is no obvious way to disable any one of these
+  jobs.
+
+  This change makes it possible to enable/disable jobs as required by the user and adds documentation to explain how 
+  to do this.
+
+  This change also converts existing jobs to be optional components. This makes the jobs more in-line with the way the
+  stack is deployed (since version 1.24.0) and ensures that settings set as environment variables in the local environment
+  file are not so sensitive to the order that they were declared in.
+
+  **Breaking Change**:
+  - the three jobs that were automatically enabled previously are now no longer enabled by default.
+  - to re-enable these three jobs, source the relevant component in the `optional-components` subdirectory.
+
+  **Deprecations**
+  - setting additional scheduler jobs using the `BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS` variable. Users should 
+    create additional jobs by adding them as custom components instead.
+
+  What about... ?
+    - just schedule these jobs for a non-existant day like February 31st?
+      - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
+    - just set the schedule to the `'#'` string?
+      - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
+                However, this is not obvious to the user and is unreliable since it is not documented.
+
+[2.14.0](https://github.com/bird-house/birdhouse-deploy/tree/2.14.0) (2025-05-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: update `weaver` component default version to [6.6.0](https://github.com/crim-ca/weaver/tree/6.6.0).
+
+  Notable changes include:
+  
+  - Added HTML representation of job status.
+  - Added alternate job `Profile` representations for interoperability with other clients like *WPS* and *openEO*.
+  - Adjust job `status` value for `successful` instead of `succeeded` in accordance to latest OGC API standard edits.
+    If clients were defined with explicit checks of the older value, they can request that job representation using
+    query parameters `?profile=wps&f=json`. Otherwise, it is preferable that scripts are updated to allow either value
+    to ensure the statuses are resolved correctly regardless of Weaver version employed by the server.
+  - Docker build employs [Provenance](https://docs.docker.com/build/metadata/attestations/slsa-provenance)
+    and [Software Bill of Materials (SBOM)](https://docs.docker.com/build/metadata/attestations/sbom) for
+    traceable dependencies, validation of references, and trust for replicable execution pipelines.
+  - Update Python 3.11 to Python 3.12 in the distributed Docker image.
+  - Various bug fixes and security vulnerability fixes.
+
+  For full changelog details, see [Weaver Changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html).
+  
+- Cowbird: Update version [`2.5.1`](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#251-2025-05-06) 
+  for security fixes.
+
+[2.13.5](https://github.com/bird-house/birdhouse-deploy/tree/2.13.5) (2025-05-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Script `extract-jupyter-users-from-magpie-db`: allow to customize the query
+
+  An example query is provided if we want to list all users, except if they
+  belong to some groups.
+
+
+[2.13.4](https://github.com/bird-house/birdhouse-deploy/tree/2.13.4) (2025-05-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `stac` service to use `crim-ca/stac-app:1.1.0` image
+
+  This updates the version of `stac-fastapi` to version 5 (currently the latest) and resolves and issue
+  where paging links did not work properly.
+
+  See more details [here](https://github.com/crim-ca/stac-app/pull/27).
+
+## Fixes
+
+- Forward correct headers through `twitcher` for the `stac` service
+
+  The nginx configuration for `twitcher` was creating a `Forwarded` header to help `stac` construct a `base_url`
+  behind the reverse proxy. However, with newer versions of `stac-fastapi` (the application running the `stac`
+  service), the `Forwarded` header is being parsed incorrectly which means that the `base_url` was incorrectly
+  formed.
+
+  This change removes the problematic `Forwarded` header and instead send the information to the `stac` application
+  using the `X-Forwarded-Port`, `X-Forwarded-Proto`, and `X-Forwarded-Host` headers. This technique allows `stac` 
+  to generate the correct `base_url` for all versions (up to the current version 5). 
+
+[2.13.3](https://github.com/bird-house/birdhouse-deploy/tree/2.13.3) (2025-05-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Makefile: Ensure the `bin/birdhouse` path employed by default resolves from anywhere.
+
+  Previously, if `make -C path/to/birdhouse-deploy {target}` was invoked from anywhere else than within
+  the `birdhouse-deploy` directory, the invoked script path would be invalid. Path resolution is improved
+  to allow calls from anywhere, as well as, including the Makefile within an external one seamlessly.
+
+[2.13.2](https://github.com/bird-house/birdhouse-deploy/tree/2.13.2) (2025-05-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Log multiple lines
+
+  Allow the `log` command (defined in `scripts/logging.include.sh`) to log messages that span multiple lines.
+  This also adds unit tests for the `scripts/logging.include.sh` file.
+
+## Fixes
+
+- Logging bug fixes:
+
+  - Setting `NO_COLOR` or setting `BIRDHOUSE_COLOR` to a non-integer value raised an error since `BIRDHOUSE_COLOR`
+    was tested with the numeric comparison `-eq`. This has now been fixed.
+
+  - Providing an invalid log message level (e.g. `log BADLEVEL message`) would log a critical error message but not
+    exit unless the `set -o pipefail` option was set. This has been updated so that the script will exit as intended
+    even if the `pipefail` option is not set.
+
+[2.13.1](https://github.com/bird-house/birdhouse-deploy/tree/2.13.1) (2025-04-28)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyter env: new full build with significant changes to the Anaconda environment dependency composition.
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#147](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/147)
+  for more info.
+
+
 [2.13.0](https://github.com/bird-house/birdhouse-deploy/tree/2.13.0) (2025-04-04)
 ------------------------------------------------------------------------------------------------------------------
 
