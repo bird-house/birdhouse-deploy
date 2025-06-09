@@ -118,6 +118,7 @@
   This became apparent when this script is run by the `optional-components/scheduler-job-backup` job which runs
   in an alpine based docker container.
 
+- Fix bugs in Prometheus log parser meant to measure download volume. 
 
 [2.15.1](https://github.com/bird-house/birdhouse-deploy/tree/2.15.1) (2025-06-04)
 ------------------------------------------------------------------------------------------------------------------
