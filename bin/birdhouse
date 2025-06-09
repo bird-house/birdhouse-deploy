@@ -123,6 +123,10 @@ Note:
   Not all components store application application data, user data, or log data. Depending on the component, some or none of these
   will be available to backup. Use the --dry-run flag to confirm which data will be backed up.
 
+Note:
+  The directory specified by the BIRDHOUSE_BACKUP_DIR variable will be emptied before every backup operation (unless the --dry-run flag is specified).
+  If you want to preserve the content of this directory, copy it somewhere else first.
+
 Example Usage:
 
   $ birdhouse backup create -a '*' -u '*' -l '*' --birdhouse-logs --local-env-file # backs up everything
@@ -133,6 +137,10 @@ Example Usage:
 BACKUP_RESTORE_HELP="$BACKUP_RESTORE_USAGE
 
 Restore data from a backup snapshot.
+
+WARNING: Running this command without the --no-clobber option will replace the current birdhouse data with the data
+         recovered from the backup. This will remove all current birdhouse data first and is not reversible!
+         Please consider doing a backup of the current data before restoring historical data from a snapshot.
 
 Options:
   -h, --help                          Print this message and exit
@@ -155,10 +163,14 @@ Note:
   The data will be restored to the the directory specified by the BIRDHOUSE_BACKUP_DIR variable.
   In other words, restoring logs and the local environment file will behave as if the '--no-clobber' flag was provided.
 
+Note:
+  The directory specified by the BIRDHOUSE_BACKUP_DIR variable will be emptied before every restore operation (unless the --dry-run flag is specified).
+  If you want to preserve the content of this directory, copy it somewhere else first.
+
 Example Usage:
 
   $ birdhouse backup restore latest -a '*' -u '*' -l '*' --birdhouse-logs --local-env-file # restores everything from the latest snapshot
-  $ birdhouse restic snapshots # list available snapshots including their ids
+  $ birdhouse backup restic snapshots # list available snapshots including their ids
   $ birdhouse backup restore XX123ABC -a magpie # restores application data for the magpie component from the snapshot with id XX123ABC
   $ birdhouse backup restore latest -u jupyterhub --no-clobber # restore user data for jupyterhub but don't overwrite current jupyterhub user data
 "
