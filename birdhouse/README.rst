@@ -530,7 +530,7 @@ Additional backup/restore workflows
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When running the ``backup create`` command, the files to be backed up are first written to a working directory 
-(determined by the ``BIRDHOUSE_BACKUP_DIR`` configuration variable). Then they are backed up from there to 
+(determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable). Then they are backed up from there to 
 the restic repository.
 
 Alternatively, you can specify the ``--no-restic`` command line option to skip the step that backs up the files to 

@@ -124,7 +124,7 @@ Note:
   will be available to backup. Use the --dry-run flag to confirm which data will be backed up.
 
 Note:
-  The directory specified by the BIRDHOUSE_BACKUP_DIR variable will be emptied before every backup operation (unless the --dry-run flag is specified).
+  The volume specified by the BIRDHOUSE_BACKUP_VOLUME variable will be emptied before every backup operation (unless the --dry-run flag is specified).
   If you want to preserve the content of this directory, copy it somewhere else first.
 
 Example Usage:
@@ -164,7 +164,7 @@ Note:
   In other words, restoring logs and the local environment file will behave as if the '--no-clobber' flag was provided.
 
 Note:
-  The directory specified by the BIRDHOUSE_BACKUP_DIR variable will be emptied before every restore operation (unless the --dry-run flag is specified).
+  The volume specified by the BIRDHOUSE_BACKUP_VOLUME variable will be emptied before every restore operation (unless the --dry-run flag is specified).
   If you want to preserve the content of this directory, copy it somewhere else first.
 
 Example Usage:
