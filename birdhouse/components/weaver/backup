@@ -2,14 +2,14 @@
 
 backup_application() {
   _do_backup() {
-    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_DIR}:/backup --entrypoint sh weaver-mongodb -c "mongodump --host=weaver-mongodb --out=/backup/weaver/"
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup --entrypoint sh weaver-mongodb -c "mongodump --host=weaver-mongodb --out=/backup/weaver/"
   }
   backup_create_runner 'weaver mongodb database' _do_backup 'weaver weaver-worker' 
 }
 
 restore_application() {
   _do_restore() { 
-    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_DIR}:/backup --entrypoint sh weaver-mongodb -c "mongorestore --host weaver-mongodb --drop --dir /backup/weaver"
+    ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup --entrypoint sh weaver-mongodb -c "mongorestore --host weaver-mongodb --drop --dir /backup/weaver"
   }
   backup_restore_runner 'weaver mongodb database' _do_restore 'weaver' 'weaver weaver-worker'
 }

@@ -493,7 +493,7 @@ This allows users to backup and restore:
 * local environement file
 
 Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository and can be restored
-either to a directory (determined by the ``BIRDHOUSE_BACKUP_DIR`` configuration variable) or in the case
+either to a named volume (determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable) or in the case
 of user data and application data, it can directly overwrite the current data with the backup.
 
 For details about the backup and restore commands run any of the following:

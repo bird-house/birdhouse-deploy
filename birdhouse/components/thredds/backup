@@ -3,7 +3,7 @@
 backup_logs() {
   _do_backup() {
     docker run --rm \
-               -v ${BIRDHOUSE_BACKUP_DIR}:/backup \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
                -v thredds_persistence:/persist \
                "${BASH_IMAGE}" \
                sh -c 'cp -a /persist/logs /backup/thredds-logs'
