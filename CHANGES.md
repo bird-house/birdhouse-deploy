@@ -167,10 +167,14 @@
   default value.
 
 
-- Fix bugs in Prometheus log parser meant to measure download volume. 
+- Fix bugs in Prometheus log parser meant to measure download volume.
+
+- Fix issue where the current environment is printed to stdout if no shell exec flags are set.
 
 [2.15.1](https://github.com/bird-house/birdhouse-deploy/tree/2.15.1) (2025-06-04)
 ------------------------------------------------------------------------------------------------------------------
+
+## Changes
 
 - Stop build when a build step fails
 
