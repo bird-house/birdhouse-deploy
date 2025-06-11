@@ -6,7 +6,7 @@ if [ "$_BIRDHOUSE_ERROR_HANDLING_ENABLED" != "true" ]; then
     [ "$BIRDHOUSE_DEBUG_MODE" = "$true" ] && SHELL_EXEC_FLAGS="$SHELL_EXEC_FLAGS -x"
     [ "$BIRDHOUSE_FAIL_FAST" = "$true" ] && SHELL_EXEC_FLAGS="$SHELL_EXEC_FLAGS -e"
 
-    set ${SHELL_EXEC_FLAGS}
+    [ -n "$SHELL_EXEC_FLAGS" ] && set ${SHELL_EXEC_FLAGS}
 
     exit_handler() {
         exit_code="$?"
