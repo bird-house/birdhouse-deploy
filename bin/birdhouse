@@ -115,6 +115,7 @@ Options:
   -a, --component-application-data    Backup application data for a given component (e.g. magpie). This can be specified multiple times. Use '*' to select all components.
   -u, --component-user-data           Backup user data for a given component (e.g. cowbird). This can be specified multiple times. Use '*' to select all components.
   -l, --component-logs-data           Backup logs data for a given component (e.g. thredds). This can be specified multiple times. Use '*' to select all components.
+  -r, --representative-data           Backup representative data for a give component (e.g. stac). This can be specified multiple times. Use '*' to select all components.
   --birdhouse-logs                    Backup birdhouse logs and docker container logs
   --local-env-file                    Backup local environment file
   --no-restic                         Do not save this backup as a restic snapshot. This will only backup the data to the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
@@ -149,6 +150,7 @@ Options:
   -a, --component-application-data    Restore application data for a given component (e.g. magpie). This can be specified multiple times. Use '*' to select all components.
   -u, --component-user-data           Restore user data for a given component (e.g. cowbird). This can be specified multiple times. Use '*' to select all components.
   -l, --component-logs-data           Restore logs data for a given component (e.g. thredds). This can be specified multiple times. Use '*' to select all components.
+  -r, --representative-data           Restore representative data for a give component (e.g. stac). This can be specified multiple times. Use '*' to select all components.
   --birdhouse-logs                    Restore birdhouse logs and docker container logs
   --local-env-file                    Restore local environment file
   --no-clobber                        Do not overwrite current files with restored backup. This will only recover the data to the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
@@ -322,7 +324,7 @@ parse_configs_args() {
 source_env() {
   if [ "$_BIRDHOUSE_ENV_ALREADY_SOURCED" != "true" ]; then
     eval "$(print_config_command no-suffix)"
-    export _BIRDHOUSE_ENV_ALREADY_SOURCED=true
+    _BIRDHOUSE_ENV_ALREADY_SOURCED=true
   fi 
 }
 
@@ -377,6 +379,7 @@ do_component_backup_create_restore() {
 # The BIRDHOUSE_BACKUP_APPLICATION_COMPONENTS variable determines which component's application data will be affected.
 # The BIRDHOUSE_BACKUP_USER_COMPONENTS variable determines which component's user data will be affected.
 # The BIRDHOUSE_BACKUP_LOGS_COMPONENTS variable determines which component's application logs will be affected.
+# The BIRDHOUSE_BACKUP_REPRESENTATIVE_COMPONENTS variable determines which component's representative data will be affected.
 # The BIRDHOUSE_BACKUP_LOGS variable determines whether the birdhouse and docker logs will be affected
 # The BIRDHOUSE_BACKUP_LOCAL_ENV_FILE variable determines whether the local environment file will be affected
 # If BIRDHOUSE_BACKUP_DRY_RUN is true, only print a report of what will happen instead of actually backing up or restoring data.
@@ -391,6 +394,7 @@ do_backup_create_restore() {
   do_component_backup_create_restore application "${BIRDHOUSE_BACKUP_APPLICATION_COMPONENTS}"
   do_component_backup_create_restore user "${BIRDHOUSE_BACKUP_USER_COMPONENTS}"
   do_component_backup_create_restore logs "${BIRDHOUSE_BACKUP_LOGS_COMPONENTS}"
+  do_component_backup_create_restore representative "${BIRDHOUSE_BACKUP_REPRESENTATIVE_COMPONENTS}"
 
   [ "${BIRDHOUSE_BACKUP_LOGS}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${COMPOSE_DIR}/scripts/backup.include.sh"; ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_logs)
   [ "${BIRDHOUSE_BACKUP_LOCAL_ENV_FILE}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${COMPOSE_DIR}/scripts/backup.include.sh"; ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_local_env_file)
@@ -509,6 +513,12 @@ parse_backup_restore_common_args() {
     -l|--component-logs-data)
       shift
       BIRDHOUSE_BACKUP_LOGS_COMPONENTS="${BIRDHOUSE_BACKUP_LOGS_COMPONENTS} ${1}"
+      shift
+      ${calling_func} "$@"
+      ;;
+    -r|--representative-data)
+      shift
+      BIRDHOUSE_BACKUP_REPRESENTATIVE_COMPONENTS="${BIRDHOUSE_BACKUP_REPRESENTATIVE_COMPONENTS} ${1}"
       shift
       ${calling_func} "$@"
       ;;

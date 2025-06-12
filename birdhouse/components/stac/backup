@@ -13,3 +13,41 @@ restore_application() {
   }
   backup_restore_runner 'stac postgis database' _do_restore 'stac' 'stac'
 }
+
+backup_representative() {
+  _do_backup() {
+    docker run --rm \
+               --network "${COMPOSE_PROJECT_NAME}_default" \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               --user root \
+               --env PYESSV_ARCHIVE_HOME=/home/stac/.esdoc/pyessv-archive \
+               --entrypoint sh \
+               ${STAC_POPULATOR_IMAGE} \
+               -c 'mkdir /backup/stac-repr/; stac-populator export http://stac:8000/stac /backup/stac-repr/ --ignore-duplicate-ids'
+  }
+  backup_create_runner 'stac json objects' _do_backup
+}
+
+restore_representative() {
+  _do_restore() {
+    ${BIRDHOUSE_EXE} --quiet compose rm -f stac-db
+    docker volume rm "${COMPOSE_PROJECT_NAME}_stac-db"
+    ${BIRDHOUSE_EXE} --quiet compose create stac-db
+    ${BIRDHOUSE_EXE} --quiet compose start stac-db stac
+    count=0
+    while [ "$(docker inspect --format='{{.State.Health.Status}}' stac)" != "healthy" ]; do
+      [ "$count" -gt 5 ] && log ERROR "stac service is not healthy after 10 seconds" && return 1
+      sleep 2
+      count="$(( $count + 1 ))"
+    done
+    docker run --rm \
+               --network "${COMPOSE_PROJECT_NAME}_default" \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               --user root \
+               --env PYESSV_ARCHIVE_HOME=/home/stac/.esdoc/pyessv-archive \
+               --env PYSTAC_STAC_VERSION_OVERRIDE="${PYSTAC_STAC_VERSION_OVERRIDE}" \
+               ${STAC_POPULATOR_IMAGE} \
+               run --stac-version auto DirectoryLoader http://stac:8000/stac /backup/stac-repr/
+  }
+  backup_restore_runner 'stac json objects' _do_restore 'stac-repr' 'stac stac-db'
+}

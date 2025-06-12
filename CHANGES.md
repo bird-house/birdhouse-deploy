@@ -108,6 +108,14 @@
   This option is necessary when running a command while the birdhouse stack is already running and we don't want to
   change the template files for the running stack.
 
+- Add option to backup "representative" application data
+
+  Representative data is an application agnostic version of the stateful data used by components to store 
+  the current state of the running service.
+
+  This includes an option to backup and restore representative data for the `stac` component. Other components
+  should be added in future updates.
+
 ## Fixes
 
 - Replace non-portable `sed -z` option
