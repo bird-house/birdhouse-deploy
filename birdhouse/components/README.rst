@@ -61,7 +61,7 @@ component directory to the ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable in your local 
 
 * Automatically backup files
 
-  * automatically backs up application data, user data, and logs to a restic repository (default) or a docker volume
+  * automatically backs up application data, user data, representative data, and logs to a restic repository (default) or a docker volume
 
   * this uses the ``bin/birdhouse backup create`` command (see additional information in the :ref:`backups`_ documentation).
 

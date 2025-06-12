@@ -485,13 +485,6 @@ Backups
 Backups of data used by the birdhouse stack can be generated using the ``bin/birdhouse backup`` command
 and its various subcommands.
 
-This allows users to backup and restore:
-
-* application data, user data, and log data for all components
-* birdhouse logs
-* docker container logs
-* local environement file
-
 Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository and can be restored
 either to a named volume (determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable) or in the case
 of user data and application data, it can directly overwrite the current data with the backup.
@@ -503,6 +496,68 @@ For details about the backup and restore commands run any of the following:
     bin/birdhouse backup --help
     bin/birdhouse backup create --help
     bin/birdhouse backup restore --help
+
+Data types
+^^^^^^^^^^
+
+Users can backup and restore the following data from the birdhouse stack:
+
+* application data
+
+  * stateful data used by components to store the current state of the running service
+
+  * this is useful when you want to be able to quickly restore a component to a previous state
+    and the component version has not been majorly updated since the last backup.
+
+  * for example: a database dump from a postgres or mongodb database
+
+* representative data
+
+  * an application agnostic version of the stateful data used by components to store 
+    the current state of the running service
+
+  * this contains the same information as the application data (above) but in a form that can be
+    exported/imported by a stable API. In other words, application data is a version of the
+    data exactly as it is used by the storage technology (i.e. database), representative data is
+    a version of the data that is independent of the underlying storage technology.
+
+  * this is useful when you want to be able to restore a component to a previous state and the
+    component version has been updated since the last backup. 
+    
+  * backing up and restoring representative data will probably take a much longer time than
+    application data.
+
+  * for example: STAC objects from the ``stac`` component stored as JSON files.
+
+* user data
+
+  * data created directly by users of birdhouse.
+
+  * for example: files written to the ``jupyterhub`` component's user workspaces
+
+* component log data
+
+  * log data for components that write log output to a location that is not visible to the
+    docker logging mechanism.
+
+  * for example: logs for the ``thredds`` component.
+
+* birdhouse logs
+
+  * all logs written to the directory specified by ``BIRDHOUSE_LOG_DIR``.
+
+  * for example: the log output of some scheduler jobs
+
+* docker container logs
+
+  * container logs for all docker containers running in the birdhouse stack.
+
+  * for example: ``magpie`` container logs
+
+* local environement file
+
+  * the local environment file specified by ``BIRDHOUSE_LOCAL_ENV``
+
 
 Configure the restic repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
