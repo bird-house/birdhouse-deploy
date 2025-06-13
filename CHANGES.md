@@ -15,6 +15,10 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Changes
+
+- Add Prometheus rules defining long-term metrics (hourly and daily).
+
 ## Fixes
 
 - Fix bugs in Prometheus log parser meant to measure download volume.
