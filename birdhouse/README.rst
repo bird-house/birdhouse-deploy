@@ -529,27 +529,27 @@ options.
 Additional backup/restore workflows
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When running the ``backup create`` command, the files to be backed up are first written to a working directory 
+When running the ``backup create`` command, the files to be backed up are first written to a volume 
 (determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable). Then they are backed up from there to 
 the restic repository.
 
 Alternatively, you can specify the ``--no-restic`` command line option to skip the step that backs up the files to 
-the restic repository. You can then choose to access the files to backup directly in the working directory.
+the restic repository. You can then choose to access the files to backup directly in the volume.
 
 This allows users to inspect the files, integrate them into a different custom backup solution, etc.
 
 Similarly, when restoring files from restic with the ``backup restore`` command, the files are first restored
-to the same working directory before being copied to the appropriate location in the birdhouse stack. 
+to the same volume before being copied to the appropriate location in the birdhouse stack. 
 
 For example, restoring the ``magpie`` database will first restore the backup file from restic to the working
 directory and then overwrite the ``magpie`` database with the information contained in the backup file.
 
 If you want to skip the step that overwrites the current data in the birdhouse stack, you can specify the 
-``--no-clobber`` command line option. This will still restore the files to the working directory.
+``--no-clobber`` command line option. This will still restore the files to the volume.
 
 .. note::
     Even without the ``--no-restic`` and ``--no-clobber`` options, the files will be written
-    to the working directory every time you run backup and restore.
+    to the volume every time you run backup and restore.
 
 Additional configuration options
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -561,6 +561,10 @@ the backup and restore jobs.
 
   * The location of a directory that contains an SSH key used to access a remote machine where the restic repository
     is hosted. Required if accessing a restic repository using the sftp protocol.
+
+  * Depending on the remote SSH server you may need to generate a brand new SSH key pair. This is because the ``restic``
+    command runs as a different user (in a docker container) than a user on the host machine. See the :ref:`backups-key-pair`_
+    documentation for more information.
 
 * ``BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS``
 
@@ -596,6 +600,32 @@ the backup and restore jobs.
 
   * Warning! Using this option may overwrite other docker options that are required for restic to run properly.
     Make sure you are familiar with restic commands and know what you are doing before using this feature.
+
+.. backups-key-pair::
+
+Generating a new SSH key pair for restic
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To generate a unique SSH key pair for ``restic`` to backup your data to a remote server using the SFTP protocol:
+
+1. Set ``BIRDHOUSE_BACKUP_SSH_KEY_DIR`` to an empty directory on the host machine
+2. Generate a new SSH key pair for the user that is running the restic docker container with the following command:
+
+.. code-block:: shell
+
+  BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS='--entrypoint sh -it' bin/birdhouse backup restic -c 'ssh-keygen'
+
+.. note::
+
+    Do not create a passphrase for the SSH key since this must be able to be run without user input.
+
+3. Copy the generated public key to the ``authorized_keys`` file on the remote host. The public key file can be found
+   in the directory specified by ``BIRDHOUSE_BACKUP_SSH_KEY_DIR``.
+4. Ensure that you can SSH to the remote server:
+
+.. code-block:: shell
+
+  BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS='--entrypoint sh -it' birdhouse backup restic -c "ssh someuser@my.remote.host.com"
 
 .. _nginx.conf: ./components/proxy/nginx.conf
 .. _default.env: ./default.env
