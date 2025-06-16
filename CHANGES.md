@@ -17,6 +17,20 @@
 
 ## Changes
 
+- Add option to backup "representative" application data
+
+  Representative data is an application agnostic version of the stateful data used by components to store 
+  the current state of the running service.
+
+  This includes an option to backup and restore representative data for the `stac` component. Other components
+  should be added in future updates.
+
+
+[2.16.0](https://github.com/bird-house/birdhouse-deploy/tree/2.16.0) (2025-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
 - Add `backup` command in `bin/birdhouse` to backup and restore data to a restic repository
 
   This allows users to backup and restore:
@@ -108,13 +122,7 @@
   This option is necessary when running a command while the birdhouse stack is already running and we don't want to
   change the template files for the running stack.
 
-- Add option to backup "representative" application data
-
-  Representative data is an application agnostic version of the stateful data used by components to store 
-  the current state of the running service.
-
-  This includes an option to backup and restore representative data for the `stac` component. Other components
-  should be added in future updates.
+- Add Prometheus rules defining long-term metrics (hourly and daily).
 
 ## Fixes
 
