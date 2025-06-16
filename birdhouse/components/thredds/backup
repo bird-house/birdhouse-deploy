@@ -1,0 +1,16 @@
+#!/bin/sh
+
+backup_logs() {
+  _do_backup() {
+    docker run --rm \
+               -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+               -v thredds_persistence:/persist \
+               "${BASH_IMAGE}" \
+               sh -c 'cp -a /persist/logs /backup/thredds-logs'
+  }
+  backup_create_runner 'thredds application logs' _do_backup 'thredds'
+}
+
+restore_logs() {
+  BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER=true backup_restore_runner 'thredds application logs' : 'thredds-logs'
+}

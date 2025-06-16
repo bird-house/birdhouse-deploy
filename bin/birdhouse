@@ -16,7 +16,7 @@ USAGE="USAGE: $THIS_BASENAME [-h|--help]
                              [-s|--log-stdout [level]]
                              [-l|--log-file [level] path]
                              [-L|--log-level level]
-                             {info|compose|configs}"
+                             {info|compose|configs|backup}"
 USAGE=$(echo $USAGE | tr "\n" " ")
 
 HELP="$USAGE
@@ -24,9 +24,10 @@ HELP="$USAGE
 Manage the Birdhouse software stack.
 
 Commands:
-  info      Print build information
-  compose   Run a \"docker compose\" command for the Birdhouse project (run '${THIS_BASENAME} compose --help' for more options)
-  configs   Load or execute commands in the Birdhouse configuration environment
+  info        Print build information
+  compose     Run a \"docker compose\" command for the Birdhouse project (run '${THIS_BASENAME} compose --help' for more options)
+  configs     Load or execute commands in the Birdhouse configuration environment
+  backup      Backup or recover data from a running birdhouse environment
 
 Options:
   -h, --help                                              Print this message and exit
@@ -41,7 +42,7 @@ Options:
   -L, --log-level {DEBUG|INFO|WARN|ERROR}                 Set log level, default is INFO
 "
 
-CONFIGS_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] configs [-h|--help] [-d|--default] {[-p|--print-config-command] | [-c|--command command]}"
+CONFIGS_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] configs [-h|--help] [-d|--default] {[-p|--print-config-command] | [-c|--command command] | [--print-log-command]}"
 CONFIGS_HELP="$CONFIGS_USAGE
 
 Load or execute commands in the Birdhouse configuration environment.
@@ -51,6 +52,7 @@ Options:
   -d, --default                Only load/print a command for the default configuration settings, not those specified by the local environment file
   -p, --print-config-command   Print a command that can be used to load configuration settings as environment variables
   -c, --command string         Execute the given command after loading configuration settings
+  --print-log-command          Print a command that can be used to load the 'log' function used by birdhouse
 Deprecated Options:
   -q, --quiet                  Suppress stdout when loading configuration settings for the '--command' option. [DEPRECATED: use the --quiet option directly under birdhouse instead]
 
@@ -63,7 +65,116 @@ Example Usage:
   $ eval \$(${THIS_BASENAME} configs -p)
   $ echo \${BIRDHOUSE_FQDN}
   example.com  # This is the value of BIRDHOUSE_FQDN as determined by the current configuration settings
+  $ eval \$(${THIS_BASENAME} configs --print-log-command)
+  log INFO 'Now I can write log messages!'
 "
+
+BACKUP_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] backup [-h|--help] {create,restore,restic}"
+
+BACKUP_CREATE_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] backup [backup options] create [-h|--help] 
+                                                                                                     [-d|--dry-run] 
+                                                                                                     [[-a|--component-application-data component], ...]
+                                                                                                     [[-u|--component-user-data component], ...] 
+                                                                                                     [[-l|--component-logs-data component], ...]                                                                                                     
+                                                                                                     [--birdhouse-logs] 
+                                                                                                     [--local-env-file]
+                                                                                                     [--no-restic]"
+BACKUP_CREATE_USAGE=$(echo $BACKUP_CREATE_USAGE | tr "\n" " ")
+
+BACKUP_RESTORE_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] backup [backup options] restore -s|--snapshot snaphot
+                                                                                                       [-h|--help] 
+                                                                                                       [-d|--dry-run] 
+                                                                                                       [[-a|--component-application-data component], ...]
+                                                                                                       [[-u|--component-user-data component], ...] 
+                                                                                                       [[-l|--component-logs-data component], ...]
+                                                                                                       [--birdhouse-logs] 
+                                                                                                       [--local-env-file]
+                                                                                                       [--no-clobber]"
+BACKUP_RESTORE_USAGE=$(echo $BACKUP_RESTORE_USAGE | tr "\n" " ")
+
+BACKUP_HELP="$BACKUP_USAGE
+
+Manage backups for the birdhouse stack.
+
+Commands:
+  create:     Create a backup for data used by the birdhouse stack.
+  restore:    Restore data from a backup snapshot.
+  restic:     Run a command using the restic CLI (birdhouse uses restic to manage backups).
+
+Options:
+  -h, --help    Print this message and exit
+"
+
+BACKUP_CREATE_HELP="$BACKUP_CREATE_USAGE
+
+Create a backup for data used by the birdhouse stack.
+
+Options:
+  -h, --help                          Print this message and exit
+  -d, --dry-run                       Print information about which data will be backed up. Do not actually perform backup.
+  -a, --component-application-data    Backup application data for a given component (e.g. magpie). This can be specified multiple times. Use '*' to select all components.
+  -u, --component-user-data           Backup user data for a given component (e.g. cowbird). This can be specified multiple times. Use '*' to select all components.
+  -l, --component-logs-data           Backup logs data for a given component (e.g. thredds). This can be specified multiple times. Use '*' to select all components.
+  --birdhouse-logs                    Backup birdhouse logs and docker container logs
+  --local-env-file                    Backup local environment file
+  --no-restic                         Do not save this backup as a restic snapshot. This will only backup the data to the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
+
+Note:
+  Not all components store application application data, user data, or log data. Depending on the component, some or none of these
+  will be available to backup. Use the --dry-run flag to confirm which data will be backed up.
+
+Note:
+  The volume specified by the BIRDHOUSE_BACKUP_VOLUME variable will be emptied before every backup operation (unless the --dry-run flag is specified).
+  If you want to preserve the content of this directory, copy it somewhere else first.
+
+Example Usage:
+
+  $ birdhouse backup create -a '*' -u '*' -l '*' --birdhouse-logs --local-env-file # backs up everything
+  $ birdhouse backup create -a magpie # backs up application data for the magpie component
+  $ birdhouse backup create -a cowbird -u cowbird -a finch # backs up application data for cowbird and finch and the user data for cowbird
+"
+
+BACKUP_RESTORE_HELP="$BACKUP_RESTORE_USAGE
+
+Restore data from a backup snapshot.
+
+WARNING: Running this command without the --no-clobber option will replace the current birdhouse data with the data
+         recovered from the backup. This will remove all current birdhouse data first and is not reversible!
+         Please consider doing a backup of the current data before restoring historical data from a snapshot.
+
+Options:
+  -h, --help                          Print this message and exit
+  -s, --snapshot                      ID of the snapshot that should be recovered. To list available snapshots run: ${THIS_BASENAME} backup restic snapshots
+  -d, --dry-run                       Print information about which data will be restored. Do not actually perform restore.
+  -a, --component-application-data    Restore application data for a given component (e.g. magpie). This can be specified multiple times. Use '*' to select all components.
+  -u, --component-user-data           Restore user data for a given component (e.g. cowbird). This can be specified multiple times. Use '*' to select all components.
+  -l, --component-logs-data           Restore logs data for a given component (e.g. thredds). This can be specified multiple times. Use '*' to select all components.
+  --birdhouse-logs                    Restore birdhouse logs and docker container logs
+  --local-env-file                    Restore local environment file
+  --no-clobber                        Do not overwrite current files with restored backup. This will only recover the data to the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
+
+
+Note:
+  Not all components store application application data, user data, or log data. Depending on the component, some or none of these
+  will be available to restore. Use the --dry-run flag to confirm which data will be restored.
+
+Note:
+  Log data and the local environment file will never overwrite current files with the restored backup. 
+  The data will be restored to the the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
+  In other words, restoring logs and the local environment file will behave as if the '--no-clobber' flag was provided.
+
+Note:
+  The volume specified by the BIRDHOUSE_BACKUP_VOLUME variable will be emptied before every restore operation (unless the --dry-run flag is specified).
+  If you want to preserve the content of this directory, copy it somewhere else first.
+
+Example Usage:
+
+  $ birdhouse backup restore latest -a '*' -u '*' -l '*' --birdhouse-logs --local-env-file # restores everything from the latest snapshot
+  $ birdhouse backup restic snapshots # list available snapshots including their ids
+  $ birdhouse backup restore XX123ABC -a magpie # restores application data for the magpie component from the snapshot with id XX123ABC
+  $ birdhouse backup restore latest -u jupyterhub --no-clobber # restore user data for jupyterhub but don't overwrite current jupyterhub user data
+"
+
 
 READ_CONFIGS_CMD=read_configs
 
@@ -106,6 +217,10 @@ print_config_command() {
   echo "${configs_cmd_prefix} . ${COMPOSE_DIR}/read-configs.include.sh; ${READ_CONFIGS_CMD} ; ${configs_cmd_suffix}"
 }
 
+print_log_command() {
+  echo ". ${COMPOSE_DIR}/scripts/logging.include.sh"
+}
+
 # Support multiple short flags together (ex: -abc instead of -a -b -c)
 # The first argument is the parse function to call once the multiple short flags have been parsed
 # The rest of the arguments are the rest arguments to be processed.
@@ -140,9 +255,18 @@ parse_configs_args() {
       parse_configs_args "$@"
       ;;
     -p|--print-config-command)
-      # Cannot be called with the --command argument as well
-      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'invalid arg that triggers usage message'
+      # Cannot be called with the --command or --print-log-command argument as well
+      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'Choose either --print-config-command or --command'
+      [ "${LOG_INCLUDE_PRINT}" = 'True' ] && parse_configs_args 'Choose either --print-config-command or --print-log-command'
       CONFIGS_PRINT=True
+      shift
+      parse_configs_args "$@"
+      ;;
+    --print-log-command)
+      # Cannot be called with the --print-config-command or --command option as well
+      [ "${CONFIGS_CMD+set}" = 'set' ] && parse_configs_args 'Choose either --print-log-command or --command'
+      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'Choose either --print-log-command or --print-config-command'
+      LOG_INCLUDE_PRINT=True
       shift
       parse_configs_args "$@"
       ;;
@@ -152,8 +276,9 @@ parse_configs_args() {
       parse_configs_args -c "${arg_value}" "$@"
       ;;
     -c|--command)
-      # Cannot be called with the --print-config-command option as well
-      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'invalid arg that triggers usage message'
+      # Cannot be called with the --print-config-command or --print-log-command option as well
+      [ "${CONFIGS_PRINT}" = 'True' ] && parse_configs_args 'Choose either --command or --print-config-command'
+      [ "${LOG_INCLUDE_PRINT}" = 'True' ] && parse_configs_args 'Choose either --command or --print-log-command'
       shift
       CONFIGS_CMD="$1"
       shift
@@ -170,22 +295,301 @@ parse_configs_args() {
       # command once all other options have been parsed
       if [ "${CONFIGS_PRINT}" = 'True' ]; then
         print_config_command
+      elif [ "${LOG_INCLUDE_PRINT}" = 'True' ]; then
+        print_log_command
       elif [ "${CONFIGS_CMD+set}" = 'set' ]; then
         if [ "${CONFIGS_QUIET}" = "True" ]; then
-          eval "$(print_config_command no-suffix)" 2> /dev/null
+          source_env 2> /dev/null
         else
-          eval "$(print_config_command no-suffix)"
+          source_env
         fi
         exec /usr/bin/env sh -c "${CONFIGS_CMD}"
       else
-        parse_configs_args 'invalid arg that triggers usage message'
+        parse_configs_args 'Choose either --command, --print-config-command, or --print-log-command'
       fi
       ;;
     *)
+      >&2 echo "$@"
       >&2 echo "$CONFIGS_USAGE"
       exit 1
       ;;
   esac
+}
+
+# Source the birdhouse environment. This will only work the first time it is
+# called so that it can be called multiple times within the same process without
+# triggering a re-read of the configuration settings every time.
+source_env() {
+  if [ "$_BIRDHOUSE_ENV_ALREADY_SOURCED" != "true" ]; then
+    eval "$(print_config_command no-suffix)"
+    export _BIRDHOUSE_ENV_ALREADY_SOURCED=true
+  fi 
+}
+
+# Ensure that the birdhouse stack is running before executing another command.
+# If the stack is not running, this will raise a log ERROR message and exit.
+ensure_birdhouse_running() {
+  source_env
+  if ! docker ps --filter label=com.docker.compose.project --format '{{.Label "com.docker.compose.project"}}' | grep -q "${COMPOSE_PROJECT_NAME:-birdhouse}"; then
+      log ERROR "This command requires that the birdhouse stack be running. Start the stack first with '${THIS_BASENAME} compose up -d' and try again."
+      exit 1
+  fi
+  "$@"
+}
+
+# Backup or restore component data. This is called by the do_backup_create_restore function.
+# The BIRDHOUSE_BACKUP_RESTORE_COMMAND variable determines whether this will backup or restore.
+# The first argument determines whether to run a backup or restore job (must be one of 'backup' or 'restore')
+# The second argument determines which components will be backed up or restored. This argument is either a
+# space delimited string containing the names of components or the string '*' (selects all enabled components).
+do_component_backup_create_restore() {
+  backup_restore_type="$1"
+  confdirs=
+  if echo " ${2} " | grep -q ' \* '; then
+    confdirs="${ALL_CONF_DIRS}"
+    backup_restore_all='true'
+  else
+    for component in ${2}; do
+      component_path="$(echo "${ALL_CONF_DIRS}" | grep -o "[^[:space:]]*/${component}[[:space:]]*$")"
+      if [ -n "$component_path" ]; then
+        confdirs="${confdirs} ${component_path}"
+      else
+        log WARN "Skipping ${BIRDHOUSE_BACKUP_RESTORE_COMMAND} for component '${component}'. This component is not enabled."
+      fi
+    done
+  fi
+  for confdir in ${confdirs}; do
+    backup_script="$(cd "${COMPOSE_DIR}"; readlink -f "${confdir}/backup" 2>/dev/null || realpath "${confdir}/backup" 2>/dev/null)"
+    if [ -n "${backup_script}" ] && [ -f "${backup_script}" ]; then
+      (  # run this in a subprocess so that sourcing the backup_script does not modify this environment
+       . "${backup_script}"
+       . "${COMPOSE_DIR}/scripts/backup.include.sh"
+       $(command -v ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_${backup_restore_type} || true)
+      )
+    elif [ "${backup_restore_all}" != 'true' ]; then
+      log WARN "Skipping ${BIRDHOUSE_BACKUP_RESTORE_COMMAND} for component '$(basename "${component}")'. No ${BIRDHOUSE_BACKUP_RESTORE_COMMAND} command exists."
+    fi
+  done
+}
+
+# Backup or restore data.
+# The BIRDHOUSE_BACKUP_RESTORE_COMMAND variable determines whether this will backup or restore.
+# The BIRDHOUSE_BACKUP_APPLICATION_COMPONENTS variable determines which component's application data will be affected.
+# The BIRDHOUSE_BACKUP_USER_COMPONENTS variable determines which component's user data will be affected.
+# The BIRDHOUSE_BACKUP_LOGS_COMPONENTS variable determines which component's application logs will be affected.
+# The BIRDHOUSE_BACKUP_LOGS variable determines whether the birdhouse and docker logs will be affected
+# The BIRDHOUSE_BACKUP_LOCAL_ENV_FILE variable determines whether the local environment file will be affected
+# If BIRDHOUSE_BACKUP_DRY_RUN is true, only print a report of what will happen instead of actually backing up or restoring data.
+do_backup_create_restore() {
+  if [ "$BIRDHOUSE_BACKUP_DRY_RUN" = "true" ]; then 
+    echo "Dry-run: this would run ${BIRDHOUSE_BACKUP_RESTORE_COMMAND} jobs for the following:"
+  else
+    # start with a clean backup volume so that snapshots only contain the data that is requested to be backed up/restored
+    docker volume rm "${BIRDHOUSE_BACKUP_VOLUME}"
+  fi
+
+  do_component_backup_create_restore application "${BIRDHOUSE_BACKUP_APPLICATION_COMPONENTS}"
+  do_component_backup_create_restore user "${BIRDHOUSE_BACKUP_USER_COMPONENTS}"
+  do_component_backup_create_restore logs "${BIRDHOUSE_BACKUP_LOGS_COMPONENTS}"
+
+  [ "${BIRDHOUSE_BACKUP_LOGS}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${COMPOSE_DIR}/scripts/backup.include.sh"; ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_logs)
+  [ "${BIRDHOUSE_BACKUP_LOCAL_ENV_FILE}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${COMPOSE_DIR}/scripts/backup.include.sh"; ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_local_env_file)
+
+  [ "$BIRDHOUSE_BACKUP_DRY_RUN" = "true" ] || BIRDHOUSE_COMPOSE_TEMPLATE_SKIP=true "${THIS_FILE}" --quiet compose restart proxy 
+
+  if [ "${BIRDHOUSE_BACKUP_RESTORE_COMMAND}" = 'backup' ] && [ "$BIRDHOUSE_BACKUP_DRY_RUN" != "true" ] && [ "$BIRDHOUSE_BACKUP_RESTORE_NO_RESTIC" != "true" ]; then
+    # initialize the restic repository if it doesn't exist 
+    if ! do_restic cat config 2>/dev/null > /dev/null; then
+      do_restic init || exit $?
+    fi
+
+    # backup the scheduler data to the repository
+    do_restic --verbose backup ${BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS} /backup || exit $?
+
+    # forget old snapshots if a policy is enabled
+    if [ -n "${BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS}" ]; then
+      do_restic --verbose forget ${BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS}
+      do_restic --verbose prune
+    fi
+  fi
+}
+
+# Variables that contain references to files or directories that need to be mounted to the 
+# docker container that runs the restic service.
+RESTIC_FILE_VARS="
+RESTIC_REPOSITORY_FILE
+RESTIC_PASSWORD_FILE  
+RESTIC_CACERT
+RESTIC_TLS_CLIENT_CERT
+RESTIC_CACHE_DIR
+TMPDIR
+AWS_SHARED_CREDENTIALS_FILE
+"
+
+# This needs to be declared as string that can be interpreted by sh (in the extra_args function below)
+# This can't be a regular function because it is called by xargs which runs the command in a subprocess and 
+#   functions declared in parent processes are not available to their children. 
+#     - (Yes in bash we can do `export -f` but this needs to work in shells other than bash)
+#     - (Yes in bash we can use `while IFS= read -d ''` but this needs to work in shells other than bash)
+PARSE_EXTRA_ARGS_FUNCTION_DEFINITION='
+  var="${1%%=*}"
+  value="${1#*=}"
+  # mount repository location if specified in an env variable
+  [ "${var}" = "RESTIC_REPOSITORY" ] && [ -n "${value}" ] && [ "${value#*":"}" = "${value}" ] && printf " -v ${value}:${value} "
+  # mount repository location if specified in a file
+  if [ "${var}" = "RESTIC_REPOSITORY_FILE" ]; then
+    repo_loc="$(docker run --rm -v "${value}:/restic-file" "${BASH_IMAGE}" cat /restic-file | xargs)"
+    [ -n "${repo_loc}" ] && [ "${repo_loc#*":"}" = "${repo_loc}" ] && printf " -v ${repo_loc}:${repo_loc} "
+  fi
+  # mount any files specified in the restic env file
+  echo "${RESTIC_FILE_VARS}" | grep -q "^[[:space:]]*${var}[[:space:]]*$" && printf " -v ${value}:${value}:ro "
+'
+
+# Determine extra args that need to be added to the docker run command that runs the restic service.
+extra_args() {
+  env -i sh -ac '. "$1" && env -0' sh "${BIRDHOUSE_BACKUP_RESTIC_ENV_FILE}" | xargs -0 -n1 sh -c "$PARSE_EXTRA_ARGS_FUNCTION_DEFINITION" sh 
+}
+
+# Run a restic command.
+do_restic() {
+  source_env
+  restic_cmd="docker run --rm --env-file='${BIRDHOUSE_BACKUP_RESTIC_ENV_FILE}' --env 'RESTIC_PASSWORD_COMMAND=' -v '${BIRDHOUSE_BACKUP_SSH_KEY_DIR}:/root/.ssh:ro' -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup ${BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS} $(extra_args) ${RESTIC_IMAGE} $@"
+  log DEBUG "Running restic command: ${restic_cmd}"
+  eval "${restic_cmd}"
+}
+ 
+parse_backup_args() {
+  case "$1" in
+    -h|--help)
+      echo "${BACKUP_HELP}" | more
+      exit
+      ;;
+    create)
+      shift
+      parse_backup_create_args "$@"
+      ;;
+    restore)
+      shift
+      parse_backup_restore_args "$@"
+      ;;
+    restic)
+      shift
+      do_restic "$@"
+      ;;
+    *)
+      >&2 echo "$@"
+      >&2 echo "$BACKUP_USAGE"
+      exit 1
+      ;;
+  esac
+}
+
+# Parse args that are common to the backup create and backup restore commands
+parse_backup_restore_common_args() {
+  calling_func="$1"
+  shift
+  case "$1" in
+    -d|--dry-run)
+      shift
+      export BIRDHOUSE_BACKUP_DRY_RUN=true # export needed so that it is visible in subprocess when actually calling backup scripts
+      ${calling_func} "$@"
+      ;;
+    -a|--component-application-data)
+      shift
+      BIRDHOUSE_BACKUP_APPLICATION_COMPONENTS="${BIRDHOUSE_BACKUP_APPLICATION_COMPONENTS} ${1}"
+      shift
+      ${calling_func} "$@"
+      ;;
+    -u|--component-user-data)
+      shift
+      BIRDHOUSE_BACKUP_USER_COMPONENTS="${BIRDHOUSE_BACKUP_USER_COMPONENTS} ${1}"
+      shift
+      ${calling_func} "$@"
+      ;;
+    -l|--component-logs-data)
+      shift
+      BIRDHOUSE_BACKUP_LOGS_COMPONENTS="${BIRDHOUSE_BACKUP_LOGS_COMPONENTS} ${1}"
+      shift
+      ${calling_func} "$@"
+      ;;
+    --birdhouse-logs)
+      shift
+      BIRDHOUSE_BACKUP_LOGS=true
+      ${calling_func} "$@"
+      ;;
+    --local-env-file)
+      shift
+      BIRDHOUSE_BACKUP_LOCAL_ENV_FILE=true
+      ${calling_func} "$@"
+      ;;
+    -??*)
+      parse_multiple_short_flags ${calling_func} "$@"
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+# Parse backup create args
+parse_backup_create_args() {
+  case "$1" in     
+    -h|--help)
+      echo "${BACKUP_CREATE_HELP}" | more
+      exit
+      ;;
+    --no-restic)
+      shift
+      export BIRDHOUSE_BACKUP_RESTORE_NO_RESTIC=true
+      parse_backup_create_args "$@"
+      ;;
+    '')
+      BIRDHOUSE_BACKUP_RESTORE_COMMAND=backup
+      ensure_birdhouse_running do_backup_create_restore
+      exit
+      ;;
+    *)
+      if ! parse_backup_restore_common_args parse_backup_create_args "$@"; then
+        >&2 echo "$@"
+        >&2 echo "$BACKUP_CREATE_USAGE"
+        exit 1
+      fi      
+      ;;
+    esac
+}
+
+# Parse backup restore args
+parse_backup_restore_args() {
+  case "$1" in    
+    -h|--help)
+      echo "${BACKUP_RESTORE_HELP}" | more
+      exit
+      ;;
+    -s|--snapshot)
+      shift
+      BIRDHOUSE_RESTORE_SNAPSHOT="$1"
+      shift
+      parse_backup_restore_args "$@"
+      ;;
+    --no-clobber)
+      shift
+      export BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER=true
+      parse_backup_restore_args "$@"
+      ;;
+    '')
+      [ -n "$BIRDHOUSE_RESTORE_SNAPSHOT" ] || parse_backup_restore_args 'Use the --snapshot option to specify a snapshot to restore.'
+      BIRDHOUSE_BACKUP_RESTORE_COMMAND=restore
+      ensure_birdhouse_running do_backup_create_restore
+      exit
+      ;;
+    *)
+      if ! parse_backup_restore_common_args parse_backup_restore_args "$@"; then
+        >&2 echo "$@"
+        >&2 echo "$BACKUP_RESTORE_USAGE"
+        exit 1
+      fi  
+      ;;
+    esac
 }
 
 # Echos "True" if the first argument is a valid log level
@@ -289,6 +693,10 @@ parse_args() {
       shift
       parse_configs_args "$@"
       ;;
+    backup)
+      shift
+      parse_backup_args "$@"
+      ;;
     -h|--help)
       echo "$HELP" | more
       ;;
@@ -296,6 +704,7 @@ parse_args() {
       parse_multiple_short_flags parse_args "$@"
       ;;
     *)
+      >&2 echo "$@"
       >&2 echo "$USAGE"
       exit 1
       ;;

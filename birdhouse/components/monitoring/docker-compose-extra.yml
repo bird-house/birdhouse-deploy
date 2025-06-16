@@ -55,6 +55,7 @@ services:
       - --storage.tsdb.path=/prometheus
       - --web.console.libraries=/usr/share/prometheus/console_libraries
       - --web.console.templates=/usr/share/prometheus/consoles
+      - --web.enable-admin-api
       # https://prometheus.io/docs/prometheus/latest/storage/
       - --storage.tsdb.retention.time=90d
       # wrong default was http://container-hash:9090/
