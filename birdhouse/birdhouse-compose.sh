@@ -37,28 +37,32 @@ read_configs # this sets ALL_CONF_DIRS
 check_required_vars || exit $?
 
 # we apply all the templates
-if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ] || [ x"${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE}" = x"true" ]; then
-  log INFO "Updating template files found across 'BIRDHOUSE_EXTRA_CONF_DIRS' (enabled and default components)."
-  find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
-  while read FILE
-  do
-    DEST=${FILE%.template}
-    if [ -d "${DEST}" ]; then
-      # purposely using 'rmdir' to get an error if the contents are not empty
-      # this is only to handle docker-compose early generation of volume mounts
-      log WARN "Removing invalid directory for template file [${DEST}]"
-      if ! rmdir "${DEST}" 2>/dev/null; then
-        log ERROR "Cannot remove non-empty directory [${DEST}]." \
-                  "This directory should not exist as it conflicts with destination of [${FILE}]." \
-                  "Please remove it and try starting up the birdhouse stack again."
-        exit 1
+if [ "${BIRDHOUSE_COMPOSE_TEMPLATE_SKIP}" != 'true' ]; then
+  if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ] || [ x"${BIRDHOUSE_COMPOSE_TEMPLATE_FORCE}" = x"true" ]; then
+    log INFO "Updating template files found across 'BIRDHOUSE_EXTRA_CONF_DIRS' (enabled and default components)."
+    find ${ALL_CONF_DIRS} -name '*.template' 2>/dev/null |
+    while read FILE
+    do
+      DEST=${FILE%.template}
+      if [ -d "${DEST}" ]; then
+        # purposely using 'rmdir' to get an error if the contents are not empty
+        # this is only to handle docker-compose early generation of volume mounts
+        log WARN "Removing invalid directory for template file [${DEST}]"
+        if ! rmdir "${DEST}" 2>/dev/null; then
+          log ERROR "Cannot remove non-empty directory [${DEST}]." \
+                    "This directory should not exist as it conflicts with destination of [${FILE}]." \
+                    "Please remove it and try starting up the birdhouse stack again."
+          exit 1
+        fi
       fi
-    fi
-    cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
-  done
-  [ "$?" -eq 1 ] && exit 1  # re-raise the subshell error of the while loop
+      cat "${FILE}" | envsubst "$VARS" | envsubst "$OPTIONAL_VARS" > "${DEST}"
+    done
+    [ "$?" -eq 1 ] && exit 1  # re-raise the subshell error of the while loop
+  else
+    log DEBUG "Skipping template files update (\"$1\" not \"up\", \"restart\", or forced by BIRDHOUSE_COMPOSE_TEMPLATE_FORCE)"
+  fi
 else
-  log DEBUG "Skipping template files update (\"$1\" not \"up\", \"restart\", or forced by BIRDHOUSE_COMPOSE_TEMPLATE_FORCE)"
+  log DEBUG "Skipping template files update with BIRDHOUSE_COMPOSE_TEMPLATE_SKIP=true"
 fi
 
 create_compose_conf_list # this sets COMPOSE_CONF_LIST
@@ -91,14 +95,15 @@ if [ x"$1" = x"up" ] || [ x"$1" = x"restart" ]; then
   done
 fi
 
-log INFO "Executing docker-compose with extra options: $* ${COMPOSE_EXTRA_OPTS}"
+log INFO "Executing docker-compose with extra options: $@ ${COMPOSE_EXTRA_OPTS}"
 # the PROXY_HTTP_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} $* ${COMPOSE_EXTRA_OPTS} || expect_exit
+# Use "$@" instead of $* so that quoted arguments are respected and passed to the docker compose command as expected 
+PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} "$@" ${COMPOSE_EXTRA_OPTS} || expect_exit
 
 # execute post-compose function if exists and no error occurred
 if type post-compose 2>&1 | grep 'post-compose is a function' > /dev/null
 then
-  post-compose $*
+  post-compose "$@"
 fi
 
 if [ x"$1" = x"up" ]; then

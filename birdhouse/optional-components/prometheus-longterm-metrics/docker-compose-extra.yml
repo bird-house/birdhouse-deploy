@@ -18,6 +18,7 @@ services:
       - --storage.tsdb.path=/prometheus
       - --web.console.libraries=/usr/share/prometheus/console_libraries
       - --web.console.templates=/usr/share/prometheus/consoles
+      - --web.enable-admin-api
       - --storage.tsdb.retention.time=${PROMETHEUS_LONGTERM_RETENTION_TIME}
       - --web.external-url=https://${BIRDHOUSE_FQDN_PUBLIC}/prometheus-longterm-metrics/
       - --storage.tsdb.min-block-duration=${PROMETHEUS_LONGTERM_TSDB_MIN_BLOCK_DURATION}

@@ -15,10 +15,6 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-## Changes
-
-- Add Prometheus rules defining long-term metrics (hourly and daily).
-
 ## Fixes
 
 - Fix various bugs with backward-compatibility mode
@@ -171,7 +167,115 @@
   default value.
 
 
-- Fix bugs in Prometheus log parser meant to measure download volume.
+[2.16.0](https://github.com/bird-house/birdhouse-deploy/tree/2.16.0) (2025-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add `backup` command in `bin/birdhouse` to backup and restore data to a restic repository
+
+  This allows users to backup and restore:
+    - application data, user data, and log data for all components
+    - birdhouse logs
+    - docker container logs
+    - local environement file
+  
+  Restoring data either involves restoring it to a named volume (determined by `BIRDHOUSE_BACKUP_VOLUME`) or in the case
+  of user data and application data, to overwrite the current data with the backup.
+
+  For full details run the `bin/birdhouse backup --help` command.
+
+  Backups are stored in a [restic](https://restic.readthedocs.io/en/stable/) repository which can be configured by creating 
+  a file at `BIRDHOUSE_BACKUP_RESTIC_ENV_FILE` (default: `birdhouse/restic.env`)  which contains the 
+  [environment variables](https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables) 
+  necessary for restic to create, and access a repository (see `birdhouse/restic.env.example` for details).
+
+  The backup and restore commands can be further customized by setting any of the following variables:
+
+  - `BIRDHOUSE_BACKUP_SSH_KEY_DIR`: 
+    - The location of a directory that contains an SSH key used to access a remote machine where the restic repository 
+      is hosted. Required if accessing a restic repository using the sftp protocol.
+  - `BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS`: 
+    - Additional options to pass to the `restic backup` command when running the `birdhouse backup create` command.
+       For example: `BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS='--skip-if-unchanged --exclude-file "file-i-do-not-want-backedup.txt"`
+  - `BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS`:
+    - Additional options to pass to the `restic forget` command after running the backup job. This allows you to ensure 
+      that restic deletes old backups according to your backup retention policy. If this is set, then restic will also 
+      run the `restic prune` command after every backup to clean up old backup files.
+      For example, to store backups daily for 1 week, weekly for 1 month, and monthly for a year:
+      `BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS='--keep-daily=7 --keep-weekly=4 --keep-monthly=12'`
+    
+- Add scheduler job to automatically backup data
+
+  Create a new scheduler job at `optional-components/scheduler-job-backup` which runs the `bin/birdhouse backup create` 
+  command at regular intervals to ensure that the birdhouse stack's data is regularly backed up.
+
+  To configure this job you may set the following variables:
+    - `SCHEDULER_JOB_BACKUP_FREQUENCY`:
+      - Cron schedule when to run this scheduler job (default is `'1 1 * * *'`, at 1:01 am daily)
+    - `SCHEDULER_JOB_BACKUP_ARGS`:
+      - Extra arguments to pass to the 'bin/birdhouse backup create' command when backing up data.
+        By default this backs up everything (default is `'-a \* -u \* -l \* --birdhouse-logs --local-env-file'`)
+
+- Add `configs --print-log-command` option in `bin/birdhouse`
+
+  This allows users to print a command that can be used to load the birdhouse logging functions in the current
+  process. This is very similar to the `bin/birdhouse configs --print-config-command` except that it only loads
+  the logging functions.
+
+  Example usage:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-log-command)
+  log INFO 'here is an example log message'
+  ```
+
+  It is important to have a distinct option to just load the log commands because functions are not inherited
+  by subprocesses which means that if you do something like:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-config-command)
+  log INFO 'this one works'
+  sh -c 'log ERROR "this one does not"'
+  ```
+
+  the log command in the subprocess does not work. We would have to re-run the `eval` in the subprocess which would
+  unnecessarily redefine all the existing configuration variables. Instead we can now do this:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-log-command)
+  log INFO 'this one works'
+  sh -c 'eval $(bin/birdhouse configs --print-log-command); log INFO "this one does work now"'
+  ```
+
+  which is much quicker and does not require redefining all configuration variables.
+
+  Note: this was introduced as a helper for the `bin/birdhouse backup` commands but was made part of the public
+  interface because it is potentially very useful for other scripts that want to use the birdhouse logging mechanism. 
+  For example, the `components/weaver/post-docker-compose-up` script defines its own logging functions which could
+  now be easily replaced using this method.
+
+- Add `BIRDHOUSE_COMPOSE_TEMPLATE_SKIP` environment variable to explicitly skip rebuilding template files if `true`
+
+  This gives us the option to skip re-building template files even if the command to `bin/birdhouse compose` is `up`
+  or `restart`. This is essentially the opposite of `BIRDHOUSE_COMPOSE_TEMPLATE_FORCE`.
+
+  This option is necessary when running a command while the birdhouse stack is already running and we don't want to
+  change the template files for the running stack.
+
+- Add Prometheus rules defining long-term metrics (hourly and daily).
+
+## Fixes
+
+- Replace non-portable `sed -z` option
+
+  The `birdhouse/scripts/get-services-json.include.sh` script includes the `sed` command using the `-z` flag. The
+  `-z` flag is non-standard and is not supported by several well-used versions of `sed`.
+
+  This became apparent when this script is run by the `optional-components/scheduler-job-backup` job which runs
+  in an alpine based docker container.
+
+- Fix bugs in Prometheus log parser meant to measure download volume. 
 
 - Fix issue where the current environment is printed to stdout if no shell exec flags are set.
 
