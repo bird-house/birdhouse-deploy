@@ -22,7 +22,7 @@ backup_representative() {
                --user root \
                --env PYESSV_ARCHIVE_HOME=/home/stac/.esdoc/pyessv-archive \
                --entrypoint sh \
-               ${STAC_POPULATOR_IMAGE} \
+               ${STAC_POPULATOR_BACKUP_IMAGE} \
                -c 'mkdir /backup/stac-repr/; stac-populator export http://stac:8000/stac /backup/stac-repr/ --ignore-duplicate-ids'
   }
   backup_create_runner 'stac json objects' _do_backup
@@ -46,8 +46,8 @@ restore_representative() {
                --user root \
                --env PYESSV_ARCHIVE_HOME=/home/stac/.esdoc/pyessv-archive \
                --env PYSTAC_STAC_VERSION_OVERRIDE="${PYSTAC_STAC_VERSION_OVERRIDE}" \
-               ${STAC_POPULATOR_IMAGE} \
-               run --stac-version auto DirectoryLoader http://stac:8000/stac /backup/stac-repr/
+               ${STAC_POPULATOR_BACKUP_IMAGE} \
+               run DirectoryLoader http://stac:8000/stac /backup/stac-repr/
   }
   backup_restore_runner 'stac json objects' _do_restore 'stac-repr' 'stac stac-db'
 }

@@ -115,7 +115,7 @@ Options:
   -a, --component-application-data    Backup application data for a given component (e.g. magpie). This can be specified multiple times. Use '*' to select all components.
   -u, --component-user-data           Backup user data for a given component (e.g. cowbird). This can be specified multiple times. Use '*' to select all components.
   -l, --component-logs-data           Backup logs data for a given component (e.g. thredds). This can be specified multiple times. Use '*' to select all components.
-  -r, --representative-data           Backup representative data for a give component (e.g. stac). This can be specified multiple times. Use '*' to select all components.
+  -r, --representative-data           Backup representative data for a given component (e.g. stac). This can be specified multiple times. Use '*' to select all components.
   --birdhouse-logs                    Backup birdhouse logs and docker container logs
   --local-env-file                    Backup local environment file
   --no-restic                         Do not save this backup as a restic snapshot. This will only backup the data to the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
@@ -150,7 +150,7 @@ Options:
   -a, --component-application-data    Restore application data for a given component (e.g. magpie). This can be specified multiple times. Use '*' to select all components.
   -u, --component-user-data           Restore user data for a given component (e.g. cowbird). This can be specified multiple times. Use '*' to select all components.
   -l, --component-logs-data           Restore logs data for a given component (e.g. thredds). This can be specified multiple times. Use '*' to select all components.
-  -r, --representative-data           Restore representative data for a give component (e.g. stac). This can be specified multiple times. Use '*' to select all components.
+  -r, --representative-data           Restore representative data for a given component (e.g. stac). This can be specified multiple times. Use '*' to select all components.
   --birdhouse-logs                    Restore birdhouse logs and docker container logs
   --local-env-file                    Restore local environment file
   --no-clobber                        Do not overwrite current files with restored backup. This will only recover the data to the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.

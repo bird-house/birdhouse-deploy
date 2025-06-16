@@ -522,7 +522,9 @@ Users can backup and restore the following data from the birdhouse stack:
     a version of the data that is independent of the underlying storage technology.
 
   * this is useful when you want to be able to restore a component to a previous state and the
-    component version has been updated since the last backup. 
+    component version has been updated since the last backup. For example, if a database
+    has been updated between versions and there is no easy way to cleanly migrate the existing
+    database data between versions, the representative data can be used.
     
   * backing up and restoring representative data will probably take a much longer time than
     application data.
