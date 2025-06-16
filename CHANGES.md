@@ -108,6 +108,8 @@
   This option is necessary when running a command while the birdhouse stack is already running and we don't want to
   change the template files for the running stack.
 
+- Add Prometheus rules defining long-term metrics (hourly and daily).
+
 ## Fixes
 
 - Replace non-portable `sed -z` option
