@@ -54,16 +54,16 @@ counter = prometheus_client.Counter(
 def parse_line(line):
     match = REGEX.match(line)
     if match:
-        labels = {k: match.groupdict().get(k, None) for k in LABEL_KEYS}
+        labels = {k: match.groupdict().get(k, "") for k in LABEL_KEYS}
         # Tweaks
-        if labels.get("tds_service") == "dodsC":
-            labels["dataset"] = (labels.get("dataset", "").removesuffix(".dods")
-            .removesuffix(".dds")
-            .removesuffix(".das"))
+        if labels["tds_service"] == "dodsC":
+            labels["dataset"] = (labels["dataset"].removesuffix(".dods")
+                .removesuffix(".dds")
+                .removesuffix(".das"))
             if (req := match.group("thredds_request")) is not None:
                 labels["variable"] = req.split(".")[0]
-        elif labels.get("tds_service") == "ncss":
-            labels["dataset"] = labels.get("dataset", "").removesuffix("/dataset.html")
+        elif labels["tds_service"] == "ncss":
+            labels["dataset"] = labels["dataset"].removesuffix("/dataset.html")
             labels["variable"] = ""
         else:
             labels["variable"] = ""
@@ -73,4 +73,3 @@ def parse_line(line):
             counter.labels(**labels).inc(body_kb_sent)
 
 LOG_PARSER_CONFIG = {f"/var/log/proxy/{os.getenv('PROXY_LOG_FILE')}": [parse_line]}
-
