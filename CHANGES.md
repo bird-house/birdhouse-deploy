@@ -19,6 +19,9 @@
 
 - Add additional documentation for backups
 
+  Also include a new script `birdhouse/scripts/create-restic-keypair.sh` to help users create and test SSH keypairs
+  for use by restic when accessing restic repositories over SFTP.
+
 [2.16.0](https://github.com/bird-house/birdhouse-deploy/tree/2.16.0) (2025-06-16)
 ------------------------------------------------------------------------------------------------------------------
 

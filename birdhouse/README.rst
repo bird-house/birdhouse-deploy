@@ -608,12 +608,13 @@ Generating a new SSH key pair for restic
 
 To generate a unique SSH key pair for ``restic`` to backup your data to a remote server using the SFTP protocol:
 
-1. Set ``BIRDHOUSE_BACKUP_SSH_KEY_DIR`` to an empty directory on the host machine
+1. Set ``BIRDHOUSE_BACKUP_SSH_KEY_DIR`` to a directory on the host machine. This directory will be writeable by
+   the ``restic`` docker container so we recommend starting with an empty directory.
 2. Generate a new SSH key pair for the user that is running the restic docker container with the following command:
 
 .. code-block:: shell
 
-  BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS='--entrypoint sh -it' bin/birdhouse backup restic -c 'ssh-keygen'
+  birdhouse/scripts/create-restic-keypair.sh create
 
 .. note::
 
@@ -625,7 +626,7 @@ To generate a unique SSH key pair for ``restic`` to backup your data to a remote
 
 .. code-block:: shell
 
-  BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS='--entrypoint sh -it' birdhouse backup restic -c "ssh someuser@my.remote.host.com"
+  birdhouse/scripts/create-restic-keypair.sh test
 
 .. _nginx.conf: ./components/proxy/nginx.conf
 .. _default.env: ./default.env
