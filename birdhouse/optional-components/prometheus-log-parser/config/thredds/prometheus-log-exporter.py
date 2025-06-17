@@ -23,7 +23,7 @@ import prometheus_client
 THREDDS_REQ_URI_REGEX = (r'\/[^\s]+\/thredds\/'
                          r'(?P<tds_service>dodsC|fileServer|ncss|wcs)\/'
                          r'(?P<dataset>[^\s\?]*)'
-                         r'(?:\?(?P<thredds_request>[\w-]+))?')
+                         r'(?:\?(?P<thredds_request>[^\s]+))?')
 
 # This matches the nginx log_fomat as defined in birdhouse/components/proxy/nginx.conf.template
 REGEX = re.compile(
@@ -42,7 +42,7 @@ REGEX = re.compile(
     r'\"(?P<user_agent>[^\"]+)\"\s'
     r'\"(?P<forward_for>[^\"]+)\"')
 
-LABEL_KEYS = ("remote_addr", "tds_service", "dataset")
+LABEL_KEYS = ("remote_addr", "tds_service", "dataset", "variable")
 
 counter = prometheus_client.Counter(
     name="thredds_transfer_size_kb",
@@ -54,13 +54,16 @@ counter = prometheus_client.Counter(
 def parse_line(line):
     match = REGEX.match(line)
     if match:
-        labels = {label: match.group(label) or "" for label in LABEL_KEYS}
+        labels = {k: match.groupdict().get(k, None) for k in LABEL_KEYS}
         # Tweaks
-        if labels["tds_service"] == "dodsC":
-            labels["dataset"] = labels["dataset"].removesuffix(".dods")
-            labels["variable"] = match.group("thredds_request").split(".")[0]
-        elif labels["tds_service"] == "ncss":
-            labels["dataset"] = labels["dataset"].removesuffix("/dataset.html")
+        if labels.get("tds_service") == "dodsC":
+            labels["dataset"] = (labels.get("dataset", "").removesuffix(".dods")
+            .removesuffix(".dds")
+            .removesuffix(".das"))
+            if (req := match.group("thredds_request")) is not None:
+                labels["variable"] = req.split(".")[0]
+        elif labels.get("tds_service") == "ncss":
+            labels["dataset"] = labels.get("dataset", "").removesuffix("/dataset.html")
             labels["variable"] = ""
         else:
             labels["variable"] = ""
@@ -70,3 +73,4 @@ def parse_line(line):
             counter.labels(**labels).inc(body_kb_sent)
 
 LOG_PARSER_CONFIG = {f"/var/log/proxy/{os.getenv('PROXY_LOG_FILE')}": [parse_line]}
+
