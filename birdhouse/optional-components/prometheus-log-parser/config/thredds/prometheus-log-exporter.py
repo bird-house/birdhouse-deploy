@@ -54,7 +54,8 @@ counter = prometheus_client.Counter(
 def parse_line(line):
     match = REGEX.match(line)
     if match:
-        labels = {k: match.groupdict().get(k, None) for k in LABEL_KEYS}
+        groups = match.groupdict()
+        labels = {k: groups.get(k, "") for k in LABEL_KEYS}
         # Tweaks
         if labels.get("tds_service") == "dodsC":
             labels["dataset"] = (labels.get("dataset", "").removesuffix(".dods")
