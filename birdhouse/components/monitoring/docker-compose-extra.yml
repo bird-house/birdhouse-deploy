@@ -60,6 +60,7 @@ services:
       - --storage.tsdb.retention.time=90d
       # wrong default was http://container-hash:9090/
       - --web.external-url=${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/prometheus/
+      - --log.level=${PROMETHEUS_LOG_LEVEL}
     restart: always
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:9090"]
