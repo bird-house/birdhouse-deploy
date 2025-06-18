@@ -20,7 +20,6 @@ backup_representative() {
                --network "${COMPOSE_PROJECT_NAME}_default" \
                -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
                --user root \
-               --env PYESSV_ARCHIVE_HOME=/home/stac/.esdoc/pyessv-archive \
                --entrypoint sh \
                ${STAC_POPULATOR_BACKUP_IMAGE} \
                -c 'mkdir /backup/stac-repr/; stac-populator export http://stac:8000/stac /backup/stac-repr/ --ignore-duplicate-ids'
@@ -44,7 +43,6 @@ restore_representative() {
                --network "${COMPOSE_PROJECT_NAME}_default" \
                -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
                --user root \
-               --env PYESSV_ARCHIVE_HOME=/home/stac/.esdoc/pyessv-archive \
                --env PYSTAC_STAC_VERSION_OVERRIDE="${PYSTAC_STAC_VERSION_OVERRIDE}" \
                ${STAC_POPULATOR_BACKUP_IMAGE} \
                run DirectoryLoader http://stac:8000/stac /backup/stac-repr/
