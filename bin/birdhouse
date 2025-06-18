@@ -453,7 +453,7 @@ extra_args() {
 # Run a restic command.
 do_restic() {
   source_env
-  restic_cmd="docker run --rm --env-file='${BIRDHOUSE_BACKUP_RESTIC_ENV_FILE}' --env 'RESTIC_PASSWORD_COMMAND=' -v '${BIRDHOUSE_BACKUP_SSH_KEY_DIR}:/root/.ssh' -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup ${BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS} $(extra_args) ${RESTIC_IMAGE} $@"
+  restic_cmd="docker run --rm --env-file='${BIRDHOUSE_BACKUP_RESTIC_ENV_FILE}' --env 'RESTIC_PASSWORD_COMMAND=' -v '${BIRDHOUSE_BACKUP_SSH_KEY_DIR}:/root/.ssh:ro' -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup ${BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS} $(extra_args) ${RESTIC_IMAGE} $@"
   log DEBUG "Running restic command: ${restic_cmd}"
   eval "${restic_cmd}"
 }

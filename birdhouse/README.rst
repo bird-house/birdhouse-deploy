@@ -562,9 +562,12 @@ the backup and restore jobs.
   * The location of a directory that contains an SSH key used to access a remote machine where the restic repository
     is hosted. Required if accessing a restic repository using the sftp protocol.
 
-  * Depending on the remote SSH server you may need to generate a brand new SSH key pair. This is because the ``restic``
-    command runs as a different user (in a docker container) than a user on the host machine. See the :ref:`backups-key-pair`_
-    documentation for more information.
+  * Please ensure that your key does not require a passphrase since backups must be run without any additional user
+    input. Also ensure that your key is generated using a modern, secure algorithm that is supported by the remote
+    ssh server you are trying to log into.
+
+  * You can test whether your keys are sufficient for restic by running the ``birdhouse/scripts/test-restic-keypair.sh``
+    script.
 
 * ``BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS``
 
@@ -600,33 +603,6 @@ the backup and restore jobs.
 
   * Warning! Using this option may overwrite other docker options that are required for restic to run properly.
     Make sure you are familiar with restic commands and know what you are doing before using this feature.
-
-.. backups-key-pair::
-
-Generating a new SSH key pair for restic
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-To generate a unique SSH key pair for ``restic`` to backup your data to a remote server using the SFTP protocol:
-
-1. Set ``BIRDHOUSE_BACKUP_SSH_KEY_DIR`` to a directory on the host machine. This directory will be writeable by
-   the ``restic`` docker container so we recommend starting with an empty directory.
-2. Generate a new SSH key pair for the user that is running the restic docker container with the following command:
-
-.. code-block:: shell
-
-  birdhouse/scripts/create-restic-keypair.sh create
-
-.. note::
-
-    Do not create a passphrase for the SSH key since this must be able to be run without user input.
-
-3. Copy the generated public key to the ``authorized_keys`` file on the remote host. The public key file can be found
-   in the directory specified by ``BIRDHOUSE_BACKUP_SSH_KEY_DIR``.
-4. Ensure that you can SSH to the remote server:
-
-.. code-block:: shell
-
-  birdhouse/scripts/create-restic-keypair.sh test
 
 .. _nginx.conf: ./components/proxy/nginx.conf
 .. _default.env: ./default.env
