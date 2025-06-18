@@ -23,6 +23,7 @@ services:
       - --web.external-url=https://${BIRDHOUSE_FQDN_PUBLIC}/prometheus-longterm-metrics/
       - --storage.tsdb.min-block-duration=${PROMETHEUS_LONGTERM_TSDB_MIN_BLOCK_DURATION}
       - --storage.tsdb.max-block-duration=${PROMETHEUS_LONGTERM_TSDB_MAX_BLOCK_DURATION}
+      - --log.level=${PROMETHEUS_LONGTERM_LOG_LEVEL}
     restart: always
     logging: *default-logging
 
