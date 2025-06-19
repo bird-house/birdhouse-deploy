@@ -21,7 +21,7 @@ import prometheus_client
 # /twitcher/ows/proxy/thredds/wcs/birdhouse/disk2/ouranos/CORDEX/CMIP6/DD/NAM-12/OURANOS/MPI-ESM1-2-LR/historical/r1i1p1f1/CRCM5/v1-r1/1hr/vas/v20231129/vas_NAM-12_MPI-ESM1-2-LR_historical_r1i1p1f1_OURANOS_CRCM5_v1-r1_1hr_198601010000-198612312300.nc?request=GetCapabilities&service=WCS&version=1.0.0
 
 THREDDS_REQ_URI_REGEX = (r'\/[^\s]+\/thredds\/'
-                         r'(?P<tds_service>dodsC|fileServer|ncss|wcs)\/'
+                         r'(?P<tds_service>dodsC|fileServer|ncss/\w+|wcs)\/'
                          r'(?P<dataset>[^\s\?]*)'
                          r'(?:\?(?P<thredds_request>[^\s]+))?')
 
@@ -55,6 +55,7 @@ def parse_line(line):
     match = REGEX.match(line)
     if match:
         groups = match.groupdict()
+        # Note that `variable` is not extracted by the regex, but by the logic below.
         labels = {k: groups.get(k, "") for k in LABEL_KEYS}
         # Tweaks
         if labels["tds_service"] == "dodsC":
@@ -62,12 +63,13 @@ def parse_line(line):
                 .removesuffix(".dds")
                 .removesuffix(".das"))
             if (req := match.group("thredds_request")) is not None:
-                labels["variable"] = req.split(".")[0]
-        elif labels["tds_service"] == "ncss":
+                labels["variable"] = ",".join(re.findall("(\w+)(?:\.\w+)?(?:%[^,]+)?", req))
+        elif labels["tds_service"].startswith("ncss"):
+            # The NCSS regexp consumes the access method (e.g., point, grid) as part of the service name.
             labels["dataset"] = labels["dataset"].removesuffix("/dataset.html")
-            labels["variable"] = ""
-        else:
-            labels["variable"] = ""
+            if (req := match.group("thredds_request")) is not None:
+                if m := re.search("var=([^&]+)", req):
+                    labels["variable"] = m.group(1)
 
         if body_byte_sent := match.group("body_byte_sent"):
             body_kb_sent = int(body_byte_sent) / 1024
