@@ -23,7 +23,7 @@ import prometheus_client
 THREDDS_REQ_URI_REGEX = (r'\/[^\s]+\/thredds\/'
                          r'(?P<tds_service>dodsC|fileServer|ncss/(?:grid|point)|wcs)\/'
                          r'(?P<dataset>[^\s\?]*)'
-                         r'(?:\?(?P<thredds_request>[^\s]+))?')
+                         r'(?:\?(?P<thredds_request>\S+))?')
 
 # This matches the nginx log_fomat as defined in birdhouse/components/proxy/nginx.conf.template
 REGEX = re.compile(
