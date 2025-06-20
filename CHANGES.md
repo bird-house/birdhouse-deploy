@@ -19,6 +19,23 @@
 
 - Fix bugs in prometheus-log-exporter.
 
+[2.16.1](https://github.com/bird-house/birdhouse-deploy/tree/2.16.1) (2025-06-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow to set Prometheus log level for the monitoring and prometheus-longterm-metrics components
+
+## Fixes
+
+- Fix typo in prometheus-longterm-rules "thredds:kb_transfer_size_kb:increase_1h rule"
+
+  Fix the follow error
+  ```
+  ts=2025-06-17T05:09:00.903Z caller=manager.go:201 level=error component="rule manager" msg="loading groups failed" err="/etc/prometheus/prometheus-longterm-metrics.rules: 41:17: group \"longterm-metrics-hourly\", rule 6, \"thredds:kb_transfer_size_kb:increase_1h\": could not parse expression: 1:40: parse error: unexpected right parenthesis ')'"
+  ```
+
+
 [2.16.0](https://github.com/bird-house/birdhouse-deploy/tree/2.16.0) (2025-06-16)
 ------------------------------------------------------------------------------------------------------------------
 
