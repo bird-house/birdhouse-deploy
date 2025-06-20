@@ -21,7 +21,7 @@ def session_plex(root_dir):
     Fixture to return the prometheus log exporter module.
     """
     # Ensure the parent directory is in the sys.path
-    path = Path(root_dir) / "birdhouse" / "optional-components" / "prometheus-log-parser" / "config" / "thredds"
+    path = root_dir / "birdhouse" / "optional-components" / "prometheus-log-parser" / "config" / "thredds"
     sys.path.append(str(path))
     return importlib.import_module("prometheus-log-exporter")
 
