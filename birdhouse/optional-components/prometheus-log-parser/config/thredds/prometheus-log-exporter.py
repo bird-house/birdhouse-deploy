@@ -63,7 +63,7 @@ def parse_line(line):
                 .removesuffix(".dds")
                 .removesuffix(".das"))
             if (req := match.group("thredds_request")) is not None:
-                labels["variable"] = ",".join(re.findall("(\w+)(?:\.\w+)?(?:%[^,]+)?", req))
+                labels["variable"] = ",".join(re.findall(r"(\w+)(?:\.\w+)?(?:%[^,]+)?", req))
         elif labels["tds_service"].startswith("ncss"):
             # The NCSS regexp consumes the access method (e.g., point, grid) as part of the service name.
             labels["dataset"] = labels["dataset"].removesuffix("/dataset.html")
