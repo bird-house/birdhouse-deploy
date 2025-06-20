@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Add additional documentation for backups
+
+  Also include a new script `birdhouse/scripts/create-restic-keypair.sh` to help users create and test SSH keypairs
+  for use by restic when accessing restic repositories over SFTP.
 
 [2.16.1](https://github.com/bird-house/birdhouse-deploy/tree/2.16.1) (2025-06-17)
 ------------------------------------------------------------------------------------------------------------------
@@ -77,12 +82,12 @@
   Create a new scheduler job at `optional-components/scheduler-job-backup` which runs the `bin/birdhouse backup create` 
   command at regular intervals to ensure that the birdhouse stack's data is regularly backed up.
 
-  To configure this job you may set the following variables:
+  To configure this job you must set the following variables:
     - `SCHEDULER_JOB_BACKUP_FREQUENCY`:
       - Cron schedule when to run this scheduler job (default is `'1 1 * * *'`, at 1:01 am daily)
     - `SCHEDULER_JOB_BACKUP_ARGS`:
       - Extra arguments to pass to the 'bin/birdhouse backup create' command when backing up data.
-        By default this backs up everything (default is `'-a \* -u \* -l \* --birdhouse-logs --local-env-file'`)
+        For example, to back up everything set it to `'-a \* -u \* -l \* --birdhouse-logs --local-env-file'`
 
 - Add `configs --print-log-command` option in `bin/birdhouse`
 
