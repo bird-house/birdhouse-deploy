@@ -564,7 +564,8 @@ the backup and restore jobs.
 
   * Please ensure that your key does not require a passphrase since backups must be run without any additional user
     input. Also ensure that your key is generated using a modern, secure algorithm that is supported by the remote
-    ssh server you are trying to log into.
+    ssh server you are trying to log into. At time of writing, the RSA algorithm is considered insecure
+    by most modern standards; an algorithm such as ECDSA is preferred.
 
   * You can test whether your keys are sufficient for restic by running the ``birdhouse/scripts/test-restic-keypair.sh``
     script.
