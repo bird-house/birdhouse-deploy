@@ -1,7 +1,6 @@
 import pytest
 import sys
-from pathlib import Path
-import importlib.util
+import importlib
 
 
 @pytest.fixture(scope="module")
