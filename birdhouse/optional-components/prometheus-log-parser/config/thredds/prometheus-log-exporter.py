@@ -21,7 +21,7 @@ import prometheus_client
 # /twitcher/ows/proxy/thredds/wcs/birdhouse/disk2/ouranos/CORDEX/CMIP6/DD/NAM-12/OURANOS/MPI-ESM1-2-LR/historical/r1i1p1f1/CRCM5/v1-r1/1hr/vas/v20231129/vas_NAM-12_MPI-ESM1-2-LR_historical_r1i1p1f1_OURANOS_CRCM5_v1-r1_1hr_198601010000-198612312300.nc?request=GetCapabilities&service=WCS&version=1.0.0
 
 THREDDS_REQ_URI_REGEX = (r'\/[^\s]+\/thredds\/'
-                         r'(?P<tds_service>dodsC|fileServer|ncss/\w+|wcs)\/'
+                         r'(?P<tds_service>dodsC|fileServer|ncss/(?:grid|point)|wcs)\/'
                          r'(?P<dataset>[^\s\?]*)'
                          r'(?:\?(?P<thredds_request>[^\s]+))?')
 
