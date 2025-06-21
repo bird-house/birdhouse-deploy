@@ -5,7 +5,7 @@ if [ -z "${BIRDHOUSE_COLOR}" ] && [ -z "${NO_COLOR}" ]; then
     BIRDHOUSE_COLOR=1
 fi 
 
-if [ "${BIRDHOUSE_COLOR}" = "1" ]; then
+if [ "${BIRDHOUSE_COLOR}" = "1" ] && [ ! -z "${TERM}" ]; then
     BLUE=$(tput setaf 12)
     GRAY=$(tput setaf 8)
     CYAN=$(tput setaf 6)
