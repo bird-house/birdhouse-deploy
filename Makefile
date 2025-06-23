@@ -247,7 +247,12 @@ install-tests:	## Install development dependencies
 .PHONY: test-unit
 test-unit: install-tests	## Run unit tests
 	@-$(MSG_I) "Running unit tests..."
-	@pytest -m "not online and not minimal" "$(TEST_DIR)"
+	@pytest "$(TEST_DIR)/unit"
+
+.PHONY: test-integration
+test-integration: install-tests	## Run integration tests
+	@-$(MSG_I) "Running integration tests..."
+	@pytest "$(TEST_DIR)/integration"
 
 .PHONY: test-minimal
 test-minimal: install-tests	## Run tests with minimal stack
