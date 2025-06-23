@@ -232,3 +232,34 @@ start:		## Start the stack with current env.local definitions
 stop:		## Stop the running stack
 	@-$(MSG_I) "Stopping $(APP_NAME) stack..."
 	@$(SHELL) $(SCRIPT) compose stop
+
+
+### Test Targets ###
+
+TEST_DIR ?= $(BIRDHOUSE_MAKE_DIR)/tests		## Tests directory to collect
+TEST_DIR := $(call clean_opt,$(TEST_DIR))
+
+
+install-tests:	## Install development dependencies
+	@-$(MSG_I) "Installing development dependencies..."
+	@$(SHELL) -c '$(CONDA_CMD) pip install -r "$(BIRDHOUSE_MAKE_DIR)/tests/requirements.txt"'
+
+.PHONY: test-unit
+test-unit: install-tests	## Run unit tests
+	@-$(MSG_I) "Running unit tests..."
+	@pytest -m "not online and not minimal" "$(TEST_DIR)"
+
+.PHONY: test-minimal
+test-minimal: install-tests	## Run tests with minimal stack
+	@-$(MSG_I) "Run tests with minimal stack..."
+	@pytest -m "minimal" "$(TEST_DIR)"
+
+.PHONY: test-online
+test-online: install-tests	## Run tests with online stack
+	@-$(MSG_I) "Run tests with online stack..."
+	@pytest -m "online" "$(TEST_DIR)"
+
+.PHONY: test-all
+test-all: install-tests	## Run all tests
+	@-$(MSG_I) "Run all tests..."
+	@pytest "$(TEST_DIR)"
