@@ -39,7 +39,6 @@ def run(local_env_file):
         kwargs["env"] = {
             **kwargs.get("env", os.environ),
             "BIRDHOUSE_LOCAL_ENV": local_env_file,
-            "TERM": os.getenv("TERM", ""),
         }
         if compose:
             kwargs["env"]["BIRDHOUSE_COMPOSE"] = compose
