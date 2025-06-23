@@ -20,6 +20,7 @@ def run(root_dir):
         kwargs["env"] = {
             **kwargs.get("env", {k: v for k, v in os.environ.items() if k not in UNSET_VARS}),
             "__BIRDHOUSE_SUPPORTED_INTERFACE": str(supported_interface),
+            "TERM": os.getenv("TERM") or "linux",
         }
         if log_level:
             kwargs["env"]["BIRDHOUSE_LOG_LEVEL"] = log_level
