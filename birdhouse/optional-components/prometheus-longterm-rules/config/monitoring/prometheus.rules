@@ -38,7 +38,7 @@ groups:
 
         # Total download volume in the last 1 hour logged by the prometheus-log-exporter counter
         - record: thredds:kb_transfer_size_kb:increase_1h
-          expr: increase(thredds_transfer_size_kb[1h]))
+          expr: increase(thredds_transfer_size_kb[1h])
           labels:
             group: longterm-metrics
 

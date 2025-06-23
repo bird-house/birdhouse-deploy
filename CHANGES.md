@@ -25,6 +25,26 @@
   This includes an option to backup and restore representative data for the `stac` component. Other components
   should be added in future updates.
 
+- Add additional documentation for backups
+
+  Also include a new script `birdhouse/scripts/create-restic-keypair.sh` to help users create and test SSH keypairs
+  for use by restic when accessing restic repositories over SFTP.
+
+[2.16.1](https://github.com/bird-house/birdhouse-deploy/tree/2.16.1) (2025-06-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow to set Prometheus log level for the monitoring and prometheus-longterm-metrics components
+
+## Fixes
+
+- Fix typo in prometheus-longterm-rules "thredds:kb_transfer_size_kb:increase_1h rule"
+
+  Fix the follow error
+  ```
+  ts=2025-06-17T05:09:00.903Z caller=manager.go:201 level=error component="rule manager" msg="loading groups failed" err="/etc/prometheus/prometheus-longterm-metrics.rules: 41:17: group \"longterm-metrics-hourly\", rule 6, \"thredds:kb_transfer_size_kb:increase_1h\": could not parse expression: 1:40: parse error: unexpected right parenthesis ')'"
+  ```
 
 [2.16.0](https://github.com/bird-house/birdhouse-deploy/tree/2.16.0) (2025-06-16)
 ------------------------------------------------------------------------------------------------------------------
@@ -69,12 +89,12 @@
   Create a new scheduler job at `optional-components/scheduler-job-backup` which runs the `bin/birdhouse backup create` 
   command at regular intervals to ensure that the birdhouse stack's data is regularly backed up.
 
-  To configure this job you may set the following variables:
+  To configure this job you must set the following variables:
     - `SCHEDULER_JOB_BACKUP_FREQUENCY`:
       - Cron schedule when to run this scheduler job (default is `'1 1 * * *'`, at 1:01 am daily)
     - `SCHEDULER_JOB_BACKUP_ARGS`:
       - Extra arguments to pass to the 'bin/birdhouse backup create' command when backing up data.
-        By default this backs up everything (default is `'-a \* -u \* -l \* --birdhouse-logs --local-env-file'`)
+        For example, to back up everything set it to `'-a \* -u \* -l \* --birdhouse-logs --local-env-file'`
 
 - Add `configs --print-log-command` option in `bin/birdhouse`
 
