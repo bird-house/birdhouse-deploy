@@ -15,7 +15,7 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-## Changes 
+## Fixes 
 
 - Fix 'thredds_transfer_size_kb_total' name in prometheus-long-term-rules
 
