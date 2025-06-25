@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.16.3](https://github.com/bird-house/birdhouse-deploy/tree/2.16.3) (2025-06-25)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes 
 
 - Fix 'thredds_transfer_size_kb_total' name in prometheus-long-term-rules
@@ -23,6 +28,8 @@
   properly in a rule and the prometheus rule will never return valid data.
 
 - Fix bugs in prometheus-log-exporter.
+
+- Avoid `tput: No value for $TERM and no -T specified` warnings if terminal is undefined.
 
 [2.16.2](https://github.com/bird-house/birdhouse-deploy/tree/2.16.2) (2025-06-23)
 ------------------------------------------------------------------------------------------------------------------
@@ -41,6 +48,7 @@
 
   Also include a new script `birdhouse/scripts/create-restic-keypair.sh` to help users create and test SSH keypairs
   for use by restic when accessing restic repositories over SFTP.
+
 
 [2.16.1](https://github.com/bird-house/birdhouse-deploy/tree/2.16.1) (2025-06-17)
 ------------------------------------------------------------------------------------------------------------------
