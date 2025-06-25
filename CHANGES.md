@@ -15,7 +15,27 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Fixes 
+
+- Fix 'thredds_transfer_size_kb_total' name in prometheus-long-term-rules
+
+  Counter names have the suffix `_total`. Without this suffix, the counter value is not discovered
+  properly in a rule and the prometheus rule will never return valid data.
+
+- Fix bugs in prometheus-log-exporter.
+
+[2.16.2](https://github.com/bird-house/birdhouse-deploy/tree/2.16.2) (2025-06-23)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
+
+- Add option to backup "representative" application data
+
+  Representative data is an application agnostic version of the stateful data used by components to store 
+  the current state of the running service.
+
+  This includes an option to backup and restore representative data for the `stac` component. Other components
+  should be added in future updates.
 
 - Add additional documentation for backups
 
@@ -42,7 +62,6 @@
   ```
   ts=2025-06-17T05:09:00.903Z caller=manager.go:201 level=error component="rule manager" msg="loading groups failed" err="/etc/prometheus/prometheus-longterm-metrics.rules: 41:17: group \"longterm-metrics-hourly\", rule 6, \"thredds:kb_transfer_size_kb:increase_1h\": could not parse expression: 1:40: parse error: unexpected right parenthesis ')'"
   ```
-
 
 [2.16.0](https://github.com/bird-house/birdhouse-deploy/tree/2.16.0) (2025-06-16)
 ------------------------------------------------------------------------------------------------------------------
