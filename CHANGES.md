@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.16.3](https://github.com/bird-house/birdhouse-deploy/tree/2.16.3) (2025-06-25)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes 
 
 - Fix 'thredds_transfer_size_kb_total' name in prometheus-long-term-rules
