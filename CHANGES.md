@@ -15,10 +15,14 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Fixes 
+
 - Fix 'thredds_transfer_size_kb_total' name in prometheus-long-term-rules
 
   Counter names have the suffix `_total`. Without this suffix, the counter value is not discovered
   properly in a rule and the prometheus rule will never return valid data.
+
+- Fix bugs in prometheus-log-exporter.
 
 [2.16.2](https://github.com/bird-house/birdhouse-deploy/tree/2.16.2) (2025-06-23)
 ------------------------------------------------------------------------------------------------------------------
