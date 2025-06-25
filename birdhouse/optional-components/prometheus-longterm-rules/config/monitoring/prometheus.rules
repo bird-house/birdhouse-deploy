@@ -38,7 +38,7 @@ groups:
 
         # Total download volume in the last 1 hour logged by the prometheus-log-exporter counter
         - record: thredds:kb_transfer_size_kb:increase_1h
-          expr: increase(thredds_transfer_size_kb[1h])
+          expr: increase(thredds_transfer_size_kb_total[1h])
           labels:
             group: longterm-metrics
 
@@ -127,4 +127,3 @@ groups:
           expr: round(sum by(name) (rate(container_last_seen{name=~"jupyter-.+"}[1d]) > 0.9))
           labels:
             group: longterm-metrics
-
