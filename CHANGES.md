@@ -17,12 +17,21 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.16.4](https://github.com/bird-house/birdhouse-deploy/tree/2.16.4) (2025-07-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix invalid `STAC_POPULATOR_BACKUP_IMAGE='${STAC_POPULATOR_BACKUP_DOCKER}:${STAC_POPULATOR_BACKUP_VERSION}'`.
+
+  The `STAC_POPULATOR_BACKUP_IMAGE` variable was refering other variables missing their `_BACKUP` part.
+
 [2.16.3](https://github.com/bird-house/birdhouse-deploy/tree/2.16.3) (2025-06-25)
 ------------------------------------------------------------------------------------------------------------------
 
 ## Fixes 
 
-- Fix 'thredds_transfer_size_kb_total' name in prometheus-long-term-rules
+- Fix `thredds_transfer_size_kb_total` name in `optional-components/prometheus-longterm-rules`.
 
   Counter names have the suffix `_total`. Without this suffix, the counter value is not discovered
   properly in a rule and the prometheus rule will never return valid data.
