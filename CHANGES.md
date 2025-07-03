@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.16.4](https://github.com/bird-house/birdhouse-deploy/tree/2.16.4) (2025-07-03)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Fix invalid `STAC_POPULATOR_BACKUP_IMAGE='${STAC_POPULATOR_BACKUP_DOCKER}:${STAC_POPULATOR_BACKUP_VERSION}'`.
