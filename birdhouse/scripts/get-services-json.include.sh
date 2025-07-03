@@ -12,11 +12,9 @@ fi
 
 for adir in ${ALL_CONF_DIRS}; do
   [ -f "${adir}/service-config.json" ] || continue
-  # read and strip leading/trailing whitespaces
-  SERVICE_CONF="$(cat "${adir}/service-config.json" | sed -z 's/^\s*//;s/\s*$//')"
   # remove the leading/trailing [] to get a pseudo-json of nested objects to extend the list
-  SERVICE_CONF="$(echo "${SERVICE_CONF}" | sed -z 's/^\s*\[\s*//;s/\s*\]\s*$//')"
-  SERVICES="${SERVICES}$([ -n "${SERVICES}" ] && echo ',') ${SERVICE_CONF}"
+  SERVICE_CONF="$(cat "${adir}/service-config.json" | tr '\n' ' ' | sed 's/^\s*\[\s*//;s/\s*\]\s*$//')"
+  SERVICES="${SERVICES}$([ -n "${SERVICES}" ] && echo ',' || echo '') ${SERVICE_CONF}"
 done
 
 if [ -z "${SERVICES}" ]; then

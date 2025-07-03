@@ -7,7 +7,7 @@ Docker instructions
 Requirements
 ^^^^^^^^^^^^
 
-* Centos 7, RockyLinux 8, Ubuntu 20.04, 22.04 known to work.
+* Centos 7, RockyLinux 8, Ubuntu 20.04, 22.04, 24.04 known to work.
 
 * Hostname of Docker host must exist on the network.  Must use bridge
   networking if Docker host is a Virtual Machine.
@@ -477,6 +477,190 @@ Release Procedure
 
   * Run ``git push --tags`` to upload the new version.
 
+.. backups::
+
+Backups
+-------
+
+Backups of data used by the birdhouse stack can be generated using the ``bin/birdhouse backup`` command
+and its various subcommands.
+
+Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository and can be restored
+either to a named volume (determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable) or in the case
+of user data and application data, it can directly overwrite the current data with the backup.
+
+For details about the backup and restore commands run any of the following:
+
+.. code-block:: shell
+
+    bin/birdhouse backup --help
+    bin/birdhouse backup create --help
+    bin/birdhouse backup restore --help
+
+Data types
+^^^^^^^^^^
+
+Users can backup and restore the following data from the birdhouse stack:
+
+* application data
+
+  * stateful data used by components to store the current state of the running service
+
+  * this is useful when you want to be able to quickly restore a component to a previous state
+    and the component version has not been majorly updated since the last backup.
+
+  * for example: a database dump from a postgres or mongodb database
+
+* representative data
+
+  * an application agnostic version of the stateful data used by components to store 
+    the current state of the running service
+
+  * this contains the same information as the application data (above) but in a form that can be
+    exported/imported by a stable API. In other words, application data is a version of the
+    data exactly as it is used by the storage technology (i.e. database), representative data is
+    a version of the data that is independent of the underlying storage technology.
+
+  * this is useful when you want to be able to restore a component to a previous state and the
+    component version has been updated since the last backup. For example, if a database
+    has been updated between versions and there is no easy way to cleanly migrate the existing
+    database data between versions, the representative data can be used.
+    
+  * backing up and restoring representative data will probably take a much longer time than
+    application data.
+
+  * for example: STAC objects from the ``stac`` component stored as JSON files.
+
+* user data
+
+  * data created directly by users of birdhouse.
+
+  * for example: files written to the ``jupyterhub`` component's user workspaces
+
+* component log data
+
+  * log data for components that write log output to a location that is not visible to the
+    docker logging mechanism.
+
+  * for example: logs for the ``thredds`` component.
+
+* birdhouse logs
+
+  * all logs written to the directory specified by ``BIRDHOUSE_LOG_DIR``.
+
+  * for example: the log output of some scheduler jobs
+
+* docker container logs
+
+  * container logs for all docker containers running in the birdhouse stack.
+
+  * for example: ``magpie`` container logs
+
+* local environement file
+
+  * the local environment file specified by ``BIRDHOUSE_LOCAL_ENV``
+
+
+Configure the restic repository
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository which can be 
+configured by creating a file at the location determined by the ``BIRDHOUSE_BACKUP_RESTIC_ENV_FILE`` configuration
+variable (default: ``birdhouse/restic.env``). 
+
+This file contains environment variables which are used by restic to determine how to create and access the 
+repository where backups are stored. 
+
+A list of all environment variables that are used by restic can be found in the 
+`documentation <https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables>`_.
+
+Restic supports backing up data locally, remotely using the SFTP protocol, as well as remotely to a variety of 
+repository types including AWS, Azure, S3, restic REST server, and many more.
+
+Depending on which repository type and access method you want to use, different environment variables may be required.
+
+Some basic examples can be found in the ``birdhouse/restic.env.example`` file but please refer to the 
+`documentation <https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables>`_ for all available
+options.
+
+Additional backup/restore workflows
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When running the ``backup create`` command, the files to be backed up are first written to a volume 
+(determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable). Then they are backed up from there to 
+the restic repository.
+
+Alternatively, you can specify the ``--no-restic`` command line option to skip the step that backs up the files to 
+the restic repository. You can then choose to access the files to backup directly in the volume.
+
+This allows users to inspect the files, integrate them into a different custom backup solution, etc.
+
+Similarly, when restoring files from restic with the ``backup restore`` command, the files are first restored
+to the same volume before being copied to the appropriate location in the birdhouse stack. 
+
+For example, restoring the ``magpie`` database will first restore the backup file from restic to the working
+directory and then overwrite the ``magpie`` database with the information contained in the backup file.
+
+If you want to skip the step that overwrites the current data in the birdhouse stack, you can specify the 
+``--no-clobber`` command line option. This will still restore the files to the volume.
+
+.. note::
+    Even without the ``--no-restic`` and ``--no-clobber`` options, the files will be written
+    to the volume every time you run backup and restore.
+
+Additional configuration options
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following configuration variables can be set in the local environment file to further configure
+the backup and restore jobs.
+
+* ``BIRDHOUSE_BACKUP_SSH_KEY_DIR``
+
+  * The location of a directory that contains an SSH key used to access a remote machine where the restic repository
+    is hosted. Required if accessing a restic repository using the sftp protocol.
+
+  * Please ensure that your key does not require a passphrase since backups must be run without any additional user
+    input. Also ensure that your key is generated using a modern, secure algorithm that is supported by the remote
+    ssh server you are trying to log into. At time of writing, the RSA algorithm is considered insecure
+    by most modern standards; an algorithm such as ECDSA is preferred.
+
+  * You can test whether your keys are sufficient for restic by running the ``birdhouse/scripts/test-restic-keypair.sh``
+    script.
+
+* ``BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS``
+
+  * Additional options to pass to the restic backup command when running the birdhouse backup create command.
+
+  * For example: ``'--skip-if-unchanged --exclude-file "file-i-do-not-want-backedup.txt"``
+
+* ``BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS``
+
+  * Additional options to pass to the ``restic forget`` command after running the backup job. 
+  
+  * This allows you to ensure that restic deletes old backups according to your backup retention policy.
+
+  * If this is set, then restic will also run the ``restic prune`` command after every backup to clean up 
+    old backup files.
+
+  * For example, to store backups daily for 1 week, weekly for 1 month, and monthly for a year:
+    ``'--keep-daily=7 --keep-weekly=4 --keep-monthly=12'``
+
+* ``BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS``
+
+  * Additional options to pass to the ``docker run`` command that runs the restic commands.
+
+  * This can be useful if you want to mount additional directories to the container running restic
+    in order to back up data not directly managed by Birdhouse.
+
+    * For example, to backup files in a directory named `/home/other_project/` you could run:
+      ``BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS='-v /home/other_project:/backup2' birdhouse backup restic backup /backup2``
+
+    * Note: in the example above, ``birdhouse backup restic`` runs the ``restic`` command in a docker container.
+      The ``backup /backup2`` arguments tell the ``restic`` command to backup the ``/backup2`` folder to a restic
+      repository. See the ``restic`` documentation for details regarding all the available restic command options.
+
+  * Warning! Using this option may overwrite other docker options that are required for restic to run properly.
+    Make sure you are familiar with restic commands and know what you are doing before using this feature.
 
 .. _nginx.conf: ./components/proxy/nginx.conf
 .. _default.env: ./default.env

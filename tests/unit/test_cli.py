@@ -39,7 +39,7 @@ def run(local_env_file):
         kwargs["env"] = {
             **kwargs.get("env", os.environ),
             "BIRDHOUSE_LOCAL_ENV": local_env_file,
-            "TERM": os.getenv("TERM", ""),
+            "BIRDHOUSE_LOG_LEVEL": "",
         }
         if compose:
             kwargs["env"]["BIRDHOUSE_COMPOSE"] = compose
@@ -90,21 +90,21 @@ def test_help_with_invalid_arg(cli_path, run):
 def test_usage_no_args(cli_path, run):
     proc = run(cli_path, expect_error=True)
     assert "USAGE:" in proc.stderr
-    assert len(proc.stderr.splitlines()) == 1
+    assert len(proc.stderr.splitlines()) == 2
     assert not proc.stdout
 
 
 def test_usage_invalid_arg(cli_path, run):
     proc = run(f"{cli_path} some-arg-that-does-not-go-here", expect_error=True)
     assert "USAGE:" in proc.stderr
-    assert len(proc.stderr.splitlines()) == 1
+    assert len(proc.stderr.splitlines()) == 2
     assert not proc.stdout
 
 
 def test_usage_some_invalid_arg(cli_path, run):
     proc = run(f"{cli_path} -b some-arg-that-does-not-go-here", expect_error=True)
     assert "USAGE:" in proc.stderr
-    assert len(proc.stderr.splitlines()) == 1
+    assert len(proc.stderr.splitlines()) == 2
     assert not proc.stdout
 
 
@@ -140,7 +140,7 @@ def test_configs_no_args(cli_path, run):
     proc = run(f"{cli_path} configs", expect_error=True)
     assert "USAGE:" in proc.stderr
     assert "configs" in proc.stderr
-    assert len(proc.stderr.splitlines()) == 1
+    assert len(proc.stderr.splitlines()) == 2
     assert not proc.stdout
 
 
@@ -156,7 +156,7 @@ def test_configs_invalid_args(cli_path, run):
     proc = run(f"{cli_path} configs some-arg-that-does-not-go-here", expect_error=True)
     assert "USAGE:" in proc.stderr
     assert "configs" in proc.stderr
-    assert len(proc.stderr.splitlines()) == 1
+    assert len(proc.stderr.splitlines()) == 2
     assert not proc.stdout
 
 
@@ -180,14 +180,14 @@ def test_configs_set_env_file(cli_path, run, local_env_file, tmp_path, flag):
 
 @pytest.mark.parametrize("flag", ["-s", "--log-stdout"])
 def test_log_stdout(cli_path, run, logging_script, flag):
-    proc = run(f"{cli_path} {flag} compose", compose=logging_script)
+    proc = run(f"{cli_path} {flag} compose", compose=logging_script, expect_error=True)
     check_log_output(DEFAULT_LOG_CHECK_LEVELS, proc.stdout)
 
 
 @pytest.mark.parametrize("flag", ["--log-file ", "-l ", "--log-file=", "-l="])
 def test_log_file(cli_path, run, flag, tmp_path, logging_script):
     log_path = tmp_path / "test.log"
-    proc = run(f"{cli_path} {flag}{log_path} compose", compose=logging_script)
+    proc = run(f"{cli_path} {flag}{log_path} compose", compose=logging_script, expect_error=True)
     with open(log_path) as f:
         check_log_output(DEFAULT_LOG_CHECK_LEVELS, f.read())
     check_log_output(DEFAULT_LOG_CHECK_LEVELS, proc.stderr)
@@ -195,20 +195,20 @@ def test_log_file(cli_path, run, flag, tmp_path, logging_script):
 
 
 def test_default_log_fd(cli_path, run, logging_script):
-    proc = run(f"{cli_path} compose", compose=logging_script)
+    proc = run(f"{cli_path} compose", compose=logging_script, expect_error=True)
     check_log_output(DEFAULT_LOG_CHECK_LEVELS, proc.stderr)
     assert not proc.stdout
 
 
 @pytest.mark.parametrize("flag", ["-q", "--quiet"])
 def test_log_quiet(cli_path, run, logging_script, flag):
-    proc = run(f"{cli_path} {flag} compose", compose=logging_script)
+    proc = run(f"{cli_path} {flag} compose", compose=logging_script, expect_error=True)
     assert not proc.stdout
 
 
 def test_log_file_stdout(cli_path, run, tmp_path, logging_script):
     log_path = tmp_path / "test.log"
-    proc = run(f"{cli_path} -l {log_path} -s compose", compose=logging_script)
+    proc = run(f"{cli_path} -l {log_path} -s compose", compose=logging_script, expect_error=True)
     with open(log_path) as f:
         check_log_output(DEFAULT_LOG_CHECK_LEVELS, f.read())
     check_log_output(DEFAULT_LOG_CHECK_LEVELS, proc.stdout)
@@ -216,7 +216,7 @@ def test_log_file_stdout(cli_path, run, tmp_path, logging_script):
 
 def test_log_file_quiet(cli_path, run, tmp_path, logging_script):
     log_path = tmp_path / "test.log"
-    proc = run(f"{cli_path} -l {log_path} -q compose", compose=logging_script)
+    proc = run(f"{cli_path} -l {log_path} -q compose", compose=logging_script, expect_error=True)
     with open(log_path) as f:
         check_log_output(DEFAULT_LOG_CHECK_LEVELS, f.read())
     assert not proc.stdout
@@ -224,26 +224,26 @@ def test_log_file_quiet(cli_path, run, tmp_path, logging_script):
 
 @pytest.mark.parametrize("flag", ["-L ", "--log-level ", "-L=", "--log-level="])
 def test_log_level_flags(cli_path, run, logging_script, flag):
-    proc = run(f"{cli_path} {flag}DEBUG compose", compose=logging_script)
+    proc = run(f"{cli_path} {flag}DEBUG compose", compose=logging_script, expect_error=True)
     check_log_output(LOG_CHECK_LEVELS, proc.stderr)
 
 
 @pytest.mark.parametrize("level", LOG_LEVELS)
 def test_log_level(cli_path, run, logging_script, level):
-    proc = run(f"{cli_path} -L {level} compose", compose=logging_script)
+    proc = run(f"{cli_path} -L {level} compose", compose=logging_script, expect_error=True)
     check_log_output(LOG_CHECK_LEVELS[LOG_CHECK_LEVELS.index(level) :], proc.stderr)
 
 
 @pytest.mark.parametrize("level", LOG_LEVELS)
 def test_log_override_stdout(cli_path, run, logging_script, level):
-    proc = run(f"{cli_path} -L DEBUG -s {level} compose", compose=logging_script)
+    proc = run(f"{cli_path} -L DEBUG -s {level} compose", compose=logging_script, expect_error=True)
     check_log_output([level_ for level_ in LOG_CHECK_LEVELS if level_ != level], proc.stderr)
     check_log_output([level], proc.stdout)
 
 
 @pytest.mark.parametrize("level", LOG_LEVELS)
 def test_log_override_quiet(cli_path, run, logging_script, level):
-    proc = run(f"{cli_path} -L DEBUG -q {level} compose", compose=logging_script)
+    proc = run(f"{cli_path} -L DEBUG -q {level} compose", compose=logging_script, expect_error=True)
     check_log_output([level_ for level_ in LOG_CHECK_LEVELS if level_ != level], proc.stderr)
     check_log_output([], proc.stdout)
 
@@ -254,6 +254,7 @@ def test_log_override_file(cli_path, run, logging_script, tmp_path, level):
     proc = run(
         f"{cli_path} -L DEBUG -l {level} {log_file} compose",
         compose=logging_script,
+        expect_error=True,
     )
     with open(log_file) as f:
         check_log_output([level], f.read())
@@ -265,6 +266,7 @@ def test_configs_log_override_multiple(cli_path, run, logging_script, tmp_path):
     proc = run(
         f"{cli_path} -L DEBUG -l DEBUG {log_file} -s INFO " f"-q WARN -l ERROR {log_file} -q ERROR compose",
         compose=logging_script,
+        expect_error=True,    
     )
     check_log_output(["DEBUG"], proc.stderr)
     check_log_output(["INFO"], proc.stdout)
@@ -278,6 +280,7 @@ def test_configs_log_override_file_default(cli_path, run, logging_script, tmp_pa
     proc = run(
         f"{cli_path} -L DEBUG -l {log_file} -l ERROR {error_log_file} compose",
         compose=logging_script,
+        expect_error=True,    
     )
     check_log_output(LOG_LEVELS, proc.stderr)
     with open(log_file) as f:

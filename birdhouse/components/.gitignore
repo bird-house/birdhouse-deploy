@@ -1,0 +1,2 @@
+# Old paths from deprecated components. Keep these so that old config files remain uncommittable after updates.
+portainer/config/proxy/conf.extra-service.d/portainer.conf

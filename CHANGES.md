@@ -17,6 +17,345 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.16.4](https://github.com/bird-house/birdhouse-deploy/tree/2.16.4) (2025-07-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix invalid `STAC_POPULATOR_BACKUP_IMAGE='${STAC_POPULATOR_BACKUP_DOCKER}:${STAC_POPULATOR_BACKUP_VERSION}'`.
+
+  The `STAC_POPULATOR_BACKUP_IMAGE` variable was refering other variables missing their `_BACKUP` part.
+
+[2.16.3](https://github.com/bird-house/birdhouse-deploy/tree/2.16.3) (2025-06-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes 
+
+- Fix `thredds_transfer_size_kb_total` name in `optional-components/prometheus-longterm-rules`.
+
+  Counter names have the suffix `_total`. Without this suffix, the counter value is not discovered
+  properly in a rule and the prometheus rule will never return valid data.
+
+- Fix bugs in prometheus-log-exporter.
+
+- Avoid `tput: No value for $TERM and no -T specified` warnings if terminal is undefined.
+
+[2.16.2](https://github.com/bird-house/birdhouse-deploy/tree/2.16.2) (2025-06-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add option to backup "representative" application data
+
+  Representative data is an application agnostic version of the stateful data used by components to store 
+  the current state of the running service.
+
+  This includes an option to backup and restore representative data for the `stac` component. Other components
+  should be added in future updates.
+
+- Add additional documentation for backups
+
+  Also include a new script `birdhouse/scripts/create-restic-keypair.sh` to help users create and test SSH keypairs
+  for use by restic when accessing restic repositories over SFTP.
+
+
+[2.16.1](https://github.com/bird-house/birdhouse-deploy/tree/2.16.1) (2025-06-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow to set Prometheus log level for the monitoring and prometheus-longterm-metrics components
+
+## Fixes
+
+- Fix typo in prometheus-longterm-rules "thredds:kb_transfer_size_kb:increase_1h rule"
+
+  Fix the follow error
+  ```
+  ts=2025-06-17T05:09:00.903Z caller=manager.go:201 level=error component="rule manager" msg="loading groups failed" err="/etc/prometheus/prometheus-longterm-metrics.rules: 41:17: group \"longterm-metrics-hourly\", rule 6, \"thredds:kb_transfer_size_kb:increase_1h\": could not parse expression: 1:40: parse error: unexpected right parenthesis ')'"
+  ```
+
+[2.16.0](https://github.com/bird-house/birdhouse-deploy/tree/2.16.0) (2025-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add `backup` command in `bin/birdhouse` to backup and restore data to a restic repository
+
+  This allows users to backup and restore:
+    - application data, user data, and log data for all components
+    - birdhouse logs
+    - docker container logs
+    - local environement file
+  
+  Restoring data either involves restoring it to a named volume (determined by `BIRDHOUSE_BACKUP_VOLUME`) or in the case
+  of user data and application data, to overwrite the current data with the backup.
+
+  For full details run the `bin/birdhouse backup --help` command.
+
+  Backups are stored in a [restic](https://restic.readthedocs.io/en/stable/) repository which can be configured by creating 
+  a file at `BIRDHOUSE_BACKUP_RESTIC_ENV_FILE` (default: `birdhouse/restic.env`)  which contains the 
+  [environment variables](https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables) 
+  necessary for restic to create, and access a repository (see `birdhouse/restic.env.example` for details).
+
+  The backup and restore commands can be further customized by setting any of the following variables:
+
+  - `BIRDHOUSE_BACKUP_SSH_KEY_DIR`: 
+    - The location of a directory that contains an SSH key used to access a remote machine where the restic repository 
+      is hosted. Required if accessing a restic repository using the sftp protocol.
+  - `BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS`: 
+    - Additional options to pass to the `restic backup` command when running the `birdhouse backup create` command.
+       For example: `BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS='--skip-if-unchanged --exclude-file "file-i-do-not-want-backedup.txt"`
+  - `BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS`:
+    - Additional options to pass to the `restic forget` command after running the backup job. This allows you to ensure 
+      that restic deletes old backups according to your backup retention policy. If this is set, then restic will also 
+      run the `restic prune` command after every backup to clean up old backup files.
+      For example, to store backups daily for 1 week, weekly for 1 month, and monthly for a year:
+      `BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS='--keep-daily=7 --keep-weekly=4 --keep-monthly=12'`
+    
+- Add scheduler job to automatically backup data
+
+  Create a new scheduler job at `optional-components/scheduler-job-backup` which runs the `bin/birdhouse backup create` 
+  command at regular intervals to ensure that the birdhouse stack's data is regularly backed up.
+
+  To configure this job you must set the following variables:
+    - `SCHEDULER_JOB_BACKUP_FREQUENCY`:
+      - Cron schedule when to run this scheduler job (default is `'1 1 * * *'`, at 1:01 am daily)
+    - `SCHEDULER_JOB_BACKUP_ARGS`:
+      - Extra arguments to pass to the 'bin/birdhouse backup create' command when backing up data.
+        For example, to back up everything set it to `'-a \* -u \* -l \* --birdhouse-logs --local-env-file'`
+
+- Add `configs --print-log-command` option in `bin/birdhouse`
+
+  This allows users to print a command that can be used to load the birdhouse logging functions in the current
+  process. This is very similar to the `bin/birdhouse configs --print-config-command` except that it only loads
+  the logging functions.
+
+  Example usage:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-log-command)
+  log INFO 'here is an example log message'
+  ```
+
+  It is important to have a distinct option to just load the log commands because functions are not inherited
+  by subprocesses which means that if you do something like:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-config-command)
+  log INFO 'this one works'
+  sh -c 'log ERROR "this one does not"'
+  ```
+
+  the log command in the subprocess does not work. We would have to re-run the `eval` in the subprocess which would
+  unnecessarily redefine all the existing configuration variables. Instead we can now do this:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-log-command)
+  log INFO 'this one works'
+  sh -c 'eval $(bin/birdhouse configs --print-log-command); log INFO "this one does work now"'
+  ```
+
+  which is much quicker and does not require redefining all configuration variables.
+
+  Note: this was introduced as a helper for the `bin/birdhouse backup` commands but was made part of the public
+  interface because it is potentially very useful for other scripts that want to use the birdhouse logging mechanism. 
+  For example, the `components/weaver/post-docker-compose-up` script defines its own logging functions which could
+  now be easily replaced using this method.
+
+- Add `BIRDHOUSE_COMPOSE_TEMPLATE_SKIP` environment variable to explicitly skip rebuilding template files if `true`
+
+  This gives us the option to skip re-building template files even if the command to `bin/birdhouse compose` is `up`
+  or `restart`. This is essentially the opposite of `BIRDHOUSE_COMPOSE_TEMPLATE_FORCE`.
+
+  This option is necessary when running a command while the birdhouse stack is already running and we don't want to
+  change the template files for the running stack.
+
+- Add Prometheus rules defining long-term metrics (hourly and daily).
+
+## Fixes
+
+- Replace non-portable `sed -z` option
+
+  The `birdhouse/scripts/get-services-json.include.sh` script includes the `sed` command using the `-z` flag. The
+  `-z` flag is non-standard and is not supported by several well-used versions of `sed`.
+
+  This became apparent when this script is run by the `optional-components/scheduler-job-backup` job which runs
+  in an alpine based docker container.
+
+- Fix bugs in Prometheus log parser meant to measure download volume. 
+
+- Fix issue where the current environment is printed to stdout if no shell exec flags are set.
+
+[2.15.1](https://github.com/bird-house/birdhouse-deploy/tree/2.15.1) (2025-06-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Stop build when a build step fails
+
+  If a command exits with a non-zero exit code when deploying the stack (i.e. running `birdhouse-compose.sh`) the
+  build process should stop and report that an unexpected error occurs.
+
+  This is enforced by setting the `-e` flag when `birdhouse-compose.sh` is run by default. Several commands have been
+  updated so that they are followed by `|| true` so that if they exit with a non-zero status it will not stop the
+  script.
+
+  Also a new environment variable `BIRDHOUSE_DEBUG_MODE` is introduced which can be set to `true` to set the `-x`
+  flag which will write every command that is run by `birdhouse-compose.sh` to stderr. Previously, setting the
+  `BIRDHOUSE_LOG_LEVEL` to `DEBUG` would set the `-x` flag whenever `pre-docker-compose-up` and `post-docker-compose-up`
+  scripts are executed. Please use the `BIRDHOUSE_DEBUG_MODE` instead from now on. `BIRDHOUSE_LOG_LEVEL` should
+  only be used to set the log level of the birdhouse logger.
+
+[2.15.0](https://github.com/bird-house/birdhouse-deploy/tree/2.15.0) (2025-05-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Make scheduler jobs configurable
+
+  The scheduler component automatically enables three jobs (autodeploy, logrotate, notebookdeploy). If someone wants
+  to use the scheduler component but does not want these jobs, there is no obvious way to disable any one of these
+  jobs.
+
+  This change makes it possible to enable/disable jobs as required by the user and adds documentation to explain how 
+  to do this.
+
+  This change also converts existing jobs to be optional components. This makes the jobs more in-line with the way the
+  stack is deployed (since version 1.24.0) and ensures that settings set as environment variables in the local environment
+  file are not so sensitive to the order that they were declared in.
+
+  **Breaking Change**:
+  - the three jobs that were automatically enabled previously are now no longer enabled by default.
+  - to re-enable these three jobs, source the relevant component in the `optional-components` subdirectory.
+
+  **Deprecations**
+  - setting additional scheduler jobs using the `BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS` variable. Users should 
+    create additional jobs by adding them as custom components instead.
+
+  What about... ?
+    - just schedule these jobs for a non-existant day like February 31st?
+      - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
+    - just set the schedule to the `'#'` string?
+      - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
+                However, this is not obvious to the user and is unreliable since it is not documented.
+
+[2.14.0](https://github.com/bird-house/birdhouse-deploy/tree/2.14.0) (2025-05-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: update `weaver` component default version to [6.6.0](https://github.com/crim-ca/weaver/tree/6.6.0).
+
+  Notable changes include:
+  
+  - Added HTML representation of job status.
+  - Added alternate job `Profile` representations for interoperability with other clients like *WPS* and *openEO*.
+  - Adjust job `status` value for `successful` instead of `succeeded` in accordance to latest OGC API standard edits.
+    If clients were defined with explicit checks of the older value, they can request that job representation using
+    query parameters `?profile=wps&f=json`. Otherwise, it is preferable that scripts are updated to allow either value
+    to ensure the statuses are resolved correctly regardless of Weaver version employed by the server.
+  - Docker build employs [Provenance](https://docs.docker.com/build/metadata/attestations/slsa-provenance)
+    and [Software Bill of Materials (SBOM)](https://docs.docker.com/build/metadata/attestations/sbom) for
+    traceable dependencies, validation of references, and trust for replicable execution pipelines.
+  - Update Python 3.11 to Python 3.12 in the distributed Docker image.
+  - Various bug fixes and security vulnerability fixes.
+
+  For full changelog details, see [Weaver Changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html).
+  
+- Cowbird: Update version [`2.5.1`](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#251-2025-05-06) 
+  for security fixes.
+
+[2.13.5](https://github.com/bird-house/birdhouse-deploy/tree/2.13.5) (2025-05-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Script `extract-jupyter-users-from-magpie-db`: allow to customize the query
+
+  An example query is provided if we want to list all users, except if they
+  belong to some groups.
+
+
+[2.13.4](https://github.com/bird-house/birdhouse-deploy/tree/2.13.4) (2025-05-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `stac` service to use `crim-ca/stac-app:1.1.0` image
+
+  This updates the version of `stac-fastapi` to version 5 (currently the latest) and resolves and issue
+  where paging links did not work properly.
+
+  See more details [here](https://github.com/crim-ca/stac-app/pull/27).
+
+## Fixes
+
+- Forward correct headers through `twitcher` for the `stac` service
+
+  The nginx configuration for `twitcher` was creating a `Forwarded` header to help `stac` construct a `base_url`
+  behind the reverse proxy. However, with newer versions of `stac-fastapi` (the application running the `stac`
+  service), the `Forwarded` header is being parsed incorrectly which means that the `base_url` was incorrectly
+  formed.
+
+  This change removes the problematic `Forwarded` header and instead send the information to the `stac` application
+  using the `X-Forwarded-Port`, `X-Forwarded-Proto`, and `X-Forwarded-Host` headers. This technique allows `stac` 
+  to generate the correct `base_url` for all versions (up to the current version 5). 
+
+[2.13.3](https://github.com/bird-house/birdhouse-deploy/tree/2.13.3) (2025-05-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Makefile: Ensure the `bin/birdhouse` path employed by default resolves from anywhere.
+
+  Previously, if `make -C path/to/birdhouse-deploy {target}` was invoked from anywhere else than within
+  the `birdhouse-deploy` directory, the invoked script path would be invalid. Path resolution is improved
+  to allow calls from anywhere, as well as, including the Makefile within an external one seamlessly.
+
+[2.13.2](https://github.com/bird-house/birdhouse-deploy/tree/2.13.2) (2025-05-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Log multiple lines
+
+  Allow the `log` command (defined in `scripts/logging.include.sh`) to log messages that span multiple lines.
+  This also adds unit tests for the `scripts/logging.include.sh` file.
+
+## Fixes
+
+- Logging bug fixes:
+
+  - Setting `NO_COLOR` or setting `BIRDHOUSE_COLOR` to a non-integer value raised an error since `BIRDHOUSE_COLOR`
+    was tested with the numeric comparison `-eq`. This has now been fixed.
+
+  - Providing an invalid log message level (e.g. `log BADLEVEL message`) would log a critical error message but not
+    exit unless the `set -o pipefail` option was set. This has been updated so that the script will exit as intended
+    even if the `pipefail` option is not set.
+
+[2.13.1](https://github.com/bird-house/birdhouse-deploy/tree/2.13.1) (2025-04-28)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyter env: new full build with significant changes to the Anaconda environment dependency composition.
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#147](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/147)
+  for more info.
+
+
+[2.13.0](https://github.com/bird-house/birdhouse-deploy/tree/2.13.0) (2025-04-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Deprecate `portainer` component
+
+  The portainer component is not currently being used and is not actually usable outside of a very specific
+  host machine configuration. This change deprecates the component by moving it to the `deprecated-components`
+  directory. It can still be enabled from that path if desired.
+
 [2.12.0](https://github.com/bird-house/birdhouse-deploy/tree/2.12.0) (2025-04-03)
 ------------------------------------------------------------------------------------------------------------------
 
