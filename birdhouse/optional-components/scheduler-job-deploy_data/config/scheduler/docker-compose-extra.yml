@@ -1,0 +1,4 @@
+services:
+  scheduler:
+    volumes: 
+      - ./optional-components/scheduler-job-deploy_data/config.yml:/scheduler-job-configs/deploy_data.yml:ro

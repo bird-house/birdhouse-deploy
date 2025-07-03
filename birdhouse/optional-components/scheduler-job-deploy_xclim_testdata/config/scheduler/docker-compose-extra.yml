@@ -1,4 +1,0 @@
-services:
-  scheduler:
-    volumes: 
-      - ./optional-components/scheduler-job-deploy_xclim_testdata/config.yml:/scheduler-job-configs/deploy_xclim_testdata.yml:ro
