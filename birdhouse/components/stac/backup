@@ -47,5 +47,5 @@ restore_representative() {
                ${STAC_POPULATOR_BACKUP_IMAGE} \
                run DirectoryLoader http://stac:8000/stac /backup/stac-repr/
   }
-  backup_restore_runner 'stac json objects' _do_restore 'stac-repr' 'stac stac-db'
+  backup_restore_runner 'stac json objects' _do_restore 'stac-repr' 'stac stac-db stac-migration'
 }
