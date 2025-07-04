@@ -15,7 +15,6 @@ ENV_SPLIT_STR_ALT: str = "#env for testing alt#"
 # pytest error since these messages are unrelated to failing tests.
 DEFAULT_BIRDHOUSE_ENV = {
     "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False",
-    "TERM": os.getenv("TERM", ""),
 }
 
 

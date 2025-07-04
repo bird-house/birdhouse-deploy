@@ -485,13 +485,6 @@ Backups
 Backups of data used by the birdhouse stack can be generated using the ``bin/birdhouse backup`` command
 and its various subcommands.
 
-This allows users to backup and restore:
-
-* application data, user data, and log data for all components
-* birdhouse logs
-* docker container logs
-* local environement file
-
 Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository and can be restored
 either to a named volume (determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable) or in the case
 of user data and application data, it can directly overwrite the current data with the backup.
@@ -503,6 +496,70 @@ For details about the backup and restore commands run any of the following:
     bin/birdhouse backup --help
     bin/birdhouse backup create --help
     bin/birdhouse backup restore --help
+
+Data types
+^^^^^^^^^^
+
+Users can backup and restore the following data from the birdhouse stack:
+
+* application data
+
+  * stateful data used by components to store the current state of the running service
+
+  * this is useful when you want to be able to quickly restore a component to a previous state
+    and the component version has not been majorly updated since the last backup.
+
+  * for example: a database dump from a postgres or mongodb database
+
+* representative data
+
+  * an application agnostic version of the stateful data used by components to store 
+    the current state of the running service
+
+  * this contains the same information as the application data (above) but in a form that can be
+    exported/imported by a stable API. In other words, application data is a version of the
+    data exactly as it is used by the storage technology (i.e. database), representative data is
+    a version of the data that is independent of the underlying storage technology.
+
+  * this is useful when you want to be able to restore a component to a previous state and the
+    component version has been updated since the last backup. For example, if a database
+    has been updated between versions and there is no easy way to cleanly migrate the existing
+    database data between versions, the representative data can be used.
+    
+  * backing up and restoring representative data will probably take a much longer time than
+    application data.
+
+  * for example: STAC objects from the ``stac`` component stored as JSON files.
+
+* user data
+
+  * data created directly by users of birdhouse.
+
+  * for example: files written to the ``jupyterhub`` component's user workspaces
+
+* component log data
+
+  * log data for components that write log output to a location that is not visible to the
+    docker logging mechanism.
+
+  * for example: logs for the ``thredds`` component.
+
+* birdhouse logs
+
+  * all logs written to the directory specified by ``BIRDHOUSE_LOG_DIR``.
+
+  * for example: the log output of some scheduler jobs
+
+* docker container logs
+
+  * container logs for all docker containers running in the birdhouse stack.
+
+  * for example: ``magpie`` container logs
+
+* local environement file
+
+  * the local environment file specified by ``BIRDHOUSE_LOCAL_ENV``
+
 
 Configure the restic repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -529,27 +586,27 @@ options.
 Additional backup/restore workflows
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When running the ``backup create`` command, the files to be backed up are first written to a working directory 
+When running the ``backup create`` command, the files to be backed up are first written to a volume 
 (determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable). Then they are backed up from there to 
 the restic repository.
 
 Alternatively, you can specify the ``--no-restic`` command line option to skip the step that backs up the files to 
-the restic repository. You can then choose to access the files to backup directly in the working directory.
+the restic repository. You can then choose to access the files to backup directly in the volume.
 
 This allows users to inspect the files, integrate them into a different custom backup solution, etc.
 
 Similarly, when restoring files from restic with the ``backup restore`` command, the files are first restored
-to the same working directory before being copied to the appropriate location in the birdhouse stack. 
+to the same volume before being copied to the appropriate location in the birdhouse stack. 
 
 For example, restoring the ``magpie`` database will first restore the backup file from restic to the working
 directory and then overwrite the ``magpie`` database with the information contained in the backup file.
 
 If you want to skip the step that overwrites the current data in the birdhouse stack, you can specify the 
-``--no-clobber`` command line option. This will still restore the files to the working directory.
+``--no-clobber`` command line option. This will still restore the files to the volume.
 
 .. note::
     Even without the ``--no-restic`` and ``--no-clobber`` options, the files will be written
-    to the working directory every time you run backup and restore.
+    to the volume every time you run backup and restore.
 
 Additional configuration options
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -561,6 +618,14 @@ the backup and restore jobs.
 
   * The location of a directory that contains an SSH key used to access a remote machine where the restic repository
     is hosted. Required if accessing a restic repository using the sftp protocol.
+
+  * Please ensure that your key does not require a passphrase since backups must be run without any additional user
+    input. Also ensure that your key is generated using a modern, secure algorithm that is supported by the remote
+    ssh server you are trying to log into. At time of writing, the RSA algorithm is considered insecure
+    by most modern standards; an algorithm such as ECDSA is preferred.
+
+  * You can test whether your keys are sufficient for restic by running the ``birdhouse/scripts/test-restic-keypair.sh``
+    script.
 
 * ``BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS``
 

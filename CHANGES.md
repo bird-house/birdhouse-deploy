@@ -167,6 +167,48 @@
   default value.
 
 
+[2.16.4](https://github.com/bird-house/birdhouse-deploy/tree/2.16.4) (2025-07-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix invalid `STAC_POPULATOR_BACKUP_IMAGE='${STAC_POPULATOR_BACKUP_DOCKER}:${STAC_POPULATOR_BACKUP_VERSION}'`.
+
+  The `STAC_POPULATOR_BACKUP_IMAGE` variable was refering other variables missing their `_BACKUP` part.
+
+[2.16.3](https://github.com/bird-house/birdhouse-deploy/tree/2.16.3) (2025-06-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes 
+
+- Fix `thredds_transfer_size_kb_total` name in `optional-components/prometheus-longterm-rules`.
+
+  Counter names have the suffix `_total`. Without this suffix, the counter value is not discovered
+  properly in a rule and the prometheus rule will never return valid data.
+
+- Fix bugs in prometheus-log-exporter.
+
+- Avoid `tput: No value for $TERM and no -T specified` warnings if terminal is undefined.
+
+[2.16.2](https://github.com/bird-house/birdhouse-deploy/tree/2.16.2) (2025-06-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add option to backup "representative" application data
+
+  Representative data is an application agnostic version of the stateful data used by components to store 
+  the current state of the running service.
+
+  This includes an option to backup and restore representative data for the `stac` component. Other components
+  should be added in future updates.
+
+- Add additional documentation for backups
+
+  Also include a new script `birdhouse/scripts/create-restic-keypair.sh` to help users create and test SSH keypairs
+  for use by restic when accessing restic repositories over SFTP.
+
+
 [2.16.1](https://github.com/bird-house/birdhouse-deploy/tree/2.16.1) (2025-06-17)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -182,7 +224,6 @@
   ```
   ts=2025-06-17T05:09:00.903Z caller=manager.go:201 level=error component="rule manager" msg="loading groups failed" err="/etc/prometheus/prometheus-longterm-metrics.rules: 41:17: group \"longterm-metrics-hourly\", rule 6, \"thredds:kb_transfer_size_kb:increase_1h\": could not parse expression: 1:40: parse error: unexpected right parenthesis ')'"
   ```
-
 
 [2.16.0](https://github.com/bird-house/birdhouse-deploy/tree/2.16.0) (2025-06-16)
 ------------------------------------------------------------------------------------------------------------------
@@ -227,12 +268,12 @@
   Create a new scheduler job at `optional-components/scheduler-job-backup` which runs the `bin/birdhouse backup create` 
   command at regular intervals to ensure that the birdhouse stack's data is regularly backed up.
 
-  To configure this job you may set the following variables:
+  To configure this job you must set the following variables:
     - `SCHEDULER_JOB_BACKUP_FREQUENCY`:
       - Cron schedule when to run this scheduler job (default is `'1 1 * * *'`, at 1:01 am daily)
     - `SCHEDULER_JOB_BACKUP_ARGS`:
       - Extra arguments to pass to the 'bin/birdhouse backup create' command when backing up data.
-        By default this backs up everything (default is `'-a \* -u \* -l \* --birdhouse-logs --local-env-file'`)
+        For example, to back up everything set it to `'-a \* -u \* -l \* --birdhouse-logs --local-env-file'`
 
 - Add `configs --print-log-command` option in `bin/birdhouse`
 
