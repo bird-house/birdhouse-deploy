@@ -19,13 +19,22 @@
 
 - Backup: Allow `BIRDHOUSE_BACKUP_VOLUME` to be employed directly as directory.
 
-  This feature _**requires**_ using the `--no-restic` option.
+  This feature _**requires**_ using the `--no-restic` option to avoid it being involved by ``--snapshot`` override.
   Combining a directory path and omitting `--no-restic` can lead to undesired side effects.
-  However, it allows using backup/restore operations for quick data manipulations
-  without involving a `restic` configuration, such as needed for fixing problematic service migrations.
+  However, it allows using backup/restore operations for quick data manipulations on alternate locations than a
+  volume to offer flexibility or to bypass `restic` operations.
+  This can be employed for fixing problematic service data migrations or file system limitations with volumes.
+
+  The directory structure must match exactly with `BIRDHOUSE_BACKUP_VOLUME` when used as volume
+  (e.g.: `/tmp/backup/{component}-{backup_type}/...`).
 
   This feature also disables the automatic cleanup of the volume (since the directory is used directly).
   Therefore, users have to manage the contents of `BIRDHOUSE_BACKUP_VOLUME` on their own and consistently.
+
+- Backup: Avoid `birdhouse backup restore` operation to complain about missing `-s|--snapshot` when not required.
+
+  For example, `BIRDHOUSE_BACKUP_VOLUME=/tmp/backup birdhouse backup restore --no-restic -r stac` only operates on local
+  data contents to be restored into the server instance. No remote `restic` snapshot is required to run the operation.
 
 - Backup: Unification of script shebangs, variables names and function names with invoked operations.
 
@@ -40,11 +49,6 @@
   - Renames to match the common `BIRDHOUSE_BACKUP_[...]` prefix employed by other "backup" variables:
 
     - `BIRDHOUSE_RESTORE_SNAPSHOT` => `BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT`
-
-- Backup: Avoid `birdhouse backup restore` operation to complain about missing `-s|--snapshot` when not required.
-
-  For example, invoking `BIRDHOUSE_BACKUP_VOLUME=/tmp/backup birdhouse backup restore -r stac` only operates on local
-  data contents to be restored into the server instance. No remote `restic` snapshot is required to run the operation.
 
 - Backup: Add `stac-migration` image to the list of containers to stop on `birdhouse backup restore -r stac`.
 
