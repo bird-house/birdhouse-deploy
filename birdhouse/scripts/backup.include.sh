@@ -1,8 +1,9 @@
+#!/usr/bin/env sh
 # This file includes functions that are intended to be sourced by the do_backup_restore function (in bin/birdhouse)
 # It assumes that various environment variables are set including:
 #  - BIRDHOUSE_EXE
 #  - BIRDHOUSE_BACKUP_VOLUME
-#  - BIRDHOUSE_RESTORE_SNAPSHOT
+#  - BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT
 #  - BIRDHOUSE_BACKUP_DRY_RUN
 
 eval "$(${BIRDHOUSE_EXE} configs --print-log-command)"
@@ -35,8 +36,13 @@ backup_restore_runner() {
   [ -z "${command}" ] && log ERROR "No command provided for the restore job with description: '${description}'. A command is required. Skipping this restore." && return 1
   [ -z "${volume_dest}" ] && log ERROR "No volume destination provided for the restore job with description: '${description}'. A volume destination is required. Skipping this restore." && return 1
   [ "${BIRDHOUSE_BACKUP_DRY_RUN}" = 'true' ] && echo "${description}" && return 0
-  ${BIRDHOUSE_EXE} --quiet backup restic restore "${BIRDHOUSE_RESTORE_SNAPSHOT}:/backup/${volume_dest}" --delete --target "/backup/${volume_dest}" || return $?
-  log INFO "${description} has been restored to the ${BIRDHOUSE_BACKUP_VOLUME} volume in the '${volume_dest}' folder."
+  if [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ]; then
+    log INFO "Skipping restic restore for ${description} (--no-restic specified). Using [BIRDHOUSE_BACKUP_VOLUME=${BIRDHOUSE_BACKUP_VOLUME}] directly."
+  else
+    log INFO "Preparing ${description} from snapshot [${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}] into [${BIRDHOUSE_BACKUP_VOLUME}] volume..."
+    ${BIRDHOUSE_EXE} --quiet backup restic restore "${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}:/backup/${volume_dest}" --delete --target "/backup/${volume_dest}" || return $?
+    log INFO "${description} has been restored to the ${BIRDHOUSE_BACKUP_VOLUME} volume in the '${volume_dest}' folder."
+  fi
   if [ "${BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER}" != 'true' ]; then
     if [ -n "${stop_containers}" ]; then
       log INFO "Stopping containers: ${stop_containers}"
