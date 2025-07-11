@@ -287,3 +287,22 @@ def test_configs_log_override_file_default(cli_path, run, logging_script, tmp_pa
         check_log_output([level for level in LOG_LEVELS if level != "ERROR"], f.read())
     with open(error_log_file) as f:
         check_log_output(["ERROR"], f.read())
+
+
+@pytest.mark.parametrize("backup_type", ["create", "restore"])
+def test_backup_no_volume_error(cli_path, run, backup_type):
+    proc = run(f"{cli_path} backup {backup_type} -r stac --no-restic", expect_error=True)
+    assert "BIRDHOUSE_BACKUP_VOLUME must be specified" in proc.stderr
+
+
+@pytest.mark.parametrize("backup_type", ["create", "restore"])
+def test_backup_volume_not_dir_warning(cli_path, run, backup_type):
+    proc = run(
+        f"{cli_path} backup {backup_type} -r stac --no-restic",
+        env={"BIRDHOUSE_BACKUP_VOLUME": "tmp"},
+        expect_error=True,  # error from stack not running, not from the check itself
+    )
+    assert "Backup restore detected without an explicit directory path" in proc.stderr
+    assert "This command requires that the birdhouse stack be running." in proc.stderr, (
+        "Expected the check for running stack to be reached since the warning should not raise an error directly."
+    )

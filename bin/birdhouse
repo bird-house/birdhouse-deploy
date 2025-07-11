@@ -561,6 +561,18 @@ parse_backup_create_args() {
       parse_backup_create_args "$@"
       ;;
     '')
+      if
+        [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] && \
+        [ -z "${BIRDHOUSE_BACKUP_VOLUME}" ]; then
+        source_env 2> /dev/null
+        log ERROR "BIRDHOUSE_BACKUP_VOLUME must be specified when running with --no-restic."
+        exit 1
+      elif [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
+        source_env 2> /dev/null
+        log WARN \
+            "Backup restore detected without an explicit directory path [BIRDHOUSE_BACKUP_VOLUME=${BIRDHOUSE_BACKUP_VOLUME}]." \
+            "This will automatically create/use a docker named-volume."
+      fi
       BIRDHOUSE_BACKUP_COMMAND=backup
       ensure_birdhouse_running do_backup_create_restore
       exit
@@ -602,6 +614,20 @@ parse_backup_restore_args() {
       [ -n "${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}" ] || \
       [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] || \
         parse_backup_restore_args 'Use the -s|--snapshot option to specify a snapshot to restore with restic or --no-restic to employ BIRDHOUSE_BACKUP_VOLUME directly.'
+      if
+        [ -z "${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}" ] && \
+        [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ]; then
+        if [ -z "${BIRDHOUSE_BACKUP_VOLUME}" ]; then
+          source_env 2> /dev/null
+          log ERROR "BIRDHOUSE_BACKUP_VOLUME must be specified when running with --no-restic and omitting -s|--snapshot."
+          exit 1
+        elif [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
+          source_env 2> /dev/null
+          log WARN \
+              "Backup restore detected without an explicit directory path [BIRDHOUSE_BACKUP_VOLUME=${BIRDHOUSE_BACKUP_VOLUME}]." \
+              "This will automatically create/use a docker named-volume."
+        fi
+      fi
       BIRDHOUSE_BACKUP_COMMAND=restore
       ensure_birdhouse_running do_backup_create_restore
       exit
