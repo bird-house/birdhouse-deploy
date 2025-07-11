@@ -57,6 +57,8 @@
   operation dealing with dirty database contents and potentially conflicting restore data that would not be applied.
   Relates to added service `stac-migration` in [#534](https://github.com/bird-house/birdhouse-deploy/pull/534).
 
+- Backup: Allow `BIRDHOUSE_LOG_LEVEL` to override the `stac-populator` log level involved with `-r stac`.
+
 [2.16.4](https://github.com/bird-house/birdhouse-deploy/tree/2.16.4) (2025-07-03)
 ------------------------------------------------------------------------------------------------------------------
 

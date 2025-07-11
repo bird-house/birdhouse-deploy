@@ -20,9 +20,10 @@ backup_representative() {
                --network "${COMPOSE_PROJECT_NAME}_default" \
                -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
                --user root \
+               --env BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL} \
                --entrypoint sh \
                ${STAC_POPULATOR_BACKUP_IMAGE} \
-               -c 'mkdir /backup/stac-repr/; stac-populator export http://stac:8000/stac /backup/stac-repr/ --ignore-duplicate-ids'
+               -c 'mkdir /backup/stac-repr/; stac-populator --log-level-stderr ${BIRDHOUSE_LOG_LEVEL} export http://stac:8000/stac /backup/stac-repr/ --ignore-duplicate-ids'
   }
   backup_create_runner 'stac json objects' _do_backup
 }
@@ -45,6 +46,7 @@ restore_representative() {
                --user root \
                --env PYSTAC_STAC_VERSION_OVERRIDE="${PYSTAC_STAC_VERSION_OVERRIDE}" \
                ${STAC_POPULATOR_BACKUP_IMAGE} \
+               --log-level-stderr ${BIRDHOUSE_LOG_LEVEL} \
                run DirectoryLoader http://stac:8000/stac /backup/stac-repr/
   }
   backup_restore_runner 'stac json objects' _do_restore 'stac-repr' 'stac stac-db stac-migration'
