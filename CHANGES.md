@@ -17,6 +17,14 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+## Changes
+
+- Updated `deploy-data-raven-testdata-to-thredds.yml` to reflect the new `raven-testdata` repository structure.
+
+  The `deploy-data-raven-testdata-to-thredds.yml` workflow was updated to reflect the new structure of the `raven-testdata` repository. 
+  The new structure includes a `data` directory that contains all the test data files.
+  This new layout recreates the same structure used in `xclim-testdata`.
+
 [2.16.4](https://github.com/bird-house/birdhouse-deploy/tree/2.16.4) (2025-07-03)
 ------------------------------------------------------------------------------------------------------------------
 
