@@ -15,7 +15,9 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes 
+
+- Fix empty newlines displayed on `COMPOSE_CONF_LIST` output.
 
 [2.16.4](https://github.com/bird-house/birdhouse-deploy/tree/2.16.4) (2025-07-03)
 ------------------------------------------------------------------------------------------------------------------
