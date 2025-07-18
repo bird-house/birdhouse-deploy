@@ -352,7 +352,7 @@ log_error_help() {
 }
 
 # Perform pre-checks of arguments/configuration combinations relevant for backup creation.
-do_backup_create_checks() {
+check_backup_create_args() {
   [ -n "${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}" ] || \
   [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] || \
     log_error_help \
@@ -374,7 +374,7 @@ do_backup_create_checks() {
 }
 
 # Perform pre-checks of arguments/configuration combinations relevant for backup restore.
-do_backup_restore_checks() {
+check_backup_restore_args() {
   if
     [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] && \
     [ -z "${BIRDHOUSE_BACKUP_VOLUME}" ]; then
@@ -604,8 +604,9 @@ parse_backup_create_args() {
       ;;
     '')
       BIRDHOUSE_BACKUP_COMMAND=backup
+      source_env
+      check_backup_create_args
       ensure_birdhouse_running
-      do_backup_create_checks
       do_backup_create_restore
       exit
       ;;
@@ -644,8 +645,9 @@ parse_backup_restore_args() {
       ;;
     '')
       BIRDHOUSE_BACKUP_COMMAND=restore
+      source_env
+      check_backup_restore_args
       ensure_birdhouse_running
-      do_backup_restore_checks
       do_backup_create_restore
       exit
       ;;
