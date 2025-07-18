@@ -20,13 +20,6 @@
 [2.16.5](https://github.com/bird-house/birdhouse-deploy/tree/2.16.5) (2025-07-18)
 ------------------------------------------------------------------------------------------------------------------
 
-## Fixes 
-
-- Fix empty newlines displayed on `COMPOSE_CONF_LIST` output.
-
-[2.16.4](https://github.com/bird-house/birdhouse-deploy/tree/2.16.4) (2025-07-03)
-------------------------------------------------------------------------------------------------------------------
-
 ## Changes
 
 - `canarieapi`: Update to default version [1.0.1](https://github.com/Ouranosinc/CanarieAPI/blob/master/CHANGES.rst#101-2025-07-17). 
@@ -48,6 +41,13 @@
   - Fixes for HTML page endpoints.
   - Various CLI fixes.
   - Security updates.
+
+## Fixes 
+
+- Fix empty newlines displayed on `COMPOSE_CONF_LIST` output.
+
+[2.16.4](https://github.com/bird-house/birdhouse-deploy/tree/2.16.4) (2025-07-03)
+------------------------------------------------------------------------------------------------------------------
 
 ## Fixes
 
