@@ -375,16 +375,23 @@ check_backup_create_args() {
 
 # Perform pre-checks of arguments/configuration combinations relevant for backup restore.
 check_backup_restore_args() {
-  if
-    [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] && \
-    [ -z "${BIRDHOUSE_BACKUP_VOLUME}" ]; then
-    log_error_help \
-      "BIRDHOUSE_BACKUP_VOLUME must be specified when running with --no-restic." \
-      "${BACKUP_RESTORE_USAGE}"
-  elif [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
-    log WARN \
-        "Backup restore detected without an explicit directory path [BIRDHOUSE_BACKUP_VOLUME=${BIRDHOUSE_BACKUP_VOLUME}]." \
-        "This will automatically create/use a docker named-volume."
+  if [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ]; then
+    if [ -z "${BIRDHOUSE_BACKUP_VOLUME}" ]; then
+      log_error_help \
+        "BIRDHOUSE_BACKUP_VOLUME must be specified when running with --no-restic." \
+        "${BACKUP_RESTORE_USAGE}"
+    elif [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
+      log WARN \
+          "Backup restore detected without an explicit directory path [BIRDHOUSE_BACKUP_VOLUME=${BIRDHOUSE_BACKUP_VOLUME}]." \
+          "This will automatically create/use a docker named-volume."
+    fi
+  else
+    if [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -ne 0 ]; then
+      log_error_help \
+        "BIRDHOUSE_BACKUP_VOLUME must be a named volume when running using restic -s|--snapshot." \
+        "Its value indicates a directory path [BIRDHOUSE_BACKUP_VOLUME=${BIRDHOUSE_BACKUP_VOLUME}]." \
+        "${BACKUP_RESTORE_USAGE}"
+    fi
   fi
 }
 
