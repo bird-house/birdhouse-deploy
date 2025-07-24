@@ -1,4 +1,3 @@
-import os
 import subprocess
 
 import pytest
@@ -36,10 +35,13 @@ def logging_script(root_dir):
 @pytest.fixture
 def run(local_env_file):
     def _(command, expect_error=False, compose=None, **kwargs):
+        # WARNING: DO NOT forward 'os.environ', could break certain test assumptions
+        kwargs_env = kwargs.get("env", {})
         kwargs["env"] = {
-            **kwargs.get("env", os.environ),
+            "__BIRDHOUSE_SUPPORTED_INTERFACE": "False",
             "BIRDHOUSE_LOCAL_ENV": local_env_file,
-            "BIRDHOUSE_LOG_LEVEL": "",
+            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False",
+            **kwargs_env,
         }
         if compose:
             kwargs["env"]["BIRDHOUSE_COMPOSE"] = compose
@@ -296,9 +298,8 @@ def test_backup_no_volume_error(cli_path, run, backup_type):
         env={"BIRDHOUSE_BACKUP_VOLUME": ""},
         expect_error=True,
     )
-    output = proc.stderr
     assert proc.returncode != 0
-    assert "BIRDHOUSE_BACKUP_VOLUME must be specified" in output
+    assert "BIRDHOUSE_BACKUP_VOLUME must be specified" in proc.stderr
 
 
 @pytest.mark.parametrize("backup_type", ["create", "restore"])
@@ -308,9 +309,8 @@ def test_backup_volume_not_dir_warning(cli_path, run, backup_type):
         env={"BIRDHOUSE_BACKUP_VOLUME": "tmp"},
         expect_error=True,  # error from stack not running, not from the check itself
     )
-    output = proc.stderr
     assert proc.returncode != 0  # only because we early-stop, not because of the warning itself
-    assert f"Backup {backup_type} detected without an explicit directory path" in output
-    assert "This command requires that the birdhouse stack be running." in output, (
+    assert f"Backup {backup_type} detected without an explicit directory path" in proc.stderr
+    assert "This command requires that the birdhouse stack be running." in proc.stderr, (
         "Expected the check for running stack to be reached since the warning should not raise an error directly."
     )
