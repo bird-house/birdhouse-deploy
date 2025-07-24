@@ -266,7 +266,7 @@ def test_configs_log_override_multiple(cli_path, run, logging_script, tmp_path):
     proc = run(
         f"{cli_path} -L DEBUG -l DEBUG {log_file} -s INFO " f"-q WARN -l ERROR {log_file} -q ERROR compose",
         compose=logging_script,
-        expect_error=True,    
+        expect_error=True,
     )
     check_log_output(["DEBUG"], proc.stderr)
     check_log_output(["INFO"], proc.stdout)
@@ -280,7 +280,7 @@ def test_configs_log_override_file_default(cli_path, run, logging_script, tmp_pa
     proc = run(
         f"{cli_path} -L DEBUG -l {log_file} -l ERROR {error_log_file} compose",
         compose=logging_script,
-        expect_error=True,    
+        expect_error=True,
     )
     check_log_output(LOG_LEVELS, proc.stderr)
     with open(log_file) as f:
@@ -296,7 +296,7 @@ def test_backup_no_volume_error(cli_path, run, backup_type):
         env={"BIRDHOUSE_BACKUP_VOLUME": ""},
         expect_error=True,
     )
-    output = proc.stdout + proc.stderr
+    output = proc.stderr
     assert proc.returncode != 0
     assert "BIRDHOUSE_BACKUP_VOLUME must be specified" in output
 
@@ -308,7 +308,7 @@ def test_backup_volume_not_dir_warning(cli_path, run, backup_type):
         env={"BIRDHOUSE_BACKUP_VOLUME": "tmp"},
         expect_error=True,  # error from stack not running, not from the check itself
     )
-    output = proc.stdout + proc.stderr
+    output = proc.stderr
     assert proc.returncode != 0  # only because we early-stop, not because of the warning itself
     assert f"Backup {backup_type} detected without an explicit directory path" in output
     assert "This command requires that the birdhouse stack be running." in output, (
