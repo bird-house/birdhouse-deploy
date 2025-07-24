@@ -353,6 +353,11 @@ log_error_help() {
 
 # Perform pre-checks of arguments/configuration combinations relevant for backup creation.
 check_backup_create_args() {
+  if [ -z "${BIRDHOUSE_BACKUP_VOLUME}" ]; then
+    log_error_help \
+      "BIRDHOUSE_BACKUP_VOLUME must be specified." \
+      "${BACKUP_CREATE_USAGE}"
+  fi
   [ -n "${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}" ] || \
   [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] || \
     log_error_help \
@@ -360,27 +365,23 @@ check_backup_create_args() {
       "${BACKUP_CREATE_USAGE}"
   if
     [ -z "${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}" ] && \
-    [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ]; then
-    if [ -z "${BIRDHOUSE_BACKUP_VOLUME}" ]; then
-      log_error_help \
-        "BIRDHOUSE_BACKUP_VOLUME must be specified when running with --no-restic and omitting -s|--snapshot." \
-        "${BACKUP_CREATE_USAGE}"
-    elif [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
+    [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] && \
+    [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
       log WARN \
           "Backup create detected without an explicit directory path [BIRDHOUSE_BACKUP_VOLUME=${BIRDHOUSE_BACKUP_VOLUME}]." \
           "This will automatically create/use a docker named-volume."
-    fi
   fi
 }
 
 # Perform pre-checks of arguments/configuration combinations relevant for backup restore.
 check_backup_restore_args() {
+  if [ -z "${BIRDHOUSE_BACKUP_VOLUME}" ]; then
+    log_error_help \
+      "BIRDHOUSE_BACKUP_VOLUME must be specified." \
+      "${BACKUP_RESTORE_USAGE}"
+  fi
   if [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ]; then
-    if [ -z "${BIRDHOUSE_BACKUP_VOLUME}" ]; then
-      log_error_help \
-        "BIRDHOUSE_BACKUP_VOLUME must be specified when running with --no-restic." \
-        "${BACKUP_RESTORE_USAGE}"
-    elif [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
+    if [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
       log WARN \
           "Backup restore detected without an explicit directory path [BIRDHOUSE_BACKUP_VOLUME=${BIRDHOUSE_BACKUP_VOLUME}]." \
           "This will automatically create/use a docker named-volume."
