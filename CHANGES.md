@@ -24,6 +24,13 @@
   See [Ouranosinc/PAVICS-e2e-workflow-tests#150](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/150)
   for more info.
 
+- Updated `deploy-data-raven-testdata-to-thredds.yml` to reflect the new `raven-testdata` repository structure.
+
+  The `deploy-data-raven-testdata-to-thredds.yml` workflow was updated to reflect the new structure of the `raven-testdata` repository. 
+  The new structure includes a `data` directory that contains all the test data files and provides more granular
+  control by setting tagged commits as targets for the test data required for a specific version of `raven` and `RavenPy`.
+  This new layout emulates the same control functionality employed in `xclim`/`xclim-testdata`.
+
 [2.16.5](https://github.com/bird-house/birdhouse-deploy/tree/2.16.5) (2025-07-18)
 ------------------------------------------------------------------------------------------------------------------
 
