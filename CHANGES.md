@@ -17,6 +17,25 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.16.6](https://github.com/bird-house/birdhouse-deploy/tree/2.16.6) (2025-08-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyter env: Updated jupyter image (`py311-250423-update250730`) with new dependency `intake-esgf`, significantly
+  changed `ravenpy` (v0.19.0), as well as marginal updates to Ouranos core libraries: `xclim` (v0.57.0),
+  `xsdba` (v0.12.3), and `xscen` (v0.5.0).
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#150](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/150)
+  for more info.
+
+- Updated `deploy-data-raven-testdata-to-thredds.yml` to reflect the new `raven-testdata` repository structure.
+
+  The `deploy-data-raven-testdata-to-thredds.yml` workflow was updated to reflect the new structure of the `raven-testdata` repository. 
+  The new structure includes a `data` directory that contains all the test data files and provides more granular
+  control by setting tagged commits as targets for the test data required for a specific version of `raven` and `RavenPy`.
+  This new layout emulates the same control functionality employed in `xclim`/`xclim-testdata`.
+
 [2.16.5](https://github.com/bird-house/birdhouse-deploy/tree/2.16.5) (2025-07-18)
 ------------------------------------------------------------------------------------------------------------------
 
