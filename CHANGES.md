@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.16.6](https://github.com/bird-house/birdhouse-deploy/tree/2.16.6) (2025-08-01)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Jupyter env: Updated jupyter image (`py311-250423-update250730`) with new dependency `intake-esgf`, significantly
