@@ -15,7 +15,43 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Jupyter env: Updated jupyter image (`py311-250423-update250730`) with new dependency `intake-esgf`, significantly
+  changed `ravenpy` (v0.19.0), as well as marginal updates to Ouranos core libraries: `xclim` (v0.57.0),
+  `xsdba` (v0.12.3), and `xscen` (v0.5.0).
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#150](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/150)
+  for more info.
+
+[2.16.5](https://github.com/bird-house/birdhouse-deploy/tree/2.16.5) (2025-07-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- `canarieapi`: Update to default version [1.0.1](https://github.com/Ouranosinc/CanarieAPI/blob/master/CHANGES.rst#101-2025-07-17). 
+
+  - Bug fix for configuration setting `PARSE_LOGS`.
+  - Security updates.
+
+- `cowbird`: Update to default version [2.5.2](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#252-2025-07-17). 
+
+  - Security updates.
+
+- `magpie`: Update to default version [4.2.0](https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst#420-2024-12-12).
+
+  - Allow `ServiceTHREDDS` to use `/` in its metadata and data prefixes.
+  - Security updates.
+
+- `weaver`: Update to default version [6.6.2](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#662-2025-06-27).
+
+  - Fixes for HTML page endpoints.
+  - Various CLI fixes.
+  - Security updates.
+
+## Fixes 
+
+- Fix empty newlines displayed on `COMPOSE_CONF_LIST` output.
 
 ## Changes
 
