@@ -15,7 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Fixed a malformed `rsync` command in `deploy-data-raven-testdata-to-thredds.yml` workflow.
+
+  The `--exclude` option was not used properly which would cause the `rsync` command to fail. This is now fixed.
 
 [2.16.6](https://github.com/bird-house/birdhouse-deploy/tree/2.16.6) (2025-08-01)
 ------------------------------------------------------------------------------------------------------------------
