@@ -7,5 +7,5 @@ deploy:
   # rsync content below source_dir into dest_dir
   - source_dir: ./data
     dest_dir: /data/datasets/testdata/raven
-    # sync all files used for tests
-    rsync_extra_opts: --include=*/ --include=*.geojson --include=*.rv* --include=*.nc --include=*.tiff --include=*.txt --include=*.zip --exclude=*
+    # only sync .nc files
+    rsync_extra_opts: --include=*/ --include=*.nc --exclude=*
