@@ -8,4 +8,4 @@ deploy:
   - source_dir: ./data
     dest_dir: /data/datasets/testdata/raven
     # sync all files used for tests
-    rsync_extra_opts: --include=*/ --*.geojson --include=*.rv* --include=*.nc --include=*.tiff --include=*.txt --include=*.zip --exclude=*
+    rsync_extra_opts: --include=*/ --include=*.geojson --include=*.nc --include=*.rv* --include=*.tiff --include=*.txt --include=*.zip --exclude=*
