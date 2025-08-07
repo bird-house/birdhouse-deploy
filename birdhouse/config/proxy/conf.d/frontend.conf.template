@@ -15,7 +15,7 @@ map $http_x_forwarded_proto $real_scheme {
 }
 
 server {
-    listen       80;
+    listen       80 ${PROXY_LISTEN_80_PARAMS};
     server_name  localhost;
 
     ${INCLUDE_FOR_PORT_80}
@@ -28,7 +28,7 @@ server {
 }
 
 server {
-    listen       443;
+    listen       443 ${PROXY_LISTEN_443_PARAMS};
     server_name  localhost;
     proxy_buffering off;
 
