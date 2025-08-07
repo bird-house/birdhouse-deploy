@@ -27,7 +27,8 @@
   HTTP/1.1 200 OK
   ```
 
-  After
+  After `export PROXY_LISTEN_443_PARAMS="http2"` is set in `env.local` and
+  `proxy` container restarted
   ```
   $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
   HTTP/2 200
