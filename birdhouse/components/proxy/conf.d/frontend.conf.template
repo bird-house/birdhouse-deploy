@@ -15,7 +15,7 @@ map $http_x_forwarded_proto $real_scheme {
 }
 
 server {
-    listen       80;
+    listen       80 ${PROXY_LISTEN_80_PARAMS};
     server_name  localhost;
 
     resolver 127.0.0.11;

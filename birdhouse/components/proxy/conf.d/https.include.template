@@ -1,5 +1,5 @@
 server {
-    listen       443;
+    listen       443 ${PROXY_LISTEN_443_PARAMS};
     server_name  localhost;
     proxy_buffering off;
 
