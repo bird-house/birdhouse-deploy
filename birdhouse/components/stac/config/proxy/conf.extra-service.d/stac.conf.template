@@ -4,7 +4,7 @@
         # We need the second `/stac` for API redirect in STAC (see `root-path` and `ROUTER_PREFIX`).
         # See https://github.com/stac-utils/stac-fastapi/issues/427
         # See https://github.com/crim-ca/stac-app/blob/main/stac_app.py#L60
-        proxy_pass https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/stac/stac;
+        proxy_pass ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/stac/stac/;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Host $host:$server_port;
@@ -14,7 +14,7 @@
 
     # Automatically redirect to /stac/stac and exclude redirect when already using /stac 
     location ~ ^${TWITCHER_PROTECTED_PATH}/stac(?!/stac) {
-        return 302 ${TWITCHER_PROTECTED_PATH}/stac/stac;
+        return 302 ${TWITCHER_PROTECTED_PATH}/stac/stac/;
     }
 
     location /stac-browser/ {

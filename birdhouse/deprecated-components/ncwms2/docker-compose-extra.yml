@@ -1,4 +1,3 @@
-version: "3.4"
 
 x-logging: &default-logging
   driver: "json-file"
@@ -11,7 +10,7 @@ services:
     image: pavics/ncwms2:2.0.4
     container_name: ncwms2
     volumes:
-      - ${DATA_PERSIST_ROOT}/datasets:/data
+      - ${BIRDHOUSE_DATA_PERSIST_ROOT}/datasets:/data
       - ./deprecated-components/ncwms2/custom.cfg:/opt/birdhouse/custom.cfg
       - ./deprecated-components/ncwms2/server.xml:/opt/birdhouse/eggs/birdhousebuilder.recipe.tomcat-0.2.9-py2.7.egg/birdhousebuilder/recipe/tomcat/server.xml
     restart: always

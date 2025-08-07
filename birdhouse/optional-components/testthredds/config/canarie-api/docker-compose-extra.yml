@@ -1,5 +1,5 @@
-version: "3.4"
 services:
-  proxy:
+  canarie-api: &canarie-volumes
     volumes:
     - ./optional-components/testthredds/config/canarie-api/canarie_api_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/testthredds_canarie_api_monitoring.py:ro
+  canarie-api-cron: *canarie-volumes

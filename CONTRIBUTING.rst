@@ -3,13 +3,13 @@ Contributing
 
 Contributions are welcome, and they are greatly appreciated! Every little bit helps, and credit will always be given.
 
-Please read the PAVICS `Developer Documentation`_ to get started.
+Please read the Birdhouse `Developer Documentation`_ to get started.
 
 .. _Developer Documentation: https://birdhouse-deploy.readthedocs.io/en/latest/
 
 Policy
 ------
-Since PAVICS is used in production by multiple organizations, this deployment repository also has a policy regarding contributions.
+Since Birdhouse is used in production by multiple organizations, this deployment repository also has a policy regarding contributions.
 
 Policy objectives
 ~~~~~~~~~~~~~~~~~~~~~
@@ -37,9 +37,9 @@ Policy rules
 
 3. Contributions will trigger a test suite that must successfully pass before being merged (or integrated).
 
-    * The test suite can be run using a different DACCS config with ``birdhouse_daccs_configs_branch: branch_name`` in the PR description.
-    * It is possible to skip the test suite if the latest commit contains either ``[skip ci]``, ``[ci skip]`` or ``[no ci]``.
-      To globally skip the test suite regardless of the commit message use ``birdhouse_skip_ci: true`` in the PR description.
+   * The test suite can be run using a different DACCS config with ``birdhouse_daccs_configs_branch: {branch_name}`` in the PR description.
+   * To globally skip the test suite regardless of the commit message use ``birdhouse_skip_ci: true`` in the PR description.
+   * It is possible to skip the test suite if the latest commit message contains ``[skip ci]``.
 
 4. Contributions must be reviewed by every willing organizations
    (Default reviewers are `@mishaschwartz`_ for `UofT` , `@tlvu`_ for `Ouranos`_ and `@fmigneault`_ for `CRIM`_).
@@ -74,7 +74,7 @@ Policy rules
 10. If patches or contributions are made directly in the production fork, they must also be ported back and approved in
     the main branch (no code that does not exist in the main branch should exist in a production fork).
 
-11. The main branch will contain the official versions of PAVICS that will evolve according to semantic versioning.
+11. The main branch will contain the official versions of Birdhouse that will evolve according to semantic versioning.
     These versions should be used by the organizations.
 
 12. If contributions are made directly in a production fork (point 10), a tagged version should use the last common one
@@ -84,8 +84,8 @@ Policy rules
       The tag ``2.1.9`` cannot be applied because this version could possibly exists in the main branch.
       A tag looking like ``2.1.8.orgXrev1`` would be preferred.
 
-PAVICS multi organization git repository management
+Birdhouse multi organization git repository management
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. image:: https://raw.githubusercontent.com/bird-house/birdhouse-deploy/master/docs/source/images/multi_organizations_management.jpg
-  :alt: PAVICS multi organization git repository management
+  :alt: Birdhouse multi organization git repository management

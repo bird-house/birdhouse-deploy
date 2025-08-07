@@ -1,4 +1,3 @@
-version: "3.4"
 services:
   testthredds:
     image: ${TESTTHREDDS_IMAGE}
@@ -8,12 +7,12 @@ services:
     environment:
       # for reconstructing proper URL back to user when Thredds behind proxy
       # because Twitcher eats the "Host" http header set by Nginx
-      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+      BIRDHOUSE_FQDN_PUBLIC: $BIRDHOUSE_FQDN_PUBLIC
       WANTED_CONTEXT_ROOT: $TESTTHREDDS_CONTEXT_ROOT
       WANTED_CONTEXT_ROOT_WARFILE_NAME: $TESTTHREDDS_WARFILE_NAME
     volumes:
       - testthredds_persistence:/usr/local/tomcat/content/thredds
-      - ${DATA_PERSIST_ROOT}/testdatasets:/pavics-testdata:ro
+      - ${BIRDHOUSE_DATA_PERSIST_ROOT}/testdatasets:/birdhouse-testdata:ro
       - ${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}:ro
       - ${THREDDS_DATASET_LOCATION_ON_HOST}:${THREDDS_DATASET_LOCATION_ON_CONTAINER}:ro
       - testwps_outputs:/testwps_outputs:ro

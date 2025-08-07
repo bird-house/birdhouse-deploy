@@ -11,14 +11,14 @@ fi
 # eg: DB_NAME=finch
 DB_NAME="$1"
 if [ -z "$DB_NAME" ]; then
-    log ERROR "please provide a database name, ex: finch" 1>&2
+    log ERROR "please provide a database name, ex: finch"
     exit 2
 fi
 shift
 
 POSTGRES_USER="$1"
 if [ -z "$POSTGRES_USER" ]; then
-    POSTGRES_USER=pavics
+    POSTGRES_USER=birdhouse
 else
     shift
 fi

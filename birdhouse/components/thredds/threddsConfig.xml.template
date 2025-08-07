@@ -9,20 +9,20 @@ https://www.unidata.ucar.edu/software/tds/current/reference/ThreddsConfigXMLFile
     <logoUrl>/twitcher/ows/proxy/thredds/threddsIcon.gif</logoUrl>
     <logoAltText>TDS</logoAltText>
 
-    <abstract>Scientific Climate Data</abstract>
-    <keywords>meteorology, atmosphere, climate, ocean, earth science, birdhouse</keywords>
+    <abstract>${THREDDS_ABSTRACT}</abstract>
+    <keywords>${THREDDS_KEYWORDS}</keywords>
 
     <contact>
       <name>Support</name>
-      <organization>${THREDDS_ORGANIZATION}</organization>
-      <email></email>
-      <phone></phone>
+      <organization>${THREDDS_SUPPORT_ORGANIZATION}</organization>
+      <email>${THREDDS_SUPPORT_EMAIL}</email>
+      <phone>${THREDDS_SUPPORT_PHONE}</phone>
     </contact>
 
     <hostInstitution>
       <name>${THREDDS_ORGANIZATION}</name>
-      <webSite></webSite>
-      <logoUrl></logoUrl>
+      <webSite>${THREDDS_ORGANIZATION_WEBSITE}</webSite>
+      <logoUrl>${THREDDS_ORGANIZATION_LOGO_URL}</logoUrl>
       <logoAltText>${THREDDS_ORGANIZATION}</logoAltText>
     </hostInstitution>
   </serverInformation>
@@ -92,7 +92,7 @@ https://www.unidata.ucar.edu/software/tds/current/reference/ThreddsConfigXMLFile
   </NCISO>
 
   <!--
-  https://www.unidata.ucar.edu/software/tds/current/reference/ThreddsConfigXMLFile.html#DiskCache
+  https://docs.unidata.ucar.edu/tds/current/userguide/tds_config_ref.html#cdm-library-disk-cache
 
   These elements control where the CDM/NetCDF-Java library writes temporary
   files, for example when it needs to unzip files, or write GRIB index files,

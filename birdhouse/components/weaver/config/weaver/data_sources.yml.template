@@ -2,13 +2,13 @@
 # Employed by default for looking at files available directly (e.g.: pre-fetched)
 localhost:
     netloc: "localhost"
-    ades: "http://localhost:4001"
+    ades: "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}"
     default: true
 
 # Weaver self-reference, but using the exposed endpoint on the birdhouse instance
 public:
-    netloc: "${PAVICS_FQDN_PUBLIC}"
-    ades: "https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
+    netloc: "${BIRDHOUSE_FQDN_PUBLIC}"
+    ades: "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/${WEAVER_MANAGER_NAME}"
 
 # Weaver self-reference with specifically 'opensearch' parameters as process input.
 # Since none are available in the stack, there is no collection ID.

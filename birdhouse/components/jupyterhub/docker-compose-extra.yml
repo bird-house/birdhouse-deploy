@@ -1,4 +1,3 @@
-version: "3.4"
 
 x-logging:
   &default-logging
@@ -13,7 +12,7 @@ services:
     container_name: jupyterhub
     hostname: jupyterhub
     environment:
-      DOCKER_NOTEBOOK_IMAGES: ${DOCKER_NOTEBOOK_IMAGES}
+      JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES: ${JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES}
       JUPYTERHUB_IMAGE_SELECTION_NAMES: ${JUPYTERHUB_IMAGE_SELECTION_NAMES}
       DOCKER_NETWORK_NAME: jupyterhub_network
       JUPYTERHUB_USER_DATA_DIR: ${JUPYTERHUB_USER_DATA_DIR}
@@ -24,10 +23,11 @@ services:
       JUPYTER_DEMO_USER_CPU_LIMIT: ${JUPYTER_DEMO_USER_CPU_LIMIT}
       JUPYTER_GOOGLE_DRIVE_SETTINGS: ${JUPYTER_GOOGLE_DRIVE_SETTINGS}
       JUPYTERHUB_README: ${JUPYTERHUB_README}
-      MOUNT_IMAGE_SPECIFIC_NOTEBOOKS: ${MOUNT_IMAGE_SPECIFIC_NOTEBOOKS}
+      JUPYTERHUB_MOUNT_IMAGE_SPECIFIC_NOTEBOOKS: ${JUPYTERHUB_MOUNT_IMAGE_SPECIFIC_NOTEBOOKS}
       USER_WORKSPACE_UID: ${USER_WORKSPACE_UID}
       USER_WORKSPACE_GID: ${USER_WORKSPACE_GID}
       JUPYTERHUB_CRYPT_KEY: ${JUPYTERHUB_CRYPT_KEY}
+      JUPYTERHUB_DOCKER_EXTRA_HOSTS: ${JUPYTERHUB_DOCKER_EXTRA_HOSTS:-}
     volumes:
       - ./components/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
       - ./components/jupyterhub/custom_templates:/custom_templates:ro
@@ -45,14 +45,21 @@ services:
     command: bash -c "jupyterhub upgrade-db && jupyterhub"
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/jupyter"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
 
 # need external network so the folder name is not prefixed to network name
 networks:
   jupyterhub_network:
-    external:
-      name: "jupyterhub_network"
+    name: "jupyterhub_network"
+    external: true
 
 volumes:
   jupyterhub_data_persistence:
-    external:
-      name: jupyterhub_data_persistence
+    name: jupyterhub_data_persistence
+    external: true

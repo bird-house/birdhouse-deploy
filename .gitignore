@@ -3,6 +3,7 @@ birdhouse/env.local
 birdhouse/certkey.pem
 birdhouse/cert.pem
 birdhouse/key.pem
+birdhouse/restic.env
 
 ## Deployment
 vagrant_variables.yml
@@ -30,3 +31,4 @@ venv/
 ## Testing
 .pytest_cache/
 *.log
+birdhouse/data/

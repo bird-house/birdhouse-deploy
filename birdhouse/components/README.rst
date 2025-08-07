@@ -1,4 +1,4 @@
-PAVICS Components
+Birdhouse Components
 #################
 
 
@@ -8,12 +8,114 @@ PAVICS Components
 Scheduler
 =========
 
+The scheduler component runs specific jobs on a schedule. This is similar to using the `cron`
+service but this runs in docker containers and is specifically designed to interact with the
+Birdhouse stack.
+
+Available jobs
+-------------
+
+Scheduler jobs can be enabled by enabling optional components. Birdhouse comes with a variety of
+these jobs in the ``optional-components`` directory. To enable any of these jobs, add the relevant
+component directory to the ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable in your local environment file.
+
+* Enable automatic deployment
+
+  * additional description of this can be found in the :ref:`Automated Deployment` section
+
+  * component location: ``optional-components/scheduler-job-autodeploy``
+
+* Automatically rotate logs
+
+  * rotate and manage the birdhouse log files located in the directory specified by ``BIRDHOUSE_LOG_DIR``.
+
+  * component location: ``optional-components/scheduler-job-logrotate``
+
+* Automatically update tutorial Jupyter notebooks
+
+  * update tutorial notebooks that are displayed to users who run Jupyterlab servers through the ``jupyterhub`` component.
+
+  * this requires that the ``jupyterhub`` component is also enabled
+
+  * component location: ``optional-components/scheduler-job-notebookdeploy``
+
+* Automatically renew LetsEncrypt SSL certificate
+  * renew a SSL certificate issued by LetsEncrypt on a schedule
+  * component location: ``optional-components/scheduler-job-renew_letsencrypt_ssl_cert``
+
+* Automatically deploy xclim test data to THREDDS
+
+  * adds xclim test data to the thredds server and keeps it up to date (for test purposes).
+
+  * this requires that the ``thredds`` component is also enabled
+
+  * component location: ``optional-components/scheduler-job-deploy_xclim_testdata``
+
+* Automatically deploy raven test data to THREDDS
+
+  * adds test data used by the raven WPS component to the thredds server and keeps it up to date (for test purposes).
+
+  * this requires that the ``thredds`` and ``raven`` components also be enabled
+  
+  * component location: ``optional-components/scheduler-job-deploy_raven_testdata``
+
+* Automatically backup files
+
+  * automatically backs up application data, user data, representative data, and logs to a restic repository (default) or a docker volume
+
+  * this uses the ``bin/birdhouse backup create`` command (see additional information in the :ref:`backups`_ documentation).
+
+  * component location: ``optional-components/scheduler-job-backup``
+
+For additional configuration options for all these jobs see the ``env.local.example`` file
+as well as the individual ``default.env`` files in each of the component directories.
+
+Custom jobs
+-----------
+
+To add custom jobs to the scheduler component, create a new component that mounts a ``.yml`` configuration file
+to the ``/scheduler-job-configs/`` directory inside the ``scheduler`` container.
+
+See the components listed above as examples on how to build a similar scheduler job component. For more information
+about the syntax of the configuration files see the `documentation <https://github.com/Ouranosinc/docker-crontab/>`_.
+
+The old way to add additional jobs is to update the ``BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS``
+environment variable in the local environment file to contain a YAML string that describes the job to run.
+
+Note that this method is deprecated and may be removed in the future. Please update all jobs defined in the
+``BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS`` variable to components.
+
+For example a simple additional job might look like:
+
+.. code-block:: shell
+
+  if [ -z "$(echo "$BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS" | grep 'example job')" ]; then
+    export BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS="
+  $BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS
+  - name: example job
+    comment: basic job that echos 'something' every hour
+    schedule: '1 * * * *'
+    command: 'echo something'
+    dockerargs: >-
+      --rm --name example
+  "
+  fi
+
+Note in the example above, the code first checks to make sure that there isn't already a job named ``example job``.
+This is because the local environment file may be read multiple times when it is loaded so it is crucial to ensure that
+jobs are not accidentally duplicated.
+
+.. _Automated Deployment:
+
+Automated Deployment
+--------------------
+
 This component provides automated unattended continuous deployment for the
-"PAVICS stack" (all the git repos in var ``AUTODEPLOY_EXTRA_REPOS``), for the
+"Birdhouse stack" (all the git repos in var ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``), for the
 tutorial notebooks on the Jupyter environment and for the automated deployment
 itself.
 
-It can also be used to schedule other tasks on the PAVICS physical host.
+It can also be used to schedule other tasks on the Birdhouse physical host.
 
 Everything is dockerized, the deployment runs inside a container that will
 update all other containers.
@@ -27,12 +129,12 @@ The trigger for the deployment is new code change on the server on the current
 branch (PR merged, push). New code change locally will not trigger deployment
 so local development workflow is also supported.
 
-Multiple remote repos are supported so the "PAVICS stack" can be made of
+Multiple remote repos are supported so the "Birdhouse stack" can be made of
 multiple checkouts for modularity and extensibility.  The autodeploy will
-trigger if any of the checkouts (configured in ``AUTODEPLOY_EXTRA_REPOS``) is
+trigger if any of the checkouts (configured in ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``) is
 not up-to-date with its remote repo.
 
-A suggested "PAVICS stack" is made of at least 2 repos, this repo and another
+A suggested "Birdhouse stack" is made of at least 2 repos, this repo and another
 private repo containing the source controlled ``env.local`` file and any other
 docker-compose override for true infrastructure-as-code.
 
@@ -41,32 +143,32 @@ script deploy.sh_ (:download:`download <../deployment/deploy.sh>`).
 
 
 Usage
------
+^^^^^
 
 Given the unattended nature, there is no UI.  Logs are used to keep trace.
 
-- ``/var/log/PAVICS/autodeploy.log`` is for the PAVICS deployment.
+- ``${BIRDHOUSE_LOG_DIR}/autodeploy.log`` is for the Birdhouse deployment.
 
-- ``/var/log/PAVICS/notebookdeploy.log`` is for the tutorial notebooks deployment.
+- ``${BIRDHOUSE_LOG_DIR}/notebookdeploy.log`` is for the tutorial notebooks deployment.
 
-- logrotate is enabled for ``/var/log/PAVICS/*.log`` to avoid filling up the
+- logrotate is enabled for ``${BIRDHOUSE_LOG_DIR}/*.log`` to avoid filling up the
   disk.  Any new ``.log`` files in that folder will get logrotate for free.
 
 
 How to Enable the Component
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Edit ``env.local`` (a copy of env.local.example_ (:download:`download <../env.local.example>`))
 
-  - Add "./components/scheduler" to ``EXTRA_CONF_DIRS``.
-  - Set ``AUTODEPLOY_EXTRA_REPOS``, ``AUTODEPLOY_DEPLOY_KEY_ROOT_DIR``,
-    ``AUTODEPLOY_PLATFORM_FREQUENCY``, ``AUTODEPLOY_NOTEBOOK_FREQUENCY`` as desired,
+  - Add "./components/scheduler" to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+  - Set ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``, ``BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR``,
+    ``BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY``, ``BIRDHOUSE_AUTODEPLOY_NOTEBOOK_FREQUENCY`` as desired,
     full documentation in `env.local.example`_.
   - Run once fix-write-perm_ (:download:`download <../deployment/fix-write-perm>`), see doc in script.
 
 
 Old way to deploy the automatic deployment
-------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Superseded by this new ``scheduler`` component.  Keeping for reference only.
 
@@ -77,12 +179,12 @@ Configure logrotate for all following automations to prevent disk full::
 
   deployment/install-logrotate-config .. $USER
 
-To enable continuous deployment of PAVICS::
+To enable continuous deployment of Birdhouse::
 
   deployment/install-automated-deployment.sh .. $USER [daily|5-mins]
   # read the script for more options/details
 
-If you want to manually force a deployment of PAVICS (note this might not use
+If you want to manually force a deployment of Birdhouse (note this might not use
 latest version of deploy.sh_ script (:download:`download <../deployment/deploy.sh>`)::
 
   deployment/deploy.sh .
@@ -96,23 +198,23 @@ To enable continuous deployment of tutorial Jupyter notebooks::
 To trigger tutorial Jupyter notebooks deploy manually::
 
   # configure logrotate before because this script will log to
-  # /var/log/PAVICS/notebookdeploy.log
+  # ${BIRDHOUSE_LOG_DIR}/notebookdeploy.log
 
   deployment/trigger-deploy-notebook
   # read the script for more details
 
 Migrating to the new mechanism requires manual deletion of all the artifacts
-created by the old install scripts: ``sudo rm /etc/cron.d/PAVICS-deploy
-/etc/cron.hourly/PAVICS-deploy-notebooks /etc/logrotate.d/PAVICS-deploy
+created by the old install scripts: ``sudo rm /etc/cron.d/Birdhouse-deploy
+/etc/cron.hourly/birdhouse-deploy-notebooks /etc/logrotate.d/Birdhouse-deploy
 /usr/local/sbin/triggerdeploy.sh``.  Both can not co-exist at the same time.
 
 
 Comparison between the old and new autodeploy mechanism
--------------------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Maximum backward-compatibility has been kept with the old install scripts style:
 
-* Still log to the same existing log files under ``/var/log/PAVICS``.
+* Still log to the same existing log files under ``${BIRDHOUSE_LOG_DIR}``.
 * Old single ssh deploy key is still compatible, but the new mechanism allows for different ssh deploy keys for each
   extra repos (again, public repos should use https clone path to avoid dealing with ssh deploy keys in the first
   place).
@@ -122,7 +224,7 @@ Features missing in old install scripts or how the new mechanism improves on the
 
 * Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if triggerdeploy.sh_
   (:download:`download <../deployment/triggerdeploy.sh>`)
-  or the deployed ``/etc/cron.hourly/PAVICS-deploy-notebooks`` script changes, they have to be deployed manually.
+  or the deployed ``/etc/cron.hourly/birdhouse-deploy-notebooks`` script changes, they have to be deployed manually.
   It's very annoying.  Now they are volume-mount in so are fresh on each run.
 * ``env.local`` now drives absolutely everything, source control that file and we've got a true DevOPS pipeline.
 * Configurable platform and notebook autodeploy frequency.  Previously, this means manually editing the generated cron
@@ -136,13 +238,13 @@ Features missing in old install scripts or how the new mechanism improves on the
   traceable and reproducible.
 
 How to test platform autodeploy is not broken by a PR
------------------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There are 2 tests that need to be performed:
 
 * Can autodeploy deploy the PR from ``master`` branch, the stable reference point?
 
-  * This could fail if some changes in the PR are incompatible with autodeploy. For example: ``./pavics-compose.sh`` calls some binaries that do not exist in the autodeploy docker image.
+  * This could fail if some changes in the PR are incompatible with autodeploy. For example: ``birdhouse compose`` calls some binaries that do not exist in the autodeploy docker image.
 
 * Can autodeploy be triggered again successfully, after the PR is live?
 
@@ -150,17 +252,17 @@ There are 2 tests that need to be performed:
 
 Here is a sample setup to test autodeploy:
 
-* Have 2 checkout directories.  One is for starting the stack using ``./pavics-compose.sh``, the other one is to push new bogus changes to trigger the autodeploy mechanism.
+* Have 2 checkout directories.  One is for starting the stack using ``birdhouse compose``, the other one is to push new bogus changes to trigger the autodeploy mechanism.
 
 .. code-block:: shell
 
-  # this one for running pavics-compose.sh
+  # this one for running birdhouse compose
   git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy
 
   # this one for triggering autodeploy
   git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy-trigger
 
-* Set ``AUTODEPLOY_PLATFORM_FREQUENCY`` in ``env.local`` to a very frequent value so you do not have to wait too long for autodeploy to trigger.
+* Set ``BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY`` in ``env.local`` to a very frequent value so you do not have to wait too long for autodeploy to trigger.
 
 .. code-block:: shell
 
@@ -168,18 +270,18 @@ Here is a sample setup to test autodeploy:
   cd birdhouse-deploy/birdhouse
 
   # ensure the scheduler component is enabled, otherwise autodeploy will not work
-  echo 'export EXTRA_CONF_DIRS="$EXTRA_CONF_DIRS ./components/scheduler" >> env.local
+  echo 'export BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./components/scheduler" >> env.local
 
-  # set AUTODEPLOY_PLATFORM_FREQUENCY
+  # set BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY
   # can set to more frequent than 5 minutes if your machine is capable enough
-  echo 'export AUTODEPLOY_PLATFORM_FREQUENCY="@every 5m"' >> env.local
+  echo 'export BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY="@every 5m"' >> env.local
 
   # if scheduler container already running:
-  # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
-  ./pavics-compose.sh stop scheduler && ./pavics-compose.sh rm -vf scheduler && ./pavics-compose.sh up -d
+  # recreate scheduler container for new BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to be effective
+  birdhouse compose stop scheduler && birdhouse compose rm -vf scheduler && birdhouse compose up -d
 
   # if scheduler container not running yet: start the newly added scheduler component
-  ./pavics-compose.sh up -d
+  birdhouse compose up -d
 
 * Create a ``${USER}-test`` branch so you can add bogus commits without affecting your real PR.  Set up your main checkout (birdhouse-deploy) to track that test branch so it will detect new changes on the test branch and trigger the autodeploy.
 
@@ -197,7 +299,7 @@ Here is a sample setup to test autodeploy:
 
   # ensure your runnings code is at "master" and is working correctly
   # if you do not have a working baseline, you will not know if the breakage is due to autodeploy or your code
-  ./pavics-compose.sh up -d
+  birdhouse compose up -d
 
 * Test scenario 1, from ``master`` to your PR
 
@@ -216,7 +318,7 @@ Here is a sample setup to test autodeploy:
   # the autodeploy mechanism will detect that the remote branch has changed and attempt to update the local branch
 
   # follow logs, check for errors
-  tail -f /var/log/PAVICS/autodeploy.log
+  tail -f ${BIRDHOUSE_LOG_DIR}/autodeploy.log
 
   # each autodeploy trigger will start the log with
   #   ==========
@@ -245,9 +347,9 @@ Here is a sample setup to test autodeploy:
   # the autodeploy mechanism will detect that the remote branch has changed and attempt to update the local branch
 
   # follow logs, check for errors
-  tail -f /var/log/PAVICS/autodeploy.log
+  tail -f ${BIRDHOUSE_LOG_DIR}/autodeploy.log
 
-* Test done, clean up the bogus ``${USER}-test`` branch and optionally relax ``AUTODEPLOY_PLATFORM_FREQUENCY``
+* Test done, clean up the bogus ``${USER}-test`` branch and optionally relax ``BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY``
 
 .. code-block:: shell
 
@@ -266,21 +368,22 @@ Here is a sample setup to test autodeploy:
   git checkout YOUR_PR_BRANCH
   git branch -D ${USER}-test
 
-  # edit env.local and change AUTODEPLOY_PLATFORM_FREQUENCY to something less frequent to save your cpu
+  # edit env.local and change BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to something less frequent to save your cpu
   # do not remove the scheduler component from the stack yet or the next command will fail
 
-  # recreate scheduler container for new AUTODEPLOY_PLATFORM_FREQUENCY to be effective
-  ./pavics-compose.sh stop scheduler && ./pavics-compose.sh rm -vf scheduler && ./pavics-compose.sh up -d
+  # recreate scheduler container for new BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to be effective
+  birdhouse compose stop scheduler && birdhouse compose rm -vf scheduler && birdhouse compose up -d
 
   # optionally edit env.local to remove the scheduler component from the stack
   # then remove the running scheduler container
-  ./pavics-compose.sh up -d --remove-orphans
+  birdhouse compose up -d --remove-orphans
 
+.. _Monitoring:
 
 Monitoring
 ==========
 
-This component provides monitoring and alerting for the PAVICS physical host and containers.
+This component provides monitoring and alerting for the Birdhouse physical host and containers.
 
 Prometheus stack is used:
 
@@ -294,9 +397,9 @@ Prometheus stack is used:
 Usage
 -----
 
-- Grafana to view metric graphs: https://PAVICS_FQDN/grafana/d/pf6xQMWGz/docker-and-system-monitoring
-- Prometheus alert rules: https://PAVICS_FQDN/prometheus/rules
-- AlertManager to manage alerts: https://PAVICS_FQDN/alertmanager
+- Grafana to view metric graphs: https://BIRDHOUSE_FQDN/grafana/d/pf6xQMWGz/docker-and-system-monitoring
+- Prometheus alert rules: https://BIRDHOUSE_FQDN/prometheus/rules
+- AlertManager to manage alerts: https://BIRDHOUSE_FQDN/alertmanager
 
 The paths above are by default only accessible to a user logged in to magpie as an administrator or
 as a member of group ``monitoring``.  These routes provide sensitive information about the
@@ -313,10 +416,10 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy of `env.local.example`_ (:download:`download <../env.local.example>`))
 
-  - Add "./components/monitoring" to ``EXTRA_CONF_DIRS``
+  - Add "./components/monitoring" to ``BIRDHOUSE_EXTRA_CONF_DIRS``
   - Set ``GRAFANA_ADMIN_PASSWORD`` to login to Grafana
   - Set ``ALERTMANAGER_ADMIN_EMAIL_RECEIVER`` for receiving alerts
-  - Set ``SMTP_SERVER`` for sending alerts
+  - Set ``ALERTMANAGER_SMTP_SERVER`` for sending alerts
   - Optionally set
 
     - ``ALERTMANAGER_EXTRA_GLOBAL`` to further configure AlertManager
@@ -371,6 +474,7 @@ AlertManager for Alert Dashboard and Silencing
 .. image:: monitoring/images/alertmanager-dashboard.png
 .. image:: monitoring/images/alertmanager-silence-alert.png
 
+.. _monitoring-customize-the-component
 
 Customizing the Component
 -------------------------
@@ -388,6 +492,57 @@ Customizing the Component
   ``ALERTMANAGER_EXTRA_GLOBAL``, ``ALERTMANAGER_EXTRA_ROUTES`` (can route to
   Slack or other services accepting webhooks), ``ALERTMANAGER_EXTRA_RECEIVERS``.
 
+
+Longterm Storage of Prometheus Metrics
+--------------------------------------
+
+Prometheus stores metrics for 90 days by default. This may be sufficient for some use cases but you may wish to store
+some metrics for longer. In order to store certain metrics for a longer than 90 days, you can enable the following
+additional components:
+
+- :ref:`prometheus-longterm-metrics`: a second Prometheus instance used to collect the metrics that you want to store longterm
+- :ref:`thanos`: a service that enables more efficient storage of the metrics collected by the :ref:`prometheus-longterm-metrics`
+  component.
+- :ref:`prometheus-longterm-rules`: adds some example rules to the monitoring Prometheus instance (the one deployed by this `monitoring` 
+  component) that can be stored longterm by the `prometheus-longterm-metrics` component. 
+
+.. note::
+    A separate prometheus instance is necessary since the retention time for prometheus metrics is set at the 
+    instance level. This means that increasing the retention time must be done for all metrics at once which is undesirable
+    because you probably don't need to store every metric for a long period of time and you'll end up using a lot more
+    disk space than needed.
+
+If some or all of these additional components are enabled, they interact in the following way to store certain metrics for
+longer than 90 days:
+
+1. 
+  - `recording rules`_ are added to the monitoring Prometheus instance (the one deployed by this `monitoring` component). These
+    rules are any that have the `longterm-metrics` label. 
+  - The metrics described by these rules are collected/calculated by the monitoring Prometheus instance. The monitoring Prometheus
+    instance treats these rules the same as any other (ie. only stores them for 90 days by default).
+  - To enable some example longterm `recording rules`_, enable the :ref:`prometheus-longterm-rules` component. You can also choose 
+    to create your own rules (see :ref:`prometheus-longterm-metrics` for details on how to create these longterm metrics rules). 
+2. 
+  - The :ref:`prometheus-longterm-metrics` Prometheus instance collects/copies only the rules with the `longterm-metrics` label from the 
+    monitoring Prometheus instance.
+  - The :ref:`prometheus-longterm-metrics` Prometheus instance stores only these metrics for a custom duration (can be longer than
+    90 days).
+3. 
+  - The :ref:`thanos` component can be deployed alongside the :ref:`prometheus-longterm-metrics` Prometheus instance in order to store
+    the metrics that the :ref:`prometheus-longterm-metrics` Prometheus instance has already collected.
+  - The :ref:`thanos` component collects the metrics collected by the :ref:`prometheus-longterm-metrics` Prometheus instance and
+    stores them in an S3 object store. 
+  - The :ref:`thanos` object store stores the metrics more efficiently, meaning that metrics can be stored for even longer and they'll
+    take up less disk space than if they were just stored by the :ref:`prometheus-longterm-metrics` Prometheus instance. 
+
+.. note::
+
+  It is possible to deploy the :ref:`prometheus-longterm-metrics` Prometheus instance and the :ref:`thanos` instance on a different
+  machine than the monitoring Prometheus instance. However, note that both the :ref:`prometheus-longterm-metrics` and :ref:`thanos`
+  components *must* be deployed on the same machine (if both are in use). Also note that this is untested and may require serious 
+  troubleshooting to work properly.
+
+.. _recording rules: https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/
 
 Weaver
 ======
@@ -408,17 +563,17 @@ and execution of custom applications and workflows.
 Usage
 -----
 
-Once this component is enabled, `Weaver`_ will be accessible at ``https://<PAVICS_FQDN_PUBLIC>/weaver`` endpoint,
-where ``PAVICS_FQDN_PUBLIC`` is defined in your ``env.local`` file.
+Once this component is enabled, `Weaver`_ will be accessible at ``https://<BIRDHOUSE_FQDN_PUBLIC>/weaver`` endpoint,
+where ``BIRDHOUSE_FQDN_PUBLIC`` is defined in your ``env.local`` file.
 
 Full process listing (across WPS providers) should be available using request:
 
 .. code-block::
 
-    GET https://<PAVICS_FQDN_PUBLIC>/weaver/processes?providers=true
+    GET https://<BIRDHOUSE_FQDN_PUBLIC>/weaver/processes?providers=true
 
 Please refer to the `Weaver OpenAPI`_ for complete description of available requests.
-This description will also be accessible via ``https://<PAVICS_FQDN_PUBLIC>/weaver/api`` once the instance is started.
+This description will also be accessible via ``https://<BIRDHOUSE_FQDN_PUBLIC>/weaver/api`` once the instance is started.
 
 For any specific details about `Weaver`_ configuration parameters, functionalities or questions, please refer to its
 `documentation <https://pavics-weaver.readthedocs.io/en/latest/>`_.
@@ -428,7 +583,7 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 
-  - Add ``./components/weaver`` to ``EXTRA_CONF_DIRS``.
+  - Add ``./components/weaver`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
   - Component ``birdhouse/optional-components/all-public-access`` should also be enabled to ensure that `Weaver`_
     can request ``GetCapabilities`` of every WPS provider to be registered. Publicly inaccessible services will not
@@ -447,6 +602,16 @@ Customizing the Component
     Further ``docker-compose-extra.yml`` could be needed to define
     any other ``volumes`` entries where these component would need to be mounted to.
 
+  - Optionally, set ``WEAVER_ALT_PREFIX`` with any desired prefix location to use as alternate alias
+    for the ``/weaver/`` endpoint. The ``/weaver/`` endpoint will remain available.
+    The ``WEAVER_ALT_PREFIX`` alias defines an *additional* equivalent location to access the service.
+    By default ``/ogcapi`` is employed as a common value for this suite of OGC standards.
+
+    Note that custom prefix values, if specified, should start with a leading ``/``, and leave out any trailing ``/``.
+    The prefix can also use multiple levels as desired (e.g.: ``/my/custom/path``).
+
+    If the original ``/weaver/`` endpoint is deemed sufficient, and you would rather omit this additional alias
+    entirely, the ``WEAVER_ALT_PREFIX`` variable should be explicitly set to an empty value.
 
 
 .. _finch: https://github.com/bird-house/finch
@@ -499,14 +664,14 @@ the various services of the platform when changes are detected. Therefore, it do
 from users.
 
 In case the platform maintainer desires to perform manual syncing operations with Cowbird, its REST API should be used.
-It will be accessible under ``https://{PAVICS_FQDN_PUBLIC}/cowbird`` and details of available endpoints will be served
+It will be accessible under ``https://{BIRDHOUSE_FQDN_PUBLIC}/cowbird`` and details of available endpoints will be served
 under ``/cowbird/api``. Note that Magpie administrator credentials will be required to access those endpoints.
 
 How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/cowbird`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/cowbird`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Customizing the Component
 -------------------------
@@ -535,11 +700,11 @@ Usage
 
 The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API 
 exposed by the current stack instance. Once this component is enabled, STAC API will be accessible at 
-``https://<PAVICS_FQDN_PUBLIC>/stac`` endpoint and the STAC browser will be available at 
-``https://<PAVICS_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint, 
+``https://<BIRDHOUSE_FQDN_PUBLIC>/stac`` endpoint and the STAC browser will be available at
+``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint,
 define the following in the ``env.local`` file::
 
-  export PROXY_ROOT_LOCATION="return 302 https://\$host/stac-browser;"
+  export BIRDHOUSE_PROXY_ROOT_LOCATION='return 302 ${BIRDHOUSE_PROXY_SCHEME}://\$host/stac-browser;'
 
 Here is a sample search query using a CLI::
 
@@ -556,7 +721,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/stac`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/stac`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Canarie-API
 ===========
@@ -566,13 +731,13 @@ An endpoint monitoring tool that shows the current status of other components in
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}/canarie``
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/canarie``
 
 How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/canarie`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/canarie`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 data-volume
 ===========
@@ -598,13 +763,13 @@ degree-days of cooling, the duration of heatwaves, etc. This returns annual valu
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch``
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch``
 
 How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/finch`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/finch`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Geoserver
 =========
@@ -617,7 +782,7 @@ Geospatial Web.
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}/geoserver``. For usage and
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/geoserver``. For usage and
 configuration options please refer to the `Geoserver documentation`_.
 
 .. _Geoserver documentation: https://docs.geoserver.org
@@ -626,7 +791,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/geoserver`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/geoserver`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Hummingbird
 ===========
@@ -636,13 +801,13 @@ A Web Processing Service for compliance checks used in the climate science commu
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird``
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/hummingbird``
 
 How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/hummingbird`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/hummingbird`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Jupyterhub
 ==========
@@ -653,14 +818,14 @@ end-users.
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}/jupyter``. Users are able to log in to Jupyterhub using the
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/jupyter``. Users are able to log in to Jupyterhub using the
 same user name and password as Magpie. They will then be able to launch a personal jupyterlab server.
 
 How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/jupyterhub`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/jupyterhub`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 - Set the ``JUPYTERHUB_CRYPT_KEY`` environment variable
 
 Magpie
@@ -672,7 +837,7 @@ User/Group/Service/Resource/Permission management and integrates with Twitcher.
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}/magpie``. For usage and configuration options please
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/magpie``. For usage and configuration options please
 refer to the `Magpie documentation`_.
 
 .. _Magpie documentation: https://pavics-magpie.readthedocs.io
@@ -696,26 +861,6 @@ How to Enable the Component
 ---------------------------
 
 - Do not enable this component directly. It will be enabled as a dependency of other components.
-
-portainer
-=========
-
-A web based container deployment and management tool.
-
-Usage
------
-
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}/portainer/``. For usage and configuration options please
-refer to the `portainer documentation`_.
-
-How to Enable the Component
----------------------------
-
-- Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/portainer`` to ``EXTRA_CONF_DIRS``.
-
-.. _portainer documentation: https://docs.portainer.io/
-
 
 postgres
 ========
@@ -756,13 +901,13 @@ processing as well as time series analysis.
 Usage
 -----
 
-The service is available at ``https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven``
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/raven``
 
 How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/raven`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/raven`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Thredds
 =======
@@ -774,13 +919,13 @@ Climate Data Catalog and Format Renderers. See the `Thredds documentation`_ for 
 Usage
 -----
 
-The catalog is available at the ``https://${PAVICS_FQDN_PUBLIC}/thredds`` endpoint.
+The catalog is available at the ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds`` endpoint.
 
 How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./components/thredds`` to ``EXTRA_CONF_DIRS``.
+- Add ``./components/thredds`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Twitcher
 ========
@@ -810,7 +955,7 @@ of all processes executed by these services.
 Usage
 -----
 
-All outputs from these processes will become available at the ``https://${PAVICS_FQDN_PUBLIC}/wpsoutputs`` endpoint.
+All outputs from these processes will become available at the ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs`` endpoint.
 
 By default, this endpoint is not protected. To secure access to this endpoint it is highly recommended to enable the
 `./optional-components/secure-data-proxy` component as well.

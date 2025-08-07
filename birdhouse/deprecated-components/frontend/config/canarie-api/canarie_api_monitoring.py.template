@@ -1,5 +1,5 @@
 PLATFORMS['server']['monitoring']['Frontend'] = {
     'request': {
-        'url': 'https://${PAVICS_FQDN_PUBLIC}'
+        'url': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}'
     }
 }

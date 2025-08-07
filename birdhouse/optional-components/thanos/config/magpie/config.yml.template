@@ -1,0 +1,28 @@
+providers:
+  thanos:
+    # below URL is only used to fill in the required location in Magpie
+    # actual auth validation is performed with Twitcher 'verify' endpoint without accessing this proxied URL
+    url: http://proxy:80
+    title: Thanos
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+
+permissions:
+  - service: thanos
+    permission: read
+    group: administrators
+    action: create
+  - service: thanos
+    permission: write
+    group: administrators
+    action: create
+  - service: thanos
+    permission: read
+    group: monitoring
+    action: create
+  - service: thanos
+    permission: write
+    group: monitoring
+    action: create

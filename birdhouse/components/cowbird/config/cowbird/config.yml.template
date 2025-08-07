@@ -14,14 +14,13 @@ handlers:
     admin_password: ${MAGPIE_ADMIN_PASSWORD}
   Geoserver:
     active: true
-    # FIXME: replace by the protected/proxy endpoint once component is made available
-    url: http://${PAVICS_FQDN_PUBLIC}:8765/geoserver
+    url: http://geoserver:8080/geoserver
     workspace_dir: ${WORKSPACE_DIR}
     admin_user: ${GEOSERVER_ADMIN_USER}
     admin_password: ${GEOSERVER_ADMIN_PASSWORD}
   Catalog:
     active: true
-    url: https://${PAVICS_FQDN_PUBLIC}/twitcher/ows/proxy/catalog
+    url: ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/ows/proxy/catalog
     workspace_dir: ${WORKSPACE_DIR}
   Thredds:
     active: true

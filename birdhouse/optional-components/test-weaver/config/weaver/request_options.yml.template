@@ -11,5 +11,5 @@
 requests:
   # disable SSL verification for test instance using self-signed certificate
   # avoid doing this on real instance to keep it secure against man-in-the-middle attacks
-  - url: https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/weaver/providers/hummingbird/processes/ncdump/jobs
+  - url: ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/weaver/providers/hummingbird/processes/ncdump/jobs
     verify: false

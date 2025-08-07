@@ -1,0 +1,5 @@
+
+services:
+  prometheus:
+    volumes:
+      - ./optional-components/prometheus-longterm-rules/config/monitoring/prometheus.rules:/etc/prometheus/prometheus-longterm-metrics.rules:ro

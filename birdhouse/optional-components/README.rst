@@ -8,7 +8,7 @@ Optional components
 Monitor all components in CANARIE node, both public and internal url
 --------------------------------------------------------------------
 
-So that the url ``https://<PAVICS_FQDN>/canarie/node/service/stats`` also return
+So that the url ``https://<BIRDHOUSE_FQDN>/canarie/node/service/stats`` also return
 what the end user really see (a component might work but is not accessible to
 the end user).
 
@@ -18,7 +18,7 @@ this config and adjust accordingly.
 How to enable this config in ``env.local`` (a copy from env.local.example_
 (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/canarie-api-full-monitoring`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/canarie-api-full-monitoring`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 Emu WPS service for testing
@@ -34,16 +34,16 @@ instead.
 How to enable Emu in ``env.local`` (a copy from env.local.example_
 (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/emu`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/emu`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 * Optionally set ``EMU_IMAGE``,
   ``EMU_NAME``, ``EMU_INTERNAL_PORT``,
   ``EMU_WPS_OUTPUTS_VOL`` in ``env.local`` for further customizations.
   Default values are in `optional-components/emu/default.env <emu/default.env>`_
   (:download:`download </birdhouse/optional-components/emu/default.env>`).
 
-Emu service will be available at ``http://PAVICS_FQDN:EMU_PORT/wps`` or
-``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/EMU_NAME`` where
-``PAVICS_FQDN``\ , ``PAVICS_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
+Emu service will be available at ``http://BIRDHOUSE_FQDN:EMU_PORT/wps`` or
+``https://BIRDHOUSE_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/EMU_NAME`` where
+``BIRDHOUSE_FQDN``\ , ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
 in your ``env.local``.
 
 Magpie will be automatically configured to give complete public anonymous
@@ -58,7 +58,7 @@ A second THREDDS server for testing
 
 How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/testthredds`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/testthredds`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 * Optionally set ``TESTTHREDDS_IMAGE``\ , ``TESTTHREDDS_PORT``\ ,
   ``TESTTHREDDS_CONTEXT_ROOT``\ , ``TESTTHREDDS_WARFILE_NAME``\ ,
@@ -66,9 +66,9 @@ How to enable in ``env.local`` (a copy from env.local.example_ (:download:`downl
   customizations.  Default values are in: `optional-components/testthredds/default.env <testthredds/default.env>`_ (:download:`download </birdhouse/optional-components/testthredds/default.env>`).
 
 Test THREDDS service will be available at
-``http://PAVICS_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT`` or
-``https://PAVICS_FQDN_PUBLIC/TESTTHREDDS_CONTEXT_ROOT`` where ``PAVICS_FQDN`` and
-``PAVICS_FQDN_PUBLIC`` are defined in your ``env.local``.
+``http://BIRDHOUSE_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT`` or
+``https://BIRDHOUSE_FQDN_PUBLIC/TESTTHREDDS_CONTEXT_ROOT`` where ``BIRDHOUSE_FQDN`` and
+``BIRDHOUSE_FQDN_PUBLIC`` are defined in your ``env.local``.
 
 Use same docker image as regular THREDDS by default but can be customized.
 
@@ -97,7 +97,7 @@ Good to preview new birds or test alternative configuration of existing birds.
 
 How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/generic_bird`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/generic_bird`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 * Optionally set ``GENERIC_BIRD_IMAGE``, ``GENERIC_BIRD_PORT``,
   ``GENERIC_BIRD_NAME``, ``GENERIC_BIRD_INTERNAL_PORT``, and
@@ -105,16 +105,18 @@ How to enable in ``env.local`` (a copy from env.local.example_ (:download:`downl
   Default values are in `optional-components/generic_bird/default.env <generic_bird/default.env>`_
   (:download:`download </birdhouse/optional-components/generic_bird/default.env>`).
 
-The WPS service will be available at ``http://PAVICS_FQDN:GENERIC_BIRD_PORT/wps``
-or ``https://PAVICS_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME`` where
-``PAVICS_FQDN``\ , ``PAVICS_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
+The WPS service will be available at ``http://BIRDHOUSE_FQDN:GENERIC_BIRD_PORT/wps``
+or ``https://BIRDHOUSE_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME`` where
+``BIRDHOUSE_FQDN``\ , ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
 in your ``env.local``.
 
 Use same docker image as regular Finch by default but can be customized.
 
 Use a separate Postgres DB for this optional component to be completely
 self-contained and to allow experimenting with different versions of Postgres
-DB.
+DB. This Postgres DB will be named ``generic_bird`` by default but can be customized by
+setting the ``BIRDHOUSE_GENERIC_BIRD_POSTGRES_DB`` environment variable in ``env.local``
+in case that name clashes with the ``BIRDHOUSE_POSTGRES_DB`` variable.
 
 Magpie will be automatically configured to give complete public anonymous
 access for this WPS service.
@@ -131,14 +133,14 @@ rapidly identify if a service might be misbehaving.
 
 Since the various WPS services are executed using a different applications and dependencies in their respective
 Docker images, the method required to validate their status can vary a lot for each case. This optional component
-defines all the appropriate ``healthcheck`` for all known WPS services in PAVICS.
+defines all the appropriate ``healthcheck`` for all known WPS services in Birdhouse.
 
 How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/wps-healthchecks`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/wps-healthchecks`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Once enabled, every WPS service will be monitored at regular intervals and ``docker-compose`` will indicate in their
-health status. Command ``pavics-compose ps`` can be employed to list running images, and along with it, the statuses
+health status. Command ``birdhouse-compose ps`` can be employed to list running images, and along with it, the statuses
 reported by each ``healthcheck``.
 
 
@@ -158,7 +160,7 @@ https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 
 How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/all-public-access`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/all-public-access`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 The anonymous user will now have all the permissions described in |magpie-public-perms|_
 (:download:`download </birdhouse/optional-components/all-public-access/all-public-access-magpie-permission.cfg>`).
@@ -191,7 +193,7 @@ request user can obtain access to it.
 
 How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/secure-data-proxy`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/secure-data-proxy`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Once enabled, users will *NOT* have public access to files under ``/wpsoutputs`` anymore, except for items defined
 with authorized ``read`` permissions for the ``anonymous`` group under |secure-data-proxy-perms|_. As any other Magpie
@@ -212,7 +214,7 @@ desired access rules.
 
 How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/secure-thredds`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/secure-thredds`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 The anonymous user will *NOT* have access anymore to THREDDS test directory ``birdhouse/testdata/secure`` and any other
 directories and files under it. Directories above and next to ``secure`` will still be accessible if
@@ -236,7 +238,7 @@ This component is intended to automatically map the databases (``PostgreSQL``, `
 
 How to enable in ``env.local`` (a copy from env.local.example_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/database-external-ports`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/database-external-ports`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 That's it. Databases will be accessible using the mapped ports in then optional component configuration.
 
@@ -258,10 +260,10 @@ This optional component is intended to be employed in combination with test note
 
 How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/test-weaver`` to ``EXTRA_CONF_DIRS``
+* Add ``./optional-components/test-weaver`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``
 
 .. note::
-    Definition ``./components/weaver`` is also expected to be in ``EXTRA_CONF_DIRS`` for permissions to have any effect.
+    Definition ``./components/weaver`` is also expected to be in ``BIRDHOUSE_EXTRA_CONF_DIRS`` for permissions to have any effect.
     Ensure that ``./optional-components/test-weaver`` is placed **AFTER** ``./components/weaver``. Otherwise, the
     ``request_options.yml`` override applied by this optional component will be discarded by the main component.
 
@@ -332,7 +334,7 @@ except time required to feed the catalog.
 To enable this optional-component:
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./optional-components/stac-populator`` to ``EXTRA_CONF_DIRS``.
+- Add ``./optional-components/stac-populator`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 Allow public access to STAC catalog
@@ -343,13 +345,13 @@ STAC Public Access allows STAC catalog to be accessed by anyone, without authent
 To enable this optional-component:
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./optional-components/stac-public-access`` to ``EXTRA_CONF_DIRS``.
+- Add ``./optional-components/stac-public-access`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 Provide a proxy for local STAC asset hosting
 --------------------------------------------------------
 
-STAC data proxy allows to host the URL location defined by ``PAVICS_FQDN_PUBLIC`` and ``STAC_DATA_PROXY_URL_PATH``
+STAC data proxy allows to host the URL location defined by ``BIRDHOUSE_FQDN_PUBLIC`` and ``STAC_DATA_PROXY_URL_PATH``
 to provide access to files contained within ``STAC_DATA_PROXY_DIR_PATH``.
 
 The ``STAC_DATA_PROXY_DIR_PATH`` location can be used to hold STAC Assets defined by the current server node
@@ -359,7 +361,7 @@ location of new data, or to make a new local replication of remote data.
 To enable this optional-component:
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
-- Add ``./optional-components/stac-data-proxy`` to ``EXTRA_CONF_DIRS``.
+- Add ``./optional-components/stac-data-proxy`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 - Optionally, add any other relevant components to control access as desired (see below).
 
 When using this component, access to the endpoint defined by ``STAC_DATA_PROXY_URL_PATH``, and therefore all
@@ -411,7 +413,7 @@ indexing and serving.
 How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.example`_
 (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/x-robots-tag-header`` to ``EXTRA_CONF_DIRS``.
+* Add ``./optional-components/x-robots-tag-header`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 * Optionally set ``X_ROBOTS_TAG_HEADER`` to an alternate directive as desired.
   Default values are in `optional-components/x-robots-tag-header/default.env <x-robots-tag-header/default.env>`_
   (:download:`download </birdhouse/optional-components/x-robots-tag-header/default.env>`).
@@ -429,15 +431,161 @@ How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.examp
 
     Note however that most Nginx configurations are predefined for this stack. Custom definitions would need to be
     added to apply additional operations. One exception to this case is the *Homepage* location
-    (i.e.: where the ``/`` location will be redirected), which can take advantage of the ``PROXY_ROOT_LOCATION``
+    (i.e.: where the ``/`` location will be redirected), which can take advantage of the ``BIRDHOUSE_PROXY_ROOT_LOCATION``
     environment variable to override the endpoint as follows:
 
     .. code-block:: shell
 
-        export PROXY_ROOT_LOCATION='
+        export BIRDHOUSE_PROXY_ROOT_LOCATION='
             add_header X-Robots-Tag: "all";
             alias /data/homepage/;  # or any other desired redirection (e.g.: "return 302 <URL>")
         '
 
     .. seealso::
-        See the `env.local.example`_ file for more details about this ``PROXY_ROOT_LOCATION`` behaviour.
+        See the `env.local.example`_ file for more details about this ``BIRDHOUSE_PROXY_ROOT_LOCATION`` behaviour.
+
+.. _prometheus-longterm-metrics
+
+Prometheus Long-term Metrics
+----------------------------
+
+This is a second prometheus instance that collects longterm monitoring metrics from the monitoring Prometheus instance
+(the one created by the ``components/monitoring`` component).
+
+Longterm metrics are any prometheus rule that have the label ``group: longterm-metrics`` or in other words are
+selectable using prometheus' ``'{group="longterm-metrics"}'`` query filter. To add some default longterm metrics rules
+also enable the ``prometheus-longterm-rules`` component.
+
+You may also choose to create your own set of rules instead of, or as well as, the default ones. See how to 
+:ref:`add additional rules here <monitoring-customize-the-component>`.
+
+To configure this component:
+
+    * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
+
+If the monitoring Prometheus instance that this Prometheus instance is tracking is not deployed on the same machine
+(or at a non-default network address on the same machine), you may configure the network location of the monitoring 
+Prometheus instance by setting the ``PROMETHEUS_LONGTERM_TARGETS`` variable. For example, if the monitoring Prometheus 
+instance's API is available at `https://example.com/prometheus:9090` the you can set the variable: 
+
+.. code::
+
+    export PROMETHEUS_LONGTERM_TARGETS='["https://example.com/prometheus:9090"]'
+
+.. note::
+
+    You may list multiple monitoring Prometheus instances to track in this way by adding more URLs to the list.
+
+.. warning::
+
+    Deploying the longterm metrics Prometheus instance on a separate machine from the monitoring Prometheus component
+    is untested and may require serious troubleshooting to work properly.
+
+Enabling this component creates the additional endpoint ``/prometheus-longterm-metrics``.
+
+.. _prometheus-longterm-rules
+
+Prometheus Long-term Rules
+--------------------------
+
+This adds some default longterm metrics rules to the `prometheus` component for use by the `prometheus-longterm-metrics`
+component. These rules all have the label ``group: longterm-metrics``.
+
+To see which rules are added, check out the
+`optional-components/prometheus-longterm-rules/config/monitoring/prometheus.rules` file.
+
+.. _thanos
+
+Thanos
+------
+
+This enables better storage of longterm metrics collected by the ``optional-components/prometheus-longterm-metrics``
+component. Data will be collected from the ``prometheus-longterm-metrics`` and stored in an S3 object store
+indefinitely.
+
+When enabling this component, please change the default values for the ``THANOS_MINIO_ROOT_USER`` and
+``THANOS_MINIO_ROOT_PASSWORD`` by updating the ``env.local`` file. These set the login credentials for the root user
+that runs the minio_ object store.
+
+Enabling this component creates the additional endpoints:
+    * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
+    * ``/thanos-minio``: a minio_ web console to inspect the data stored by minio_.
+
+.. note::
+
+    The `thanos` component must be deployed on the same machine as the `prometheus-longterm-metrics` component since
+    `thanos` needs access to the data stored by prometheus on disk (in docker this is acheived by sharing a named volume).
+
+.. _minio: https://min.io/
+
+.. _prometheus-log-parser
+
+Prometheus Log Parser
+---------------------
+
+Parses log files from other components and converts their logs to prometheus metrics that are then ingested by the
+monitoring Prometheus instance (the one created by the :ref:`Monitoring` component).
+
+For more information on how this component reads log files and converts them to prometheus components see
+the log-parser_ documentation.
+
+To configure this component:
+
+    * set the ``PROMETHEUS_LOG_PARSER_POLL_DELAY`` variable to a number of seconds to set how often the log parser
+      checks if new lines have been added to log files (default: 1)
+    * set the ``PROMETHEUS_LOG_PARSER_TAIL`` variable to ``"true"`` to only parse new lines in log files. If unset,
+      this will parse all existing lines in the log file as well (default: ``"true"``)
+
+To view all metrics exported by the log parser:
+
+    * Navigate to the ``https://<BIRDHOUSE_FQDN>/prometheus/graph`` search page
+    * Put ``{job="log_parser"}`` in the search bar and click the "Execute" button
+
+For developers, to create a new parser that can be used to track log files:
+
+    1. create a python file that can be mounted as a volume to the ``PROMETHEUS_LOG_PARSER_PARSERS_DIR``
+       directory on the ``prometheus-log-parser`` container.
+    2. mount any log files that you want to parse as a volume on the ``prometheus-log-parser`` container.
+    3. the python script should create at least one `prometheus metric using the prometheus_client 
+       library <prometheus_python_metrics>`_ and must contain a global constant named ``LOG_PARSER_CONFIG`` 
+       which is a dictionary where keys are paths to log files (mounted in the container) and values are a 
+       list of "line parser" functions.
+       * a "line parser" is any function that takes a string as a single argument (a single line from a
+         log file). These functions are where you'd write the code that parses the line and converts it
+         into a prometheus metric.
+       * your line parser function should update one of the prometheus metrics you created previously. 
+
+    For an example of a working log parser, see
+    `birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py`_
+    (:download:`download <birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py>`).
+
+.. _log-parser: https://github.com/DACCS-Climate/log-parser/
+.. _prometheus_python_metrics: https://prometheus.github.io/client_python/instrumenting/
+
+.. _local-dev-test
+
+Local Dev Test
+--------------
+
+This allows users to deploy the entire stack locally for development or testing purposes.
+
+If this component is enabled the following configuration settings must also be set in the local environment file:
+
+    * ``export BIRDHOUSE_FQDN=host.docker.internal``
+    * ``export BIRDHOUSE_HTTP_ONLY=True``
+
+You should also add ``host.docker.internal`` to your ``/etc/hosts`` file pointing to the loopback address so that URLs
+generated by Birdhouse that refer to ``host.docker.internal`` will resolve properly in a browser:
+
+.. code:: shell
+
+  echo '127.0.0.1    host.docker.internal' | sudo tee -a /etc/hosts 
+
+After deploying the stack, you can now interact with the Birdhouse software at ``http://host.docker.internal`` from the
+machine that is the docker host.
+
+Note that you do *not* need an SSL certificate set up to deploy the stack in this way.
+
+.. warning:: 
+
+  **DO NOT** enable this component in production. This is intended for local development and test purposes only!

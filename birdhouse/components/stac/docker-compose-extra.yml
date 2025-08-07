@@ -1,4 +1,3 @@
-version: "3.4"
 
 x-logging:
   &default-logging
@@ -25,13 +24,29 @@ services:
       - DOCS_URL=/stac/api.html
     logging: *default-logging
     restart: always
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/stac')"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
 
   stac-browser:
     container_name: stac-browser
     image: ${STAC_BROWSER_IMAGE}
     environment:
-      - CATALOG_URL=https://${PAVICS_FQDN_PUBLIC}/stac/
+      - CATALOG_URL=${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/stac/
       - ROOT_PATH=/stac-browser/
+    logging: *default-logging
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
 
   stac-db:
     container_name: stac-db
@@ -46,11 +61,15 @@ services:
       - PGDATABASE=postgis
     volumes:
       - stac-db:/var/lib/postgresql/data
+    logging: *default-logging
+    restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
 
 volumes:
   stac-db:

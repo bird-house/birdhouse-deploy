@@ -19,9 +19,9 @@ This directory also contains additional configurations for these deprecated comp
 These contain the settings to extend the deprecated components that have been moved from the corresponding
 directories under `birdhouse/optional-components`.
 
-To enable these additional configurations; add them to the `EXTRA_CONF_DIRS` variable (in `env.local`)
+To enable these additional configurations; add them to the `BIRDHOUSE_EXTRA_CONF_DIRS` variable (in `env.local`)
 as you would to enable any component. For example, to enable the deprecated malleefowl component as well as the
-wps-healthchecks for malleefowl. The `EXTRA_CONF_DIRS` variable should contain:
+wps-healthchecks for malleefowl. The `BIRDHOUSE_EXTRA_CONF_DIRS` variable should contain:
 
 .. code-block:: shell
 

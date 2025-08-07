@@ -1,0 +1,27 @@
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  prometheus-log-parser:
+    image: ${PROMETHEUS_LOG_PARSER_IMAGE}
+    container_name: prometheus-log-parser
+    entrypoint: ["log-parser-prometheus"]
+    environment:
+      - PROMETHEUS_LOG_PARSER_CLIENT_PORT=${PROMETHEUS_LOG_PARSER_CLIENT_PORT}
+      - LOG_PARSER_PARSERS=${PROMETHEUS_LOG_PARSER_PARSERS_DIR}
+      - LOG_PARSER_POLL_DELAY=${PROMETHEUS_LOG_PARSER_POLL_DELAY}
+      - LOG_PARSER_TAIL=${PROMETHEUS_LOG_PARSER_TAIL}
+      - LOG_PARSER_LOG_LEVEL=${PROMETHEUS_LOG_PARSER_LOG_LEVEL}
+    restart: always
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://0.0.0.0:8000"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s

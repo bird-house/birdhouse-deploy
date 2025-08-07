@@ -1,4 +1,3 @@
-version: "3.4"
 
 x-logging:
   &default-logging
@@ -31,3 +30,10 @@ services:
     command: "pserve /opt/birdhouse/src/twitcher/twitcher.ini"
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://0.0.0.0:8000"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s

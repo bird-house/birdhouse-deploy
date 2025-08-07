@@ -9,11 +9,11 @@ COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
 if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
     . "${COMPOSE_DIR}/read-configs.include.sh"
 
-    # Get AUTODEPLOY_EXTRA_REPOS
+    # Get BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS
     read_configs
 fi
 
-for r in "${COMPOSE_DIR}" ${AUTODEPLOY_EXTRA_REPOS}; do
+for r in "${COMPOSE_DIR}" ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}; do
     echo "=== $r"
     cd "$r"
     git status -v

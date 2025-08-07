@@ -15,6 +15,1254 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.16.7](https://github.com/bird-house/birdhouse-deploy/tree/2.16.7) (2025-08-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fixed a malformed `rsync` command in `deploy-data-raven-testdata-to-thredds.yml` workflow.
+
+  The `--exclude` option was not used properly which would cause the `rsync` command to fail. This is now fixed.
+
+[2.16.6](https://github.com/bird-house/birdhouse-deploy/tree/2.16.6) (2025-08-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyter env: Updated jupyter image (`py311-250423-update250730`) with new dependency `intake-esgf`, significantly
+  changed `ravenpy` (v0.19.0), as well as marginal updates to Ouranos core libraries: `xclim` (v0.57.0),
+  `xsdba` (v0.12.3), and `xscen` (v0.5.0).
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#150](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/150)
+  for more info.
+
+- Updated `deploy-data-raven-testdata-to-thredds.yml` to reflect the new `raven-testdata` repository structure.
+
+  The `deploy-data-raven-testdata-to-thredds.yml` workflow was updated to reflect the new structure of the `raven-testdata` repository. 
+  The new structure includes a `data` directory that contains all the test data files and provides more granular
+  control by setting tagged commits as targets for the test data required for a specific version of `raven` and `RavenPy`.
+  This new layout emulates the same control functionality employed in `xclim`/`xclim-testdata`.
+
+[2.16.5](https://github.com/bird-house/birdhouse-deploy/tree/2.16.5) (2025-07-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- `canarieapi`: Update to default version [1.0.1](https://github.com/Ouranosinc/CanarieAPI/blob/master/CHANGES.rst#101-2025-07-17). 
+
+  - Bug fix for configuration setting `PARSE_LOGS`.
+  - Security updates.
+
+- `cowbird`: Update to default version [2.5.2](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#252-2025-07-17). 
+
+  - Security updates.
+
+- `magpie`: Update to default version [4.2.0](https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst#420-2024-12-12).
+
+  - Allow `ServiceTHREDDS` to use `/` in its metadata and data prefixes.
+  - Security updates.
+
+- `weaver`: Update to default version [6.6.2](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#662-2025-06-27).
+
+  - Fixes for HTML page endpoints.
+  - Various CLI fixes.
+  - Security updates.
+
+## Fixes 
+
+- Fix empty newlines displayed on `COMPOSE_CONF_LIST` output.
+
+[2.16.4](https://github.com/bird-house/birdhouse-deploy/tree/2.16.4) (2025-07-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix invalid `STAC_POPULATOR_BACKUP_IMAGE='${STAC_POPULATOR_BACKUP_DOCKER}:${STAC_POPULATOR_BACKUP_VERSION}'`.
+
+  The `STAC_POPULATOR_BACKUP_IMAGE` variable was refering other variables missing their `_BACKUP` part.
+
+[2.16.3](https://github.com/bird-house/birdhouse-deploy/tree/2.16.3) (2025-06-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes 
+
+- Fix `thredds_transfer_size_kb_total` name in `optional-components/prometheus-longterm-rules`.
+
+  Counter names have the suffix `_total`. Without this suffix, the counter value is not discovered
+  properly in a rule and the prometheus rule will never return valid data.
+
+- Fix bugs in prometheus-log-exporter.
+
+- Avoid `tput: No value for $TERM and no -T specified` warnings if terminal is undefined.
+
+[2.16.2](https://github.com/bird-house/birdhouse-deploy/tree/2.16.2) (2025-06-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add option to backup "representative" application data
+
+  Representative data is an application agnostic version of the stateful data used by components to store 
+  the current state of the running service.
+
+  This includes an option to backup and restore representative data for the `stac` component. Other components
+  should be added in future updates.
+
+- Add additional documentation for backups
+
+  Also include a new script `birdhouse/scripts/create-restic-keypair.sh` to help users create and test SSH keypairs
+  for use by restic when accessing restic repositories over SFTP.
+
+
+[2.16.1](https://github.com/bird-house/birdhouse-deploy/tree/2.16.1) (2025-06-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow to set Prometheus log level for the monitoring and prometheus-longterm-metrics components
+
+## Fixes
+
+- Fix typo in prometheus-longterm-rules "thredds:kb_transfer_size_kb:increase_1h rule"
+
+  Fix the follow error
+  ```
+  ts=2025-06-17T05:09:00.903Z caller=manager.go:201 level=error component="rule manager" msg="loading groups failed" err="/etc/prometheus/prometheus-longterm-metrics.rules: 41:17: group \"longterm-metrics-hourly\", rule 6, \"thredds:kb_transfer_size_kb:increase_1h\": could not parse expression: 1:40: parse error: unexpected right parenthesis ')'"
+  ```
+
+[2.16.0](https://github.com/bird-house/birdhouse-deploy/tree/2.16.0) (2025-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add `backup` command in `bin/birdhouse` to backup and restore data to a restic repository
+
+  This allows users to backup and restore:
+    - application data, user data, and log data for all components
+    - birdhouse logs
+    - docker container logs
+    - local environement file
+  
+  Restoring data either involves restoring it to a named volume (determined by `BIRDHOUSE_BACKUP_VOLUME`) or in the case
+  of user data and application data, to overwrite the current data with the backup.
+
+  For full details run the `bin/birdhouse backup --help` command.
+
+  Backups are stored in a [restic](https://restic.readthedocs.io/en/stable/) repository which can be configured by creating 
+  a file at `BIRDHOUSE_BACKUP_RESTIC_ENV_FILE` (default: `birdhouse/restic.env`)  which contains the 
+  [environment variables](https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables) 
+  necessary for restic to create, and access a repository (see `birdhouse/restic.env.example` for details).
+
+  The backup and restore commands can be further customized by setting any of the following variables:
+
+  - `BIRDHOUSE_BACKUP_SSH_KEY_DIR`: 
+    - The location of a directory that contains an SSH key used to access a remote machine where the restic repository 
+      is hosted. Required if accessing a restic repository using the sftp protocol.
+  - `BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS`: 
+    - Additional options to pass to the `restic backup` command when running the `birdhouse backup create` command.
+       For example: `BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS='--skip-if-unchanged --exclude-file "file-i-do-not-want-backedup.txt"`
+  - `BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS`:
+    - Additional options to pass to the `restic forget` command after running the backup job. This allows you to ensure 
+      that restic deletes old backups according to your backup retention policy. If this is set, then restic will also 
+      run the `restic prune` command after every backup to clean up old backup files.
+      For example, to store backups daily for 1 week, weekly for 1 month, and monthly for a year:
+      `BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS='--keep-daily=7 --keep-weekly=4 --keep-monthly=12'`
+    
+- Add scheduler job to automatically backup data
+
+  Create a new scheduler job at `optional-components/scheduler-job-backup` which runs the `bin/birdhouse backup create` 
+  command at regular intervals to ensure that the birdhouse stack's data is regularly backed up.
+
+  To configure this job you must set the following variables:
+    - `SCHEDULER_JOB_BACKUP_FREQUENCY`:
+      - Cron schedule when to run this scheduler job (default is `'1 1 * * *'`, at 1:01 am daily)
+    - `SCHEDULER_JOB_BACKUP_ARGS`:
+      - Extra arguments to pass to the 'bin/birdhouse backup create' command when backing up data.
+        For example, to back up everything set it to `'-a \* -u \* -l \* --birdhouse-logs --local-env-file'`
+
+- Add `configs --print-log-command` option in `bin/birdhouse`
+
+  This allows users to print a command that can be used to load the birdhouse logging functions in the current
+  process. This is very similar to the `bin/birdhouse configs --print-config-command` except that it only loads
+  the logging functions.
+
+  Example usage:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-log-command)
+  log INFO 'here is an example log message'
+  ```
+
+  It is important to have a distinct option to just load the log commands because functions are not inherited
+  by subprocesses which means that if you do something like:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-config-command)
+  log INFO 'this one works'
+  sh -c 'log ERROR "this one does not"'
+  ```
+
+  the log command in the subprocess does not work. We would have to re-run the `eval` in the subprocess which would
+  unnecessarily redefine all the existing configuration variables. Instead we can now do this:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-log-command)
+  log INFO 'this one works'
+  sh -c 'eval $(bin/birdhouse configs --print-log-command); log INFO "this one does work now"'
+  ```
+
+  which is much quicker and does not require redefining all configuration variables.
+
+  Note: this was introduced as a helper for the `bin/birdhouse backup` commands but was made part of the public
+  interface because it is potentially very useful for other scripts that want to use the birdhouse logging mechanism. 
+  For example, the `components/weaver/post-docker-compose-up` script defines its own logging functions which could
+  now be easily replaced using this method.
+
+- Add `BIRDHOUSE_COMPOSE_TEMPLATE_SKIP` environment variable to explicitly skip rebuilding template files if `true`
+
+  This gives us the option to skip re-building template files even if the command to `bin/birdhouse compose` is `up`
+  or `restart`. This is essentially the opposite of `BIRDHOUSE_COMPOSE_TEMPLATE_FORCE`.
+
+  This option is necessary when running a command while the birdhouse stack is already running and we don't want to
+  change the template files for the running stack.
+
+- Add Prometheus rules defining long-term metrics (hourly and daily).
+
+## Fixes
+
+- Replace non-portable `sed -z` option
+
+  The `birdhouse/scripts/get-services-json.include.sh` script includes the `sed` command using the `-z` flag. The
+  `-z` flag is non-standard and is not supported by several well-used versions of `sed`.
+
+  This became apparent when this script is run by the `optional-components/scheduler-job-backup` job which runs
+  in an alpine based docker container.
+
+- Fix bugs in Prometheus log parser meant to measure download volume. 
+
+- Fix issue where the current environment is printed to stdout if no shell exec flags are set.
+
+[2.15.1](https://github.com/bird-house/birdhouse-deploy/tree/2.15.1) (2025-06-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Stop build when a build step fails
+
+  If a command exits with a non-zero exit code when deploying the stack (i.e. running `birdhouse-compose.sh`) the
+  build process should stop and report that an unexpected error occurs.
+
+  This is enforced by setting the `-e` flag when `birdhouse-compose.sh` is run by default. Several commands have been
+  updated so that they are followed by `|| true` so that if they exit with a non-zero status it will not stop the
+  script.
+
+  Also a new environment variable `BIRDHOUSE_DEBUG_MODE` is introduced which can be set to `true` to set the `-x`
+  flag which will write every command that is run by `birdhouse-compose.sh` to stderr. Previously, setting the
+  `BIRDHOUSE_LOG_LEVEL` to `DEBUG` would set the `-x` flag whenever `pre-docker-compose-up` and `post-docker-compose-up`
+  scripts are executed. Please use the `BIRDHOUSE_DEBUG_MODE` instead from now on. `BIRDHOUSE_LOG_LEVEL` should
+  only be used to set the log level of the birdhouse logger.
+
+[2.15.0](https://github.com/bird-house/birdhouse-deploy/tree/2.15.0) (2025-05-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Make scheduler jobs configurable
+
+  The scheduler component automatically enables three jobs (autodeploy, logrotate, notebookdeploy). If someone wants
+  to use the scheduler component but does not want these jobs, there is no obvious way to disable any one of these
+  jobs.
+
+  This change makes it possible to enable/disable jobs as required by the user and adds documentation to explain how 
+  to do this.
+
+  This change also converts existing jobs to be optional components. This makes the jobs more in-line with the way the
+  stack is deployed (since version 1.24.0) and ensures that settings set as environment variables in the local environment
+  file are not so sensitive to the order that they were declared in.
+
+  **Breaking Change**:
+  - the three jobs that were automatically enabled previously are now no longer enabled by default.
+  - to re-enable these three jobs, source the relevant component in the `optional-components` subdirectory.
+
+  **Deprecations**
+  - setting additional scheduler jobs using the `BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS` variable. Users should 
+    create additional jobs by adding them as custom components instead.
+
+  What about... ?
+    - just schedule these jobs for a non-existant day like February 31st?
+      - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
+    - just set the schedule to the `'#'` string?
+      - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
+                However, this is not obvious to the user and is unreliable since it is not documented.
+
+[2.14.0](https://github.com/bird-house/birdhouse-deploy/tree/2.14.0) (2025-05-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: update `weaver` component default version to [6.6.0](https://github.com/crim-ca/weaver/tree/6.6.0).
+
+  Notable changes include:
+  
+  - Added HTML representation of job status.
+  - Added alternate job `Profile` representations for interoperability with other clients like *WPS* and *openEO*.
+  - Adjust job `status` value for `successful` instead of `succeeded` in accordance to latest OGC API standard edits.
+    If clients were defined with explicit checks of the older value, they can request that job representation using
+    query parameters `?profile=wps&f=json`. Otherwise, it is preferable that scripts are updated to allow either value
+    to ensure the statuses are resolved correctly regardless of Weaver version employed by the server.
+  - Docker build employs [Provenance](https://docs.docker.com/build/metadata/attestations/slsa-provenance)
+    and [Software Bill of Materials (SBOM)](https://docs.docker.com/build/metadata/attestations/sbom) for
+    traceable dependencies, validation of references, and trust for replicable execution pipelines.
+  - Update Python 3.11 to Python 3.12 in the distributed Docker image.
+  - Various bug fixes and security vulnerability fixes.
+
+  For full changelog details, see [Weaver Changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html).
+  
+- Cowbird: Update version [`2.5.1`](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#251-2025-05-06) 
+  for security fixes.
+
+[2.13.5](https://github.com/bird-house/birdhouse-deploy/tree/2.13.5) (2025-05-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Script `extract-jupyter-users-from-magpie-db`: allow to customize the query
+
+  An example query is provided if we want to list all users, except if they
+  belong to some groups.
+
+
+[2.13.4](https://github.com/bird-house/birdhouse-deploy/tree/2.13.4) (2025-05-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `stac` service to use `crim-ca/stac-app:1.1.0` image
+
+  This updates the version of `stac-fastapi` to version 5 (currently the latest) and resolves and issue
+  where paging links did not work properly.
+
+  See more details [here](https://github.com/crim-ca/stac-app/pull/27).
+
+## Fixes
+
+- Forward correct headers through `twitcher` for the `stac` service
+
+  The nginx configuration for `twitcher` was creating a `Forwarded` header to help `stac` construct a `base_url`
+  behind the reverse proxy. However, with newer versions of `stac-fastapi` (the application running the `stac`
+  service), the `Forwarded` header is being parsed incorrectly which means that the `base_url` was incorrectly
+  formed.
+
+  This change removes the problematic `Forwarded` header and instead send the information to the `stac` application
+  using the `X-Forwarded-Port`, `X-Forwarded-Proto`, and `X-Forwarded-Host` headers. This technique allows `stac` 
+  to generate the correct `base_url` for all versions (up to the current version 5). 
+
+[2.13.3](https://github.com/bird-house/birdhouse-deploy/tree/2.13.3) (2025-05-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Makefile: Ensure the `bin/birdhouse` path employed by default resolves from anywhere.
+
+  Previously, if `make -C path/to/birdhouse-deploy {target}` was invoked from anywhere else than within
+  the `birdhouse-deploy` directory, the invoked script path would be invalid. Path resolution is improved
+  to allow calls from anywhere, as well as, including the Makefile within an external one seamlessly.
+
+[2.13.2](https://github.com/bird-house/birdhouse-deploy/tree/2.13.2) (2025-05-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Log multiple lines
+
+  Allow the `log` command (defined in `scripts/logging.include.sh`) to log messages that span multiple lines.
+  This also adds unit tests for the `scripts/logging.include.sh` file.
+
+## Fixes
+
+- Logging bug fixes:
+
+  - Setting `NO_COLOR` or setting `BIRDHOUSE_COLOR` to a non-integer value raised an error since `BIRDHOUSE_COLOR`
+    was tested with the numeric comparison `-eq`. This has now been fixed.
+
+  - Providing an invalid log message level (e.g. `log BADLEVEL message`) would log a critical error message but not
+    exit unless the `set -o pipefail` option was set. This has been updated so that the script will exit as intended
+    even if the `pipefail` option is not set.
+
+[2.13.1](https://github.com/bird-house/birdhouse-deploy/tree/2.13.1) (2025-04-28)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyter env: new full build with significant changes to the Anaconda environment dependency composition.
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#147](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/147)
+  for more info.
+
+
+[2.13.0](https://github.com/bird-house/birdhouse-deploy/tree/2.13.0) (2025-04-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Deprecate `portainer` component
+
+  The portainer component is not currently being used and is not actually usable outside of a very specific
+  host machine configuration. This change deprecates the component by moving it to the `deprecated-components`
+  directory. It can still be enabled from that path if desired.
+
+[2.12.0](https://github.com/bird-house/birdhouse-deploy/tree/2.12.0) (2025-04-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- THREDDS: provide service information page details
+
+  - Add multiple metadata variables
+    (`THREDDS_ORGANIZATION_[...]`, `THREDDS_SUPPORT_[...]`, `THREDDS_ABSTRACT` and `THREDDS_KEYWORDS`)
+    allowing customization of the THREDDS server information page.
+  - Add a cross-reference to the `service-config.json` to the service information `/thredds/info/serverInfo.html` page.
+  - Resolve the Magpie `ServiceTHREDDS` configuration disallowing access
+    to `/twitcher/ows/proxy/thredds/info/serverInfo.html` by default.
+    Every content under the THREDDS `/info/` prefix will be considered a Magpie `BROWSE` permission of "metadata".
+    It is up to the organization to make this endpoint visible, either using `optional-components/all-public-access`
+    or a similar custom Magpie permission definition.
+
+[2.11.2](https://github.com/bird-house/birdhouse-deploy/tree/2.11.2) (2025-03-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Make sure that authentication routes use the correct scheme
+
+  Two components that were added after the `BIRDHOUSE_PROXY_SCHEME` environment variable was introduced did not
+  use it when checking whether a user was authenticated to view a resource using ``twitcher``'s verify route.
+  This is now fixed so that the proper scheme is used.
+
+- Fix bug where generated docker compose file is appended to not written
+
+  Fixes a bug introduced when the version string was removed from the generated docker compose file. The previous
+  line used `>` which truncated the file before writing. Now that the previous line is removed, the truncation 
+  logic needed to be applied elsewhere. 
+
+[2.11.1](https://github.com/bird-house/birdhouse-deploy/tree/2.11.1) (2025-03-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Remove deprecated version field from generated docker-compose files
+
+  The `env-local` optional component generates a docker compose file that contained a version field which are
+  deprecated. This fixes the issue by removing the code that generates the deprecated field.
+
+  Also updates a declaration of an external volume in `prometheus-longterm-metrics` to use the compose v2 syntax.
+
+- Fix bug where compose directory can't be found in `bin/birdhouse` script
+
+    The `COMPOSE_DIR` variable cannnot be discovered properly if:
+    
+    - the `bin/birdhouse` script is called with the `configs --print-config-command` options.
+    - the result of that call is `eval`ed in order to load the birdhouse configuration settings into 
+      the calling process's environment.
+    - this is done from a directory outside of the birdhouse-deploy source code directory.
+
+    For example:
+
+    ```sh
+    cd /
+    eval $(birdhouse configs --print-config-command)
+    ```
+
+    This is fixed by explicitly giving a value for the `COMPOSE_DIR` variable when using the `--print-config-command`
+    option. The value is already correctly set in the `bin/birdhouse` script so it is easy to pass that 
+    value on to the user. 
+
+[2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Wrong compose `up` extra arguments given to compose `restart`
+
+  * For example, when setting `BIRDHOUSE_COMPOSE_UP_EXTRA_OPTS="--remove-orphans"` in
+    `env.local`, that `--remove-orphans` flag is not supposed to be used with
+    compose `restart`.  Fix regression from
+    [PR #492](https://github.com/bird-house/birdhouse-deploy/pull/492).
+
+
+## Changes
+
+- Improve handling of `.template` files generation
+
+  * Change the templating mechanism to run by default for the docker compose `restart` command instead of only `up`.
+  * Add `BIRDHOUSE_COMPOSE_TEMPLATE_FORCE` variable that allows enforcing the generation of the `.template` files
+    instead of only when compose `up` or `restart` command is passed by default.
+  * Add automatic removal of empty directories conflicting with `.template` destinations. 
+    This occurs only if a `docker compose` command ran early, and it generated volume mount directories to the
+    yet non-existing files.
+  * Add logs when template generation occurs, is skipped, or edge case directories are removed.
+
+- Deprecate the `docker-compose` command as default
+
+  Sets the default compose command to `docker compose` using the new `DOCKER_COMPOSE` environment variable.
+  This uses compose v2 by default (instead of v1 which is very old and has been deprecated for a while).
+  For backwards compatibility, you can set `DOCKER_COMPOSE=docker-compose` in the local environment file to 
+  use the previous default.
+
+- Remove deprecated catalog crawler code
+
+  Code related to the solr catalog in the `birdhouse-compose.sh` file has been deprecated for a while and 
+  is not currently usable with the current stack anyway so it is removed
+
+  Also there is commented out old code that relates to the presence of an SSL certificate which is not use 
+  and no longer relevant as of version 2.7.0.
+
+- Update Docker Compose syntax to version 2 in all docker compose files
+
+  **Breaking Change**: as of birdhouse-deploy version [2.7.3](https://github.com/bird-house/birdhouse-deploy/tree/2.7.3), 
+  the stack could not be deployed with a docker compose version <`2.20.2`. However, that was not specified in the release 
+  notes so we're stating it here.
+  The incompatibility is due to the addition of various additional keys under 
+  [healthcheck](https://docs.docker.com/reference/compose-file/services/#healthcheck) in the docker compose files
+  including `interval`, `timeout`, `start_period`, and `start_interval`.
+
+  The version 1 compose specification that docker uses is out of date and no longer maintained by docker.
+  We currently have a mix of version 1 syntax and version 2 (specifically `2.20.2`+) syntax in our docker compose
+  files.
+
+  This means that the stack will not properly run with a docker compose version <`2.20.2`. For any version >`2.20.2` 
+  the stack runs properly but displays lots of deprecation warnings about deprecated 
+  [version strings](https://docs.docker.com/reference/compose-file/version-and-name/), [external
+  volumes](https://docs.docker.com/reference/compose-file/volumes/#external) and [external 
+  network](https://docs.docker.com/reference/compose-file/networks/#external) definitions.
+
+  This PR updates all version 1 syntax so that these deprecation warnings are not displayed. Documentation has 
+  been updated to make this dependency on a modern version of docker explicit.
+
+  **Migration Steps**: 
+    - if you are using a version of docker compose <`2.20.2` update your docker compose version
+    - if you deploy any external components that use any of the old docker compose syntax you may want to update
+      those docker compose files as well so that you aren't bombarded by deprecation warnings whenever you start
+      the birdhouse stack.  
+
+[2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update STAC app version to 1.0.1
+
+  This update includes a bug fix which treats date-time values as ranges instead of strings when building 
+  JSON schemas for use in queryables or collection summaries.
+  See https://github.com/crim-ca/stac-app/pull/24 for more details.
+
+[2.10.0](https://github.com/bird-house/birdhouse-deploy/tree/2.10.0) (2025-02-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add the `prometheus-longterm-metrics` and `thanos` optional components
+
+  The `prometheus-longterm-metrics` component collects longterm monitoring metrics from the original prometheus instance
+  (the one created by the ``components/monitoring`` component).
+
+  Longterm metrics are any prometheus rule that have the label ``group: longterm-metrics`` or in other words are
+  selectable using prometheus's ``'{group="longterm-metrics"}'`` query filter. To see which longterm metric rules are
+  added by default see the 
+  ``optional-components/prometheus-longterm-metrics/config/monitoring/prometheus.rules.template`` file.
+
+  To configure this component:
+
+  * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
+
+  Enabling the `prometheus-longterm-metrics` component creates the additional endpoint ``/prometheus-longterm-metrics``.
+
+  The `thanos` component enables better storage of longterm metrics collected by the 
+  ``optional-components/prometheus-longterm-metrics`` component. Data will be collected from the
+  ``prometheus-longterm-metrics`` and stored in an S3 object store indefinitely.
+  
+  When enabling this component, please change the default values for the ``THANOS_MINIO_ROOT_USER`` and ``THANOS_MINIO_ROOT_PASSWORD``
+  by updating the ``env.local`` file. These set the login credentials for the root user that runs the 
+  [minio](https://min.io/) object store.
+  
+- Enabling the `thanos` component creates the additional endpoints:
+
+  * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
+  * ``/thanos-minio``: a minio web console to inspect the data stored by minio.
+
+[2.9.1](https://github.com/bird-house/birdhouse-deploy/tree/2.9.1) (2025-02-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: update `stac` component to version [1.0.0](https://github.com/crim-ca/stac-app/releases/tag/1.0.0)
+
+  This update makes the `/queryables` endpoint run much more quickly by stashing the queryables data in the
+  database instead of building it from scratch every time the `/queryables` endpoint was accessed.
+
+  It also adds two new endpoints `PATCH /queryables` and `PATCH /summaries` which automatically update the
+  queryables and collection summaries based on the data that is currently present in the database. See the
+  [documentation](https://github.com/crim-ca/stac-app/blob/040d350ade758871b6e95db9c86c04202433ef0e/README.md)
+  for more details.
+
+[2.9.0](https://github.com/bird-house/birdhouse-deploy/tree/2.9.0) (2025-02-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- JupyterHub: update `jupyterhub` component default version to [5.2.1](https://github.com/Ouranosinc/jupyterhub/releases/tag/5.2.1-20241114)
+
+  This implements all changes between JupyterHub version 
+  [4.1.6 and 5.2.1](https://jupyterhub.readthedocs.io/en/stable/reference/changelog.html).
+
+  **Breaking backward incompatible change**: This update requires the following manual upgrade steps:
+
+  - If your local environment file sets the `c.DockerSpawner.image_whitelist` config option in the 
+    `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` environnment variable. Change `c.DockerSpawner.image_whitelist` 
+    to `c.DockerSpawner.allowed_images`.
+
+  If you have changed any of the default `jupyterhub` settings you may need to consult the [JupyterHub upgrade
+  guide](https://jupyterhub.readthedocs.io/en/latest/howto/upgrading-v5.html) to see if any of those settings
+  have been changed.
+
+[2.8.2](https://github.com/bird-house/birdhouse-deploy/tree/2.8.2) (2025-01-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Generic_bird broken because a DELAYED_EVAL is missing
+
+  * Generic_bird consumes `FINCH_IMAGE` which is a delayed eval variable so
+    generic_bird variable should also be a delayed eval variable.
+
+
+## Changes
+
+- Allow to override certbot image in `env.local` to easily test newer version
+  and update to latest version.
+
+
+[2.8.1](https://github.com/bird-house/birdhouse-deploy/tree/2.8.1) (2025-01-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Weaver: adjust missing `WEAVER_MANAGER_NAME` in healthchecks expecting matching `SCRIPT_NAME` configuration
+
+  * Weaver's own `healthcheck` definition did not resolve to the expected endpoint.
+  * Canarie-API `monitoring` endpoint for Weaver did not resolve to the expected endpoint.
+
+[2.8.0](https://github.com/bird-house/birdhouse-deploy/tree/2.8.0) (2025-01-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: update `weaver` component default version to [6.1.1](https://github.com/crim-ca/weaver/tree/6.1.1).
+
+  ### Relevant changes
+  * Add support of *OGC API - Processes - Part 3: Workflows and Chaining* with *Nested Process* ad-hoc workflow.
+  * Add support of *OGC API - Processes - Part 3: Workflows and Chaining* with *Remote Collection* (STAC and OGC).
+  * Add support of *OGC API - Processes - Part 4: Job Management* endpoints for job "pending" creation and execution.
+  * Add support of *OGC API - Processes - Part 4: Job Management* endpoints for job provenance as *W3C PROV* metadata.
+  * Multiple alignment and fixes related to latest *OGC API - Processes - Part 1: Core* definitions regarding handling
+    of input parameters and headers when submitting jobs to obtain alternate result representations and behavior.
+  * Add HTML responses by default via web browsers or as requested by `Accept` headers or `f` query parameter.
+  * Add improved CWL schema validation with `Weaver`-specific definitions where applicable
+    (see https://github.com/crim-ca/weaver/tree/master/weaver/schemas/cwl).
+
+- Weaver: modifications to `proxy` configurations for `weaver`
+
+  * Add `WEAVER_ALT_PREFIX` optional variable that auto-configures `WEAVER_ALT_PREFIX_PROXY_LOCATION`,
+    which allows setting an alternate endpoint to redirect requests to `weaver`.
+    It uses `/ogcapi` by default which is a very common expectation from servers supporting OGC standards.
+  * Use the `TWITCHER_VERIFY_PATH` approach to accelerate access of `weaver` resources authorization.
+  * Modify proxy pass definitions and URL prefixes to resolve correctly with HTML resources.
+
+[2.7.3](https://github.com/bird-house/birdhouse-deploy/tree/2.7.3) (2025-01-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add integration test framework
+
+  This update adds a framework for testing the deployed stack using pytest. This will allow developers to check
+  that their changes are consistent with the existing stack and to add additionally tests when new functionality
+  is introduced. 
+
+  Changes to implement this include:
+
+  - existing unit tests are moved to the `tests/unit/` directory
+  - new integration tests are written in the `tests/integration/` directory. More tests will be added in the
+    future!
+  - `conftest.py` scripts updated to bring the stack up/down in a consistent way for the integration tests.
+  - unit tests updated to accomodate new testing infrastructure as needed.
+  - unit tests updated to test logging outputs better
+  - `birdhouse` interface script updated to support testing infrastructure (this should not change anything for
+    other end-users).
+  - additional documentation added to `birdhouse` interface to improve user experience.
+  - docker healthchecks added to more components so that the readiness of the stack can be determined with or
+    without the use of the `canarie-api` component.
+  - deprecates the `optional-components/wps-healthchecks` component since the healthchecks are now added by default
+    to all WPS components.
+
+  Next steps:
+
+  - add more integration tests as needed
+  - add a framework for testing migrating the stack from one version to another
+
+[2.7.2](https://github.com/bird-house/birdhouse-deploy/tree/2.7.2) (2025-01-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Jupyterhub: allow users created before Cowbird was enabled to spawn jupyterlab
+
+  Users created before Cowbird was enabled will not have a "workspace directory" created. A workspace directory
+  is a symlink to the directory that contains their Jupyterhub data.
+  
+  When Cowbird is enabled, Jupyterhub checks if the workspace directory exists and raises an error if it doesn't.
+  
+  This change allows Jupyterhub to create the symlink if it doesn't exist instead of raising an error. 
+  This means that users without a "workspace directory" will be able to continue using Jupyterhub as they did 
+  before without the need for manual intervention by a system administrator who would otherwise need to manually
+  create the symlink for them.
+
+- Add resolver for http nginx configuration
+
+  Nginx requires a resolver to be explicity defined when using `proxy_pass` with a variable in the argument passed
+  to `proxy_pass`. This resolver is defined explicitly for the https server block but not for the http server block.
+
+  This adds the explicit resolver for the http server block as well so that `proxy_pass` works when called using using
+  http URLs as well.
+  
+
+[2.7.1](https://github.com/bird-house/birdhouse-deploy/tree/2.7.1) (2024-12-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Updated Cowbird to version 2.5.0
+
+  This update fixes an issue where Magpie reports a webhook failure on almost every action.
+  See a full description of the issue in https://github.com/Ouranosinc/cowbird/pull/78.
+
+[2.7.0](https://github.com/bird-house/birdhouse-deploy/tree/2.7.0) (2024-12-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Enable local deployment to improve development and testing
+
+  The Birdhouse stack can now be deployed locally and accessed on a browser on the host machine without the need 
+  for an SSL certificate. This is useful for local development and for running tests against the full stack while developing and in CI environments.
+
+  To enable this, add the new `optional-components/local-dev-test` component to `BIRDHOUSE_EXTRA_CONF_DIRS` and
+  set the following environment variables in the local environment file:
+
+  * `export BIRDHOUSE_FQDN=host.docker.internal`
+  * `export BIRDHOUSE_HTTP_ONLY=True`
+
+  You should also add ``host.docker.internal`` to your ``/etc/hosts`` file pointing to the loopback address so 
+  that URLs generated by Birdhouse that refer to ``host.docker.internal`` will resolve properly in a browser:
+
+  ```
+  echo '127.0.0.1    host.docker.internal' | sudo tee -a /etc/hosts
+  ```
+
+  After deploying the stack, you can now interact with the Birdhouse software at ``http://host.docker.internal`` 
+  from the machine that is the docker host.
+
+  In order to implement the changes above, the following non-breaking changes have been made to the deployment code:
+
+  - added a configuration variable `BIRDHOUSE_HTTP_ONLY` which is not set by default. If set to `True` the `proxy` component will only serve content over `http` (not `https`).
+  - added the following configuration variables. These should not be set directly unless you really know what you're doing:
+    - `BIRDHOUSE_PROXY_SCHEME`: default remains `https`. If `BIRDHOUSE_HTTP_ONLY` is `True` then the default becomes `http`
+    - `PROXY_INCLUDE_HTTPS`: default remains `include /etc/nginx/conf.d/https.include;`. If `BIRDHOUSE_HTTP_ONLY` is `True`, the default is that the variable is unset. 
+  - changed the default values for the following configuration variables:
+    - `BIRDHOUSE_ALLOW_UNSECURE_HTTP`: default remains `""`. If `BIRDHOUSE_HTTP_ONLY` is `True` then the default becomes `True`.
+  - logs are written to stderr by default. Previously they were written to stdout.
+    - this allows us to call scripts and programmatically use their outputs. Previously log entries would need to be 
+      manually filtered out before program outputs could be used.
+    - added the `--log-stdout` and `--log-file` flags to the `bin/birdhouse` interface to allow redirecting logs to 
+      stdout or to a specific file instead.
+    - log redirection can also now be set using environment variables:
+      - `BIRDHOUSE_LOG_FD` can be used to redirect logs to a file descriptor (ex: `BIRDHOUSE_LOG_FD=3`)
+      - `BIRDHOUSE_LOG_FILE` can be used to redirect logs to file (ex: `BIRDHOUSE_LOG_FILE=/some/file/on/disk.log`)
+      - Note that the variables here should not be set in the local environment file since that file is sourced **after**
+        some logs are written. Instead, set these by exporting them in the parent process that calls `bin/birdhouse`.
+    - for backwards compatibility, if scripts are not called through the `bin/birdhouse` interface, logs will still be 
+      written to stdout.
+
+[2.6.5](https://github.com/bird-house/birdhouse-deploy/tree/2.6.5) (2024-12-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix incorrect Geoserver URL in Cowbird configuration
+
+  The Geoserver URL in the Cowbird configuration was incorrect as it used a non-standard port.
+  This changes the URL to the one used by docker compose internally. This allows Cowbird to execute
+  webhooks that target Geoserver.
+
+[2.6.4](https://github.com/bird-house/birdhouse-deploy/tree/2.6.4) (2024-12-09)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- canarie-api: fix new Thredds v5 monitoring URL
+
+  Fix the error below at the URL https://HOST/canarie/node/service/stats:
+  Bad return code from http://thredds:8080//twitcher/ows/proxy/thredds/catalog.html (Expecting 200, Got 404
+
+  Old URL: http://thredds:8080//twitcher/ows/proxy/thredds/catalog.html
+  New URL: http://thredds:8080/twitcher/ows/proxy/thredds/catalog/catalog.html
+
+  An oversight from the previous PR
+  https://github.com/bird-house/birdhouse-deploy/pull/413
+
+
+[2.6.3](https://github.com/bird-house/birdhouse-deploy/tree/2.6.3) (2024-12-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update Thredds to supported version
+
+  Unidata has dropped support for TDS versions < 5.x. This updates Thredds to version 5.5.
+
+  This Thredds v5 actually have 2 minors issues
+  * Magpie Allow or Deny exception under top-level Allow or Deny do not work on NCSS only,
+    see [Ouranosinc/Magpie#633](https://github.com/Ouranosinc/Magpie/issues/633).
+  * Performance problem with WMS only, see [Unidata/tds#406](https://github.com/Unidata/tds/issues/406).
+
+  They are considered minor and not blocking the release because
+  * Magpie top-level Allow or Deny still work across the board,
+    exception under top-level also works across the board,
+    except for NCSS only and NCSS is not widely used.
+  * WMS is not widely used, similar to NCSS.
+
+  Other features from this newer Thredds
+  * Security fixes (newer Tomcat) and if there is a critical vulnerability,
+    we won't be able to stay on v4 series because it is not even available on
+    DockerHub anymore as Unidata has dropped support.
+  * New experimental Zarr support.
+
+
+[2.6.2](https://github.com/bird-house/birdhouse-deploy/tree/2.6.2) (2024-12-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Fix help string description for `bin/birdhouse configs` command
+
+  Update description of the `configs` subcommand to better describe it.
+  The description when calling `bin/birdhouse -h` now matches the description when calling `bin/birdhouse configs -h`
+  
+- Jupyterhub: Update recommended paths for public share folders
+
+  The recommended public share folders in the `env.local.example` file create a conflict with the default
+  `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` path when both are enabled and mounted on a Jupyterlab container.
+  This change updates the recommended paths for the public share folders to avoid this conflict and adds a
+  warning helping users to avoid this conflict.
+
+  Note: the conflict arises when `PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR` is mounted to a container as read-only
+  volume and then Jupyterhub tries to mount the public share folder within that volume. Since the parent volume
+  is read-only, the second volume mount fails.
+
+
+## Fixes
+
+- Correct docker image for `stac-populator` optional component
+
+  This sets the docker image for the `stac-populator` component to a version that actually contains the code
+  that is executed when `stac-populator` is called. The previous image no longer contained the relevant code.
+
+[2.6.1](https://github.com/bird-house/birdhouse-deploy/tree/2.6.1) (2024-11-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix regressions introduced by PR #359 "Flexible locations for data served by thredds"
+
+  In [PR #359](https://github.com/bird-house/birdhouse-deploy/pull/359/):
+
+  `secure-thredds/config/magpie/permissions.cfg` started to use variable but was never renamed to `.template`
+  so those variable never get template expanded
+  (commit [317d96c3](https://github.com/bird-house/birdhouse-deploy/commit/317d96c39db7a6d79d1568a7094441ccdedc55ae)).
+
+  `bootstrap-testdata` default value was removed but did not source `read-configs.include.sh` so the variable
+   stayed blank (commit [4ab0fc74](https://github.com/bird-house/birdhouse-deploy/commit/4ab0fc74cb8fa601d75ecfc2a94749b23f60109c)).
+   The default value was there initially so the script can be used in standalone situation (not inside a checkout).
+
+
+[2.6.0](https://github.com/bird-house/birdhouse-deploy/tree/2.6.0) (2024-11-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add the `prometheus-log-parser` optional component
+
+  This component parses log files from other components and converts their logs to prometheus
+  metrics that are then ingested by the monitoring Prometheus instance (the one created by the
+  `components/monitoring` component).
+
+  For more information on how this component reads log files and converts them to prometheus components see
+  the [log-parser](https://github.com/DACCS-Climate/log-parser/) documentation.
+
+  To configure this component:
+
+  * set the `PROMETHEUS_LOG_PARSER_POLL_DELAY` variable to a number of seconds to set how often the log parser
+    checks if new lines have been added to log files (default: 1)
+  * set the `PROMETHEUS_LOG_PARSER_TAIL` variable to `"true"` to only parse new lines in log files. If unset,
+    this will parse all existing lines in the log file as well (default: `"true"`)
+
+  To view all metrics exported by the log parser:
+
+  * Navigate to the `https://<BIRDHOUSE_FQDN>/prometheus/graph` search page
+  * Put `{job="log_parser"}` in the search bar and click the "Execute" button
+
+- Update the prometheus version to the current latest `v2.53.3`. This is required to support   
+  loading multiple prometheus scrape configuration files with the `scrape_config_files`
+  configuration option.
+
+[2.5.5](https://github.com/bird-house/birdhouse-deploy/tree/2.5.5) (2024-11-14)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new full build with latest of everything
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#137](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/137)
+  for more info.
+
+
+[2.5.4](https://github.com/bird-house/birdhouse-deploy/tree/2.5.4) (2024-10-31)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- THREDDS: add more options to configure `catalog.xml`
+  - The default THREDDS configuration creates two default datasets, the *Service Data* dataset and the 
+    *Main* dataset. The *Service Data* dataset is used internally and hosts WPS outputs. The *Main* dataset is the
+    place where users can access data served by THREDDS. Both of these are configured to serve files with the following 
+    extensions: .nc .ncml .txt .md .rst .csv
+
+  - In order to allow the THREDDS server to serve files with additional extensions, this introduces two new
+    variables:
+    - `THREDDS_SERVICE_DATA_EXTRA_FILE_FILTERS`: this allows users to specify additional [filter 
+        elements](https://docs.unidata.ucar.edu/tds/current/userguide/tds_dataset_scan_ref.html#including-only-desired-files) to the *Service Data* dataset. This is especially useful if a WPS 
+        outputs files with an extension other than the default (eg: .h5) to the `wps_outputs/` directory.
+    - `THREDDS_DATASET_DATASETSCAN_BODY`: this allows users to specify the whole body of the *Main* dataset's 
+       [`<datasetScan>`](https://docs.unidata.ucar.edu/tds/current/userguide/tds_dataset_scan_ref.html) element.
+       This allows users to fully customize how this dataset serves files.
+
+  - We limit the configuration options for the *Service Data* dataset more than the *Main* dataset because the *Service
+    Data* dataset requires a basic configuration in order to properly serve WPS outputs. Making significant changes
+    to this configuration could have unexpected negative impacts on WPS usage.
+
+  - In order to allow customization of the Magpie THREDDS configuration in case new file extensions are added we introduce
+    two additional variables:
+    - `THREDDS_MAGPIE_EXTRA_METADATA_PREFIXES`: additional file prefixes (ie. regular expression match patterns) that Magpie
+      should treat as metadata (accessible with "browse" permissions).
+    - `THREDDS_MAGPIE_EXTRA_DATA_PREFIXES`: additional file prefixes (ie. regular expression match patterns) that Magpie
+      should treat as data (accessible with "read" permissions).
+
+  - The defaults for these new variables are fully backwards compatible. Without changing these variables, the THREDDS
+    server should behave exactly the same as before except that .md files and .rst files are now considered metadata
+    files according to the Magpie configuration, meaning that they can now be viewed with "browse" permissions.
+
+[2.5.3](https://github.com/bird-house/birdhouse-deploy/tree/2.5.3) (2024-09-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Magpie/Twitcher: update Python packages and base Docker image to address security vulnerabilities 
+
+  - [Magpie 4.1.1](https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst#411-2024-07-23)
+    (relates to [Ouranosinc/Magpie#622](https://github.com/Ouranosinc/Magpie/pull/622)).
+  - [Twitcher 0.10.0](https://github.com/bird-house/twitcher/blob/master/CHANGES.rst#0100-2024-07-22)
+    (relates to [bird-house/twitcher#136](https://github.com/bird-house/twitcher/pull/136)).
+
+- xclim-testdata: adapt repository cloning script to the new data structure
+
+  The `xclim-testdata` repo has been restructured to include the data in a `data` subdirectory.
+  This change updates the cloning script to account for this new structure and to ensure that the
+  user experience is consistent with the previous version.
+
+  See:
+  * [xclim-testdata PR/29](https://github.com/Ouranosinc/xclim-testdata/pull/29)
+  * [xclim PR/1889](https://github.com/Ouranosinc/xclim/pull/1889)
+
+[2.5.2](https://github.com/bird-house/birdhouse-deploy/tree/2.5.2) (2024-07-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- GeoServer: upgrade to 2.25.2 to fix vulnerabilities
+
+  See:
+  * https://nsfocusglobal.com/remote-code-execution-vulnerability-between-geoserver-and-geotools-cve-2024-36401-cve-2024-36404-notification/
+  * https://github.com/geoserver/geoserver/security/advisories/GHSA-6jj6-gm7p-fcvv
+  * https://github.com/geotools/geotools/security/advisories/GHSA-w3pj-wh35-fq8w
+
+  This change will upgrade to GeoServer 2.25.2 and GeoTools 31.2 (the version of `gt-complex.jar`).
+
+  ```shell
+  $ docker exec -u 0 geoserver find / -iname '**gt-complex**'
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/gt-complex-31.2.jar
+  ```
+
+  The previous version was GeoServer 2.22.2 and GeoTools 28.2.
+
+  ```shell
+  $ docker exec -u 0 geoserver find / -iname '**gt-complex**'
+  /usr/local/tomcat/webapps/geoserver/WEB-INF/lib/gt-complex-28.2.jar
+  ```
+
+  Also enable
+  * OGC-API plugins https://docs.geoserver.org/stable/en/user/community/ogc-api/features/index.html
+    so we can slowly transition from the WPS plugin.
+  * STAC Datastore plugin https://docs.geoserver.org/latest/en/user/community/stac-datastore/index.html
+    so we can test integration with our STAC component.
+
+
+[2.5.1](https://github.com/bird-house/birdhouse-deploy/tree/2.5.1) (2024-07-10)
+------------------------------------------------------------------------------------------------------------------
+
+- Cowbird: bump version to [2.4.0](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#240-2024-07-09).
+
+  - Includes multiple dependency updates for latest security and performance improvements.
+
+[2.5.0](https://github.com/bird-house/birdhouse-deploy/tree/2.5.0) (2024-06-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: bump version to [5.6.1](https://github.com/crim-ca/weaver/tree/5.6.1).
+
+  - See full changes details in 
+    [Weaver changes](https://pavics-weaver.readthedocs.io/en/latest/changes.html#changes-5-6-1)
+  - In summary:
+    - multiple control setting options to customize some behaviors
+    - improved *OGC API - Processes* standard conformance
+    - improved support of *Common Workflow Language (CWL)* features (secrets, sub-workflow, auth-propagation, etc.)
+
+- Weaver: WPS retry logic on post-compose step.
+  - Apply `--network birdhouse_default` to the Docker `curl` image to allow HTTP requests to properly resolve
+    against the running services (WPS bird providers, Weave and Magpie). In some cases, this network would not
+    be automatically resolved.
+  - Fix the index used during HTTP request retry to avoid going one step over the intended retry attempts.
+
+[2.4.2](https://github.com/bird-house/birdhouse-deploy/tree/2.4.2) (2024-06-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- deploy-data: allow more flexibility to deploy files from other checkout in same config file
+
+  Given the config file can specify multiple checkouts, this flexibility to
+  have `SRC_DIR` be an absolute path will allow one checkout to take files from
+  other checkouts, using absolute path to the other checkouts.  `SRC_DIR` can
+  still be a relative path of the current checkout, as before, to preserve
+  backward-compatibility.
+
+  Possible use-case: re-organize the layout of various files from the various
+  checkouts in an intermediate location before rsyncing this intermediate
+  location to the final destination.
+
+
+[2.4.1](https://github.com/bird-house/birdhouse-deploy/tree/2.4.1) (2024-06-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+- Weaver: Adjust invalid `data_sources.yml` definitions.
+
+  - Add the missing `data_sources.yml` volume mount for  `weaver-worker`.
+  - When `weaver-worker` runs a `Workflow`, the nested `step` process locations need to be resolved according to the
+    current `"localhost"` instance. However, the Web API running in `weaver` service is not visible from the worker.
+    Since the configuration is shared between `weaver` and `weaver-worker`, use the public endpoint of `weaver` to
+    make process URL resolution consistent, and also provide more useful references in job logs when resolution fails.
+
+[2.4.0](https://github.com/bird-house/birdhouse-deploy/tree/2.4.0) (2024-06-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Rename variables, constants and files from PAVICS to Birdhouse
+
+  For historical reasons the name PAVICS was used in variable names, constants and filenames in this repo to refer
+  to the software stack in general. This was because, for a long time, the PAVICS deployment of this stack was the
+  only one that was being used in production. However, now that multiple deployments of this software exist in
+  production (that are not named PAVICS), we remove unnecessary references to PAVICS in order to reduce confusion
+  for maintainers and developers who may not be aware of the historical reasons for the PAVICS name.
+
+  This update makes the following changes:
+
+  * The string ``PAVICS`` in environment variables, constant values, and file names have been changed to 
+    ``BIRDHOUSE`` (case has been preserved where possible).
+    * For example:
+      * ``PAVICS_FQDN`` -> ``BIRDHOUSE_FQDN``
+      * ``pavics_compose.sh`` -> ``birdhouse_compose.sh``
+      * ``THREDDS_DATASET_LOCATION_ON_CONTAINER='/pavics-ncml'`` -> ``THREDDS_DATASET_LOCATION_ON_CONTAINER='/birdhouse-ncml'``
+  * Comment strings and documentation that refers to the software stack as ``PAVICS`` have been changed to use
+    ``Birdhouse``.
+  * Recreated the ``pavics-compose.sh`` script that runs ``birdhouse-compose.sh`` in backwards compatible mode.
+    * Backwards compatible mode means that variables in ``env.local`` that contain the string ``PAVICS`` will be used
+      to set the equivalent variable that contains ``BIRDHOUSE``. For example, the ``PAVICS_FQDN`` variable set in
+      the ``env.local`` file will be used to set the value of ``BIRDHOUSE_FQDN``.
+  * Removed unused variables:
+    * `CMIP5_THREDDS_ROOT`
+
+- Create a new CLI entrypoint in ``bin/birdhouse`` that can be used to invoke ``pavics-compose.sh`` or 
+  ``birdhouse-compose.sh`` from one convenient location. This script also includes some useful options and provides
+  a generic entrypoint to the stack that can be extended in the future. In the future, users should treat this
+  entrypoint as the only stable CLI for interacting with the Birdhouse software.
+
+### Migration Guide
+
+  - Update ``env.local`` file to replace all variables that contain ``PAVICS`` with ``BIRDHOUSE``.
+    Variable names have also been updated to ensure that they start with the prefix ``BIRDHOUSE_``.
+    * see [`env.local.example`](./birdhouse/env.local.example) to see new variable names
+    * see the ``BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in [`default.env`](./birdhouse/default.env)) for a 
+      full list of changed environment variable names.
+  - Update any external scripts that access the old variable names directly to use the updated variable names.
+  - Update any external scripts that access any of the following files to use the new file name:
+
+    | old file name           | new file name              |
+    |-------------------------|----------------------------|
+    | pavics-compose.sh       | birdhouse-compose.sh       |
+    | PAVICS-deploy.logrotate | birdhouse-deploy.logrotate |
+    | configure-pavics.sh     | configure-birdhouse.sh     |
+    | trigger-pavicscrawler   | trigger-birdhousecrawler   |
+
+  - Update any external scripts that called ``pavics-compose.sh`` or ``read-configs.include.sh`` to use the CLI 
+    entrypoint in ``bin/birdhouse`` instead.
+  - The following default values have changed. If your deployment was using the old default value, update your 
+    ``env.local`` file to explicitly set the old default values.
+
+    | old variable name                          | new variable name                    | old default value       | new default value          |
+    |--------------------------------------------|--------------------------------------|-------------------------|:---------------------------|
+    | POSTGRES_PAVICS_USERNAME                   | BIRDHOUSE_POSTGRES_USERNAME          | postgres-pavics         | postgres-birdhouse         |
+    | THREDDS_DATASET_LOCATION_ON_CONTAINER      | (no change)                          | /pavics-ncml            | /birdhouse-ncml            |
+    | THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER | (no change)                          | /pavics-data            | /birdhouse-data            |
+    | (hardcoded)                                | BIRDHOUSE_POSTGRES_DB                | pavics                  | birdhouse                  |
+    | PAVICS_LOG_DIR                             | BIRDHOUSE_LOG_DIR                    | /var/log/PAVICS         | /var/log/birdhouse         |
+    | (hardcoded)                                | GRAFANA_DEFAULT_PROVIDER_FOLDER      | Local-PAVICS            | Local-Birdhouse            |
+    | (hardcoded)                                | GRAFANA_DEFAULT_PROVIDER_FOLDER_UUID | local-pavics            | local-birdhouse            |
+    | (hardcoded)                                | GRAFANA_PROMETHEUS_DATASOURCE_UUID   | local_pavics_prometheus | local_birdhouse_prometheus |
+
+    Note that the `PAVICS_LOG_DIR` variable was actually hardcoded as `/var/log/PAVICS` in some scripts. If 
+    `PAVICS_LOG_DIR` was set to anything other than `/var/log/PAVICS` you'll end up with inconsistent log outputs as 
+    previously some logs would have been sent to `PAVICS_LOG_DIR` and others to `/var/log/PAVICS`. We recommend merging
+    these two log files. Going forward, all logs will be sent to `BIRDHOUSE_LOG_DIR`. 
+
+  - Update any jupyter notebooks that make use of the `PAVICS_HOST_URL` environment variable to use the new
+    `BIRDHOUSE_HOST_URL` instead.
+  - Set the ``BIRDHOUSE_POSTGRES_DB`` variable to ``pavics`` in the ``env.local`` file. This value was previously
+    hardcoded to the string ``pavics`` so to maintain backwards compatibility with any existing databases this should be
+    kept the same. If you do want to update to the new database name, you will need to rename the existing database.
+    For example, the following will update the existing database named ``pavics`` to ``birdhouse`` (assuming the old
+    default values for the postgres username):
+
+    ```shell
+    docker exec -it postgres psql -U postgres-pavics -d postgres -c 'ALTER DATABASE pavics RENAME TO birdhouse'
+    ```
+
+    You can then update the ``env.local`` file to the new variable name and restart the stack
+  - Set the ``BIRDHOUSE_POSTGRES_USER`` variable to ``postgres-pavics`` in the ``env.local`` file if you would like to 
+    preserve the old default value. If you would like to change the value of ``BIRDHOUSE_POSTGRES_USER`` then also 
+    update the name for any running postgres instances. For example, the following will update the user named 
+    ``postgres-pavics`` to ``postgres-birdhouse``:
+
+    ```shell
+    docker exec -it postgres psql -U postgres-pavics -d postgres -c 'CREATE USER "tmpsuperuser" WITH SUPERUSER'
+    docker exec -it postgres psql -U tmpsuperuser -d postgres -c 'ALTER ROLE "postgres-pavics" RENAME TO "postgres-birdhouse"'
+    docker exec -it postgres psql -U tmpsuperuser -d postgres -c 'ALTER ROLE "postgres-birdhouse" WITH PASSWORD '\''postgres-qwerty'\'
+    docker exec -it postgres psql -U postgres-birdhouse -d postgres -c 'DROP ROLE "tmpsuperuser"'
+    ```
+
+    Note that the ``postgres-qwerty`` value is meant just for illustration, you should replace this with the value of 
+    the ``BIRDHOUSE_POSTGRES_PASSWORD`` variable.
+    Note that you'll need to do the same for the ``stac-db`` service as well (assuming that you weren't previously
+    overriding the ``STAC_POSTGRES_USER`` with a custom value).
+
+[2.3.3](https://github.com/bird-house/birdhouse-deploy/tree/2.3.3) (2024-05-29)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Bump cadvisor version to the latest version: v0.49.1
+  - See the cadvisor repo for all changes: https://github.com/google/cadvisor/compare/v0.36.0...v0.49.1
+  - This updated was prompted by the fact that the previously installed version of cadvisor (v0.36.0) did not support
+    newer versions of docker. When deploying this repo with recent docker version, cadvisor was unable to discover or 
+    monitor running containers.
+
+[2.3.2](https://github.com/bird-house/birdhouse-deploy/tree/2.3.2) (2024-05-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Make the monitoring component docker images configurable
+  - The following variables have been added to the `components/monitoring/default.env` file and can be overridden in 
+    `env.local` to change the docker image for one of the services enabled by the monitoring component:
+    - `GRAFANA_VERSION`
+    - `GRAFANA_DOCKER`
+    - `CADVISOR_VERSION`
+    - `CADVISOR_DOCKER`
+    - `PROMETHEUS_VERSION`
+    - `PROMETHEUS_DOCKER`
+    - `NODE_EXPORTER_VERSION`
+    - `NODE_EXPORTER_DOCKER`
+    - `ALERTMANAGER_VERSION`
+    - `ALERTMANAGER_DOCKER`
+  - Note that the defaults are the same as the previous hardcoded versions so this change is fully backwards compatible.
+
+[2.3.1](https://github.com/bird-house/birdhouse-deploy/tree/2.3.1) (2024-05-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Scripts that read configuration settings and that exit early on error fail unexpectedly
+
+  - Scripts that call `set -e` before reading configuration settings were failing early because some lines are
+    intentionally returning a non-zero value when setting variable defaults. This change modifies lines that may return 
+    a non-zero status but should not cause the script to exit early.
+  - Scripts that were exiting early prior to this change include:
+    - birdhouse/deployment/fix-geoserver-data-dir-perm
+    - birdhouse/deployment/fix-write-perm
+    - birdhouse/deployment/trigger-deploy-notebook
+
+[2.3.0](https://github.com/bird-house/birdhouse-deploy/tree/2.3.0) (2024-05-14)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- bump canarie-api version to [1.0.0](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.0.0)
+
+  - This version of canarie-api permits running the proxy (nginx) container independently of the canarie-api
+    application. This makes it easier to monitor the logs of canarie-api and proxy containers simultaneously and
+    allows for the configuration files for canarie-api to be mapped to the canarie-api containers where appropriate.
+
+[2.2.2](https://github.com/bird-house/birdhouse-deploy/tree/2.2.2) (2024-05-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+- Jupyter env: new full build with latest of almost everything
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#121](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/121)
+  for more info.
+
+
+[2.2.1](https://github.com/bird-house/birdhouse-deploy/tree/2.2.1) (2024-05-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- bump jupyterhub version to 4.1.5-20240426
+  
+  - This is the latest bugfix update to jupyterhub after the release of version 4.1.0. There haven't been any additional
+    updates for a few weeks now, so we can assume that this version is relatively stable now. See the [jupyterhub 
+    changelog](https://jupyterhub.readthedocs.io/en/stable/reference/changelog.html) for details.
+
 ## Fixes
 
 - docs: Fix version of `sphinx-mdinclude` to address incompatible `docutils` operation under ReadTheDocs Sphinx build.

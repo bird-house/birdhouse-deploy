@@ -14,7 +14,7 @@ SERVICES['indices'] = {
         'institution': 'Ouranos',
         'releaseTime': FINCH_RELEASE_TIME,
         'researchSubject': 'Climatology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Data Manipulation',
         'tags': ['Climatology', 'Cloud']
     },
@@ -34,7 +34,7 @@ SERVICES['indices'] = {
     'monitoring': {
         'Finch': {
             'request': {
-                'url': 'https://${PAVICS_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
+                'url': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/finch?service=WPS&version=1.0.0&request=GetCapabilities'
             }
         },
     }
@@ -47,7 +47,7 @@ SERVICES['slicer'] = {
         'institution': 'Ouranos',
         'releaseTime': '2021-03-25T00:00:00Z',
         'researchSubject': 'Climatology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Data Manipulation',
         'tags': ['Climatology', 'Cloud']
     },
@@ -85,7 +85,7 @@ SERVICES['Finch'] = {
         'institution': 'Ouranos',
         'releaseTime': FINCH_RELEASE_TIME,
         'researchSubject': 'Climatology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Data Manipulation',
         'tags': ['Climatology', 'Cloud']
     },

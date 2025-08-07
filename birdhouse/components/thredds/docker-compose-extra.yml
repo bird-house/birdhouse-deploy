@@ -1,4 +1,3 @@
-version: "3.4"
 
 x-logging: &default-logging
   driver: "json-file"
@@ -15,7 +14,7 @@ services:
     environment:
       # for reconstructing proper URL back to user when Thredds behind proxy
       # because Twitcher eats the "Host" http header set by Nginx
-      PAVICS_FQDN_PUBLIC: $PAVICS_FQDN_PUBLIC
+      BIRDHOUSE_FQDN_PUBLIC: $BIRDHOUSE_FQDN_PUBLIC
     volumes:
       - thredds_persistence:/usr/local/tomcat/content/thredds
       - ${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}
@@ -36,8 +35,13 @@ services:
           "--fail",
           "http://localhost:8080${TWITCHER_PROTECTED_PATH}/thredds/catalog.html"
         ]
-
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
+      
 volumes:
   thredds_persistence:
-    external:
-      name: thredds_persistence
+    external: true
+    name: thredds_persistence

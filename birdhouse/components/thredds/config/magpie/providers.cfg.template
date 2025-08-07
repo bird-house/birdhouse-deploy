@@ -15,21 +15,25 @@ providers:
         - ".+\\.ncml"  # match longest extension first to avoid tuncating it by match of sorter '.nc'
         - ".+\\.nc"
       metadata_type:
-        prefixes:
-          - null  # note: special YAML value evaluated as `no-prefix`, use quotes if literal value is needed
-          - "\\w+\\.gif"  # threddsIcon, folder icon, etc.
-          - "\\w+\\.ico"  # favicon
-          - "\\w+\\.txt"  # licence
-          - "\\w+\\.css"  # tds.css
-          - "catalog\\.\\w+"  # note: special case for `THREDDS` top-level directory (root) accessed for `BROWSE`
-          - catalog
-          - ncml
-          - uddc
-          - iso
+        prefixes: [
+          null,  # note: special YAML value evaluated as `no-prefix`, use quotes if literal value is needed
+          "\\w+\\.gif",  # threddsIcon, folder icon, etc.
+          "\\w+\\.ico",  # favicon
+          "\\w+\\.css",  # tds.css
+          "catalog\\.\\w+",  # note: special case for `THREDDS` top-level directory (root) accessed for `BROWSE`
+          catalog,
+          info,
+          ncml,
+          uddc,
+          iso,
+          ${THREDDS_MAGPIE_EXTRA_METADATA_PREFIXES}
+        ]
       data_type:
-        prefixes:
-          - fileServer
-          - dodsC
-          - wcs
-          - wms
-          - ncss
+        prefixes: [
+          fileServer,
+          dodsC,
+          wcs,
+          wms,
+          ncss,
+          ${THREDDS_MAGPIE_EXTRA_DATA_PREFIXES}
+        ]

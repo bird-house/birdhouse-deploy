@@ -11,7 +11,7 @@ SERVICES['Solr'] = {
         'institution': 'Ouranos',
         'releaseTime': get_release_time_from_repo_tag("docker", "${SOLR_DOCKER}", "${SOLR_VERSION}"),
         'researchSubject': 'Climatology',
-        'supportEmail': '${SUPPORT_EMAIL}',
+        'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
         'category': 'Data Manipulation',
         'tags': ['Indexation', 'Search']
     },
@@ -24,7 +24,7 @@ SERVICES['Solr'] = {
         'releasenotes': 'https://github.com/Ouranosinc/PAVICS/tags',
         'support': 'https://github.com/Ouranosinc/PAVICS/issues',
         'source': 'https://github.com/Ouranosinc/PAVICS/tree/master/birdhouse/docker/solr',
-        'tryme': 'http://${PAVICS_FQDN}:8983/solr/',
+        'tryme': 'http://${BIRDHOUSE_FQDN}:8983/solr/',
         'licence': 'https://github.com/bird-house/finch/blob/master/LICENSE.txt',
         'provenance': 'https://ouranosinc.github.io/pavics-sdi/arch/backend.html#indexation'
     },
@@ -32,7 +32,7 @@ SERVICES['Solr'] = {
         'Solr': {
             'request': {
                 # FIXME: remove port by design (https://github.com/bird-house/birdhouse-deploy/issues/222)
-                'url': 'http://${PAVICS_FQDN}:8983/solr/${THREDDS_SERVICE_DATA_URL_PATH}/select'
+                'url': 'http://${BIRDHOUSE_FQDN}:8983/solr/${THREDDS_SERVICE_DATA_URL_PATH}/select'
             }
         },
     }

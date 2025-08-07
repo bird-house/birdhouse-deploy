@@ -1,0 +1,4 @@
+services:
+  prometheus:
+    volumes:
+      - ./optional-components/prometheus-log-parser/config/monitoring/scrape_configs.yml:/etc/prometheus/scrape_config.d/log_parser.yml:ro

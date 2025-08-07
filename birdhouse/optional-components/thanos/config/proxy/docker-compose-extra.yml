@@ -1,0 +1,5 @@
+
+services:
+  proxy:
+    volumes:
+      - ./optional-components/thanos/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/thanos:ro

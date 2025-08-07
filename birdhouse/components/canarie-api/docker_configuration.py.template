@@ -10,12 +10,11 @@ import requests_cache  # see entrypoint script
 
 logger = logging.getLogger("canarie-api-config")
 
-MY_SERVER_NAME = 'https://${PAVICS_FQDN_PUBLIC}/canarie'
+MY_SERVER_NAME = '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/canarie'
 
 DATABASE = {
-    'filename': '/opt/local/src/CanarieAPI/stats.db',
-    'access_log': '/var/log/nginx/access_file.log',
-    'log_pid': '/var/run/nginx.pid'
+    'filename': '/data/stats.db',
+    'access_log': '/logs/${PROXY_LOG_FILE}'
 }
 
 
@@ -109,25 +108,25 @@ SERVICES = {
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '2.2.0',
-            'releaseTime': '2024-04-18T15:04:09Z',
-            'institution': '${SERVER_INSTITUTION}',
-            'researchSubject': '${SERVER_SUBJECT}',
-            'supportEmail': '${SUPPORT_EMAIL}',
+            'version': '2.16.7',
+            'releaseTime': '2025-08-05T18:12:01Z',
+            'institution': '${BIRDHOUSE_INSTITUTION}',
+            'researchSubject': '${BIRDHOUSE_SUBJECT}',
+            'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
             'category': 'Resource/Cloud Management',
-            'tags': [tag.strip() for tag in "${SERVER_TAGS}".split(",") if tag.strip()],
+            'tags': [tag.strip() for tag in "${BIRDHOUSE_TAGS}".split(",") if tag.strip()],
         },
         'stats': {
             'method': '.*',
             'route': '(?!)'  # this will be set by CANARIE_STATS_ROUTES (see below)
         },
         'redirect': {
-            'doc': '${SERVER_DOCUMENTATION_URL}',
-            'releasenotes': '${SERVER_RELEASE_NOTES_URL}',
-            'support': '${SERVER_SUPPORT_URL}',
+            'doc': '${BIRDHOUSE_DOCUMENTATION_URL}',
+            'releasenotes': '${BIRDHOUSE_RELEASE_NOTES_URL}',
+            'support': '${BIRDHOUSE_SUPPORT_URL}',
             'source': 'https://github.com/bird-house/birdhouse-deploy',
-            'tryme': 'https://${PAVICS_FQDN_PUBLIC}',
-            'licence': '${SERVER_LICENSE_URL}',
+            'tryme': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}',
+            'licence': '${BIRDHOUSE_LICENSE_URL}',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html'
         },
         'monitoring': {}  # filled in after processing everything, see end of script
@@ -137,17 +136,17 @@ SERVICES = {
 PLATFORMS = {
     'server': {
         'info': {
-            'name': '${SERVER_NAME}',
-            'synopsis': """${SERVER_DESCRIPTION}""".replace("\n", " ").strip(),
+            'name': '${BIRDHOUSE_NAME}',
+            'synopsis': """${BIRDHOUSE_DESCRIPTION}""".replace("\n", " ").strip(),
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '2.2.0',
-            'releaseTime': '2024-04-18T15:04:09Z',
-            'institution': '${SERVER_INSTITUTION}',
-            'researchSubject': '${SERVER_SUBJECT}',
-            'supportEmail': '${SUPPORT_EMAIL}',
-            'tags': [tag.strip() for tag in "${SERVER_TAGS}".split(",") if tag.strip()],
+            'version': '2.16.7',
+            'releaseTime': '2025-08-05T18:12:01Z',
+            'institution': '${BIRDHOUSE_INSTITUTION}',
+            'researchSubject': '${BIRDHOUSE_SUBJECT}',
+            'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
+            'tags': [tag.strip() for tag in "${BIRDHOUSE_TAGS}".split(",") if tag.strip()],
         },
         'stats': {
             'method': '.*',
@@ -158,7 +157,7 @@ PLATFORMS = {
             'releasenotes': 'https://github.com/bird-house/birdhouse-deploy/releases',
             'support': 'https://github.com/Ouranosinc/pavics-sdi/issues',
             'source': 'https://github.com/Ouranosinc/pavics-sdi',
-            'tryme': 'https://pavics.ouranos.ca',
+            'tryme': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}',
             'licence': 'https://pavics-sdi.readthedocs.io/en/latest/license.html',
             'provenance': 'https://pavics-sdi.readthedocs.io/en/latest/provenance/index.html',
             'factsheet': 'http://www.canarie.ca/software/pavics'

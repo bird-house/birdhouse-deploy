@@ -1,7 +1,7 @@
-version: "3.4"
 services:
-  proxy:
+  canarie-api: &canarie-volumes
     volumes:
       - ./optional-components/canarie-api-full-monitoring/config/catalog/canarie_api_full_monitoring.py:${CANARIE_MONITORING_EXTRA_CONF_DIR}/catalog_canarie_api_full_monitoring.py:ro
+  canarie-api-cron: *canarie-volumes
 
 # vi: tabstop=8 expandtab shiftwidth=2 softtabstop=2

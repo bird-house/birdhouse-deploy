@@ -51,7 +51,7 @@ cache.service.expire = 60
 # debugtoolbar.hosts = 127.0.0.1 ::1
 
 # twitcher
-twitcher.url = https://${PAVICS_FQDN}/twitcher
+twitcher.url = ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN}/twitcher
 twitcher.adapter = magpie.adapter.MagpieAdapter
 twitcher.rpcinterface = false
 twitcher.username =
@@ -60,12 +60,12 @@ twitcher.ows_security = true
 twitcher.ows_proxy = true
 twitcher.ows_proxy_delegate = false
 twitcher.ows_proxy_protected_path = /ows
-twitcher.ows_proxy_ssl_verify = ${VERIFY_SSL}
+twitcher.ows_proxy_ssl_verify = ${BIRDHOUSE_VERIFY_SSL}
 twitcher.workdir =
 twitcher.prefix =
 
 # magpie (for twitcher.adapter)
-magpie.url = https://${PAVICS_FQDN}/magpie
+magpie.url = ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN}/magpie
 magpie.secret = ${MAGPIE_SECRET}
 magpie.admin_user = ${MAGPIE_ADMIN_USERNAME}
 magpie.admin_password = ${MAGPIE_ADMIN_PASSWORD}
