@@ -31,4 +31,4 @@ docker run --rm --name fix-geoserver-data-dir-perm \
     --env FIRST_RUN_ONLY \
     "${BASH_IMAGE}" \
     bash -xc 'if [ -z "$FIRST_RUN_ONLY" -o ! -f /datadir/global.xml ]; \
-    then chown -R 1000:10001 /datadir; else echo "No execute."; fi'
+    then chown -R 2000:2000 /datadir; else echo "No execute."; fi'
