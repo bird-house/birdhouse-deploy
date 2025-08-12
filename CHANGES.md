@@ -17,9 +17,12 @@
 
 ## Changes
 
-- Updated the `finch` service to v0.11.3.
+- Updated the `finch` service to v0.12.1.
 
-  This is a significant jump from the previous version (v0.9.0) and includes many changes, primarily xclim v0.43.0
+  This is a significant jump from the previous version (v0.9.2) and includes many bug fixes and dependency updates:
+
+  - anyascii (replacement for unidecode)
+  - xclim v0.43.0 (previously xclim v0.37)
 
 [2.16.7](https://github.com/bird-house/birdhouse-deploy/tree/2.16.7) (2025-08-05)
 ------------------------------------------------------------------------------------------------------------------
