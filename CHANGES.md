@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.16.8](https://github.com/bird-house/birdhouse-deploy/tree/2.16.8) (2025-08-13)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Allow user generated jupyterlab kernels to persist between sessions
