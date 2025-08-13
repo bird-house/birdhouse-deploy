@@ -42,6 +42,11 @@
   This fixes the issue by symlinking the relevant folder to `/home/$NB_USER/.local` within the container so that 
   the healthchecks can run as expected.
 
+- Thanos-minio container should always restart on failure
+
+  Since this container wasn't restarting automatically it could make the entire stack unavailable if it failed.
+  The proxy container would refuse to start since it could not connect to the upstream thanos-minio server.
+
 [2.16.7](https://github.com/bird-house/birdhouse-deploy/tree/2.16.7) (2025-08-05)
 ------------------------------------------------------------------------------------------------------------------
 
