@@ -119,18 +119,11 @@ targets:	## Display available targets and descriptions
 
 ### Versioning Targets ###
 
-# Bumpversion 'dry' config
-# if 'dry' is specified as target, any bump-my-version call using 'BUMP_XARGS' will not apply changes
-BUMP_XARGS ?= --verbose --allow-dirty	## Extra arguments to pass down to version control utility
-BUMP_XARGS := $(call clean_opt,$(BUMP_XARGS))
-ifeq ($(filter dry, $(MAKECMDGOALS)), dry)
-  BUMP_XARGS := $(BUMP_XARGS) --dry-run
-endif
 BUMP_CFG  ?= .bumpversion.toml				## Bump version configuration (default recommended)
 BUMP_CFG  := $(call clean_opt,$(BUMP_CFG))
 BUMP_TOOL := bump-my-version
 BUMP_PATH := $(CONDA_ENV_PATH)/bin/$(BUMP_TOOL)
-BUMP_CMD  := $(BUMP_TOOL) --config-file "$(BUMP_CFG)"
+BUMP_CMD  := $(BUMP_TOOL)
 
 # guess the applicable semantic level update if provided via major|minor|patch targets
 # perform validation to avoid many combination provided simultaneously
@@ -193,7 +186,7 @@ bump: bump-check bump-install  ## Bump version using specified <VERSION> (call: 
 	@[ $(BUMP_VERSION_INPUT) -eq 0 ] || [ "${VERSION}" ] || ( \
 		$(MSG_E) "Argument 'VERSION' is not specified to bump version"; exit 1 \
 	)
-	@$(SHELL) -c '$(CONDA_CMD) $(BUMP_CMD) $(BUMP_XARGS) bump $(BUMP_VERSION_LEVEL)'
+	@$(SHELL) -c '$(CONDA_CMD) $(BUMP_CMD) bump $(BUMP_VERSION_LEVEL)'
 
 .PHONY: bump-install
 bump-install:   ## Installs bump-my-version if not detected in the environment
