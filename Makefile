@@ -120,7 +120,7 @@ targets:	## Display available targets and descriptions
 ### Versioning Targets ###
 
 # Bumpversion 'dry' config
-# if 'dry' is specified as target, any bumpversion call using 'BUMP_XARGS' will not apply changes
+# if 'dry' is specified as target, any bump-my-version call using 'BUMP_XARGS' will not apply changes
 BUMP_XARGS ?= --verbose --allow-dirty	## Extra arguments to pass down to version control utility
 BUMP_XARGS := $(call clean_opt,$(BUMP_XARGS))
 ifeq ($(filter dry, $(MAKECMDGOALS)), dry)
@@ -193,24 +193,16 @@ bump: bump-check bump-install  ## Bump version using specified <VERSION> (call: 
 	@[ $(BUMP_VERSION_INPUT) -eq 0 ] || [ "${VERSION}" ] || ( \
 		$(MSG_E) "Argument 'VERSION' is not specified to bump version"; exit 1 \
 	)
-	@$(SHELL) -c ' \
-		PRE_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2) && \
-		$(CONDA_CMD) $(BUMP_CMD) $(BUMP_XARGS) $(BUMP_VERSION_LEVEL) && \
-		POST_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2) && \
-		echo "Replace $${PRE_RELEASE_TIME} → $${POST_RELEASE_TIME}" && \
-		$(_SED) -i "s/$${PRE_RELEASE_TIME}/$${POST_RELEASE_TIME}/g" $(BUMP_CFG) && \
-		git add $(BUMP_CFG) && \
-		git commit --amend --no-edit \
-	'
+	@$(SHELL) -c '$(CONDA_CMD) $(BUMP_CMD) $(BUMP_XARGS) bump $(BUMP_VERSION_LEVEL)'
 
 .PHONY: bump-install
-bump-install:   ## Installs bumpversion if not detected in the environment
+bump-install:   ## Installs bump-my-version if not detected in the environment
 	@-$(SHELL) -c '$(CONDA_CMD) test -f "$(BUMP_PATH)" || pip install $(PIP_XARGS) $(BUMP_TOOL)'
 
 .PHONY: bump-check
-bump-check:		## Verifies that required bumpversion files are found
+bump-check:		## Verifies that required bump-my-version files are found
 	@[ -f "$(BUMP_CFG)" ] || ( \
-		$(MSG_E) "Missing required file [$(BUMP_CFG)]. Run [make init-bump] or update BUMP_CFG accordingly."; \
+		$(MSG_E) "Missing required file [$(BUMP_CFG)]. Run [bump-my-version sample-config] or update BUMP_CFG accordingly."; \
 		exit 1 \
 	);
 
