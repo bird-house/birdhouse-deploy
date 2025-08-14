@@ -1,7 +1,8 @@
 # conda env create -f environment-dev.yml
 name: birdhouse-deploy
 channels:
-  - conda-forge  # for bump2version
+  - conda-forge
+  - nodefaults  # to avoid installing the default packages that come with conda
 dependencies:
   - make
 
