@@ -22,14 +22,14 @@
   One usage is to add the parameter "http2" to enable HTTP/2 protocol.
 
   Before
-  ```
+  ```sh
   $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
   HTTP/1.1 200 OK
   ```
 
   After `export PROXY_LISTEN_443_PARAMS="http2"` is set in `env.local` and
   `proxy` container restarted
-  ```
+  ```sh
   $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
   HTTP/2 200
   ```
