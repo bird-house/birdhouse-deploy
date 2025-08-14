@@ -1,12 +1,12 @@
 [tool.bumpversion]
 current_version = "2.16.8"
-commit = true
+commit = false
 tag = false
 tag_name = "{new_version}"
-parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+) (?P<releaseTime>.*)?"
+allow_dirty = true
+parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = [
     "{major}.{minor}.{patch}",
-    "{utcnow:%Y-%m-%dT%H:%M:%SZ}"
 ]
 
 [[tool.bumpversion.files]]
@@ -23,37 +23,42 @@ replace = """[Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/ma
 
 [[tool.bumpversion.files]]
 filename = "Makefile"
+part = "version"
 search = "APP_VERSION := {current_version}"
 replace = "APP_VERSION := {new_version}"
 
 [[tool.bumpversion.files]]
 filename = "README.rst"
+part = "version"
 search = "{current_version}"
 replace = "{new_version}"
 
 [[tool.bumpversion.files]]
 filename = "RELEASE.txt"
-search = "{current_version} 2025-08-13T13:48:58Z"
-replace = "{new_version} {utcnow:%Y-%m-%dT%H:%M:%SZ}"
-
-[[tool.bumpversion.parts]]
-name = "releaseTime"
-values = ["2025-08-13T13:48:58Z"]
+part = "version"
+search = "{current_version}"
+replace = "{new_version}"
 
 [[tool.bumpversion.files]]
-part = "version"
+filename = "RELEASE.txt"
+search = "\\d{{4}}-\\d{{2}}-\\d{{2}}T\\d{{2}}:\\d{{2}}:\\d{{2}}Z"
+replace = "{utcnow:%Y-%m-%dT%H:%M:%SZ}"
+regex = true
+
+[[tool.bumpversion.files]]
 filename = "birdhouse/components/canarie-api/docker_configuration.py.template"
+part = "version"
 search = "'version': '{current_version}'"
 replace = "'version': '{new_version}'"
 
 [[tool.bumpversion.files]]
-part = "releaseTime"
 filename = "birdhouse/components/canarie-api/docker_configuration.py.template"
-parse = "'releaseTime': '(?P<releaseTime>.*)'"
-serialize = ["{releaseTime}"]
-replace = "{utcnow:%Y-%m-%dT%H:%M:%SZ}"
+search = "'releaseTime': '\\d{{4}}-\\d{{2}}-\\d{{2}}T\\d{{2}}:\\d{{2}}:\\d{{2}}Z'"
+replace = "'releaseTime': '{utcnow:%Y-%m-%dT%H:%M:%SZ}'"
+regex = true
 
 [[tool.bumpversion.files]]
 filename = "docs/source/conf.py"
+part = "version"
 search = "'{current_version}'"
 replace = "'{new_version}'"
