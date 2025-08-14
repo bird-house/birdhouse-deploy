@@ -24,6 +24,41 @@
   - anyascii (replacement for unidecode)
   - xclim v0.43.0 (previously xclim v0.37)
 
+[2.16.8](https://github.com/bird-house/birdhouse-deploy/tree/2.16.8) (2025-08-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Allow user generated jupyterlab kernels to persist between sessions
+
+  If a jupyterlab user wants to create a virtual environment to use as a kernel they can do so
+  by creating a new virtual environment and installing it as a kernel with the `python -m ipykernel install`
+  command.
+
+  By default this command installs the kernel metadata in `/usr/local/share/jupyter/kernels` which is not
+  persisted to a docker volume and so the kernel is no longer visible when the jupyterlab container restarts.
+  Alternatively, the command can be run with the `--user` flag which installs the kernel metadata to the user's
+  home directory (which is persisted to a docker volume) but the jupyterlab API does not recognize kernels
+  installed in this way for some reason.
+
+  To solve this issue, this creates a symlink from the kernels metadata folder in the user's home directory to
+  a location outside of the user's home directory (`/usr/local/share/jupyter/user-kernels/kernels`) which can
+  be detected by the juptyerlab API.
+
+- Ensure jupyterlab container healthchecks don't fail by default
+
+  The healthchecks assume that the jupyter data directory is in `/home/$NB_USER/.local` regardless of the value 
+  of $HOME. This means that healthechecks for the jupyterlab containers were always failing even if the
+  container was actually healthy.
+
+  This fixes the issue by symlinking the relevant folder to `/home/$NB_USER/.local` within the container so that 
+  the healthchecks can run as expected.
+
+- Thanos-minio container should always restart on failure
+
+  Since this container wasn't restarting automatically it could make the entire stack unavailable if it failed.
+  The proxy container would refuse to start since it could not connect to the upstream thanos-minio server.
+
 [2.16.7](https://github.com/bird-house/birdhouse-deploy/tree/2.16.7) (2025-08-05)
 ------------------------------------------------------------------------------------------------------------------
 
