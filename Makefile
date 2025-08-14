@@ -126,9 +126,9 @@ BUMP_XARGS := $(call clean_opt,$(BUMP_XARGS))
 ifeq ($(filter dry, $(MAKECMDGOALS)), dry)
   BUMP_XARGS := $(BUMP_XARGS) --dry-run
 endif
-BUMP_CFG  ?= .bumpversion.cfg				## Bump version configuration (default recommended)
+BUMP_CFG  ?= .bumpversion.toml				## Bump version configuration (default recommended)
 BUMP_CFG  := $(call clean_opt,$(BUMP_CFG))
-BUMP_TOOL := bump2version
+BUMP_TOOL := bump-my-version
 BUMP_PATH := $(CONDA_ENV_PATH)/bin/$(BUMP_TOOL)
 BUMP_CMD  := $(BUMP_TOOL) --config-file "$(BUMP_CFG)"
 
