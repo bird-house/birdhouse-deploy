@@ -193,7 +193,7 @@ bump: bump-check bump-install  ## Bump version using specified <VERSION> (call: 
 	@[ $(BUMP_VERSION_INPUT) -eq 0 ] || [ "${VERSION}" ] || ( \
 		$(MSG_E) "Argument 'VERSION' is not specified to bump version"; exit 1 \
 	)
-	@$(SHELL) -c '$(CONDA_CMD) $(BUMP_CMD) bump $(BUMP_VERSION_LEVEL)'
+	@$(SHELL) -c '$(CONDA_CMD) $(BUMP_CMD) $(BUMP_XARGS) $(BUMP_VERSION_LEVEL)'
 
 .PHONY: bump-install
 bump-install:   ## Installs bump-my-version if not detected in the environment
