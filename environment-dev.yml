@@ -10,7 +10,7 @@ dependencies:
   - bump-my-version
 
   # for generating requirements.txt with hashes
-  - pip-tools ==7.5.0
+  - pip-tools
 
   - pip
   - pip:

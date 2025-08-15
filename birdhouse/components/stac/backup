@@ -16,13 +16,18 @@ restore_application() {
 
 backup_representative() {
   _do_backup() {
+    # WARNING: using BIRDHOUSE_LOG_LEVEL does not check whether is a valid log level for stac-populator.
+    #  This may cause errors in the future if new log levels are introduced.
+    #  It is assumed for the moment that equivalent log level are desired between the populator and the CLI
+    #  when debugging the entire birdhouse backup process, or that ERROR/WARN/INFO are used otherwise.
     docker run --rm \
                --network "${COMPOSE_PROJECT_NAME}_default" \
                -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
                --user root \
+               --env BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL} \
                --entrypoint sh \
                ${STAC_POPULATOR_BACKUP_IMAGE} \
-               -c 'mkdir /backup/stac-repr/; stac-populator export http://stac:8000/stac /backup/stac-repr/ --ignore-duplicate-ids'
+               -c 'mkdir /backup/stac-repr/; stac-populator --log-level-stderr ${BIRDHOUSE_LOG_LEVEL} export http://stac:8000/stac /backup/stac-repr/ --ignore-duplicate-ids'
   }
   backup_create_runner 'stac json objects' _do_backup
 }
@@ -45,7 +50,8 @@ restore_representative() {
                --user root \
                --env PYSTAC_STAC_VERSION_OVERRIDE="${PYSTAC_STAC_VERSION_OVERRIDE}" \
                ${STAC_POPULATOR_BACKUP_IMAGE} \
+               --log-level-stderr ${BIRDHOUSE_LOG_LEVEL} \
                run DirectoryLoader http://stac:8000/stac /backup/stac-repr/
   }
-  backup_restore_runner 'stac json objects' _do_restore 'stac-repr' 'stac stac-db'
+  backup_restore_runner 'stac json objects' _do_restore 'stac-repr' 'stac stac-db stac-migration'
 }
