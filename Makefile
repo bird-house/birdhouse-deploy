@@ -119,11 +119,18 @@ targets:	## Display available targets and descriptions
 
 ### Versioning Targets ###
 
+# Bumpversion 'dry' config
+# if 'dry' is specified as target, any bumpversion call using 'BUMP_XARGS' will not apply changes
+BUMP_XARGS ?= --verbose --allow-dirty	## Extra arguments to pass down to version control utility
+BUMP_XARGS := $(call clean_opt,$(BUMP_XARGS))
+ifeq ($(filter dry, $(MAKECMDGOALS)), dry)
+  BUMP_XARGS := $(BUMP_XARGS) --dry-run
+endif
 BUMP_CFG  ?= .bumpversion.toml				## Bump version configuration (default recommended)
 BUMP_CFG  := $(call clean_opt,$(BUMP_CFG))
 BUMP_TOOL := bump-my-version
 BUMP_PATH := $(CONDA_ENV_PATH)/bin/$(BUMP_TOOL)
-BUMP_CMD  := $(BUMP_TOOL)
+BUMP_CMD  := $(BUMP_TOOL) bump --config-file "$(BUMP_CFG)"
 
 # guess the applicable semantic level update if provided via major|minor|patch targets
 # perform validation to avoid many combination provided simultaneously
