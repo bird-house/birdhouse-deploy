@@ -15,7 +15,21 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- STAC: Update STAC API to `crim-ca/stac-app:2.0.1`.
+
+  - Changes in [`crim-ca/stac-app:2.0.0`](https://github.com/crim-ca/stac-app/releases/tag/2.0.0) includes:
+    - migration to `stac-fastapi==6.0.0` and corresponding fixes to support it
+    - add `q` parameter free-text search on `/search`, `/collections` and `/collections/{collectionId}/items` endpoints
+    - enforce JSON schema validation of all `stac_extensions` referenced by published STAC Items and Collections
+    - multiple dependency updates
+  - Minor package dependency fix in [`crim-ca/stac-app:2.0.1`](https://github.com/crim-ca/stac-app/releases/tag/2.0.1).
+
+- STAC: Update `stac-db` and `stac-migration` to version `0.9.8`.
+
+- STAC: Add `optional/stac-db-persist` and `STAC_DB_PERSIST_DIR` to allow custom STAC DB metadata storage location.
+
 
 [2.16.9](https://github.com/bird-house/birdhouse-deploy/tree/2.16.9) (2025-08-15)
 ------------------------------------------------------------------------------------------------------------------

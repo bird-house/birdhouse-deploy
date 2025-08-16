@@ -348,6 +348,8 @@ To enable this optional-component:
 - Add ``./optional-components/stac-public-access`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
+.. _optional-components_stac-data-proxy:
+
 Provide a proxy for local STAC asset hosting
 --------------------------------------------------------
 
@@ -396,6 +398,51 @@ Following are the possible combinations and obtained behaviors:
         ``./optional-components/secure-data-proxy`` are enabled.
       - Similar to the previous case, allowing full authorization management control by the administrator, but contents
         are publicly accessible by default. To revoke access, a Magpie administrator has to apply a ``deny`` permission.
+
+
+Persist STAC PostgreSQL database to alternate location
+--------------------------------------------------------
+
+STAC metadata (published Collections and Items JSON) are stored by
+default under ``/var/lib/docker/volumes/birdhouse_stac-db``.
+This optional component provides ``STAC_DB_PERSIST_DIR`` as a configurable variable to define an alternate location
+as drive mount bind. By default, this value will be set to ``${BIRDHOUSE_DATA_PERSIST_ROOT}/stac-db_persist``.
+
+To enable this optional-component:
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./optional-components/stac-db-persist`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Optionally, configure any desired overrides for ``STAC_DB_PERSIST_DIR`` and/or ``BIRDHOUSE_DATA_PERSIST_ROOT``
+  (note that setting ``BIRDHOUSE_DATA_PERSIST_ROOT`` affects other components using the same root directory).
+
+.. note::
+    This does not affect STAC *data* storage (i.e.: the referenced Assets) if any are defined on the server.
+    Refer to :ref:`optional-components_stac-data-proxy` for these considerations.
+
+.. warning::
+    If the server was started prior to configuring this component, `docker` might issue some warnings regarding the
+    ``stac-db`` volume being already defined with existing data contents. In such case, it is recommended to manually
+    perform following steps to migrate the data to the new location. This would also be required if the DB already has
+    published STAC metadata.
+
+    .. code-block:: shell
+
+        # Stop the server
+        birdhouse compose stop
+
+        # Move the data to desired location (might need sudo)
+        # Note that '_data' is automatically created by docker when named-volume is created,
+        # but mount bind path is directly the data contents
+        mv /var/lib/docker/volumes/birdhouse_stac-db/_data/* ${STAC_DB_PERSIST_DIR}/
+
+        # Remove the existing stac-db volume
+        docker volume rm birdhouse_stac-db
+
+        # <configure the component as described above>
+
+        # Restart the server
+        birdhouse compose up -d
+
 
 X-Robots-Tag Header
 ---------------------------
