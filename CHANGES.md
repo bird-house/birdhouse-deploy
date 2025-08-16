@@ -17,6 +17,29 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.16.10](https://github.com/bird-house/birdhouse-deploy/tree/2.16.10) (2025-08-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Proxy: allow to add parameters to Nginx listen directives via env.local
+
+  One usage is to add the parameter "http2" to enable HTTP/2 protocol.
+
+  Before
+  ```sh
+  $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
+  HTTP/1.1 200 OK
+  ```
+
+  After `export PROXY_LISTEN_443_PARAMS="http2"` is set in `env.local` and
+  `proxy` container restarted
+  ```sh
+  $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
+  HTTP/2 200
+  ```
+
+
 [2.16.9](https://github.com/bird-house/birdhouse-deploy/tree/2.16.9) (2025-08-15)
 ------------------------------------------------------------------------------------------------------------------
 
