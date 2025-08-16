@@ -35,6 +35,88 @@
   ```
 
 
+[2.16.9](https://github.com/bird-house/birdhouse-deploy/tree/2.16.9) (2025-08-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Backup: Allow `BIRDHOUSE_BACKUP_VOLUME` to be employed directly as directory.
+
+  This feature _**requires**_ using the `--no-restic` option to avoid it being involved by ``--snapshot`` override.
+  Combining a directory path and omitting `--no-restic` can lead to undesired side effects.
+  However, it allows using backup/restore operations for quick data manipulations on alternate locations than a
+  volume to offer flexibility or to bypass `restic` operations.
+  This can be employed for fixing problematic service data migrations or file system limitations with volumes.
+
+  The directory structure must match exactly with `BIRDHOUSE_BACKUP_VOLUME` when used as volume
+  (e.g.: `/tmp/backup/{component}-{backup_type}/...`).
+
+  This feature also disables the automatic cleanup of the volume (since the directory is used directly).
+  Therefore, users have to manage the contents of `BIRDHOUSE_BACKUP_VOLUME` on their own and consistently.
+
+- Backup: Avoid `birdhouse backup restore` operation to complain about missing `-s|--snapshot` when not required.
+
+  For example, `BIRDHOUSE_BACKUP_VOLUME=/tmp/backup birdhouse backup restore --no-restic -r stac` only operates on local
+  data contents to be restored into the server instance. No remote `restic` snapshot is required to run the operation.
+
+- Backup: Unification of script shebangs, variables names and function names with invoked operations.
+
+  - Renames related to `backup [create|restore|restic]` when they apply to many operations simultaneously.
+    This helps highlight that a variable with explicitly `CREATE`, `RESTORE` or `RESTIC` only applies to that
+    specific operation, whereas others are shared.
+
+    - `parse_backup_restore_common_args` => `parse_backup_common_args`
+    - `BIRDHOUSE_BACKUP_RESTORE_NO_RESTIC` => `BIRDHOUSE_BACKUP_NO_RESTIC`
+    - `BIRDHOUSE_BACKUP_RESTORE_COMMAND` => `BIRDHOUSE_BACKUP_COMMAND`
+
+  - Renames to match the common `BIRDHOUSE_BACKUP_[...]` prefix employed by other "backup" variables:
+
+    - `BIRDHOUSE_RESTORE_SNAPSHOT` => `BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT`
+
+- Backup: Add `stac-migration` image to the list of containers to stop on `birdhouse backup restore -r stac`.
+
+  Because the service was not stopped, and that it links to `stac-db` and its corresponding volume, the
+  following `docker volume rm stac-db` step would fail as the volume was still in use. This would lead to a restore
+  operation dealing with dirty database contents and potentially conflicting restore data that would not be applied.
+  Relates to added service `stac-migration` in [#534](https://github.com/bird-house/birdhouse-deploy/pull/534).
+
+- Backup: Allow `BIRDHOUSE_LOG_LEVEL` to override the `stac-populator` log level involved with `-r stac`.
+
+[2.16.8](https://github.com/bird-house/birdhouse-deploy/tree/2.16.8) (2025-08-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Allow user generated jupyterlab kernels to persist between sessions
+
+  If a jupyterlab user wants to create a virtual environment to use as a kernel they can do so
+  by creating a new virtual environment and installing it as a kernel with the `python -m ipykernel install`
+  command.
+
+  By default this command installs the kernel metadata in `/usr/local/share/jupyter/kernels` which is not
+  persisted to a docker volume and so the kernel is no longer visible when the jupyterlab container restarts.
+  Alternatively, the command can be run with the `--user` flag which installs the kernel metadata to the user's
+  home directory (which is persisted to a docker volume) but the jupyterlab API does not recognize kernels
+  installed in this way for some reason.
+
+  To solve this issue, this creates a symlink from the kernels metadata folder in the user's home directory to
+  a location outside of the user's home directory (`/usr/local/share/jupyter/user-kernels/kernels`) which can
+  be detected by the juptyerlab API.
+
+- Ensure jupyterlab container healthchecks don't fail by default
+
+  The healthchecks assume that the jupyter data directory is in `/home/$NB_USER/.local` regardless of the value 
+  of $HOME. This means that healthechecks for the jupyterlab containers were always failing even if the
+  container was actually healthy.
+
+  This fixes the issue by symlinking the relevant folder to `/home/$NB_USER/.local` within the container so that 
+  the healthchecks can run as expected.
+
+- Thanos-minio container should always restart on failure
+
+  Since this container wasn't restarting automatically it could make the entire stack unavailable if it failed.
+  The proxy container would refuse to start since it could not connect to the upstream thanos-minio server.
+
 [2.16.7](https://github.com/bird-house/birdhouse-deploy/tree/2.16.7) (2025-08-05)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -99,7 +181,7 @@
 
 - Fix invalid `STAC_POPULATOR_BACKUP_IMAGE='${STAC_POPULATOR_BACKUP_DOCKER}:${STAC_POPULATOR_BACKUP_VERSION}'`.
 
-  The `STAC_POPULATOR_BACKUP_IMAGE` variable was refering other variables missing their `_BACKUP` part.
+  The `STAC_POPULATOR_BACKUP_IMAGE` variable was referring other variables missing their `_BACKUP` part.
 
 [2.16.3](https://github.com/bird-house/birdhouse-deploy/tree/2.16.3) (2025-06-25)
 ------------------------------------------------------------------------------------------------------------------
