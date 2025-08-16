@@ -17,6 +17,20 @@
 
 ## Changes
 
+- STAC: Update STAC Browser to
+  [`crim-ca/stac-browser:3.4.0-dev`](https://github.com/crim-ca/stac-browser/releases/tag/3.4.0-dev).
+
+  - Dockers are now built directly with the GitHub CI releases
+    (see https://github.com/crim-ca/stac-browser/pkgs/container/stac-browser).
+  - Synchronize with latest changes (as of 2025-08-16).
+    - Beside the necessary `prefixPath` override for Nginx Proxy redirect and a minor HTML file resolution fix,
+      the image is entirely up-to-date with the official upstream code.
+    - Supports STAC 1.1.0.
+    - Supports language locales.
+    - Greatly improves parsing of STAC metadata and their visual rendering.
+    - Allows dynamic runtime [config.js](https://github.com/radiantearth/stac-browser/blob/main/config.js) overrides.
+      For the time being, only the required `catalogUrl` is overridden, but further settings could be added later on.
+
 - STAC: Update STAC API to `crim-ca/stac-app:2.0.1`.
 
   - Changes in [`crim-ca/stac-app:2.0.0`](https://github.com/crim-ca/stac-app/releases/tag/2.0.0) includes:
