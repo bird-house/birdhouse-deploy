@@ -15,7 +15,14 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Updated the `finch` service to v0.12.1.
+
+  This is a significant jump from the previous version (v0.9.2) and includes many bug fixes and dependency updates:
+
+  - anyascii (replacement for unidecode)
+  - xclim v0.43.0 (previously xclim v0.37)
 
 [2.16.10](https://github.com/bird-house/birdhouse-deploy/tree/2.16.10) (2025-08-16)
 ------------------------------------------------------------------------------------------------------------------
