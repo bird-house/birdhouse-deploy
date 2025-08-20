@@ -98,7 +98,7 @@ notebook_dir = '/notebook_dir'
 jupyterhub_data_dir = os.environ['JUPYTERHUB_USER_DATA_DIR']
 container_workspace_dir = join(notebook_dir, "writable-workspace")
 container_home_dir = join(container_workspace_dir, ".home")
-user_kernels_dir = "/usr/local/share/jupyter/user-kernels"
+user_kernels_dir = "/var/tmp/user-kernels"
 
 c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.environment = {
