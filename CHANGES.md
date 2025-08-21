@@ -15,7 +15,16 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Backup: Fix STAC representative data restore operation (`birdhouse backup restore -r stac`).
+
+  - Change the configured ``--user root`` to ``--user stac`` to match
+    the [Dockerfile of `stac-populator`](https://github.com/crim-ca/stac-populator/blob/master/docker/Dockerfile)
+    in order to resolve the preconfigured `PYESSV_ARCHIVE_HOME` directory.
+  - Add `stac-migration` along `stac-db` to the list of stopped/restored containers to ensure that the `stac-db`
+    volume used by both does not yield a docker daemon error of "volume in use", and to apply any relevant
+    migration scripts on the recreated `stac-db` volume.
 
 [2.16.9](https://github.com/bird-house/birdhouse-deploy/tree/2.16.9) (2025-08-15)
 ------------------------------------------------------------------------------------------------------------------

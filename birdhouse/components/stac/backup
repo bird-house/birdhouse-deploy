@@ -20,10 +20,11 @@ backup_representative() {
     #  This may cause errors in the future if new log levels are introduced.
     #  It is assumed for the moment that equivalent log level are desired between the populator and the CLI
     #  when debugging the entire birdhouse backup process, or that ERROR/WARN/INFO are used otherwise.
+    log INFO "Starting STAC populator [${STAC_POPULATOR_BACKUP_IMAGE}] for representative backup of STAC JSON data"
     docker run --rm \
                --network "${COMPOSE_PROJECT_NAME}_default" \
                -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
-               --user root \
+               --user stac \
                --env BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL} \
                --entrypoint sh \
                ${STAC_POPULATOR_BACKUP_IMAGE} \
@@ -34,20 +35,21 @@ backup_representative() {
 
 restore_representative() {
   _do_restore() {
-    ${BIRDHOUSE_EXE} --quiet compose rm -f stac-db
+    ${BIRDHOUSE_EXE} --quiet compose rm -f stac-db stac-migration
     docker volume rm "${COMPOSE_PROJECT_NAME}_stac-db"
     ${BIRDHOUSE_EXE} --quiet compose create stac-db
-    ${BIRDHOUSE_EXE} --quiet compose start stac-db stac
+    ${BIRDHOUSE_EXE} --quiet compose start stac-db stac-migration stac
     count=0
     while [ "$(docker inspect --format='{{.State.Health.Status}}' stac)" != "healthy" ]; do
       [ "$count" -gt 5 ] && log ERROR "stac service is not healthy after 10 seconds" && return 1
       sleep 2
       count="$(( $count + 1 ))"
     done
+    log INFO "Starting STAC populator [${STAC_POPULATOR_BACKUP_IMAGE}] for representative restore of STAC JSON data"
     docker run --rm \
                --network "${COMPOSE_PROJECT_NAME}_default" \
                -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
-               --user root \
+               --user stac \
                --env PYSTAC_STAC_VERSION_OVERRIDE="${PYSTAC_STAC_VERSION_OVERRIDE}" \
                ${STAC_POPULATOR_BACKUP_IMAGE} \
                --log-level-stderr ${BIRDHOUSE_LOG_LEVEL} \
