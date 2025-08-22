@@ -17,6 +17,26 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.16.11](https://github.com/bird-house/birdhouse-deploy/tree/2.16.11) (2025-08-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Added a Dependabot configuration for tracking version updates for `pip` and for GitHub Actions
+
+  GitHub Actions have been updated to their most recent versions and their versions now point to commit hashes instead
+  of version tags for security purposes. Dependabot has been configured to perform periodic updates on these actions.
+  Python requirements (`requirements.txt`) now use commit hashes generated via the `pip-tools` library for security purposes
+  as well. The list of Python library requirements has been moved to `requirements.in` and is also managed by Dependabot.
+
+- Added `nodefaults` to the `environment-dev.yml` to ensure that the Anaconda "default" repository is never used for environment creation
+
+- Replaced `bump2version` with a maintained fork (`bump-my-version`) in the development dependencies and the top-level Makefile
+    
+  Migrated the `.bumpversion.cfg` to use newer TOML format (`.bumpversion.toml`) and removed the logic in Makefile centred on
+  tracking and updating the date of last version bump as this is now handled dynamically via `bump-my-version`
+
+
 [2.16.10](https://github.com/bird-house/birdhouse-deploy/tree/2.16.10) (2025-08-16)
 ------------------------------------------------------------------------------------------------------------------
 
