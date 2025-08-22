@@ -8,7 +8,7 @@ override BIRDHOUSE_MAKE_DIR := $(shell realpath -P $$(dirname $(BIRDHOUSE_MAKE_C
 # Generic variables
 override SHELL       := bash
 override APP_NAME    := birdhouse-deploy
-override APP_VERSION := 2.16.10
+override APP_VERSION := 2.16.11
 
 # utility to remove comments after value of an option variable
 override clean_opt = $(shell echo "$(1)" | $(_SED) -r -e "s/[ '$'\t'']+$$//g")
