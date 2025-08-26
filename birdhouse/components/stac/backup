@@ -24,7 +24,7 @@ backup_representative() {
     docker run --rm \
                --network "${COMPOSE_PROJECT_NAME}_default" \
                -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
-               --user stac \
+               --user root \
                --env BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL} \
                --entrypoint sh \
                ${STAC_POPULATOR_BACKUP_IMAGE} \
@@ -49,7 +49,7 @@ restore_representative() {
     docker run --rm \
                --network "${COMPOSE_PROJECT_NAME}_default" \
                -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
-               --user stac \
+               --user root \
                --env PYSTAC_STAC_VERSION_OVERRIDE="${PYSTAC_STAC_VERSION_OVERRIDE}" \
                ${STAC_POPULATOR_BACKUP_IMAGE} \
                --log-level-stderr ${BIRDHOUSE_LOG_LEVEL} \

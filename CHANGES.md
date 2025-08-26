@@ -19,9 +19,9 @@
 
 - Backup: Fix STAC representative data restore operation (`birdhouse backup restore -r stac`).
 
-  - Change the configured ``--user root`` to ``--user stac`` to match
+  - Change the default `STAC_POPULATOR_BACKUP_VERSION=0.9.0` to employ
     the [Dockerfile of `stac-populator`](https://github.com/crim-ca/stac-populator/blob/master/docker/Dockerfile)
-    in order to resolve the preconfigured `PYESSV_ARCHIVE_HOME` directory.
+    fix with preconfigured `PYESSV_ARCHIVE_HOME` directory.
   - Add `stac-migration` along `stac-db` to the list of stopped/restored containers to ensure that the `stac-db`
     volume used by both does not yield a docker daemon error of "volume in use", and to apply any relevant
     migration scripts on the recreated `stac-db` volume.
