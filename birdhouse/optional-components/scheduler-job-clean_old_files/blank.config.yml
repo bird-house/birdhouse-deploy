@@ -1,0 +1,1 @@
+# this file intentionally contains no content and is mounted to the scheduler directory if a clean_old_files job is not enabled.
