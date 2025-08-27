@@ -20,6 +20,18 @@
 - Updated configuration of `.github/labeler.yml` to follow the new `actions/labeler` v5.0 conventions
 
 
+[2.16.13](https://github.com/bird-house/birdhouse-deploy/tree/2.16.13) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Updated the `finch` service to v0.12.1.
+
+  This is a significant jump from the previous version (v0.9.2) and includes many bug fixes and dependency updates:
+
+  - anyascii (replacement for unidecode)
+  - xclim v0.43.0 (previously xclim v0.37)
+
 [2.16.12](https://github.com/bird-house/birdhouse-deploy/tree/2.16.12) (2025-08-27)
 ------------------------------------------------------------------------------------------------------------------
 
