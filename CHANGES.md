@@ -17,8 +17,11 @@
 
 ## Fixes
 
-- Updated configuration of `.github/labeler.yml` to follow the new `actions/labeler` v5.0 conventions
+- Updated configuration of `.github/labeler.yml` to follow the new `actions/labeler` v5.0 conventions.
 
+    In `Birdhouse-deploy` v2.16.11, the `actions/labeler` action was updated to v5.0 which introduced a new configuration
+    format for the `.github/labeler.yml` file. This change updates the configuration to follow the new format. See: 
+    [actions/labeler v5.0 release notes](https://github.com/actions/labeler/releases/tag/v5.0.0).
 
 [2.16.13](https://github.com/bird-house/birdhouse-deploy/tree/2.16.13) (2025-08-27)
 ------------------------------------------------------------------------------------------------------------------
