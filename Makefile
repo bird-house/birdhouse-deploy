@@ -8,7 +8,7 @@ override BIRDHOUSE_MAKE_DIR := $(shell realpath -P $$(dirname $(BIRDHOUSE_MAKE_C
 # Generic variables
 override SHELL       := bash
 override APP_NAME    := birdhouse-deploy
-override APP_VERSION := 2.16.10
+override APP_VERSION := 2.16.12
 
 # utility to remove comments after value of an option variable
 override clean_opt = $(shell echo "$(1)" | $(_SED) -r -e "s/[ '$'\t'']+$$//g")
@@ -126,11 +126,11 @@ BUMP_XARGS := $(call clean_opt,$(BUMP_XARGS))
 ifeq ($(filter dry, $(MAKECMDGOALS)), dry)
   BUMP_XARGS := $(BUMP_XARGS) --dry-run
 endif
-BUMP_CFG  ?= .bumpversion.cfg				## Bump version configuration (default recommended)
+BUMP_CFG  ?= .bumpversion.toml				## Bump version configuration (default recommended)
 BUMP_CFG  := $(call clean_opt,$(BUMP_CFG))
-BUMP_TOOL := bump2version
+BUMP_TOOL := bump-my-version
 BUMP_PATH := $(CONDA_ENV_PATH)/bin/$(BUMP_TOOL)
-BUMP_CMD  := $(BUMP_TOOL) --config-file "$(BUMP_CFG)"
+BUMP_CMD  := $(BUMP_TOOL) bump --config-file "$(BUMP_CFG)"
 
 # guess the applicable semantic level update if provided via major|minor|patch targets
 # perform validation to avoid many combination provided simultaneously
@@ -193,24 +193,16 @@ bump: bump-check bump-install  ## Bump version using specified <VERSION> (call: 
 	@[ $(BUMP_VERSION_INPUT) -eq 0 ] || [ "${VERSION}" ] || ( \
 		$(MSG_E) "Argument 'VERSION' is not specified to bump version"; exit 1 \
 	)
-	@$(SHELL) -c ' \
-		PRE_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2) && \
-		$(CONDA_CMD) $(BUMP_CMD) $(BUMP_XARGS) $(BUMP_VERSION_LEVEL) && \
-		POST_RELEASE_TIME=$$(head -n 1 RELEASE.txt | cut -d " " -f 2) && \
-		echo "Replace $${PRE_RELEASE_TIME} → $${POST_RELEASE_TIME}" && \
-		$(_SED) -i "s/$${PRE_RELEASE_TIME}/$${POST_RELEASE_TIME}/g" $(BUMP_CFG) && \
-		git add $(BUMP_CFG) && \
-		git commit --amend --no-edit \
-	'
+	@$(SHELL) -c '$(CONDA_CMD) $(BUMP_CMD) $(BUMP_XARGS) $(BUMP_VERSION_LEVEL)'
 
 .PHONY: bump-install
-bump-install:   ## Installs bumpversion if not detected in the environment
+bump-install:   ## Installs bump-my-version if not detected in the environment
 	@-$(SHELL) -c '$(CONDA_CMD) test -f "$(BUMP_PATH)" || pip install $(PIP_XARGS) $(BUMP_TOOL)'
 
 .PHONY: bump-check
-bump-check:		## Verifies that required bumpversion files are found
+bump-check:		## Verifies that required bump-my-version files are found
 	@[ -f "$(BUMP_CFG)" ] || ( \
-		$(MSG_E) "Missing required file [$(BUMP_CFG)]. Run [make init-bump] or update BUMP_CFG accordingly."; \
+		$(MSG_E) "Missing required file [$(BUMP_CFG)]. Run [bump-my-version sample-config] or update BUMP_CFG accordingly."; \
 		exit 1 \
 	);
 
