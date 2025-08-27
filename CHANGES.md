@@ -44,6 +44,43 @@
 
 - STAC: Add `optional/stac-db-persist` and `STAC_DB_PERSIST_DIR` to allow custom STAC DB metadata storage location.
 
+- Drop unsupported `pytest-lazy-fixture` python package for tests
+
+  This package is no longer maintained and breaks for `pytest` versions 8+. We do not need it for our tests so
+  it was dropped. In the future if we need to support lazy fixtures we should use the `pytest-lazy-fixtures`
+  package instead (which is actively maintained).
+
+- Dependabot automated updates for Python dependencies.
+
+  The following Python dependencies were updated to their most recent compatible releases:
+   - `jsonschema`: 4.17.1 -> 4.25.1
+   - `prometheus-client`: 0.22.0 -> 0.22.1
+   - `pytest`: 7.2.2 -> 8.4.1
+   - `python-dotenv`: 1.0.1 -> 1.1.1
+   - `requests`: 2.32.4 -> 2.32.5
+
+[2.16.14](https://github.com/bird-house/birdhouse-deploy/tree/2.16.14) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Updated configuration of `.github/labeler.yml` to follow the new `actions/labeler` v5.0 conventions.
+
+  In `Birdhouse-deploy` v2.16.11, the `actions/labeler` action was updated to v5.0 which introduced a new configuration
+  format for the `.github/labeler.yml` file. This change updates the configuration to follow the new format. See: 
+  [actions/labeler v5.0 release notes](https://github.com/actions/labeler/releases/tag/v5.0.0).
+
+[2.16.13](https://github.com/bird-house/birdhouse-deploy/tree/2.16.13) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Updated the `finch` service to v0.12.1.
+
+  This is a significant jump from the previous version (v0.9.2) and includes many bug fixes and dependency updates:
+
+  - anyascii (replacement for unidecode)
+  - xclim v0.43.0 (previously xclim v0.37)
 
 [2.16.12](https://github.com/bird-house/birdhouse-deploy/tree/2.16.12) (2025-08-27)
 ------------------------------------------------------------------------------------------------------------------
