@@ -17,6 +17,17 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.16.12](https://github.com/bird-house/birdhouse-deploy/tree/2.16.12) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- User kernels directory should always be writable
+
+  The destination used to symlink user kernels (`/usr/local/share/jupyter`) is not always writable depending 
+  on the jupyterlab docker image that is used to spawn the jupyterlab containers. To ensure that it is always 
+  writable this places the link under `/var/tmp` which is guaranteed to be writable.
+
 [2.16.11](https://github.com/bird-house/birdhouse-deploy/tree/2.16.11) (2025-08-22)
 ------------------------------------------------------------------------------------------------------------------
 
