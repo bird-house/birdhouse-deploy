@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.16.14](https://github.com/bird-house/birdhouse-deploy/tree/2.16.14) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Updated configuration of `.github/labeler.yml` to follow the new `actions/labeler` v5.0 conventions.
