@@ -1,0 +1,7 @@
+volumes:
+  stac-db:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${STAC_DB_PERSIST_DIR}
+      o: bind
