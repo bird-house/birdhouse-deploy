@@ -23,6 +23,96 @@
   on the jupyterlab docker image that is used to spawn the jupyterlab containers. To ensure that it is always 
   writable this places the link under `/var/tmp` which is guaranteed to be writable.
 
+[2.16.11](https://github.com/bird-house/birdhouse-deploy/tree/2.16.11) (2025-08-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Added a Dependabot configuration for tracking version updates for `pip` and for GitHub Actions
+
+  GitHub Actions have been updated to their most recent versions and their versions now point to commit hashes instead
+  of version tags for security purposes. Dependabot has been configured to perform periodic updates on these actions.
+  Python requirements (`requirements.txt`) now use commit hashes generated via the `pip-tools` library for security purposes
+  as well. The list of Python library requirements has been moved to `requirements.in` and is also managed by Dependabot.
+
+- Added `nodefaults` to the `environment-dev.yml` to ensure that the Anaconda "default" repository is never used for environment creation
+
+- Replaced `bump2version` with a maintained fork (`bump-my-version`) in the development dependencies and the top-level Makefile
+    
+  Migrated the `.bumpversion.cfg` to use newer TOML format (`.bumpversion.toml`) and removed the logic in Makefile centred on
+  tracking and updating the date of last version bump as this is now handled dynamically via `bump-my-version`
+
+
+[2.16.10](https://github.com/bird-house/birdhouse-deploy/tree/2.16.10) (2025-08-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Proxy: allow to add parameters to Nginx listen directives via env.local
+
+  One usage is to add the parameter "http2" to enable HTTP/2 protocol.
+
+  Before
+  ```sh
+  $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
+  HTTP/1.1 200 OK
+  ```
+
+  After `export PROXY_LISTEN_443_PARAMS="http2"` is set in `env.local` and
+  `proxy` container restarted
+  ```sh
+  $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
+  HTTP/2 200
+  ```
+
+
+[2.16.9](https://github.com/bird-house/birdhouse-deploy/tree/2.16.9) (2025-08-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Backup: Allow `BIRDHOUSE_BACKUP_VOLUME` to be employed directly as directory.
+
+  This feature _**requires**_ using the `--no-restic` option to avoid it being involved by ``--snapshot`` override.
+  Combining a directory path and omitting `--no-restic` can lead to undesired side effects.
+  However, it allows using backup/restore operations for quick data manipulations on alternate locations than a
+  volume to offer flexibility or to bypass `restic` operations.
+  This can be employed for fixing problematic service data migrations or file system limitations with volumes.
+
+  The directory structure must match exactly with `BIRDHOUSE_BACKUP_VOLUME` when used as volume
+  (e.g.: `/tmp/backup/{component}-{backup_type}/...`).
+
+  This feature also disables the automatic cleanup of the volume (since the directory is used directly).
+  Therefore, users have to manage the contents of `BIRDHOUSE_BACKUP_VOLUME` on their own and consistently.
+
+- Backup: Avoid `birdhouse backup restore` operation to complain about missing `-s|--snapshot` when not required.
+
+  For example, `BIRDHOUSE_BACKUP_VOLUME=/tmp/backup birdhouse backup restore --no-restic -r stac` only operates on local
+  data contents to be restored into the server instance. No remote `restic` snapshot is required to run the operation.
+
+- Backup: Unification of script shebangs, variables names and function names with invoked operations.
+
+  - Renames related to `backup [create|restore|restic]` when they apply to many operations simultaneously.
+    This helps highlight that a variable with explicitly `CREATE`, `RESTORE` or `RESTIC` only applies to that
+    specific operation, whereas others are shared.
+
+    - `parse_backup_restore_common_args` => `parse_backup_common_args`
+    - `BIRDHOUSE_BACKUP_RESTORE_NO_RESTIC` => `BIRDHOUSE_BACKUP_NO_RESTIC`
+    - `BIRDHOUSE_BACKUP_RESTORE_COMMAND` => `BIRDHOUSE_BACKUP_COMMAND`
+
+  - Renames to match the common `BIRDHOUSE_BACKUP_[...]` prefix employed by other "backup" variables:
+
+    - `BIRDHOUSE_RESTORE_SNAPSHOT` => `BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT`
+
+- Backup: Add `stac-migration` image to the list of containers to stop on `birdhouse backup restore -r stac`.
+
+  Because the service was not stopped, and that it links to `stac-db` and its corresponding volume, the
+  following `docker volume rm stac-db` step would fail as the volume was still in use. This would lead to a restore
+  operation dealing with dirty database contents and potentially conflicting restore data that would not be applied.
+  Relates to added service `stac-migration` in [#534](https://github.com/bird-house/birdhouse-deploy/pull/534).
+
+- Backup: Allow `BIRDHOUSE_LOG_LEVEL` to override the `stac-populator` log level involved with `-r stac`.
+
 [2.16.8](https://github.com/bird-house/birdhouse-deploy/tree/2.16.8) (2025-08-13)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -122,7 +212,7 @@
 
 - Fix invalid `STAC_POPULATOR_BACKUP_IMAGE='${STAC_POPULATOR_BACKUP_DOCKER}:${STAC_POPULATOR_BACKUP_VERSION}'`.
 
-  The `STAC_POPULATOR_BACKUP_IMAGE` variable was refering other variables missing their `_BACKUP` part.
+  The `STAC_POPULATOR_BACKUP_IMAGE` variable was referring other variables missing their `_BACKUP` part.
 
 [2.16.3](https://github.com/bird-house/birdhouse-deploy/tree/2.16.3) (2025-06-25)
 ------------------------------------------------------------------------------------------------------------------
