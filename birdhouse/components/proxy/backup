@@ -1,0 +1,15 @@
+#!/bin/sh
+
+backup_logs() {
+  _do_backup() {
+    ${BIRDHOUSE_EXE} --quiet compose run --rm \
+                             -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
+                             proxy \
+                             sh -c "mkdir /backup/proxy-logs; cp ${PROXY_LOG_PATH} /backup/proxy-logs/${PROXY_LOG_FILE}"
+  }
+  backup_create_runner 'proxy access logs' _do_backup 'proxy'
+}
+
+restore_logs() {
+  BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER=true backup_restore_runner 'proxy access logs' : 'proxy-logs'
+}

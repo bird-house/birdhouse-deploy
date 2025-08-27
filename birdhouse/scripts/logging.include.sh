@@ -5,7 +5,7 @@ if [ -z "${BIRDHOUSE_COLOR}" ] && [ -z "${NO_COLOR}" ]; then
     BIRDHOUSE_COLOR=1
 fi 
 
-if [ "${BIRDHOUSE_COLOR}" = "1" ]; then
+if [ "${BIRDHOUSE_COLOR}" = "1" ] && [ -n "${TERM}" ]; then
     BLUE=$(tput setaf 12)
     GRAY=$(tput setaf 8)
     CYAN=$(tput setaf 6)
@@ -107,7 +107,7 @@ log_dest() {
 
 for level in CRITICAL DEBUG INFO WARN ERROR; do 
     override="$(echo "${BIRDHOUSE_LOG_DEST_OVERRIDE}" | sed "s/\(^\|.*:\)\(${level}:\(quiet\|fd\|file\):[^:]*\).*\|.*/\2/")"
-    no_override="$([ "${level}" = "CRITICAL" ] && echo NO_OVERRIDE)"
+    no_override="$([ "${level}" = "CRITICAL" ] && echo NO_OVERRIDE)" || true
     if [ -z "${override}" ] && echo "${BIRDHOUSE_LOG_DEST_OVERRIDE}" | grep -q "\(^\|.*:\)${level}:"; then
         echo "${LOG_CRITICAL}Invalid log destination override for level '${level}': [BIRDHOUSE_LOG_DEST_OVERRIDE=${BIRDHOUSE_LOG_DEST_OVERRIDE}]" | log_dest CRITICAL "$no_override"
         exit 2

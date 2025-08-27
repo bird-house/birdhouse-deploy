@@ -24,6 +24,389 @@
   
   (see `env.local.example` or the `scheduler` documentation for details).
 
+[2.16.12](https://github.com/bird-house/birdhouse-deploy/tree/2.16.12) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- User kernels directory should always be writable
+
+  The destination used to symlink user kernels (`/usr/local/share/jupyter`) is not always writable depending 
+  on the jupyterlab docker image that is used to spawn the jupyterlab containers. To ensure that it is always 
+  writable this places the link under `/var/tmp` which is guaranteed to be writable.
+
+[2.16.11](https://github.com/bird-house/birdhouse-deploy/tree/2.16.11) (2025-08-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Added a Dependabot configuration for tracking version updates for `pip` and for GitHub Actions
+
+  GitHub Actions have been updated to their most recent versions and their versions now point to commit hashes instead
+  of version tags for security purposes. Dependabot has been configured to perform periodic updates on these actions.
+  Python requirements (`requirements.txt`) now use commit hashes generated via the `pip-tools` library for security purposes
+  as well. The list of Python library requirements has been moved to `requirements.in` and is also managed by Dependabot.
+
+- Added `nodefaults` to the `environment-dev.yml` to ensure that the Anaconda "default" repository is never used for environment creation
+
+- Replaced `bump2version` with a maintained fork (`bump-my-version`) in the development dependencies and the top-level Makefile
+    
+  Migrated the `.bumpversion.cfg` to use newer TOML format (`.bumpversion.toml`) and removed the logic in Makefile centred on
+  tracking and updating the date of last version bump as this is now handled dynamically via `bump-my-version`
+
+
+[2.16.10](https://github.com/bird-house/birdhouse-deploy/tree/2.16.10) (2025-08-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Proxy: allow to add parameters to Nginx listen directives via env.local
+
+  One usage is to add the parameter "http2" to enable HTTP/2 protocol.
+
+  Before
+  ```sh
+  $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
+  HTTP/1.1 200 OK
+  ```
+
+  After `export PROXY_LISTEN_443_PARAMS="http2"` is set in `env.local` and
+  `proxy` container restarted
+  ```sh
+  $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
+  HTTP/2 200
+  ```
+
+
+[2.16.9](https://github.com/bird-house/birdhouse-deploy/tree/2.16.9) (2025-08-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Backup: Allow `BIRDHOUSE_BACKUP_VOLUME` to be employed directly as directory.
+
+  This feature _**requires**_ using the `--no-restic` option to avoid it being involved by ``--snapshot`` override.
+  Combining a directory path and omitting `--no-restic` can lead to undesired side effects.
+  However, it allows using backup/restore operations for quick data manipulations on alternate locations than a
+  volume to offer flexibility or to bypass `restic` operations.
+  This can be employed for fixing problematic service data migrations or file system limitations with volumes.
+
+  The directory structure must match exactly with `BIRDHOUSE_BACKUP_VOLUME` when used as volume
+  (e.g.: `/tmp/backup/{component}-{backup_type}/...`).
+
+  This feature also disables the automatic cleanup of the volume (since the directory is used directly).
+  Therefore, users have to manage the contents of `BIRDHOUSE_BACKUP_VOLUME` on their own and consistently.
+
+- Backup: Avoid `birdhouse backup restore` operation to complain about missing `-s|--snapshot` when not required.
+
+  For example, `BIRDHOUSE_BACKUP_VOLUME=/tmp/backup birdhouse backup restore --no-restic -r stac` only operates on local
+  data contents to be restored into the server instance. No remote `restic` snapshot is required to run the operation.
+
+- Backup: Unification of script shebangs, variables names and function names with invoked operations.
+
+  - Renames related to `backup [create|restore|restic]` when they apply to many operations simultaneously.
+    This helps highlight that a variable with explicitly `CREATE`, `RESTORE` or `RESTIC` only applies to that
+    specific operation, whereas others are shared.
+
+    - `parse_backup_restore_common_args` => `parse_backup_common_args`
+    - `BIRDHOUSE_BACKUP_RESTORE_NO_RESTIC` => `BIRDHOUSE_BACKUP_NO_RESTIC`
+    - `BIRDHOUSE_BACKUP_RESTORE_COMMAND` => `BIRDHOUSE_BACKUP_COMMAND`
+
+  - Renames to match the common `BIRDHOUSE_BACKUP_[...]` prefix employed by other "backup" variables:
+
+    - `BIRDHOUSE_RESTORE_SNAPSHOT` => `BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT`
+
+- Backup: Add `stac-migration` image to the list of containers to stop on `birdhouse backup restore -r stac`.
+
+  Because the service was not stopped, and that it links to `stac-db` and its corresponding volume, the
+  following `docker volume rm stac-db` step would fail as the volume was still in use. This would lead to a restore
+  operation dealing with dirty database contents and potentially conflicting restore data that would not be applied.
+  Relates to added service `stac-migration` in [#534](https://github.com/bird-house/birdhouse-deploy/pull/534).
+
+- Backup: Allow `BIRDHOUSE_LOG_LEVEL` to override the `stac-populator` log level involved with `-r stac`.
+
+[2.16.8](https://github.com/bird-house/birdhouse-deploy/tree/2.16.8) (2025-08-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Allow user generated jupyterlab kernels to persist between sessions
+
+  If a jupyterlab user wants to create a virtual environment to use as a kernel they can do so
+  by creating a new virtual environment and installing it as a kernel with the `python -m ipykernel install`
+  command.
+
+  By default this command installs the kernel metadata in `/usr/local/share/jupyter/kernels` which is not
+  persisted to a docker volume and so the kernel is no longer visible when the jupyterlab container restarts.
+  Alternatively, the command can be run with the `--user` flag which installs the kernel metadata to the user's
+  home directory (which is persisted to a docker volume) but the jupyterlab API does not recognize kernels
+  installed in this way for some reason.
+
+  To solve this issue, this creates a symlink from the kernels metadata folder in the user's home directory to
+  a location outside of the user's home directory (`/usr/local/share/jupyter/user-kernels/kernels`) which can
+  be detected by the juptyerlab API.
+
+- Ensure jupyterlab container healthchecks don't fail by default
+
+  The healthchecks assume that the jupyter data directory is in `/home/$NB_USER/.local` regardless of the value 
+  of $HOME. This means that healthechecks for the jupyterlab containers were always failing even if the
+  container was actually healthy.
+
+  This fixes the issue by symlinking the relevant folder to `/home/$NB_USER/.local` within the container so that 
+  the healthchecks can run as expected.
+
+- Thanos-minio container should always restart on failure
+
+  Since this container wasn't restarting automatically it could make the entire stack unavailable if it failed.
+  The proxy container would refuse to start since it could not connect to the upstream thanos-minio server.
+
+[2.16.7](https://github.com/bird-house/birdhouse-deploy/tree/2.16.7) (2025-08-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fixed a malformed `rsync` command in `deploy-data-raven-testdata-to-thredds.yml` workflow.
+
+  The `--exclude` option was not used properly which would cause the `rsync` command to fail. This is now fixed.
+
+[2.16.6](https://github.com/bird-house/birdhouse-deploy/tree/2.16.6) (2025-08-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyter env: Updated jupyter image (`py311-250423-update250730`) with new dependency `intake-esgf`, significantly
+  changed `ravenpy` (v0.19.0), as well as marginal updates to Ouranos core libraries: `xclim` (v0.57.0),
+  `xsdba` (v0.12.3), and `xscen` (v0.5.0).
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#150](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/150)
+  for more info.
+
+- Updated `deploy-data-raven-testdata-to-thredds.yml` to reflect the new `raven-testdata` repository structure.
+
+  The `deploy-data-raven-testdata-to-thredds.yml` workflow was updated to reflect the new structure of the `raven-testdata` repository. 
+  The new structure includes a `data` directory that contains all the test data files and provides more granular
+  control by setting tagged commits as targets for the test data required for a specific version of `raven` and `RavenPy`.
+  This new layout emulates the same control functionality employed in `xclim`/`xclim-testdata`.
+
+[2.16.5](https://github.com/bird-house/birdhouse-deploy/tree/2.16.5) (2025-07-18)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- `canarieapi`: Update to default version [1.0.1](https://github.com/Ouranosinc/CanarieAPI/blob/master/CHANGES.rst#101-2025-07-17). 
+
+  - Bug fix for configuration setting `PARSE_LOGS`.
+  - Security updates.
+
+- `cowbird`: Update to default version [2.5.2](https://github.com/Ouranosinc/cowbird/blob/master/CHANGES.rst#252-2025-07-17). 
+
+  - Security updates.
+
+- `magpie`: Update to default version [4.2.0](https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst#420-2024-12-12).
+
+  - Allow `ServiceTHREDDS` to use `/` in its metadata and data prefixes.
+  - Security updates.
+
+- `weaver`: Update to default version [6.6.2](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#662-2025-06-27).
+
+  - Fixes for HTML page endpoints.
+  - Various CLI fixes.
+  - Security updates.
+
+## Fixes 
+
+- Fix empty newlines displayed on `COMPOSE_CONF_LIST` output.
+
+[2.16.4](https://github.com/bird-house/birdhouse-deploy/tree/2.16.4) (2025-07-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix invalid `STAC_POPULATOR_BACKUP_IMAGE='${STAC_POPULATOR_BACKUP_DOCKER}:${STAC_POPULATOR_BACKUP_VERSION}'`.
+
+  The `STAC_POPULATOR_BACKUP_IMAGE` variable was referring other variables missing their `_BACKUP` part.
+
+[2.16.3](https://github.com/bird-house/birdhouse-deploy/tree/2.16.3) (2025-06-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes 
+
+- Fix `thredds_transfer_size_kb_total` name in `optional-components/prometheus-longterm-rules`.
+
+  Counter names have the suffix `_total`. Without this suffix, the counter value is not discovered
+  properly in a rule and the prometheus rule will never return valid data.
+
+- Fix bugs in prometheus-log-exporter.
+
+- Avoid `tput: No value for $TERM and no -T specified` warnings if terminal is undefined.
+
+[2.16.2](https://github.com/bird-house/birdhouse-deploy/tree/2.16.2) (2025-06-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add option to backup "representative" application data
+
+  Representative data is an application agnostic version of the stateful data used by components to store 
+  the current state of the running service.
+
+  This includes an option to backup and restore representative data for the `stac` component. Other components
+  should be added in future updates.
+
+- Add additional documentation for backups
+
+  Also include a new script `birdhouse/scripts/create-restic-keypair.sh` to help users create and test SSH keypairs
+  for use by restic when accessing restic repositories over SFTP.
+
+
+[2.16.1](https://github.com/bird-house/birdhouse-deploy/tree/2.16.1) (2025-06-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow to set Prometheus log level for the monitoring and prometheus-longterm-metrics components
+
+## Fixes
+
+- Fix typo in prometheus-longterm-rules "thredds:kb_transfer_size_kb:increase_1h rule"
+
+  Fix the follow error
+  ```
+  ts=2025-06-17T05:09:00.903Z caller=manager.go:201 level=error component="rule manager" msg="loading groups failed" err="/etc/prometheus/prometheus-longterm-metrics.rules: 41:17: group \"longterm-metrics-hourly\", rule 6, \"thredds:kb_transfer_size_kb:increase_1h\": could not parse expression: 1:40: parse error: unexpected right parenthesis ')'"
+  ```
+
+[2.16.0](https://github.com/bird-house/birdhouse-deploy/tree/2.16.0) (2025-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add `backup` command in `bin/birdhouse` to backup and restore data to a restic repository
+
+  This allows users to backup and restore:
+    - application data, user data, and log data for all components
+    - birdhouse logs
+    - docker container logs
+    - local environement file
+  
+  Restoring data either involves restoring it to a named volume (determined by `BIRDHOUSE_BACKUP_VOLUME`) or in the case
+  of user data and application data, to overwrite the current data with the backup.
+
+  For full details run the `bin/birdhouse backup --help` command.
+
+  Backups are stored in a [restic](https://restic.readthedocs.io/en/stable/) repository which can be configured by creating 
+  a file at `BIRDHOUSE_BACKUP_RESTIC_ENV_FILE` (default: `birdhouse/restic.env`)  which contains the 
+  [environment variables](https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables) 
+  necessary for restic to create, and access a repository (see `birdhouse/restic.env.example` for details).
+
+  The backup and restore commands can be further customized by setting any of the following variables:
+
+  - `BIRDHOUSE_BACKUP_SSH_KEY_DIR`: 
+    - The location of a directory that contains an SSH key used to access a remote machine where the restic repository 
+      is hosted. Required if accessing a restic repository using the sftp protocol.
+  - `BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS`: 
+    - Additional options to pass to the `restic backup` command when running the `birdhouse backup create` command.
+       For example: `BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS='--skip-if-unchanged --exclude-file "file-i-do-not-want-backedup.txt"`
+  - `BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS`:
+    - Additional options to pass to the `restic forget` command after running the backup job. This allows you to ensure 
+      that restic deletes old backups according to your backup retention policy. If this is set, then restic will also 
+      run the `restic prune` command after every backup to clean up old backup files.
+      For example, to store backups daily for 1 week, weekly for 1 month, and monthly for a year:
+      `BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS='--keep-daily=7 --keep-weekly=4 --keep-monthly=12'`
+    
+- Add scheduler job to automatically backup data
+
+  Create a new scheduler job at `optional-components/scheduler-job-backup` which runs the `bin/birdhouse backup create` 
+  command at regular intervals to ensure that the birdhouse stack's data is regularly backed up.
+
+  To configure this job you must set the following variables:
+    - `SCHEDULER_JOB_BACKUP_FREQUENCY`:
+      - Cron schedule when to run this scheduler job (default is `'1 1 * * *'`, at 1:01 am daily)
+    - `SCHEDULER_JOB_BACKUP_ARGS`:
+      - Extra arguments to pass to the 'bin/birdhouse backup create' command when backing up data.
+        For example, to back up everything set it to `'-a \* -u \* -l \* --birdhouse-logs --local-env-file'`
+
+- Add `configs --print-log-command` option in `bin/birdhouse`
+
+  This allows users to print a command that can be used to load the birdhouse logging functions in the current
+  process. This is very similar to the `bin/birdhouse configs --print-config-command` except that it only loads
+  the logging functions.
+
+  Example usage:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-log-command)
+  log INFO 'here is an example log message'
+  ```
+
+  It is important to have a distinct option to just load the log commands because functions are not inherited
+  by subprocesses which means that if you do something like:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-config-command)
+  log INFO 'this one works'
+  sh -c 'log ERROR "this one does not"'
+  ```
+
+  the log command in the subprocess does not work. We would have to re-run the `eval` in the subprocess which would
+  unnecessarily redefine all the existing configuration variables. Instead we can now do this:
+
+  ```sh
+  eval $(bin/birdhouse configs --print-log-command)
+  log INFO 'this one works'
+  sh -c 'eval $(bin/birdhouse configs --print-log-command); log INFO "this one does work now"'
+  ```
+
+  which is much quicker and does not require redefining all configuration variables.
+
+  Note: this was introduced as a helper for the `bin/birdhouse backup` commands but was made part of the public
+  interface because it is potentially very useful for other scripts that want to use the birdhouse logging mechanism. 
+  For example, the `components/weaver/post-docker-compose-up` script defines its own logging functions which could
+  now be easily replaced using this method.
+
+- Add `BIRDHOUSE_COMPOSE_TEMPLATE_SKIP` environment variable to explicitly skip rebuilding template files if `true`
+
+  This gives us the option to skip re-building template files even if the command to `bin/birdhouse compose` is `up`
+  or `restart`. This is essentially the opposite of `BIRDHOUSE_COMPOSE_TEMPLATE_FORCE`.
+
+  This option is necessary when running a command while the birdhouse stack is already running and we don't want to
+  change the template files for the running stack.
+
+- Add Prometheus rules defining long-term metrics (hourly and daily).
+
+## Fixes
+
+- Replace non-portable `sed -z` option
+
+  The `birdhouse/scripts/get-services-json.include.sh` script includes the `sed` command using the `-z` flag. The
+  `-z` flag is non-standard and is not supported by several well-used versions of `sed`.
+
+  This became apparent when this script is run by the `optional-components/scheduler-job-backup` job which runs
+  in an alpine based docker container.
+
+- Fix bugs in Prometheus log parser meant to measure download volume. 
+
+- Fix issue where the current environment is printed to stdout if no shell exec flags are set.
+
+[2.15.1](https://github.com/bird-house/birdhouse-deploy/tree/2.15.1) (2025-06-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Stop build when a build step fails
+
+  If a command exits with a non-zero exit code when deploying the stack (i.e. running `birdhouse-compose.sh`) the
+  build process should stop and report that an unexpected error occurs.
+
+  This is enforced by setting the `-e` flag when `birdhouse-compose.sh` is run by default. Several commands have been
+  updated so that they are followed by `|| true` so that if they exit with a non-zero status it will not stop the
+  script.
+
+  Also a new environment variable `BIRDHOUSE_DEBUG_MODE` is introduced which can be set to `true` to set the `-x`
+  flag which will write every command that is run by `birdhouse-compose.sh` to stderr. Previously, setting the
+  `BIRDHOUSE_LOG_LEVEL` to `DEBUG` would set the `-x` flag whenever `pre-docker-compose-up` and `post-docker-compose-up`
+  scripts are executed. Please use the `BIRDHOUSE_DEBUG_MODE` instead from now on. `BIRDHOUSE_LOG_LEVEL` should
+  only be used to set the log level of the birdhouse logger.
+
 [2.15.0](https://github.com/bird-house/birdhouse-deploy/tree/2.15.0) (2025-05-27)
 ------------------------------------------------------------------------------------------------------------------
 

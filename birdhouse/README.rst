@@ -150,7 +150,6 @@ To launch all the containers, use the following command:
 If you get a ``'No applicable error code, please check error log'`` error from the WPS processes, please make sure that the WPS databases exists in the
 postgres instance. See `create-wps-pgsql-databases.sh <scripts/create-wps-pgsql-databases.sh>`_ (:download:`download </birdhouse/scripts/create-wps-pgsql-databases.sh>`).
 
-
 Production deployment hardware recommendations
 ----------------------------------------------
 
@@ -162,7 +161,6 @@ Disk: at least 100 TB, depending how much data is hosted on Thredds and Geoserve
 
 In general, the more users, the more cpu cores and memory needed.  The more data, more memory and bigger and faster disks needed.
 
-
 Note about WPS request timeout
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -173,7 +171,6 @@ Note about WPS request timeout
   Default value ``PROXY_READ_TIMEOUT_VALUE`` in `default.env`_ (:download:`download <birdhouse/default.env>`).
 
   Overrideable in ``env.local`` file, as usual for all values in ``default.env`` file.
-
 
 Manual steps post deployment
 ----------------------------
@@ -235,7 +232,6 @@ The canarie monitoring link
 ``https://<BIRDHOUSE_FQDN>/canarie/node/service/stats`` can be used to confirm the
 instance is ready to run the automated end-to-end test suite.  That link should
 return the HTTP response code ``200``.
-
 
 Vagrant instructions
 --------------------
@@ -350,22 +346,83 @@ not able to access protected URLs:
   not be fully functional when self-signed certificates are enabled. For example, accessing other components through
   the JupyterLab interface may fail with an ``SSLError``.
 
-Framework tests
----------------
+Development and testing
+-----------------------
 
-Core features of the platform has tests to prevent regressions.
+To set up a development environment, we recommend using an Anaconda environment.
+
+The repository contains an `environment-dev.yml` file for conda that lists dependencies needed to run the development
+environment (including `bump-my-version` for version management and `pip-tools` for managing Python dependencies).
+This file will install the libraries listed in the `tests/requirements.txt` file that are needed to run the tests.
+
+In order to set up the development environment, run the following commands:
+
+.. code-block:: shell
+
+    # Create a conda environment named 'birdhouse-dev'
+    conda env create -f environment-dev.yml
+
+    # Activate the conda environment
+    conda activate birdhouse-dev
+
+Framework tests
+^^^^^^^^^^^^^^^
+
+Core features of the platform include tests to prevent regressions.
 
 To run the tests:
 
 .. code-block:: shell
 
-    python3 -m pip install -r tests/requirements.txt
     pytest tests/
 
 Some tests require internet access (to access JSON schemas used to validate
 JSON structure). If you need to run tests offline, you can skip the tests that
 require internet access by using the `-k 'not online'` pytest option.
 
+Alternatively, testing-related targets are available via the `Makefile <../Makefile>`_:
+
+.. code-block:: shell
+
+    # Install the test requirements
+    make install-tests
+
+    # run all tests
+    make test-all
+
+    # run unit tests only
+    make test-unit
+
+    # run integration tests only
+    make test-integration
+
+    # run tests with minimal requirements stack
+    make test-minimal
+
+    # run tests with online requirements stack
+    make test-online
+
+Housekeeping
+^^^^^^^^^^^^
+
+The testing requirements (`requirements.txt`) are managed by Dependabot, which will automatically create pull requests
+to update the dependencies in the `requirements.in` file and regenerate `requirements.txt` based on it.  This ensures
+that the dependencies are kept up to date and that the tests can be run with the latest versions of the dependencies.
+
+Periodically, we may want to modify `requirements.txt` between scheduled updates.  These dependencies are controlled
+from `requirements.in` pins and then generated with `pip-compile` to provide all packages with their commit hashes
+(via `pip-tools`).  This allows us to have a reproducible set of dependencies that can be used to run the tests
+locally and on CI.
+
+After updating the dependency pins found in `requirements.in`, you can run the following command:
+
+.. code-block:: shell
+
+    # Update the dependencies in requirements.txt
+    pip-compile --generate-hashes --output-file=tests/requirements.txt tests/requirements.in
+
+Note that the version of Python used to run the `pip-compile` command should match the minimum supported version
+of Python used in the Birdhouse stack!
 
 Tagging policy
 --------------
@@ -377,7 +434,6 @@ with different versions and we want to track which combination of versions works
 together.  So we need a slight modification to the definition of the standard.
 
 Given a version number MAJOR.MINOR.PATCH, increment the:
-
 
 #. MAJOR version when the API or user facing UI changes that requires
    significant documentation update and/or re-training of the users.  Also
@@ -393,15 +449,14 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
    existing components and the change is a minor change for the existing
    component.
 
-
 To help properly update versions in all files that could reference to the latest tag,
-the `bump2version <https://github.com/c4urself/bump2version>`_ utility is employed.
+the `bump-my-version <https://github.com/callowayproject/bump-my-version>`_ utility is employed.
 Running this tool will modify versions in files referencing to the latest revision
-(as defined in `.bumpversion.cfg`_) and apply change logs
+(as defined in `.bumpversion.toml`_) and apply change logs
 updates by moving ``Unreleased`` items under a new version matching the new version.
 
 In order to handle auto-update of the ``releaseTime`` value simultaneously to the
-generated release version, the ``bump2version`` call is wrapped in `Makefile <../Makefile>`_.
+generated release version, the ``bump-my-version`` call is wrapped in `Makefile <../Makefile>`_.
 
 One of the following commands should be used to generate a new version.
 
@@ -411,7 +466,7 @@ One of the following commands should be used to generate a new version.
     make VERSION="<MAJOR>.<MINOR>.<PATCH>" bump
 
     # bump the next semantic version automatically
-    make bump (major|minor|patch)
+    make bump (major | minor | patch)
 
     # test result without applying it
     make VERSION="<MAJOR>.<MINOR>.<PATCH>" bump dry
@@ -426,9 +481,8 @@ using the following command.
 
 Once the version as been bumped and the PR is merged, a corresponding version tag should be added
 to the commit generated by the merge. This step is intentionally manual instead of leaving it up
-to ``bump2version`` to auto-generate the tag in other to apply it directly on ``master`` branch
+to ``bump-my-version`` to auto-generate the tag in other to apply it directly on ``master`` branch
 (onto the merge commit itself), instead of onto the commits in the PR prior merging.
-
 
 Release Procedure
 -----------------
@@ -477,8 +531,192 @@ Release Procedure
 
   * Run ``git push --tags`` to upload the new version.
 
+.. backups::
+
+Backups
+-------
+
+Backups of data used by the birdhouse stack can be generated using the ``bin/birdhouse backup`` command
+and its various subcommands.
+
+Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository and can be restored
+either to a named volume (determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable) or in the case
+of user data and application data, it can directly overwrite the current data with the backup.
+
+For details about the backup and restore commands run any of the following:
+
+.. code-block:: shell
+
+    bin/birdhouse backup --help
+    bin/birdhouse backup create --help
+    bin/birdhouse backup restore --help
+
+Data types
+^^^^^^^^^^
+
+Users can backup and restore the following data from the birdhouse stack:
+
+* application data
+
+  * stateful data used by components to store the current state of the running service
+
+  * this is useful when you want to be able to quickly restore a component to a previous state
+    and the component version has not been majorly updated since the last backup.
+
+  * for example: a database dump from a postgres or mongodb database
+
+* representative data
+
+  * an application agnostic version of the stateful data used by components to store 
+    the current state of the running service
+
+  * this contains the same information as the application data (above) but in a form that can be
+    exported/imported by a stable API. In other words, application data is a version of the
+    data exactly as it is used by the storage technology (i.e. database), representative data is
+    a version of the data that is independent of the underlying storage technology.
+
+  * this is useful when you want to be able to restore a component to a previous state and the
+    component version has been updated since the last backup. For example, if a database
+    has been updated between versions and there is no easy way to cleanly migrate the existing
+    database data between versions, the representative data can be used.
+    
+  * backing up and restoring representative data will probably take a much longer time than
+    application data.
+
+  * for example: STAC objects from the ``stac`` component stored as JSON files.
+
+* user data
+
+  * data created directly by users of birdhouse.
+
+  * for example: files written to the ``jupyterhub`` component's user workspaces
+
+* component log data
+
+  * log data for components that write log output to a location that is not visible to the
+    docker logging mechanism.
+
+  * for example: logs for the ``thredds`` component.
+
+* birdhouse logs
+
+  * all logs written to the directory specified by ``BIRDHOUSE_LOG_DIR``.
+
+  * for example: the log output of some scheduler jobs
+
+* docker container logs
+
+  * container logs for all docker containers running in the birdhouse stack.
+
+  * for example: ``magpie`` container logs
+
+* local environement file
+
+  * the local environment file specified by ``BIRDHOUSE_LOCAL_ENV``
+
+
+Configure the restic repository
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository which can be 
+configured by creating a file at the location determined by the ``BIRDHOUSE_BACKUP_RESTIC_ENV_FILE`` configuration
+variable (default: ``birdhouse/restic.env``). 
+
+This file contains environment variables which are used by restic to determine how to create and access the 
+repository where backups are stored. 
+
+A list of all environment variables that are used by restic can be found in the 
+`documentation <https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables>`_.
+
+Restic supports backing up data locally, remotely using the SFTP protocol, as well as remotely to a variety of 
+repository types including AWS, Azure, S3, restic REST server, and many more.
+
+Depending on which repository type and access method you want to use, different environment variables may be required.
+
+Some basic examples can be found in the ``birdhouse/restic.env.example`` file but please refer to the 
+`documentation <https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables>`_ for all available
+options.
+
+Additional backup/restore workflows
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When running the ``backup create`` command, the files to be backed up are first written to a volume 
+(determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable). Then they are backed up from there to 
+the restic repository.
+
+Alternatively, you can specify the ``--no-restic`` command line option to skip the step that backs up the files to 
+the restic repository. You can then choose to access the files to backup directly in the volume.
+
+This allows users to inspect the files, integrate them into a different custom backup solution, etc.
+
+Similarly, when restoring files from restic with the ``backup restore`` command, the files are first restored
+to the same volume before being copied to the appropriate location in the birdhouse stack. 
+
+For example, restoring the ``magpie`` database will first restore the backup file from restic to the working
+directory and then overwrite the ``magpie`` database with the information contained in the backup file.
+
+If you want to skip the step that overwrites the current data in the birdhouse stack, you can specify the 
+``--no-clobber`` command line option. This will still restore the files to the volume.
+
+.. note::
+    Even without the ``--no-restic`` and ``--no-clobber`` options, the files will be written
+    to the volume every time you run backup and restore.
+
+Additional configuration options
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following configuration variables can be set in the local environment file to further configure
+the backup and restore jobs.
+
+* ``BIRDHOUSE_BACKUP_SSH_KEY_DIR``
+
+  * The location of a directory that contains an SSH key used to access a remote machine where the restic repository
+    is hosted. Required if accessing a restic repository using the sftp protocol.
+
+  * Please ensure that your key does not require a passphrase since backups must be run without any additional user
+    input. Also ensure that your key is generated using a modern, secure algorithm that is supported by the remote
+    ssh server you are trying to log into. At time of writing, the RSA algorithm is considered insecure
+    by most modern standards; an algorithm such as ECDSA is preferred.
+
+  * You can test whether your keys are sufficient for restic by running the ``birdhouse/scripts/test-restic-keypair.sh``
+    script.
+
+* ``BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS``
+
+  * Additional options to pass to the restic backup command when running the birdhouse backup create command.
+
+  * For example: ``'--skip-if-unchanged --exclude-file "file-i-do-not-want-backedup.txt"``
+
+* ``BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS``
+
+  * Additional options to pass to the ``restic forget`` command after running the backup job. 
+  
+  * This allows you to ensure that restic deletes old backups according to your backup retention policy.
+
+  * If this is set, then restic will also run the ``restic prune`` command after every backup to clean up 
+    old backup files.
+
+  * For example, to store backups daily for 1 week, weekly for 1 month, and monthly for a year:
+    ``'--keep-daily=7 --keep-weekly=4 --keep-monthly=12'``
+
+* ``BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS``
+
+  * Additional options to pass to the ``docker run`` command that runs the restic commands.
+
+  * This can be useful if you want to mount additional directories to the container running restic
+    in order to back up data not directly managed by Birdhouse.
+
+    * For example, to backup files in a directory named `/home/other_project/` you could run:
+      ``BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS='-v /home/other_project:/backup2' birdhouse backup restic backup /backup2``
+
+    * Note: in the example above, ``birdhouse backup restic`` runs the ``restic`` command in a docker container.
+      The ``backup /backup2`` arguments tell the ``restic`` command to backup the ``/backup2`` folder to a restic
+      repository. See the ``restic`` documentation for details regarding all the available restic command options.
+
+  * Warning! Using this option may overwrite other docker options that are required for restic to run properly.
+    Make sure you are familiar with restic commands and know what you are doing before using this feature.
 
 .. _nginx.conf: ./components/proxy/nginx.conf
 .. _default.env: ./default.env
-.. _`.bumpversion.cfg`: ../.bumpversion.cfg
+.. _`.bumpversion.toml`: ../.bumpversion.toml
 .. _CHANGES.md: ../CHANGES.md
