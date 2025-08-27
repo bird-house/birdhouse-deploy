@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Drop unsupported `pytest-lazy-fixture` python package for tests
+
+  This package is no longer maintained and breaks for `pytest` versions 8+. We do not need it for our tests so
+  it was dropped. In the future if we need to support lazy fixtures we should use the `pytest-lazy-fixtures`
+  package instead (which is actively maintained).
 
 [2.16.11](https://github.com/bird-house/birdhouse-deploy/tree/2.16.11) (2025-08-22)
 ------------------------------------------------------------------------------------------------------------------
