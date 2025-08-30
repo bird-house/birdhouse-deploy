@@ -13,7 +13,11 @@ services:
     container_name: raven
     environment:
       PYWPS_CFG: /wps.cfg
+      # Keep for backward-compat with older RavenWPS.
       GEO_URL: "${RAVEN_GEO_URL}"
+      # Forward-compat with newer RavenWPS not yet in this stack.
+      RAVEN_GEOSERVER_URL: "${RAVEN_GEO_URL}"
+      RAVENPY_GEOSERVER_URL: "${RAVEN_GEO_URL}"
     volumes:
       - ./config/raven/wps.cfg:/wps.cfg
       - /tmp
