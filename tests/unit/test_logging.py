@@ -5,22 +5,17 @@ import subprocess
 import pytest
 
 LOG_LEVELS = ("DEBUG", "INFO", "WARN", "ERROR")
-UNSET_VARS = {
-    "BIRDHOUSE_LOG_FD",
-    "BIRDHOUSE_LOG_FILE",
-    "BIRDHOUSE_LOG_LEVEL",
-    "BIRDHOUSE_LOG_DEST_OVERRIDE",
-    "BIRDHOUSE_LOG_QUIET",
-}
 
 
 @pytest.fixture
 def run(root_dir):
     def _(command, expect_error=False, log_level=None, supported_interface=True, **kwargs):
+        # WARNING: DO NOT forward 'os.environ', could break certain test assumptions
+        kwargs_env = kwargs.get("env", {})
         kwargs["env"] = {
-            **kwargs.get("env", {k: v for k, v in os.environ.items() if k not in UNSET_VARS}),
             "__BIRDHOUSE_SUPPORTED_INTERFACE": str(supported_interface),
             "TERM": os.getenv("TERM") or "linux",
+            **kwargs_env,
         }
         if log_level:
             kwargs["env"]["BIRDHOUSE_LOG_LEVEL"] = log_level

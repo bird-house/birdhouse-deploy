@@ -32,6 +32,262 @@
   but kept for backward compatibility if we ever need to rollback to older
   versions of GeoServer.
 
+## Fixes
+
+- Fix various bugs with backward-compatibility mode
+
+  - Missing template expansion for old variable names
+
+    This bug only affect external repos still using old variable names for
+    template expansion.
+
+  - Missing delayed eval for old variable names
+
+    This bug only affect external repos still using old variable names for
+    delayed eval.
+
+  - Lost new lines when new value is transfered to old value and vice-versa
+
+    Example: if `ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS` (old var) is set in
+    `env.local`, the new matching var `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` is
+    automatically set but lost the new lines from the old var.
+
+    This is bad because subsequently, when new var
+    `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` is used in
+    `components/jupyterhub/jupyterhub_config.py.template` for template expansion,
+    it will generate badly formatted code since the new lines are lost.
+
+    The reverse case: external repos still using old vars for template
+    expansion but in `env.local` the new var is used, the value transfered
+    from the new var to the old var is missing all the new lines and also
+    generate broken code.
+
+  - Wrong old var overriding new var during child invocation, even when new
+    var is set properly in `env.local`.
+
+    This bug is mostly visible with child invocation.  First level
+    invocation, to be affected, need to use the old var name, which means
+    external repos only because the current repo has all switched to use the
+    new var names.
+
+    Previously `set_old_backwards_compatible_variables` was called before
+    `read_env_local` which means old var names were initialized with default
+    values only, not the updated values from `env.local`.  On child
+    invocation, since the old var already exists, it overrides the new var
+    even if the new var is properly set in `env.local`.
+
+    For the autodeploy process, `triggerdeploy.sh` is the first level
+    invocation and `autodeploy.sh` is the child invocation.  It blows up in
+    the child invocation when `BIRDHOUSE_LOG_DIR` resets to the default value
+    even when `BIRDHOUSE_LOG_DIR` (new var) is sets properly in `env.local`.
+
+    Most other scripts do not have a child invocation so they all work fine
+    and that's why this back-compat bug is discovered so late.
+
+  - New var reset to default in child invocation even when old var is set properly in `env.local`
+
+    This bug happens for child invocation only.
+
+    Example: in autodeploy, `triggerdeploy.sh` is the first level invocation
+    and `deploy.sh` is the child invocation.  `SSL_CERTIFICATE` (old var) is
+    properly set in `env.local` but `BIRDHOUSE_SSL_CERTIFICATE` (new var)
+    resets to default value in `deploy.sh` and breaks autodepploy.
+
+    See more details in the sample debugging usage of `BIRDHOUSE_DEBUG_VARS_TRACE_CMD`.
+
+    The fix is to connect the chain of mapping
+    `SSL_CERTIFICATE` -> `SERVER_SSL_CERTIFICATE` -> `BIRDHOUSE_SSL_CERTIFICATE` so
+    that `SSL_CERTIFICATE` will first override `SERVER_SSL_CERTIFICATE` with the
+    good value, then `SERVER_SSL_CERTIFICATE` will override `BIRDHOUSE_SSL_CERTIFICATE`
+    with the good value originally from `SSL_CERTIFICATE`.
+
+    In `process_backwards_compatible_variables()`, it has to change to process
+    **all** old vars and not just those old vars not set in
+    `set_old_backwards_compatible_variables()`.
+
+    Technically this is safe because all the old vars set in
+    `set_old_backwards_compatible_variables()` are set from new var values or
+    default values so setting "new_var = old_value" back in
+    `process_backwards_compatible_variables()` is basically setting the same value again.
+
+- Fix process_delayed_eval() losing new lines and leading empty space after being eval'ed
+
+  Example: if `AUTODEPLOY_PLATFORM_EXTRA_DOCKER_ARGS` is set in `env.local` and
+  added to `DELAYED_EVAL` in `env.local` because it uses other variables,
+  the new lines and the 4 front spaces must be kept for proper yaml syntax when
+  template expanding in `components/scheduler/config.yml.template`.
+
+- Autodeploy: fix SSL certificate not visible during scheduler job
+
+  The autodeploy triggered by the scheduler job runs in a docker image.  All
+  the files it uses must be volume-mount into the container, including the SSL
+  certificate file.
+
+  When the SSL certificate is a symlink to a file outside of the birdhouse-deploy
+  checkout, it won't "resolve".
+
+  This bug do not affect `birdhouse-compose.sh` because it do not run in a
+  container but directly on the host so it has access to all the files without
+  needing specific volume-mount.
+
+  This bug do not affect the current docker-compose image used by autodeploy
+  but is found by the upcoming docker-compose image that seems much more strict.
+
+## Changes
+
+- Add variable `BIRDHOUSE_DEBUG_VARS_TRACE_CMD` to help debug back-compat vars
+
+  This new `BIRDHOUSE_DEBUG_VARS_TRACE_CMD` was useful to debug autodeploy
+  failure, tracing why `BIRDHOUSE_LOG_DIR` resets to the bad default value in
+  child invocation (`deploy.sh`) even when `BIRDHOUSE_LOG_DIR` (new var) is
+  set properly in `env.local`.
+
+  Example usage to debug autodeploy failure because `BIRDHOUSE_SSL_CERTIFICATE`
+  resets to the default value when `SSL_CERTIFICATE` (old var) is properly
+  set in `env.local`:
+  ```
+  BIRDHOUSE_DEBUG_VARS_TRACE_CMD='echo "
+      BIRDHOUSE_SSL_CERTIFICATE=\"$BIRDHOUSE_SSL_CERTIFICATE\"
+         SERVER_SSL_CERTIFICATE=\"$SERVER_SSL_CERTIFICATE\"
+                SSL_CERTIFICATE=\"$SSL_CERTIFICATE\""' ../bin/birdhouse -b -L DEBUG configs -c 'echo "$BIRDHOUSE_SSL_CERTIFICATE"'
+  ```
+
+  Matching output:
+  ```
+  TRACE_VARS:  after read_env_local:
+      BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+         SERVER_SSL_CERTIFICATE=""
+                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+
+  TRACE_VARS:  after set_old_backwards_compatible_variables:
+      BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+         SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+
+  TRACE_VARS:  after process_backwards_compatible_variables:  <-- error introduced at this step
+      BIRDHOUSE_SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+         SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
+                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+  ```
+
+  Since in `BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES` we previously had
+  ```
+    SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
+    SERVER_SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
+  ```
+  then in the first level invocation (`triggerdeploy.sh` or the `birdhouse configs`
+  above) the values of `BIRDHOUSE_SSL_CERTIFICATE` is good.
+
+  But then in the child invocation (`deploy.sh`), `SSL_CERTIFICATE` will first
+  override `BIRDHOUSE_SSL_CERTIFICATE` to the good value, then
+  `SERVER_SSL_CERTIFICATE` will override `BIRDHOUSE_SSL_CERTIFICATE` to the bad
+  default value.
+
+
+[2.16.10](https://github.com/bird-house/birdhouse-deploy/tree/2.16.10) (2025-08-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Proxy: allow to add parameters to Nginx listen directives via env.local
+
+  One usage is to add the parameter "http2" to enable HTTP/2 protocol.
+
+  Before
+  ```sh
+  $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
+  HTTP/1.1 200 OK
+  ```
+
+  After `export PROXY_LISTEN_443_PARAMS="http2"` is set in `env.local` and
+  `proxy` container restarted
+  ```sh
+  $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
+  HTTP/2 200
+  ```
+
+
+[2.16.9](https://github.com/bird-house/birdhouse-deploy/tree/2.16.9) (2025-08-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Backup: Allow `BIRDHOUSE_BACKUP_VOLUME` to be employed directly as directory.
+
+  This feature _**requires**_ using the `--no-restic` option to avoid it being involved by ``--snapshot`` override.
+  Combining a directory path and omitting `--no-restic` can lead to undesired side effects.
+  However, it allows using backup/restore operations for quick data manipulations on alternate locations than a
+  volume to offer flexibility or to bypass `restic` operations.
+  This can be employed for fixing problematic service data migrations or file system limitations with volumes.
+
+  The directory structure must match exactly with `BIRDHOUSE_BACKUP_VOLUME` when used as volume
+  (e.g.: `/tmp/backup/{component}-{backup_type}/...`).
+
+  This feature also disables the automatic cleanup of the volume (since the directory is used directly).
+  Therefore, users have to manage the contents of `BIRDHOUSE_BACKUP_VOLUME` on their own and consistently.
+
+- Backup: Avoid `birdhouse backup restore` operation to complain about missing `-s|--snapshot` when not required.
+
+  For example, `BIRDHOUSE_BACKUP_VOLUME=/tmp/backup birdhouse backup restore --no-restic -r stac` only operates on local
+  data contents to be restored into the server instance. No remote `restic` snapshot is required to run the operation.
+
+- Backup: Unification of script shebangs, variables names and function names with invoked operations.
+
+  - Renames related to `backup [create|restore|restic]` when they apply to many operations simultaneously.
+    This helps highlight that a variable with explicitly `CREATE`, `RESTORE` or `RESTIC` only applies to that
+    specific operation, whereas others are shared.
+
+    - `parse_backup_restore_common_args` => `parse_backup_common_args`
+    - `BIRDHOUSE_BACKUP_RESTORE_NO_RESTIC` => `BIRDHOUSE_BACKUP_NO_RESTIC`
+    - `BIRDHOUSE_BACKUP_RESTORE_COMMAND` => `BIRDHOUSE_BACKUP_COMMAND`
+
+  - Renames to match the common `BIRDHOUSE_BACKUP_[...]` prefix employed by other "backup" variables:
+
+    - `BIRDHOUSE_RESTORE_SNAPSHOT` => `BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT`
+
+- Backup: Add `stac-migration` image to the list of containers to stop on `birdhouse backup restore -r stac`.
+
+  Because the service was not stopped, and that it links to `stac-db` and its corresponding volume, the
+  following `docker volume rm stac-db` step would fail as the volume was still in use. This would lead to a restore
+  operation dealing with dirty database contents and potentially conflicting restore data that would not be applied.
+  Relates to added service `stac-migration` in [#534](https://github.com/bird-house/birdhouse-deploy/pull/534).
+
+- Backup: Allow `BIRDHOUSE_LOG_LEVEL` to override the `stac-populator` log level involved with `-r stac`.
+
+[2.16.8](https://github.com/bird-house/birdhouse-deploy/tree/2.16.8) (2025-08-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Allow user generated jupyterlab kernels to persist between sessions
+
+  If a jupyterlab user wants to create a virtual environment to use as a kernel they can do so
+  by creating a new virtual environment and installing it as a kernel with the `python -m ipykernel install`
+  command.
+
+  By default this command installs the kernel metadata in `/usr/local/share/jupyter/kernels` which is not
+  persisted to a docker volume and so the kernel is no longer visible when the jupyterlab container restarts.
+  Alternatively, the command can be run with the `--user` flag which installs the kernel metadata to the user's
+  home directory (which is persisted to a docker volume) but the jupyterlab API does not recognize kernels
+  installed in this way for some reason.
+
+  To solve this issue, this creates a symlink from the kernels metadata folder in the user's home directory to
+  a location outside of the user's home directory (`/usr/local/share/jupyter/user-kernels/kernels`) which can
+  be detected by the juptyerlab API.
+
+- Ensure jupyterlab container healthchecks don't fail by default
+
+  The healthchecks assume that the jupyter data directory is in `/home/$NB_USER/.local` regardless of the value 
+  of $HOME. This means that healthechecks for the jupyterlab containers were always failing even if the
+  container was actually healthy.
+
+  This fixes the issue by symlinking the relevant folder to `/home/$NB_USER/.local` within the container so that 
+  the healthchecks can run as expected.
+
+- Thanos-minio container should always restart on failure
+
+  Since this container wasn't restarting automatically it could make the entire stack unavailable if it failed.
+  The proxy container would refuse to start since it could not connect to the upstream thanos-minio server.
 
 [2.16.7](https://github.com/bird-house/birdhouse-deploy/tree/2.16.7) (2025-08-05)
 ------------------------------------------------------------------------------------------------------------------
@@ -97,7 +353,7 @@
 
 - Fix invalid `STAC_POPULATOR_BACKUP_IMAGE='${STAC_POPULATOR_BACKUP_DOCKER}:${STAC_POPULATOR_BACKUP_VERSION}'`.
 
-  The `STAC_POPULATOR_BACKUP_IMAGE` variable was refering other variables missing their `_BACKUP` part.
+  The `STAC_POPULATOR_BACKUP_IMAGE` variable was referring other variables missing their `_BACKUP` part.
 
 [2.16.3](https://github.com/bird-house/birdhouse-deploy/tree/2.16.3) (2025-06-25)
 ------------------------------------------------------------------------------------------------------------------
@@ -429,6 +685,7 @@
   host machine configuration. This change deprecates the component by moving it to the `deprecated-components`
   directory. It can still be enabled from that path if desired.
 
+
 [2.12.0](https://github.com/bird-house/birdhouse-deploy/tree/2.12.0) (2025-04-03)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -494,6 +751,7 @@
     This is fixed by explicitly giving a value for the `COMPOSE_DIR` variable when using the `--print-config-command`
     option. The value is already correctly set in the `bin/birdhouse` script so it is easy to pass that 
     value on to the user. 
+
 
 [2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
 ------------------------------------------------------------------------------------------------------------------
@@ -562,6 +820,7 @@
     - if you deploy any external components that use any of the old docker compose syntax you may want to update
       those docker compose files as well so that you aren't bombarded by deprecation warnings whenever you start
       the birdhouse stack.  
+
 
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------

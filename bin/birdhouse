@@ -9,7 +9,7 @@ COMPOSE_DIR="$(dirname "${THIS_DIR}")/birdhouse"
 export BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"${COMPOSE_DIR}/birdhouse-compose.sh"}"
 export __BIRDHOUSE_SUPPORTED_INTERFACE=True
 
-USAGE="USAGE: $THIS_BASENAME [-h|--help] 
+USAGE="USAGE: $THIS_BASENAME [-h|--help]
                              [-b|--backwards-compatible]
                              [-e|--env-file path]
                              [-q|--quiet [level]]
@@ -71,23 +71,23 @@ Example Usage:
 
 BACKUP_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] backup [-h|--help] {create,restore,restic}"
 
-BACKUP_CREATE_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] backup [backup options] create [-h|--help] 
-                                                                                                     [-d|--dry-run] 
-                                                                                                     [[-a|--component-application-data component], ...]
-                                                                                                     [[-u|--component-user-data component], ...] 
-                                                                                                     [[-l|--component-logs-data component], ...]                                                                                                     
-                                                                                                     [--birdhouse-logs] 
+BACKUP_CREATE_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] backup [backup options] create [-h|--help]
+                                                                                                     [-d|--dry-run]
+                                                                                                     [[-a|--component-application-data COMPONENT], ...]
+                                                                                                     [[-u|--component-user-data COMPONENT], ...]
+                                                                                                     [[-l|--component-logs-data COMPONENT], ...]
+                                                                                                     [--birdhouse-logs]
                                                                                                      [--local-env-file]
                                                                                                      [--no-restic]"
 BACKUP_CREATE_USAGE=$(echo $BACKUP_CREATE_USAGE | tr "\n" " ")
 
-BACKUP_RESTORE_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] backup [backup options] restore -s|--snapshot snaphot
-                                                                                                       [-h|--help] 
-                                                                                                       [-d|--dry-run] 
-                                                                                                       [[-a|--component-application-data component], ...]
-                                                                                                       [[-u|--component-user-data component], ...] 
-                                                                                                       [[-l|--component-logs-data component], ...]
-                                                                                                       [--birdhouse-logs] 
+BACKUP_RESTORE_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] backup [backup options] restore (-s|--snapshot SNAPSHOT | --no-restic)
+                                                                                                       [-h|--help]
+                                                                                                       [-d|--dry-run]
+                                                                                                       [[-a|--component-application-data COMPONENT], ...]
+                                                                                                       [[-u|--component-user-data COMPONENT], ...]
+                                                                                                       [[-l|--component-logs-data COMPONENT], ...]
+                                                                                                       [--birdhouse-logs]
                                                                                                        [--local-env-file]
                                                                                                        [--no-clobber]"
 BACKUP_RESTORE_USAGE=$(echo $BACKUP_RESTORE_USAGE | tr "\n" " ")
@@ -121,18 +121,18 @@ Options:
   --no-restic                         Do not save this backup as a restic snapshot. This will only backup the data to the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
 
 Note:
-  Not all components store application application data, user data, or log data. Depending on the component, some or none of these
+  Not all components store application data, user data, or log data. Depending on the component, some or none of these
   will be available to backup. Use the --dry-run flag to confirm which data will be backed up.
 
 Note:
-  The volume specified by the BIRDHOUSE_BACKUP_VOLUME variable will be emptied before every backup operation (unless the --dry-run flag is specified).
-  If you want to preserve the content of this directory, copy it somewhere else first.
+  The volume specified by the BIRDHOUSE_BACKUP_VOLUME variable will be emptied before every backup operation (unless the --dry-run flag or --no-restic is specified).
+  If you want to preserve the content of this directory, copy it somewhere else first, or employ a directory path combined with --no-restic option.
 
 Example Usage:
 
-  $ birdhouse backup create -a '*' -u '*' -l '*' --birdhouse-logs --local-env-file # backs up everything
-  $ birdhouse backup create -a magpie # backs up application data for the magpie component
-  $ birdhouse backup create -a cowbird -u cowbird -a finch # backs up application data for cowbird and finch and the user data for cowbird
+  $ birdhouse backup create -a '*' -u '*' -l '*' --birdhouse-logs --local-env-file    # backs up everything
+  $ birdhouse backup create -a magpie                                                 # backs up application data for the magpie component
+  $ birdhouse backup create -a cowbird -u cowbird -a finch                            # backs up application data for cowbird and finch and the user data for cowbird
 "
 
 BACKUP_RESTORE_HELP="$BACKUP_RESTORE_USAGE
@@ -153,28 +153,35 @@ Options:
   -r, --representative-data           Restore representative data for a given component (e.g. stac). This can be specified multiple times. Use '*' to select all components.
   --birdhouse-logs                    Restore birdhouse logs and docker container logs
   --local-env-file                    Restore local environment file
+  --no-restic                         Do not employ any restic snapshot as backup. Backup data will be recovered directly from the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
   --no-clobber                        Do not overwrite current files with restored backup. This will only recover the data to the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
 
 
 Note:
-  Not all components store application application data, user data, or log data. Depending on the component, some or none of these
+  Not all components store application data, user data, or log data. Depending on the component, some or none of these
   will be available to restore. Use the --dry-run flag to confirm which data will be restored.
 
 Note:
-  Log data and the local environment file will never overwrite current files with the restored backup. 
+  Log data and the local environment file will never overwrite current files with the restored backup.
   The data will be restored to the the volume specified by the BIRDHOUSE_BACKUP_VOLUME variable.
   In other words, restoring logs and the local environment file will behave as if the '--no-clobber' flag was provided.
 
 Note:
-  The volume specified by the BIRDHOUSE_BACKUP_VOLUME variable will be emptied before every restore operation (unless the --dry-run flag is specified).
-  If you want to preserve the content of this directory, copy it somewhere else first.
+  The volume specified by the BIRDHOUSE_BACKUP_VOLUME variable will be emptied before every restore operation (unless the --dry-run flag or --no-restic is specified).
+  If you want to preserve the content of this directory, copy it somewhere else first, or employ a directory path combined with --no-restic option.
+
+Note:
+  To identify the restic restore snapshot IDs, restic commands can be invoked as follows:
+
+  $ birdhouse backup restic --help      # prints help options for the restic command
+  $ birdhouse backup restic snapshots   # list available restic snapshots including their IDs
 
 Example Usage:
 
-  $ birdhouse backup restore latest -a '*' -u '*' -l '*' --birdhouse-logs --local-env-file # restores everything from the latest snapshot
-  $ birdhouse backup restic snapshots # list available snapshots including their ids
-  $ birdhouse backup restore XX123ABC -a magpie # restores application data for the magpie component from the snapshot with id XX123ABC
-  $ birdhouse backup restore latest -u jupyterhub --no-clobber # restore user data for jupyterhub but don't overwrite current jupyterhub user data
+  $ birdhouse backup restore --snapshot latest -a '*' -u '*' -l '*' --birdhouse-logs --local-env-file   # restores everything from the latest snapshot
+  $ birdhouse backup restore --snapshot XX123ABC -a magpie                                              # restores application data for the magpie component from the snapshot with id XX123ABC
+  $ birdhouse backup restore --snapshot latest -u jupyterhub --no-clobber                               # restore user data for jupyterhub but don't overwrite current jupyterhub user data
+  $ birdhouse backup restore --no-restic -r stac                                                        # restore representative data for STAC directly from BIRDHOUSE_BACKUP_VOLUME directory
 "
 
 
@@ -325,10 +332,10 @@ source_env() {
   if [ "$_BIRDHOUSE_ENV_ALREADY_SOURCED" != "true" ]; then
     eval "$(print_config_command no-suffix)"
     _BIRDHOUSE_ENV_ALREADY_SOURCED=true
-  fi 
+  fi
 }
 
-# Ensure that the birdhouse stack is running before executing another command.
+# Ensure that the birdhouse stack is running.
 # If the stack is not running, this will raise a log ERROR message and exit.
 ensure_birdhouse_running() {
   source_env
@@ -336,11 +343,61 @@ ensure_birdhouse_running() {
       log ERROR "This command requires that the birdhouse stack be running. Start the stack first with '${THIS_BASENAME} compose up -d' and try again."
       exit 1
   fi
-  "$@"
+}
+
+log_error_help() {
+  log ERROR "$1"
+  >&2 echo "$2"
+  exit 1
+}
+
+# Perform pre-checks of arguments/configuration combinations relevant for backup creation.
+check_backup_create_args() {
+  if [ -z "${BIRDHOUSE_BACKUP_VOLUME}" ]; then
+    log_error_help \
+      "BIRDHOUSE_BACKUP_VOLUME must be specified." \
+      "${BACKUP_CREATE_USAGE}"
+  fi
+  [ -n "${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}" ] || \
+  [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] || \
+    log_error_help \
+      'Use the -s|--snapshot option to specify a snapshot to restore with restic or --no-restic to employ BIRDHOUSE_BACKUP_VOLUME directly.' \
+      "${BACKUP_CREATE_USAGE}"
+  if
+    [ -z "${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}" ] && \
+    [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] && \
+    [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
+      log WARN \
+          "Backup create detected without an explicit directory path [BIRDHOUSE_BACKUP_VOLUME=${BIRDHOUSE_BACKUP_VOLUME}]." \
+          "This will automatically create/use a docker named-volume."
+  fi
+}
+
+# Perform pre-checks of arguments/configuration combinations relevant for backup restore.
+check_backup_restore_args() {
+  if [ -z "${BIRDHOUSE_BACKUP_VOLUME}" ]; then
+    log_error_help \
+      "BIRDHOUSE_BACKUP_VOLUME must be specified." \
+      "${BACKUP_RESTORE_USAGE}"
+  fi
+  if [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ]; then
+    if [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
+      log WARN \
+          "Backup restore detected without an explicit directory path [BIRDHOUSE_BACKUP_VOLUME=${BIRDHOUSE_BACKUP_VOLUME}]." \
+          "This will automatically create/use a docker named-volume."
+    fi
+  else
+    if [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -ne 0 ]; then
+      log_error_help \
+        "BIRDHOUSE_BACKUP_VOLUME must be a named volume when running using restic -s|--snapshot." \
+        "Its value indicates a directory path [BIRDHOUSE_BACKUP_VOLUME=${BIRDHOUSE_BACKUP_VOLUME}]." \
+        "${BACKUP_RESTORE_USAGE}"
+    fi
+  fi
 }
 
 # Backup or restore component data. This is called by the do_backup_create_restore function.
-# The BIRDHOUSE_BACKUP_RESTORE_COMMAND variable determines whether this will backup or restore.
+# The BIRDHOUSE_BACKUP_COMMAND variable determines whether this will backup or restore.
 # The first argument determines whether to run a backup or restore job (must be one of 'backup' or 'restore')
 # The second argument determines which components will be backed up or restored. This argument is either a
 # space delimited string containing the names of components or the string '*' (selects all enabled components).
@@ -356,7 +413,7 @@ do_component_backup_create_restore() {
       if [ -n "$component_path" ]; then
         confdirs="${confdirs} ${component_path}"
       else
-        log WARN "Skipping ${BIRDHOUSE_BACKUP_RESTORE_COMMAND} for component '${component}'. This component is not enabled."
+        log WARN "Skipping ${BIRDHOUSE_BACKUP_COMMAND} for component '${component}'. This component is not enabled."
       fi
     done
   fi
@@ -366,16 +423,16 @@ do_component_backup_create_restore() {
       (  # run this in a subprocess so that sourcing the backup_script does not modify this environment
        . "${backup_script}"
        . "${COMPOSE_DIR}/scripts/backup.include.sh"
-       $(command -v ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_${backup_restore_type} || true)
+       $(command -v ${BIRDHOUSE_BACKUP_COMMAND}_${backup_restore_type} || true)
       )
     elif [ "${backup_restore_all}" != 'true' ]; then
-      log WARN "Skipping ${BIRDHOUSE_BACKUP_RESTORE_COMMAND} for component '$(basename "${component}")'. No ${BIRDHOUSE_BACKUP_RESTORE_COMMAND} command exists."
+      log WARN "Skipping ${BIRDHOUSE_BACKUP_COMMAND} for component '$(basename "${component}")'. No ${BIRDHOUSE_BACKUP_COMMAND} command exists."
     fi
   done
 }
 
 # Backup or restore data.
-# The BIRDHOUSE_BACKUP_RESTORE_COMMAND variable determines whether this will backup or restore.
+# The BIRDHOUSE_BACKUP_COMMAND variable determines whether this will backup or restore.
 # The BIRDHOUSE_BACKUP_APPLICATION_COMPONENTS variable determines which component's application data will be affected.
 # The BIRDHOUSE_BACKUP_USER_COMPONENTS variable determines which component's user data will be affected.
 # The BIRDHOUSE_BACKUP_LOGS_COMPONENTS variable determines which component's application logs will be affected.
@@ -384,9 +441,9 @@ do_component_backup_create_restore() {
 # The BIRDHOUSE_BACKUP_LOCAL_ENV_FILE variable determines whether the local environment file will be affected
 # If BIRDHOUSE_BACKUP_DRY_RUN is true, only print a report of what will happen instead of actually backing up or restoring data.
 do_backup_create_restore() {
-  if [ "$BIRDHOUSE_BACKUP_DRY_RUN" = "true" ]; then 
-    echo "Dry-run: this would run ${BIRDHOUSE_BACKUP_RESTORE_COMMAND} jobs for the following:"
-  else
+  if [ "$BIRDHOUSE_BACKUP_DRY_RUN" = "true" ]; then
+    echo "Dry-run: this would run ${BIRDHOUSE_BACKUP_COMMAND} jobs for the following:"
+  elif [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" != "true" ]; then
     # start with a clean backup volume so that snapshots only contain the data that is requested to be backed up/restored
     docker volume rm "${BIRDHOUSE_BACKUP_VOLUME}"
   fi
@@ -396,13 +453,13 @@ do_backup_create_restore() {
   do_component_backup_create_restore logs "${BIRDHOUSE_BACKUP_LOGS_COMPONENTS}"
   do_component_backup_create_restore representative "${BIRDHOUSE_BACKUP_REPRESENTATIVE_COMPONENTS}"
 
-  [ "${BIRDHOUSE_BACKUP_LOGS}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${COMPOSE_DIR}/scripts/backup.include.sh"; ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_logs)
-  [ "${BIRDHOUSE_BACKUP_LOCAL_ENV_FILE}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${COMPOSE_DIR}/scripts/backup.include.sh"; ${BIRDHOUSE_BACKUP_RESTORE_COMMAND}_local_env_file)
+  [ "${BIRDHOUSE_BACKUP_LOGS}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${COMPOSE_DIR}/scripts/backup.include.sh"; ${BIRDHOUSE_BACKUP_COMMAND}_logs)
+  [ "${BIRDHOUSE_BACKUP_LOCAL_ENV_FILE}" = "true" ] && (. "${COMPOSE_DIR}/scripts/backup"; . "${COMPOSE_DIR}/scripts/backup.include.sh"; ${BIRDHOUSE_BACKUP_COMMAND}_local_env_file)
 
-  [ "$BIRDHOUSE_BACKUP_DRY_RUN" = "true" ] || BIRDHOUSE_COMPOSE_TEMPLATE_SKIP=true "${THIS_FILE}" --quiet compose restart proxy 
+  [ "$BIRDHOUSE_BACKUP_DRY_RUN" = "true" ] || BIRDHOUSE_COMPOSE_TEMPLATE_SKIP=true "${THIS_FILE}" --quiet compose restart proxy
 
-  if [ "${BIRDHOUSE_BACKUP_RESTORE_COMMAND}" = 'backup' ] && [ "$BIRDHOUSE_BACKUP_DRY_RUN" != "true" ] && [ "$BIRDHOUSE_BACKUP_RESTORE_NO_RESTIC" != "true" ]; then
-    # initialize the restic repository if it doesn't exist 
+  if [ "${BIRDHOUSE_BACKUP_COMMAND}" = 'backup' ] && [ "$BIRDHOUSE_BACKUP_DRY_RUN" != "true" ] && [ "$BIRDHOUSE_BACKUP_NO_RESTIC" != "true" ]; then
+    # initialize the restic repository if it doesn't exist
     if ! do_restic cat config 2>/dev/null > /dev/null; then
       do_restic init || exit $?
     fi
@@ -418,11 +475,11 @@ do_backup_create_restore() {
   fi
 }
 
-# Variables that contain references to files or directories that need to be mounted to the 
+# Variables that contain references to files or directories that need to be mounted to the
 # docker container that runs the restic service.
 RESTIC_FILE_VARS="
 RESTIC_REPOSITORY_FILE
-RESTIC_PASSWORD_FILE  
+RESTIC_PASSWORD_FILE
 RESTIC_CACERT
 RESTIC_TLS_CLIENT_CERT
 RESTIC_CACHE_DIR
@@ -431,8 +488,8 @@ AWS_SHARED_CREDENTIALS_FILE
 "
 
 # This needs to be declared as string that can be interpreted by sh (in the extra_args function below)
-# This can't be a regular function because it is called by xargs which runs the command in a subprocess and 
-#   functions declared in parent processes are not available to their children. 
+# This can't be a regular function because it is called by xargs which runs the command in a subprocess and
+#   functions declared in parent processes are not available to their children.
 #     - (Yes in bash we can do `export -f` but this needs to work in shells other than bash)
 #     - (Yes in bash we can use `while IFS= read -d ''` but this needs to work in shells other than bash)
 PARSE_EXTRA_ARGS_FUNCTION_DEFINITION='
@@ -451,7 +508,7 @@ PARSE_EXTRA_ARGS_FUNCTION_DEFINITION='
 
 # Determine extra args that need to be added to the docker run command that runs the restic service.
 extra_args() {
-  env -i sh -ac '. "$1" && env -0' sh "${BIRDHOUSE_BACKUP_RESTIC_ENV_FILE}" | xargs -0 -n1 sh -c "$PARSE_EXTRA_ARGS_FUNCTION_DEFINITION" sh 
+  env -i sh -ac '. "$1" && env -0' sh "${BIRDHOUSE_BACKUP_RESTIC_ENV_FILE}" | xargs -0 -n1 sh -c "$PARSE_EXTRA_ARGS_FUNCTION_DEFINITION" sh
 }
 
 # Run a restic command.
@@ -461,7 +518,7 @@ do_restic() {
   log DEBUG "Running restic command: ${restic_cmd}"
   eval "${restic_cmd}"
 }
- 
+
 parse_backup_args() {
   case "$1" in
     -h|--help)
@@ -488,8 +545,8 @@ parse_backup_args() {
   esac
 }
 
-# Parse args that are common to the backup create and backup restore commands
-parse_backup_restore_common_args() {
+# Parse args that are common to all backup commands
+parse_backup_common_args() {
   calling_func="$1"
   shift
   case "$1" in
@@ -543,42 +600,50 @@ parse_backup_restore_common_args() {
 
 # Parse backup create args
 parse_backup_create_args() {
-  case "$1" in     
+  case "$1" in
     -h|--help)
       echo "${BACKUP_CREATE_HELP}" | more
       exit
       ;;
     --no-restic)
       shift
-      export BIRDHOUSE_BACKUP_RESTORE_NO_RESTIC=true
+      export BIRDHOUSE_BACKUP_NO_RESTIC=true
       parse_backup_create_args "$@"
       ;;
     '')
-      BIRDHOUSE_BACKUP_RESTORE_COMMAND=backup
-      ensure_birdhouse_running do_backup_create_restore
+      BIRDHOUSE_BACKUP_COMMAND=backup
+      source_env
+      check_backup_create_args
+      ensure_birdhouse_running
+      do_backup_create_restore
       exit
       ;;
     *)
-      if ! parse_backup_restore_common_args parse_backup_create_args "$@"; then
+      if ! parse_backup_common_args parse_backup_create_args "$@"; then
         >&2 echo "$@"
         >&2 echo "$BACKUP_CREATE_USAGE"
         exit 1
-      fi      
+      fi
       ;;
     esac
 }
 
 # Parse backup restore args
 parse_backup_restore_args() {
-  case "$1" in    
+  case "$1" in
     -h|--help)
       echo "${BACKUP_RESTORE_HELP}" | more
       exit
       ;;
     -s|--snapshot)
       shift
-      BIRDHOUSE_RESTORE_SNAPSHOT="$1"
+      BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT="$1"
       shift
+      parse_backup_restore_args "$@"
+      ;;
+    --no-restic)
+      shift
+      export BIRDHOUSE_BACKUP_NO_RESTIC=true
       parse_backup_restore_args "$@"
       ;;
     --no-clobber)
@@ -587,24 +652,26 @@ parse_backup_restore_args() {
       parse_backup_restore_args "$@"
       ;;
     '')
-      [ -n "$BIRDHOUSE_RESTORE_SNAPSHOT" ] || parse_backup_restore_args 'Use the --snapshot option to specify a snapshot to restore.'
-      BIRDHOUSE_BACKUP_RESTORE_COMMAND=restore
-      ensure_birdhouse_running do_backup_create_restore
+      BIRDHOUSE_BACKUP_COMMAND=restore
+      source_env
+      check_backup_restore_args
+      ensure_birdhouse_running
+      do_backup_create_restore
       exit
       ;;
     *)
-      if ! parse_backup_restore_common_args parse_backup_restore_args "$@"; then
+      if ! parse_backup_common_args parse_backup_restore_args "$@"; then
         >&2 echo "$@"
         >&2 echo "$BACKUP_RESTORE_USAGE"
         exit 1
-      fi  
+      fi
       ;;
     esac
 }
 
 # Echos "True" if the first argument is a valid log level
 check_log_dest_override() {
-  case "$1" in 
+  case "$1" in
     DEBUG|INFO|WARN|ERROR|CRITICAL)
       echo True
     ;;

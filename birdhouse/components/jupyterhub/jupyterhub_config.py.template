@@ -98,10 +98,16 @@ notebook_dir = '/notebook_dir'
 jupyterhub_data_dir = os.environ['JUPYTERHUB_USER_DATA_DIR']
 container_workspace_dir = join(notebook_dir, "writable-workspace")
 container_home_dir = join(container_workspace_dir, ".home")
+user_kernels_dir = "/usr/local/share/jupyter/user-kernels"
 
 c.DockerSpawner.notebook_dir = notebook_dir
 c.DockerSpawner.environment = {
     "HOME": container_home_dir,
+    # Adds a custom path that jupyterlab will use to search for kernels so that
+    # user-generated kernels can be detected by jupyterlab (the default location
+    # in the home directory is not visible to jupyterlab for some reason).
+    # See c.DockerSpawner.post_start_cmd for more info.
+    "JUPYTER_PATH": user_kernels_dir,
     # https://docs.bokeh.org/en/latest/docs/user_guide/jupyter.html#jupyterhub
     # Issue https://github.com/bokeh/bokeh/issues/12090
     # Post on Panel forum:
@@ -261,6 +267,19 @@ if jupyter_idle_server_cull_timeout or jupyter_idle_kernel_cull_timeout:
         '--MappingKernelManager.cull_connected=True',
         '--TerminalManager.cull_connected=True',
     ])
+
+# This ensures that the docker healthchecks pass for the jupyterlab containers
+# The healthchecks assume that the jupyter data directory is in /home/$NB_USER/.local
+# regardless of the value of $HOME.
+# It also makes a symlink between the kernels directory in the user space to another
+# location outside of the home directory. This is because jupyterlab is currently unable
+# to detect kernels inside the user's home directory for some reason.
+_post_start_command = (
+    "ln -s $HOME/.local /home/$NB_USER/.local; "
+    f"mkdir -p {user_kernels_dir}; "
+    f"ln -s $HOME/.local/share/jupyter/kernels {user_kernels_dir}/kernels"
+)
+c.DockerSpawner.post_start_cmd = f"sh -c '{_post_start_command}'"
 
 # ------------------------------------------------------------------------------
 # Configuration overrides
