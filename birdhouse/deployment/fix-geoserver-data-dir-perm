@@ -3,6 +3,12 @@
 #
 # Geoserver container runs with hardcoded uid 1000 and gid 10001.
 #
+# NOT needed since version `pavics/geoserver:2.25.2--v2024.06.25-kartoza`.
+# It will auto chown if wrong ownership detected.
+#
+# Keep here only for backward compatibility if we ever need to revert to older
+# image of GeoServer from kartoza.
+#
 # Set env var FIRST_RUN_ONLY to only execute this script once, before first
 # startup of Geoserver.  If Geoserver has already run at least once, file
 # global.xml will exist and this script will not execute.  Without
@@ -31,4 +37,4 @@ docker run --rm --name fix-geoserver-data-dir-perm \
     --env FIRST_RUN_ONLY \
     "${BASH_IMAGE}" \
     bash -xc 'if [ -z "$FIRST_RUN_ONLY" -o ! -f /datadir/global.xml ]; \
-    then chown -R 2000:2000 /datadir; else echo "No execute."; fi'
+    then chown -R 1000:10001 /datadir; else echo "No execute."; fi'
