@@ -59,6 +59,17 @@
    - `python-dotenv`: 1.0.1 -> 1.1.1
    - `requests`: 2.32.4 -> 2.32.5
 
+## Fixes
+
+- Backup: Fix STAC representative data restore operation (`birdhouse backup restore -r stac`).
+
+  - Change the default `STAC_POPULATOR_BACKUP_VERSION=0.9.0` to employ
+    the [Dockerfile of `stac-populator`](https://github.com/crim-ca/stac-populator/blob/master/docker/Dockerfile)
+    fix with preconfigured `PYESSV_ARCHIVE_HOME` directory.
+  - Add `stac-migration` along `stac-db` to the list of stopped/restored containers to ensure that the `stac-db`
+    volume used by both does not yield a docker daemon error of "volume in use", and to apply any relevant
+    migration scripts on the recreated `stac-db` volume.
+
 [2.16.14](https://github.com/bird-house/birdhouse-deploy/tree/2.16.14) (2025-08-27)
 ------------------------------------------------------------------------------------------------------------------
 
