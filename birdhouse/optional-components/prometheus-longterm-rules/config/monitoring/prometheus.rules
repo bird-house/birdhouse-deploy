@@ -1,68 +1,71 @@
+# Naming conventions: https://prometheus.io/docs/practices/naming/
+# Label rules with `group: longterm-metrics` to archive them by the optional second prometheus instance.
+
 groups:
     - name: longterm-metrics-hourly
       interval: 1h
       rules:
 
         # --- CPU ---
-        # Percentage of the time, over the last hour, that all CPUs were working
+        # Fraction of the time, over the last hour, that all CPUs were working (0-1)
         # 1 means all CPUs were working all the time, 0 means they were all idle all the time
-        - record: instance:cpu_load:avg_rate1h
+        - record: instance:node_cpu_seconds:avg_rate1h_not_idle
           expr: avg by(instance) (rate(node_cpu_seconds_total{mode!="idle"}[1h]))
           labels:
             group: longterm-metrics
 
-        # Percentage of the time that CPUs are waiting for IO
-        - record: instance:cpu_load_iowait:avg_rate1h
+        # Fraction of the time that CPUs are waiting for IO (0-1)
+        - record: instance:node_cpu_seconds:avg_rate1h_iowait
           expr: avg by(instance) (rate(node_cpu_seconds_total{mode="iowait"}[1h]))
           labels:
             group: longterm-metrics
 
-        # Number of threads in the last hour
-        - record: instance:node_threads_count:last_1h
+        # Number of threads in the last hour (1)
+        - record: instance:go_threads:avg1h
           expr: avg by(instance) (avg_over_time(go_threads[1h]))
           labels:
             group: longterm-metrics
 
         # --- Network ---
-        # Bytes sent
-        - record: instance:node_network_transmit_bytes_total:sum_rate1h
+        # Bytes sent (bytes)
+        - record: instance:node_network_transmit_bytes:sum_rate1h
           expr: sum by(instance) (rate(node_network_transmit_bytes_total[1h]))
           labels:
             group: longterm-metrics
 
-        # Bytes received
-        - record: instance:node_network_receive_bytes_total:sum_rate1h
+        # Bytes received (bytes)
+        - record: instance:node_network_receive_bytes:sum_rate1h
           expr: sum by(instance) (rate(node_network_receive_bytes_total[1h]))
           labels:
             group: longterm-metrics
 
-        # Total download volume in the last 1 hour logged by the prometheus-log-exporter counter
-        - record: thredds:kb_transfer_size_kb:increase_1h
-          expr: increase(thredds_transfer_size_kb_total[1h])
+        # Total download volume in the last 1 hour logged by the prometheus-log-exporter counter (bytes)
+        - record: instance:thredds_transfer_size_bytes:increase1h
+          expr: increase(thredds_transfer_size_bytes_total[1h])
           labels:
             group: longterm-metrics
 
         # --- Memory ---
-        # Total memory available in the last hour
-        - record: instance:node_memory_MemAvailable_bytes:last_1h
+        # Total memory available in the last hour (bytes)
+        - record: instance:node_memory_MemAvailable_bytes:avg1h
           expr: avg by(instance) (avg_over_time(node_memory_MemAvailable_bytes[1h]))
           labels:
             group: longterm-metrics
 
-        # Swap memory use
-        - record: instance:node_memory_SwapUsed_percent:last_1h
+        # Swap memory use (bytes)
+        - record: instance:node_memory_SwapFree_bytes:avg1h
           expr: avg by(instance) (avg_over_time(node_memory_SwapFree_bytes[1h]))
           labels:
             group: longterm-metrics
 
         # -- Disks ---
-        # Bytes read
+        # Disk read (bytes)
         - record: instance:node_disk_read_bytes:sum_rate1h
           expr: sum by(instance) (rate(node_disk_read_bytes_total[1h]))
           labels:
             group: longterm-metrics
 
-        # Bytes written
+        # Disk write (bytes)
         - record: instance:node_disk_written_bytes:sum_rate1h
           expr: sum by(instance) (rate(node_disk_written_bytes_total[1h]))
           labels:
@@ -71,14 +74,14 @@ groups:
         # --- Users ---
         # To aggregate user numbers over a month or a year, we need to keep the name labels.
 
-        # JupyterLab container kb writes to disk in the last hour
-        - record: name:jupyter_writes_to_disk_kb:last_1h
-          expr: (sum by(name) (increase(container_fs_writes_bytes_total{name=~"jupyter-.+"}[1h])) > 0) / 1024
+        # JupyterLab container writes to disk in the last hour (bytes, filtered on > 0)
+        - record: jupyter:container_fs_writes_bytes:sum_increase1h
+          expr: (sum by(name) (increase(container_fs_writes_bytes_total{name=~"jupyter-.+"}[1h])) > 0)
           labels:
             group: longterm-metrics
 
-        # JupyterLab container CPU usage (> 1 minute per hour)
-        - record: name:jupyter_cpu_seconds:last_1h
+        # JupyterLab container CPU usage (seconds, filtered on > 60 seconds per hour)
+        - record: jupyter:container_cpu_user_seconds:sum_increase1h
           expr: (sum by(name) (increase(container_cpu_user_seconds_total{name=~"jupyter-.+"}[1h])) > 60)
           labels:
             group: longterm-metrics
@@ -87,43 +90,45 @@ groups:
     - name: longterm-metrics-daily
       interval: 1d
       rules:
-      # Note: `avg_over_time` could be replace by `last_over_time`, the latter having been added in Prometheus 2.26
+      # Note: `max_over_time` could be replace by `last_over_time`, the latter having been added in Prometheus 2.26
 
       # --- System ---
-      # Uptime
-        - record: instance:node_boot_time_seconds:last_1d
+      # Uptime (seconds)
+        - record: instance:node_boot_time_seconds:max_over_time1d
           expr: max by(instance) (time() - max_over_time(node_boot_time_seconds[1d]))
           labels:
             group: longterm-metrics
 
       # --- Disk space ---
-      # Free disk space in the last 24 hours
-        - record: instance:node_filesystem_free_bytes:last_1d
+      # Free disk space (bytes)
+        - record: instance:node_filesystem_free_bytes:avg_min_over_time1d
           expr: avg by(instance) (min_over_time(node_filesystem_free_bytes[1d]))
           labels:
             group: longterm-metrics
 
-      # Disk size in the last 24 hours
-        - record: instance:node_filesystem_size_bytes:last_1d
+      # Disk size (bytes)
+        - record: instance:node_filesystem_size_bytes:avg_max_over_time1d
           expr: avg by(instance) (max_over_time(node_filesystem_size_bytes[1d]))
           labels:
             group: longterm-metrics
 
       # --- RAM ---
-        # Total memory available
-        - record: instance:node_memory_MemTotal_bytes:last_1d
+        # Total memory available (bytes)
+        - record: instance:node_memory_MemTotal_bytes:avg_max_over_time1d
           expr: avg by(instance) (max_over_time(node_memory_MemTotal_bytes[1d]))
           labels:
             group: longterm-metrics
 
-        # Swap memory size
-        - record: instance:node_memory_SwapTotal_bytes:last_1d
+        # Swap memory size (bytes)
+        - record: instance:node_memory_SwapTotal_bytes:avg_min_over_time1d
           expr: avg by(instance) (min_over_time(node_memory_SwapTotal_bytes[1d]))
           labels:
             group: longterm-metrics
 
-        # JupyterLab container open
-        - record: name:jupyter_container_seen:last_1d
-          expr: round(sum by(name) (rate(container_last_seen{name=~"jupyter-.+"}[1d]) > 0.9))
+      # --- Users ---
+        # Fraction of time JupyterLab containers open in the last day (0-1)
+        # 1: container open all day
+        - record: jupyter:container_last_seen:sum_rate1d
+          expr: sum by(name) (rate(container_last_seen{name=~"jupyter-.+"}[1d]) > 0)
           labels:
             group: longterm-metrics
