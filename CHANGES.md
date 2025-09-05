@@ -30,7 +30,10 @@
 
   `fix-geoserver-data-dir-perm` is not required anymore, it has been disabled
   but kept for backward compatibility if we ever need to rollback to older
-  versions of GeoServer.
+  versions of GeoServer.  If you need to rollback to any versions before 2.25.2
+  you might need to run `fix-geoserver-data-dir-perm` manually, only if it is
+  required.  Do not run it if not required. It takes lots of time if you have
+  lots of data.
 
   Please **backup** your GeoServer data before the upgrade.  If the upgrade
   fails, you won't be able to rollback.  If you have upgrade problem, please

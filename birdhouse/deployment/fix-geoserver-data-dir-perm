@@ -7,7 +7,7 @@
 # It will auto chown if wrong ownership detected.
 #
 # Keep here only for backward compatibility if we ever need to revert to older
-# image of GeoServer from kartoza.
+# image of GeoServer (older than 2.25.2--v2024.06.25-kartoza) from kartoza.
 #
 # Set env var FIRST_RUN_ONLY to only execute this script once, before first
 # startup of Geoserver.  If Geoserver has already run at least once, file
