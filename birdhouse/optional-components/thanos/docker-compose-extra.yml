@@ -70,6 +70,7 @@ services:
       - ${THANOS_MINIO_DATA_STORE}:/data
       - ./optional-components/thanos/minio-entrypoint:/entrypoint
     entrypoint: /entrypoint
+    restart: always
     command:
       - 'minio'
       - 'server'

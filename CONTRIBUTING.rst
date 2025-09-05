@@ -9,21 +9,22 @@ Please read the Birdhouse `Developer Documentation`_ to get started.
 
 Policy
 ------
+
 Since Birdhouse is used in production by multiple organizations, this deployment repository also has a policy regarding contributions.
 
 Policy objectives
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 1. Keep production stable between deployments
-2. Encourage PR to be merged more quickly
+2. Encourage Pull Requests to be merged more quickly
 3. Achieve the two previous objectives
     * by weighing down everyone's workflow as little as possible
     * by having an approach that scales well as more nodes go into production and the number of PR increases
 
 Policy rules
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
 
-1. The repository has a main branch, "`master`_", open to the community where contributions, "PR", are welcome.
+1. The repository has a main branch, "`master`_", open to the community where contributions, Pull Requests/"PRs", are welcome.
    This master branch must not have owners and therefore no organization can block contributions to it.
 
 .. _master: https://github.com/bird-house/birdhouse-deploy
@@ -85,7 +86,7 @@ Policy rules
       A tag looking like ``2.1.8.orgXrev1`` would be preferred.
 
 Birdhouse multi organization git repository management
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. image:: https://raw.githubusercontent.com/bird-house/birdhouse-deploy/master/docs/source/images/multi_organizations_management.jpg
   :alt: Birdhouse multi organization git repository management

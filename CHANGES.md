@@ -38,6 +38,223 @@
   [kartoza/docker-geoserver#760](https://github.com/kartoza/docker-geoserver/issues/760).
 
 
+[2.17.0](https://github.com/bird-house/birdhouse-deploy/tree/2.17.0) (2025-09-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: Update STAC Browser to
+  [`crim-ca/stac-browser:3.4.0-dev`](https://github.com/crim-ca/stac-browser/releases/tag/3.4.0-dev).
+
+  - Dockers are now built directly with the GitHub CI releases
+    (see https://github.com/crim-ca/stac-browser/pkgs/container/stac-browser).
+  - Synchronize with latest changes (as of 2025-08-16).
+    - Beside the necessary `prefixPath` override for Nginx Proxy redirect and a minor HTML file resolution fix,
+      the image is entirely up-to-date with the official upstream code.
+    - Supports STAC 1.1.0.
+    - Supports language locales.
+    - Greatly improves parsing of STAC metadata and their visual rendering.
+    - Allows dynamic runtime [config.js](https://github.com/radiantearth/stac-browser/blob/main/config.js) overrides.
+      For the time being, only the required `catalogUrl` is overridden, but further settings could be added later on.
+
+- STAC: Update STAC API to `crim-ca/stac-app:2.0.1`.
+
+  - Changes in [`crim-ca/stac-app:2.0.0`](https://github.com/crim-ca/stac-app/releases/tag/2.0.0) includes:
+    - migration to `stac-fastapi==6.0.0` and corresponding fixes to support it
+    - add `q` parameter free-text search on `/search`, `/collections` and `/collections/{collectionId}/items` endpoints
+    - enforce JSON schema validation of all `stac_extensions` referenced by published STAC Items and Collections
+    - multiple dependency updates
+  - Minor package dependency fix in [`crim-ca/stac-app:2.0.1`](https://github.com/crim-ca/stac-app/releases/tag/2.0.1).
+
+- STAC: Update `stac-db` and `stac-migration` to version `0.9.8`.
+
+- STAC: Add `optional/stac-db-persist` and `STAC_DB_PERSIST_DIR` to allow custom STAC DB metadata storage location.
+
+- Drop unsupported `pytest-lazy-fixture` python package for tests
+
+  This package is no longer maintained and breaks for `pytest` versions 8+. We do not need it for our tests so
+  it was dropped. In the future if we need to support lazy fixtures we should use the `pytest-lazy-fixtures`
+  package instead (which is actively maintained).
+
+- Dependabot automated updates for Python dependencies.
+
+  The following Python dependencies were updated to their most recent compatible releases:
+   - `jsonschema`: 4.17.1 -> 4.25.1
+   - `prometheus-client`: 0.22.0 -> 0.22.1
+   - `pytest`: 7.2.2 -> 8.4.1
+   - `python-dotenv`: 1.0.1 -> 1.1.1
+   - `requests`: 2.32.4 -> 2.32.5
+
+## Fixes
+
+- Backup: Fix STAC representative data restore operation (`birdhouse backup restore -r stac`).
+
+  - Change the default `STAC_POPULATOR_BACKUP_VERSION=0.9.0` to employ
+    the [Dockerfile of `stac-populator`](https://github.com/crim-ca/stac-populator/blob/master/docker/Dockerfile)
+    fix with preconfigured `PYESSV_ARCHIVE_HOME` directory.
+  - Add `stac-migration` along `stac-db` to the list of stopped/restored containers to ensure that the `stac-db`
+    volume used by both does not yield a docker daemon error of "volume in use", and to apply any relevant
+    migration scripts on the recreated `stac-db` volume.
+
+[2.16.14](https://github.com/bird-house/birdhouse-deploy/tree/2.16.14) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Updated configuration of `.github/labeler.yml` to follow the new `actions/labeler` v5.0 conventions.
+
+  In `Birdhouse-deploy` v2.16.11, the `actions/labeler` action was updated to v5.0 which introduced a new configuration
+  format for the `.github/labeler.yml` file. This change updates the configuration to follow the new format. See: 
+  [actions/labeler v5.0 release notes](https://github.com/actions/labeler/releases/tag/v5.0.0).
+
+[2.16.13](https://github.com/bird-house/birdhouse-deploy/tree/2.16.13) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Updated the `finch` service to v0.12.1.
+
+  This is a significant jump from the previous version (v0.9.2) and includes many bug fixes and dependency updates:
+
+  - anyascii (replacement for unidecode)
+  - xclim v0.43.0 (previously xclim v0.37)
+
+[2.16.12](https://github.com/bird-house/birdhouse-deploy/tree/2.16.12) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- User kernels directory should always be writable
+
+  The destination used to symlink user kernels (`/usr/local/share/jupyter`) is not always writable depending 
+  on the jupyterlab docker image that is used to spawn the jupyterlab containers. To ensure that it is always 
+  writable this places the link under `/var/tmp` which is guaranteed to be writable.
+
+[2.16.11](https://github.com/bird-house/birdhouse-deploy/tree/2.16.11) (2025-08-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Added a Dependabot configuration for tracking version updates for `pip` and for GitHub Actions
+
+  GitHub Actions have been updated to their most recent versions and their versions now point to commit hashes instead
+  of version tags for security purposes. Dependabot has been configured to perform periodic updates on these actions.
+  Python requirements (`requirements.txt`) now use commit hashes generated via the `pip-tools` library for security purposes
+  as well. The list of Python library requirements has been moved to `requirements.in` and is also managed by Dependabot.
+
+- Added `nodefaults` to the `environment-dev.yml` to ensure that the Anaconda "default" repository is never used for environment creation
+
+- Replaced `bump2version` with a maintained fork (`bump-my-version`) in the development dependencies and the top-level Makefile
+    
+  Migrated the `.bumpversion.cfg` to use newer TOML format (`.bumpversion.toml`) and removed the logic in Makefile centred on
+  tracking and updating the date of last version bump as this is now handled dynamically via `bump-my-version`
+
+
+[2.16.10](https://github.com/bird-house/birdhouse-deploy/tree/2.16.10) (2025-08-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Proxy: allow to add parameters to Nginx listen directives via env.local
+
+  One usage is to add the parameter "http2" to enable HTTP/2 protocol.
+
+  Before
+  ```sh
+  $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
+  HTTP/1.1 200 OK
+  ```
+
+  After `export PROXY_LISTEN_443_PARAMS="http2"` is set in `env.local` and
+  `proxy` container restarted
+  ```sh
+  $ curl --silent --include https://${BIRDHOUSE_FQDN_PUBLIC}/ | head -1
+  HTTP/2 200
+  ```
+
+
+[2.16.9](https://github.com/bird-house/birdhouse-deploy/tree/2.16.9) (2025-08-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Backup: Allow `BIRDHOUSE_BACKUP_VOLUME` to be employed directly as directory.
+
+  This feature _**requires**_ using the `--no-restic` option to avoid it being involved by ``--snapshot`` override.
+  Combining a directory path and omitting `--no-restic` can lead to undesired side effects.
+  However, it allows using backup/restore operations for quick data manipulations on alternate locations than a
+  volume to offer flexibility or to bypass `restic` operations.
+  This can be employed for fixing problematic service data migrations or file system limitations with volumes.
+
+  The directory structure must match exactly with `BIRDHOUSE_BACKUP_VOLUME` when used as volume
+  (e.g.: `/tmp/backup/{component}-{backup_type}/...`).
+
+  This feature also disables the automatic cleanup of the volume (since the directory is used directly).
+  Therefore, users have to manage the contents of `BIRDHOUSE_BACKUP_VOLUME` on their own and consistently.
+
+- Backup: Avoid `birdhouse backup restore` operation to complain about missing `-s|--snapshot` when not required.
+
+  For example, `BIRDHOUSE_BACKUP_VOLUME=/tmp/backup birdhouse backup restore --no-restic -r stac` only operates on local
+  data contents to be restored into the server instance. No remote `restic` snapshot is required to run the operation.
+
+- Backup: Unification of script shebangs, variables names and function names with invoked operations.
+
+  - Renames related to `backup [create|restore|restic]` when they apply to many operations simultaneously.
+    This helps highlight that a variable with explicitly `CREATE`, `RESTORE` or `RESTIC` only applies to that
+    specific operation, whereas others are shared.
+
+    - `parse_backup_restore_common_args` => `parse_backup_common_args`
+    - `BIRDHOUSE_BACKUP_RESTORE_NO_RESTIC` => `BIRDHOUSE_BACKUP_NO_RESTIC`
+    - `BIRDHOUSE_BACKUP_RESTORE_COMMAND` => `BIRDHOUSE_BACKUP_COMMAND`
+
+  - Renames to match the common `BIRDHOUSE_BACKUP_[...]` prefix employed by other "backup" variables:
+
+    - `BIRDHOUSE_RESTORE_SNAPSHOT` => `BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT`
+
+- Backup: Add `stac-migration` image to the list of containers to stop on `birdhouse backup restore -r stac`.
+
+  Because the service was not stopped, and that it links to `stac-db` and its corresponding volume, the
+  following `docker volume rm stac-db` step would fail as the volume was still in use. This would lead to a restore
+  operation dealing with dirty database contents and potentially conflicting restore data that would not be applied.
+  Relates to added service `stac-migration` in [#534](https://github.com/bird-house/birdhouse-deploy/pull/534).
+
+- Backup: Allow `BIRDHOUSE_LOG_LEVEL` to override the `stac-populator` log level involved with `-r stac`.
+
+[2.16.8](https://github.com/bird-house/birdhouse-deploy/tree/2.16.8) (2025-08-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Allow user generated jupyterlab kernels to persist between sessions
+
+  If a jupyterlab user wants to create a virtual environment to use as a kernel they can do so
+  by creating a new virtual environment and installing it as a kernel with the `python -m ipykernel install`
+  command.
+
+  By default this command installs the kernel metadata in `/usr/local/share/jupyter/kernels` which is not
+  persisted to a docker volume and so the kernel is no longer visible when the jupyterlab container restarts.
+  Alternatively, the command can be run with the `--user` flag which installs the kernel metadata to the user's
+  home directory (which is persisted to a docker volume) but the jupyterlab API does not recognize kernels
+  installed in this way for some reason.
+
+  To solve this issue, this creates a symlink from the kernels metadata folder in the user's home directory to
+  a location outside of the user's home directory (`/usr/local/share/jupyter/user-kernels/kernels`) which can
+  be detected by the juptyerlab API.
+
+- Ensure jupyterlab container healthchecks don't fail by default
+
+  The healthchecks assume that the jupyter data directory is in `/home/$NB_USER/.local` regardless of the value 
+  of $HOME. This means that healthechecks for the jupyterlab containers were always failing even if the
+  container was actually healthy.
+
+  This fixes the issue by symlinking the relevant folder to `/home/$NB_USER/.local` within the container so that 
+  the healthchecks can run as expected.
+
+- Thanos-minio container should always restart on failure
+
+  Since this container wasn't restarting automatically it could make the entire stack unavailable if it failed.
+  The proxy container would refuse to start since it could not connect to the upstream thanos-minio server.
+
 [2.16.7](https://github.com/bird-house/birdhouse-deploy/tree/2.16.7) (2025-08-05)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -102,7 +319,7 @@
 
 - Fix invalid `STAC_POPULATOR_BACKUP_IMAGE='${STAC_POPULATOR_BACKUP_DOCKER}:${STAC_POPULATOR_BACKUP_VERSION}'`.
 
-  The `STAC_POPULATOR_BACKUP_IMAGE` variable was refering other variables missing their `_BACKUP` part.
+  The `STAC_POPULATOR_BACKUP_IMAGE` variable was referring other variables missing their `_BACKUP` part.
 
 [2.16.3](https://github.com/bird-house/birdhouse-deploy/tree/2.16.3) (2025-06-25)
 ------------------------------------------------------------------------------------------------------------------
