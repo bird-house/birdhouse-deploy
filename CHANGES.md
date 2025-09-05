@@ -32,6 +32,11 @@
   but kept for backward compatibility if we ever need to rollback to older
   versions of GeoServer.
 
+  Please **backup** your GeoServer data before the upgrade.  If the upgrade
+  fails, you won't be able to rollback.  If you have upgrade problem, please
+  look at
+  [kartoza/docker-geoserver#760](https://github.com/kartoza/docker-geoserver/issues/760).
+
 
 [2.16.7](https://github.com/bird-house/birdhouse-deploy/tree/2.16.7) (2025-08-05)
 ------------------------------------------------------------------------------------------------------------------
