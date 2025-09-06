@@ -14,8 +14,8 @@
     "links": [
       {
         "rel": "service",
-        "type": "application/json",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/"
+        "type": "text/html",
+        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/?f=html"
       },
       {
         "rel": "service-doc",
@@ -25,7 +25,7 @@
       {
         "rel": "service-desc",
         "type": "application/json",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/"
+        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/?f=json"
       },
       {
         "rel": "conformance",
