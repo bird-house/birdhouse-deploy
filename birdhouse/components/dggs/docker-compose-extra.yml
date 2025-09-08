@@ -1,0 +1,38 @@
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+
+services:
+  dggs:
+    container_name: dggs
+    image: ${DGGS_IMAGE}
+    environment:
+      HOSTNAME: ${BIRDHOUSE_FQDN}
+      HTTP_HOST: ${BIRDHOUSE_FQDN}
+      FORWARDED_ALLOW_IPS: "*"
+      PYDGGSAPI_PORT: 8000
+      PYDGGSAPI_WORKERS: ${DGGS_WORKERS}
+      PYDGGSAPI_LOG_LEVEL: ${DGGS_LOG_LEVEL}
+    networks:
+      - default
+    volumes:
+      - ${DGGS_CONFIG_PATH}:/opt/local/src/pydggsapi/config/pydggsapi-config.json:ro
+      - ${DGGS_DATA_DIR}:/data:rw
+    restart: always
+    logging: *default-logging
+    healthcheck:
+      test: [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://localhost:8000${DGGS_API_PATH_INTERNAL}')"
+      ]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s

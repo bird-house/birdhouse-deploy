@@ -1,0 +1,9 @@
+providers:
+  # definition of STAC service for API access
+  dggs:
+    url: http://dggs:8000
+    title: Discrete Global Grid System (DGGS) Service
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
