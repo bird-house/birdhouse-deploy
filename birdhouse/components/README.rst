@@ -723,6 +723,43 @@ How to Enable the Component
 - Edit ``env.local`` (a copy of `env.local.example`_)
 - Add ``./components/stac`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
+
+DGGS: Discrete Global Grid Systems API
+======================================
+
+`DGGS`_ is a spatial reference system combining a discrete global grid hierarchy with a zone identifier, in contrast
+to typical ``(lat, lon)`` spatial reference systems. By using a predefined and deterministic order of zone IDs and
+refinement sub-zones, DGGS enables efficient access, representation and analysis of spatial data that has been
+quantized over a certain grid reference system (DGGRS).
+
+The *OGC API - DGGS* definition implemented by this service is a RESTful API that provides access to DGGS resources,
+definitions, zonal query conversion, and data retrieval from precomputed datasets.
+
+.. _DGGS: https://ogcapi.ogc.org/dggs/
+
+Usage
+-----
+
+Once enabled, the API will be accessible (by default) on the ``/dggs-api`` endpoint.
+It will also be available through the common ``/ogcapi/dggs`` alias.
+
+Refer to the `DGGS`_ OGC API documentation for specific endpoints and features.
+
+Refer to `vgrid DGGS <https://github.com/opengeoshub#vgrid-dggs>`_ and
+the `vgrid repository <https://github.com/opengeoshub/vgrid>`_ for a relatively extensive
+collection of DGGS tools and its associated data manipulation ecosystem (using ``xarray``, QGIS plugin, etc.).
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/dggs`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Optionally, define alternate DGGS dataset locations using a derived configuration file based on
+  the ``./components/dggs/config/dggs/pydggsapi-config.json.template``.
+  See the `PyDGGS-API implementation <https://github.com/LandscapeGeoinformatics/pydggsapi>`_ for more details.
+- Optionally, configure variables in ``./components/dggs/default.env`` via ``env.local`` to customize the service.
+
+
 Canarie-API
 ===========
 
