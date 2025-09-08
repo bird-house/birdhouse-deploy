@@ -955,10 +955,11 @@ of all processes executed by these services.
 Usage
 -----
 
-All outputs from these processes will become available at the ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs`` endpoint.
+All outputs from these processes will become available at
+the ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs`` endpoint.
 
 By default, this endpoint is not protected. To secure access to this endpoint it is highly recommended to enable the
-`./optional-components/secure-data-proxy` component as well.
+``./optional-components/secure-data-proxy`` component as well.
 
 How to Enable the Component
 ---------------------------

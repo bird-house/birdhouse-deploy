@@ -175,6 +175,30 @@ The anonymous user will now have all the permissions described in |magpie-public
 .. |magpie-public-perms| replace:: optional-components/all-public-access/all-public-access-magpie-permission.cfg
 .. _env.local.example: ../env.local.example
 
+Control secured access to generic data
+--------------------------------------------------------
+
+It is possible to serve static data files through Nginx by mapping a directory to a specific URL path.
+This optional component provides a configurable location to serve such data.
+
+.. seealso::
+    Following components can also employ this feature.
+    However, they are not direct dependencies to allow flexibility.
+
+    - ``./components/wps-outputs_volume`` (`components_secure-data-proxy-wps_outputs`_)
+    - ``./optional-components/stac-data-proxy`` (`optional-components_stac-data-proxy`_)
+
+How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
+
+* Add ``./optional-components/secure-data-proxy`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+* Optionally, set ``SECURE_DATA_PROXY_ROOT`` to an alternate directory location on the machine.
+* Optionally, set ``SECURE_DATA_PROXY_LOCATIONS`` with additional Nginx definitions to protect and serve data from.
+
+Once enabled, users will *NOT* have public access to files served
+at the ``${BIRDHOUSE_FQDN_PUBLIC}/${SECURE_DATA_PROXY_ROOT}`` location.
+Permission management of these resources is controlled through Magpie under the ``secure-data-proxy`` service.
+
+.. _components_secure-data-proxy-wps_outputs:
 
 Control secured access to WPS outputs
 --------------------------------------------------------
@@ -204,7 +228,7 @@ service to customize specific user access control to stored data files.
 .. |secure-data-proxy-perms| replace:: optional-components/secure-data-proxy/config/magpie/config.yml.template
 
 
-Control secured access to resources example
+Control secured access to THREDDS resources example
 --------------------------------------------------------
 
 Optional configuration |magpie-secure-perms|_ is provided as example to illustrate how to apply permissions on specific
