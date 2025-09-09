@@ -3,10 +3,10 @@
     "1": {
       "igeo7": {
         "title": "IGEO7: DGGRS ISEA7H with Z7 ID representation",
-        "description": "Hexagonal Discrete Global Grid System (DGGS) with aperture 7 composing subdivisions of 7 hexagonal cells of equal area, and Z7 hierarchical integer indexing system.",
+        "description": "Hexagonal Discrete Global Grid System (DGGS) with aperture 7 composing subdivisions of 7 hexagonal cells of equal area, and Z7 hierarchical integer indexing system (https://agile-giss.copernicus.org/articles/6/32/2025/).",
         "crs": "wgs84",
         "shapeType": "hexagon",
-        "definition_link": "https://agile-giss.copernicus.org/articles/6/32/2025/",
+        "definition_link": "https://www.opengis.net/def/dggrs/OGC/1.0/IGEO7",
         "defaultDepth": 5,
         "classname": "igeo7_dggrs_provider.IGEO7Provider"
       }
@@ -14,10 +14,10 @@
     "2": {
       "h3": {
         "title": "DGGRS H3",
-        "description": "H3 hexagonal hierarchical geospatial indexing system developed by Uber (https://github.com/uber/h3).",
+        "description": "H3 hexagonal hierarchical geospatial indexing system developed by Uber (https://github.com/uber/h3, https://h3geo.org/).",
         "crs": "wgs84",
         "shapeType": "hexagon",
-        "definition_link": "https://h3geo.org/",
+        "definition_link": "https://www.opengis.net/def/dggrs/OGC/1.0/H3",
         "defaultDepth": 9,
         "classname": "h3_dggrs_provider.H3Provider"
       }
