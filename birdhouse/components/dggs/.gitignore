@@ -1,4 +1,4 @@
 config/dggs/pydggsapi-config.json
 config/magpie/config.yml
-config/proxy/conf.extra-services.d/dggs.conf
+config/proxy/conf.extra-service.d/dggs.conf
 service-config.json
