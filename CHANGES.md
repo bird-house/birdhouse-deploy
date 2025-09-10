@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.17.1](https://github.com/bird-house/birdhouse-deploy/tree/2.17.1) (2025-09-10)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Weaver: Fix invalid JSON/HTML media-types for reported `/services` links without explicit format indicator.
