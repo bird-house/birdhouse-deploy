@@ -191,12 +191,16 @@ This optional component provides a configurable location to serve such data.
 How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
 
 * Add ``./optional-components/secure-data-proxy`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
-* Optionally, set ``SECURE_DATA_PROXY_ROOT`` to an alternate directory location on the machine.
+* Optionally, set ``SECURE_DATA_PROXY_ROOT`` to an alternate directory location on the machine to mount in ``proxy``.
 * Optionally, set ``SECURE_DATA_PROXY_LOCATIONS`` with additional Nginx definitions to protect and serve data from.
 
-Once enabled, users will *NOT* have public access to files served
-at the ``${BIRDHOUSE_FQDN_PUBLIC}/${SECURE_DATA_PROXY_ROOT}`` location.
-Permission management of these resources is controlled through Magpie under the ``secure-data-proxy`` service.
+Once enabled, if a Nginx ``location`` with path-mapping ``alias`` contains the ``${SECURE_DATA_PROXY_AUTH_INCLUDE}``
+definition, the data it would normally serve directly will *NOT* have public access from the specified ``location``,
+unless the authenticated user is granted access by relevant user or group permissions.
+
+Permission management of these resources is controlled through Magpie under
+the ``secure-data-proxy`` service (type: API). Resources names and nesting under ``secure-data-proxy`` service
+should match exactly the ``location`` path expected by Nginx ``proxy``.
 
 .. _components_secure-data-proxy-wps_outputs:
 
