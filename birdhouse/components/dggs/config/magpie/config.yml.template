@@ -1,9 +1,81 @@
 providers:
   # definition of STAC service for API access
-  dggs:
+  ${DGGS_API_NAME}:
     url: http://dggs:8000
     title: Discrete Global Grid System (DGGS) Service
     public: true
     c4i: false
     type: api
     sync_type: api
+
+  ${DGGS_TILES_NAME}:
+    url: http://dggs:8000
+    title: Tiles support over Discrete Global Grid System (DGGS) Service
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+
+
+permissions:
+  - service: ${DGGS_API_NAME}
+    resource: /openapi.json
+    permission: read
+    group: anonymous
+    action: create
+  - service: ${DGGS_API_NAME}
+    resource: ${DGGS_DOCS_PATH_INTERNAL}
+    permission: read
+    group: anonymous
+    action: create
+
+  # === DGGS API ===
+  # /${DGGS_API_NAME}/dggs/...
+  # /${DGGS_API_NAME}/collections/{collectionId}/dggs/...
+
+  # Administrator permissions over whole service
+  - service: ${DGGS_API_NAME}
+    permission: read
+    group: administrators
+    action: create
+  - service: ${DGGS_API_NAME}
+    permission: write
+    group: administrators
+    action: create
+  # Open access to the entrypoint
+  - service: ${DGGS_API_NAME}
+    permission: read-match
+    group: anonymous
+    action: create
+  # Open access to the generic DGGRS definitions
+  # DGGS-nested endpoints and Collections access managed by user/groups.
+  - service: ${DGGS_API_NAME}
+    resource: /dggs
+    permission: read-match
+    group: anonymous
+    action: create
+  # Open access to the documentation endpoints
+  - service: ${DGGS_API_NAME}
+    resource: /conformance
+    permission: read-match
+    group: anonymous
+    action: create
+
+  # === Tiles API ===
+  # /${DGGS_TILES_NAME}/{collectionId}.json
+  # /${DGGS_TILES_NAME}/{collectionId}/{z}/{x}/{x}
+
+  # Administrator permissions over whole service
+  - service: ${DGGS_TILES_NAME}
+    permission: read
+    group: administrators
+    action: create
+  - service: ${DGGS_TILES_NAME}
+    permission: write
+    group: administrators
+    action: create
+  # Tiles-only endpoint. Collections access managed by user/groups.
+  - service: ${DGGS_TILES_NAME}
+    permission: read-match
+    group: anonymous
+    action: create

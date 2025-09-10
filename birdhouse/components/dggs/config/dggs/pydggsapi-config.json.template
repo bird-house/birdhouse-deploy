@@ -1,7 +1,7 @@
 {
   "dggrs": {
     "1": {
-      "igeo7": {
+      "IGEO7": {
         "title": "IGEO7: DGGRS ISEA7H with Z7 ID representation",
         "description": "Hexagonal Discrete Global Grid System (DGGS) with aperture 7 composing subdivisions of 7 hexagonal cells of equal area, and Z7 hierarchical integer indexing system (https://agile-giss.copernicus.org/articles/6/32/2025/).",
         "crs": "wgs84",
@@ -12,7 +12,7 @@
       }
     },
     "2": {
-      "h3": {
+      "H3": {
         "title": "DGGRS H3",
         "description": "H3 hexagonal hierarchical geospatial indexing system developed by Uber (https://github.com/uber/h3, https://h3geo.org/).",
         "crs": "wgs84",
@@ -30,7 +30,7 @@
         "description": "Data extracted from RCM-ARD rasters over Winnipeg, Manitoba, Canada, quantized to H3 cells.",
         "collection_provider": {
           "providerId": "h3-parquet",
-          "dggrsId": "h3",
+          "dggrsId": "H3",
           "maxzonelevel": 9,
           "getdata_params": {
             "datasource_id": "manitoba"
@@ -47,7 +47,7 @@
           "datasources": {
             "manitoba": {
               "filepath": "https://hirondelle.crim.ca/data/samples/dggs/H3/L7/2025-08-31/rl/RCM2_OK3556292_PK3777138_2_SC30MCPD_20250831_123917_RL.parquet",
-              "id_col": "h3",
+              "id_col": "H3",
               "data_cols": [
                 "resolution",
                 "center_lat",

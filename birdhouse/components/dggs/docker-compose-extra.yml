@@ -14,13 +14,17 @@ services:
       HOSTNAME: ${BIRDHOUSE_FQDN}
       HTTP_HOST: ${BIRDHOUSE_FQDN}
       FORWARDED_ALLOW_IPS: "*"
+      ROOT_PATH: "${DGGS_API_PATH}"
+      DOCS_URL: ${DGGS_API_PATH}${DGGS_DOCS_PATH_INTERNAL}
+      OPENAPI_URL: /json
+      DGGS_PREFIX: ""
       PYDGGSAPI_PORT: 8000
       PYDGGSAPI_WORKERS: ${DGGS_WORKERS}
       PYDGGSAPI_LOG_LEVEL: ${DGGS_LOG_LEVEL}
     networks:
       - default
     volumes:
-      - ${DGGS_CONFIG_PATH}:/opt/local/src/pydggsapi/config/pydggsapi-config.json:ro
+      - ${DGGS_CONFIG_PATH}:/opt/local/src/pydggsapi/config/pydggsapi-config.json:rw
       - ${DGGS_DATA_DIR}:/data:rw
     restart: always
     logging: *default-logging
@@ -29,7 +33,7 @@ services:
         "CMD",
         "python",
         "-c",
-        "import urllib.request; urllib.request.urlopen('http://localhost:8000${DGGS_API_PATH_INTERNAL}')"
+        "import urllib.request; urllib.request.urlopen('http://localhost:8000${DGGS_API_PATH_INTERNAL}/')"
       ]
       interval: 60s
       timeout: 5s
