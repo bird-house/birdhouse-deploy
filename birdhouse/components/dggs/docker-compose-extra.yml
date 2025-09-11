@@ -29,7 +29,12 @@ services:
     networks:
       - default
     volumes:
+      # The below configuration file is mounted with read-write so that the API using it can operate.
+      # The service does not actually change it, but it employs it as a database connection that requires write access.
       - ${DGGS_CONFIG_PATH}:/opt/local/src/pydggsapi/config/pydggsapi-config.json:rw
+      # Following volume mount is provided for convenience to easily make static data files available to the service.
+      # Users should edit the 'DGGS_CONFIG_PATH' to a custom configuration which can include '/data/...' file paths.
+      # The volume is mounted read-write to allow creation of temporary/cache files by the service to accelerate access.
       - ${DGGS_DATA_DIR}:/data:rw
     restart: always
     logging: *default-logging
