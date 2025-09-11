@@ -33,8 +33,9 @@
         proxy_set_header X-Forwarded-Host $http_host:$server_port;
         #proxy_set_header X-Script-Name ${DGGS_API_PATH};
     }
-    location = ${DGGS_API_PATH}/json {
-        rewrite ^/${DGGS_API_PATH}/(.*) /$1 break;
+    # '/api' is the standard path by OGC: https://ogcapi.ogc.org/common/overview.html
+    location = ${DGGS_API_PATH}/api {
+        rewrite ^${DGGS_API_PATH}/(.*) ${DGGS_API_PATH_INTERNAL}/$1 break;
         proxy_pass http://dggs:8000;
         proxy_set_header Host $host;
         proxy_set_header X-Original-URI $request_uri;
