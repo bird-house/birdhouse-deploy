@@ -14,6 +14,12 @@
         try_files /services.json =404;
     }
 
+    location ~ ^/services/(.*)$ {
+        default_type application/json;
+        root /static;
+        try_files /services/$1.json =404;
+    }
+
     location /version {
         default_type application/json;
         root /static;

@@ -33,9 +33,43 @@
         "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/conformance/"
       },
       {
+        "rel": "http://www.opengis.net/def/rel/ogc/1.0/conformance",
+        "type": "application/json",
+        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/conformance/"
+      },
+      {
+        "rel": "http://www.opengis.net/def/rel/ogc/1.0/data-meta",
+        "type": "application/json",
+        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/services/${WEAVER_MANAGER_NAME}/"
+      },
+      {
         "rel": "service-meta",
         "type": "application/vnd.oci.image.index.v1+json",
         "href": "${WEAVER_IMAGE_URI}"
+      },
+      {
+        "rel": "license",
+        "type": "text/plain",
+        "href": "https://raw.githubusercontent.com/crim-ca/weaver/refs/heads/master/LICENSE.txt",
+        "title": "Weaver License"
+      },
+      {
+        "rel": "cite-as",
+        "type": "text/plain",
+        "href": "https://raw.githubusercontent.com/crim-ca/weaver/refs/heads/master/CITATION.cff",
+        "title": "Weaver Citation"
+      },
+      {
+        "rel": "about",
+        "type": "text/html",
+        "href": "https://github.com/crim-ca/weaver",
+        "title": "Weaver Code Repository"
+      },
+      {
+        "rel": "version-history",
+        "type": "text/html",
+        "href": "https://github.com/crim-ca/weaver/blob/master/CHANGES.rst",
+        "title": "Weaver Change Log"
       }
     ]
   }
