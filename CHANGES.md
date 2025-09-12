@@ -17,6 +17,9 @@
 
 ## Changes
 
+- Cowbird: Define variables in the standard naming convention used by other components.
+  - `COWBIRD_DOCKER`, `COWBIRD_IMAGE`, `COWBIRD_IMAGE_API`, `COWBIRD_IMAGE_WORKER`, `COWBIRD_IMAGE_URI`
+
 - Services: Add more links and references.
   - Add a `/services/{serviceId}` endpoint to retrieve individual service metadata definitions.
   - Add missing `service-config.json.template` files for Magpie, Twitcher and Cowbird.
