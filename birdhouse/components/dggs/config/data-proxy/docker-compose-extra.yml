@@ -1,0 +1,5 @@
+services:
+  proxy:
+    volumes:
+      - ./components/dggs/config/data-proxy/conf.extra-service.d/dggs.conf:/etc/nginx/conf.extra-service.d/data-proxy/dggs.conf:ro
+      - ${DGGS_DATA_PROXY_DIR_PATH}:/data/data-proxy/${DGGS_API_NAME}:ro
