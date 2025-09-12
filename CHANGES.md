@@ -17,7 +17,7 @@
 
 - Introduce a scheduler job to delete old files that may accumulate over time
 
-  Creates the `optional-component-clean_old_files` job that deletes old THREDDS log files and WPS output files.
+  Creates the `optional-component/clean_old_files` job that deletes old THREDDS log files and WPS output files.
   Allows individual cleanup jobs to be enabled for each of `raven`, `finch`, `hummingbird`, and `thredds` components.
   Allows the user to configure how old a file must be before it is deleted (age in days) and how to calculate the age
   of the file (time since last modified, time since last accessed, time since created).
@@ -434,7 +434,7 @@
     create additional jobs by adding them as custom components instead.
 
   What about... ?
-    - just schedule these jobs for a non-existant day linvalid arg that triggers usage messageike February 31st?
+    - just schedule these jobs for a non-existant day like February 31st?
       - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
     - just set the schedule to the `'#'` string?
       - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
