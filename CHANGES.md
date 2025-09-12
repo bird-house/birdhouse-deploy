@@ -17,6 +17,12 @@
 
 ## Changes
 
+- STAC: Split the services API/UI into distinct `components/stac` and  `components/stac-browser`.
+  - Enabling only `components/stac` will not provide `/stac-browser/` endpoint anymore. It must be explicitly enabled.
+  - Enabling `components/stac-browser` will enforce enabling `components/stac` as a dependency.
+  - Add missing `STAC_BROWSER_DOCKER` variable to respect the standard naming convention used by other components.
+  - Each component has their respective `service-config.json.template` definition.
+
 - Cowbird: Define variables in the standard naming convention used by other components.
   - `COWBIRD_DOCKER`, `COWBIRD_IMAGE`, `COWBIRD_IMAGE_API`, `COWBIRD_IMAGE_WORKER`, `COWBIRD_IMAGE_URI`
 

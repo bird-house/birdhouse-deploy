@@ -2,5 +2,4 @@ services:
   proxy:
     volumes:
       - ./components/stac/service-config.json:/static/services/stac.json:ro
-      - ./components/stac/service-config.json:/static/services/stac-browser.json:ro
       - ./components/stac/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/stac:ro
