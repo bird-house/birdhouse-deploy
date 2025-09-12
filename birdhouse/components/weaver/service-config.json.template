@@ -1,76 +1,74 @@
-[
-  {
-    "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.2.0/node_registry.schema.json#service",
-    "name": "weaver",
-    "version": "${WEAVER_VERSION}",
-    "types": [
-      "ogcapi_processes",
-      "wps"
-    ],
-    "keywords": [
-      "service-ogcapi_processes"
-    ],
-    "description": "An OGC-API flavored Execution Management Service",
-    "links": [
-      {
-        "rel": "service",
-        "type": "text/html",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/?f=html"
-      },
-      {
-        "rel": "service-doc",
-        "type": "text/html",
-        "href": "https://pavics-weaver.readthedocs.io/"
-      },
-      {
-        "rel": "service-desc",
-        "type": "application/json",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/?f=json"
-      },
-      {
-        "rel": "conformance",
-        "type": "application/json",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/conformance/"
-      },
-      {
-        "rel": "http://www.opengis.net/def/rel/ogc/1.0/conformance",
-        "type": "application/json",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/conformance/"
-      },
-      {
-        "rel": "http://www.opengis.net/def/rel/ogc/1.0/data-meta",
-        "type": "application/json",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/services/${WEAVER_MANAGER_NAME}/"
-      },
-      {
-        "rel": "service-meta",
-        "type": "application/vnd.oci.image.index.v1+json",
-        "href": "${WEAVER_IMAGE_URI}"
-      },
-      {
-        "rel": "license",
-        "type": "text/plain",
-        "href": "https://raw.githubusercontent.com/crim-ca/weaver/refs/heads/master/LICENSE.txt",
-        "title": "Weaver License"
-      },
-      {
-        "rel": "cite-as",
-        "type": "text/plain",
-        "href": "https://raw.githubusercontent.com/crim-ca/weaver/refs/heads/master/CITATION.cff",
-        "title": "Weaver Citation"
-      },
-      {
-        "rel": "about",
-        "type": "text/html",
-        "href": "https://github.com/crim-ca/weaver",
-        "title": "Weaver Code Repository"
-      },
-      {
-        "rel": "version-history",
-        "type": "text/html",
-        "href": "https://github.com/crim-ca/weaver/blob/master/CHANGES.rst",
-        "title": "Weaver Change Log"
-      }
-    ]
-  }
-]
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.2.0/node_registry.schema.json#service",
+  "name": "weaver",
+  "version": "${WEAVER_VERSION}",
+  "types": [
+    "ogcapi_processes",
+    "wps"
+  ],
+  "keywords": [
+    "service-ogcapi_processes"
+  ],
+  "description": "An OGC-API flavored Execution Management Service",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/?f=html"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://pavics-weaver.readthedocs.io/"
+    },
+    {
+      "rel": "service-desc",
+      "type": "application/json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/?f=json"
+    },
+    {
+      "rel": "conformance",
+      "type": "application/json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/conformance/"
+    },
+    {
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/conformance",
+      "type": "application/json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/conformance/"
+    },
+    {
+      "rel": "http://www.opengis.net/def/rel/ogc/1.0/data-meta",
+      "type": "application/json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/services/${WEAVER_MANAGER_NAME}/"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${WEAVER_IMAGE_URI}"
+    },
+    {
+      "rel": "license",
+      "type": "text/plain",
+      "href": "https://raw.githubusercontent.com/crim-ca/weaver/refs/heads/master/LICENSE.txt",
+      "title": "Weaver License"
+    },
+    {
+      "rel": "cite-as",
+      "type": "text/plain",
+      "href": "https://raw.githubusercontent.com/crim-ca/weaver/refs/heads/master/CITATION.cff",
+      "title": "Weaver Citation"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "href": "https://github.com/crim-ca/weaver",
+      "title": "Weaver Code Repository"
+    },
+    {
+      "rel": "version-history",
+      "type": "text/html",
+      "href": "https://github.com/crim-ca/weaver/blob/master/CHANGES.rst",
+      "title": "Weaver Change Log"
+    }
+  ]
+}

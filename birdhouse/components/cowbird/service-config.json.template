@@ -1,58 +1,56 @@
-[
-  {
-    "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.2.0/node_registry.schema.json#service",
-    "name": "cowbird",
-    "version": "${COWBIRD_VERSION}",
-    "types": [
-      "auth"
-    ],
-    "keywords": [
-      "other"
-    ],
-    "description": "Cowbird is a middleware that manages interactions between various birds of the bird-house stack.",
-    "links": [
-      {
-        "rel": "service",
-        "type": "application/json",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/cowbird/"
-      },
-      {
-        "rel": "service-doc",
-        "type": "text/html",
-        "href": "https://pavics-cowbird.readthedocs.io/"
-      },
-      {
-        "rel": "service-desc",
-        "type": "text/html",
-        "href": "https://github.com/ouranosinc/cowbird/api"
-      },
-      {
-        "rel": "service-meta",
-        "type": "application/vnd.oci.image.index.v1+json",
-        "href": "${COWBIRD_IMAGE_URI}"
-      },
-      {
-        "rel": "about",
-        "type": "text/html",
-        "href": "https://github.com/Ouranosinc/cowbird/",
-        "title": "Cowbird Code Repository"
-      },
-      {
-        "rel": "license",
-        "type": "text/plain",
-        "href": "https://raw.githubusercontent.com/Ouranosinc/Cowbird/refs/heads/master/LICENSE"
-      },
-      {
-        "rel": "author",
-        "type": "text/plain",
-        "href": "https://raw.githubusercontent.com/Ouranosinc/Cowbird/refs/heads/master/AUTHORS.rst"
-      },
-      {
-        "rel": "version-history",
-        "type": "text/html",
-        "href": "https://github.com/Ouranosinc/Cowbird/blob/master/CHANGES.rst",
-        "title": "Cowbird Change Log"
-      }
-    ]
-  }
-]
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.2.0/node_registry.schema.json#service",
+  "name": "cowbird",
+  "version": "${COWBIRD_VERSION}",
+  "types": [
+    "auth"
+  ],
+  "keywords": [
+    "other"
+  ],
+  "description": "Cowbird is a middleware that manages interactions between various birds of the bird-house stack.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "application/json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/cowbird/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://pavics-cowbird.readthedocs.io/"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/html",
+      "href": "https://github.com/ouranosinc/cowbird/api"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${COWBIRD_IMAGE_URI}"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "href": "https://github.com/Ouranosinc/cowbird/",
+      "title": "Cowbird Code Repository"
+    },
+    {
+      "rel": "license",
+      "type": "text/plain",
+      "href": "https://raw.githubusercontent.com/Ouranosinc/Cowbird/refs/heads/master/LICENSE"
+    },
+    {
+      "rel": "author",
+      "type": "text/plain",
+      "href": "https://raw.githubusercontent.com/Ouranosinc/Cowbird/refs/heads/master/AUTHORS.rst"
+    },
+    {
+      "rel": "version-history",
+      "type": "text/html",
+      "href": "https://github.com/Ouranosinc/Cowbird/blob/master/CHANGES.rst",
+      "title": "Cowbird Change Log"
+    }
+  ]
+}

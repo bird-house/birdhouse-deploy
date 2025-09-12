@@ -30,6 +30,8 @@
   - Add a `/services/{serviceId}` endpoint to retrieve individual service metadata definitions.
   - Add missing `service-config.json.template` files for Magpie, Twitcher and Cowbird.
   - Extend the provided metadata links for multiple services.
+  - Change all `service-config.json.template` definition to be directly the JSON object rather than an array.
+    This allows reporting these objects directly on `/services/{serviceId}`, while `/services` combines them.
 
 [2.17.1](https://github.com/bird-house/birdhouse-deploy/tree/2.17.1) (2025-09-10)
 ------------------------------------------------------------------------------------------------------------------
