@@ -175,6 +175,38 @@ The anonymous user will now have all the permissions described in |magpie-public
 .. |magpie-public-perms| replace:: optional-components/all-public-access/all-public-access-magpie-permission.cfg
 .. _env.local.example: ../env.local.example
 
+
+.. _optional-components_data-proxy:
+
+Provide web access to generic data
+--------------------------------------------------------
+
+It is possible to serve static data files through Nginx by mapping a directory to a specific URL path.
+This optional component provides a configurable location to serve such data.
+
+.. seealso::
+    Can be combined with :ref:`optional-components/secure-data-proxy <optional-components_secure-data-proxy>`
+    to control access to the data. Otherwise, it is public by default.
+
+This component does not do anything on its own. It has to be combined with other components to make their
+corresponding locations available through the web.
+
+Enabling ``components/<SERVICE>`` with ``optional-components/data-proxy`` will make the following variables available:
+- ``<SERVICE>_DATA_PROXY_URL_PATH``: web access location to the data
+- ``<SERVICE>_DATA_PROXY_DIR_PATH``: host machine directory to the data
+
+By default, all services will employ ``/data/data-proxy/<service>`` as the host directory and ``/data/<service>``
+as web serving location. They can be configured globally or per service using relevant configuration variables.
+
+How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
+
+* Add ``./optional-components/data-proxy`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+* Optionally, configure alternate locations.
+* Optionally, combine with ``./optional-components/secure-data-proxy`` to control access to the data.
+* Enable another component supporting this cross-component capability.
+
+.. _optional-components_secure-data-proxy:
+
 Control secured access to generic data
 --------------------------------------------------------
 
