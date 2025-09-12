@@ -13,7 +13,11 @@
         root /static;
         try_files /services.json =404;
     }
-
+    location = /services/ {
+        default_type application/json;
+        root /static;
+        try_files /services.json =404;
+    }
     location ~ ^/services/(.*)$ {
         default_type application/json;
         root /static;
