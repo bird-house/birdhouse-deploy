@@ -33,6 +33,13 @@
   - Change all `service-config.json.template` definition to be directly the JSON object rather than an array.
     This allows reporting these objects directly on `/services/{serviceId}`, while `/services` combines them.
 
+[2.17.2](https://github.com/bird-house/birdhouse-deploy/tree/2.17.2) (2025-09-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Magpie: Fix trailing slash redirect handling between the `proxy` and `magpie`.
+
 [2.17.1](https://github.com/bird-house/birdhouse-deploy/tree/2.17.1) (2025-09-10)
 ------------------------------------------------------------------------------------------------------------------
 
