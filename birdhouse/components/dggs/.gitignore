@@ -1,5 +1,5 @@
 config/dggs/pydggsapi-config.json
 config/magpie/config.yml
 config/proxy/conf.extra-service.d/dggs.conf
-config/secure-data-proxy/conf.extra-service.d/dggs.conf
+config/data-proxy/conf.extra-service.d/dggs.conf
 service-config.json
