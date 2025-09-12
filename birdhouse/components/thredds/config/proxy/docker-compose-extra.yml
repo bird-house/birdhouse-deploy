@@ -1,6 +1,7 @@
 services:
   proxy:
     volumes:
-    - ./components/thredds/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/thredds:ro
+      - ./components/thredds/service-config.json:/static/services/thredds.json:ro
+      - ./components/thredds/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/thredds:ro
     links:
       - thredds

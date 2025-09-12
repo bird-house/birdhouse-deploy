@@ -3,6 +3,7 @@ services:
   # extend proxy with endpoint and config for Cowbird API access
   proxy:
     volumes:
+      - ./components/cowbird/service-config.json:/static/services/cowbird.json:ro
       - ./components/cowbird/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/cowbird:ro
     links:
       - cowbird

@@ -8,7 +8,7 @@ x-logging:
 
 services:
   magpie:
-    image: pavics/magpie:${MAGPIE_VERSION}
+    image: ${MAGPIE_IMAGE}
     container_name: magpie
     environment:
       TWITCHER_PROTECTED_URL: ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}

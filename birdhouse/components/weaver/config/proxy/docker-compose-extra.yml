@@ -3,6 +3,7 @@ services:
   # extend proxy configuration with weaver endpoints
   proxy:
     volumes:
+      - ./components/weaver/service-config.json:/static/services/weaver.json:ro
       - ./components/weaver/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/weaver:ro
       # because of mounting path naming restrictions (see note in 'worker' definition),
       # we must add the custom path on top of named 'wps_outputs' volume of other birds for the proxy to expose results

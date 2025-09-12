@@ -8,7 +8,7 @@ x-logging:
 
 services:
   cowbird:
-    image: pavics/cowbird:${COWBIRD_VERSION}-webservice
+    image: ${COWBIRD_IMAGE_API}
     container_name: cowbird
     environment:
       HOSTNAME: $HOSTNAME
@@ -53,7 +53,7 @@ services:
       start_interval: 5s
 
   cowbird-worker:
-    image: pavics/cowbird:${COWBIRD_VERSION}-worker
+    image: ${COWBIRD_IMAGE_WORKER}
     container_name: cowbird-worker
     environment:
       COWBIRD_SSL_VERIFY: "true"

@@ -1,0 +1,4 @@
+services:
+  proxy:
+    volumes:
+      - ./components/finch/service-config.json:/static/services/finch.json:ro

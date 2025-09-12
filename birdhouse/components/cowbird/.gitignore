@@ -4,6 +4,7 @@ config/cowbird/cowbird.ini
 config/magpie/config.yml
 config/proxy/conf.extra-service.d/cowbird.conf
 config/canarie-api/canarie_api_monitoring.py
+service-config.json
 
 # Old paths. Keep these so that old config files remain uncommittable after updates.
 conf.extra-service.d/cowbird.conf
