@@ -15,7 +15,9 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Magpie: Fix trailing slash redirect handling between the `proxy` and `magpie`.
 
 [2.17.1](https://github.com/bird-house/birdhouse-deploy/tree/2.17.1) (2025-09-10)
 ------------------------------------------------------------------------------------------------------------------
