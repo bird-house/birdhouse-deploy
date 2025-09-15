@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.2.0/node_registry.schema.json#service",
   "name": "twitcher",
-  "version": "magpie-${MAGPIE_VERSION}",
+  "version": "${TWITCHER_RELEASE}",
   "types": [
     "auth"
   ],

@@ -23,6 +23,11 @@
   - Add missing `STAC_BROWSER_DOCKER` variable to respect the standard naming convention used by other components.
   - Each component has their respective `service-config.json.template` definition.
 
+- Twitcher: Define variables in the standard naming convention used by other components.
+  - `TWITCHER_VERSION`, `TWITCHER_DOCKER`, `TWITCHER_IMAGE`
+  - `TWITCHER_RELEASE` is used to resolve the `version` property of `service-config.json.template`
+    which has special consideration with `MAGPIE_VERSION`
+
 - Cowbird: Define variables in the standard naming convention used by other components.
   - `COWBIRD_DOCKER`, `COWBIRD_IMAGE`, `COWBIRD_IMAGE_API`, `COWBIRD_IMAGE_WORKER`, `COWBIRD_IMAGE_URI`
 
