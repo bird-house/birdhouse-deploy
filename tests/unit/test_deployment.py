@@ -86,6 +86,8 @@ def load_templated_service_config(service_config_path, template_variables):
     with open(service_config_path) as service_config_file:
         service_config_json = Template(service_config_file.read()).safe_substitute(template_variables)
         service_configs = json.loads(service_config_json)
+    if isinstance(service_configs, dict):
+        service_configs = [service_configs]
     return service_configs
 
 
