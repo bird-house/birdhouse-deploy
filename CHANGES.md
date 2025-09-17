@@ -92,22 +92,6 @@
   the new lines and the 4 front spaces must be kept for proper yaml syntax when
   template expanding in `components/scheduler/config.yml.template`.
 
-- Autodeploy: fix SSL certificate not visible during scheduler job
-
-  The autodeploy triggered by the scheduler job runs in a docker image.  All
-  the files it uses must be volume-mount into the container, including the SSL
-  certificate file.
-
-  When the SSL certificate is a symlink to a file outside of the birdhouse-deploy
-  checkout, it won't "resolve".
-
-  This bug do not affect `birdhouse-compose.sh` because it do not run in a
-  container but directly on the host so it has access to all the files without
-  needing specific volume-mount.
-
-  This bug do not affect the current docker-compose image used by autodeploy
-  but is found by the upcoming docker-compose image that seems much more strict.
-
 ## Changes
 
 - Remove 5 duplicate intermediate unused `SERVER_` vars
