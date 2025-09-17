@@ -47,7 +47,7 @@
           "datasources": {
             "manitoba": {
               "filepath": "https://hirondelle.crim.ca/data/samples/dggs/H3/L7/2025-08-31/rl/RCM2_OK3556292_PK3777138_2_SC30MCPD_20250831_123917_RL.parquet",
-              "id_col": "H3",
+              "id_col": "h3",
               "data_cols": [
                 "resolution",
                 "center_lat",
