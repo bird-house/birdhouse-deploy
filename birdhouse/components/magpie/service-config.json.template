@@ -3,7 +3,8 @@
   "name": "magpie",
   "version": "${MAGPIE_VERSION}",
   "types": [
-    "auth"
+    "auth",
+    "management"
   ],
   "keywords": [
     "other"

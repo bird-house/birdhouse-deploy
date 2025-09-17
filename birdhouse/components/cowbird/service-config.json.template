@@ -3,7 +3,8 @@
   "name": "cowbird",
   "version": "${COWBIRD_VERSION}",
   "types": [
-    "auth"
+    "auth",
+    "management"
   ],
   "keywords": [
     "other"

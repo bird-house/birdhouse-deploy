@@ -3,7 +3,8 @@
   "name": "twitcher",
   "version": "${TWITCHER_RELEASE}",
   "types": [
-    "auth"
+    "auth",
+    "management"
   ],
   "keywords": [
     "other"
