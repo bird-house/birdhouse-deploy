@@ -167,6 +167,132 @@
   default value.
 
 
+[2.17.2](https://github.com/bird-house/birdhouse-deploy/tree/2.17.2) (2025-09-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Magpie: Fix trailing slash redirect handling between the `proxy` and `magpie`.
+
+[2.17.1](https://github.com/bird-house/birdhouse-deploy/tree/2.17.1) (2025-09-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Weaver: Fix invalid JSON/HTML media-types for reported `/services` links without explicit format indicator.
+
+[2.17.0](https://github.com/bird-house/birdhouse-deploy/tree/2.17.0) (2025-09-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: Update STAC Browser to
+  [`crim-ca/stac-browser:3.4.0-dev`](https://github.com/crim-ca/stac-browser/releases/tag/3.4.0-dev).
+
+  - Dockers are now built directly with the GitHub CI releases
+    (see https://github.com/crim-ca/stac-browser/pkgs/container/stac-browser).
+  - Synchronize with latest changes (as of 2025-08-16).
+    - Beside the necessary `prefixPath` override for Nginx Proxy redirect and a minor HTML file resolution fix,
+      the image is entirely up-to-date with the official upstream code.
+    - Supports STAC 1.1.0.
+    - Supports language locales.
+    - Greatly improves parsing of STAC metadata and their visual rendering.
+    - Allows dynamic runtime [config.js](https://github.com/radiantearth/stac-browser/blob/main/config.js) overrides.
+      For the time being, only the required `catalogUrl` is overridden, but further settings could be added later on.
+
+- STAC: Update STAC API to `crim-ca/stac-app:2.0.1`.
+
+  - Changes in [`crim-ca/stac-app:2.0.0`](https://github.com/crim-ca/stac-app/releases/tag/2.0.0) includes:
+    - migration to `stac-fastapi==6.0.0` and corresponding fixes to support it
+    - add `q` parameter free-text search on `/search`, `/collections` and `/collections/{collectionId}/items` endpoints
+    - enforce JSON schema validation of all `stac_extensions` referenced by published STAC Items and Collections
+    - multiple dependency updates
+  - Minor package dependency fix in [`crim-ca/stac-app:2.0.1`](https://github.com/crim-ca/stac-app/releases/tag/2.0.1).
+
+- STAC: Update `stac-db` and `stac-migration` to version `0.9.8`.
+
+- STAC: Add `optional/stac-db-persist` and `STAC_DB_PERSIST_DIR` to allow custom STAC DB metadata storage location.
+
+- Drop unsupported `pytest-lazy-fixture` python package for tests
+
+  This package is no longer maintained and breaks for `pytest` versions 8+. We do not need it for our tests so
+  it was dropped. In the future if we need to support lazy fixtures we should use the `pytest-lazy-fixtures`
+  package instead (which is actively maintained).
+
+- Dependabot automated updates for Python dependencies.
+
+  The following Python dependencies were updated to their most recent compatible releases:
+   - `jsonschema`: 4.17.1 -> 4.25.1
+   - `prometheus-client`: 0.22.0 -> 0.22.1
+   - `pytest`: 7.2.2 -> 8.4.1
+   - `python-dotenv`: 1.0.1 -> 1.1.1
+   - `requests`: 2.32.4 -> 2.32.5
+
+## Fixes
+
+- Backup: Fix STAC representative data restore operation (`birdhouse backup restore -r stac`).
+
+  - Change the default `STAC_POPULATOR_BACKUP_VERSION=0.9.0` to employ
+    the [Dockerfile of `stac-populator`](https://github.com/crim-ca/stac-populator/blob/master/docker/Dockerfile)
+    fix with preconfigured `PYESSV_ARCHIVE_HOME` directory.
+  - Add `stac-migration` along `stac-db` to the list of stopped/restored containers to ensure that the `stac-db`
+    volume used by both does not yield a docker daemon error of "volume in use", and to apply any relevant
+    migration scripts on the recreated `stac-db` volume.
+
+[2.16.14](https://github.com/bird-house/birdhouse-deploy/tree/2.16.14) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Updated configuration of `.github/labeler.yml` to follow the new `actions/labeler` v5.0 conventions.
+
+  In `Birdhouse-deploy` v2.16.11, the `actions/labeler` action was updated to v5.0 which introduced a new configuration
+  format for the `.github/labeler.yml` file. This change updates the configuration to follow the new format. See: 
+  [actions/labeler v5.0 release notes](https://github.com/actions/labeler/releases/tag/v5.0.0).
+
+[2.16.13](https://github.com/bird-house/birdhouse-deploy/tree/2.16.13) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Updated the `finch` service to v0.12.1.
+
+  This is a significant jump from the previous version (v0.9.2) and includes many bug fixes and dependency updates:
+
+  - anyascii (replacement for unidecode)
+  - xclim v0.43.0 (previously xclim v0.37)
+
+[2.16.12](https://github.com/bird-house/birdhouse-deploy/tree/2.16.12) (2025-08-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- User kernels directory should always be writable
+
+  The destination used to symlink user kernels (`/usr/local/share/jupyter`) is not always writable depending 
+  on the jupyterlab docker image that is used to spawn the jupyterlab containers. To ensure that it is always 
+  writable this places the link under `/var/tmp` which is guaranteed to be writable.
+
+[2.16.11](https://github.com/bird-house/birdhouse-deploy/tree/2.16.11) (2025-08-22)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Added a Dependabot configuration for tracking version updates for `pip` and for GitHub Actions
+
+  GitHub Actions have been updated to their most recent versions and their versions now point to commit hashes instead
+  of version tags for security purposes. Dependabot has been configured to perform periodic updates on these actions.
+  Python requirements (`requirements.txt`) now use commit hashes generated via the `pip-tools` library for security purposes
+  as well. The list of Python library requirements has been moved to `requirements.in` and is also managed by Dependabot.
+
+- Added `nodefaults` to the `environment-dev.yml` to ensure that the Anaconda "default" repository is never used for environment creation
+
+- Replaced `bump2version` with a maintained fork (`bump-my-version`) in the development dependencies and the top-level Makefile
+    
+  Migrated the `.bumpversion.cfg` to use newer TOML format (`.bumpversion.toml`) and removed the logic in Makefile centred on
+  tracking and updating the date of last version bump as this is now handled dynamically via `bump-my-version`
+
+
 [2.16.10](https://github.com/bird-house/birdhouse-deploy/tree/2.16.10) (2025-08-16)
 ------------------------------------------------------------------------------------------------------------------
 

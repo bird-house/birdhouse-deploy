@@ -417,6 +417,7 @@ do_component_backup_create_restore() {
       fi
     done
   fi
+  log DEBUG "Running component backup/restore [${backup_restore_type}] for components: [${confdirs}]"
   for confdir in ${confdirs}; do
     backup_script="$(cd "${COMPOSE_DIR}"; readlink -f "${confdir}/backup" 2>/dev/null || realpath "${confdir}/backup" 2>/dev/null)"
     if [ -n "${backup_script}" ] && [ -f "${backup_script}" ]; then
