@@ -76,14 +76,6 @@
     properly set in `env.local` but `BIRDHOUSE_SSL_CERTIFICATE` (new var)
     resets to default value in `deploy.sh` and breaks autodepploy.
 
-    See more details in the sample debugging usage of `BIRDHOUSE_DEBUG_VARS_TRACE_CMD`.
-
-    The fix is to connect the chain of mapping
-    `SSL_CERTIFICATE` -> `SERVER_SSL_CERTIFICATE` -> `BIRDHOUSE_SSL_CERTIFICATE` so
-    that `SSL_CERTIFICATE` will first override `SERVER_SSL_CERTIFICATE` with the
-    good value, then `SERVER_SSL_CERTIFICATE` will override `BIRDHOUSE_SSL_CERTIFICATE`
-    with the good value originally from `SSL_CERTIFICATE`.
-
     In `process_backwards_compatible_variables()`, it has to change to process
     **all** old vars and not just those old vars not set in
     `set_old_backwards_compatible_variables()`.
@@ -118,53 +110,20 @@
 
 ## Changes
 
-- Add variable `BIRDHOUSE_DEBUG_VARS_TRACE_CMD` to help debug back-compat vars
+- Remove 5 duplicate intermediate unused `SERVER_` vars
 
-  This new `BIRDHOUSE_DEBUG_VARS_TRACE_CMD` was useful to debug autodeploy
-  failure, tracing why `BIRDHOUSE_LOG_DIR` resets to the bad default value in
-  child invocation (`deploy.sh`) even when `BIRDHOUSE_LOG_DIR` (new var) is
-  set properly in `env.local`.
+  The back-compat code and mapping syntax only support one rename.  Those
+  5 `SERVER_` vars are intermediate rename (orig -> `SERVER_orig` -> `BIRDHOUSE_orig`)
+  and not fully supported in the current state.
 
-  Example usage to debug autodeploy failure because `BIRDHOUSE_SSL_CERTIFICATE`
-  resets to the default value when `SSL_CERTIFICATE` (old var) is properly
-  set in `env.local`:
-  ```
-  BIRDHOUSE_DEBUG_VARS_TRACE_CMD='echo "
-      BIRDHOUSE_SSL_CERTIFICATE=\"$BIRDHOUSE_SSL_CERTIFICATE\"
-         SERVER_SSL_CERTIFICATE=\"$SERVER_SSL_CERTIFICATE\"
-                SSL_CERTIFICATE=\"$SSL_CERTIFICATE\""' ../bin/birdhouse -b -L DEBUG configs -c 'echo "$BIRDHOUSE_SSL_CERTIFICATE"'
-  ```
+  * SERVER_DOC_URL=BIRDHOUSE_DOC_URL
+  * SERVER_SUPPORT_EMAIL=BIRDHOUSE_SUPPORT_EMAIL
+  * SERVER_SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
+  * SERVER_DATA_PERSIST_SHARED_ROOT=BIRDHOUSE_DATA_PERSIST_SHARED_ROOT
+  * SERVER_WPS_OUTPUTS_DIR=BIRDHOUSE_WPS_OUTPUTS_DIR
 
-  Matching output:
-  ```
-  TRACE_VARS:  after read_env_local:
-      BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
-         SERVER_SSL_CERTIFICATE=""
-                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
-
-  TRACE_VARS:  after set_old_backwards_compatible_variables:
-      BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
-         SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
-                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
-
-  TRACE_VARS:  after process_backwards_compatible_variables:  <-- error introduced at this step
-      BIRDHOUSE_SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
-         SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
-                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
-  ```
-
-  Since in `BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES` we previously had
-  ```
-    SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
-    SERVER_SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
-  ```
-  then in the first level invocation (`triggerdeploy.sh` or the `birdhouse configs`
-  above) the values of `BIRDHOUSE_SSL_CERTIFICATE` is good.
-
-  But then in the child invocation (`deploy.sh`), `SSL_CERTIFICATE` will first
-  override `BIRDHOUSE_SSL_CERTIFICATE` to the good value, then
-  `SERVER_SSL_CERTIFICATE` will override `BIRDHOUSE_SSL_CERTIFICATE` to the bad
-  default value.
+  Those 5 `SERVER_` were intermediate rename inside a same PR so they never
+  made it to any release.  Nobody should ever have been aware of them.
 
 
 [2.17.2](https://github.com/bird-house/birdhouse-deploy/tree/2.17.2) (2025-09-12)
