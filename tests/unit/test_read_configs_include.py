@@ -593,24 +593,24 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         """
 
         env_local = '''
-# Add custom backward compatible var mapping.
-BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES="$BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES
-    MY_OLD_VAR=MY_NEW_VAR"
+            # Add custom backward compatible var mapping.
+            BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES="$BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES
+              MY_OLD_VAR=MY_NEW_VAR"
 
-# Add new var to template expansion
-VARS="$VARS
-  \$MY_NEW_VAR"
+            # Add new var to template expansion
+            VARS="$VARS
+              \\$MY_NEW_VAR"
 
-# Add new var to template expansion
-OPTIONAL_VARS="$OPTIONAL_VARS
-  \$MY_NEW_VAR"
+            # Add new var to template expansion
+            OPTIONAL_VARS="$OPTIONAL_VARS
+              \\$MY_NEW_VAR"
 
-BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
-'''
+            BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
+            '''
 
-        expected=("\n"
-                  "    MY_OLD_VAR=MY_NEW_VAR\n"  # Added twice because env.local read twice in read_configs.
-                  "    MY_OLD_VAR=MY_NEW_VAR\n")
+        expected = ("\n"
+                    "              MY_OLD_VAR=MY_NEW_VAR\n"  # Added twice because env.local read twice in read_configs.
+                    "              MY_OLD_VAR=MY_NEW_VAR\n")
         proc = self.run_func(
             read_config_include_file,
             env_local,
@@ -686,22 +686,22 @@ BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
         This case is also for components not in BIRDHOUSE_DEFAULT_CONF_DIRS that also append to DELAYED_EVAL.
         """
         env_local = f'''
-# Add custom backward compatible var mapping.
-BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES="$BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES
-    CUSTOM_DELAYED_OLD_VAR=CUSTOM_DELAYED_NEW_VAR"
+          # Add custom backward compatible var mapping.
+          BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES="$BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES
+            CUSTOM_DELAYED_OLD_VAR=CUSTOM_DELAYED_NEW_VAR"
 
-# Add new custom var to DELAYED_EVAL.
-DELAYED_EVAL="
-  $DELAYED_EVAL
-  CUSTOM_DELAYED_NEW_VAR"
+          # Add new custom var to DELAYED_EVAL.
+          DELAYED_EVAL="
+            $DELAYED_EVAL
+            CUSTOM_DELAYED_NEW_VAR"
 
-# Custom old var depends on another built-in old var and new var.
-{var_name}='$DATA_PERSIST_ROOT - $ANOTHER_NEW_VAR'
+          # Custom old var depends on another built-in old var and new var.
+          {var_name}='$DATA_PERSIST_ROOT - $ANOTHER_NEW_VAR'
 
-ANOTHER_NEW_VAR=some_val
+          ANOTHER_NEW_VAR=some_val
 
-BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
-'''
+          BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
+          '''
 
         proc = self.run_func(
             read_config_include_file,
