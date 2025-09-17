@@ -587,7 +587,11 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         print(proc.stdout)
         assert "\n".join(get_command_stdout(proc).split("\n")[-4:]) == expected
 
-    def test_template_expansion_enabled_for_old_var(self, read_config_include_file, exit_on_error):
+    @pytest.mark.parametrize("template_expansion_var,content_expected",
+        (("$VARS", ["$MY_NEW_VAR", "$MY_OLD_VAR", "$BIRDHOUSE_LOG_DIR", "$PAVICS_LOG_DIR"]),
+         ("$OPTIONAL_VARS", ["$MY_NEW_VAR", "$MY_OLD_VAR", "$BIRDHOUSE_FQDN_PUBLIC", "$PAVICS_FQDN_PUBLIC"])))
+    def test_template_expansion_enabled_for_old_var(self, read_config_include_file, exit_on_error,
+                                                    template_expansion_var,content_expected):
         """
         Test that template expansion is enabled for corresponding old var if new var is enabled.
         """
@@ -624,32 +628,13 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         proc = self.run_func(
             read_config_include_file,
             env_local,
-            f'echo "$VARS"',
+            f'echo "{template_expansion_var}"',  # '$VARS' or '$OPTIONAL_VARS'
             exit_on_error=exit_on_error,
         )
         print(proc.stdout)
         vars_content = get_command_stdout(proc)
-        # Custom mapping newly inserted.
-        assert "  $MY_NEW_VAR" in vars_content
-        assert "  $MY_OLD_VAR" in vars_content
-        # Built-in mapping for VARS in birdhouse/default.env
-        assert "  $BIRDHOUSE_LOG_DIR" in vars_content
-        assert "  $PAVICS_LOG_DIR" in vars_content
-
-        proc = self.run_func(
-            read_config_include_file,
-            env_local,
-            f'echo "$OPTIONAL_VARS"',
-            exit_on_error=exit_on_error,
-        )
-        print(proc.stdout)
-        optional_vars_content = get_command_stdout(proc)
-        # Custom mapping newly inserted.
-        assert "  $MY_NEW_VAR" in optional_vars_content
-        assert "  $MY_OLD_VAR" in optional_vars_content
-        # Built-in mapping for OPTIONAL_VARS in birdhouse/default.env.
-        assert "  $BIRDHOUSE_FQDN_PUBLIC" in optional_vars_content
-        assert "  $PAVICS_FQDN_PUBLIC" in optional_vars_content
+        for var_name in content_expected:
+            assert f"  {var_name}" in vars_content
 
     @pytest.mark.parametrize("var_name", ("PAVICS_FQDN", "BIRDHOUSE_FQDN"))
     def test_delayed_eval_enabled_for_built_in_old_var(self, read_config_include_file,
