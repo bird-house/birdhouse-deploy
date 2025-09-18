@@ -1,3 +1,3 @@
     location / {
-        return 302 https://$host$request_uri;
+        return 308 https://$host$request_uri;
     }
