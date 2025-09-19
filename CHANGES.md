@@ -38,6 +38,10 @@
   - Change all `service-config.json.template` definition to be directly the JSON object rather than an array.
     This allows reporting these objects directly on `/services/{serviceId}`, while `/services` combines them.
 
+## Fixes
+
+- Proxy: Fix lost HTTP method on redirect to HTTPS.
+
 [2.17.2](https://github.com/bird-house/birdhouse-deploy/tree/2.17.2) (2025-09-12)
 ------------------------------------------------------------------------------------------------------------------
 
