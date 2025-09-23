@@ -8,7 +8,7 @@ x-logging:
 
 services:
   twitcher:
-    image: pavics/twitcher:magpie-${MAGPIE_VERSION}
+    image: ${TWITCHER_IMAGE}
     container_name: twitcher
     environment:
       # target directories to allow loading multiple config files of corresponding category

@@ -110,6 +110,36 @@
   made it to any release.  Nobody should ever have been aware of them.
 
 
+[2.18.0](https://github.com/bird-house/birdhouse-deploy/tree/2.18.0) (2025-09-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: Split the services API/UI into distinct `components/stac` and  `components/stac-browser`.
+  - Enabling only `components/stac` will not provide `/stac-browser/` endpoint anymore. It must be explicitly enabled.
+  - Enabling `components/stac-browser` will enforce enabling `components/stac` as a dependency.
+  - Add missing `STAC_BROWSER_DOCKER` variable to respect the standard naming convention used by other components.
+  - Each component has their respective `service-config.json.template` definition.
+
+- Twitcher: Define variables in the standard naming convention used by other components.
+  - `TWITCHER_VERSION`, `TWITCHER_DOCKER`, `TWITCHER_IMAGE`
+  - `TWITCHER_RELEASE` is used to resolve the `version` property of `service-config.json.template`
+    which has special consideration with `MAGPIE_VERSION`
+
+- Cowbird: Define variables in the standard naming convention used by other components.
+  - `COWBIRD_DOCKER`, `COWBIRD_IMAGE`, `COWBIRD_IMAGE_API`, `COWBIRD_IMAGE_WORKER`, `COWBIRD_IMAGE_URI`
+
+- Services: Add more links and references.
+  - Add a `/services/{serviceId}` endpoint to retrieve individual service metadata definitions.
+  - Add missing `service-config.json.template` files for Magpie, Twitcher and Cowbird.
+  - Extend the provided metadata links for multiple services.
+  - Change all `service-config.json.template` definition to be directly the JSON object rather than an array.
+    This allows reporting these objects directly on `/services/{serviceId}`, while `/services` combines them.
+
+## Fixes
+
+- Proxy: Fix lost HTTP method on redirect to HTTPS.
+
 [2.17.2](https://github.com/bird-house/birdhouse-deploy/tree/2.17.2) (2025-09-12)
 ------------------------------------------------------------------------------------------------------------------
 
