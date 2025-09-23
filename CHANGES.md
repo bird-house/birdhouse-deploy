@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.18.1](https://github.com/bird-house/birdhouse-deploy/tree/2.18.1) (2025-09-23)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Canarie-API: Update to [`1.0.3`](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.0.3) to fix log parsing.
