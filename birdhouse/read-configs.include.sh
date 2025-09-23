@@ -456,13 +456,30 @@ set_backwards_compatible_as_default() {
   fi
 }
 
-# Main function to read all config files in appropriate order and call
-# process_delayed_eval() at the appropriate moment.
-read_configs() {
+
+### Similar code between read_configs() and read_basic_configs_only().
+_read_basic_configs_pre() {
     set_backwards_compatible_as_default
     discover_compose_dir
     discover_env_local
     read_default_env
+}
+
+
+_read_basic_configs_post() {
+    read_env_local  # again to override components default.env, need discover_env_local
+    set_old_backwards_compatible_variables  # after read_env_local to use updated value and not default value
+    process_backwards_compatible_variables
+    check_default_vars
+    process_delayed_eval
+}
+### END Similar code between read_configs() and read_basic_configs_only().
+
+
+# Main function to read all config files in appropriate order and call
+# process_delayed_eval() at the appropriate moment.
+read_configs() {
+    _read_basic_configs_pre
 
     ### This section is different than read_basic_configs_only() below, the rest should be IDENTICAL.
     read_env_local  # for BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, need discover_env_local
@@ -470,11 +487,7 @@ read_configs() {
     read_components_default_env  # uses BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
     ### END This section is different than read_basic_configs_only() below, the rest should be IDENTICAL.
 
-    read_env_local  # again to override components default.env, need discover_env_local
-    set_old_backwards_compatible_variables  # after read_env_local to use updated value and not default value
-    process_backwards_compatible_variables
-    check_default_vars
-    process_delayed_eval
+    _read_basic_configs_post
 }
 
 
@@ -482,15 +495,8 @@ read_configs() {
 # of various components.  Use only when you know what you are doing.  Else use
 # read_configs() to be safe.
 read_basic_configs_only() {
-    set_backwards_compatible_as_default
-    discover_compose_dir
-    discover_env_local
-    read_default_env
-    read_env_local  # need discover_env_local
-    set_old_backwards_compatible_variables  # after read_env_local to use updated value and not default value
-    process_backwards_compatible_variables
-    check_default_vars
-    process_delayed_eval
+    _read_basic_configs_pre
+    _read_basic_configs_post
 }
 
 
