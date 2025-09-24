@@ -110,6 +110,18 @@
   made it to any release.  Nobody should ever have been aware of them.
 
 
+[2.18.1](https://github.com/bird-house/birdhouse-deploy/tree/2.18.1) (2025-09-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Canarie-API: Update to [`1.0.3`](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.0.3) to fix log parsing.
+  - Ensure that timezone-aware date-time are considered.
+  - Fix statistics retrieval to obtain service/request invocation counts.
+  - Relates to [Ouranosinc/CanarieAPI#53](https://github.com/Ouranosinc/CanarieAPI/pull/53) and 
+    [Ouranosinc/CanarieAPI#21](https://github.com/Ouranosinc/CanarieAPI/issues/21).
+
+
 [2.18.0](https://github.com/bird-house/birdhouse-deploy/tree/2.18.0) (2025-09-19)
 ------------------------------------------------------------------------------------------------------------------
 
