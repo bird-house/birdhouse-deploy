@@ -76,14 +76,6 @@
     properly set in `env.local` but `BIRDHOUSE_SSL_CERTIFICATE` (new var)
     resets to default value in `deploy.sh` and breaks autodepploy.
 
-    See more details in the sample debugging usage of `BIRDHOUSE_DEBUG_VARS_TRACE_CMD`.
-
-    The fix is to connect the chain of mapping
-    `SSL_CERTIFICATE` -> `SERVER_SSL_CERTIFICATE` -> `BIRDHOUSE_SSL_CERTIFICATE` so
-    that `SSL_CERTIFICATE` will first override `SERVER_SSL_CERTIFICATE` with the
-    good value, then `SERVER_SSL_CERTIFICATE` will override `BIRDHOUSE_SSL_CERTIFICATE`
-    with the good value originally from `SSL_CERTIFICATE`.
-
     In `process_backwards_compatible_variables()`, it has to change to process
     **all** old vars and not just those old vars not set in
     `set_old_backwards_compatible_variables()`.
@@ -100,72 +92,65 @@
   the new lines and the 4 front spaces must be kept for proper yaml syntax when
   template expanding in `components/scheduler/config.yml.template`.
 
-- Autodeploy: fix SSL certificate not visible during scheduler job
+## Changes
 
-  The autodeploy triggered by the scheduler job runs in a docker image.  All
-  the files it uses must be volume-mount into the container, including the SSL
-  certificate file.
+- Remove 5 duplicate intermediate unused `SERVER_` vars
 
-  When the SSL certificate is a symlink to a file outside of the birdhouse-deploy
-  checkout, it won't "resolve".
+  The back-compat code and mapping syntax only support one rename.  Those
+  5 `SERVER_` vars are intermediate rename (orig -> `SERVER_orig` -> `BIRDHOUSE_orig`)
+  and not fully supported in the current state.
 
-  This bug do not affect `birdhouse-compose.sh` because it do not run in a
-  container but directly on the host so it has access to all the files without
-  needing specific volume-mount.
+  * SERVER_DOC_URL=BIRDHOUSE_DOC_URL
+  * SERVER_SUPPORT_EMAIL=BIRDHOUSE_SUPPORT_EMAIL
+  * SERVER_SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
+  * SERVER_DATA_PERSIST_SHARED_ROOT=BIRDHOUSE_DATA_PERSIST_SHARED_ROOT
+  * SERVER_WPS_OUTPUTS_DIR=BIRDHOUSE_WPS_OUTPUTS_DIR
 
-  This bug do not affect the current docker-compose image used by autodeploy
-  but is found by the upcoming docker-compose image that seems much more strict.
+  Those 5 `SERVER_` were intermediate rename inside a same PR so they never
+  made it to any release.  Nobody should ever have been aware of them.
+
+
+[2.18.1](https://github.com/bird-house/birdhouse-deploy/tree/2.18.1) (2025-09-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Canarie-API: Update to [`1.0.3`](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.0.3) to fix log parsing.
+  - Ensure that timezone-aware date-time are considered.
+  - Fix statistics retrieval to obtain service/request invocation counts.
+  - Relates to [Ouranosinc/CanarieAPI#53](https://github.com/Ouranosinc/CanarieAPI/pull/53) and 
+    [Ouranosinc/CanarieAPI#21](https://github.com/Ouranosinc/CanarieAPI/issues/21).
+
+
+[2.18.0](https://github.com/bird-house/birdhouse-deploy/tree/2.18.0) (2025-09-19)
+------------------------------------------------------------------------------------------------------------------
 
 ## Changes
 
-- Add variable `BIRDHOUSE_DEBUG_VARS_TRACE_CMD` to help debug back-compat vars
+- STAC: Split the services API/UI into distinct `components/stac` and  `components/stac-browser`.
+  - Enabling only `components/stac` will not provide `/stac-browser/` endpoint anymore. It must be explicitly enabled.
+  - Enabling `components/stac-browser` will enforce enabling `components/stac` as a dependency.
+  - Add missing `STAC_BROWSER_DOCKER` variable to respect the standard naming convention used by other components.
+  - Each component has their respective `service-config.json.template` definition.
 
-  This new `BIRDHOUSE_DEBUG_VARS_TRACE_CMD` was useful to debug autodeploy
-  failure, tracing why `BIRDHOUSE_LOG_DIR` resets to the bad default value in
-  child invocation (`deploy.sh`) even when `BIRDHOUSE_LOG_DIR` (new var) is
-  set properly in `env.local`.
+- Twitcher: Define variables in the standard naming convention used by other components.
+  - `TWITCHER_VERSION`, `TWITCHER_DOCKER`, `TWITCHER_IMAGE`
+  - `TWITCHER_RELEASE` is used to resolve the `version` property of `service-config.json.template`
+    which has special consideration with `MAGPIE_VERSION`
 
-  Example usage to debug autodeploy failure because `BIRDHOUSE_SSL_CERTIFICATE`
-  resets to the default value when `SSL_CERTIFICATE` (old var) is properly
-  set in `env.local`:
-  ```
-  BIRDHOUSE_DEBUG_VARS_TRACE_CMD='echo "
-      BIRDHOUSE_SSL_CERTIFICATE=\"$BIRDHOUSE_SSL_CERTIFICATE\"
-         SERVER_SSL_CERTIFICATE=\"$SERVER_SSL_CERTIFICATE\"
-                SSL_CERTIFICATE=\"$SSL_CERTIFICATE\""' ../bin/birdhouse -b -L DEBUG configs -c 'echo "$BIRDHOUSE_SSL_CERTIFICATE"'
-  ```
+- Cowbird: Define variables in the standard naming convention used by other components.
+  - `COWBIRD_DOCKER`, `COWBIRD_IMAGE`, `COWBIRD_IMAGE_API`, `COWBIRD_IMAGE_WORKER`, `COWBIRD_IMAGE_URI`
 
-  Matching output:
-  ```
-  TRACE_VARS:  after read_env_local:
-      BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
-         SERVER_SSL_CERTIFICATE=""
-                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+- Services: Add more links and references.
+  - Add a `/services/{serviceId}` endpoint to retrieve individual service metadata definitions.
+  - Add missing `service-config.json.template` files for Magpie, Twitcher and Cowbird.
+  - Extend the provided metadata links for multiple services.
+  - Change all `service-config.json.template` definition to be directly the JSON object rather than an array.
+    This allows reporting these objects directly on `/services/{serviceId}`, while `/services` combines them.
 
-  TRACE_VARS:  after set_old_backwards_compatible_variables:
-      BIRDHOUSE_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
-         SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
-                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
+## Fixes
 
-  TRACE_VARS:  after process_backwards_compatible_variables:  <-- error introduced at this step
-      BIRDHOUSE_SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
-         SERVER_SSL_CERTIFICATE="${__DEFAULT__BIRDHOUSE_SSL_CERTIFICATE}"
-                SSL_CERTIFICATE="/ssl_cert/ouranos_cert.pem"
-  ```
-
-  Since in `BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES` we previously had
-  ```
-    SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
-    SERVER_SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
-  ```
-  then in the first level invocation (`triggerdeploy.sh` or the `birdhouse configs`
-  above) the values of `BIRDHOUSE_SSL_CERTIFICATE` is good.
-
-  But then in the child invocation (`deploy.sh`), `SSL_CERTIFICATE` will first
-  override `BIRDHOUSE_SSL_CERTIFICATE` to the good value, then
-  `SERVER_SSL_CERTIFICATE` will override `BIRDHOUSE_SSL_CERTIFICATE` to the bad
-  default value.
-
+- Proxy: Fix lost HTTP method on redirect to HTTPS.
 
 [2.17.2](https://github.com/bird-house/birdhouse-deploy/tree/2.17.2) (2025-09-12)
 ------------------------------------------------------------------------------------------------------------------
