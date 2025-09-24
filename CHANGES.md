@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.18.2](https://github.com/bird-house/birdhouse-deploy/tree/2.18.2) (2025-09-24)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - STAC Browser: Fix issue of extra `stac-browser` definition not removed from API/Browser split in version 2.18.0.
