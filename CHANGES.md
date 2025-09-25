@@ -110,6 +110,16 @@
   made it to any release.  Nobody should ever have been aware of them.
 
 
+[2.18.2](https://github.com/bird-house/birdhouse-deploy/tree/2.18.2) (2025-09-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- STAC Browser: Fix issue of extra `stac-browser` definition not removed from API/Browser split in version 2.18.0.
+  - Remove the duplicate `stac-browser` entry flagged in
+    https://github.com/bird-house/birdhouse-deploy/pull/584#issuecomment-3329714369 and 
+    https://github.com/bird-house/birdhouse-deploy/pull/584#issuecomment-3330272144.
+
 [2.18.1](https://github.com/bird-house/birdhouse-deploy/tree/2.18.1) (2025-09-23)
 ------------------------------------------------------------------------------------------------------------------
 
