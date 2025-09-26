@@ -1,0 +1,6 @@
+
+services:
+  magpie:
+    volumes:
+      - ./components/dggs/config/magpie/config.yml:${MAGPIE_PROVIDERS_CONFIG_PATH}/dggs.yml:ro
+      - ./components/dggs/config/magpie/config.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/dggs.yml:ro
