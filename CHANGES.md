@@ -24,6 +24,65 @@
   
   (see `env.local.example` or the `scheduler` documentation for details).
 
+[2.18.2](https://github.com/bird-house/birdhouse-deploy/tree/2.18.2) (2025-09-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- STAC Browser: Fix issue of extra `stac-browser` definition not removed from API/Browser split in version 2.18.0.
+  - Remove the duplicate `stac-browser` entry flagged in
+    https://github.com/bird-house/birdhouse-deploy/pull/584#issuecomment-3329714369 and 
+    https://github.com/bird-house/birdhouse-deploy/pull/584#issuecomment-3330272144.
+
+[2.18.1](https://github.com/bird-house/birdhouse-deploy/tree/2.18.1) (2025-09-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Canarie-API: Update to [`1.0.3`](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.0.3) to fix log parsing.
+  - Ensure that timezone-aware date-time are considered.
+  - Fix statistics retrieval to obtain service/request invocation counts.
+  - Relates to [Ouranosinc/CanarieAPI#53](https://github.com/Ouranosinc/CanarieAPI/pull/53) and 
+    [Ouranosinc/CanarieAPI#21](https://github.com/Ouranosinc/CanarieAPI/issues/21).
+
+
+[2.18.0](https://github.com/bird-house/birdhouse-deploy/tree/2.18.0) (2025-09-19)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: Split the services API/UI into distinct `components/stac` and  `components/stac-browser`.
+  - Enabling only `components/stac` will not provide `/stac-browser/` endpoint anymore. It must be explicitly enabled.
+  - Enabling `components/stac-browser` will enforce enabling `components/stac` as a dependency.
+  - Add missing `STAC_BROWSER_DOCKER` variable to respect the standard naming convention used by other components.
+  - Each component has their respective `service-config.json.template` definition.
+
+- Twitcher: Define variables in the standard naming convention used by other components.
+  - `TWITCHER_VERSION`, `TWITCHER_DOCKER`, `TWITCHER_IMAGE`
+  - `TWITCHER_RELEASE` is used to resolve the `version` property of `service-config.json.template`
+    which has special consideration with `MAGPIE_VERSION`
+
+- Cowbird: Define variables in the standard naming convention used by other components.
+  - `COWBIRD_DOCKER`, `COWBIRD_IMAGE`, `COWBIRD_IMAGE_API`, `COWBIRD_IMAGE_WORKER`, `COWBIRD_IMAGE_URI`
+
+- Services: Add more links and references.
+  - Add a `/services/{serviceId}` endpoint to retrieve individual service metadata definitions.
+  - Add missing `service-config.json.template` files for Magpie, Twitcher and Cowbird.
+  - Extend the provided metadata links for multiple services.
+  - Change all `service-config.json.template` definition to be directly the JSON object rather than an array.
+    This allows reporting these objects directly on `/services/{serviceId}`, while `/services` combines them.
+
+## Fixes
+
+- Proxy: Fix lost HTTP method on redirect to HTTPS.
+
+[2.17.2](https://github.com/bird-house/birdhouse-deploy/tree/2.17.2) (2025-09-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Magpie: Fix trailing slash redirect handling between the `proxy` and `magpie`.
+
 [2.17.1](https://github.com/bird-house/birdhouse-deploy/tree/2.17.1) (2025-09-10)
 ------------------------------------------------------------------------------------------------------------------
 

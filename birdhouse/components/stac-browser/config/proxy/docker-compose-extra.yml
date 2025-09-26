@@ -1,0 +1,5 @@
+services:
+  proxy:
+    volumes:
+      - ./components/stac-browser/service-config.json:/static/services/stac-browser.json:ro
+      - ./components/stac-browser/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/stac-browser:ro

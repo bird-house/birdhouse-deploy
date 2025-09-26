@@ -1,4 +1,5 @@
 services:
   proxy:
     volumes:
-    - ./components/geoserver/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/geoserver:ro
+      - ./components/geoserver/service-config.json:/static/services/geoserver.json:ro
+      - ./components/geoserver/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/geoserver:ro
