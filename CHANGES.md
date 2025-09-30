@@ -15,7 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- STAC: Update default API version to `crim-ca/stac-app:2.0.2`.
+
+  - Fix `rel: items` links causing invalid collection listing results
+    (relates to https://github.com/stac-utils/stac-fastapi-pgstac/pull/294,
+    https://github.com/stac-utils/stac-fastapi-pgstac/issues/285,
+    https://github.com/crim-ca/stac-populator/issues/109 and
+    https://github.com/crim-ca/stac-app/pull/50).
 
 [2.18.3](https://github.com/bird-house/birdhouse-deploy/tree/2.18.3) (2025-09-26)
 ------------------------------------------------------------------------------------------------------------------
