@@ -47,7 +47,7 @@
 
     # DGGS API
     location = ${DGGS_API_PATH} {
-        return 301 ${DGGS_API_PATH}/$is_args$args;
+        return 308 ${DGGS_API_PATH}/$is_args$args;
     }
     location ~ ^${DGGS_API_PATH}/(.*)$ {
         auth_request /dggs-auth;
@@ -62,7 +62,7 @@
     }
     # Tiles API
     location = ${DGGS_TILES_PATH} {
-        return 301 ${DGGS_TILES_PATH}/$is_args$args;
+        return 308 ${DGGS_TILES_PATH}/$is_args$args;
     }
     location ~ ^${DGGS_TILES_PATH}/(.*)$ {
         auth_request /dggs-auth;
@@ -82,13 +82,13 @@
     #   This allows verification of the same service user/group permissions references regardless
     #   whether the *shortcut* endpoint, the alias or the explicit 'twitcher' proxy route is used.
     location = ${TWITCHER_PROTECTED_PATH}${DGGS_API_PATH} {
-        return 301 ${DGGS_API_PATH}/$is_args$args;
+        return 308 ${DGGS_API_PATH}/$is_args$args;
     }
     location ~ ^${TWITCHER_PROTECTED_PATH}${DGGS_API_PATH}/(.*)$ {
         return 308 ${DGGS_API_PATH}/$1$is_args$args;
     }
     location = ${TWITCHER_PROTECTED_PATH}${DGGS_TILES_PATH} {
-        return 301 ${DGGS_TILES_PATH}/$is_args$args;
+        return 308 ${DGGS_TILES_PATH}/$is_args$args;
     }
     location ~ ^${TWITCHER_PROTECTED_PATH}${DGGS_TILES_PATH}/(.*)$ {
         return 308 ${DGGS_TILES_PATH}/$1$is_args$args;
@@ -96,14 +96,16 @@
 
     # NOTE:
     #   Redirect to typical endpoints employed by clients.
+    #   Use 307 instead of 308 as above to indicate and hint clients that this is only a
+    #   shortcut to be revalidatd rather than the definitive location of the actual service.
     #   The 'collection' variant is explicitly listed since '/ogcapi/' prefix could be
     #   used for other services (e.g.: '/ogcapi/processes' for Weaver).
     location ~ ^/ogcapi/dggs(.*)$ {
-        return 302 ${DGGS_API_PATH}$1$is_args$args;
+        return 307 ${DGGS_API_PATH}$1$is_args$args;
     }
     location ~ ^/ogcapi/collections/(.*)/dggs(.*)$ {
-        return 302 ${DGGS_API_PATH}/collections/$1/dggs$2$is_args$args;
+        return 307 ${DGGS_API_PATH}/collections/$1/dggs$2$is_args$args;
     }
     location ~ ^/ogcapi/tiles(.*)$ {
-        return 302 ${DGGS_TILES_PATH}$1$is_args$args;
+        return 307 ${DGGS_TILES_PATH}$1$is_args$args;
     }
