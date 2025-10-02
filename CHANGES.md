@@ -15,7 +15,9 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Documentation
+
+- Document how to allow Jupyterlab containers to access GPUs on the host machine
 
 [2.18.4](https://github.com/bird-house/birdhouse-deploy/tree/2.18.4) (2025-10-01)
 ------------------------------------------------------------------------------------------------------------------

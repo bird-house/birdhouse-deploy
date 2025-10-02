@@ -821,6 +821,42 @@ Usage
 The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/jupyter``. Users are able to log in to Jupyterhub using the
 same user name and password as Magpie. They will then be able to launch a personal jupyterlab server.
 
+GPU support for jupyterlab containers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If the host machine has GPUs and you want to make them available to the docker containers running Jupyterlab:
+
+1. ensure that the GPU drivers on the host machine are up to date
+2. install the `NVIDIA container toolkit`_ package on the host machine
+3. configure docker to use the NVIDIA as a container run-time (See the "configure docker" section in `NVIDIA container toolkit`_)
+4. restart docker for the changes to take effect
+5. add the following to the ``JUPYTERHUB_CONFIG_OVERRIDE`` variable in your local environment file:
+
+.. code-block:: shell
+
+    export JUPYTERHUB_CONFIG_OVERRIDE='
+    # enable GPU support
+    import docker
+
+    c.DockerSpawner.extra_host_config["device_requests"] = [
+        docker.types.DeviceRequest(count=-1, capabilities=[["gpu"]])
+    ]
+    '
+
+This will allow the docker containers to access all GPUs on the host machine. To limit the number of GPUs you want to make available
+you can change the ``count`` value to a positive integer or you can specify the ``device_ids`` key instead. ``device_ids`` takes a list
+of integers representing the devices (GPUs) that you want to enable. Device IDs for each GPU can be inspected by running the ``nvidia-smi``
+command on the host machine.
+
+For example, if I only want to make available GPUs with ids 1 and 4 you would set:
+
+.. code-block::
+
+   docker.types.DeviceRequest(device_ids=[1, 4], capabilities=[["gpu"]])
+
+.. _NVIDIA container toolkit: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html 
+
+
 How to Enable the Component
 ---------------------------
 
