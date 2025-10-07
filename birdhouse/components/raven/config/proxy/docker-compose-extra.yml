@@ -1,0 +1,4 @@
+services:
+  proxy:
+    volumes:
+      - ./components/raven/service-config.json:/static/services/raven.json:ro

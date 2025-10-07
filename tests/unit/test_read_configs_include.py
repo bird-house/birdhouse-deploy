@@ -40,7 +40,7 @@ def set_local_env(env_file: io.FileIO, content: Union[str, dict]) -> None:
         content = {**DEFAULT_BIRDHOUSE_ENV, **content}
         env_file.write("\n".join(f"export {k}={v}" for k, v in content.items()))
     else:
-        default_content = "\n".join([f"{k}={v}" for k, v in DEFAULT_BIRDHOUSE_ENV.items()])
+        default_content = "\n".join([f"export {k}={v}" for k, v in DEFAULT_BIRDHOUSE_ENV.items()])
         env_file.write(f"{default_content}\n{content}")
 
 
@@ -278,6 +278,27 @@ class TestReadConfigs(_ReadConfigsFromEnvFile):
         )
         assert split_and_strip(get_command_stdout(proc))[-1] == "{'123'}"
 
+    def test_delayed_eval_preserve_new_lines_leading_spaces(self, read_config_include_file, exit_on_error) -> None:
+        """Test that the delayed evaluation functions preserve the original formatting of the string"""
+        extra = {
+            "SAMPLE_EXTRA_DOCKER_ARGS":
+                "\"\n"
+                "    --env SOME_ENV_VAR='${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir'\n"
+                "    --volume '${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir:${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir:ro'\"",
+            "DELAYED_EVAL": '"$DELAYED_EVAL SAMPLE_EXTRA_DOCKER_ARGS"',
+        }
+        proc = self.run_func(
+            read_config_include_file,
+            extra,
+            'echo "${SAMPLE_EXTRA_DOCKER_ARGS}"',
+            exit_on_error=exit_on_error,
+        )
+        print(proc.stdout)
+        assert ("\n".join(get_command_stdout(proc).split("\n")[-4:])
+                == "\n"
+                   "    --env SOME_ENV_VAR='/data/somedir'\n"
+                   "    --volume '/data/somedir:/data/somedir:ro'\n")
+
 
 class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
     command = "read_configs"
@@ -318,11 +339,6 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         SMTP_SERVER=ALERTMANAGER_SMTP_SERVER
         COMPOSE_UP_EXTRA_OPTS=BIRDHOUSE_COMPOSE_UP_EXTRA_OPTS
         WPS_OUTPUTS_DIR=BIRDHOUSE_WPS_OUTPUTS_DIR
-        SERVER_DOC_URL=BIRDHOUSE_DOC_URL
-        SERVER_SUPPORT_EMAIL=BIRDHOUSE_SUPPORT_EMAIL
-        SERVER_SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
-        SERVER_DATA_PERSIST_SHARED_ROOT=BIRDHOUSE_DATA_PERSIST_SHARED_ROOT
-        SERVER_WPS_OUTPUTS_DIR=BIRDHOUSE_WPS_OUTPUTS_DIR
         SERVER_NAME=BIRDHOUSE_NAME
         SERVER_DESCRIPTION=BIRDHOUSE_DESCRIPTION
         SERVER_INSTITUTION=BIRDHOUSE_INSTITUTION
@@ -441,11 +457,10 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
             command_suffix,
             exit_on_error=exit_on_error,
         )
-        expected = set()
-        for k in self.new_vars:
-            expected.add(f"{k}=new")
         actual = [re.sub(r"[\s\n]+", " ", val.strip()) for val in get_command_stdout(proc).split(ENV_SPLIT_STR_ALT)]
-        assert all(val != "new" for val in actual)
+        # "val" is like "NEW_VAR=" without the "new" value because it is initially unset and
+        # old var are not allowed to override so it stays unset.
+        assert all(val.split("=")[-1] != "new" for val in actual)
 
     def test_allowed_override_all(self, read_config_include_file, exit_on_error):
         """
@@ -546,6 +561,141 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         print(proc.stdout)
         assert split_and_strip(get_command_stdout(proc))[-1] == "pavics.example.com"
 
+    @pytest.mark.parametrize("from_name,to_name",
+        (("ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS", "JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS"),
+         ("JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS", "ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS")))
+    def test_formatting_preserved_from_old_to_new_var_vice_versa(self, read_config_include_file,
+                                                                 exit_on_error, from_name, to_name):
+        """
+        Test that formatting (new lines, leading spaces, quotes) are preserved when old var
+        value is transfered to new var and vice-versa.  This is important during template expansion.
+        """
+        expected = ("\n"
+                    "    # python code requires keeping formatting  \n"
+                    "    {'user': 'pass'}\n")
+
+        extra = {
+            from_name: f"\"{expected}\"",
+            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
+        }
+        proc = self.run_func(
+            read_config_include_file,
+            extra,
+            f'echo "${to_name}"',
+            exit_on_error=exit_on_error,
+        )
+        print(proc.stdout)
+        assert "\n".join(get_command_stdout(proc).split("\n")[-4:]) == expected
+
+    @pytest.mark.parametrize("template_expansion_var,content_expected",
+        (("$VARS", ["$MY_NEW_VAR", "$MY_OLD_VAR", "$BIRDHOUSE_LOG_DIR", "$PAVICS_LOG_DIR"]),
+         ("$OPTIONAL_VARS", ["$MY_NEW_VAR", "$MY_OLD_VAR", "$BIRDHOUSE_FQDN_PUBLIC", "$PAVICS_FQDN_PUBLIC"])))
+    def test_template_expansion_enabled_for_old_var(self, read_config_include_file, exit_on_error,
+                                                    template_expansion_var,content_expected):
+        """
+        Test that template expansion is enabled for corresponding old var if new var is enabled.
+        """
+
+        env_local = '''
+            # Add custom backward compatible var mapping.
+            BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES="$BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES
+              MY_OLD_VAR=MY_NEW_VAR"
+
+            # Add new var to template expansion
+            VARS="$VARS
+              \\$MY_NEW_VAR"
+
+            # Add new var to template expansion
+            OPTIONAL_VARS="$OPTIONAL_VARS
+              \\$MY_NEW_VAR"
+
+            BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
+            '''
+
+        expected = ("\n"
+                    "              MY_OLD_VAR=MY_NEW_VAR\n"  # Added twice because env.local read twice in read_configs.
+                    "              MY_OLD_VAR=MY_NEW_VAR\n")
+        proc = self.run_func(
+            read_config_include_file,
+            env_local,
+            'echo "$BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES"',
+            exit_on_error=exit_on_error,
+        )
+        print(proc.stdout)
+        selected_output = "\n".join(get_command_stdout(proc).split("\n")[-4:])
+        assert selected_output == expected
+
+        proc = self.run_func(
+            read_config_include_file,
+            env_local,
+            f'echo "{template_expansion_var}"',  # '$VARS' or '$OPTIONAL_VARS'
+            exit_on_error=exit_on_error,
+        )
+        print(proc.stdout)
+        vars_content = get_command_stdout(proc)
+        for var_name in content_expected:
+            assert f"  {var_name}" in vars_content
+
+    @pytest.mark.parametrize("var_name", ("PAVICS_FQDN", "BIRDHOUSE_FQDN"))
+    def test_delayed_eval_enabled_for_built_in_old_var(self, read_config_include_file,
+                                                       exit_on_error, var_name):
+        """
+        Test that delayed eval is enabled for corresponding old var if new var is enabled.
+        """
+        expected = "fqdn.example.com"
+        extra = {
+            var_name: expected,
+            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
+        }
+        proc = self.run_func(
+            read_config_include_file,
+            extra,
+            'echo "${PAVICS_FQDN_PUBLIC} - ${BIRDHOUSE_FQDN_PUBLIC}"',
+            exit_on_error=exit_on_error,
+        )
+        # By default, old var PAVICS_FQDN_PUBLIC is same value as old var PAVICS_FQDN.
+        # New var BIRDHOUSE_FQDN_PUBLIC is same value as new var BIRDHOUSE_FQDN.
+        # If BIRDHOUSE_FQDN is unset, it is set to the same value as PAVICS_FQDN.
+        # If PAVICS_FQDN is unset, it is set to the same value as BIRDHOUSE_FQDN.
+        assert split_and_strip(get_command_stdout(proc))[-1] == f"{expected} - {expected}"
+
+    @pytest.mark.parametrize("var_name", ("CUSTOM_DELAYED_OLD_VAR", "CUSTOM_DELAYED_NEW_VAR"))
+    def test_delayed_eval_enabled_for_custom_old_var(self, read_config_include_file,
+                                                     exit_on_error, var_name):
+        """
+        Test that delayed eval is enabled for corresponding old var if new var is enabled.
+
+        This case is useful for external repos depending on each other and the "base" external
+        repo also rename variable and do not wish to break other "downstream" external repos.
+
+        This case is also for components not in BIRDHOUSE_DEFAULT_CONF_DIRS that also append to DELAYED_EVAL.
+        """
+        env_local = f'''
+          # Add custom backward compatible var mapping.
+          BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES="$BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES
+            CUSTOM_DELAYED_OLD_VAR=CUSTOM_DELAYED_NEW_VAR"
+
+          # Add new custom var to DELAYED_EVAL.
+          DELAYED_EVAL="
+            $DELAYED_EVAL
+            CUSTOM_DELAYED_NEW_VAR"
+
+          # Custom old var depends on another built-in old var and new var.
+          {var_name}='$DATA_PERSIST_ROOT - $ANOTHER_NEW_VAR'
+
+          ANOTHER_NEW_VAR=some_val
+
+          BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
+          '''
+
+        proc = self.run_func(
+            read_config_include_file,
+            env_local,
+            'echo "${CUSTOM_DELAYED_OLD_VAR} == ${CUSTOM_DELAYED_NEW_VAR}"',
+            exit_on_error=exit_on_error,
+        )
+        assert split_and_strip(get_command_stdout(proc))[-1] == "/data - some_val == /data - some_val"
+
 
 class TestCreateComposeConfList(_ReadConfigs):
     command: str = " create_compose_conf_list"
@@ -582,16 +732,19 @@ class TestCreateComposeConfList(_ReadConfigs):
         "./components/finch/docker-compose-extra.yml",
         "./components/finch/config/canarie-api/docker-compose-extra.yml",
         "./components/finch/config/magpie/docker-compose-extra.yml",
+        "./components/finch/config/proxy/docker-compose-extra.yml",
         "./components/finch/config/wps_outputs-volume/docker-compose-extra.yml",
         "./components/raven/docker-compose-extra.yml",
         "./components/raven/config/canarie-api/docker-compose-extra.yml",
         "./components/raven/config/magpie/docker-compose-extra.yml",
+        "./components/raven/config/proxy/docker-compose-extra.yml",
         "./components/raven/config/wps_outputs-volume/docker-compose-extra.yml",
         "./components/data-volume/docker-compose-extra.yml",
         "./components/hummingbird/docker-compose-extra.yml",
         "./components/hummingbird/config/canarie-api/docker-compose-extra.yml",
         "./components/hummingbird/config/data-volume/docker-compose-extra.yml",
         "./components/hummingbird/config/magpie/docker-compose-extra.yml",
+        "./components/hummingbird/config/proxy/docker-compose-extra.yml",
         "./components/hummingbird/config/wps_outputs-volume/docker-compose-extra.yml",
         "./components/thredds/docker-compose-extra.yml",
         "./components/thredds/config/canarie-api/docker-compose-extra.yml",

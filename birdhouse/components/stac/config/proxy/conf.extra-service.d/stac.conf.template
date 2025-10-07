@@ -16,19 +16,3 @@
     location ~ ^${TWITCHER_PROTECTED_PATH}/stac(?!/stac) {
         return 302 ${TWITCHER_PROTECTED_PATH}/stac/stac/;
     }
-
-    location /stac-browser/ {
-        # STAC API is protected behind Twitcher so we might not need to protect the browser as well.
-        # In case we encounter a valid use case in which we need to protect the browser, we might 
-        # consider using Twitcher's verify capability to protect the route in an efficient manner.
-        proxy_pass http://stac-browser:8080/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-Host localhost;
-        proxy_set_header X-Forwarded-Server localhost;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-For $remote_addr;
-        proxy_set_header Origin localhost;
-        proxy_hide_header Access-Control-Allow-Origin;
-        proxy_redirect off;
-    }
