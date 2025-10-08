@@ -1,0 +1,8 @@
+
+services:
+  # extend twitcher with MagpieAdapter hooks employed for DGGS proxied requests
+  twitcher:
+    volumes:
+      # NOTE: MagpieAdapter hooks are defined within Magpie config, but it is actually Twitcher proxy that runs them
+      # target mount location depends on 'MAGPIE_PROVIDERS_CONFIG_PATH' environment variable that is found under `birdhouse/components/twitcher/docker-compose-extra.yml`
+      - ./components/dggs/config/magpie/config.yml:/opt/birdhouse/src/magpie/config/dggs-config.yml:ro
