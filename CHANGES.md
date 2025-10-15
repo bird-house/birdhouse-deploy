@@ -15,7 +15,16 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Update autodeploy image to latest version
+
+  This makes autodeploy compatible with newer Docker engine installed on the
+  host [#246](https://github.com/bird-house/birdhouse-deploy/issues/246).
+
+  Also makes autodeploy compatible with newer docker-compose syntax version
+  [#505](https://github.com/bird-house/birdhouse-deploy/issues/505).
+
 
 [2.18.4](https://github.com/bird-house/birdhouse-deploy/tree/2.18.4) (2025-10-01)
 ------------------------------------------------------------------------------------------------------------------
