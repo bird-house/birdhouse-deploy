@@ -15,6 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Fixes
+
+- Modify Prometheus Thredds counter to record bytes instead of kb. 
+- Change longterm rule names to follow naming conventions.
+
+
 ## Changes
 
 - Update autodeploy image to latest version
