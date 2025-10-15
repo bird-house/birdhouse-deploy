@@ -179,9 +179,11 @@ triggerdeploy START_TIME=${START_TIME}"
 # Read BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS
 read_basic_configs_only
 
-# Since git v2.35.2, because autodeploy runs as root but the repos are not
-# checkout by root.
-git config --global --add safe.directory '*'
+if [ -n "$AUTODEPLOY_GIT_GLOBAL_SAFE_DIRECTORY" ]; then
+    # Since git v2.35.2, because autodeploy runs as root but the repos are not
+    # checkout by root.
+    git config --global --add safe.directory '*'
+fi
 
 set -x
 
