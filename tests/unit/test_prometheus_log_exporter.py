@@ -27,12 +27,12 @@ def test_550(plex):
     assert len(samples) == 2
 
     s1, s2 = samples
-    assert s1.value == (584 + 3684 + 584)/1024, "Total size does not match expected value"
+    assert s1.value == 584 + 3684 + 584, "Total size does not match expected value"
     assert s1.labels["dataset"] == "birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc"
     assert s1.labels["tds_service"] == "dodsC", "Service type does not match expected value"
     assert s1.labels["variable"] == ""
 
-    assert s2.value == 15027 / 1024
+    assert s2.value == 15027
     assert s2.labels["variable"] == "time,time_bnds,plev,lat,lat_bnds,lon,lon_bnds"
 
 
