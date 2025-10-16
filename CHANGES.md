@@ -21,7 +21,8 @@
   - Add `STAC_BROWSER_PATH_PREFIX` variable that makes the mapping more easily configurable.
     However, changing its value requires building the corresponding docker wih the same prefix.
     The change will not be effective "simply" by modifying the variable.
-  - Relates to https://github.com/radiantearth/stac-browser/pull/653.
+  - Revert to `crim-ca/stac-browser:3.3.5` (rather than `crim-ca/stac-browser:3.4.0-dev`)
+    without need of the temporary patch (relates to https://github.com/radiantearth/stac-browser/pull/653).
 
 [2.18.5](https://github.com/bird-house/birdhouse-deploy/tree/2.18.5) (2025-10-15)
 ------------------------------------------------------------------------------------------------------------------
