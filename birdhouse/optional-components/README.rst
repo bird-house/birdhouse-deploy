@@ -472,12 +472,32 @@ To enable this optional-component:
         birdhouse compose up -d
 
 
+Use the DGGS sample data and configuration
+--------------------------------------------------------
+
+:ref:`components_dggs` requires a valid configuration and DGGRS-aligned data to start the API service.
+This sample definition provides a minimal example of such definition.
+
+In other circumstances, a custom definition would instead be employed with specific data sources, DGGRS definitions
+and other metadata. This sample is provided with minimal details to get things working.
+
+To enable this optional-component:
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./optional-components/dggs-data-sample`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+
+Important
+~~~~~~~~~~~~
+
+This component should not be employed if custom configurations are desired. Variables will conflict and override
+the definitions required by :ref:`components_dggs`.
+
 X-Robots-Tag Header
 ---------------------------
 
 Applies the ``X-Robots-Tag`` header value defined by the ``X_ROBOTS_TAG_HEADER`` variable globally for the server.
 
-If ``X_ROBOTS_TAG_HEADER`` is not overriden, it uses ``noindex, nofollow`` which will disallow most crawling and
+If ``X_ROBOTS_TAG_HEADER`` is not overridden, it uses ``noindex, nofollow`` which will disallow most crawling and
 indexing functionalities from robots. If omitting this optional component entirely, no ``X-Robots-Tag`` header
 will be applied, which is equivalent to the robots default ``X-Robots-Tag: all``, setting no restrictions regarding
 indexing and serving.

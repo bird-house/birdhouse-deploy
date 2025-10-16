@@ -37,6 +37,9 @@ services:
     volumes:
       # The below configuration file is mounted with read-write so that the API using it can operate.
       # The service does not actually change it, but it employs it as a database connection that requires write access.
+      # NOTE:
+      #   variable 'DGGS_CONFIG_PATH' must be defined explicitly,
+      #   either by custom config with 'env.local' or using 'optional-components/dggs-data-sample'
       - ${DGGS_CONFIG_PATH}:/opt/local/src/pydggsapi/config/pydggsapi-config.json:rw
       # Following volume mount is provided for convenience to easily make static data files available to the service.
       # Users should edit the 'DGGS_CONFIG_PATH' to a custom configuration which can include '/data/...' file paths.

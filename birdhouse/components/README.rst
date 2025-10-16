@@ -723,6 +723,7 @@ How to Enable the Component
 - Edit ``env.local`` (a copy of `env.local.example`_)
 - Add ``./components/stac`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
+.. _components_dggs:
 
 DGGS: Discrete Global Grid Systems API
 ======================================
@@ -754,8 +755,9 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 - Add ``./components/dggs`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
-- Optionally, define alternate DGGS dataset locations using a derived configuration file based on
-  the ``./components/dggs/config/dggs/pydggsapi-config.json.template``.
+- Define ``DGGS_CONFIG_PATH`` in the ``env.local`` with custom definitions.
+  Alternatively, employ sample DGGS dataset and configuration by enabling ``./optional-components/dggs-data-sample``.
+  Enabling this optional component will set ``DGGS_CONFIG_PATH`` with a predefined configuration for this sample data.
   See the `PyDGGS-API implementation <https://github.com/LandscapeGeoinformatics/pydggsapi>`_ for more details.
 - Optionally, configure variables in ``./components/dggs/default.env`` via ``env.local`` to customize the service.
 
