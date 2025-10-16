@@ -16,6 +16,9 @@
 
     # Generic API docs
     location ${DGGS_API_PATH}/docs {
+        auth_request /dggs-auth;
+        auth_request_set $auth_status $upstream_status;
+
         proxy_pass http://dggs:8000${DGGS_DOCS_PATH_INTERNAL}/$is_args$args;
         proxy_set_header Host $host;
         #proxy_set_header X-Original-URI $request_uri;
@@ -25,6 +28,9 @@
         #proxy_set_header X-Script-Name ${DGGS_API_PATH};
     }
     location ${DGGS_TILES_PATH}/docs {
+        auth_request /dggs-auth;
+        auth_request_set $auth_status $upstream_status;
+
         proxy_pass http://dggs:8000${DGGS_DOCS_PATH_INTERNAL}/$is_args$args;
         proxy_set_header Host $host;
         #proxy_set_header X-Original-URI $request_uri;
@@ -35,6 +41,9 @@
     }
     # '/api' is the standard path by OGC: https://ogcapi.ogc.org/common/overview.html
     location = ${DGGS_API_PATH}/api {
+        auth_request /dggs-auth;
+        auth_request_set $auth_status $upstream_status;
+
         rewrite ^${DGGS_API_PATH}/(.*) ${DGGS_API_PATH_INTERNAL}/$1 break;
         proxy_pass http://dggs:8000;
         proxy_set_header Host $host;

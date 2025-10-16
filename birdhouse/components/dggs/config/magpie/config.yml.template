@@ -28,6 +28,16 @@ permissions:
     permission: read
     group: anonymous
     action: create
+  - service: ${DGGS_API_NAME}
+    resource: /docs
+    permission: read
+    group: anonymous
+    action: create
+  - service: ${DGGS_API_NAME}
+    resource: /api
+    permission: read
+    group: anonymous
+    action: create
 
   # === DGGS API ===
   # /${DGGS_API_NAME}/dggs/...
