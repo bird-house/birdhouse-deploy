@@ -1,0 +1,5 @@
+    location ${DGGS_DATA_PROXY_URL_PATH}/ {
+        ${SECURE_DATA_PROXY_AUTH_INCLUDE}
+
+        alias /data/data-proxy/${DGGS_API_NAME}/;
+    }

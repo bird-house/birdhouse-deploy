@@ -1,0 +1,3 @@
+# Ensure the component is detected when added to 'BIRDHOUSE_EXTRA_CONF_DIRS'
+# However, specific configurations for it are defined across other services
+# Look for '..._DATA_PROXY_...' variables
