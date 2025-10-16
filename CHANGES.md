@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- STAC Browser: fix resolution against the pre-built prefix path to align with proxy configuration.
+  - Add `STAC_BROWSER_PATH_PREFIX` variable that makes the mapping more easily configurable.
+    However, changing its value requires building the corresponding docker wih the same prefix.
+    The change will not be effective "simply" by modifying the variable.
+  - Relates to https://github.com/radiantearth/stac-browser/pull/653.
 
 [2.18.5](https://github.com/bird-house/birdhouse-deploy/tree/2.18.5) (2025-10-15)
 ------------------------------------------------------------------------------------------------------------------
