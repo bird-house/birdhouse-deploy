@@ -15,7 +15,30 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Create template component for data deploy jobs
+
+  New data deploy scheduler jobs no longer need to copy/paste lots of boilerplate code to create a new job.  
+  Instead they can simply define specific environment variables and then the can now use the 
+  `optional-components/scheduler-job-deploy_data` job will automatically generate a new data deploy job.
+
+  For example, if `XXXX` is added to the `SCHEDULER_JOB_DEPLOY_DATA_JOB_IDS` variable and the following 
+  variables are defined:
+
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_NAME`
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_COMMENT`
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_CHECKOUT_CACHE`
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_LOG_FILENAME`
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_SCHEDULE`
+  - `SCHEDULER_JOB_XXXX_DEPLOY_DATA_JOB_CONFIG_FILE`
+
+  a deploy data job will be automatically created.
+
+  See `optional-components/scheduler-job-deploy_raven_testdata/default.env` and 
+  `optional-components/scheduler-job-deploy_raven_testdata/default.env` for examples.
+
+  See `birdhouse/deployment/deploy-data` for details on how the deploy data job works.
 
 [2.18.5](https://github.com/bird-house/birdhouse-deploy/tree/2.18.5) (2025-10-15)
 ------------------------------------------------------------------------------------------------------------------
