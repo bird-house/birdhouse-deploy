@@ -90,6 +90,9 @@ discover_env_local() {
 
     # env.local can be a symlink to the private config repo where the real
     # env.local file is source controlled.
+    # If autodeploy is enabled, the config repo containing the env.local file
+    # needs to be added to BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS, otherwise
+    # autodeploy will fail.
     # Docker volume-mount will need the real dir of the file for symlink to
     # resolve inside the container.
     BIRDHOUSE_LOCAL_ENV_REAL_PATH="$(realpath "${BIRDHOUSE_LOCAL_ENV}")"

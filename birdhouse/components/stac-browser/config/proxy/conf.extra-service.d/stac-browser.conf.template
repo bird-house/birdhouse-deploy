@@ -1,9 +1,9 @@
 
-    location /stac-browser/ {
+    location ${STAC_BROWSER_PATH_PREFIX} {
         # STAC API is protected behind Twitcher so we might not need to protect the browser as well.
         # In case we encounter a valid use case in which we need to protect the browser, we might
         # consider using Twitcher's verify capability to protect the route in an efficient manner.
-        proxy_pass http://stac-browser:8080/;
+        proxy_pass http://stac-browser:8080${STAC_BROWSER_PATH_PREFIX};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-Host localhost;
