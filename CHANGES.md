@@ -31,6 +31,11 @@
     * `SCHEDULER_JOB_RENEW_SSL_DOCKER`
     * `SCHEDULER_JOB_RENEW_SSL_VERSION`
 
+- Update `DOCKER_CLI_IMAGE` version.
+
+  Simply to match `BIRDHOUSE_COMPOSE_IMAGE` version.  Previous version was not
+  causing any problems.
+
 
 [2.18.5](https://github.com/bird-house/birdhouse-deploy/tree/2.18.5) (2025-10-15)
 ------------------------------------------------------------------------------------------------------------------
