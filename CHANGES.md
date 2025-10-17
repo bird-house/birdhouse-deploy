@@ -36,10 +36,18 @@
   Simply to match `BIRDHOUSE_COMPOSE_IMAGE` version.  Previous version was not
   causing any problems.
 
-- Generic job for deploy-data script (`components/scheduler/deploy_data_job.env`)
-  now uses centralized `DOCKER_CLI_IMAGE` version.
+- Centralized usage of `DOCKER_CLI_IMAGE` in all scheduler jobs.
 
-  To be consistent with the platform.
+  To ease future version update and for all jobs to be consistent.
+
+  Backward **incompatible** changes:
+  * Removed config variables:
+    * `SCHEDULER_JOB_RAVEN_DEPLOY_DATA_JOB_DOCKER`
+    * `SCHEDULER_JOB_RAVEN_DEPLOY_DATA_JOB_VERSION`
+    * `SCHEDULER_JOB_XCLIM_DEPLOY_DATA_JOB_DOCKER`
+    * `SCHEDULER_JOB_XCLIM_DEPLOY_DATA_JOB_VERSION`
+    * `SCHEDULER_JOB_NOTEBOOKDEPLOY_DOCKER`
+    * `SCHEDULER_JOB_NOTEBOOKDEPLOY_VERSION`
 
 
 [2.18.5](https://github.com/bird-house/birdhouse-deploy/tree/2.18.5) (2025-10-15)
