@@ -36,6 +36,11 @@
   Simply to match `BIRDHOUSE_COMPOSE_IMAGE` version.  Previous version was not
   causing any problems.
 
+- Generic job for deploy-data script (`components/scheduler/deploy_data_job.env`)
+  now uses centralized `DOCKER_CLI_IMAGE` version.
+
+  To be consistent with the platform.
+
 
 [2.18.5](https://github.com/bird-house/birdhouse-deploy/tree/2.18.5) (2025-10-15)
 ------------------------------------------------------------------------------------------------------------------
