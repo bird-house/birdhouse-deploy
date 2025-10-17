@@ -17,6 +17,26 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.18.7](https://github.com/bird-house/birdhouse-deploy/tree/2.18.7) (2025-10-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Autodeploy unable to git pull the newer `env.local` file.
+
+  Previously the `env.local` file could be a symlink to a file anywhere on the
+  disk.
+
+  Now `env.local` can only be a symlink to a file under a folder listed in
+  `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`.
+
+  This is a new restriction from the newer autodeploy docker image in the
+  previous release 2.18.5 below.  We can not volume-mount both the parent dir
+  and the file at the same time and have write access.  We can only
+  volume-mount one of the two.  For read-only access, it is still okay to
+  volume-mount both.
+
+
 [2.18.6](https://github.com/bird-house/birdhouse-deploy/tree/2.18.6) (2025-10-17)
 ------------------------------------------------------------------------------------------------------------------
 
