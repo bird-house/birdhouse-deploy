@@ -50,6 +50,38 @@
     * `SCHEDULER_JOB_NOTEBOOKDEPLOY_VERSION`
 
 
+[2.18.7](https://github.com/bird-house/birdhouse-deploy/tree/2.18.7) (2025-10-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Autodeploy unable to git pull the newer `env.local` file.
+
+  Previously the `env.local` file could be a symlink to a file anywhere on the
+  disk.
+
+  Now `env.local` can only be a symlink to a file under a folder listed in
+  `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`.
+
+  This is a new restriction from the newer autodeploy docker image in the
+  previous release 2.18.5 below.  We can not volume-mount both the parent dir
+  and the file at the same time and have write access.  We can only
+  volume-mount one of the two.  For read-only access, it is still okay to
+  volume-mount both.
+
+
+[2.18.6](https://github.com/bird-house/birdhouse-deploy/tree/2.18.6) (2025-10-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- STAC Browser: fix resolution against the pre-built prefix path to align with proxy configuration.
+  - Add `STAC_BROWSER_PATH_PREFIX` variable that makes the mapping more easily configurable.
+    However, changing its value requires building the corresponding docker wih the same prefix.
+    The change will not be effective "simply" by modifying the variable.
+  - Revert to `crim-ca/stac-browser:3.3.5` (rather than `crim-ca/stac-browser:3.4.0-dev`)
+    without need of the temporary patch (relates to https://github.com/radiantearth/stac-browser/pull/653).
+
 [2.18.5](https://github.com/bird-house/birdhouse-deploy/tree/2.18.5) (2025-10-15)
 ------------------------------------------------------------------------------------------------------------------
 

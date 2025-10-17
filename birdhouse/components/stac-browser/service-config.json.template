@@ -14,7 +14,7 @@
     {
       "rel": "service",
       "type": "text/html",
-      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/stac-browser/"
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${STAC_BROWSER_PATH_PREFIX}"
     },
     {
       "rel": "service-doc",
