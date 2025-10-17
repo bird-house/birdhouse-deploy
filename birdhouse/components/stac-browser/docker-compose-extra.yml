@@ -13,7 +13,7 @@ services:
     environment:
       # backward compat for older image versions (ghcr.io/crim-ca/stac-browser:docker_image_push)
       - CATALOG_URL=${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/stac/
-      - ROOT_PATH=/stac-browser/
+      - ROOT_PATH=${STAC_BROWSER_PATH_PREFIX}
       # newer image versions (ghcr.io/radiantearth/stac-browser, mininum version 3.1.1)
       # anything in the config (except build params) can be overridden by environment variables with 'SB_' prefix
       # (https://github.com/radiantearth/stac-browser/blob/main/config.js)
