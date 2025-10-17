@@ -58,10 +58,9 @@ for item in ${GEOSERVER_DATA_DIR}/ ${JUPYTERHUB_USER_DATA_DIR}/ ${MAGPIE_PERSIST
 done
 
 if [ ! x"$FORCE_MODE" = xforce ]; then
-    log INFO "Dry-run mode, not executing '${COMPOSE_DIR}/deployment/fix-geoserver-data-dir-perm' and other permission fixup"
+    log INFO "Dry-run mode, not executing various permission fixup"
 else
-    log INFO "Executing '${COMPOSE_DIR}/deployment/fix-geoserver-data-dir-perm' and other permission fixup"
-    "${COMPOSE_DIR}/deployment/fix-geoserver-data-dir-perm"
+    log INFO "Executing various permission fixup"
 
     docker run --rm --name fix-jupyter-data-dir-perm \
         --volume "${JUPYTERHUB_USER_DATA_DIR}":/datadir \
