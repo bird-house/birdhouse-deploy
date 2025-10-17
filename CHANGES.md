@@ -15,7 +15,40 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Centralize management of docker-compose image version needed by birdhouse-compose.sh script.
+
+  To simplify future version update and to easily shared by other future components.
+
+  Backward compatible change:
+  * Added config variable `BIRDHOUSE_COMPOSE_IMAGE`.
+
+  Backward **incompatible** changes:
+  * Removed config variables:
+    * `SCHEDULER_JOB_AUTODEPLOY_DOCKER`
+    * `SCHEDULER_JOB_AUTODEPLOY_VERSION`
+    * `SCHEDULER_JOB_RENEW_SSL_DOCKER`
+    * `SCHEDULER_JOB_RENEW_SSL_VERSION`
+
+- Update `DOCKER_CLI_IMAGE` version.
+
+  Simply to match `BIRDHOUSE_COMPOSE_IMAGE` version.  Previous version was not
+  causing any problems.
+
+- Centralized usage of `DOCKER_CLI_IMAGE` in all scheduler jobs.
+
+  To ease future version update and for all jobs to be consistent.
+
+  Backward **incompatible** changes:
+  * Removed config variables:
+    * `SCHEDULER_JOB_RAVEN_DEPLOY_DATA_JOB_DOCKER`
+    * `SCHEDULER_JOB_RAVEN_DEPLOY_DATA_JOB_VERSION`
+    * `SCHEDULER_JOB_XCLIM_DEPLOY_DATA_JOB_DOCKER`
+    * `SCHEDULER_JOB_XCLIM_DEPLOY_DATA_JOB_VERSION`
+    * `SCHEDULER_JOB_NOTEBOOKDEPLOY_DOCKER`
+    * `SCHEDULER_JOB_NOTEBOOKDEPLOY_VERSION`
+
 
 [2.18.7](https://github.com/bird-house/birdhouse-deploy/tree/2.18.7) (2025-10-17)
 ------------------------------------------------------------------------------------------------------------------
