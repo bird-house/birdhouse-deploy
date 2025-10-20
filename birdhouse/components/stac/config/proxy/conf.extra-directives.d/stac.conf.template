@@ -1,0 +1,4 @@
+    map $http_origin $stac_origin_allowed {
+        default ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC};
+        ${_STAC_ADDITIONAL_CORS_ORIGINS}
+    }
