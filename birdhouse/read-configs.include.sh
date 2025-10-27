@@ -460,35 +460,35 @@ set_backwards_compatible_as_default() {
 }
 
 # Record all currently exported environment variables and store them in the __BIRDHOUSE_PROCESS_ENV
-# variable. Calling set_process_env later will re-export all these variables, setting them back to their
-# original value. See set_process_env for an example.
-discover_process_env() {
+# variable. Calling reset_process_env later will re-export all these variables, setting them back to their
+# original value. See reset_process_env for an example.
+stage_process_env() {
   __BIRDHOUSE_PROCESS_ENV="$(export -p)"
 }
 
-# Re-export and set all environment variables that were exported when discover_process_env was last called. This 
-# effectively resets these variables to the values that they had when discover_process_env was last called.
+# Re-export and set all environment variables that were exported when stage_process_env was last called. This 
+# effectively resets these variables to the values that they had when stage_process_env was last called.
 #
-# Note that this will not unset variables that were not exported when discover_process_env was last called.
+# Note that this will not unset variables that were not exported when stage_process_env was last called.
 #
 # For example:
 # 
 # export X=10
-# discover_process_env
+# stage_process_env
 # echo $X  # prints 10
 # X=11
 # export Y=12
 # echo $X  # prints 11
-# set_process_env
+# reset_process_env
 # echo $X  # prints 10
 # echo $Y  # prints 12
-set_process_env() {
+reset_process_env() {
   eval "${__BIRDHOUSE_PROCESS_ENV}"
 }
 
 ### Similar code between read_configs() and read_basic_configs_only().
 _read_basic_configs_pre() {
-    discover_process_env
+    stage_process_env
     set_backwards_compatible_as_default
     discover_compose_dir
     discover_env_local
@@ -498,7 +498,7 @@ _read_basic_configs_pre() {
 
 _read_basic_configs_post() {
     read_env_local  # override default env, needs discover_env_local to run first
-    set_process_env  # override local env and default env with variables declared in the calling process' environment, needs discover_process_env to run first
+    reset_process_env  # override local env and default env with variables declared in the calling process' environment, needs stage_process_env to run first
     set_old_backwards_compatible_variables  # after read_env_local to use updated value and not default value for backwards compatible variables
     process_backwards_compatible_variables
     check_default_vars
@@ -514,7 +514,7 @@ read_configs() {
 
     ### This section is different than read_basic_configs_only() below, the rest should be IDENTICAL.
     read_env_local  # for BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, needs discover_env_local to run first
-    set_process_env  # use BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS if they're declared in the calling process' environment, needs discover_process_env to run first
+    reset_process_env  # use BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS if they're declared in the calling process' environment, needs stage_process_env to run first
     process_backwards_compatible_variables pre-components
     read_components_default_env  # uses BIRDHOUSE_EXTRA_CONF_DIRS and BIRDHOUSE_DEFAULT_CONF_DIRS, sets ALL_CONF_DIRS
     ### END This section is different than read_basic_configs_only() below, the rest should be IDENTICAL.
