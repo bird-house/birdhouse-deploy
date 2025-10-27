@@ -698,30 +698,59 @@ information.
 Usage
 -----
 
-The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API 
-exposed by the current stack instance. Once this component is enabled, STAC API will be accessible at 
-``https://<BIRDHOUSE_FQDN_PUBLIC>/stac`` endpoint and the STAC browser will be available at
-``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint,
-define the following in the ``env.local`` file::
+The STAC API can be browsed via the ``stac-browser`` component. Once this component is enabled, STAC API 
+will be accessible at the ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac``.
 
-  export BIRDHOUSE_PROXY_ROOT_LOCATION='return 302 ${BIRDHOUSE_PROXY_SCHEME}://\$host/stac-browser;'
-
-Here is a sample search query using a CLI::
+Here is a sample search query using a the ``pystac-client`` python CLI:
 
 .. code-block:: shell
 
     pip install pystac-client
-    stac-client search $PAVIS_FQDN/stac -q "variable_id=txgt_32" "scenario=ssp585"
+    stac-client search $BIRDHOUSE_FQDN_PUBLIC/stac -q "variable_id=txgt_32" "scenario=ssp585"
 
 Calls to the STAC API pass through Twitcher in order to validate authorization. Unauthenticated users will have 
-read-only access by default to STAC API resources while members of the `stac-admin` group can create and modify 
-resources. STAC Browser is not protected by any authorization mechanism.
+read-only access to STAC API resources while members of the `stac-admin` group can create and modify 
+resources if the ``optional-components/stac-public-access`` component is enabled.
 
 How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 - Add ``./components/stac`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+
+STAC Browser
+============
+
+STAC Browser is a web UI used to interact with the STAC API. 
+
+Usage
+-----
+
+The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API 
+exposed by the current ``components/stac`` service. 
+Once this component is enabled, the STAC browser will be available at the ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` 
+endpoint
+
+If your STAC API contains geojson data, it is recommended to set the ``STAC_CORS_ORIGINS`` value to accept the origin
+``https://geojson.io`` since the STAC Browser offers a link to open geojson data at this URL. 
+Note that you do not need to change the ``STAC_CORS_ORIGINS`` value from the default (which accepts all origins), but
+if you have changed it please update it to include this origin as well.
+
+For example:
+
+.. code::shell
+
+  # If the STAC_CORS_ORIGINS is currently
+  export STAC_CORS_ORIGINS='http://example.com ~http:(www|other)\.api\.example\.com'
+
+  # you can update it to
+  export STAC_CORS_ORIGINS='http://example.com ~http:(www|other)\.api\.example\.com https://geojson.io'
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/stac-browser`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Canarie-API
 ===========

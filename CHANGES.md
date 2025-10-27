@@ -30,7 +30,7 @@
 
   For example:
 
-  ```
+  ```shell
   set $access_control_allow_origin http://example.com;
   include /etc/nginx/conf.d/cors.include;
   ```
@@ -50,7 +50,7 @@
 
   For example, setting the following:
   
-  ```
+  ```shell
   export STAC_CORS_ORIGINS='https://example.com ~^https?://(www\.)?other\.example\.com$' 
   ```
 
@@ -58,13 +58,11 @@
   `Access-Control-Allow-Origin header` set to their origin, but http://example.ca will not.
 
   Note that this breaks backwards compatibility slightly since previously all origins were allowed for `/stac` by
-  default. To keep the backwards compatible behaviour you can set:
+  default. To match all origins and keep the backwards compatible behaviour you can set:
 
-  ```
+  ```shell
   export STAC_CORS_ORIGINS='~.*' 
   ```
-
-  to match all origins.
 
 [2.18.7](https://github.com/bird-house/birdhouse-deploy/tree/2.18.7) (2025-10-17)
 ------------------------------------------------------------------------------------------------------------------
