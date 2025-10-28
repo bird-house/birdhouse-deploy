@@ -393,7 +393,7 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
             exit_on_error=exit_on_error,
             process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
-        print(proc.stdout)
+        print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc))[-1] == "fqdn.example.com"
 
     def test_not_allowed_simple_substitution(self, read_config_include_file, exit_on_error):
@@ -408,7 +408,7 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
             exit_on_error=exit_on_error,
             process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
         )
-        print(proc.stdout)
+        print(proc.stdout)  # useful for debugging when assert fail
         assert not split_and_strip(get_command_stdout(proc))
 
     def test_allowed_simple_override(self, read_config_include_file, exit_on_error) -> None:
