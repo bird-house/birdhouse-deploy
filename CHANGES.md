@@ -64,6 +64,40 @@
   export STAC_CORS_ORIGINS='~.*' 
   ```
 
+[2.18.8](https://github.com/bird-house/birdhouse-deploy/tree/2.18.8) (2025-10-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow configuration options to be set as environment variables
+
+  Previously configuration options must be set in the local environment file (`birdhouse/env.local` by default).
+  This change allows configuration options to be set as environment variables which would take precedence over those
+  set in the local environment file.
+
+  For example, you can now set the `BIRDHOUSE_FQDN` variable when starting the stack like so:
+
+  ```sh
+  BIRDHOUSE_FQDN=myhost.example.com bin/birdhouse compose up -d
+
+  # OR 
+
+  export BIRDHOUSE_FQDN=myhost.example.com
+  bin/birdhouse compose up -d
+  ```
+
+  This change has the following advantages:
+
+  - flexibility: the user has more options for how they can customize their deployment
+  - good dev-ops: this change further aligns birdhouse with the [12 factor app principles](https://12factor.net/), 
+                  specifically the [Config](https://12factor.net/config) principle which recommends that configuration 
+                  options be settable as environment variables.
+  - security: sensitive settings (credentials, secrets) can be set as environment variables, ensuring that they are 
+              not easily visible in the plain text local environment file.
+  - consistency: users can store non-sensitive settings in the local environment file and share that file freely without
+                 worrying that sensitive setting will be leaked.
+
+
 [2.18.7](https://github.com/bird-house/birdhouse-deploy/tree/2.18.7) (2025-10-17)
 ------------------------------------------------------------------------------------------------------------------
 
