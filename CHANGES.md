@@ -15,21 +15,22 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.18.9](https://github.com/bird-house/birdhouse-deploy/tree/2.18.9) (2025-11-10)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
-- Centralize management of docker-compose image version needed by birdhouse-compose.sh script.
+- Centralize management of `docker-compose` image version needed by `birdhouse-compose.sh` script.
 
   To simplify future version update and to easily shared by other future components.
 
   Backward compatible change:
-  * Added config variable `BIRDHOUSE_COMPOSE_IMAGE`.
-
-  Backward **incompatible** changes:
-  * Removed config variables:
-    * `SCHEDULER_JOB_AUTODEPLOY_DOCKER`
-    * `SCHEDULER_JOB_AUTODEPLOY_VERSION`
-    * `SCHEDULER_JOB_RENEW_SSL_DOCKER`
-    * `SCHEDULER_JOB_RENEW_SSL_VERSION`
+  * Added config variables
+    * `BIRDHOUSE_COMPOSE_DOCKER`
+    * `BIRDHOUSE_COMPOSE_VERSION`
+    * `BIRDHOUSE_COMPOSE_IMAGE`
 
 - Update `DOCKER_CLI_IMAGE` version.
 
@@ -40,14 +41,54 @@
 
   To ease future version update and for all jobs to be consistent.
 
-  Backward **incompatible** changes:
-  * Removed config variables:
-    * `SCHEDULER_JOB_RAVEN_DEPLOY_DATA_JOB_DOCKER`
-    * `SCHEDULER_JOB_RAVEN_DEPLOY_DATA_JOB_VERSION`
-    * `SCHEDULER_JOB_XCLIM_DEPLOY_DATA_JOB_DOCKER`
-    * `SCHEDULER_JOB_XCLIM_DEPLOY_DATA_JOB_VERSION`
-    * `SCHEDULER_JOB_NOTEBOOKDEPLOY_DOCKER`
-    * `SCHEDULER_JOB_NOTEBOOKDEPLOY_VERSION`
+  Backward compatible change:
+  * Added config variables
+    * `DOCKER_CLI_DOCKER`
+    * `DOCKER_CLI_VERSION`
+
+- scheduler-job-autodeploy: make compatible with change of `BIRDHOUSE_LOCAL_ENV` via env var and not symlink
+
+  See https://github.com/bird-house/birdhouse-deploy/pull/597#issuecomment-3428179549.
+
+## Fixes
+
+- `scheduler-job-deploy_xclim_testdata` wrongly used variables from `scheduler-job-deploy_raven_testdata`.
+
+- scheduler-jobs: fix deploy raven and xclim testdata missing logs, forgot delayed eval
+
+
+[2.18.8](https://github.com/bird-house/birdhouse-deploy/tree/2.18.8) (2025-10-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow configuration options to be set as environment variables
+
+  Previously configuration options must be set in the local environment file (`birdhouse/env.local` by default).
+  This change allows configuration options to be set as environment variables which would take precedence over those
+  set in the local environment file.
+
+  For example, you can now set the `BIRDHOUSE_FQDN` variable when starting the stack like so:
+
+  ```sh
+  BIRDHOUSE_FQDN=myhost.example.com bin/birdhouse compose up -d
+
+  # OR 
+
+  export BIRDHOUSE_FQDN=myhost.example.com
+  bin/birdhouse compose up -d
+  ```
+
+  This change has the following advantages:
+
+  - flexibility: the user has more options for how they can customize their deployment
+  - good dev-ops: this change further aligns birdhouse with the [12 factor app principles](https://12factor.net/), 
+                  specifically the [Config](https://12factor.net/config) principle which recommends that configuration 
+                  options be settable as environment variables.
+  - security: sensitive settings (credentials, secrets) can be set as environment variables, ensuring that they are 
+              not easily visible in the plain text local environment file.
+  - consistency: users can store non-sensitive settings in the local environment file and share that file freely without
+                 worrying that sensitive setting will be leaked.
 
 - GeoServer: upgrade to 2.27.2 to fix vulnerabilities
 

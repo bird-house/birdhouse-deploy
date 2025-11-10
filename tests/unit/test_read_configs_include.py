@@ -103,13 +103,14 @@ class _ReadConfigsFromEnvFile(_ReadConfigs):
         command_suffix: str = "",
         command: Optional[str] = None,
         exit_on_error: bool = True,
+        process_env: dict = {}
     ) -> subprocess.CompletedProcess:
         try:
             with tempfile.NamedTemporaryFile(delete=False, mode="w") as f:
                 set_local_env(f, local_env)
             return super().run_func(
                 include_file,
-                {"BIRDHOUSE_LOCAL_ENV": f.name},
+                {"BIRDHOUSE_LOCAL_ENV": f.name, **process_env},
                 command_suffix,
                 command,
                 exit_on_error,
@@ -118,7 +119,73 @@ class _ReadConfigsFromEnvFile(_ReadConfigs):
             os.unlink(f.name)
 
 
-class TestReadConfigs(_ReadConfigsFromEnvFile):
+class TestReadBasicConfigs(_ReadConfigsFromEnvFile):
+    command: str = "read_basic_configs_only"
+
+    def test_return_code(self, read_config_include_file, exit_on_error) -> None:
+        """Test that the return code is 0"""
+        proc = self.run_func(read_config_include_file, {}, exit_on_error=exit_on_error)
+        assert proc.returncode == 0
+
+    def test_delayed_eval_quoting(self, read_config_include_file, exit_on_error) -> None:
+        """Test that the delayed evaluation functions resolve quotation marks and braces properly"""
+        extra = {
+            "EXTRA_TEST_VAR": "\"{'123'}\"",
+            "DELAYED_EVAL": '"$DELAYED_EVAL EXTRA_TEST_VAR"',
+        }
+        proc = self.run_func(
+            read_config_include_file,
+            extra,
+            'echo "${EXTRA_TEST_VAR}"',
+            exit_on_error=exit_on_error,
+        )
+        assert split_and_strip(get_command_stdout(proc))[-1] == "{'123'}"
+
+    def test_delayed_eval_preserve_new_lines_leading_spaces(self, read_config_include_file, exit_on_error) -> None:
+        """Test that the delayed evaluation functions preserve the original formatting of the string"""
+        extra = {
+            "SAMPLE_EXTRA_DOCKER_ARGS":
+                "\"\n"
+                "    --env SOME_ENV_VAR='${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir'\n"
+                "    --volume '${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir:${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir:ro'\"",
+            "DELAYED_EVAL": '"$DELAYED_EVAL SAMPLE_EXTRA_DOCKER_ARGS"',
+        }
+        proc = self.run_func(
+            read_config_include_file,
+            extra,
+            'echo "${SAMPLE_EXTRA_DOCKER_ARGS}"',
+            exit_on_error=exit_on_error,
+        )
+        print(proc.stdout)
+        assert ("\n".join(get_command_stdout(proc).split("\n")[-4:])
+                == "\n"
+                   "    --env SOME_ENV_VAR='/data/somedir'\n"
+                   "    --volume '/data/somedir:/data/somedir:ro'\n")
+
+    def test_process_env_takes_precedence_over_default_env(self, read_config_include_file, exit_on_error) -> None:
+        proc = self.run_func(
+            read_config_include_file,
+            {}, # local env is empty so that it falls back to the default value
+            'echo "${BASH_IMAGE}"',
+            exit_on_error=exit_on_error,
+            process_env={"BASH_IMAGE": "process env"}
+        )
+        print(proc.stdout)
+        assert get_command_stdout(proc).strip() == "process env"
+
+    def test_process_env_takes_precedence_over_local_env(self, read_config_include_file, exit_on_error) -> None:
+        proc = self.run_func(
+            read_config_include_file,
+            {"BASH_IMAGE": "local env"},
+            'echo "${BASH_IMAGE}"',
+            exit_on_error=exit_on_error,
+            process_env={"BASH_IMAGE": "process env"}
+        )
+        print(proc.stdout)
+        assert get_command_stdout(proc).strip() == "process env"
+
+
+class TestReadConfigs(TestReadBasicConfigs):
     command: str = "read_configs"
 
     default_all_conf_order: list[str] = [
@@ -150,11 +217,6 @@ class TestReadConfigs(_ReadConfigsFromEnvFile):
         "./components/thredds",
         "./components/jupyterhub",
     ]
-
-    def test_return_code(self, read_config_include_file, exit_on_error) -> None:
-        """Test that the return code is 0"""
-        proc = self.run_func(read_config_include_file, {}, exit_on_error=exit_on_error)
-        assert proc.returncode == 0
 
     @pytest.mark.usefixtures("run_in_compose_dir")
     def test_all_conf_dirs_set(self, read_config_include_file, exit_on_error) -> None:
@@ -264,41 +326,6 @@ class TestReadConfigs(_ReadConfigsFromEnvFile):
             == "public.example.com - /my-data-root/jupyterhub_user_data - /my-geoserver-data"
         )
 
-    def test_delayed_eval_quoting(self, read_config_include_file, exit_on_error) -> None:
-        """Test that the delayed evaluation functions resolve quotation marks and braces properly"""
-        extra = {
-            "EXTRA_TEST_VAR": "\"{'123'}\"",
-            "DELAYED_EVAL": '"$DELAYED_EVAL EXTRA_TEST_VAR"',
-        }
-        proc = self.run_func(
-            read_config_include_file,
-            extra,
-            'echo "${EXTRA_TEST_VAR}"',
-            exit_on_error=exit_on_error,
-        )
-        assert split_and_strip(get_command_stdout(proc))[-1] == "{'123'}"
-
-    def test_delayed_eval_preserve_new_lines_leading_spaces(self, read_config_include_file, exit_on_error) -> None:
-        """Test that the delayed evaluation functions preserve the original formatting of the string"""
-        extra = {
-            "SAMPLE_EXTRA_DOCKER_ARGS":
-                "\"\n"
-                "    --env SOME_ENV_VAR='${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir'\n"
-                "    --volume '${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir:${BIRDHOUSE_DATA_PERSIST_ROOT}/somedir:ro'\"",
-            "DELAYED_EVAL": '"$DELAYED_EVAL SAMPLE_EXTRA_DOCKER_ARGS"',
-        }
-        proc = self.run_func(
-            read_config_include_file,
-            extra,
-            'echo "${SAMPLE_EXTRA_DOCKER_ARGS}"',
-            exit_on_error=exit_on_error,
-        )
-        print(proc.stdout)
-        assert ("\n".join(get_command_stdout(proc).split("\n")[-4:])
-                == "\n"
-                   "    --env SOME_ENV_VAR='/data/somedir'\n"
-                   "    --volume '/data/somedir:/data/somedir:ro'\n")
-
 
 class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
     command = "read_configs"
@@ -358,16 +385,15 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         Test that a deprecated variable can be used to set the new version if backwards compatible
         variables are allowed.
         """
-        extra = {
-            "PAVICS_FQDN": "fqdn.example.com",
-            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
-        }
+
         proc = self.run_func(
             read_config_include_file,
-            extra,
-            'echo "${BIRDHOUSE_FQDN}"',
+            local_env={"PAVICS_FQDN": "fqdn.example.com"},
+            command_suffix='echo "${BIRDHOUSE_FQDN}"',
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
+        print(proc.stdout)  # useful for debugging when assert fail
         assert split_and_strip(get_command_stdout(proc))[-1] == "fqdn.example.com"
 
     def test_not_allowed_simple_substitution(self, read_config_include_file, exit_on_error):
@@ -375,16 +401,14 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         Test that a deprecated variable cannot be used to set the new version if backwards compatible
         variables are not allowed.
         """
-        extra = {
-            "PAVICS_FQDN": "fqdn.example.com",
-            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False",
-        }
         proc = self.run_func(
             read_config_include_file,
-            extra,
-            'echo "${BIRDHOUSE_FQDN}"',
+            local_env={"PAVICS_FQDN": "fqdn.example.com"},
+            command_suffix='echo "${BIRDHOUSE_FQDN}"',
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
         )
+        print(proc.stdout)  # useful for debugging when assert fail
         assert not split_and_strip(get_command_stdout(proc))
 
     def test_allowed_simple_override(self, read_config_include_file, exit_on_error) -> None:
@@ -395,13 +419,13 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         extra = {
             "PAVICS_FQDN": "pavics.example.com",
             "BIRDHOUSE_FQDN": "birdhouse.example.com",
-            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
         }
         proc = self.run_func(
             read_config_include_file,
             extra,
             'echo "${BIRDHOUSE_FQDN}"',
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
         assert split_and_strip(get_command_stdout(proc))[-1] == "pavics.example.com"
 
@@ -413,13 +437,13 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         extra = {
             "PAVICS_FQDN": "pavics.example.com",
             "BIRDHOUSE_FQDN": "birdhouse.example.com",
-            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False",
         }
         proc = self.run_func(
             read_config_include_file,
             extra,
             'echo "${BIRDHOUSE_FQDN}"',
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
         )
         assert split_and_strip(get_command_stdout(proc))[-1] == "birdhouse.example.com"
 
@@ -431,9 +455,10 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in self.new_vars)}"'
         proc = self.run_func(
             read_config_include_file,
-            {"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True", **self.old_vars},
+            self.old_vars,
             command_suffix,
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
         expected = set()
         for k in self.new_vars:
@@ -453,9 +478,10 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         command_suffix = f'echo "{ENV_SPLIT_STR_ALT.join(f"{k}=${k}" for k in self.new_vars)}"'
         proc = self.run_func(
             read_config_include_file,
-            {"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False", **self.old_vars},
+            self.old_vars,
             command_suffix,
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
         )
         actual = [re.sub(r"[\s\n]+", " ", val.strip()) for val in get_command_stdout(proc).split(ENV_SPLIT_STR_ALT)]
         # "val" is like "NEW_VAR=" without the "new" value because it is initially unset and
@@ -471,12 +497,12 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         proc = self.run_func(
             read_config_include_file,
             {
-                "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
                 **self.old_vars,
                 **self.new_vars,
             },
             command_suffix,
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
         expected = set()
         for k in self.new_vars:
@@ -497,12 +523,12 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         proc = self.run_func(
             read_config_include_file,
             {
-                "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False",
                 **self.old_vars,
                 **self.new_vars,
             },
             command_suffix,
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
         )
         assert {re.sub(r"[\s\n]+", " ", val.strip()) for val in get_command_stdout(proc).split(ENV_SPLIT_STR_ALT)} == {
             f"{k}=new" for k in self.new_vars
@@ -515,13 +541,13 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         """
         extra = {
             "BIRDHOUSE_FQDN": "birdhouse.example.com",
-            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
         }
         proc = self.run_func(
             read_config_include_file,
             extra,
             'echo "${PAVICS_FQDN}"',
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
         assert split_and_strip(get_command_stdout(proc))[-1] == "birdhouse.example.com"
 
@@ -532,13 +558,13 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         """
         extra = {
             "BIRDHOUSE_FQDN": "birdhouse.example.com",
-            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False",
         }
         proc = self.run_func(
             read_config_include_file,
             extra,
             'echo "${PAVICS_FQDN}"',
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False"}
         )
         assert not split_and_strip(get_command_stdout(proc))
 
@@ -550,13 +576,13 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         extra = {
             "PAVICS_FQDN": "pavics.example.com",
             "BIRDHOUSE_FQDN": "birdhouse.example.com",
-            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
         }
         proc = self.run_func(
             read_config_include_file,
             extra,
             'echo "${PAVICS_FQDN}"',
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
         print(proc.stdout)
         assert split_and_strip(get_command_stdout(proc))[-1] == "pavics.example.com"
@@ -576,13 +602,13 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
 
         extra = {
             from_name: f"\"{expected}\"",
-            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
         }
         proc = self.run_func(
             read_config_include_file,
             extra,
             f'echo "${to_name}"',
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
         print(proc.stdout)
         assert "\n".join(get_command_stdout(proc).split("\n")[-4:]) == expected
@@ -608,8 +634,6 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
             # Add new var to template expansion
             OPTIONAL_VARS="$OPTIONAL_VARS
               \\$MY_NEW_VAR"
-
-            BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
             '''
 
         expected = ("\n"
@@ -620,6 +644,7 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
             env_local,
             'echo "$BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES"',
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
         print(proc.stdout)
         selected_output = "\n".join(get_command_stdout(proc).split("\n")[-4:])
@@ -630,6 +655,7 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
             env_local,
             f'echo "{template_expansion_var}"',  # '$VARS' or '$OPTIONAL_VARS'
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
         print(proc.stdout)
         vars_content = get_command_stdout(proc)
@@ -645,13 +671,13 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
         expected = "fqdn.example.com"
         extra = {
             var_name: expected,
-            "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True",
         }
         proc = self.run_func(
             read_config_include_file,
             extra,
             'echo "${PAVICS_FQDN_PUBLIC} - ${BIRDHOUSE_FQDN_PUBLIC}"',
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
         # By default, old var PAVICS_FQDN_PUBLIC is same value as old var PAVICS_FQDN.
         # New var BIRDHOUSE_FQDN_PUBLIC is same value as new var BIRDHOUSE_FQDN.
@@ -684,8 +710,6 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
           {var_name}='$DATA_PERSIST_ROOT - $ANOTHER_NEW_VAR'
 
           ANOTHER_NEW_VAR=some_val
-
-          BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED=True
           '''
 
         proc = self.run_func(
@@ -693,6 +717,7 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
             env_local,
             'echo "${CUSTOM_DELAYED_OLD_VAR} == ${CUSTOM_DELAYED_NEW_VAR}"',
             exit_on_error=exit_on_error,
+            process_env={"BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "True"}
         )
         assert split_and_strip(get_command_stdout(proc))[-1] == "/data - some_val == /data - some_val"
 
