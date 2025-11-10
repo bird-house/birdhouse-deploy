@@ -95,6 +95,7 @@ discover_env_local() {
     # autodeploy will fail.
     # Docker volume-mount will need the real dir of the file for symlink to
     # resolve inside the container.
+    # Need to be environment variable for use in template expansion.
     export BIRDHOUSE_LOCAL_ENV_REAL_PATH="$(realpath "${BIRDHOUSE_LOCAL_ENV}")"
     export BIRDHOUSE_LOCAL_ENV_REAL_DIR="$(dirname "${BIRDHOUSE_LOCAL_ENV}_REAL_PATH")"
 }
