@@ -16,6 +16,16 @@
 ------------------------------------------------------------------------------------------------------------------
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- scheduler-job-autodeploy: make compatible with change of `BIRDHOUSE_LOCAL_ENV` via env var and not symlink
+
+  See https://github.com/bird-house/birdhouse-deploy/pull/597#issuecomment-3428179549.
+
+## Fixes
+
+- scheduler-jobs: fix deploy raven and xclim testdata missing logs, forgot delayed eval
+
 
 [2.18.8](https://github.com/bird-house/birdhouse-deploy/tree/2.18.8) (2025-10-30)
 ------------------------------------------------------------------------------------------------------------------
