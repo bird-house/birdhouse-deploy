@@ -17,19 +17,15 @@
 
 ## Changes
 
-- Centralize management of docker-compose image version needed by birdhouse-compose.sh script.
+- Centralize management of `docker-compose` image version needed by `birdhouse-compose.sh` script.
 
   To simplify future version update and to easily shared by other future components.
 
   Backward compatible change:
-  * Added config variable `BIRDHOUSE_COMPOSE_IMAGE`.
-
-  Backward **incompatible** changes:
-  * Removed config variables:
-    * `SCHEDULER_JOB_AUTODEPLOY_DOCKER`
-    * `SCHEDULER_JOB_AUTODEPLOY_VERSION`
-    * `SCHEDULER_JOB_RENEW_SSL_DOCKER`
-    * `SCHEDULER_JOB_RENEW_SSL_VERSION`
+  * Added config variables
+    * `BIRDHOUSE_COMPOSE_DOCKER`
+    * `BIRDHOUSE_COMPOSE_VERSION`
+    * `BIRDHOUSE_COMPOSE_IMAGE`
 
 - Update `DOCKER_CLI_IMAGE` version.
 
@@ -40,14 +36,14 @@
 
   To ease future version update and for all jobs to be consistent.
 
-  Backward **incompatible** changes:
-  * Removed config variables:
-    * `SCHEDULER_JOB_RAVEN_DEPLOY_DATA_JOB_DOCKER`
-    * `SCHEDULER_JOB_RAVEN_DEPLOY_DATA_JOB_VERSION`
-    * `SCHEDULER_JOB_XCLIM_DEPLOY_DATA_JOB_DOCKER`
-    * `SCHEDULER_JOB_XCLIM_DEPLOY_DATA_JOB_VERSION`
-    * `SCHEDULER_JOB_NOTEBOOKDEPLOY_DOCKER`
-    * `SCHEDULER_JOB_NOTEBOOKDEPLOY_VERSION`
+  Backward compatible change:
+  * Added config variables
+    * `DOCKER_CLI_DOCKER`
+    * `DOCKER_CLI_VERSION`
+
+## Fixes
+
+- `scheduler-job-deploy_xclim_testdata` wrongly used variables from `scheduler-job-deploy_raven_testdata`.
 
 
 [2.18.8](https://github.com/bird-house/birdhouse-deploy/tree/2.18.8) (2025-10-30)
