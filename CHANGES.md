@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.18.9](https://github.com/bird-house/birdhouse-deploy/tree/2.18.9) (2025-11-10)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Centralize management of `docker-compose` image version needed by `birdhouse-compose.sh` script.
@@ -41,9 +46,15 @@
     * `DOCKER_CLI_DOCKER`
     * `DOCKER_CLI_VERSION`
 
+- scheduler-job-autodeploy: make compatible with change of `BIRDHOUSE_LOCAL_ENV` via env var and not symlink
+
+  See https://github.com/bird-house/birdhouse-deploy/pull/597#issuecomment-3428179549.
+
 ## Fixes
 
 - `scheduler-job-deploy_xclim_testdata` wrongly used variables from `scheduler-job-deploy_raven_testdata`.
+
+- scheduler-jobs: fix deploy raven and xclim testdata missing logs, forgot delayed eval
 
 
 [2.18.8](https://github.com/bird-house/birdhouse-deploy/tree/2.18.8) (2025-10-30)
