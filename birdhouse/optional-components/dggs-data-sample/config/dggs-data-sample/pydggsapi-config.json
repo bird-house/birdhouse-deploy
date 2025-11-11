@@ -1,0 +1,72 @@
+{
+  "dggrs": {
+    "1": {
+      "IGEO7": {
+        "title": "IGEO7: DGGRS ISEA7H with Z7 ID representation",
+        "description": "Hexagonal Discrete Global Grid System (DGGS) with aperture 7 composing subdivisions of 7 hexagonal cells of equal area, and Z7 hierarchical integer indexing system (https://agile-giss.copernicus.org/articles/6/32/2025/).",
+        "crs": "wgs84",
+        "shapeType": "hexagon",
+        "definition_link": "https://www.opengis.net/def/dggrs/OGC/1.0/IGEO7",
+        "defaultDepth": 0,
+        "classname": "igeo7_dggrs_provider.IGEO7Provider"
+      }
+    },
+    "2": {
+      "H3": {
+        "title": "DGGRS H3",
+        "description": "H3 hexagonal hierarchical geospatial indexing system developed by Uber (https://github.com/uber/h3, https://h3geo.org/).",
+        "crs": "wgs84",
+        "shapeType": "hexagon",
+        "definition_link": "https://www.opengis.net/def/dggrs/OGC/1.0/H3",
+        "defaultDepth": 0,
+        "classname": "h3_dggrs_provider.H3Provider"
+      }
+    }
+  },
+  "collections": {
+    "1": {
+      "manitoba": {
+        "title": "Manitoba RCM-ARD Data",
+        "description": "Data extracted from RCM-ARD rasters over Winnipeg, Manitoba, Canada, quantized to H3 cells.",
+        "extent": {
+          "spatial": {
+            "bbox": [[-99.01576428,  48.54178475, -96.70132469,  50.54067612]],
+            "crs": "http://www.opengis.net/def/crs/EPSG/0/4326"
+          },
+          "temporal": {
+            "interval": [["2025-08-31T00:00:00Z", "2025-08-31T23:59:59Z"]]
+          }
+        },
+        "collection_provider": {
+          "providerId": "h3-parquet",
+          "dggrsId": "H3",
+          "min_refinement_level": 7,
+          "max_refinement_level": 7,
+          "datasource_id": "manitoba"
+        }
+      }
+    }
+  },
+  "collection_providers": {
+    "1": {
+      "h3-parquet": {
+        "classname": "parquet_collection_provider.ParquetCollectionProvider",
+        "datasources": {
+          "manitoba": {
+            "filepath": "/data/samples/H3/L7/2025-08-31/rl/RCM2_OK3556292_PK3777138_2_SC30MCPD_20250831_123917_RL.parquet",
+            "id_col": "h3",
+            "data_cols": [
+              "resolution",
+              "center_lat",
+              "center_lon",
+              "avg_edge_len",
+              "cell_area",
+              "cell_perimeter",
+              "band_1"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+services:
+  dggs:
+    volumes:
+      # use a different location than the provided 'DGGS_DATA_DIR' to avoid conflicts or custom path resolution issues
+      - ./optional-components/dggs-data-sample/config/dggs-data-sample/data/:/data/samples/:ro
