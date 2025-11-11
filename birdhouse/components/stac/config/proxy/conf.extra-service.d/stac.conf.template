@@ -11,7 +11,6 @@
         proxy_buffering off;
         set $access_control_allow_origin $stac_origin_allowed;
         include /etc/nginx/conf.d/cors.include;
-        add_header Vary Origin;
     }
 
     # Automatically redirect to /stac/stac and exclude redirect when already using /stac 
