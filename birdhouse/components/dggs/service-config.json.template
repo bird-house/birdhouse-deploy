@@ -1,59 +1,57 @@
-[
-  {
-    "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.2.0/node_registry.schema.json#service",
-    "name": "dggs-api",
-    "version": "${DGGS_VERSION}",
-    "types": [
-      "ogcapi_dggs",
-      "data"
-    ],
-    "keywords": [
-      "service-ogcapi_dggs",
-      "Discrete Global Grid System",
-      "DGGS"
-    ],
-    "description": "An OGC-API service for Discrete Global Grid reference systems and data collections.",
-    "links": [
-      {
-        "rel": "service",
-        "type": "application/json",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${DGGS_API_PATH}/"
-      },
-      {
-        "rel": "service-desc",
-        "type": "application/json",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${DGGS_API_PATH}/"
-      },
-      {
-        "rel": "service-meta",
-        "type": "application/vnd.oci.image.index.v1+json",
-        "href": "${DGGS_IMAGE_URI}"
-      },
-      {
-        "rel": "service-doc",
-        "type": "text/html",
-        "href": "https://pydggsapi.readthedocs.io"
-      },
-      {
-        "rel": "source",
-        "type": "text/html",
-        "href": "https://github.com/LandscapeGeoinformatics/pydggsapi"
-      },
-      {
-        "rel": "cite-as",
-        "type": "text/plain",
-        "href": "https://raw.githubusercontent.com/LandscapeGeoinformatics/pydggsapi/refs/heads/main/CITATION.cff"
-      },
-      {
-        "rel": "license",
-        "type": "text/plain",
-        "href": "https://raw.githubusercontent.com/LandscapeGeoinformatics/pydggsapi/refs/heads/main/LICENSE"
-      },
-      {
-        "rel": "conformance",
-        "type": "application/json",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${DGGS_API_PATH}/conformance/"
-      }
-    ]
-  }
-]
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.3.0/node_registry.schema.json#service",
+  "name": "dggs",
+  "version": "${DGGS_VERSION}",
+  "types": [
+    "ogcapi_dggs",
+    "data"
+  ],
+  "keywords": [
+    "service-ogcapi_dggs",
+    "Discrete Global Grid System",
+    "DGGS"
+  ],
+  "description": "An OGC-API service for Discrete Global Grid reference systems and data collections.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "application/json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${DGGS_API_PATH}/"
+    },
+    {
+      "rel": "service-desc",
+      "type": "application/json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${DGGS_API_PATH}/"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${DGGS_IMAGE_URI}"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://pydggsapi.readthedocs.io"
+    },
+    {
+      "rel": "source",
+      "type": "text/html",
+      "href": "https://github.com/LandscapeGeoinformatics/pydggsapi"
+    },
+    {
+      "rel": "cite-as",
+      "type": "text/plain",
+      "href": "https://raw.githubusercontent.com/LandscapeGeoinformatics/pydggsapi/refs/heads/main/CITATION.cff"
+    },
+    {
+      "rel": "license",
+      "type": "text/plain",
+      "href": "https://raw.githubusercontent.com/LandscapeGeoinformatics/pydggsapi/refs/heads/main/LICENSE"
+    },
+    {
+      "rel": "conformance",
+      "type": "application/json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${DGGS_API_PATH}/conformance/"
+    }
+  ]
+}
