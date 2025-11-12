@@ -4,7 +4,7 @@
         set $access_control_allow_origin '*';
      }
 
-     set $vary_origin "";
+     set $vary_origin ""; # nginx will omit this header value if set to the empty string
      if ( $access_control_allow_origin != '*' ) {
         set $vary_origin Origin;
      }

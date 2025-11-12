@@ -708,9 +708,11 @@ Here is a sample search query using a the ``pystac-client`` python CLI:
     pip install pystac-client
     stac-client search $BIRDHOUSE_FQDN_PUBLIC/stac -q "variable_id=txgt_32" "scenario=ssp585"
 
-Calls to the STAC API pass through Twitcher in order to validate authorization. Unauthenticated users will have 
-read-only access to STAC API resources while members of the `stac-admin` group can create and modify 
-resources if the ``optional-components/stac-public-access`` component is enabled.
+Calls to the STAC API pass through Twitcher in order to validate authorization.
+By default, only users that belong to the ``administrator`` and ``stac-admin`` groups will have access to STAC
+endpoints. Additional access permissions can be set in ``Magpie`` as needed.
+To give unauthenticated users read-only access to STAC API resources, enable the ``optional-components/stac-public-access``
+component.
 
 How to Enable the Component
 ---------------------------

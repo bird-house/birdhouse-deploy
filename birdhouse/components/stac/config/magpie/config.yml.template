@@ -23,6 +23,11 @@ permissions:
   # all permissions must be nested under this 'stac' resource for requests and permissions to be resolved accordingly
   - service: stac
     resource: /stac
+    permission: write
+    group: stac-admin  # create a stac-admin group that can read/write to all stac endpoints
+    action: create
+  - service: stac
+    resource: /stac
     permission: read
-    group: administrator  # they already have access, just using admins to create the resource by default
+    group: stac-admin
     action: create
