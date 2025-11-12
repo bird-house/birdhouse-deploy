@@ -15,7 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Fix `bin/birdhouse configs --default` flag usage description
+
+  Previously the description made it seem like the local environment file would __not__ be read if this
+  option was specified. In fact, it's the components that won't be read.
+
+  Also rename the `--default` flag to `--basic` to reflect the function it calls (`read_basic_configs_only`)
+  but keep the old version for backwards compatibility.
 
 [2.18.9](https://github.com/bird-house/birdhouse-deploy/tree/2.18.9) (2025-11-10)
 ------------------------------------------------------------------------------------------------------------------
