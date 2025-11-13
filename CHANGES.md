@@ -15,7 +15,17 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.18.11](https://github.com/bird-house/birdhouse-deploy/tree/2.18.11) (2025-11-13)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
+
+- Update `$schema` in all `service.config.json.template` files to version 1.3.0
+
+  Version [1.3.0](https://github.com/DACCS-Climate/Marble-node-registry/releases/tag/1.3.0) replaces "keywords"
+  with "types" and allow keywords to be any string.
 
 - Fix `bin/birdhouse configs --default` flag usage description
 
