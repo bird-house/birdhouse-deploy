@@ -17,6 +17,76 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.18.11](https://github.com/bird-house/birdhouse-deploy/tree/2.18.11) (2025-11-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `$schema` in all `service.config.json.template` files to version 1.3.0
+
+  Version [1.3.0](https://github.com/DACCS-Climate/Marble-node-registry/releases/tag/1.3.0) replaces "keywords"
+  with "types" and allow keywords to be any string.
+
+- Fix `bin/birdhouse configs --default` flag usage description
+
+  Previously the description made it seem like the local environment file would __not__ be read if this
+  option was specified. In fact, it's the components that won't be read.
+
+  Also rename the `--default` flag to `--basic` to reflect the function it calls (`read_basic_configs_only`)
+  but keep the old version for backwards compatibility.
+
+[2.18.10](https://github.com/bird-house/birdhouse-deploy/tree/2.18.10) (2025-11-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow each service to specify values for `Access-Control-Allow-Origin`
+
+  Previously, if a `location` block in the `nginx` configuration for a given service included the cors helper
+  configuration (with `include /etc/nginx/conf.d/cors.include;`) then all origins were allowed by default.
+
+  This was done by setting the header `Access-Control-Allow-Origin: *` which works well but is a bit too permissive
+  since it allowed __all__ origins.
+
+  This change introduces a mechanism to specify specific additional allowed origins by setting the 
+  `$access_control_allow_origin` nginx variable in the `location` block before including the `cors.include` file.
+
+  For example:
+
+  ```shell
+  set $access_control_allow_origin http://example.com;
+  include /etc/nginx/conf.d/cors.include;
+  ```
+
+  will set the value of the `Access-Control-Allow-Origin` response header to `http://example.com`.
+
+  By default, the header value will be `*` if `$access_control_allow_origin` is not set (to maintain backwards
+  compatibility).
+
+  To specify multiple allowed origins, use a `map` directive (see the implementation for `components/stac` for an
+  example).
+
+- Set allowed CORS origins for `stac` through an environment variable
+
+  This change implements this flexibility for the `components/stac` component. By setting the `STAC_CORS_ORIGINS`
+  variable a user can specify allowed origins for responses from the `components/stac` component.
+
+  For example, setting the following:
+  
+  ```shell
+  export STAC_CORS_ORIGINS='https://example.com ~^https?://(www\.)?other\.example\.com$' 
+  ```
+
+  then requests from https://example.com and http://other.example.com will get a response with the 
+  `Access-Control-Allow-Origin header` set to their origin, but http://example.ca will not.
+
+  Note that this breaks backwards compatibility slightly since previously all origins were allowed for `/stac` by
+  default. To match all origins and keep the backwards compatible behaviour you can set:
+
+  ```shell
+  export STAC_CORS_ORIGINS='~.*' 
+  ```
+
 [2.18.9](https://github.com/bird-house/birdhouse-deploy/tree/2.18.9) (2025-11-10)
 ------------------------------------------------------------------------------------------------------------------
 

@@ -42,19 +42,20 @@ Options:
   -L, --log-level {DEBUG|INFO|WARN|ERROR}                 Set log level, default is INFO
 "
 
-CONFIGS_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] configs [-h|--help] [-d|--default] {[-p|--print-config-command] | [-c|--command command] | [--print-log-command]}"
+CONFIGS_USAGE="USAGE: $THIS_BASENAME [${THIS_BASENAME} options] configs [-h|--help] [-b|--basic] {[-p|--print-config-command] | [-c|--command command] | [--print-log-command]}"
 CONFIGS_HELP="$CONFIGS_USAGE
 
 Load or execute commands in the Birdhouse configuration environment.
 
 Options:
   -h, --help                   Print this message and exit
-  -d, --default                Only load/print a command for the default configuration settings, not those specified by the local environment file
+  -b, --basic                  Only load/print a command for the basic configuration settings, not those specified by additional components
   -p, --print-config-command   Print a command that can be used to load configuration settings as environment variables
   -c, --command string         Execute the given command after loading configuration settings
   --print-log-command          Print a command that can be used to load the 'log' function used by birdhouse
 Deprecated Options:
   -q, --quiet                  Suppress stdout when loading configuration settings for the '--command' option. [DEPRECATED: use the --quiet option directly under birdhouse instead]
+  -d, --default                Same as the --basic flag. [DEPRECATED: use the --basic flag instead]
 
 Example Usage:
 
@@ -254,12 +255,20 @@ parse_multiple_short_flags() {
 parse_configs_args() {
   case "$1" in
     -d|--default)
+      source_log
+      log WARN "DEPRECATED: the '${THIS_BASENAME} configs --default' flag is deprecated use the --basic flag instead"
+      shift
+      parse_configs_args --basic "$@"
+      ;;
+    -b|--basic)
       READ_CONFIGS_CMD=read_basic_configs_only
       shift
       parse_configs_args "$@"
       ;;
     -q|--quiet)
       CONFIGS_QUIET=True
+      source_log
+      log WARN "DEPRECATED: the '${THIS_BASENAME} configs --quiet' flag is deprecated use the '${THIS_BASENAME} --quiet' flag instead"
       shift
       parse_configs_args "$@"
       ;;
@@ -332,6 +341,16 @@ source_env() {
   if [ "$_BIRDHOUSE_ENV_ALREADY_SOURCED" != "true" ]; then
     eval "$(print_config_command no-suffix)"
     _BIRDHOUSE_ENV_ALREADY_SOURCED=true
+  fi
+}
+
+# Source the birdhouse logging environment. This will only work the first time it is
+# called so that it can be called multiple times within the same process without
+# triggering a re-read of the configuration settings every time.
+source_log() {
+  if [ "$_BIRDHOUSE_LOG_ENV_ALREADY_SOURCED" != "true" ]; then
+    eval "$(print_log_command no-suffix)"
+    _BIRDHOUSE_LOG_ENV_ALREADY_SOURCED=true
   fi
 }
 
