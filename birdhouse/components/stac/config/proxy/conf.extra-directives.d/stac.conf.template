@@ -1,0 +1,7 @@
+    map $http_origin $stac_origin_allowed {
+        # default should not be set to the empty string because the cors.include file will interpret
+        # that as "unset" and will change it to * by default. To get around this, set this to birdhouse's
+        # own origin (which has the same effect as being unset since same-origin requests are already allowed). 
+        default ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC};
+        ${STAC_ADDITIONAL_CORS_ORIGINS}
+    }
