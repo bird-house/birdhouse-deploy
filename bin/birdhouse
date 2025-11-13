@@ -260,7 +260,7 @@ parse_configs_args() {
       shift
       parse_configs_args --basic "$@"
       ;;
-    -b|--basic|-d|--default)
+    -b|--basic)
       READ_CONFIGS_CMD=read_basic_configs_only
       shift
       parse_configs_args "$@"
