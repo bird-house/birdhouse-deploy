@@ -114,7 +114,11 @@ If autodeploy scheduler job is enabled, the folder containing the `env.local` fi
 
 To follow infrastructure-as-code, it is encouraged to source control the above
 `env.local` file and any override needed to customized this Birdhouse deployment
-for your organization.  For an example of possible override, see how the `emu service <optional-components/emu/docker-compose-extra.yml>`_ (:download:`download </birdhouse/optional-components/emu/docker-compose-extra.yml>`)
+for your organization.  Note this `env.local` file might contains **sensitive**
+infos like passwords so it should be in a limitted access private source control
+repo, idealy not on the internet.
+
+For an example of possible override, see how the `emu service <optional-components/emu/docker-compose-extra.yml>`_ (:download:`download </birdhouse/optional-components/emu/docker-compose-extra.yml>`)
 (`README <optional-components/README.rst#emu-wps-service-for-testing>`_) can be optionally added to the deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_.
 Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repo.
 
