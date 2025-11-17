@@ -15,7 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Update `prometheus-log-parser` component to use version 1.1.1 of the log-parser
+
+  See changes for versions [1.1.0](https://github.com/DACCS-Climate/log-parser/releases/tag/v1.1.0) and 
+  [1.1.1](https://github.com/DACCS-Climate/log-parser/releases/tag/v1.1.1).
+
+  The most relevant changes to this project are support for parsing logs from streams (like stdout) and a
+  safer way to kill the running log-parser container.
 
 [2.18.11](https://github.com/bird-house/birdhouse-deploy/tree/2.18.11) (2025-11-13)
 ------------------------------------------------------------------------------------------------------------------
