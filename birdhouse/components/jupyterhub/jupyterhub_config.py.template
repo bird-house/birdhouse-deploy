@@ -274,10 +274,14 @@ if jupyter_idle_server_cull_timeout or jupyter_idle_kernel_cull_timeout:
 # It also makes a symlink between the kernels directory in the user space to another
 # location outside of the home directory. This is because jupyterlab is currently unable
 # to detect kernels inside the user's home directory for some reason.
+# This also removes any old server metadata files which may not be cleaned up if the container
+# exits unexpectedly. This is necessary to ensure that the healthcheck can detect the correct
+# hostname of the jupyterlab server (this changes every time a new container is created).
 _post_start_command = (
     "ln -s $HOME/.local /home/$NB_USER/.local; "
     f"mkdir -p {user_kernels_dir}; "
-    f"ln -s $HOME/.local/share/jupyter/kernels {user_kernels_dir}/kernels"
+    f"ln -s $HOME/.local/share/jupyter/kernels {user_kernels_dir}/kernels; "
+    "rm $HOME/.local/share/jupyter/runtime/jpserver-*.json"
 )
 c.DockerSpawner.post_start_cmd = f"sh -c '{_post_start_command}'"
 
