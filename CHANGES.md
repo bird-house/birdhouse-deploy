@@ -15,7 +15,34 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Add mechanism to set CPU and memory limits on Jupyterlab containers based on Magpie group
+
+  Creates a new variable `JUPYTERHUB_GROUP_LIMITS` which sets resource limits for JupyterLab containers per 
+  Magpie group.
+ 
+  The value for this variable is a whitespace delimited string. Each section is delimited by colons (:) 
+  where the first element is the name of the group and the rest are resource limits of the form 
+  `limit=amount`. For example:
+
+  ```sh
+  export JUPYTERHUB_GROUP_LIMITS="
+     group1:mem_limit=10G:cpu_limit=1
+     group2:cpu_limit=3
+  "
+  ```
+
+  Supported limits are: `mem_limit` and `cpu_limit`. See the Jupyterhub Dockerspawner documentation
+  for details and supported values.
+
+  Note that this will not create the groups in Magpie, that must be done manually.
+
+  Note that if a user belongs to multiple groups, later values in `JUPYTERHUB_GROUP_LIMITS` will take
+  precedence. For example, if a user belongs to group1 and group2 then the following limits will apply:
+
+  - mem_limit=10G
+  - cpu_limit=3 (because group2 is later in the list)
 
 [2.18.11](https://github.com/bird-house/birdhouse-deploy/tree/2.18.11) (2025-11-13)
 ------------------------------------------------------------------------------------------------------------------

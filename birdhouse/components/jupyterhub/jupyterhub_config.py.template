@@ -136,6 +136,9 @@ if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
 
 container_gdrive_settings_path = join(container_home_dir, ".jupyter/lab/user-settings/@jupyterlab/google-drive/drive.jupyterlab-settings")
 host_gdrive_settings_path = os.environ['JUPYTER_GOOGLE_DRIVE_SETTINGS']
+group_limits = {lim[0]: dict(li.split("=") for li in lim[1:] if "=" in li)
+                for limit in """${JUPYTERHUB_GROUP_LIMITS}""".strip().split() 
+                if (lim := limit.split(":"))}
 
 if len(host_gdrive_settings_path) > 0:
     c.DockerSpawner.volumes[host_gdrive_settings_path] = {
@@ -169,13 +172,29 @@ def create_dir_hook(spawner):
         subprocess.call(["chown", f"{os.environ['USER_WORKSPACE_UID']}:{os.environ['USER_WORKSPACE_GID']}",
                          workspace_user_dir])
 
-    if username == os.environ['JUPYTER_DEMO_USER']:
+
+def limit_resource_hook(spawner):
+    if spawner.user.name == os.environ['JUPYTER_DEMO_USER']:
         # Restrict resources for the public demo user
         # CPU limit, seems not honored by DockerSpawner
         spawner.cpu_limit = float(os.environ['JUPYTER_DEMO_USER_CPU_LIMIT'])
         spawner.mem_limit = os.environ['JUPYTER_DEMO_USER_MEM_LIMIT']
+    
+    user_groups = {g.name for g in spawner.user.groups}
+    for group, limits in group_limits.items():
+        if group in user_groups:
+            for limit, value in limits.items():
+                if limit == "cpu_limit":
+                    spawner.cpu_limit = float(value)
+                elif limit == "mem_limit":
+                    spawner.mem_limit = value
 
-c.Spawner.pre_spawn_hook = create_dir_hook
+
+def pre_spawn_hook(spawner):
+    create_dir_hook(spawner)
+    limit_resource_hook(spawner)
+
+c.Spawner.pre_spawn_hook = pre_spawn_hook
 
 ## Disable per-user configuration of single-user servers.
 c.Spawner.disable_user_config = True
