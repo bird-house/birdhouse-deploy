@@ -136,9 +136,9 @@ if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
 
 container_gdrive_settings_path = join(container_home_dir, ".jupyter/lab/user-settings/@jupyterlab/google-drive/drive.jupyterlab-settings")
 host_gdrive_settings_path = os.environ['JUPYTER_GOOGLE_DRIVE_SETTINGS']
-group_limits = {lim[0]: dict(li.split("=") for li in lim[1:] if "=" in li)
-                for limit in """${JUPYTERHUB_GROUP_LIMITS}""".strip().split() 
-                if (lim := limit.split(":"))}
+resource_limits = {tuple(lim[:2]): dict(li.split("=") for li in lim[2:] if "=" in li)
+                    for limit in """${JUPYTERHUB_RESOURCE_LIMITS}""".strip().split() 
+                    if (lim := limit.split(":"))}
 
 if len(host_gdrive_settings_path) > 0:
     c.DockerSpawner.volumes[host_gdrive_settings_path] = {
@@ -181,8 +181,8 @@ def limit_resource_hook(spawner):
         spawner.mem_limit = os.environ['JUPYTER_DEMO_USER_MEM_LIMIT']
     
     user_groups = {g.name for g in spawner.user.groups}
-    for group, limits in group_limits.items():
-        if group in user_groups:
+    for (name_type, name), limits in resource_limits.items():
+        if (name_type == "user" and name == spawner.user.name) or (name_type == "group" and name in user_groups):
             for limit, value in limits.items():
                 if limit == "cpu_limit":
                     spawner.cpu_limit = float(value)
