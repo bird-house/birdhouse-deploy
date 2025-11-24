@@ -136,6 +136,8 @@ if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
 
 container_gdrive_settings_path = join(container_home_dir, ".jupyter/lab/user-settings/@jupyterlab/google-drive/drive.jupyterlab-settings")
 host_gdrive_settings_path = os.environ['JUPYTER_GOOGLE_DRIVE_SETTINGS']
+
+# resource_limits: dict[tuple[Literal["user", "group"], str], dict[Literal["cpu_limit", "mem_limit"], str]]
 resource_limits = {tuple(lim[:2]): dict(li.split("=") for li in lim[2:] if "=" in li)
                     for limit in """${JUPYTERHUB_RESOURCE_LIMITS}""".strip().split() 
                     if (lim := limit.split(":"))}
