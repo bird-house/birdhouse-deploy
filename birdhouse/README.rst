@@ -106,7 +106,11 @@ This will source the ``env.local`` file, apply the appropriate variable substitu
 ".template", and run ``docker-compose`` with all the command line arguments after the ``compose`` argument.
 See `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`) for more details on what can go into the ``env.local`` file.
 
+Most variables that can be set in the local environment file (``env.local`` by default) can also be specified as environment variables when running ``bin/birdhouse`` 
+commands. Environment variables will take precedence over those specified in the ``env.local`` file.
+
 If the file `env.local` is somewhere else, symlink it here, next to `docker-compose.yml <docker-compose.yml>`_ (:download:`download </birdhouse/docker-compose.yml>`) because many scripts assume this location.
+If autodeploy scheduler job is enabled, the folder containing the `env.local` file needs to be added to `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`.
 
 To follow infrastructure-as-code, it is encouraged to source control the above
 `env.local` file and any override needed to customized this Birdhouse deployment

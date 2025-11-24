@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.2.0/node_registry.schema.json#service",
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.3.0/node_registry.schema.json#service",
   "name": "stac-browser",
   "version": "${STAC_BROWSER_VERSION}",
   "types": [
@@ -14,7 +14,7 @@
     {
       "rel": "service",
       "type": "text/html",
-      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/stac-browser/"
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${STAC_BROWSER_PATH_PREFIX}"
     },
     {
       "rel": "service-doc",

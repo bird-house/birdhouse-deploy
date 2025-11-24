@@ -33,6 +33,202 @@
 - Weaver: Modified `/ogcapi/...` redirections strategy via `WEAVER_ALT_PREFIX_PROXY_LOCATION`. 
   - Allows other OGC APIs to reuse the same prefix to provide a unified location to access them.
 
+[2.18.11](https://github.com/bird-house/birdhouse-deploy/tree/2.18.11) (2025-11-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `$schema` in all `service.config.json.template` files to version 1.3.0
+
+  Version [1.3.0](https://github.com/DACCS-Climate/Marble-node-registry/releases/tag/1.3.0) replaces "keywords"
+  with "types" and allow keywords to be any string.
+
+- Fix `bin/birdhouse configs --default` flag usage description
+
+  Previously the description made it seem like the local environment file would __not__ be read if this
+  option was specified. In fact, it's the components that won't be read.
+
+  Also rename the `--default` flag to `--basic` to reflect the function it calls (`read_basic_configs_only`)
+  but keep the old version for backwards compatibility.
+
+[2.18.10](https://github.com/bird-house/birdhouse-deploy/tree/2.18.10) (2025-11-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow each service to specify values for `Access-Control-Allow-Origin`
+
+  Previously, if a `location` block in the `nginx` configuration for a given service included the cors helper
+  configuration (with `include /etc/nginx/conf.d/cors.include;`) then all origins were allowed by default.
+
+  This was done by setting the header `Access-Control-Allow-Origin: *` which works well but is a bit too permissive
+  since it allowed __all__ origins.
+
+  This change introduces a mechanism to specify specific additional allowed origins by setting the 
+  `$access_control_allow_origin` nginx variable in the `location` block before including the `cors.include` file.
+
+  For example:
+
+  ```shell
+  set $access_control_allow_origin http://example.com;
+  include /etc/nginx/conf.d/cors.include;
+  ```
+
+  will set the value of the `Access-Control-Allow-Origin` response header to `http://example.com`.
+
+  By default, the header value will be `*` if `$access_control_allow_origin` is not set (to maintain backwards
+  compatibility).
+
+  To specify multiple allowed origins, use a `map` directive (see the implementation for `components/stac` for an
+  example).
+
+- Set allowed CORS origins for `stac` through an environment variable
+
+  This change implements this flexibility for the `components/stac` component. By setting the `STAC_CORS_ORIGINS`
+  variable a user can specify allowed origins for responses from the `components/stac` component.
+
+  For example, setting the following:
+  
+  ```shell
+  export STAC_CORS_ORIGINS='https://example.com ~^https?://(www\.)?other\.example\.com$' 
+  ```
+
+  then requests from https://example.com and http://other.example.com will get a response with the 
+  `Access-Control-Allow-Origin header` set to their origin, but http://example.ca will not.
+
+  Note that this breaks backwards compatibility slightly since previously all origins were allowed for `/stac` by
+  default. To match all origins and keep the backwards compatible behaviour you can set:
+
+  ```shell
+  export STAC_CORS_ORIGINS='~.*' 
+  ```
+
+[2.18.9](https://github.com/bird-house/birdhouse-deploy/tree/2.18.9) (2025-11-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Centralize management of `docker-compose` image version needed by `birdhouse-compose.sh` script.
+
+  To simplify future version update and to easily shared by other future components.
+
+  Backward compatible change:
+  * Added config variables
+    * `BIRDHOUSE_COMPOSE_DOCKER`
+    * `BIRDHOUSE_COMPOSE_VERSION`
+    * `BIRDHOUSE_COMPOSE_IMAGE`
+
+- Update `DOCKER_CLI_IMAGE` version.
+
+  Simply to match `BIRDHOUSE_COMPOSE_IMAGE` version.  Previous version was not
+  causing any problems.
+
+- Centralized usage of `DOCKER_CLI_IMAGE` in all scheduler jobs.
+
+  To ease future version update and for all jobs to be consistent.
+
+  Backward compatible change:
+  * Added config variables
+    * `DOCKER_CLI_DOCKER`
+    * `DOCKER_CLI_VERSION`
+
+- scheduler-job-autodeploy: make compatible with change of `BIRDHOUSE_LOCAL_ENV` via env var and not symlink
+
+  See https://github.com/bird-house/birdhouse-deploy/pull/597#issuecomment-3428179549.
+
+## Fixes
+
+- `scheduler-job-deploy_xclim_testdata` wrongly used variables from `scheduler-job-deploy_raven_testdata`.
+
+- scheduler-jobs: fix deploy raven and xclim testdata missing logs, forgot delayed eval
+
+
+[2.18.8](https://github.com/bird-house/birdhouse-deploy/tree/2.18.8) (2025-10-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow configuration options to be set as environment variables
+
+  Previously configuration options must be set in the local environment file (`birdhouse/env.local` by default).
+  This change allows configuration options to be set as environment variables which would take precedence over those
+  set in the local environment file.
+
+  For example, you can now set the `BIRDHOUSE_FQDN` variable when starting the stack like so:
+
+  ```sh
+  BIRDHOUSE_FQDN=myhost.example.com bin/birdhouse compose up -d
+
+  # OR 
+
+  export BIRDHOUSE_FQDN=myhost.example.com
+  bin/birdhouse compose up -d
+  ```
+
+  This change has the following advantages:
+
+  - flexibility: the user has more options for how they can customize their deployment
+  - good dev-ops: this change further aligns birdhouse with the [12 factor app principles](https://12factor.net/), 
+                  specifically the [Config](https://12factor.net/config) principle which recommends that configuration 
+                  options be settable as environment variables.
+  - security: sensitive settings (credentials, secrets) can be set as environment variables, ensuring that they are 
+              not easily visible in the plain text local environment file.
+  - consistency: users can store non-sensitive settings in the local environment file and share that file freely without
+                 worrying that sensitive setting will be leaked.
+
+
+[2.18.7](https://github.com/bird-house/birdhouse-deploy/tree/2.18.7) (2025-10-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Autodeploy unable to git pull the newer `env.local` file.
+
+  Previously the `env.local` file could be a symlink to a file anywhere on the
+  disk.
+
+  Now `env.local` can only be a symlink to a file under a folder listed in
+  `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`.
+
+  This is a new restriction from the newer autodeploy docker image in the
+  previous release 2.18.5 below.  We can not volume-mount both the parent dir
+  and the file at the same time and have write access.  We can only
+  volume-mount one of the two.  For read-only access, it is still okay to
+  volume-mount both.
+
+
+[2.18.6](https://github.com/bird-house/birdhouse-deploy/tree/2.18.6) (2025-10-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- STAC Browser: fix resolution against the pre-built prefix path to align with proxy configuration.
+  - Add `STAC_BROWSER_PATH_PREFIX` variable that makes the mapping more easily configurable.
+    However, changing its value requires building the corresponding docker wih the same prefix.
+    The change will not be effective "simply" by modifying the variable.
+  - Revert to `crim-ca/stac-browser:3.3.5` (rather than `crim-ca/stac-browser:3.4.0-dev`)
+    without need of the temporary patch (relates to https://github.com/radiantearth/stac-browser/pull/653).
+
+[2.18.5](https://github.com/bird-house/birdhouse-deploy/tree/2.18.5) (2025-10-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Modify Prometheus Thredds counter to record bytes instead of kb. 
+- Change longterm rule names to follow naming conventions.
+
+
+## Changes
+
+- Update autodeploy image to latest version
+
+  This makes autodeploy compatible with newer Docker engine installed on the
+  host [#246](https://github.com/bird-house/birdhouse-deploy/issues/246).
+
+  Also makes autodeploy compatible with newer docker-compose syntax version
+  [#505](https://github.com/bird-house/birdhouse-deploy/issues/505).
+
+
 [2.18.4](https://github.com/bird-house/birdhouse-deploy/tree/2.18.4) (2025-10-01)
 ------------------------------------------------------------------------------------------------------------------
 
