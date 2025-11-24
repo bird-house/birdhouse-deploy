@@ -12,6 +12,7 @@ services:
     image: ${STAC_IMAGE}
     depends_on:
       - stac-db
+      - stac-migration
     environment:
       - POSTGRES_USER=${STAC_POSTGRES_USER}
       - POSTGRES_PASS=${STAC_POSTGRES_PASSWORD}
@@ -32,25 +33,9 @@ services:
       start_period: 30s
       start_interval: 5s
 
-  stac-browser:
-    container_name: stac-browser
-    image: ${STAC_BROWSER_IMAGE}
-    environment:
-      - CATALOG_URL=${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/stac/
-      - ROOT_PATH=/stac-browser/
-    logging: *default-logging
-    restart: always
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8080"]
-      interval: 60s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
-      start_interval: 5s
-
   stac-db:
     container_name: stac-db
-    image: ghcr.io/stac-utils/pgstac:v0.6.10
+    image: ${STAC_DB_IMAGE}
     environment:
       - POSTGRES_USER=${STAC_POSTGRES_USER}
       - POSTGRES_PASSWORD=${STAC_POSTGRES_PASSWORD}
@@ -70,6 +55,25 @@ services:
       retries: 3
       start_period: 30s
       start_interval: 5s
+
+  stac-migration:
+    container_name: stac-migration
+    image: ${STAC_MIGRATION_IMAGE}
+    environment:
+      - POSTGRES_USER=${STAC_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${STAC_POSTGRES_PASSWORD}
+      - POSTGRES_DB=postgis
+      - PGUSER=${STAC_PGUSER}
+      - PGPASSWORD=${STAC_PGPASSWORD}
+      - PGHOST=stac-db
+      - PGDATABASE=postgis
+    links:
+      - stac-db
+    volumes:
+      - stac-db:/var/lib/postgresql/data
+    logging: *default-logging
+    restart: no
+    command: pypgstac migrate --debug --toversion ${STAC_DB_VERSION}
 
 volumes:
   stac-db:

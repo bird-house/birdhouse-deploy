@@ -45,15 +45,14 @@ def template_substitutions(component_paths):
     return templates
 
 
-@pytest.fixture(scope="module", params=[pytest.lazy_fixture("component_service_configs")])
-def resolved_services_config_schema(request):
+@pytest.fixture(scope="module")
+def resolved_services_config_schema(component_service_configs):
     """
     For each of the services provided by ``component_paths`` fixture, obtain the referenced ``$schema``.
 
     If variable ``DACCS_NODE_REGISTRY_BRANCH`` is defined, the referenced ``$schema`` is ignored in favor of it.
     """
-    service_config_paths = request.param
-    assert service_config_paths, "Invalid service configuration. No service config found."
+    assert component_service_configs, "Invalid service configuration. No service config found."
 
     # test override
     branch = os.environ.get("DACCS_NODE_REGISTRY_BRANCH", None)
@@ -62,11 +61,11 @@ def resolved_services_config_schema(request):
         f"/{branch or 'main'}/node_registry.schema.json#service"
     }
     if branch:
-        return [(default_schema, path) for path in service_config_paths]
+        return [(default_schema, path) for path in component_service_configs]
 
     else:
         service_config_schemas = []
-        for config_path in service_config_paths:
+        for config_path in component_service_configs:
             with open(config_path, mode="r", encoding="utf-8") as config_file:
                 config_data = json.load(config_file)
             if isinstance(config_data, dict):
@@ -87,6 +86,8 @@ def load_templated_service_config(service_config_path, template_variables):
     with open(service_config_path) as service_config_file:
         service_config_json = Template(service_config_file.read()).safe_substitute(template_variables)
         service_configs = json.loads(service_config_json)
+    if isinstance(service_configs, dict):
+        service_configs = [service_configs]
     return service_configs
 
 

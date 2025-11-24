@@ -23,16 +23,16 @@ def test_550(plex):
     for line in log.strip().splitlines():
         plex.parse_line(line.strip())
 
-    samples = list(get_samples(plex.counter.collect(), "thredds_transfer_size_kb"))
+    samples = list(get_samples(plex.counter.collect(), "thredds_transfer_size_bytes"))
     assert len(samples) == 2
 
     s1, s2 = samples
-    assert s1.value == (584 + 3684 + 584)/1024, "Total size does not match expected value"
+    assert s1.value == 584 + 3684 + 584, "Total size does not match expected value"
     assert s1.labels["dataset"] == "birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc"
     assert s1.labels["tds_service"] == "dodsC", "Service type does not match expected value"
     assert s1.labels["variable"] == ""
 
-    assert s2.value == 15027 / 1024
+    assert s2.value == 15027
     assert s2.labels["variable"] == "time,time_bnds,plev,lat,lat_bnds,lon,lon_bnds"
 
 
@@ -43,7 +43,7 @@ def test_dodsC(plex):
     for line in log.strip().splitlines():
         plex.parse_line(line.strip())
 
-    samples = get_samples(plex.counter.collect(), "thredds_transfer_size_kb")
+    samples = get_samples(plex.counter.collect(), "thredds_transfer_size_bytes")
     s = next(samples)
 
     assert s.labels["tds_service"] == "dodsC"
@@ -60,7 +60,7 @@ def test_wcs(plex):
     for line in log.strip().splitlines():
         plex.parse_line(line.strip())
 
-    s = next(get_samples(plex.counter.collect(), "thredds_transfer_size_kb"))
+    s = next(get_samples(plex.counter.collect(), "thredds_transfer_size_bytes"))
 
     assert s.labels["tds_service"] == "wcs"
     assert s.labels["dataset"] == "birdhouse/disk2/ouranos/CORDEX/CMIP6/DD/NAM-12/OURANOS/MPI-ESM1-2-LR/historical/r1i1p1f1/CRCM5/v1-r1/1hr/vas/v20231129/vas_NAM-12_MPI-ESM1-2-LR_historical_r1i1p1f1_OURANOS_CRCM5_v1-r1_1hr_198601010000-198612312300.nc"
@@ -73,7 +73,7 @@ def test_fileserver(plex):
     for line in log.strip().splitlines():
         plex.parse_line(line.strip())
 
-    s = next(get_samples(plex.counter.collect(), "thredds_transfer_size_kb"))
+    s = next(get_samples(plex.counter.collect(), "thredds_transfer_size_bytes"))
 
     assert s.labels["tds_service"] == "fileServer"
     assert s.labels["dataset"] == "birdhouse/disk2/ouranos/CORDEX/CMIP6/DD/NAM-12/OURANOS/MPI-ESM1-2-LR/ssp370/r2i1p1f1/CRCM5/v1-r1/1hr/tas/v20250325/tas_NAM-12_MPI-ESM1-2-LR_ssp370_r2i1p1f1_OURANOS_CRCM5_v1-r1_1hr_206101010000-206112312300.nc"
@@ -88,7 +88,7 @@ def test_ncss(plex):
     for line in log.strip().splitlines():
         plex.parse_line(line.strip())
 
-    samples = get_samples(plex.counter.collect(), "thredds_transfer_size_kb")
+    samples = get_samples(plex.counter.collect(), "thredds_transfer_size_bytes")
 
     s = next(samples)
     assert s.labels["tds_service"] == "ncss/point"

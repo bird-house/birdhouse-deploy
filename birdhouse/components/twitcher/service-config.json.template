@@ -1,0 +1,57 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.3.0/node_registry.schema.json#service",
+  "name": "twitcher",
+  "version": "${TWITCHER_RELEASE}",
+  "types": [
+    "auth",
+    "management"
+  ],
+  "keywords": [
+    "other"
+  ],
+  "description": "Authorization and Policy Enforcement Point of platform services.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "application/json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://twitcher.readthedocs.io/"
+    },
+    {
+      "rel": "service-desc",
+      "type": "application/json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/info"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/__api__"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "href": "https://github.com/bird-house/twitcher",
+      "title": "Twitcher Code Repository"
+    },
+    {
+      "rel": "license",
+      "type": "text/plain",
+      "href": "https://raw.githubusercontent.com/bird-house/twitcher/refs/heads/master/LICENSE.txt"
+    },
+    {
+      "rel": "author",
+      "type": "text/plain",
+      "href": "https://raw.githubusercontent.com/bird-house/twitcher/refs/heads/master/AUTHORS.rst"
+    },
+    {
+      "rel": "version-history",
+      "type": "text/html",
+      "href": "https://github.com/bird-house/twitcher/blob/master/CHANGES.rst",
+      "title": "Twitcher Change Log"
+    }
+  ]
+}
