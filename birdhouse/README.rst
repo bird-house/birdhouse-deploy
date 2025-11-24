@@ -350,6 +350,21 @@ not able to access protected URLs:
   not be fully functional when self-signed certificates are enabled. For example, accessing other components through
   the JupyterLab interface may fail with an ``SSLError``.
 
+Docker rootless configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are using `Docker Rootless Mode <https://docs.docker.com/engine/security/rootless/>`_ on your machine,
+you might need to execute the following command to allow the `proxy` (Nginx) service to connect to the relevant
+HTTP ports.
+
+.. code-block:: shell
+    sudo sysctl -w net.ipv4.ip_unprivileged_port_start=80
+
+This could be required when encountering errors such as the following when invoking ``birdhouse compose up -d``.
+
+.. code-block:: text
+    Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint proxy
+
 Framework tests
 ---------------
 
@@ -364,7 +379,7 @@ To run the tests:
 
 Some tests require internet access (to access JSON schemas used to validate
 JSON structure). If you need to run tests offline, you can skip the tests that
-require internet access by using the `-k 'not online'` pytest option.
+require internet access by using the ``-k 'not online'`` pytest option.
 
 
 Tagging policy
