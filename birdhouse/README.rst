@@ -354,13 +354,21 @@ Docker rootless configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you are using `Docker Rootless Mode <https://docs.docker.com/engine/security/rootless/>`_ on your machine,
-you might need to execute the following command to allow the `proxy` (Nginx) service to connect to the relevant
+you *might* need to execute one of the following commands to allow the `proxy` (Nginx) service to connect to the relevant
 HTTP ports.
+
+.. code-block:: shell
+    sudo setcap cap_net_bind_service=ep $(which rootlesskit)
 
 .. code-block:: shell
     sudo sysctl -w net.ipv4.ip_unprivileged_port_start=80
 
-This could be required when encountering errors such as the following when invoking ``birdhouse compose up -d``.
+.. warning::
+    Using the ``sysctl`` call grants access to any user able to interact with the machine's IP which could cause security concerns,
+    whereas the ``setcap`` call only grants access to the port by the Docker rootless executable. Developers are free to chose the
+    approach that best suit their use case.
+
+Notably, this could be required when encountering errors such as the following when invoking ``bin/birdhouse compose up -d``.
 
 .. code-block:: text
     Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint proxy
