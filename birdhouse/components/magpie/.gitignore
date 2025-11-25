@@ -5,6 +5,7 @@ postgres-credentials.env
 docker-entrypoint-initdb.d/create-db.sql
 config/proxy/conf.extra-service.d/magpie.conf
 config/canarie-api/canarie_api_monitoring.py
+service-config.json
 
 # Old paths. Keep these so that old config files remain uncommittable after updates.
 magpie_canarie_api_monitoring.py

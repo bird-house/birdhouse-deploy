@@ -1,43 +1,41 @@
-[
-  {
-    "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.2.0/node_registry.schema.json#service",
-    "name": "thredds",
-    "version": "${THREDDS_VERSION}",
-    "types": [
-      "data",
-      "catalog"
-    ],
-    "keywords": [
-      "data",
-      "catalog"
-    ],
-    "description": "A server that provides catalog, metadata, and data access services for scientific data.",
-    "links": [
-      {
-        "rel": "service",
-        "type": "text/html",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds/"
-      },
-      {
-        "rel": "service-doc",
-        "type": "text/html",
-        "href": "https://www.unidata.ucar.edu/software/tds/"
-      },
-      {
-        "rel": "service-desc",
-        "type": "text/xml",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds/catalog.xml"
-      },
-      {
-        "rel": "service-meta",
-        "type": "application/vnd.oci.image.index.v1+json",
-        "href": "${THREDDS_IMAGE_URI}"
-      },
-      {
-        "rel": "about",
-        "type": "text/html",
-        "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds/info/serverInfo.html"
-      }
-    ]
-  }
-]
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.3.0/node_registry.schema.json#service",
+  "name": "thredds",
+  "version": "${THREDDS_VERSION}",
+  "types": [
+    "data",
+    "catalog"
+  ],
+  "keywords": [
+    "data",
+    "catalog"
+  ],
+  "description": "A server that provides catalog, metadata, and data access services for scientific data.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds/"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://www.unidata.ucar.edu/software/tds/"
+    },
+    {
+      "rel": "service-desc",
+      "type": "text/xml",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds/catalog.xml"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${THREDDS_IMAGE_URI}"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/thredds/info/serverInfo.html"
+    }
+  ]
+}

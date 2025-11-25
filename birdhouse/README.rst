@@ -106,7 +106,11 @@ This will source the ``env.local`` file, apply the appropriate variable substitu
 ".template", and run ``docker-compose`` with all the command line arguments after the ``compose`` argument.
 See `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`) for more details on what can go into the ``env.local`` file.
 
+Most variables that can be set in the local environment file (``env.local`` by default) can also be specified as environment variables when running ``bin/birdhouse`` 
+commands. Environment variables will take precedence over those specified in the ``env.local`` file.
+
 If the file `env.local` is somewhere else, symlink it here, next to `docker-compose.yml <docker-compose.yml>`_ (:download:`download </birdhouse/docker-compose.yml>`) because many scripts assume this location.
+If autodeploy scheduler job is enabled, the folder containing the `env.local` file needs to be added to `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`.
 
 To follow infrastructure-as-code, it is encouraged to source control the above
 `env.local` file and any override needed to customized this Birdhouse deployment
@@ -150,7 +154,6 @@ To launch all the containers, use the following command:
 If you get a ``'No applicable error code, please check error log'`` error from the WPS processes, please make sure that the WPS databases exists in the
 postgres instance. See `create-wps-pgsql-databases.sh <scripts/create-wps-pgsql-databases.sh>`_ (:download:`download </birdhouse/scripts/create-wps-pgsql-databases.sh>`).
 
-
 Production deployment hardware recommendations
 ----------------------------------------------
 
@@ -162,7 +165,6 @@ Disk: at least 100 TB, depending how much data is hosted on Thredds and Geoserve
 
 In general, the more users, the more cpu cores and memory needed.  The more data, more memory and bigger and faster disks needed.
 
-
 Note about WPS request timeout
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -173,7 +175,6 @@ Note about WPS request timeout
   Default value ``PROXY_READ_TIMEOUT_VALUE`` in `default.env`_ (:download:`download <birdhouse/default.env>`).
 
   Overrideable in ``env.local`` file, as usual for all values in ``default.env`` file.
-
 
 Manual steps post deployment
 ----------------------------
@@ -235,7 +236,6 @@ The canarie monitoring link
 ``https://<BIRDHOUSE_FQDN>/canarie/node/service/stats`` can be used to confirm the
 instance is ready to run the automated end-to-end test suite.  That link should
 return the HTTP response code ``200``.
-
 
 Vagrant instructions
 --------------------
@@ -373,22 +373,83 @@ Notably, this could be required when encountering errors such as the following w
 .. code-block:: text
     Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint proxy
 
-Framework tests
----------------
+Development and testing
+-----------------------
 
-Core features of the platform has tests to prevent regressions.
+To set up a development environment, we recommend using an Anaconda environment.
+
+The repository contains an `environment-dev.yml` file for conda that lists dependencies needed to run the development
+environment (including `bump-my-version` for version management and `pip-tools` for managing Python dependencies).
+This file will install the libraries listed in the `tests/requirements.txt` file that are needed to run the tests.
+
+In order to set up the development environment, run the following commands:
+
+.. code-block:: shell
+
+    # Create a conda environment named 'birdhouse-dev'
+    conda env create -f environment-dev.yml
+
+    # Activate the conda environment
+    conda activate birdhouse-dev
+
+Framework tests
+^^^^^^^^^^^^^^^
+
+Core features of the platform include tests to prevent regressions.
 
 To run the tests:
 
 .. code-block:: shell
 
-    python3 -m pip install -r tests/requirements.txt
     pytest tests/
 
 Some tests require internet access (to access JSON schemas used to validate
 JSON structure). If you need to run tests offline, you can skip the tests that
 require internet access by using the ``-k 'not online'`` pytest option.
 
+Alternatively, testing-related targets are available via the `Makefile <../Makefile>`_:
+
+.. code-block:: shell
+
+    # Install the test requirements
+    make install-tests
+
+    # run all tests
+    make test-all
+
+    # run unit tests only
+    make test-unit
+
+    # run integration tests only
+    make test-integration
+
+    # run tests with minimal requirements stack
+    make test-minimal
+
+    # run tests with online requirements stack
+    make test-online
+
+Housekeeping
+^^^^^^^^^^^^
+
+The testing requirements (`requirements.txt`) are managed by Dependabot, which will automatically create pull requests
+to update the dependencies in the `requirements.in` file and regenerate `requirements.txt` based on it.  This ensures
+that the dependencies are kept up to date and that the tests can be run with the latest versions of the dependencies.
+
+Periodically, we may want to modify `requirements.txt` between scheduled updates.  These dependencies are controlled
+from `requirements.in` pins and then generated with `pip-compile` to provide all packages with their commit hashes
+(via `pip-tools`).  This allows us to have a reproducible set of dependencies that can be used to run the tests
+locally and on CI.
+
+After updating the dependency pins found in `requirements.in`, you can run the following command:
+
+.. code-block:: shell
+
+    # Update the dependencies in requirements.txt
+    pip-compile --generate-hashes --output-file=tests/requirements.txt tests/requirements.in
+
+Note that the version of Python used to run the `pip-compile` command should match the minimum supported version
+of Python used in the Birdhouse stack!
 
 Tagging policy
 --------------
@@ -400,7 +461,6 @@ with different versions and we want to track which combination of versions works
 together.  So we need a slight modification to the definition of the standard.
 
 Given a version number MAJOR.MINOR.PATCH, increment the:
-
 
 #. MAJOR version when the API or user facing UI changes that requires
    significant documentation update and/or re-training of the users.  Also
@@ -416,15 +476,14 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
    existing components and the change is a minor change for the existing
    component.
 
-
 To help properly update versions in all files that could reference to the latest tag,
-the `bump2version <https://github.com/c4urself/bump2version>`_ utility is employed.
+the `bump-my-version <https://github.com/callowayproject/bump-my-version>`_ utility is employed.
 Running this tool will modify versions in files referencing to the latest revision
-(as defined in `.bumpversion.cfg`_) and apply change logs
+(as defined in `.bumpversion.toml`_) and apply change logs
 updates by moving ``Unreleased`` items under a new version matching the new version.
 
 In order to handle auto-update of the ``releaseTime`` value simultaneously to the
-generated release version, the ``bump2version`` call is wrapped in `Makefile <../Makefile>`_.
+generated release version, the ``bump-my-version`` call is wrapped in `Makefile <../Makefile>`_.
 
 One of the following commands should be used to generate a new version.
 
@@ -434,7 +493,7 @@ One of the following commands should be used to generate a new version.
     make VERSION="<MAJOR>.<MINOR>.<PATCH>" bump
 
     # bump the next semantic version automatically
-    make bump (major|minor|patch)
+    make bump (major | minor | patch)
 
     # test result without applying it
     make VERSION="<MAJOR>.<MINOR>.<PATCH>" bump dry
@@ -449,9 +508,8 @@ using the following command.
 
 Once the version as been bumped and the PR is merged, a corresponding version tag should be added
 to the commit generated by the merge. This step is intentionally manual instead of leaving it up
-to ``bump2version`` to auto-generate the tag in other to apply it directly on ``master`` branch
+to ``bump-my-version`` to auto-generate the tag in other to apply it directly on ``master`` branch
 (onto the merge commit itself), instead of onto the commits in the PR prior merging.
-
 
 Release Procedure
 -----------------
@@ -687,5 +745,5 @@ the backup and restore jobs.
 
 .. _nginx.conf: ./components/proxy/nginx.conf
 .. _default.env: ./default.env
-.. _`.bumpversion.cfg`: ../.bumpversion.cfg
+.. _`.bumpversion.toml`: ../.bumpversion.toml
 .. _CHANGES.md: ../CHANGES.md

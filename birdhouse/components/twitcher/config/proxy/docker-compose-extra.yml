@@ -1,4 +1,5 @@
 services:
   proxy:
     volumes:
-    - ./components/twitcher/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/twitcher:ro
+      - ./components/twitcher/service-config.json:/static/services/twitcher.json:ro
+      - ./components/twitcher/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/twitcher:ro

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.3.0/node_registry.schema.json#service",
+  "name": "magpie",
+  "version": "${MAGPIE_VERSION}",
+  "types": [
+    "auth",
+    "management"
+  ],
+  "keywords": [
+    "other"
+  ],
+  "description": "Authentication and Resource Management Service of Users, Groups and Access Control of other services.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/magpie/?f=html"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://pavics-magpie.readthedocs.io/"
+    },
+    {
+      "rel": "service-desc",
+      "type": "application/json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/magpie/json"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${MAGPIE_IMAGE_URI}"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "href": "https://github.com/Ouranosinc/Magpie",
+      "title": "Magpie Code Repository"
+    },
+    {
+      "rel": "license",
+      "type": "text/plain",
+      "href": "https://raw.githubusercontent.com/Ouranosinc/Magpie/refs/heads/master/LICENSE"
+    },
+    {
+      "rel": "author",
+      "type": "text/plain",
+      "href": "https://raw.githubusercontent.com/Ouranosinc/Magpie/refs/heads/master/AUTHORS.rst"
+    },
+    {
+      "rel": "version-history",
+      "type": "text/html",
+      "href": "https://github.com/Ouranosinc/Magpie/blob/master/CHANGES.rst",
+      "title": "Magpie Change Log"
+    }
+  ]
+}
