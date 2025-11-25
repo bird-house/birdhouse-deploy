@@ -365,8 +365,8 @@ HTTP ports.
 
 .. warning::
     Using the ``sysctl`` call grants access to any user able to interact with the machine's IP which could cause security concerns,
-    whereas the ``setcap`` call only grants access to the port by the Docker rootless executable. Developers are free to chose the
-    approach that best suit their use case.
+    whereas the ``setcap`` call only grants access to the port by the Docker rootless executable. Developers are free to choose the
+    approach that best suits their use case.
 
 Notably, this could be required when encountering errors such as the following when invoking ``bin/birdhouse compose up -d``.
 
