@@ -7,6 +7,7 @@
     --volume /var/run/docker.sock:/var/run/docker.sock:ro
     --volume ${BIRDHOUSE_LOG_DIR}:${BIRDHOUSE_LOG_DIR}:rw
     --volume ${COMPOSE_DIR}/..:${COMPOSE_DIR}/..:rw
+    --volume ${BIRDHOUSE_LOCAL_ENV_REAL_PATH}:${BIRDHOUSE_LOCAL_ENV_REAL_PATH}:rw
     --volume ${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}:ro
     --volume ${BIRDHOUSE_SSL_CERTIFICATE}:${BIRDHOUSE_SSL_CERTIFICATE}:ro
     --env COMPOSE_DIR=${COMPOSE_DIR}
