@@ -726,6 +726,9 @@ STAC Browser
 
 STAC Browser is a web UI used to interact with the STAC API.
 
+Usage
+-----
+
 The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API
 exposed by the current ``components/stac`` service. 
 Once this component is enabled, the STAC browser will be available
