@@ -33,6 +33,15 @@
 - Weaver: Modified `/ogcapi/...` redirections strategy via `WEAVER_ALT_PREFIX_PROXY_LOCATION`. 
   - Allows other OGC APIs to reuse the same prefix to provide a unified location to access them.
 
+- Proxy: Allow `Access-Control-Allow-Origin` header to be configured using `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable.
+  - The `cors.include` file is converted to a `cors.include.template` file to allow variable expansion.
+  - The default `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN="*"` is used to retain the previous behaviour.
+  - The `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable can reference other variables to allow dynamic configuration
+    (notably, to reference `BIRDHOUSE_FQDN_PUBLIC` for same-origin allowance).
+  - Align the documentation with corresponding `STAC_CORS_ORIGINS` header implications.
+  - Avoids Nginx warnings flagged from using uninitialized `access_control_allow_origin` variable
+    (fixes https://github.com/bird-house/birdhouse-deploy/issues/610).
+
 [2.18.11](https://github.com/bird-house/birdhouse-deploy/tree/2.18.11) (2025-11-13)
 ------------------------------------------------------------------------------------------------------------------
 

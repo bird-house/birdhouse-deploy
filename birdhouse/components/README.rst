@@ -724,21 +724,23 @@ How to Enable the Component
 STAC Browser
 ============
 
-STAC Browser is a web UI used to interact with the STAC API. 
+STAC Browser is a web UI used to interact with the STAC API.
 
-The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API 
+The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API
 exposed by the current ``components/stac`` service. 
-Once this component is enabled, the STAC browser will be available at the ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` 
-endpoint
+Once this component is enabled, the STAC browser will be available
+at the ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` endpoint.
 
-If your STAC API contains geojson data, it is recommended to set the ``STAC_CORS_ORIGINS`` value to accept the origin
-``https://geojson.io`` since the STAC Browser offers a link to open geojson data at this URL. 
+If your STAC API contains GeoJSON data, it is recommended to set the ``STAC_CORS_ORIGINS`` value to accept the origin
+``https://geojson.io`` since the STAC Browser offers a link to open GeoJSON data at this URL.
 Note that you do not need to change the ``STAC_CORS_ORIGINS`` value from the default (which accepts all origins), but
 if you have changed it please update it to include this origin as well.
+If using ``BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN`` overrides, it is also recommended to reference its value within
+``STAC_CORS_ORIGINS`` to ensure consistency across the stack.
 
 For example:
 
-.. code::shell
+.. code-block:: shell
 
   # If the STAC_CORS_ORIGINS is currently
   export STAC_CORS_ORIGINS='http://example.com ~http:(www|other)\.api\.example\.com'
