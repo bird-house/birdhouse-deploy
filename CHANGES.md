@@ -80,6 +80,11 @@
   Autodeploy is missing the `chown` step to the good code owner because it does
   not "see" the value of that variable.
 
+- Missing default value for `BIRDHOUSE_HTTP_ONLY` causing inconsistent behavior
+  when the var is used in `env.local` then removed from `env.local`.  The
+  behavior never revert back as if it has never been initially used in
+  `env.local`.  See (discussion)[https://github.com/bird-house/birdhouse-deploy/pull/600#issuecomment-3528058708].
+
 
 [2.18.12](https://github.com/bird-house/birdhouse-deploy/tree/2.18.12) (2025-11-25)
 ------------------------------------------------------------------------------------------------------------------
