@@ -15,7 +15,111 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- README: remind the user to source control `env.local` securely as it may contains passwords.
+
+## Fixes
+
+- Autodeploy broken due to new config variable precedence order.
+
+  Broken since `2.18.8`.
+
+  Example breakage scenario:
+
+  Autodeploy starts and calls `read_configs`, then git pull a newer
+  version of `env.local` (which might modify `EXTRA_CONF_DIRS` to enable
+  new components for example).  But since the new var precedence locked
+  all the values to the first call of `read_configs`, the new change to
+  `EXTRA_CONF_DIRS` (or any vars in `env.local`) never went into
+  effect at the end of the autodeploy process when we start the full
+  stack.
+
+  This is because `read_configs` returns all variables as environment
+  variables and the new variable precedence order gives environment
+  variables precedence higher than the values in `env.local`.  So after
+  the first call to `read_configs` (or `read_basic_configs_only`), all the
+  values are "locked" for all child processes even if they try to call
+  `read_configs` again to get the newest values from `env.local`.
+
+  The fix is to avoid getting these config variables as environment
+  variables which will avoid "locking" their values for child processes.
+
+- Autodeploy broken due to attempt to be compat with changing the location of `env.local` via `BIRDHOUSE_LOCAL_ENV`.
+
+  Broken since `2.18.9`.
+
+  It was working for the first run of autodeploy but on the next run, the value of
+  `BIRDHOUSE_LOCAL_ENV` in `optional-components/scheduler-job-autodeploy/config.yml`
+  is wrong !
+
+  Good value in first run:
+
+  `--volume /real/path/to/env.local:/tmp/birdhouse-local-env`
+
+  Bad value in subsequent run:
+
+  `--volume /tmp/birdhouse-local-env:/tmp/birdhouse-local-env`
+
+  This is because we override `--env BIRDHOUSE_LOCAL_ENV=/tmp/birdhouse-local-env` in
+  `optional-components/scheduler-job-autodeploy/config.yml.template` as env var so on
+  the subsequent runs the bad value persists because it is an env var.
+
+  This `BIRDHOUSE_LOCAL_ENV` is meant to be set "outside" the stack as env var
+  so there is nothing in the stack that will fix this value if it is bad.
+
+  The fix is to revert that attempt.  So autodeploy only supports changing the
+  location of `env.local` via symlink only, for the moment.
+
+- One feature of autodeploy is broken due to a missing mapping in back-compat config var name change.
+
+  Broken since `2.4.0` but only if back-compat var name mode is required.
+
+  The `AUTODEPLOY_CODE_OWNERSHIP` old name mapping is missing in `BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`.
+
+  Autodeploy is missing the `chown` step to the good code owner because it does
+  not "see" the value of that variable.
+
+- Missing default value for `BIRDHOUSE_HTTP_ONLY` causing inconsistent behavior
+  when the var is used in `env.local` then removed from `env.local`.  The
+  behavior never revert back as if it has never been initially used in
+  `env.local`.  See (discussion)[https://github.com/bird-house/birdhouse-deploy/pull/600#issuecomment-3528058708].
+
+
+[2.18.12](https://github.com/bird-house/birdhouse-deploy/tree/2.18.12) (2025-11-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add mechanism to set CPU and memory limits on Jupyterlab containers based on Magpie user or group name
+
+  Creates a new variable `JUPYTERHUB_RESOURCE_LIMITS` which sets resource limits for JupyterLab containers per 
+  Magpie user or group.
+ 
+  The value for this variable is a whitespace delimited string. Each section is delimited by colons (:) 
+  where the first element is either `group` or `user` and the second element is the name of the user or group
+  to apply the limits to. The rest are resource limits of the form `limit=amount`. For example:
+
+  ```sh
+  export JUPYTERHUB_RESOURCE_LIMITS="
+     user:user1:mem_limit=30G
+     group:group1:mem_limit=10G:cpu_limit=1
+     group:group2:cpu_limit=3
+  "
+  ```
+
+  Supported limits are: 
+  [mem_limit](https://jupyterhub-dockerspawner.readthedocs.io/en/latest/api/index.html#dockerspawner.DockerSpawner.mem_limit) 
+  and [cpu_limit](https://jupyterhub-dockerspawner.readthedocs.io/en/latest/api/index.html#dockerspawner.DockerSpawner.cpu_limit). 
+
+  Note that this will not create the groups in Magpie, that must be done by some other means (through configuration files or the
+  Magpie API or UI).
+
+  Note that if a user belongs to multiple groups, later values in `JUPYTERHUB_RESOURCE_LIMITS` will take
+  precedence. For example, if a user named user1 belongs to group1 and group2 then the following limits will apply:
+
+  - mem_limit=10G (because group1 is later in the list)
+  - cpu_limit=3 (because group2 is later in the list)
 
 [2.18.11](https://github.com/bird-house/birdhouse-deploy/tree/2.18.11) (2025-11-13)
 ------------------------------------------------------------------------------------------------------------------
