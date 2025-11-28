@@ -23,7 +23,7 @@
 
 - Autodeploy broken due to new config variable precedence order.
 
-  Broken since `2.18.8`.
+  Broken since `2.18.8` (https://github.com/bird-house/birdhouse-deploy/pull/600).
 
   Example breakage scenario:
 
@@ -47,7 +47,7 @@
 
 - Autodeploy broken due to attempt to be compat with changing the location of `env.local` via `BIRDHOUSE_LOCAL_ENV`.
 
-  Broken since `2.18.9`.
+  Broken since `2.18.9` (https://github.com/bird-house/birdhouse-deploy/pull/601).
 
   It was working for the first run of autodeploy but on the next run, the value of
   `BIRDHOUSE_LOCAL_ENV` in `optional-components/scheduler-job-autodeploy/config.yml`
