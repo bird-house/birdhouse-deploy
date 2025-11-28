@@ -23,7 +23,7 @@
 
 - Autodeploy broken due to new config variable precedence order.
 
-  Broken since `2.18.8`.
+  Broken since `2.18.8` (https://github.com/bird-house/birdhouse-deploy/pull/600).
 
   Example breakage scenario:
 
@@ -47,7 +47,7 @@
 
 - Autodeploy broken due to attempt to be compat with changing the location of `env.local` via `BIRDHOUSE_LOCAL_ENV`.
 
-  Broken since `2.18.9`.
+  Broken since `2.18.9` (https://github.com/bird-house/birdhouse-deploy/pull/601).
 
   It was working for the first run of autodeploy but on the next run, the value of
   `BIRDHOUSE_LOCAL_ENV` in `optional-components/scheduler-job-autodeploy/config.yml`
@@ -69,7 +69,10 @@
   so there is nothing in the stack that will fix this value if it is bad.
 
   The fix is to revert that attempt.  So autodeploy only supports changing the
-  location of `env.local` via symlink only, for the moment.
+  location of `env.local` via symlink, or by manually adding the folder
+  containing the file `env.local` to `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS` if
+  `env.local` is set by `BIRDHOUSE_LOCAL_ENV` environment variable and not via
+  symlink.
 
 - One feature of autodeploy is broken due to a missing mapping in back-compat config var name change.
 
@@ -78,12 +81,13 @@
   The `AUTODEPLOY_CODE_OWNERSHIP` old name mapping is missing in `BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`.
 
   Autodeploy is missing the `chown` step to the good code owner because it does
-  not "see" the value of that variable.
+  not "see" the value of the old variable name since the mapping to the new
+  variable name is missing.
 
 - Missing default value for `BIRDHOUSE_HTTP_ONLY` causing inconsistent behavior
   when the var is used in `env.local` then removed from `env.local`.  The
   behavior never revert back as if it has never been initially used in
-  `env.local`.  See (discussion)[https://github.com/bird-house/birdhouse-deploy/pull/600#issuecomment-3528058708].
+  `env.local`.  See [discussion](https://github.com/bird-house/birdhouse-deploy/pull/600#issuecomment-3528058708).
 
 
 [2.18.12](https://github.com/bird-house/birdhouse-deploy/tree/2.18.12) (2025-11-25)
