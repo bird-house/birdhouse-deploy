@@ -17,6 +17,126 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.18.15](https://github.com/bird-house/birdhouse-deploy/tree/2.18.15) (2025-12-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- README: remind the user to source control `env.local` securely as it may contains passwords.
+
+## Fixes
+
+- Autodeploy broken due to new config variable precedence order.
+
+  Broken since `2.18.8` (https://github.com/bird-house/birdhouse-deploy/pull/600).
+
+  Example breakage scenario:
+
+  Autodeploy starts and calls `read_configs`, then git pull a newer
+  version of `env.local` (which might modify `EXTRA_CONF_DIRS` to enable
+  new components for example).  But since the new var precedence locked
+  all the values to the first call of `read_configs`, the new change to
+  `EXTRA_CONF_DIRS` (or any vars in `env.local`) never went into
+  effect at the end of the autodeploy process when we start the full
+  stack.
+
+  This is because `read_configs` returns all variables as environment
+  variables and the new variable precedence order gives environment
+  variables precedence higher than the values in `env.local`.  So after
+  the first call to `read_configs` (or `read_basic_configs_only`), all the
+  values are "locked" for all child processes even if they try to call
+  `read_configs` again to get the newest values from `env.local`.
+
+  The fix is to avoid getting these config variables as environment
+  variables which will avoid "locking" their values for child processes.
+
+- Autodeploy broken due to attempt to be compat with changing the location of `env.local` via `BIRDHOUSE_LOCAL_ENV`.
+
+  Broken since `2.18.9` (https://github.com/bird-house/birdhouse-deploy/pull/601).
+
+  It was working for the first run of autodeploy but on the next run, the value of
+  `BIRDHOUSE_LOCAL_ENV` in `optional-components/scheduler-job-autodeploy/config.yml`
+  is wrong !
+
+  Good value in first run:
+
+  `--volume /real/path/to/env.local:/tmp/birdhouse-local-env`
+
+  Bad value in subsequent run:
+
+  `--volume /tmp/birdhouse-local-env:/tmp/birdhouse-local-env`
+
+  This is because we override `--env BIRDHOUSE_LOCAL_ENV=/tmp/birdhouse-local-env` in
+  `optional-components/scheduler-job-autodeploy/config.yml.template` as env var so on
+  the subsequent runs the bad value persists because it is an env var.
+
+  This `BIRDHOUSE_LOCAL_ENV` is meant to be set "outside" the stack as env var
+  so there is nothing in the stack that will fix this value if it is bad.
+
+  The fix is to revert that attempt.  So autodeploy only supports changing the
+  location of `env.local` via symlink, or by manually adding the folder
+  containing the file `env.local` to `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS` if
+  `env.local` is set by `BIRDHOUSE_LOCAL_ENV` environment variable and not via
+  symlink.
+
+- One feature of autodeploy is broken due to a missing mapping in back-compat config var name change.
+
+  Broken since `2.4.0` but only if back-compat var name mode is required.
+
+  The `AUTODEPLOY_CODE_OWNERSHIP` old name mapping is missing in `BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`.
+
+  Autodeploy is missing the `chown` step to the good code owner because it does
+  not "see" the value of the old variable name since the mapping to the new
+  variable name is missing.
+
+- Missing default value for `BIRDHOUSE_HTTP_ONLY` causing inconsistent behavior
+  when the var is used in `env.local` then removed from `env.local`.  The
+  behavior never revert back as if it has never been initially used in
+  `env.local`.  See [discussion](https://github.com/bird-house/birdhouse-deploy/pull/600#issuecomment-3528058708).
+
+
+[2.18.14](https://github.com/bird-house/birdhouse-deploy/tree/2.18.14) (2025-12-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Ensure Jupyterlab container healthchecks don't fail because of leftover files
+
+  Leftover files from Jupyterlab containers that didn't shut down properly could cause the
+  healthcheck to always fail. Old files are now removed when the container starts up so this is avoided.
+
+  The full explanation:
+
+  If a Jupyterlab container is not shut down properly then it does not have a chance to 
+  [clean up](https://github.com/jupyter-server/jupyter_server/blob/dd435c/jupyter_server/serverapp.py#L3152) 
+  old runtime files. These runtime files are stored in the user's home directory which is
+  persisted between containers as a bind-mount.
+
+  When the Jupyterlab container is created again, it will create new versions of some of these files. One of which
+  is the jpserver JSON files which contains [a URL used by the 
+  healthchecks](https://github.com/jupyter/docker-stacks/blob/3b8a79/images/base-notebook/docker_healthcheck.py#L27).
+  
+  This URL contains the hostname of the Jupyterlab container which is different each time a new container is created. 
+  Different files will have different hostnames, only one of which will be the hostname for the current container.
+
+  Since the [healthchecks](https://github.com/jupyter/docker-stacks/blob/3b8a79/images/base-notebook/docker_healthcheck.py#L27)
+  use `glob` which returns files in an arbitrary order, the healthcheck can easily choose an old file with an old hostname.
+  If that is the case, the healthcheck will always fail.
+
+
+[2.18.13](https://github.com/bird-house/birdhouse-deploy/tree/2.18.13) (2025-12-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `prometheus-log-parser` component to use version 1.1.1 of the log-parser
+
+  See changes for versions [1.1.0](https://github.com/DACCS-Climate/log-parser/releases/tag/v1.1.0) and 
+  [1.1.1](https://github.com/DACCS-Climate/log-parser/releases/tag/v1.1.1).
+
+  The most relevant changes to this project are support for parsing logs from streams (like stdout) and a
+  safer way to kill the running log-parser container.
+
 [2.18.12](https://github.com/bird-house/birdhouse-deploy/tree/2.18.12) (2025-11-25)
 ------------------------------------------------------------------------------------------------------------------
 
