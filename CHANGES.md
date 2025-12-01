@@ -25,6 +25,41 @@
   The most relevant changes to this project are support for parsing logs from streams (like stdout) and a
   safer way to kill the running log-parser container.
 
+[2.18.12](https://github.com/bird-house/birdhouse-deploy/tree/2.18.12) (2025-11-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add mechanism to set CPU and memory limits on Jupyterlab containers based on Magpie user or group name
+
+  Creates a new variable `JUPYTERHUB_RESOURCE_LIMITS` which sets resource limits for JupyterLab containers per 
+  Magpie user or group.
+ 
+  The value for this variable is a whitespace delimited string. Each section is delimited by colons (:) 
+  where the first element is either `group` or `user` and the second element is the name of the user or group
+  to apply the limits to. The rest are resource limits of the form `limit=amount`. For example:
+
+  ```sh
+  export JUPYTERHUB_RESOURCE_LIMITS="
+     user:user1:mem_limit=30G
+     group:group1:mem_limit=10G:cpu_limit=1
+     group:group2:cpu_limit=3
+  "
+  ```
+
+  Supported limits are: 
+  [mem_limit](https://jupyterhub-dockerspawner.readthedocs.io/en/latest/api/index.html#dockerspawner.DockerSpawner.mem_limit) 
+  and [cpu_limit](https://jupyterhub-dockerspawner.readthedocs.io/en/latest/api/index.html#dockerspawner.DockerSpawner.cpu_limit). 
+
+  Note that this will not create the groups in Magpie, that must be done by some other means (through configuration files or the
+  Magpie API or UI).
+
+  Note that if a user belongs to multiple groups, later values in `JUPYTERHUB_RESOURCE_LIMITS` will take
+  precedence. For example, if a user named user1 belongs to group1 and group2 then the following limits will apply:
+
+  - mem_limit=10G (because group1 is later in the list)
+  - cpu_limit=3 (because group2 is later in the list)
+
 [2.18.11](https://github.com/bird-house/birdhouse-deploy/tree/2.18.11) (2025-11-13)
 ------------------------------------------------------------------------------------------------------------------
 
