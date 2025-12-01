@@ -18,7 +18,8 @@
 ## Changes
 
 - Proxy: Allow `Access-Control-Allow-Origin` header to be configured using `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable.
-  - The `cors.include` file is converted to a `cors.include.template` file to allow variable expansion.
+  - A `defaults.include.template` file is introduced to setup global nginx server defaults that can be overridden
+    by more specialized definitions in `location` blocks of components.
   - The default `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN="*"` is used to retain the previous behaviour.
   - The `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable can reference other variables to allow dynamic configuration
     (notably, to reference `BIRDHOUSE_FQDN_PUBLIC` for same-origin allowance).
