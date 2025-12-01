@@ -15,7 +15,16 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Proxy: Allow `Access-Control-Allow-Origin` header to be configured using `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable.
+  - The `cors.include` file is converted to a `cors.include.template` file to allow variable expansion.
+  - The default `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN="*"` is used to retain the previous behaviour.
+  - The `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable can reference other variables to allow dynamic configuration
+    (notably, to reference `BIRDHOUSE_FQDN_PUBLIC` for same-origin allowance).
+  - Align the documentation with corresponding `STAC_CORS_ORIGINS` header implications.
+  - Avoids Nginx warnings flagged from using uninitialized `access_control_allow_origin` variable
+    (fixes https://github.com/bird-house/birdhouse-deploy/issues/610).
 
 [2.18.15](https://github.com/bird-house/birdhouse-deploy/tree/2.18.15) (2025-12-01)
 ------------------------------------------------------------------------------------------------------------------
@@ -171,15 +180,6 @@
 
   - mem_limit=10G (because group1 is later in the list)
   - cpu_limit=3 (because group2 is later in the list)
-
-- Proxy: Allow `Access-Control-Allow-Origin` header to be configured using `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable.
-  - The `cors.include` file is converted to a `cors.include.template` file to allow variable expansion.
-  - The default `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN="*"` is used to retain the previous behaviour.
-  - The `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable can reference other variables to allow dynamic configuration
-    (notably, to reference `BIRDHOUSE_FQDN_PUBLIC` for same-origin allowance).
-  - Align the documentation with corresponding `STAC_CORS_ORIGINS` header implications.
-  - Avoids Nginx warnings flagged from using uninitialized `access_control_allow_origin` variable
-    (fixes https://github.com/bird-house/birdhouse-deploy/issues/610).
 
 [2.18.11](https://github.com/bird-house/birdhouse-deploy/tree/2.18.11) (2025-11-13)
 ------------------------------------------------------------------------------------------------------------------
