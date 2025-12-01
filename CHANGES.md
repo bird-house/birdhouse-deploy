@@ -17,6 +17,35 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.18.14](https://github.com/bird-house/birdhouse-deploy/tree/2.18.14) (2025-12-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Ensure Jupyterlab container healthchecks don't fail because of leftover files
+
+  Leftover files from Jupyterlab containers that didn't shut down properly could cause the
+  healthcheck to always fail. Old files are now removed when the container starts up so this is avoided.
+
+  The full explanation:
+
+  If a Jupyterlab container is not shut down properly then it does not have a chance to 
+  [clean up](https://github.com/jupyter-server/jupyter_server/blob/dd435c/jupyter_server/serverapp.py#L3152) 
+  old runtime files. These runtime files are stored in the user's home directory which is
+  persisted between containers as a bind-mount.
+
+  When the Jupyterlab container is created again, it will create new versions of some of these files. One of which
+  is the jpserver JSON files which contains [a URL used by the 
+  healthchecks](https://github.com/jupyter/docker-stacks/blob/3b8a79/images/base-notebook/docker_healthcheck.py#L27).
+  
+  This URL contains the hostname of the Jupyterlab container which is different each time a new container is created. 
+  Different files will have different hostnames, only one of which will be the hostname for the current container.
+
+  Since the [healthchecks](https://github.com/jupyter/docker-stacks/blob/3b8a79/images/base-notebook/docker_healthcheck.py#L27)
+  use `glob` which returns files in an arbitrary order, the healthcheck can easily choose an old file with an old hostname.
+  If that is the case, the healthcheck will always fail.
+
+
 [2.18.13](https://github.com/bird-house/birdhouse-deploy/tree/2.18.13) (2025-12-01)
 ------------------------------------------------------------------------------------------------------------------
 
