@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.18.15](https://github.com/bird-house/birdhouse-deploy/tree/2.18.15) (2025-12-01)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - README: remind the user to source control `env.local` securely as it may contains passwords.
