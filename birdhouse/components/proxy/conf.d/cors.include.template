@@ -1,6 +1,7 @@
     proxy_hide_header 'Access-Control-Allow-Origin';
 
-    set $access_control_allow_origin "${BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN}";
+    # assumes that the server default is configured or overriden by a specific locaiton block as needed
+    # if explicitly set to empty, align it with the standard value allowing any origin
     if ( $access_control_allow_origin ~ "^$" ) {
        set $access_control_allow_origin '*';
     }
