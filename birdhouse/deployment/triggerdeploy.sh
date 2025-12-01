@@ -174,11 +174,6 @@ START_TIME="$(date -Isecond)"
 echo "==========
 triggerdeploy START_TIME=${START_TIME}"
 
-. "${COMPOSE_DIR}/read-configs.include.sh"
-
-# Read BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS
-read_basic_configs_only
-
 if [ -n "$AUTODEPLOY_GIT_GLOBAL_SAFE_DIRECTORY" ]; then
     # Since git v2.35.2, because autodeploy runs as root but the repos are not
     # checkout by root.
@@ -186,6 +181,20 @@ if [ -n "$AUTODEPLOY_GIT_GLOBAL_SAFE_DIRECTORY" ]; then
 fi
 
 set -x
+
+BIRDHOUSE_EXE="${COMPOSE_DIR}/../bin/birdhouse"
+BIRDHOUSE_EXE_CONFIGS_OPTS="--backwards-compatible --quiet configs --basic --command"
+
+# Similar to "read_basic_configs_only" but only get the vars we will need, not
+# everything like the full "read_basic_configs_only".
+# Note: NEVER turn these vars into env var because this will "lock" these
+# vars for all subsequent "read_configs" even if the env.local changes.  This
+# is because of the new variable precedence that gives higher precedence to env
+# var than env.local.  This will break the last step when we bring up the stack
+# that will have to read and use all the latest values of any changed vars.
+BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS="$("${BIRDHOUSE_EXE}" ${BIRDHOUSE_EXE_CONFIGS_OPTS} '
+    echo "${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}"
+')"
 
 SHOULD_TRIGGER=""
 for adir in "${COMPOSE_DIR}" ${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}; do
