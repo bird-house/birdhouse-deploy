@@ -47,7 +47,7 @@
 
 ## Changes
 
-- README: remind the user to source control `env.local` securely as it may contains passwords.
+- README: remind the user to source control `env.local` securely as it may contain passwords.
 
 ## Fixes
 
@@ -161,7 +161,6 @@
 
   The most relevant changes to this project are support for parsing logs from streams (like stdout) and a
   safer way to kill the running log-parser container.
->>>>>>> add-cors-origin
 
 [2.18.12](https://github.com/bird-house/birdhouse-deploy/tree/2.18.12) (2025-11-25)
 ------------------------------------------------------------------------------------------------------------------
