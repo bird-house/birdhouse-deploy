@@ -202,6 +202,14 @@ Permission management of these resources is controlled through Magpie under
 the ``secure-data-proxy`` service (type: API). Resources names and nesting under ``secure-data-proxy`` service
 should match exactly the ``location`` path expected by Nginx ``proxy``.
 
+.. seealso::
+    Refer to the |secure-data-proxy-default-env|_ file for more details regarding the
+    structure of the ``SECURE_DATA_PROXY_LOCATIONS`` definition and all other variable
+    considerations implied with its usage.
+
+.. _secure-data-proxy-default-env: ./optional-components/secure-data-proxy/default.env
+.. |secure-data-proxy-default-env| replace:: optional-components/secure-data-proxy/default.env
+
 .. _components_secure-data-proxy-wps_outputs:
 
 Control secured access to WPS outputs
