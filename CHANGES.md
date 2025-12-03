@@ -32,7 +32,7 @@
 
 ## Changes
 
-- README: remind the user to source control `env.local` securely as it may contains passwords.
+- README: remind the user to source control `env.local` securely as it may contain passwords.
 
 ## Fixes
 
