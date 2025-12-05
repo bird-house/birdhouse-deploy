@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.18.16](https://github.com/bird-house/birdhouse-deploy/tree/2.18.16) (2025-12-05)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - DGGS: Add the new `components/dggs` providing an OGC API for Discrete Global Grid Systems.
@@ -34,7 +39,8 @@
   - Allows other OGC APIs to reuse the same prefix to provide a unified location to access them.
 
 - Proxy: Allow `Access-Control-Allow-Origin` header to be configured using `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable.
-  - The `cors.include` file is converted to a `cors.include.template` file to allow variable expansion.
+  - A `defaults.include.template` file is introduced to setup global nginx server defaults that can be overridden
+    by more specialized definitions in `location` blocks of components.
   - The default `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN="*"` is used to retain the previous behaviour.
   - The `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable can reference other variables to allow dynamic configuration
     (notably, to reference `BIRDHOUSE_FQDN_PUBLIC` for same-origin allowance).
