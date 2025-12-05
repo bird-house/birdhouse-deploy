@@ -18,6 +18,7 @@ services:
       - ./components/proxy/static:/static
       - ./components/proxy/nginx-docker-entrypoint.d/launch_cron.sh:/docker-entrypoint.d/launch_cron.sh:ro
       - ./components/proxy/cron.d/logrotate:/etc/cron.d/logrotate:ro
+      - ./components/proxy/logrotate.d/nginx:/etc/logrotate.d/nginx:ro
     environment:
       # https://github.com/bird-house/birdhouse-deploy/issues/198
       REQUESTS_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
