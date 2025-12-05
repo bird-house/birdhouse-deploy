@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.19.0](https://github.com/bird-house/birdhouse-deploy/tree/2.19.0) (2025-12-05)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - DGGS: Add the new `components/dggs` providing an OGC API for Discrete Global Grid Systems.
