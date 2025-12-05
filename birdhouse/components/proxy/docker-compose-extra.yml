@@ -16,7 +16,7 @@ services:
       - ./components/proxy/conf.d:/etc/nginx/conf.d
       - ./components/proxy/nginx.conf:/etc/nginx/nginx.conf
       - ./components/proxy/static:/static
-      - ./components/proxy/nginx-docker-entrypoint.d/launch_cron:/docker-entrypoint.d/launch_cron:ro
+      - ./components/proxy/nginx-docker-entrypoint.d/launch_cron.sh:/docker-entrypoint.d/launch_cron.sh:ro
       - ./components/proxy/cron.d/logrotate:/etc/cron.d/logrotate:ro
     environment:
       # https://github.com/bird-house/birdhouse-deploy/issues/198
