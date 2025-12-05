@@ -2,3 +2,4 @@ services:
   proxy:
     volumes:
       - ./optional-components/secure-data-proxy/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/secure-data-proxy:ro
+      - ${SECURE_DATA_PROXY_ROOT}:/data/secure-data-proxy:ro

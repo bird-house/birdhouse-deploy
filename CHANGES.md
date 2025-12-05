@@ -17,6 +17,27 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.19.0](https://github.com/bird-house/birdhouse-deploy/tree/2.19.0) (2025-12-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- DGGS: Add the new `components/dggs` providing an OGC API for Discrete Global Grid Systems.
+  - DGGS API available through `/dggs-api` path (default, configurable via `DGGS_API_PATH`).
+  - Redirects available for `/ogcapi/dggs/...` and  `/ogcapi/collections/.../dggs/...`.
+  - Sample configuration (minimum 1 resolvable data provider required) uses the new
+    feature of `optional-components/secure-data-proxy` on CRIM's Hirondelle server.
+
+- Data: Allow `optional-components/secure-data-proxy` to define generic and flexible locations.
+  - `SECURE_DATA_PROXY_ROOT` can be defined as mount directory inside the `proxy` service.
+  - `SECURE_DATA_PROXY_LOCATIONS` can be defined with any amount of custom locations.
+  - All locations can be configured (as desired) under Magpie `secure-data-proxy` service for access control.
+  - Other components (`wps_output-volume`, `stac-data-proxy`) that can optionally use this security middleware
+    via `SECURE_DATA_PROXY_AUTH_INCLUDE` can still do so. Their mount points are handled separately.
+
+- Weaver: Modified `/ogcapi/...` redirections strategy via `WEAVER_ALT_PREFIX_PROXY_LOCATION`. 
+  - Allows other OGC APIs to reuse the same prefix to provide a unified location to access them.
+
 [2.18.16](https://github.com/bird-house/birdhouse-deploy/tree/2.18.16) (2025-12-05)
 ------------------------------------------------------------------------------------------------------------------
 

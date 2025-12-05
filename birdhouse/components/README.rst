@@ -720,6 +720,7 @@ How to Enable the Component
 - Edit ``env.local`` (a copy of `env.local.example`_)
 - Add ``./components/stac`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
+
 STAC Browser
 ============
 
@@ -750,11 +751,52 @@ For example:
   # you can update it to
   export STAC_CORS_ORIGINS='http://example.com ~http:(www|other)\.api\.example\.com https://geojson.io'
 
+
 How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 - Add ``./components/stac-browser`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+
+
+.. _components_dggs:
+
+DGGS: Discrete Global Grid Systems API
+======================================
+
+`DGGS`_ is a spatial reference system combining a discrete global grid hierarchy with a zone identifier, in contrast
+to typical ``(lat, lon)`` spatial reference systems. By using a predefined and deterministic order of zone IDs and
+refinement sub-zones, DGGS enables efficient access, representation and analysis of spatial data that has been
+quantized over a certain grid reference system (DGGRS).
+
+The *OGC API - DGGS* definition implemented by this service is a RESTful API that provides access to DGGS resources,
+definitions, zonal query conversion, and data retrieval from precomputed datasets.
+
+.. _DGGS: https://ogcapi.ogc.org/dggs/
+
+Usage
+-----
+
+Once enabled, the API will be accessible (by default) on the ``/dggs-api`` endpoint.
+It will also be available through the common ``/ogcapi/dggs`` alias.
+
+Refer to the `DGGS`_ OGC API documentation for specific endpoints and features.
+
+Refer to `vgrid DGGS <https://github.com/opengeoshub#vgrid-dggs>`_ and
+the `vgrid repository <https://github.com/opengeoshub/vgrid>`_ for a relatively extensive
+collection of DGGS tools and its associated data manipulation ecosystem (using ``xarray``, QGIS plugin, etc.).
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/dggs`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Define ``DGGS_CONFIG_PATH`` in the ``env.local`` with custom definitions.
+  Alternatively, employ sample DGGS dataset and configuration by enabling ``./optional-components/dggs-data-sample``.
+  Enabling this optional component will set ``DGGS_CONFIG_PATH`` with a predefined configuration for this sample data.
+  See the `PyDGGS-API implementation <https://github.com/LandscapeGeoinformatics/pydggsapi>`_ for more details.
+- Optionally, configure variables in ``./components/dggs/default.env`` via ``env.local`` to customize the service.
+
 
 Canarie-API
 ===========
@@ -988,10 +1030,11 @@ of all processes executed by these services.
 Usage
 -----
 
-All outputs from these processes will become available at the ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs`` endpoint.
+All outputs from these processes will become available at
+the ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs`` endpoint.
 
 By default, this endpoint is not protected. To secure access to this endpoint it is highly recommended to enable the
-`./optional-components/secure-data-proxy` component as well.
+``./optional-components/secure-data-proxy`` component as well.
 
 How to Enable the Component
 ---------------------------
