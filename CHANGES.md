@@ -17,12 +17,27 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.18.16](https://github.com/bird-house/birdhouse-deploy/tree/2.18.16) (2025-12-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Proxy: Allow `Access-Control-Allow-Origin` header to be configured using `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable.
+  - A `defaults.include.template` file is introduced to setup global nginx server defaults that can be overridden
+    by more specialized definitions in `location` blocks of components.
+  - The default `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN="*"` is used to retain the previous behaviour.
+  - The `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable can reference other variables to allow dynamic configuration
+    (notably, to reference `BIRDHOUSE_FQDN_PUBLIC` for same-origin allowance).
+  - Align the documentation with corresponding `STAC_CORS_ORIGINS` header implications.
+  - Avoids Nginx warnings flagged from using uninitialized `access_control_allow_origin` variable
+    (fixes https://github.com/bird-house/birdhouse-deploy/issues/610).
+
 [2.18.15](https://github.com/bird-house/birdhouse-deploy/tree/2.18.15) (2025-12-01)
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
 
-- README: remind the user to source control `env.local` securely as it may contains passwords.
+- README: remind the user to source control `env.local` securely as it may contain passwords.
 
 ## Fixes
 

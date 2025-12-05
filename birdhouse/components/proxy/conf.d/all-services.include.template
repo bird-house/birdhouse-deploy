@@ -34,5 +34,8 @@
         return 302 ${BIRDHOUSE_DOC_URL};
     }
 
+    # server defaults if not overridden in specific location blocks
+    include /etc/nginx/conf.d/defaults.include;
+
     # for other extra components to extend Nginx
     include /etc/nginx/conf.extra-service.d/*/*.conf;
