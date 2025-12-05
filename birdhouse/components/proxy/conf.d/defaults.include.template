@@ -1,0 +1,3 @@
+    # These defaults are set at the server level and can be overridden by location blocks
+
+    set $access_control_allow_origin "${BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN}";
