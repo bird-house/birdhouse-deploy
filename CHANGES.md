@@ -15,7 +15,22 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- STAC API: update to version [`2.1.0`](https://github.com/crim-ca/stac-app/releases/tag/2.1.0).
+
+  - Fix paging error on `/collections` responses causing requests with `limit` query or catalogs
+    with more than 10 collections (by default) to never return collections beyond the first page.
+
+- STAC Browser: update to version [`4.0.0-rc.2-crim`](https://github.com/crim-ca/stac-browser/releases/tag/v4.0.0-rc.2-crim).
+  
+  Apply upstream fixes, notably:
+
+  - Logo resizing issue when embedded in contact details.
+  - Handling of `geojson.io` external viewer references from compatible GeoJSON STAC Assets.
+  - Improvements to UI for better locales, content positioning and browsing experience.
+  - Alignment with latest OGC APIs requirements and conformance classes.
+  - Added support for multiple additional data representations and visualization.
 
 [2.19.0](https://github.com/bird-house/birdhouse-deploy/tree/2.19.0) (2025-12-05)
 ------------------------------------------------------------------------------------------------------------------
