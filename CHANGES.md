@@ -15,7 +15,21 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Set GPU access on Jupyterlab containers based on Magpie user or group name
+
+  Adds to the feature that lets resource allocations to Jupyterlab containers be assigned based on username or
+  group membership.
+
+  New settings for the `JUPYTERHUB_RESOURCE_LIMITS` variable are `gpu_ids` and `gpu_count`.
+  `gpu_ids` are a comma separated list of the GPU ids available on the host that you want to make available to
+  the user or group. GPU ids can typically be discovered by running the `nvidia-smi` command.
+  If `gpu_count` is also specified, this is an integer indicating how many GPUs to make available to that user 
+  or group.
+  
+  For example, if `gpu_ids=gpu1,gpu2,gpu6` and `gpu_count=2` then two GPUs will be randomly selected from the 
+  `gpu_ids` list.
 
 [2.19.0](https://github.com/bird-house/birdhouse-deploy/tree/2.19.0) (2025-12-05)
 ------------------------------------------------------------------------------------------------------------------
