@@ -1,6 +1,9 @@
+# Taken from Nginx docker image, tweaked lightly to match previous CanarieApi.
+
 /var/log/nginx/*.log {
         missingok
-        rotate 52
+        # https://github.com/Ouranosinc/CanarieAPI/blob/cc0ae59231ee4b58a34571bd12097c660aefb2e3/canarieapi/logparser.py#L15
+        rotate 150
         compress
         delaycompress
         notifempty
