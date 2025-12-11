@@ -15,7 +15,26 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Proxy lost log rotation, filling up disk and hogging CPU and RAM to parse large logs on restart
+
+  Broken since `2.3.0` (https://github.com/bird-house/birdhouse-deploy/pull/452).
+
+  The root cause is the log rotation has been removed from the python code in
+  https://github.com/Ouranosinc/CanarieAPI/pull/18 without any replacement.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/593.
+
+  The fix is to restore logrotation in the proxy container using `cron` and
+  `logrotate` instead of the old python code.  Retention and frequency are the
+  same as the previous python code.  For this we needed a custom build of the
+  official Nginx docker image + `cron` + `logrotate`.
+
+  This should be a temporary solution until a solution using container STDOUT
+  parsing is implemented for the CanarieAPI.  Then we can switch back to the
+  regular official Nginx image.
+
 
 [2.20.0](https://github.com/bird-house/birdhouse-deploy/tree/2.20.0) (2025-12-10)
 ------------------------------------------------------------------------------------------------------------------
