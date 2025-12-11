@@ -1,0 +1,17 @@
+# Taken from Nginx docker image, tweaked lightly to match previous CanarieApi.
+
+/var/log/nginx/*.log {
+        missingok
+        # https://github.com/Ouranosinc/CanarieAPI/blob/cc0ae59231ee4b58a34571bd12097c660aefb2e3/canarieapi/logparser.py#L15
+        rotate 150
+        compress
+        delaycompress
+        notifempty
+        create 640 nginx adm
+        sharedscripts
+        postrotate
+                if [ -f /var/run/nginx.pid ]; then
+                        kill -USR1 `cat /var/run/nginx.pid`
+                fi
+        endscript
+}
