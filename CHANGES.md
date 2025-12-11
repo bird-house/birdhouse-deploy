@@ -34,7 +34,7 @@
   This quick and least disruptive fix to get the production server out of the
   water should be a temporary solution until a better solution using container
   STDOUT parsing is implemented for the CanarieAPI and prometheus-log-parser
-  (https://github.com/bird-house/birdhouse-deploy/pull/617).  Then we can
+  (https://github.com/bird-house/birdhouse-deploy/issues/618).  Then we can
   switch back to the regular official Nginx image.
 
 
