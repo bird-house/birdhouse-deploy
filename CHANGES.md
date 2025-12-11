@@ -31,9 +31,11 @@
   same as the previous python code.  For this we needed a custom build of the
   official Nginx docker image + `cron` + `logrotate`.
 
-  This should be a temporary solution until a solution using container STDOUT
-  parsing is implemented for the CanarieAPI.  Then we can switch back to the
-  regular official Nginx image.
+  This quick and least disruptive fix to get the production server out of the
+  water should be a temporary solution until a better solution using container
+  STDOUT parsing is implemented for the CanarieAPI and prometheus-log-parser
+  (https://github.com/bird-house/birdhouse-deploy/pull/617).  Then we can
+  switch back to the regular official Nginx image.
 
 
 [2.20.0](https://github.com/bird-house/birdhouse-deploy/tree/2.20.0) (2025-12-10)
