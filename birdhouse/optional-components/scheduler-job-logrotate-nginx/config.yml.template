@@ -1,0 +1,12 @@
+- name: logrotate-nginx
+  comment: Rotate log files for nginx
+  schedule: '@daily'
+  command: bash -c 'cp /etc/logrotate.conf.orig /etc/logrotate.conf && chown root:root /etc/logrotate.conf && chmod 644 /etc/logrotate.conf && /usr/sbin/logrotate -v /etc/logrotate.conf'
+  dockerargs: >-
+    --rm --name logrotate-nginx
+    --volume ${COMPOSE_PROJECT_NAME}_proxy-logs:/var/log/nginx/:rw
+    --volume ${COMPOSE_DIR}/optional-components/scheduler-job-logrotate-nginx/nginx.logrotate:/etc/logrotate.conf.orig:ro
+  trigger:
+    - command: sh -c '[ -f /var/run/nginx.pid ] && kill -USR1 $(cat /var/run/nginx.pid)'
+      container: proxy
+  image: 'stakater/logrotate:3.13.0'

@@ -15,7 +15,21 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Add log rotation scheduler job for the nginx logs
+
+  Currently the nginx logs are not rotated so they can build up to quite a large size.
+
+  Previously, they were rotated by the `canarie-api` component but that is no longer a required
+  component and CanarieAPI hasn't handled log rotation since CanarieAPI version 1.0.0.
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/593.
+
+  This quick and least disruptive fix to get the production server out of the water should be a 
+  temporary solution until a better solution using container STDOUT parsing is implemented for 
+  the CanarieAPI and prometheus-log-parser (https://github.com/bird-house/birdhouse-deploy/issues/618).  
+  Then we can deprecate this scheduler job.
 
 [2.20.0](https://github.com/bird-house/birdhouse-deploy/tree/2.20.0) (2025-12-10)
 ------------------------------------------------------------------------------------------------------------------
