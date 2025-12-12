@@ -1,6 +1,6 @@
 - name: logrotate-nginx
   comment: Rotate log files for nginx
-  schedule: '@daily'
+  schedule: '${SCHEDULER_JOB_LOGROTATE_NGINX_JOB_SCHEDULE}'
   command: bash -c 'cp /etc/logrotate.conf.orig /etc/logrotate.conf && chown root:root /etc/logrotate.conf && chmod 644 /etc/logrotate.conf && /usr/sbin/logrotate -v /etc/logrotate.conf'
   dockerargs: >-
     --rm --name logrotate-nginx

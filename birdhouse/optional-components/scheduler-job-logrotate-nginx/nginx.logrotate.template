@@ -1,7 +1,8 @@
 /var/log/nginx/${PROXY_LOG_FILE} {
         missingok
         # https://github.com/Ouranosinc/CanarieAPI/blob/cc0ae59231ee4b58a34571bd12097c660aefb2e3/canarieapi/logparser.py#L15
-        rotate 150
+        rotate ${SCHEDULER_JOB_LOGROTATE_NGINX_ROTATE}
+        size ${SCHEDULER_JOB_LOGROTATE_NGINX_SIZE}
         compress
         delaycompress
         notifempty
