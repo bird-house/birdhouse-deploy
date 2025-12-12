@@ -5,6 +5,7 @@ import random
 import subprocess
 
 import docker
+import yaml
 from dockerspawner import DockerSpawner
 
 c = get_config()  # noqa  # can be called directy without import because injected by IPython
@@ -139,10 +140,18 @@ if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
 container_gdrive_settings_path = join(container_home_dir, ".jupyter/lab/user-settings/@jupyterlab/google-drive/drive.jupyterlab-settings")
 host_gdrive_settings_path = os.environ['JUPYTER_GOOGLE_DRIVE_SETTINGS']
 
-# resource_limits: dict[tuple[Literal["user", "group"], str], dict[Literal["cpu_limit", "mem_limit", "gpu_count", "gpu_ids"], str]]
-resource_limits = {tuple(lim[:2]): dict(li.split("=") for li in lim[2:] if "=" in li)
-                    for limit in """${JUPYTERHUB_RESOURCE_LIMITS}""".strip().split() 
-                    if (lim := limit.split(":"))}
+# class LimitDict(TypedDict):
+#   mem_limit: NotRequired[str | int]
+#   cpu_limit: NotRequired[str | float | int]
+#   gpu_ids: NotRequired[list[int | str]]
+#   gpu_count: NotRequired[int]
+#
+# class LimitRule(TypedDict):
+#   type: Literal["user", "group"]
+#   name: str
+#   limits: LimitDict
+# resource_limits: LimitRule
+resource_limits = yaml.safe_load("""${JUPYTERHUB_RESOURCE_LIMITS}""")
 
 if len(host_gdrive_settings_path) > 0:
     c.DockerSpawner.volumes[host_gdrive_settings_path] = {
@@ -187,17 +196,19 @@ def limit_resource_hook(spawner):
     user_groups = {g.name for g in spawner.user.groups}
     gpu_ids = []
     gpu_count = 1
-    for (name_type, name), limits in resource_limits.items():
-        if (name_type == "user" and name == spawner.user.name) or (name_type == "group" and name in user_groups):
-            for limit, value in limits.items():
+    for rule in resource_limits:
+        rule_type = rule["type"]
+        name = rule["name"]
+        if rule_type == "user" and name == spawner.user.name or rule_type == "group" and name in user_groups:
+            for limit, value in rule["limits"].items():
                 if limit == "cpu_limit":
-                    spawner.cpu_limit = float(value)
+                    spawner.cpu_limit = value
                 elif limit == "mem_limit":
                     spawner.mem_limit = value
                 elif limit == "gpu_ids":
-                    gpu_ids = value.split(",")
+                    gpu_ids = value
                 elif limit == "gpu_count":
-                    gpu_count = int(value)
+                    gpu_count = value
     if gpu_ids:
         # randomly assign GPUs in an attempt to evenly distribute GPU resources
         random.shuffle(gpu_ids)
