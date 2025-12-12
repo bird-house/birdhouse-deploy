@@ -186,7 +186,7 @@ def limit_resource_hook(spawner):
     
     user_groups = {g.name for g in spawner.user.groups}
     gpu_ids = []
-    gpu_count = None
+    gpu_count = 1
     for (name_type, name), limits in resource_limits.items():
         if (name_type == "user" and name == spawner.user.name) or (name_type == "group" and name in user_groups):
             for limit, value in limits.items():
@@ -199,10 +199,9 @@ def limit_resource_hook(spawner):
                 elif limit == "gpu_count":
                     gpu_count = int(value)
     if gpu_ids:
-        if gpu_count is not None:
-            # randomly assign GPUs in an attempt to evenly distribute GPU resources
-            random.shuffle(gpu_ids)
-            gpu_ids = gpu_ids[:gpu_count]
+        # randomly assign GPUs in an attempt to evenly distribute GPU resources
+        random.shuffle(gpu_ids)
+        gpu_ids = gpu_ids[:gpu_count]
         spawner.extra_host_config["device_requests"] = [
             docker.types.DeviceRequest(device_ids=gpu_ids, capabilities=[["gpu"]])
         ]

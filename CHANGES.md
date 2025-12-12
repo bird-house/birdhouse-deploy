@@ -26,7 +26,7 @@
   `gpu_ids` are a comma separated list of the GPU ids available on the host that you want to make available to
   the user or group. GPU ids can typically be discovered by running the `nvidia-smi` command.
   If `gpu_count` is also specified, this is an integer indicating how many GPUs to make available to that user 
-  or group.
+  or group. If `gpu_count` is not specified, then only one GPU will be made available to that user.
   
   For example, if `gpu_ids=gpu1,gpu2,gpu6` and `gpu_count=2` then two GPUs will be randomly selected from the 
   `gpu_ids` list.
