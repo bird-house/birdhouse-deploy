@@ -151,7 +151,7 @@ host_gdrive_settings_path = os.environ['JUPYTER_GOOGLE_DRIVE_SETTINGS']
 #   name: str
 #   limits: LimitDict
 # resource_limits: LimitRule
-resource_limits = yaml.safe_load("""${JUPYTERHUB_RESOURCE_LIMITS}""")
+resource_limits = yaml.safe_load("""${JUPYTERHUB_RESOURCE_LIMITS}""") or []
 
 if len(host_gdrive_settings_path) > 0:
     c.DockerSpawner.volumes[host_gdrive_settings_path] = {

@@ -23,13 +23,16 @@
   group membership.
 
   New settings for the `JUPYTERHUB_RESOURCE_LIMITS` variable are `gpu_ids` and `gpu_count`.
-  `gpu_ids` are a comma separated list of the GPU ids available on the host that you want to make available to
-  the user or group. GPU ids can typically be discovered by running the `nvidia-smi` command.
-  If `gpu_count` is also specified, this is an integer indicating how many GPUs to make available to that user 
-  or group. If `gpu_count` is not specified, then only one GPU will be made available to that user.
-  
-  For example, if `gpu_ids=gpu1,gpu2,gpu6` and `gpu_count=2` then two GPUs will be randomly selected from the 
-  `gpu_ids` list.
+
+  `gpu_ids` are an array of the GPU uuids or zero based indexes of the GPUs that you want to make available 
+  to the user or group. GPU uuids and indexes can be discovered by running the `nvidia-smi --list-gpus` command or similar
+  (such as rocm-smi for AMD GPUs). Uuids are preferred as they remain stable across the life of the GPU. Mixing indexes and uuids
+  is possible but discouraged since it makes it possible to select the same GPU multiple times.
+  If `gpu_count` is also specified, this is an integer indicating how many GPUs to make available to that user or group.
+  If `gpu_count` is not specified, then exactly one GPU will be randomly selected.
+  For example, if `{"gpu_ids": [1,2,6], "gpu_count": 2}` then two GPUs will be randomly selected from the `gpu_ids` list.
+
+  Also changes the format for `JUPYTERHUB_RESOURCE_LIMITS` to a yaml or JSON string. 
 
 [2.19.0](https://github.com/bird-house/birdhouse-deploy/tree/2.19.0) (2025-12-05)
 ------------------------------------------------------------------------------------------------------------------
