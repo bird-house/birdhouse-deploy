@@ -967,18 +967,6 @@ How to Enable the Component
 
 - This component is enabled by default
 
-.. warning::
-  Nginx logs are not automatically rotated and can build up over time. We recommend that you also enable the
-  `components/scheduler` component and the `optional-components/scheduler-job-logrotate-nginx` scheduler job
-  as a temporary fix. This will rotate the nginx logs on a regular schedule.
-
-  See this issue (https://github.com/bird-house/birdhouse-deploy/issues/593) which explains the need for this
-  scheduler job in more detail.
-
-  This is a temporary workaround until nginx logs can be parsed from the stdout stream. See 
-  (https://github.com/bird-house/birdhouse-deploy/issues/618) for more details.
-
-
 Raven
 =====
 

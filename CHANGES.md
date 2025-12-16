@@ -25,7 +25,11 @@
   component and CanarieAPI hasn't handled log rotation since CanarieAPI version 1.0.0 (see 
   https://github.com/bird-house/birdhouse-deploy/pull/452 for details).
 
-  Fixes https://github.com/bird-house/birdhouse-deploy/issues/593.
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/593. Here is a summary of the issue:
+
+  - CanarieApi parses the log file every minute starting from the beginning of the file
+  - If the log file is really big it uses a lot of CPU and memory to read through the whole file
+  - This would use a lot less CPU and memory if the log file was smaller
 
   This quick and least disruptive fix to get the production server out of the water should be a 
   temporary solution until a better solution using container STDOUT parsing is implemented for 
