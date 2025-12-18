@@ -407,6 +407,13 @@ In order to set up the development environment, run the following commands:
 Development Conventions
 ^^^^^^^^^^^^^^^^^^^^^^^
 
+The aim should be to **avoid** backward **incompatible** changes to decrease manual effort between each
+update. When the effort is low, users will be more likey to stay up to date and not "fear" updates.
+
+We should also aim to be **user-friendly** by being consistent with the way we grow the platform and by
+requiring as little setup/steps (sensible default values) as possible when spin up a fresh new stack
+for onboarding new users.
+
 Adding a new config var to ``env.local``
 ========================================
 * **Default value** should be in a corresponding ``default.env`` so it is easy for the user to find them.
