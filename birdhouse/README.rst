@@ -403,46 +403,70 @@ In order to set up the development environment, run the following commands:
     # Activate the conda environment
     conda activate birdhouse-dev
 
+
 Development Conventions
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 Adding a new config var to ``env.local``
 ========================================
 * **Default value** should be in a corresponding ``default.env`` so it is easy for the user to find them.
-  The default value should not be burried in the code.
-* **Documentation** for the new var can be both in the ``default.env`` and ``env.local.example`` to be
+  The default value should not be burried in the code.  The commented out value in ``env.local.example``
+  is only an example and can not count as a default value.
+
+* **Documentation** for the new var can be both in ``default.env`` and ``env.local.example`` to be
   most user-friendly. If you do not wish to duplicate the info because it is big, you can put in one of
-  the two files and reference in the other file.  Documenting in ``env.local.example`` is the most
-  user-friendly for new user starting out because they will have to copy ``env.local.example`` to ``env.local``.
-  Documenting in ``default.env`` is more "closer to the source" and more "together" with all other vars
-  from the same component.  Some vars/documentations are "dangerous" so we do not even expose them to
-  ``env.local.example``.
+  the two files and reference in the other file.
+
+  * Documenting in ``env.local.example`` is the most user-friendly for new user starting out because they
+    will have to copy ``env.local.example`` to ``env.local``.
+  * Documenting in ``default.env`` is more "closer to the source" and more "together" with all other vars
+    from the same component.  Some vars/documentations are "dangerous" so we do not even expose them to
+    ``env.local.example``.
+
 * **Naming convention** should be ``<COMPONENT_NAME>_<VAR_NAME>`` to avoid name clash.  For platform vars
   that do not belong to any components, use ``BIRDHOUSE`` prefix instead of ``<COMPONENT_NAME>``.
 
 Renaming or deleting an existing config var in ``env.local``
 ============================================================
-* Try to **avoid** this scenario as this is **backward incompatible** with existing ``env.local`` on all
-  existing deployments.
-* If you must, **soften the blow** by adding to the ``BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`` mapping in
-  ``birdhouse/default.env`` or try to support both names in the code at the same time for a few releases to
-  give time for all users to update all existing ``env.local`` on all existing deployments.
-* ``Document migration path`` clearly in `CHANGES.md``.
-* Bump **minor** version, **not patch** version on release to signal **backward incompatible** requiring manual
-  update to all existing ``env.local`` on all existing deployments.
+* Try to **avoid** this scenario as this is **backward incompatible** with all existing ``env.local`` on
+  all existing deployments.
+
+* If you must, **soften the blow** by 
+
+  * adding to the ``BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`` mapping in ``birdhouse/default.env`` or
+  * trying to support both names in the code at the same time for a few releases
+
+  to give time for all users to update all existing ``env.local`` on all existing deployments.
+
+* **Document migration path** clearly in ``CHANGES.md``.
+
+* Bump **minor** version, **not patch** version on release to signal **backward incompatible** change
+  requiring manual update to all existing ``env.local`` on all existing deployments.
 
 Changing the default value for the expected format of an existing config var in ``env.local``
 =============================================================================================
-* Try to **avoid** this scenario as this is **backward incompatible** with existing ``env.local`` on all
-  existing deployments.
+* Try to **avoid** this scenario as this is **backward incompatible** with all existing ``env.local`` on 
+  all existing deployments.
+
+* Changing the format is potentially more disruptive than the default value.
+
 * If you must, **soften the blow** by 
+
   * supporting both formats in the code at the same time for a few releases or
-  * create a new variable for the new format so the older format is still supported by the existing var,
-    displaying a warning that new features will only come to the new var
+  * creating a new variable for the new format so the older format is still supported by the existing var,
+    displaying a warning that new features will only come to the new var or
+  * in the case of default value change, document the previous default value so user can manually set the
+    previous default value in their ``env.local`` to retain the previous behavior
+
   to give time for all users to update all existing ``env.local`` on all existing deployments.
-* ``Document migration path`` clearly in `CHANGES.md``.
-* Bump **minor** version, **not patch** version on release to signal **backward incompatible** requiring manual
-  update to all existing ``env.local`` on all existing deployments.
+
+* **Document migration path** clearly in ``CHANGES.md``.  If default value is changed, explain the impact
+  as user could previously be relying on the default value and not setting the variable explicitly in their
+  ``env.local``.  If they understand the impact and wish to retain the previous behavior, they now have to
+  explicitly set the previous default value in their ``env.local``.
+
+* Bump **minor** version, **not patch** version on release to signal **backward incompatible** change
+  requiring manual update to all existing ``env.local`` on all existing deployments.
 
 
 Framework tests
