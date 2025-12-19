@@ -21,8 +21,8 @@ services:
       - POSTGRES_HOST_WRITER=stac-db
       - POSTGRES_PORT=5432
       - ROUTER_PREFIX=/stac
-      - OPENAPI_URL=/stac/api
-      - DOCS_URL=/stac/api.html
+      - OPENAPI_URL=/stac${STAC_OPENAPI_SPEC_PATH}
+      - DOCS_URL=/stac${STAC_OPENAPI_DOCS_PATH}
     logging: *default-logging
     restart: always
     healthcheck:
