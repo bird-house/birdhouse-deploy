@@ -15,7 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- STAC API: Improve reported service links.
+
+  - Add `STAC_LICENSE_URL` to define the relevant license metadata location of the selected implementation.
+  - Add `STAC_OPENAPI_SPEC_PATH` and `STAC_OPENAPI_DOCS_PATH` to define endpoints of OpenAPI specification.
+  - Update the `/services/stac` response to provide more metadata links, including license details and better
+    API metadata references. Notably, replace the *generic* STAC API Core OpenAPI definition by the 
+    implementation-specific definition self-served by the selected docker image to document API extensions.
 
 [2.20.1](https://github.com/bird-house/birdhouse-deploy/tree/2.20.1) (2025-12-16)
 ------------------------------------------------------------------------------------------------------------------
