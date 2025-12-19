@@ -15,7 +15,22 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+- STAC API: Security update to version [2.2.0](https://github.com/crim-ca/stac-app/releases/tag/2.2.0)
+  (relates to [crim-ca/stac-app#65](https://github.com/crim-ca/stac-app/pull/65)).
+
+- Weaver: Security update to version [6.8.0](https://github.com/crim-ca/weaver/releases/tag/6.8.0)
+  (relates to [crim-ca/weaver#868](https://github.com/crim-ca/weaver/pull/868)).
+
+- Cowbird: Security update to version [4.3.0](https://github.com/Ouranosinc/cowbird/releases/tag/2.6.0)
+  (relates to [Ouranosinc/cowbird#98](https://github.com/Ouranosinc/cowbird/pull/98)).
+
+- Magpie: Security update to version [4.3.0](https://github.com/Ouranosinc/Magpie/releases/tag/4.3.0)
+  (relates to [Ouranosinc/Magpie#640](https://github.com/Ouranosinc/Magpie/pull/640)).
+
+- Twitcher: Security update to version [0.11.0](https://github.com/bird-house/twitcher/releases/tag/v0.11.0)
+  (relates to [bird-house/twitcher#143](https://github.com/bird-house/twitcher/pull/143),
+  [bird-house/twitcher#145](https://github.com/bird-house/twitcher/pull/145) and
+  [bird-house/twitcher#146](https://github.com/bird-house/twitcher/pull/146)).
 
 [2.20.1](https://github.com/bird-house/birdhouse-deploy/tree/2.20.1) (2025-12-16)
 ------------------------------------------------------------------------------------------------------------------
