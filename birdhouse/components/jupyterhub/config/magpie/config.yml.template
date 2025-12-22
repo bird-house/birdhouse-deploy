@@ -8,3 +8,10 @@ providers:
     c4i: false
     type: api
     sync_type: api
+
+permissions:
+  - service: jupyterhub
+    resource: /
+    permission: read
+    group: ${JUPYTERHUB_ADMIN_GROUP_NAME}
+    action: create

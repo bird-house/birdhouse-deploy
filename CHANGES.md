@@ -34,6 +34,60 @@
 
   Also changes the format for `JUPYTERHUB_RESOURCE_LIMITS` to a yaml or JSON string. 
 
+- Refactor Jupyterhub configuration files
+
+  Previously the jupyterhub configuration was defined in `components/jupyterhub/jupyterhub_config.py.template` 
+  except for the custom authenticator which was included in the `pavics/jupyterhub` docker image. This was fine, 
+  except that the configuration was split across two projects and as the configuration got more complex, 
+  maintaining these was getting more difficult.
+
+  This moves all configuration code including the authenticator to a python package named `jupyterhub_custom`
+  located at `components/jupyterhub/jupyterhub_custom/`. It moves all configurations for the authenticator
+  to the `magpie_authenticator.py` file and all the configurations for the spawner to the `custom_spawner.py`
+  file. All variables that are settable by environment variables are moved to the `constants.py` file. This 
+  makes it much easier to see which variables are configurable using environment variables all in one place.
+
+  This change introduces unit tests and style policies (enforced by [ruff](https://docs.astral.sh/ruff/) and 
+  [pre-commit](https://pre-commit.com/)) for this package to encourage better code practices.
+
+  This change should be fully backwards compatible with the exception of the change to how settings for 
+  `deprecated-components/catalog` is handled (see below). However, it does deprecate some environment variables in
+  favour of better configuration solutions:
+
+  - using the `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` variable to set the `DockerSpawner.allowed_images` variable
+    is deprecated.
+    - why?: this variable could be used to insert any python code into the middle of the 
+      `jupyterhub_config.py.template` file. This makes it too easy to accidentally insert code that breaks
+      the configuration settings later on. We should avoid code insertion like this whenever possible.
+    - new method: by default `DockerSpawner.allowed_images` will be set based on the values of 
+      `JUPYTERHUB_IMAGE_SELECTION_NAMES` and `JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES`. If more than one image
+      is specified by those variables then the user will be able to select which one they want. If you 
+      want to specify images other than those in the default those can be set using the `JUPYTERHUB_ALLOWED_IMAGES`
+      which is a yaml or JSON mapping of image names to jupyterlab docker image tags.
+  - using the `JUPYTERHUB_ADMIN_USERS` variable to set the `DockerSpawner.admin_users` variable is deprecated.
+    - why?: this also executes arbitrary code (like above). Also, jupyterhub encourages assigning admin permissions
+      based on 
+      [roles](https://jupyterhub.readthedocs.io/en/latest/tutorial/getting-started/authenticators-users-basics.html#configure-admins-admin-users),
+      not by assigning them to the `admin_users` attribute. This makes it possible to easily revoke admin
+      permissions as well and does not require us to restart Jupyterhub to do so.
+    - new method: a new Magpie group is created. Its name is determined by the `JUPYTERHUB_ADMIN_GROUP_NAME` 
+      variable (default is "jupyterhub-admin"). Add users to this group in Magpie in order to give them admin permissions on Jupyterhub.
+  - using lowercase constants in `JUPYTERHUB_CONFIG_OVERRIDE` is deprecated.
+    - why?: [PEP8 recommends](https://peps.python.org/pep-0008/#constants) constants be written with capitals
+      with underscores separating them.
+    - new method: all the constants that were previously named with lowercase have an uppercase equivalent 
+      in `constants.py`. For example: `notebook_dir == constants.NOTEBOOK_DIR`. The uppercase version is 
+      preferred.
+
+  Note: if your deployment is still using the `deprecated-components/catalog` component. You may want to manually set the
+  following in `JUPYTERHUB_CONFIG_OVERRIDE` since the automatic addition of the the `CATALOG_USERNAME` to the `blocked_users`
+  set is no longer part of the default settings (since the `deprecated-components/catalog` component has been deprecated for 
+  a long time):
+
+  ```python
+  c.MagpieAuthenticator.blocked_users.add("${CATALOG_USERNAME}")
+  ```
+
 [2.20.1](https://github.com/bird-house/birdhouse-deploy/tree/2.20.1) (2025-12-16)
 ------------------------------------------------------------------------------------------------------------------
 
