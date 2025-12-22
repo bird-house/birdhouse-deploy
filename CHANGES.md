@@ -34,6 +34,50 @@
 
   Also changes the format for `JUPYTERHUB_RESOURCE_LIMITS` to a yaml or JSON string. 
 
+[2.20.1](https://github.com/bird-house/birdhouse-deploy/tree/2.20.1) (2025-12-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Add log rotation scheduler job for the nginx logs
+
+  Currently the nginx logs are not rotated so they can build up to quite a large size.
+
+  Previously, they were rotated by the `canarie-api` component but that is no longer a required
+  component and CanarieAPI hasn't handled log rotation since CanarieAPI version 1.0.0 (see 
+  https://github.com/bird-house/birdhouse-deploy/pull/452 for details).
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/593. Here is a summary of the issue:
+
+  - CanarieApi parses the log file every minute starting from the beginning of the file
+  - If the log file is really big it uses a lot of CPU and memory to read through the whole file
+  - This would use a lot less CPU and memory if the log file was smaller
+
+  This quick and least disruptive fix to get the production server out of the water should be a 
+  temporary solution until a better solution using container STDOUT parsing is implemented for 
+  the CanarieAPI and prometheus-log-parser (https://github.com/bird-house/birdhouse-deploy/issues/618).  
+  Then we can deprecate this scheduler job.
+
+[2.20.0](https://github.com/bird-house/birdhouse-deploy/tree/2.20.0) (2025-12-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC API: update to version [`2.1.0`](https://github.com/crim-ca/stac-app/releases/tag/2.1.0).
+
+  - Fix paging error on `/collections` responses causing requests with `limit` query or catalogs
+    with more than 10 collections (by default) to never return collections beyond the first page.
+
+- STAC Browser: update to version [`4.0.0-rc.2-crim`](https://github.com/crim-ca/stac-browser/releases/tag/v4.0.0-rc.2-crim).
+  
+  Apply upstream fixes, notably:
+
+  - Logo resizing issue when embedded in contact details.
+  - Handling of `geojson.io` external viewer references from compatible GeoJSON STAC Assets.
+  - Improvements to UI for better locales, content positioning and browsing experience.
+  - Alignment with latest OGC APIs requirements and conformance classes.
+  - Added support for multiple additional data representations and visualization.
+
 [2.19.0](https://github.com/bird-house/birdhouse-deploy/tree/2.19.0) (2025-12-05)
 ------------------------------------------------------------------------------------------------------------------
 

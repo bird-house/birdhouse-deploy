@@ -1,0 +1,7 @@
+services:
+  proxy:
+    volumes:
+      - proxy-logs:${PROXY_LOG_DIR}
+
+volumes:
+  proxy-logs:
