@@ -62,7 +62,7 @@
     - new method: by default `DockerSpawner.allowed_images` will be set based on the values of 
       `JUPYTERHUB_IMAGE_SELECTION_NAMES` and `JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES`. If more than one image
       is specified by those variables then the user will be able to select which one they want. If you 
-      want to specify images other than those in the default those can be set using the `JUPYTERHUB_ALLOWED_IMAGES`
+      want to specify images other than those in the default, those can be set using the `JUPYTERHUB_ALLOWED_IMAGES`
       which is a yaml or JSON mapping of image names to jupyterlab docker image tags.
   - using the `JUPYTERHUB_ADMIN_USERS` variable to set the `DockerSpawner.admin_users` variable is deprecated.
     - why?: this also executes arbitrary code (like above). Also, jupyterhub encourages assigning admin permissions

@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 import requests
 from jupyterhub.app import JupyterHub
@@ -106,7 +107,7 @@ class MagpieAuthenticator(Authenticator):
         return True
 
     @default("blocked_users")
-    def _default_blocked_users(self) -> set:
+    def _default_blocked_users(self) -> set[str]:
         """Block user with known hardcoded public password or non real Jupyter users."""
         return {"authtest", "anonymous"}
 
@@ -114,7 +115,7 @@ class MagpieAuthenticator(Authenticator):
         """Return any custom handlers the authenticator needs to register."""
         return [("/logout", MagpieLogoutHandler)]
 
-    async def authenticate(self, handler: BaseHandler, data: dict) -> dict | None:
+    async def authenticate(self, handler: BaseHandler, data: dict) -> dict[str, Any] | None:
         """Authenticate a user with login form data."""
         signin_url = self.magpie_url.rstrip("/") + "/signin"
         userdata_url = self.magpie_url.rstrip("/") + "/users/current"

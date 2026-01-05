@@ -1,7 +1,7 @@
 import os
 import random
 import subprocess
-from os.path import join
+from typing import Any
 
 import docker
 from dockerspawner import DockerSpawner
@@ -46,8 +46,9 @@ class CustomDockerSpawner(DockerSpawner):
             "BIRDHOUSE_HOST_URL": constants.BIRDHOUSE_HOST_URL,
             # https://docs.dask.org/en/stable/configuration.html
             # https://jupyterhub-on-hadoop.readthedocs.io/en/latest/dask.html
-            "DASK_DISTRIBUTED__DASHBOARD__LINK": constants.BIRDHOUSE_HOST_URL
-            + "{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status",
+            "DASK_DISTRIBUTED__DASHBOARD__LINK": (
+                constants.BIRDHOUSE_HOST_URL + "{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
+            ),
         }
 
     @default("volumes")
@@ -77,7 +78,7 @@ class CustomDockerSpawner(DockerSpawner):
             }
         if constants.README:
             volumes[constants.README] = {
-                "bind": join(constants.NOTEBOOK_DIR, "README.ipynb"),
+                "bind": os.path.join(constants.NOTEBOOK_DIR, "README.ipynb"),
                 "mode": "ro",
             }
         return volumes
@@ -140,7 +141,7 @@ class CustomDockerSpawner(DockerSpawner):
         return args
 
     @default("extra_host_config")
-    def _default_extra_host_config(self) -> dict:
+    def _default_extra_host_config(self) -> dict[str, Any]:
         """Return extra host configuration dictionary."""
         return {
             # start init pid 1 process to reap defunct processes
@@ -197,22 +198,22 @@ class CustomDockerSpawner(DockerSpawner):
     # https://jupyterhub.readthedocs.io/en/latest/reference/api/spawner.html#jupyterhub.spawner.Spawner
 
     @default("notebook_dir")
-    def _default_notebook_dir(self) -> int:
+    def _default_notebook_dir(self) -> str:
         """Return notebook directory path."""
         return constants.NOTEBOOK_DIR
 
     @default("disable_user_config")
-    def _default_disable_user_config(self) -> int:
+    def _default_disable_user_config(self) -> bool:
         """Disable per-user configuration of single-user servers."""
         return True
 
     @default("default_url")
-    def _default_default_url(self) -> int:
+    def _default_default_url(self) -> str:
         """Set the URL the single-user server should start in."""
         return "/lab"
 
     @default("debug")
-    def _default_debug(self) -> int:
+    def _default_debug(self) -> bool:
         """Debug log output."""
         return True
 
@@ -238,9 +239,9 @@ class CustomDockerSpawner(DockerSpawner):
 
     def __create_tutorial_notebook_hook(self) -> None:
         """Mount tutorial notebooks as volumes based on the selected singleuser jupyterlab image."""
-        container_tutorial_dir = join(constants.NOTEBOOK_DIR, "tutorial-notebooks")
+        container_tutorial_dir = os.path.join(constants.NOTEBOOK_DIR, "tutorial-notebooks")
         if constants.JUPYTERHUB_MOUNT_IMAGE_SPECIFIC_NOTEBOOKS:
-            host_tutorial_dir = join(
+            host_tutorial_dir = os.path.join(
                 constants.JUPYTERHUB_DATA_DIR,
                 "tutorial-notebooks-specific-images",
             )
@@ -248,11 +249,11 @@ class CustomDockerSpawner(DockerSpawner):
             # Mount a volume with a tutorial-notebook subfolder corresponding to the image name, if it exists
             # The names are defined in the JUPYTERHUB_IMAGE_SELECTION_NAMES variable.
             image_name = self.user_options["image"]
-            host_tutorial_subdir = join(host_tutorial_dir, image_name)
+            host_tutorial_subdir = os.path.join(host_tutorial_dir, image_name)
             if not os.path.isdir(host_tutorial_subdir):
                 # Try again, removing any colons and any following text. Useful if the image name contains
                 # the version number, which should not be used in the directory name.
-                host_tutorial_subdir = join(host_tutorial_dir, image_name.split(":")[0])
+                host_tutorial_subdir = os.path.join(host_tutorial_dir, image_name.split(":")[0])
             if os.path.isdir(host_tutorial_subdir):
                 self.volumes[host_tutorial_subdir] = {
                     "bind": container_tutorial_dir,
@@ -260,7 +261,7 @@ class CustomDockerSpawner(DockerSpawner):
                 }
         else:
             # Mount the entire tutorial-notebooks directory
-            self.volumes[join(constants.JUPYTERHUB_DATA_DIR, "tutorial-notebooks")] = {
+            self.volumes[os.path.join(constants.JUPYTERHUB_DATA_DIR, "tutorial-notebooks")] = {
                 "bind": container_tutorial_dir,
                 "mode": "ro",
             }
@@ -268,7 +269,7 @@ class CustomDockerSpawner(DockerSpawner):
     def __create_dir_hook(self) -> None:
         """Create user workspace directories on the host and update permissions if necessary."""
         username = self.user.name
-        jupyterhub_user_dir = join(constants.JUPYTERHUB_DATA_DIR, username)
+        jupyterhub_user_dir = os.path.join(constants.JUPYTERHUB_DATA_DIR, username)
 
         if not os.path.exists(jupyterhub_user_dir):
             os.mkdir(jupyterhub_user_dir, 0o755)
@@ -285,7 +286,7 @@ class CustomDockerSpawner(DockerSpawner):
         if constants.COWBIRD_ENABLED:
             # Case for cowbird setup. The workspace directory should also have the user's ownership,
             # to have working volume mounts with the DockerSpawner.
-            workspace_user_dir = join(constants.WORKSPACE_DIR, username)
+            workspace_user_dir = os.path.join(constants.WORKSPACE_DIR, username)
             if not os.path.exists(workspace_user_dir):
                 os.symlink(jupyterhub_user_dir, workspace_user_dir, target_is_directory=True)
             subprocess.call(
