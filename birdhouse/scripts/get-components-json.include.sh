@@ -12,64 +12,22 @@
 #    "bird-house/birdhouse-deploy:optional-components/testthredds",
 #    "bird-house/birdhouse-deploy:optional-components/test-weaver",
 #    "bird-house/birdhouse-deploy:components/weaver",
-#    "bird-house/birdhouse-deploy:components/cowbird"
+#    "bird-house/birdhouse-deploy:components/cowbird",
+#    "custom:component-from-another-repo"
 #  ]
 # }
 #
 
-THIS_FILE="$(readlink -f "$0" || realpath "$0")"
-THIS_DIR="$(dirname "${THIS_FILE}")"
-COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
-
-if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
-    . "${COMPOSE_DIR}/read-configs.include.sh"
-fi
-
-# default value in case of error or missing definitions
-export BIRDHOUSE_DEPLOY_COMPONENTS_JSON='{"components": []}'
-if [ -z "${ALL_CONF_DIRS}" ]; then
-  log WARN "No components in BIRDHOUSE_DEFAULT_CONF_DIRS and BIRDHOUSE_EXTRA_CONF_DIRS. Components JSON list will be empty!"
-  return
-fi
-
-# resolve path considering if sourced or executed, and whether from current dir, birdhouse-compose include or another dir
-BIRDHOUSE_DEPLOY_COMPONENTS_ROOT=$(dirname -- "$(realpath "$0")")
-if [ "$(echo "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" | grep -cE "/birdhouse/?\$" 2>/dev/null)" -eq 1 ]; then
-  BIRDHOUSE_DEPLOY_COMPONENTS_ROOT=.
-else
-  BIRDHOUSE_DEPLOY_COMPONENTS_ROOT="${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}/.."
-fi
-cd "${BIRDHOUSE_DEPLOY_COMPONENTS_ROOT}" || true  # ignore error for now, empty list expected of known components after
-
-# note: no quotes in 'ls' on purpose to expand glob patterns
-BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN="$( \
-  ls -d1 ./*components/*/ 2>/dev/null \
-  | sed -E "s|\./(.*)/|\1|" \
-  | sed -E '/^[[:space:]]*$/d' \
-  | sed -E 's/^|[[:space:]]+/ -e /' \
-)"
-if [ -z "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN}" ]; then
-  log WARN "" \
-    "Could not resolve known birdhouse-deploy components." \
-    "Aborting to avoid potentially leaking sensible details." \
-    "Components will not be reported on the platform's JSON endpoint."
-  return
-fi
-BIRDHOUSE_DEPLOY_COMPONENTS_LIST_ACTIVE=$( \
-  echo "${ALL_CONF_DIRS}" \
-  | sed '/^[[:space:]]*$/d' \
-)
-
-# create a JSON list using the specified components
-# each component that starts by './' gets replaced with the below birdhouse prefix to provide contextual information
-# other component locations are considered 'custom' and marked as such to provide contextual information
-BIRDHOUSE_DEPLOY_COMPONENTS_BASE="bird-house/birdhouse-deploy:"
-BIRDHOUSE_DEPLOY_COMPONENTS_LIST=$( \
-  echo "${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_ACTIVE}" \
-  | grep ${BIRDHOUSE_DEPLOY_COMPONENTS_LIST_KNOWN} \
-  | sed -E 's|^\s*([A-Za-z0-9./_-]+)\s*$|"\1",|g' \
-  | sed -E "s|^\"\./(.*)\"|\"${BIRDHOUSE_DEPLOY_COMPONENTS_BASE}\\1\"|g" \
-  | sed '/^\n*$/d' \
-)
-BIRDHOUSE_DEPLOY_COMPONENTS_LIST="${BIRDHOUSE_DEPLOY_COMPONENTS_LIST%?}"  # remove last comma
-export BIRDHOUSE_DEPLOY_COMPONENTS_JSON="{\"components\": [${BIRDHOUSE_DEPLOY_COMPONENTS_LIST}]}"
+for adir in ${ALL_CONF_DIRS}; do
+  [ -d "${adir}" ] || continue
+  real_adir="$(readlink -f "${adir}" || realpath "${adir}")"
+  if [ "${real_adir}" = "${real_adir#${COMPOSE_DIR%/}/*components/}" ]; then
+    # component is not in one of the *components directories in COMPOSE_DIR (not custom)
+    component="custom:$(basename ${adir})"
+  else
+    # component is in one of the *components directories in COMPOSE_DIR (not custom)
+    component="bird-house/birdhouse-deploy:${real_adir#${COMPOSE_DIR%/}/}"
+  fi
+  BIRDHOUSE_DEPLOY_COMPONENTS_LIST="${BIRDHOUSE_DEPLOY_COMPONENTS_LIST}\"${component}\","
+done
+export BIRDHOUSE_DEPLOY_COMPONENTS_JSON="{\"components\": [${BIRDHOUSE_DEPLOY_COMPONENTS_LIST%,}]}"
