@@ -20,8 +20,7 @@
 - Fix bugs in `get-components-json.include.sh` and simplify `get-services-json.include.sh`
 
   `get-components-json.include.sh` was unable to handle the case where a component was commented out in
-  the `BIRDHOUSE_EXTRA_CONF_DIRS` variable. Also, it did not display custom components (i.e. those not 
-  in one of the `birhouse/*components/` directories).
+  the `BIRDHOUSE_EXTRA_CONF_DIRS` variable.
 
   This also simplifies the code in both files to make it easier to maintain:
   

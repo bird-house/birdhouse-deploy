@@ -12,8 +12,7 @@
 #    "bird-house/birdhouse-deploy:optional-components/testthredds",
 #    "bird-house/birdhouse-deploy:optional-components/test-weaver",
 #    "bird-house/birdhouse-deploy:components/weaver",
-#    "bird-house/birdhouse-deploy:components/cowbird",
-#    "custom:component-from-another-repo"
+#    "bird-house/birdhouse-deploy:components/cowbird"
 #  ]
 # }
 #
@@ -21,11 +20,9 @@
 for adir in ${ALL_CONF_DIRS}; do
   [ -d "${adir}" ] || continue
   real_adir="$(readlink -f "${adir}" || realpath "${adir}")"
-  if [ "${real_adir}" = "${real_adir#${COMPOSE_DIR%/}/*components/}" ]; then
-    # component is not in one of the *components directories in COMPOSE_DIR (not custom)
-    component="custom:$(basename ${adir})"
-  else
+  if [ "${real_adir}" != "${real_adir#${COMPOSE_DIR%/}/*components/}" ]; then
     # component is in one of the *components directories in COMPOSE_DIR (not custom)
+    # custom components are not included in the /components endpoint
     component="bird-house/birdhouse-deploy:${real_adir#${COMPOSE_DIR%/}/}"
   fi
   BIRDHOUSE_DEPLOY_COMPONENTS_LIST="${BIRDHOUSE_DEPLOY_COMPONENTS_LIST}\"${component}\","
