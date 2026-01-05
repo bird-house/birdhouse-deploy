@@ -34,6 +34,19 @@
 
   Also changes the format for `JUPYTERHUB_RESOURCE_LIMITS` to a yaml or JSON string. 
 
+[2.20.2](https://github.com/bird-house/birdhouse-deploy/tree/2.20.2) (2026-01-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC API: Improve reported service links.
+
+  - Add `STAC_LICENSE_URL` to define the relevant license metadata location of the selected implementation.
+  - Add `STAC_OPENAPI_SPEC_PATH` and `STAC_OPENAPI_DOCS_PATH` to define endpoints of OpenAPI specification.
+  - Update the `/services/stac` response to provide more metadata links, including license details and better
+    API metadata references. Notably, replace the *generic* STAC API Core OpenAPI definition by the 
+    implementation-specific definition self-served by the selected docker image to document API extensions.
+
 [2.20.1](https://github.com/bird-house/birdhouse-deploy/tree/2.20.1) (2025-12-16)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -41,7 +54,7 @@
 
 - Add log rotation scheduler job for the nginx logs
 
-  Currently the nginx logs are not rotated so they can build up to quite a large size.
+  Currently, the nginx logs are not rotated so they can build up to quite a large size.
 
   Previously, they were rotated by the `canarie-api` component but that is no longer a required
   component and CanarieAPI hasn't handled log rotation since CanarieAPI version 1.0.0 (see 
