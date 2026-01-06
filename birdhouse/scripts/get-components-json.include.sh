@@ -24,7 +24,7 @@ for adir in ${ALL_CONF_DIRS}; do
     # component is in one of the *components directories in COMPOSE_DIR (not custom)
     # custom components are not included in the /components endpoint
     component="bird-house/birdhouse-deploy:${real_adir#${COMPOSE_DIR%/}/}"
+    BIRDHOUSE_DEPLOY_COMPONENTS_LIST="${BIRDHOUSE_DEPLOY_COMPONENTS_LIST}\"${component}\","
   fi
-  BIRDHOUSE_DEPLOY_COMPONENTS_LIST="${BIRDHOUSE_DEPLOY_COMPONENTS_LIST}\"${component}\","
 done
 export BIRDHOUSE_DEPLOY_COMPONENTS_JSON="{\"components\": [${BIRDHOUSE_DEPLOY_COMPONENTS_LIST%,}]}"
