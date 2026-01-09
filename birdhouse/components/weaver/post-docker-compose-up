@@ -146,17 +146,25 @@ while true; do
              "${MAGPIE_URL}/signin" \
     )
     # trim excess stuff in cookie_jar pseudo-file (comments, empty lines)
-    # also trim duplicate cookies ".<host>" and "<host>" returned by Magpie behind proxy
-    cookie_jar=$(echo "${cookie_jar}" | grep -v '# ' | grep -v -e '^$' | grep -v '_\.')
-    # validate exactly 1 cookie retrieved (empty if bad-auth or invalid endpoint)
-    if [ ! -z "${cookie_jar}" ] && [ "$(echo "${cookie_jar}" | wc -l)" -eq 1 ]; then
-        fields="$(echo "${cookie_jar}" | wc -w)"
-        cookie_name="$(echo "${cookie_jar}" | cut -f $(( fields - 1 )) )"
-        cookie_value="$(echo "${cookie_jar}" | cut -f "${fields}")"
-        cookie="${cookie_name}=${cookie_value}"
+    cookie_jar=$(echo "${cookie_jar}" | grep -v '# ' | grep -v -e '^$')
+    # validate that cookie(s) are retrieved (empty if bad-auth or invalid endpoint)
+    # there can be "duplicate" cookies ".<host>" and "<host>" returned by Magpie behind proxy
+    if [ -n "${cookie_jar}" ] && [ "$(echo "${cookie_jar}" | wc -l)" -ge 1 ]; then
+        cookie=$(
+            printf "%s\n" "$cookie_jar" | while IFS= read -r cookie_line; do
+                fields=$(echo "$cookie_line" | wc -w)
+                if [ "${fields}" -lt 2 ]; then
+                    continue
+                fi
+                cookie_name=$(echo "$cookie_line" | cut -f $(( fields - 1 )))
+                cookie_value=$(echo "$cookie_line" | cut -f "$fields")
+                printf "%s=%s; " "$cookie_name" "$cookie_value"
+            done
+        )
         printf " %s\n" "OK!"
         break;
     fi
+
     # interrupt if max time reached
     next_time=$(date -u +%s)
     delta_time=$(( next_time - start_time ))

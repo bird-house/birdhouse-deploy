@@ -15,6 +15,8 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Changes
+
 - STAC API: Security update to version [2.2.0](https://github.com/crim-ca/stac-app/releases/tag/2.2.0)
   (relates to [crim-ca/stac-app#65](https://github.com/crim-ca/stac-app/pull/65)).
 
@@ -31,6 +33,11 @@
   (relates to [bird-house/twitcher#143](https://github.com/bird-house/twitcher/pull/143),
   [bird-house/twitcher#145](https://github.com/bird-house/twitcher/pull/145) and
   [bird-house/twitcher#146](https://github.com/bird-house/twitcher/pull/146)).
+
+- Weaver: Update `post-docker-compose-up` script to handle multiple Magpie cookies in response.
+
+  This can happen depending on specific internal HTTP libraries versions of the services.
+  To retain backward/forward compatibility, all cookies returned from Magpie are chained in following `curl` commands.
 
 [2.20.2](https://github.com/bird-house/birdhouse-deploy/tree/2.20.2) (2026-01-05)
 ------------------------------------------------------------------------------------------------------------------
