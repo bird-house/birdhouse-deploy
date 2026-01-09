@@ -17,22 +17,27 @@
 
 ## Changes
 
-- STAC API: Security update to version [2.2.0](https://github.com/crim-ca/stac-app/releases/tag/2.2.0)
-  (relates to [crim-ca/stac-app#65](https://github.com/crim-ca/stac-app/pull/65)).
+- STAC API: Security update and minor OpenAPI version reporting fixes
+  using version [2.2.0](https://github.com/crim-ca/stac-app/releases/tag/2.2.0)
+  (relates to [crim-ca/stac-app#65](https://github.com/crim-ca/stac-app/pull/65)
+  and [crim-ca/stac-app#69](https://github.com/crim-ca/stac-app/pull/69)).
 
-- Weaver: Security update to version [6.8.0](https://github.com/crim-ca/weaver/releases/tag/6.8.0)
-  (relates to [crim-ca/weaver#868](https://github.com/crim-ca/weaver/pull/868)).
+- Weaver: Security update using version [6.8.1](https://github.com/crim-ca/weaver/releases/tag/6.8.1)
+  (relates to [crim-ca/weaver#868](https://github.com/crim-ca/weaver/pull/868)
+  and [crim-ca/weaver#869](https://github.com/crim-ca/weaver/pull/869)).
 
-- Cowbird: Security update to version [4.3.0](https://github.com/Ouranosinc/cowbird/releases/tag/2.6.0)
+- Cowbird: Security update using version [2.6.0](https://github.com/Ouranosinc/cowbird/releases/tag/2.6.0)
   (relates to [Ouranosinc/cowbird#98](https://github.com/Ouranosinc/cowbird/pull/98)).
 
-- Magpie: Security update to version [4.3.0](https://github.com/Ouranosinc/Magpie/releases/tag/4.3.0)
-  (relates to [Ouranosinc/Magpie#640](https://github.com/Ouranosinc/Magpie/pull/640)).
+- Magpie: Security update using version [4.3.1](https://github.com/Ouranosinc/Magpie/releases/tag/4.3.1)
+  (relates to [Ouranosinc/Magpie#640](https://github.com/Ouranosinc/Magpie/pull/640)
+  and [Ouranosinc/Magpie#642](https://github.com/Ouranosinc/Magpie/pull/642)).
 
-- Twitcher: Security update to version [0.11.0](https://github.com/bird-house/twitcher/releases/tag/v0.11.0)
+- Twitcher: Security update using version [0.11.0](https://github.com/bird-house/twitcher/releases/tag/v0.11.0)
   (relates to [bird-house/twitcher#143](https://github.com/bird-house/twitcher/pull/143),
-  [bird-house/twitcher#145](https://github.com/bird-house/twitcher/pull/145) and
-  [bird-house/twitcher#146](https://github.com/bird-house/twitcher/pull/146)).
+  [bird-house/twitcher#145](https://github.com/bird-house/twitcher/pull/145),
+  [bird-house/twitcher#146](https://github.com/bird-house/twitcher/pull/146) and
+  [bird-house/twitcher#148](https://github.com/bird-house/twitcher/pull/148)).
 
 - Weaver: Update `post-docker-compose-up` script to handle multiple Magpie cookies in response.
 
