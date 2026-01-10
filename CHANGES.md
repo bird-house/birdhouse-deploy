@@ -39,10 +39,13 @@
   [bird-house/twitcher#146](https://github.com/bird-house/twitcher/pull/146) and
   [bird-house/twitcher#148](https://github.com/bird-house/twitcher/pull/148)).
 
-- Weaver: Update `post-docker-compose-up` script to handle multiple Magpie cookies in response.
+- Weaver: Update `post-docker-compose-up` script.
+  - Handle multiple Magpie cookies in response.
+    This can happen depending on specific internal HTTP libraries versions of the services.
+    To retain backward/forward compatibility, all cookies returned from Magpie are chained in following `curl` commands.
+  - Use birdhouse `log` utility to report operations produced by the script rather than custom "echo level".
 
-  This can happen depending on specific internal HTTP libraries versions of the services.
-  To retain backward/forward compatibility, all cookies returned from Magpie are chained in following `curl` commands.
+- Birdhouse: Allow `log <LEVEL> -n ...` to generate log outputs without newline.
 
 [2.20.2](https://github.com/bird-house/birdhouse-deploy/tree/2.20.2) (2026-01-05)
 ------------------------------------------------------------------------------------------------------------------

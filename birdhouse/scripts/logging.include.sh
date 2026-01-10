@@ -58,6 +58,11 @@ export LOG_CRITICAL="${REG_BG_BOLD}CRITICAL${NORMAL}: "  # to report misuse of f
 #    - all log levels will be written to stderr (the default) except for ERROR which will be suppressed and WARN which will be written to stdout
 log_dest() {
     level=$1
+    end_line="\n"
+    if [ "$2" = "-n" ]; then
+      end_line=""
+      shift || true
+    fi
     option=$2
     log_line=
     while IFS= read -r line; do
@@ -93,12 +98,12 @@ log_dest() {
             done
         fi
         if [ "${log_quiet}" = "True" ]; then
-            printf "${log_line}\n" >> "${log_file:-/dev/null}"
+            printf "${log_line}${end_line}" >> "${log_file:-/dev/null}"
         else
             if [ -n "${log_file}" ]; then
-                printf "${log_line}\n" | tee -a "${log_file}" 1>&"${log_fd}"
+                printf "${log_line}${end_line}" | tee -a "${log_file}" 1>&"${log_fd}"
             else
-                printf "${log_line}\n" 1>&"${log_fd}"
+                printf "${log_line}${end_line}" 1>&"${log_fd}"
             fi
         fi
     fi
@@ -131,35 +136,40 @@ fi
 log() {
     level="$1"
     shift || true
+    log_opts=""
+    if [ "$1" = "-n" ]; then
+      log_opts="-n"
+      shift || true
+    fi
     case "${BIRDHOUSE_LOG_LEVEL}" in
         DEBUG|INFO|WARN|ERROR)
             if [ "$*" = "" ]; then
-                echo "${LOG_CRITICAL}Invalid: log message is missing." | log_dest CRITICAL
+                echo "${LOG_CRITICAL}Invalid: log message is missing." | log_dest CRITICAL ${log_opts}
                 exit 2
             fi
             case "${BIRDHOUSE_LOG_LEVEL}-${level}" in
                 DEBUG-DEBUG)
-                    echo "${LOG_DEBUG}$*" | log_dest DEBUG
+                    echo "${LOG_DEBUG}$*" | log_dest DEBUG ${log_opts}
                 ;;
                 DEBUG-INFO|INFO-INFO)
-                    echo "${LOG_INFO}$*" | log_dest INFO
+                    echo "${LOG_INFO}$*" | log_dest INFO ${log_opts}
                 ;;
                 DEBUG-WARN|INFO-WARN|WARN-WARN)
-                    echo "${LOG_WARN}$*" | log_dest WARN
+                    echo "${LOG_WARN}$*" | log_dest WARN ${log_opts}
                 ;;
                 *-ERROR)
-                    echo "${LOG_ERROR}$*" | log_dest ERROR
+                    echo "${LOG_ERROR}$*" | log_dest ERROR ${log_opts}
                 ;;
                 *-DEBUG|*-INFO|*-WARN)
                 ;;
                 *)
-                    echo "${LOG_CRITICAL}Invalid log level: [${level}]" | log_dest CRITICAL
+                    echo "${LOG_CRITICAL}Invalid log level: [${level}]" | log_dest CRITICAL ${log_opts}
                     exit 2
                 ;;
             esac
         ;;
         *)
-            echo "${LOG_CRITICAL}Invalid log level setting: [BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL}]." | log_dest CRITICAL
+            echo "${LOG_CRITICAL}Invalid log level setting: [BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL}]." | log_dest CRITICAL ${log_opts}
             exit 2
         ;;
     esac
