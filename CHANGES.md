@@ -15,7 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Incorrect usage checks for `birdhouse backup create`
+
+  Running `birdhouse backup create` was failing without either the `--no-restic` or `--snapshot` options specified.
+  However, `--snapshot` is only required for the `restore` subargument (not `create`) and so `create` would often
+  fail with a confusing error message.
+
+  This fixes the issue by moving the check so that it is only triggered when restoring a backup.
 
 [2.20.2](https://github.com/bird-house/birdhouse-deploy/tree/2.20.2) (2026-01-05)
 ------------------------------------------------------------------------------------------------------------------
