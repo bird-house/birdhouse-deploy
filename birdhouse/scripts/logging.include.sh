@@ -33,10 +33,11 @@ export LOG_ERROR="${RED}ERROR${NORMAL}:    "
 export LOG_CRITICAL="${REG_BG_BOLD}CRITICAL${NORMAL}: "  # to report misuse of functions
 
 
-# Determines where to send log messages:
+# Determines where and how to send log messages:
 # - to the file descriptor set by BIRDHOUSE_LOG_FD, or if there is a "fd" option in BIRDHOUSE_LOG_DEST_OVERRIDE for the given log level
 # - to the file set by BIRDHOUSE_LOG_FILE, or if there is a "file" option in BIRDHOUSE_LOG_DEST_OVERRIDE for the given log level
 # - suppresses writing to a file descriptor if BIRDHOUSE_LOG_QUIET is "True" or if there is a "quiet" option in BIRDHOUSE_LOG_DEST_OVERRIDE for the given log level
+# - an optional '-n' before the message(s) prevents a newline from being appended to the log message, by forwarding the option to the 'log' function
 #
 # The BIRDHOUSE_LOG_DEST_OVERRIDE contains a ':' delimited string that determines how to override the log destination for specific log levels.
 # BIRDHOUSE_LOG_DEST_OVERRIDE sections contain '<log-level>:<option>:<argument>', this can be repeated multiple times to allow for different settings for different
@@ -131,8 +132,9 @@ if [ -z "${BIRDHOUSE_LOG_FD##*[!0-9]*}" ]; then
     exit 2
 fi
 
-# Usage: log {LEVEL} "{message}" [...]
+# Usage: log {LEVEL} [-n] "{message}" [...]
 # Any amount of messages can be passed to the function.
+# If provided, the '-n' option prevents a newline from being appended to the log message.
 log() {
     level="$1"
     shift || true
