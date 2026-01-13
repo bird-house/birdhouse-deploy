@@ -37,7 +37,7 @@ export LOG_CRITICAL="${REG_BG_BOLD}CRITICAL${NORMAL}: "  # to report misuse of f
 # - to the file descriptor set by BIRDHOUSE_LOG_FD, or if there is a "fd" option in BIRDHOUSE_LOG_DEST_OVERRIDE for the given log level
 # - to the file set by BIRDHOUSE_LOG_FILE, or if there is a "file" option in BIRDHOUSE_LOG_DEST_OVERRIDE for the given log level
 # - suppresses writing to a file descriptor if BIRDHOUSE_LOG_QUIET is "True" or if there is a "quiet" option in BIRDHOUSE_LOG_DEST_OVERRIDE for the given log level
-# - an optional '-n' before the message(s) prevents a newline from being appended to the log message, by forwarding the option to the 'log' function
+# - an optional '-n' before the message(s) prevents a newline from being appended to the log message (see the 'log' function for details)
 #
 # The BIRDHOUSE_LOG_DEST_OVERRIDE contains a ':' delimited string that determines how to override the log destination for specific log levels.
 # BIRDHOUSE_LOG_DEST_OVERRIDE sections contain '<log-level>:<option>:<argument>', this can be repeated multiple times to allow for different settings for different
@@ -132,17 +132,31 @@ if [ -z "${BIRDHOUSE_LOG_FD##*[!0-9]*}" ]; then
     exit 2
 fi
 
-# Usage: log {LEVEL} [-n] "{message}" [...]
+# Usage: log {LEVEL} [-n] [-p] "{message}" [...]
 # Any amount of messages can be passed to the function.
 # If provided, the '-n' option prevents a newline from being appended to the log message.
+# If provided, the '-p' option prevents the log prefix from being added to the message.
+# The 'log <LEVEL> -p ...' combination is typically employed to provide a continued message from a
+# previous 'log <LEVEL> -n ...' call, ensuring consistent formatting and logging destination based on the level.
+# The '-n' and '-p' options can be combined to perform multiple log calls one after the other on the same line.
+# Note that consistent '<LEVEL>' values should be used when using '-n/-p' options to ensure proper logging behavior that
+# considers the log level and file/fd redirections. A 'log <LEVEL> -n ...' call should typically never be by itself.
 log() {
     level="$1"
     shift || true
     log_opts=""
-    if [ "$1" = "-n" ]; then
-      log_opts="-n"
-      shift || true
-    fi
+    log_prefix=""
+    log_with_prefix=1
+    while [ "$1" = "-n" ] || [ "$1" = "-p" ]; do
+        if [ "$1" = "-n" ]; then
+            log_opts="-n"
+        fi
+        if [ "$1" = "-p" ]; then
+            log_with_prefix=0
+        fi
+        shift || true
+    done
+
     case "${BIRDHOUSE_LOG_LEVEL}" in
         DEBUG|INFO|WARN|ERROR)
             if [ "$*" = "" ]; then
@@ -151,16 +165,28 @@ log() {
             fi
             case "${BIRDHOUSE_LOG_LEVEL}-${level}" in
                 DEBUG-DEBUG)
-                    echo "${LOG_DEBUG}$*" | log_dest DEBUG ${log_opts}
+                    if [ ${log_with_prefix} -eq 1 ]; then
+                        log_prefix="${LOG_DEBUG}"
+                    fi
+                    echo "${log_prefix}$*" | log_dest DEBUG ${log_opts}
                 ;;
                 DEBUG-INFO|INFO-INFO)
-                    echo "${LOG_INFO}$*" | log_dest INFO ${log_opts}
+                    if [ ${log_with_prefix} -eq 1 ]; then
+                        log_prefix="${LOG_INFO}"
+                    fi
+                    echo "${log_prefix}$*" | log_dest INFO ${log_opts}
                 ;;
                 DEBUG-WARN|INFO-WARN|WARN-WARN)
-                    echo "${LOG_WARN}$*" | log_dest WARN ${log_opts}
+                    if [ ${log_with_prefix} -eq 1 ]; then
+                        log_prefix="${LOG_WARN}"
+                    fi
+                    echo "${log_prefix}$*" | log_dest WARN ${log_opts}
                 ;;
                 *-ERROR)
-                    echo "${LOG_ERROR}$*" | log_dest ERROR ${log_opts}
+                    if [ ${log_with_prefix} -eq 1 ]; then
+                        log_prefix="${LOG_ERROR}"
+                    fi
+                    echo "${log_prefix}$*" | log_dest ERROR ${log_opts}
                 ;;
                 *-DEBUG|*-INFO|*-WARN)
                 ;;

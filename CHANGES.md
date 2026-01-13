@@ -45,7 +45,11 @@
     To retain backward/forward compatibility, all cookies returned from Magpie are chained in following `curl` commands.
   - Use birdhouse `log` utility to report operations produced by the script rather than custom "echo level".
 
-- Birdhouse: Allow `log <LEVEL> -n ...` to generate log outputs without newline.
+- Birdhouse: Allow `log <LEVEL> -n ...` and `log <LEVEL> -p ...` to generate log outputs without newline/prefixes.
+  
+  These options allow writing multiple log entries onto the same line for correct visual rendering of distinct `log`
+  calls separated to allow some intermediate logic. The `log` function invocations with these options respect the
+  log levels in order to make the messages consistent with enabled redirections and verbosity.
 
 [2.20.2](https://github.com/bird-house/birdhouse-deploy/tree/2.20.2) (2026-01-05)
 ------------------------------------------------------------------------------------------------------------------
