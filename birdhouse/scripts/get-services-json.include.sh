@@ -1,13 +1,5 @@
 #!/bin/sh
 
-THIS_FILE="$(readlink -f "$0" || realpath "$0")"
-THIS_DIR="$(dirname "${THIS_FILE}")"
-COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
-
-if [ -f "${COMPOSE_DIR}/read-configs.include.sh" ]; then
-    . "${COMPOSE_DIR}/read-configs.include.sh"
-fi
-
 # default value in case of error or missing definitions
 
 for adir in ${ALL_CONF_DIRS}; do
