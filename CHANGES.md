@@ -17,6 +17,16 @@
 
 ## Fixes
 
+- Fix bugs in `get-components-json.include.sh` and simplify `get-services-json.include.sh`
+
+  `get-components-json.include.sh` was unable to handle the case where a component was commented out in
+  the `BIRDHOUSE_EXTRA_CONF_DIRS` variable.
+
+  This also simplifies the code in both files to make it easier to maintain:
+  
+  - removed unnecessary variable declarations
+  - simplify component discovery `get-components-json.include.sh`
+
 - Incorrect usage checks for `birdhouse backup create`
 
   Running `birdhouse backup create` was failing without either the `--no-restic` or `--snapshot` options specified.
