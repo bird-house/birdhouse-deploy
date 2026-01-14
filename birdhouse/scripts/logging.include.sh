@@ -118,7 +118,7 @@ for level in CRITICAL DEBUG INFO WARN ERROR; do
 done
 
 if [ -z "${BIRDHOUSE_LOG_FD##*[!0-9]*}" ]; then
-    printf "${LOG_CRITICAL}Invalid log file descriptor setting (not an integer): [BIRDHOUSE_LOG_FD=${BIRDHOUSE_LOG_FD}].\n" | log_dest CRITICAL
+    echo "${LOG_CRITICAL}Invalid log file descriptor setting (not an integer): [BIRDHOUSE_LOG_FD=${BIRDHOUSE_LOG_FD}]." | log_dest CRITICAL
     exit 2
 fi
 
