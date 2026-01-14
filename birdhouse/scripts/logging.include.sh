@@ -150,7 +150,7 @@ log() {
     case "${BIRDHOUSE_LOG_LEVEL}" in
         DEBUG|INFO|WARN|ERROR)
             if [ "$#" -eq 0 ]; then
-                echo "${LOG_CRITICAL}Invalid: log message is missing." | log_dest CRITICAL ${log_opts}
+                echo "${LOG_CRITICAL}Invalid: log message is missing." | log_dest CRITICAL
                 exit 2
             fi
             case "${BIRDHOUSE_LOG_LEVEL}-${level}" in
