@@ -65,6 +65,8 @@ log_dest() {
       shift || true
     fi
     option=$2
+    # pad every line with 10 spaces (except for the first) to align with the first line in the message
+    # sed is used for brevity and because it will pad the last line in a log message even if it doesn't end with a newline.
     log_line="$(sed '2,$s/^/          /')"
     log_quiet="${BIRDHOUSE_LOG_QUIET}"
     log_fd="${BIRDHOUSE_LOG_FD}"
