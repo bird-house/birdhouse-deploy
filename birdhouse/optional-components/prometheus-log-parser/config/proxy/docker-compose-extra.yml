@@ -1,12 +1,10 @@
 services:
   proxy:
     volumes:
+      # Note: proxy-logs volume is defined in the proxy-logs-volume component
       - proxy-logs:${PROXY_LOG_DIR}
   prometheus-log-parser:
     volumes:
       - proxy-logs:/var/log/proxy
     environment:
       - PROXY_LOG_FILE=${PROXY_LOG_FILE}
-
-volumes:
-  proxy-logs:

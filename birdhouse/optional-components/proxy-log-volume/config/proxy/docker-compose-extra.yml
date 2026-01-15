@@ -1,0 +1,8 @@
+services:
+  proxy:
+    volumes:
+      - ./optional-components/proxy-log-volume/config/proxy/conf.extra-directives.d:/etc/nginx/conf.extra-directives.d/proxy-log-volume:ro
+      - proxy-logs:${PROXY_LOG_DIR}
+
+volumes:
+  proxy-logs:
