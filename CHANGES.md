@@ -17,6 +17,42 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.20.3](https://github.com/bird-house/birdhouse-deploy/tree/2.20.3) (2026-01-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix bugs in `get-components-json.include.sh` and simplify `get-services-json.include.sh`
+
+  `get-components-json.include.sh` was unable to handle the case where a component was commented out in
+  the `BIRDHOUSE_EXTRA_CONF_DIRS` variable.
+
+  This also simplifies the code in both files to make it easier to maintain:
+  
+  - removed unnecessary variable declarations
+  - simplify component discovery `get-components-json.include.sh`
+
+- Incorrect usage checks for `birdhouse backup create`
+
+  Running `birdhouse backup create` was failing without either the `--no-restic` or `--snapshot` options specified.
+  However, `--snapshot` is only required for the `restore` subargument (not `create`) and so `create` would often
+  fail with a confusing error message.
+
+  This fixes the issue by moving the check so that it is only triggered when restoring a backup.
+
+[2.20.2](https://github.com/bird-house/birdhouse-deploy/tree/2.20.2) (2026-01-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC API: Improve reported service links.
+
+  - Add `STAC_LICENSE_URL` to define the relevant license metadata location of the selected implementation.
+  - Add `STAC_OPENAPI_SPEC_PATH` and `STAC_OPENAPI_DOCS_PATH` to define endpoints of OpenAPI specification.
+  - Update the `/services/stac` response to provide more metadata links, including license details and better
+    API metadata references. Notably, replace the *generic* STAC API Core OpenAPI definition by the 
+    implementation-specific definition self-served by the selected docker image to document API extensions.
+
 [2.20.1](https://github.com/bird-house/birdhouse-deploy/tree/2.20.1) (2025-12-16)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -24,7 +60,7 @@
 
 - Add log rotation scheduler job for the nginx logs
 
-  Currently the nginx logs are not rotated so they can build up to quite a large size.
+  Currently, the nginx logs are not rotated so they can build up to quite a large size.
 
   Previously, they were rotated by the `canarie-api` component but that is no longer a required
   component and CanarieAPI hasn't handled log rotation since CanarieAPI version 1.0.0 (see 
