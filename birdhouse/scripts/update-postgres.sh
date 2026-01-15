@@ -29,6 +29,8 @@ DATA_BACKUP_DIR="${DATA_BACKUP_DIR:-"${TMPDIR:-/tmp}"/birdhouse-postgres-migrate
 POSTGRES_COMPONENTS="-a magpie -a $(birdhouse -q configs -c 'echo $POSTGRES_DATABASES_TO_CREATE' | sed 's/ / -a /g')"
 
 log INFO "Migrating postgres databases to version ${POSTGRES_VERSION_UPDATE}"
+log INFO "Postgres databases for the following components will be updated: $(echo "${POSTGRES_COMPONENTS}" | sed 's/[[:space:]]*-a[[:space:]]*/ /g')"
+log INFO "Current databases files will be backed up to the directory: ${DATA_BACKUP_DIR}"
 
 log INFO "Starting the birdhouse stack in order to backup existing databases."
 ${BIRDHOUSE_EXE} compose up -d
@@ -50,7 +52,7 @@ MAGPIE_POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE} POSTGRES_VERSION=${POSTGRES_V
 
 ${BIRDHOUSE_EXE} backup restore --no-restic ${POSTGRES_COMPONENTS}
 
-log INFO "Migration is now complete. Please ensure that the data has been upgraded properly.
+log WARN "Migration is now complete. Please ensure that the data has been upgraded properly.
 If you are satisfied that the databases have been updated properly please add the following to your local environment file:
 
 export MAGPIE_POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE} 
