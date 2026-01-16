@@ -51,6 +51,42 @@
   calls separated to allow some intermediate logic. The `log` function invocations with these options respect the
   log levels in order to make the messages consistent with enabled redirections and verbosity.
 
+[2.20.4](https://github.com/bird-house/birdhouse-deploy/tree/2.20.4) (2026-01-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Update `scheduler` image version
+
+  Docker engine version 29.0 dropped support for docker API versions <1.44. That means that the docker client used
+  by the `scheduler` component cannot be used with modern versions of docker engine. To fix this, the `scheduler`
+  component's image has been updated to version [0.6-rc3](https://hub.docker.com/layers/pavics/crontab/0.6-rc3) which
+  uses a modern version of the docker client.
+
+
+[2.20.3](https://github.com/bird-house/birdhouse-deploy/tree/2.20.3) (2026-01-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix bugs in `get-components-json.include.sh` and simplify `get-services-json.include.sh`
+
+  `get-components-json.include.sh` was unable to handle the case where a component was commented out in
+  the `BIRDHOUSE_EXTRA_CONF_DIRS` variable.
+
+  This also simplifies the code in both files to make it easier to maintain:
+  
+  - removed unnecessary variable declarations
+  - simplify component discovery `get-components-json.include.sh`
+
+- Incorrect usage checks for `birdhouse backup create`
+
+  Running `birdhouse backup create` was failing without either the `--no-restic` or `--snapshot` options specified.
+  However, `--snapshot` is only required for the `restore` subargument (not `create`) and so `create` would often
+  fail with a confusing error message.
+
+  This fixes the issue by moving the check so that it is only triggered when restoring a backup.
+
 [2.20.2](https://github.com/bird-house/birdhouse-deploy/tree/2.20.2) (2026-01-05)
 ------------------------------------------------------------------------------------------------------------------
 
