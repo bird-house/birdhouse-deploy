@@ -692,3 +692,41 @@ Note that you do *not* need an SSL certificate set up to deploy the stack in thi
 .. warning:: 
 
   **DO NOT** enable this component in production. This is intended for local development and test purposes only!
+
+Proxy Log Volume
+----------------
+
+This optional setting creates a named docker volume `proxy-logs` that contains the logs directory for the `proxy` component.
+
+It also creates an Nginx configuration that instructs the proxy service to write access logs to a regular file in that directory.
+
+.. note::
+
+    By default, access logs are only written to the stdout stream of the `proxy` docker container.
+
+.. note::
+
+    Because access logs are now being written to a regular file, enabling this component will also enable the 
+    `optional-components/scheduler-job-logrotate-nginx` scheduler job to ensure that this file is rotated and that it will not
+    get too big.
+
+.. warning::
+
+    **DO NOT** enable this setting directly. It will be enabled as a component dependency by other components that require access
+    to the `proxy` access logs as a regular file.
+
+
+If you are creating a custom component that requires access to the `proxy` access logs, add the following to that component's
+`default.env` file:
+
+.. code::shell
+
+    COMPONENT_DEPENDENCIES="
+        ./optional-components/proxy-log-volume
+    "
+
+This will ensure that the proxy log volume setting will be enabled. You can then mount the volume named `proxy-logs` to any container
+that your custom component creates and read the `proxy` access logs at a file defined by the configuration variable `PROXY_LOG_FILE`.
+
+For example, if `PROXY_LOG_FILE` is set to ``access_file.log`` (the default) and you mount the `proxy-logs` volume to the ``/logs``
+directory in your container, the `proxy` access logs can be read at ``/logs/access_file.log`` in your container.

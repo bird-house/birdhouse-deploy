@@ -1,0 +1,3 @@
+if ! echo "${ALL_CONF_DIRS}" | grep -q 'proxy-log-volume[[:space:]]*$'; then
+  log WARN 'The scheduler-job-logrotate-nginx scheduler job is enabled but proxy access logs are not being written to a regular file that needs rotation. This WILL cause problems! Please disable the scheduler-job-logrotate-nginx job.'
+fi
