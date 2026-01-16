@@ -17,6 +17,19 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.20.4](https://github.com/bird-house/birdhouse-deploy/tree/2.20.4) (2026-01-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Update `scheduler` image version
+
+  Docker engine version 29.0 dropped support for docker API versions <1.44. That means that the docker client used
+  by the `scheduler` component cannot be used with modern versions of docker engine. To fix this, the `scheduler`
+  component's image has been updated to version [0.6-rc3](https://hub.docker.com/layers/pavics/crontab/0.6-rc3) which
+  uses a modern version of the docker client.
+
+
 [2.20.3](https://github.com/bird-house/birdhouse-deploy/tree/2.20.3) (2026-01-13)
 ------------------------------------------------------------------------------------------------------------------
 
