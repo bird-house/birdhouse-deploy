@@ -16,11 +16,23 @@
 # For example, to update the current postgres databases to version 18.1 and write backups to /tmp/test/
 # 
 # $ POSTGRES_VERSION_UPDATE=18.1 DATA_BACKUP_DIR=/tmp/test/ ./update-postgresh.sh
+#
+# This script will not update other postgres databases that may be present in this deployment but it can
+# be used as a starting point to figure out how to update other databases. For example, it may be possible
+# to update the postgres database used by generic_bird with (untested, please proceed with caution):
+#
+# $ birdhouse backup create --no-restic -a generic_bird
+# $ birdhouse compose down
+# $ docker volume rm birdhouse_postgres_generic_bird
+# $ GENERIC_BIRD_POSTGRES_IMAGE=postgres:18.1 birdhouse compose up -d
+# $ birdhouse backup restore --no-restic -a generic_bird
+#
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
 BIRDHOUSE_EXE="${THIS_DIR}/../../bin/birdhouse"
 
+# load logging functions
 eval $(${BIRDHOUSE_EXE} configs --print-log-command)
 
 : ${POSTGRES_VERSION_UPDATE:?"$(log ERROR "POSTGRES_VERSION_UPDATE must be set")"}
