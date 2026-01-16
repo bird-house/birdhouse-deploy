@@ -8,7 +8,7 @@ x-logging:
 
 services:
   postgres:
-    image: postgres:9.6
+    image: ${POSTGRES_IMAGE}
     container_name: postgres
     # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
     volumes:
