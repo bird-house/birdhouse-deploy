@@ -65,47 +65,39 @@ log_dest() {
       shift || true
     fi
     option=$2
-    log_line=
-    while IFS= read -r line; do
-        if [ -z "${log_line}" ]; then
-            log_line="$line"
-        else
-            # pad the next line by 10 space characters so that it aligns with the first line in the message.
-            log_line="${log_line}\n          ${line}"
-        fi
-    done
-    if [ -n "${log_line}" ]; then
-        log_quiet="${BIRDHOUSE_LOG_QUIET}"
-        log_fd="${BIRDHOUSE_LOG_FD}"
-        log_file="${BIRDHOUSE_LOG_FILE}"
-        if [ "${option}" != "NO_OVERRIDE" ]; then
-            override_string="${BIRDHOUSE_LOG_DEST_OVERRIDE}"
+    # pad every line with 10 spaces (except for the first) to align with the first line in the message
+    # sed is used for brevity and because it will pad the last line in a log message even if it doesn't end with a newline.
+    log_line="$(sed '2,$s/^/          /')"
+    log_quiet="${BIRDHOUSE_LOG_QUIET}"
+    log_fd="${BIRDHOUSE_LOG_FD}"
+    log_file="${BIRDHOUSE_LOG_FILE}"
+    if [ "${option}" != "NO_OVERRIDE" ]; then
+        override_string="${BIRDHOUSE_LOG_DEST_OVERRIDE}"
+        override_section="${override_string#*"${level}:"}"
+        while [ "${override_string}" != "${override_section}" ]; do
+            override="$(echo "${override_section}" | cut -d: -f 1-2)"
+            case "${override}" in
+                quiet:*)
+                    log_quiet=True
+                ;;
+                fd:*)
+                    log_fd="$(echo "${override}" | cut -d: -f 2)"
+                ;;
+                file:*)
+                    log_file="$(echo "${override}" | cut -d: -f 2)"
+                ;;
+            esac
+            override_string="${override_string#*"${level}:${override}"}"
             override_section="${override_string#*"${level}:"}"
-            while [ "${override_string}" != "${override_section}" ]; do
-                override="$(echo "${override_section}" | cut -d: -f 1-2)"
-                case "${override}" in
-                    quiet:*)
-                        log_quiet=True
-                    ;;
-                    fd:*)
-                        log_fd="$(echo "${override}" | cut -d: -f 2)"
-                    ;;
-                    file:*)
-                        log_file="$(echo "${override}" | cut -d: -f 2)"
-                    ;;
-                esac
-                override_string="${override_string#*"${level}:${override}"}"
-                override_section="${override_string#*"${level}:"}"
-            done
-        fi
-        if [ "${log_quiet}" = "True" ]; then
-            printf "${log_line}${end_line}" >> "${log_file:-/dev/null}"
+        done
+    fi
+    if [ "${log_quiet}" = "True" ]; then
+        printf "${log_line}${end_line}" >> "${log_file:-/dev/null}"
+    else
+        if [ -n "${log_file}" ]; then
+            printf "${log_line}${end_line}" | tee -a "${log_file}" 1>&"${log_fd}"
         else
-            if [ -n "${log_file}" ]; then
-                printf "${log_line}${end_line}" | tee -a "${log_file}" 1>&"${log_fd}"
-            else
-                printf "${log_line}${end_line}" 1>&"${log_fd}"
-            fi
+            printf "${log_line}${end_line}" 1>&"${log_fd}"
         fi
     fi
 }
@@ -159,8 +151,8 @@ log() {
 
     case "${BIRDHOUSE_LOG_LEVEL}" in
         DEBUG|INFO|WARN|ERROR)
-            if [ "$*" = "" ]; then
-                echo "${LOG_CRITICAL}Invalid: log message is missing." | log_dest CRITICAL ${log_opts}
+            if [ "$#" -eq 0 ]; then
+                echo "${LOG_CRITICAL}Invalid: log message is missing." | log_dest CRITICAL
                 exit 2
             fi
             case "${BIRDHOUSE_LOG_LEVEL}-${level}" in
@@ -168,25 +160,25 @@ log() {
                     if [ ${log_with_prefix} -eq 1 ]; then
                         log_prefix="${LOG_DEBUG}"
                     fi
-                    echo "${log_prefix}$*" | log_dest DEBUG ${log_opts}
+                    printf "${log_prefix}$*\n" | log_dest DEBUG ${log_opts}
                 ;;
                 DEBUG-INFO|INFO-INFO)
                     if [ ${log_with_prefix} -eq 1 ]; then
                         log_prefix="${LOG_INFO}"
                     fi
-                    echo "${log_prefix}$*" | log_dest INFO ${log_opts}
+                    printf "${log_prefix}$*\n" | log_dest INFO ${log_opts}
                 ;;
                 DEBUG-WARN|INFO-WARN|WARN-WARN)
                     if [ ${log_with_prefix} -eq 1 ]; then
                         log_prefix="${LOG_WARN}"
                     fi
-                    echo "${log_prefix}$*" | log_dest WARN ${log_opts}
+                    printf "${log_prefix}$*\n" | log_dest WARN ${log_opts}
                 ;;
                 *-ERROR)
                     if [ ${log_with_prefix} -eq 1 ]; then
                         log_prefix="${LOG_ERROR}"
                     fi
-                    echo "${log_prefix}$*" | log_dest ERROR ${log_opts}
+                    printf "${log_prefix}$*\n" | log_dest ERROR ${log_opts}
                 ;;
                 *-DEBUG|*-INFO|*-WARN)
                 ;;

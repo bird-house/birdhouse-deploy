@@ -265,3 +265,21 @@ def test_log_multiple_on_line(run, tmp_path, level):
     prefix = LOG_PREFIX[level]
     assert re.match(rf"{prefix}:\s* test line end", std_line)
     assert re.match(rf"{prefix}:\s* test line end", log_line)
+
+
+def test_log_empty_string(run):
+    """
+    Test that logging empty strings is supported
+    """
+    proc = run("log INFO ''")
+    assert proc.returncode == 0
+    assert "INFO" in proc.stderr # not CRITICAL   
+
+
+@pytest.mark.parametrize("flag", ("-n", ""))
+def test_log_multi_empty_line(run, flag):
+    """
+    Test that logging multiple empty lines is supported
+    """
+    proc = run(f"log INFO {flag} '\n\n\n'")
+    assert proc.stderr.count("\n") == (3 if flag else 4)
