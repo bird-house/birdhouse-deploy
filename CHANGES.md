@@ -31,7 +31,7 @@
 
   It will update postgres databases to the version specified by the `POSTGRES_VERSION_UPDATE` environment variable.
   All of the old database files will be copied to a temporary directory in case you want to inspect them or revert 
-  this operation later on. To specify which directory to write these backups to set the `DATA_BACKUP_DIR` variable 
+  this operation later on. To specify which directory to write these backups to set the `BIRDHOUSE_BACKUP_DATA_DIR` variable 
   (default: `${TMPDIR:-/tmp}/birdhouse-postgres-migrate-backup/`)
   
   Note that backups in the form of database dumps will also be written to the named volume or directory specified 
@@ -40,7 +40,7 @@
   For example, to update the current postgres databases to version 18.1 and write backups to `/tmp/test/`
   
   ```sh
-  $ POSTGRES_VERSION_UPDATE=18.1 DATA_BACKUP_DIR=/tmp/test/ birdhouse/scripts/update-postgresh.sh
+  $ POSTGRES_VERSION_UPDATE=18.1 BIRDHOUSE_BACKUP_DATA_DIR=/tmp/test/ birdhouse/scripts/update-postgresh.sh
   ```
 
   In a future update we can update the postgres versions and tell users to run this script first in order to safely
