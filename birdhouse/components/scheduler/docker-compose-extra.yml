@@ -1,4 +1,3 @@
-
 services:
   scheduler:
     image: ${SCHEDULER_IMAGE}

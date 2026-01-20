@@ -1,4 +1,3 @@
-
 services:
   # extend proxy configuration with weaver endpoints
   proxy:

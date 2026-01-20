@@ -1,11 +1,3 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 services:
   project-api:
     image: pavics/pavics-project-api:0.9.0
@@ -19,4 +11,3 @@ services:
     env_file:
       - ./components/postgres/credentials.env
     restart: always
-    logging: *default-logging

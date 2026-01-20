@@ -1040,3 +1040,36 @@ How to Enable the Component
 ---------------------------
 
 - Do not enable this component directly. It will be enabled as a dependency of other components
+
+logging
+=======
+
+Sets default logging options for all docker compose services started by `birdhouse-deploy`.
+
+The default value is set by the ``BIRDHOUSE_LOGGING_DEFAULT`` environment variable. To change the default
+value, set the ``BIRDHOUSE_LOGGING_DEFAULT`` to a JSON string in the local environment file that contains
+a valid `docker compose logging configuration`_.
+
+For example, to set the default driver to "local" set the following in your local environment file:
+
+.. code::shell
+
+  export BIRDHOUSE_LOGGING_DEFAULT='{"driver": "local"}'
+
+You can also override logging options for a single service using environment variables using a variable
+``BIRDHOUSE_LOGGING_<service_name>`` where ``<service_name>`` is the name of the docker compose service with
+hyphens replaced with underscores. For example, to set the default driver to "local" only for the ``weaver-worker``
+service:
+
+.. code::shell
+
+  export BIRDHOUSE_LOGGING_weaver_worker='{"driver": "local"}'
+
+Logging options can can also be set directly in a component's ``docker-compose-extra.yml`` file. The order of
+precedence for logging options are as follows:
+
+1. logging options specified by ``BIRDHOUSE_LOGGING_<service_name>`` environment variable
+2. logging options set in a ``docker-compose-extra.yml`` file
+3. logging options specified by ``BIRDHOUSE_LOGGING_DEFAULT`` environment variable
+
+.. _docker compose logging configuration: https://docs.docker.com/reference/compose-file/services/#logging
