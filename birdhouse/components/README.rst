@@ -1057,13 +1057,13 @@ For example, to set the default driver to "local" set the following in your loca
   export BIRDHOUSE_LOGGING_DEFAULT='{"driver": "local"}'
 
 You can also override logging options for a single service using environment variables using a variable
-``BIRDHOUSE_LOGGING_<service_name>`` where ``<service_name>`` is the name of the docker compose service with
-hyphens replaced with underscores. For example, to set the default driver to "local" only for the ``weaver-worker``
+``BIRDHOUSE_LOGGING_<service_name>`` where ``<service_name>`` is the uppercase name of the docker compose service 
+with hyphens replaced with underscores. For example, to set the default driver to "local" only for the ``weaver-worker``
 service:
 
 .. code::shell
 
-  export BIRDHOUSE_LOGGING_weaver_worker='{"driver": "local"}'
+  export BIRDHOUSE_LOGGING_WEAVER_WORKER='{"driver": "local"}'
 
 Logging options can can also be set directly in a component's ``docker-compose-extra.yml`` file. The order of
 precedence for logging options are as follows:

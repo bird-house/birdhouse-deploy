@@ -34,12 +34,12 @@
   ```
 
   You can also override logging options for a single service using environment variables using a variable
-  `BIRDHOUSE_LOGGING_<service_name>` where `<service_name>` is the name of the docker compose service with
-  hyphens replaced with underscores. For example, to set the default driver to "local" only for the 
+  `BIRDHOUSE_LOGGING_<service_name>` where `<service_name>` is the uppercase name of the docker compose 
+  service with hyphens replaced with underscores. For example, to set the default driver to "local" only for the 
   `weaver-worker` service:
 
   ```sh
-  export BIRDHOUSE_LOGGING_weaver_worker='{"driver": "local"}'
+  export BIRDHOUSE_LOGGING_WEAVER_WORKER='{"driver": "local"}'
   ```
 
   Logging options can can also be set directly in a component's ``docker-compose-extra.yml`` file. 
