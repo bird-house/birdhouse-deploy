@@ -1,2 +1,2 @@
-docker-compose-extra-defaults-ignore.yml
-docker-compose-extra-services-ignore.yml
+docker-compose-extra-defaults.yml
+docker-compose-extra-services.yml
