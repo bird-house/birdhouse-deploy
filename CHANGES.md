@@ -27,6 +27,9 @@
   Note that enabling network mode also requires setting `MAGPIE_NETWORK_INSTANCE_NAME` to a unique
   name within the network.
 
+  Upgrading to this version does not require any database migration and if fully backwards compatible
+  with previous versions.
+
   This change also introduces the ability to set 
   [all configuration options](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#network-mode-settings) 
   for Magpie's network mode as environment variables in the local environment file.
