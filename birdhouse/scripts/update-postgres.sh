@@ -23,6 +23,7 @@
 #
 # $ birdhouse backup create --no-restic -a generic_bird
 # $ birdhouse compose down
+# $ ${THIS_DIR}/backup-datavolume.sh birdhouse_postgres_generic_bird "${BIRDHOUSE_BACKUP_DATA_DIR}"
 # $ docker volume rm birdhouse_postgres_generic_bird
 # $ GENERIC_BIRD_POSTGRES_IMAGE=postgres:18.1 birdhouse compose up -d
 # $ birdhouse backup restore --no-restic -a generic_bird
