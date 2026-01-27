@@ -1,11 +1,3 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 services:
   magpie:
     image: ${MAGPIE_IMAGE}
@@ -33,7 +25,6 @@ services:
       - ./components/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/permissions.cfg
       - ./components/magpie/magpie.ini:/opt/local/src/magpie/config/magpie.ini
     restart: always
-    logging: *default-logging
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://0.0.0.0:2001"]
       interval: 60s
@@ -43,7 +34,7 @@ services:
       start_interval: 5s
 
   postgres-magpie:
-    image: postgres:9.6
+    image: ${MAGPIE_POSTGRES_IMAGE}
     container_name: postgres-magpie
     # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
     env_file:
@@ -54,7 +45,6 @@ services:
       - ${MAGPIE_PERSIST_DIR}:/var/lib/postgresql/data/pgdata
       - ./components/magpie/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     restart: always
-    logging: *default-logging
     healthcheck:
       test: ["CMD", "pg_isready"]
       interval: 60s

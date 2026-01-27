@@ -1,11 +1,3 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 services:
   twitcher:
     image: ${TWITCHER_IMAGE}
@@ -29,7 +21,6 @@ services:
       - ./components/twitcher/twitcher.ini:/opt/birdhouse/src/twitcher/twitcher.ini
     command: "pserve /opt/birdhouse/src/twitcher/twitcher.ini"
     restart: always
-    logging: *default-logging
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://0.0.0.0:8000"]
       interval: 60s

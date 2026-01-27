@@ -1,4 +1,3 @@
-
 services:
   # extend proxy with endpoint and config for Cowbird API access
   proxy:
