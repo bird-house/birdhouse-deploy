@@ -34,7 +34,7 @@ services:
       start_interval: 5s
 
   postgres-magpie:
-    image: postgres:9.6
+    image: ${MAGPIE_POSTGRES_IMAGE}
     container_name: postgres-magpie
     # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
     env_file:

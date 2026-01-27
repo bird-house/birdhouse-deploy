@@ -49,6 +49,34 @@
   2. logging options set in a `docker-compose-extra.yml` file
   3. logging options specified by `BIRDHOUSE_DOCKER_LOGGING_DEFAULT` environment variable
 
+- Add script that automatically updates postgres databases to a later version
+
+  In anticipation of upgrading postgres databases in the future, this introduces a script that automatically
+  upgrades postgres databases using the backup/restore process.
+
+  This includes magpie and all WPS birds that use the postgres component. This does not include test component 
+  like `optional-components/generic_bird` and will not update custom components (ones not from this repository).
+
+  Test components are not assumed to have persistent data that needs to be updated and we cannot guarantee that
+  other postgres databases used by components outside this repository do not require additional steps (data
+  migrations) in order to comply with a different version of postgres. 
+
+  It will update postgres databases to the version specified by the `POSTGRES_VERSION_UPDATE` environment variable.
+  All of the old database files will be copied to a temporary directory in case you want to inspect them or revert 
+  this operation later on. To specify which directory to write these backups to set the `BIRDHOUSE_BACKUP_DATA_DIR` variable 
+  (default: `${TMPDIR:-/tmp}/birdhouse-postgres-migrate-backup/`)
+  
+  Note that backups in the form of database dumps will also be written to the named volume or directory specified 
+  by the `BIRDHOUSE_BACKUP_VOLUME` variable.
+
+  For example, to update the current postgres databases to version 18.1 and write backups to `/tmp/test/`
+  
+  ```sh
+  $ POSTGRES_VERSION_UPDATE=18.1 BIRDHOUSE_BACKUP_DATA_DIR=/tmp/test/ birdhouse/scripts/update-postgresh.sh
+  ```
+
+  In a future update we can update the postgres versions and tell users to run this script first in order to safely
+  migrate data from one version to the next.
 
 [2.20.4](https://github.com/bird-house/birdhouse-deploy/tree/2.20.4) (2026-01-16)
 ------------------------------------------------------------------------------------------------------------------
