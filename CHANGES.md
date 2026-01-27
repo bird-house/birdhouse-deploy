@@ -15,7 +15,49 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.21.0](https://github.com/bird-house/birdhouse-deploy/tree/2.21.0) (2026-01-27)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
+
+- Remove `proxy` component's dependency on `scheduler` and `scheduler-job-logrotate-nginx`
+
+  Creates new settings in `optional-components/proxy-log-volume` that create the `proxy-logs` docker volume as well
+  as instructing Nginx to write access logs to an additional log file (specified by `PROXY_LOG_PATH`). These settings
+  are included as a `COMPONENT_DEPENDENCY` in components that require access to the the `proxy` access logs as a
+  regular file. If no components require access to these logs as a regular file then the `proxy` component will only
+  write access logs to the stdout stream for that container.
+
+  Right now, the only components that require access to logs in this way are `components/canarie-api` and
+  `optional-components/prometheus-log-parser`. Both of these now include `optional-components/proxy-log-volume` as a
+  `COMPONENT_DEPENDENCY`.
+
+  Note: this means that if no optional components require `optional-components/proxy-log-volume` as a dependency
+  then logs from the `proxy` container will only be written to stdout/stderr. This means that there is no need
+  for any additional custom log rotation handling since the logs are handled directly by docker. This means that
+  the `proxy` service itself no longer need to be dependant on the `scheduler` and `scheduler-job-logrotate-nginx`
+  components.
+
+  Note: a previous discussion suggested that logs could be parsed directly from the stdout stream of the `proxy`
+  container. However, there is no way to do so that doesn't require very hacky workarounds. Possible solutions that
+  were explored and rejected include:
+
+    - Mounting the log file from the `proxy` container from the host to the relevant containers.
+      Rejected because this practice is highly discouraged by docker as the actual storage location of log files
+      is not standardized and may be changed in future versions.
+    - Writing logs to a named pipe or socket within the `proxy` container.
+      Rejected because this is very difficult to set up and is untested when then mounted to other containers. 
+      Also, a different named pipe would be required for each consumer which is currently very difficult to set up 
+      using birdhouse's deployment tools. 
+
+  **Breaking Change**: if a custom component (not included in this repository) uses the `proxy-logs` named volume.
+  It must now include `optional-components/proxy-log-volume` as a `COMPONENT_DEPENDENCY` for that custom component.
+
+  **Breaking Change**: if `SCHEDULER_JOB_BACKUP_ARGS` specifies `-l proxy` explicitly (not `-l '*'`) then this should
+  be changed to `-l proxy-log-volume` since the backup script has been moved. Note that it is not necessary to
+  specify `-l proxy-log-volume` if `--birdhouse-logs` is also specified because the log data is identical in both.
 
 - Make docker compose logging options configurable
 

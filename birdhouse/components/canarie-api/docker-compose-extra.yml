@@ -36,6 +36,6 @@ services:
     restart: always
     entrypoint: /entrypoint
 
+# Note: proxy-logs volume is defined in the proxy-logs-volume component
 volumes:
   canarie-data:
-  proxy-logs:
