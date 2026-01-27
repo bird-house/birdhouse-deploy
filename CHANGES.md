@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.21.0](https://github.com/bird-house/birdhouse-deploy/tree/2.21.0) (2026-01-27)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Remove `proxy` component's dependency on `scheduler` and `scheduler-job-logrotate-nginx`
