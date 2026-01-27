@@ -36,6 +36,109 @@
   Note that all of these configuration options will be ignored if `MAGPIE_NETWORK_ENABLED` is `false`.
 
 
+[2.21.0](https://github.com/bird-house/birdhouse-deploy/tree/2.21.0) (2026-01-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Remove `proxy` component's dependency on `scheduler` and `scheduler-job-logrotate-nginx`
+
+  Creates new settings in `optional-components/proxy-log-volume` that create the `proxy-logs` docker volume as well
+  as instructing Nginx to write access logs to an additional log file (specified by `PROXY_LOG_PATH`). These settings
+  are included as a `COMPONENT_DEPENDENCY` in components that require access to the the `proxy` access logs as a
+  regular file. If no components require access to these logs as a regular file then the `proxy` component will only
+  write access logs to the stdout stream for that container.
+
+  Right now, the only components that require access to logs in this way are `components/canarie-api` and
+  `optional-components/prometheus-log-parser`. Both of these now include `optional-components/proxy-log-volume` as a
+  `COMPONENT_DEPENDENCY`.
+
+  Note: this means that if no optional components require `optional-components/proxy-log-volume` as a dependency
+  then logs from the `proxy` container will only be written to stdout/stderr. This means that there is no need
+  for any additional custom log rotation handling since the logs are handled directly by docker. This means that
+  the `proxy` service itself no longer need to be dependant on the `scheduler` and `scheduler-job-logrotate-nginx`
+  components.
+
+  Note: a previous discussion suggested that logs could be parsed directly from the stdout stream of the `proxy`
+  container. However, there is no way to do so that doesn't require very hacky workarounds. Possible solutions that
+  were explored and rejected include:
+
+    - Mounting the log file from the `proxy` container from the host to the relevant containers.
+      Rejected because this practice is highly discouraged by docker as the actual storage location of log files
+      is not standardized and may be changed in future versions.
+    - Writing logs to a named pipe or socket within the `proxy` container.
+      Rejected because this is very difficult to set up and is untested when then mounted to other containers. 
+      Also, a different named pipe would be required for each consumer which is currently very difficult to set up 
+      using birdhouse's deployment tools. 
+
+  **Breaking Change**: if a custom component (not included in this repository) uses the `proxy-logs` named volume.
+  It must now include `optional-components/proxy-log-volume` as a `COMPONENT_DEPENDENCY` for that custom component.
+
+  **Breaking Change**: if `SCHEDULER_JOB_BACKUP_ARGS` specifies `-l proxy` explicitly (not `-l '*'`) then this should
+  be changed to `-l proxy-log-volume` since the backup script has been moved. Note that it is not necessary to
+  specify `-l proxy-log-volume` if `--birdhouse-logs` is also specified because the log data is identical in both.
+
+- Make docker compose logging options configurable
+
+  Introduce a new component `components/logging` that sets default logging options for all docker 
+  compose services started by `birdhouse-deploy`. This component is enabled by default.
+
+  The default value is set by the `BIRDHOUSE_DOCKER_LOGGING_DEFAULT` environment variable. To change the default
+  value, set the `BIRDHOUSE_DOCKER_LOGGING_DEFAULT` to a JSON string in the local environment file that contains
+  a valid 
+  [docker compose logging configuration](https://docs.docker.com/reference/compose-file/services/#logging).
+
+  For example, to set the default driver to "local" set the following in your local environment file:
+
+  ```sh
+  export BIRDHOUSE_DOCKER_LOGGING_DEFAULT='{"driver": "local"}'
+  ```
+
+  You can also override logging options for a single service using environment variables using a variable
+  `BIRDHOUSE_DOCKER_LOGGING_<service_name>` where `<service_name>` is the uppercase name of the docker compose 
+  service with hyphens replaced with underscores. For example, to set the default driver to "local" only for the 
+  `weaver-worker` service:
+
+  ```sh
+  export BIRDHOUSE_DOCKER_LOGGING_WEAVER_WORKER='{"driver": "local"}'
+  ```
+
+  Logging options can can also be set directly in a component's ``docker-compose-extra.yml`` file. 
+  The order of precedence for logging options are as follows:
+
+  1. logging options specified by `BIRDHOUSE_DOCKER_LOGGING_<service_name>` environment variable
+  2. logging options set in a `docker-compose-extra.yml` file
+  3. logging options specified by `BIRDHOUSE_DOCKER_LOGGING_DEFAULT` environment variable
+
+- Add script that automatically updates postgres databases to a later version
+
+  In anticipation of upgrading postgres databases in the future, this introduces a script that automatically
+  upgrades postgres databases using the backup/restore process.
+
+  This includes magpie and all WPS birds that use the postgres component. This does not include test component 
+  like `optional-components/generic_bird` and will not update custom components (ones not from this repository).
+
+  Test components are not assumed to have persistent data that needs to be updated and we cannot guarantee that
+  other postgres databases used by components outside this repository do not require additional steps (data
+  migrations) in order to comply with a different version of postgres. 
+
+  It will update postgres databases to the version specified by the `POSTGRES_VERSION_UPDATE` environment variable.
+  All of the old database files will be copied to a temporary directory in case you want to inspect them or revert 
+  this operation later on. To specify which directory to write these backups to set the `BIRDHOUSE_BACKUP_DATA_DIR` variable 
+  (default: `${TMPDIR:-/tmp}/birdhouse-postgres-migrate-backup/`)
+  
+  Note that backups in the form of database dumps will also be written to the named volume or directory specified 
+  by the `BIRDHOUSE_BACKUP_VOLUME` variable.
+
+  For example, to update the current postgres databases to version 18.1 and write backups to `/tmp/test/`
+  
+  ```sh
+  $ POSTGRES_VERSION_UPDATE=18.1 BIRDHOUSE_BACKUP_DATA_DIR=/tmp/test/ birdhouse/scripts/update-postgresh.sh
+  ```
+
+  In a future update we can update the postgres versions and tell users to run this script first in order to safely
+  migrate data from one version to the next.
+
 [2.20.4](https://github.com/bird-house/birdhouse-deploy/tree/2.20.4) (2026-01-16)
 ------------------------------------------------------------------------------------------------------------------
 
