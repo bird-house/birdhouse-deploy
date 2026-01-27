@@ -1,11 +1,3 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 services:
   jupyterhub:
     image: ${JUPYTERHUB_IMAGE}
@@ -56,7 +48,6 @@ services:
     # ensure the deployment does not fail when upgrading Jupyterhub version
     command: bash -c "jupyterhub upgrade-db && jupyterhub"
     restart: always
-    logging: *default-logging
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8000/jupyter"]
       interval: 60s

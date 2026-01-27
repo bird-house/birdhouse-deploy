@@ -377,13 +377,7 @@ check_backup_create_args() {
       "BIRDHOUSE_BACKUP_VOLUME must be specified." \
       "${BACKUP_CREATE_USAGE}"
   fi
-  [ -n "${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}" ] || \
-  [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] || \
-    log_error_help \
-      'Use the -s|--snapshot option to specify a snapshot to restore with restic or --no-restic to employ BIRDHOUSE_BACKUP_VOLUME directly.' \
-      "${BACKUP_CREATE_USAGE}"
   if
-    [ -z "${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}" ] && \
     [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] && \
     [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
       log WARN \
@@ -399,6 +393,11 @@ check_backup_restore_args() {
       "BIRDHOUSE_BACKUP_VOLUME must be specified." \
       "${BACKUP_RESTORE_USAGE}"
   fi
+  [ -n "${BIRDHOUSE_BACKUP_RESTORE_SNAPSHOT}" ] || \
+  [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ] || \
+    log_error_help \
+      'Use the -s|--snapshot option to specify a snapshot to restore with restic or --no-restic to restore from BIRDHOUSE_BACKUP_VOLUME directly.' \
+      "${BACKUP_CREATE_USAGE}"
   if [ "${BIRDHOUSE_BACKUP_NO_RESTIC}" = 'true' ]; then
     if [ $(echo "${BIRDHOUSE_BACKUP_VOLUME}" | grep -c '/' || true) -eq 0 ]; then
       log WARN \
