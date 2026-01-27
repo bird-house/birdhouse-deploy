@@ -1,11 +1,3 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 services:
   stac:
     container_name: stac
@@ -21,9 +13,8 @@ services:
       - POSTGRES_HOST_WRITER=stac-db
       - POSTGRES_PORT=5432
       - ROUTER_PREFIX=/stac
-      - OPENAPI_URL=/stac/api
-      - DOCS_URL=/stac/api.html
-    logging: *default-logging
+      - OPENAPI_URL=/stac${STAC_OPENAPI_SPEC_PATH}
+      - DOCS_URL=/stac${STAC_OPENAPI_DOCS_PATH}
     restart: always
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/stac')"]
@@ -46,7 +37,6 @@ services:
       - PGDATABASE=postgis
     volumes:
       - stac-db:/var/lib/postgresql/data
-    logging: *default-logging
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
@@ -71,7 +61,6 @@ services:
       - stac-db
     volumes:
       - stac-db:/var/lib/postgresql/data
-    logging: *default-logging
     restart: no
     command: pypgstac migrate --debug --toversion ${STAC_DB_VERSION}
 

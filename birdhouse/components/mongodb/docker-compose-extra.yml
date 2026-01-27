@@ -1,11 +1,3 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 services:
   mongodb:
     image: mongo:3.4.0
@@ -17,7 +9,6 @@ services:
     # Mongodb crash with permission denied errors if the command is not overridden like this
     command: bash -c 'chown -R mongodb:mongodb /data && chmod -R 755 /data && mongod'
     restart: always
-    logging: *default-logging
     healthcheck:
       test: ["CMD", "mongo", "--eval", "print('connected')"]
       interval: 60s

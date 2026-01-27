@@ -106,11 +106,19 @@ This will source the ``env.local`` file, apply the appropriate variable substitu
 ".template", and run ``docker-compose`` with all the command line arguments after the ``compose`` argument.
 See `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`) for more details on what can go into the ``env.local`` file.
 
+Most variables that can be set in the local environment file (``env.local`` by default) can also be specified as environment variables when running ``bin/birdhouse`` 
+commands. Environment variables will take precedence over those specified in the ``env.local`` file.
+
 If the file `env.local` is somewhere else, symlink it here, next to `docker-compose.yml <docker-compose.yml>`_ (:download:`download </birdhouse/docker-compose.yml>`) because many scripts assume this location.
+If autodeploy scheduler job is enabled, the folder containing the `env.local` file needs to be added to `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`.
 
 To follow infrastructure-as-code, it is encouraged to source control the above
 `env.local` file and any override needed to customized this Birdhouse deployment
-for your organization.  For an example of possible override, see how the `emu service <optional-components/emu/docker-compose-extra.yml>`_ (:download:`download </birdhouse/optional-components/emu/docker-compose-extra.yml>`)
+for your organization.  Note this `env.local` file might contains **sensitive**
+infos like passwords so it should be in a limitted access private source control
+repo, idealy not on the internet.
+
+For an example of possible override, see how the `emu service <optional-components/emu/docker-compose-extra.yml>`_ (:download:`download </birdhouse/optional-components/emu/docker-compose-extra.yml>`)
 (`README <optional-components/README.rst#emu-wps-service-for-testing>`_) can be optionally added to the deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_.
 Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repo.
 
@@ -346,6 +354,36 @@ not able to access protected URLs:
   not be fully functional when self-signed certificates are enabled. For example, accessing other components through
   the JupyterLab interface may fail with an ``SSLError``.
 
+Docker rootless configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are using `Docker Rootless Mode <https://docs.docker.com/engine/security/rootless/>`_ on your machine,
+you *might* need to execute the following command to allow the `proxy` (Nginx) service to connect to the relevant
+HTTP ports.
+
+.. code-block:: shell
+    sudo sysctl -w net.ipv4.ip_unprivileged_port_start=80
+
+Notably, this could be required when encountering errors such as the following when invoking ``bin/birdhouse compose up -d``.
+
+.. code-block:: text
+    Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint proxy
+
+.. warning::
+    Using the ``sysctl`` call grants access to any user able to interact with the machine's IP which could cause security concerns.
+    Developers should decide whether this approach suits their needs, or if other solutions should be explored.
+    However, alternatives (some shown below) have not been fully tested and therefore provide no guarantee to work out of the box
+    with the current deployment configurations and utilities.
+
+.. todo::
+    Evaluate alternative strategies to limit ports exposure.
+
+.. code-block:: shell
+    sudo setcap cap_net_bind_service=ep $(which rootlesskit)
+
+.. code-block:: shell
+    sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+
 Development and testing
 -----------------------
 
@@ -378,7 +416,7 @@ To run the tests:
 
 Some tests require internet access (to access JSON schemas used to validate
 JSON structure). If you need to run tests offline, you can skip the tests that
-require internet access by using the `-k 'not online'` pytest option.
+require internet access by using the ``-k 'not online'`` pytest option.
 
 Alternatively, testing-related targets are available via the `Makefile <../Makefile>`_:
 

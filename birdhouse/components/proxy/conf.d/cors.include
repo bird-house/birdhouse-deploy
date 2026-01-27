@@ -1,29 +1,43 @@
-      proxy_hide_header 'Access-Control-Allow-Origin';
+    proxy_hide_header 'Access-Control-Allow-Origin';
 
-     if ($request_method = 'OPTIONS') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-        #
-        # Custom headers and headers various browsers *should* be OK with but aren't
-        #
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
-        #
-        # Tell client that this pre-flight info is valid for 20 days
-        #
-        add_header 'Access-Control-Max-Age' 1728000;
-        add_header 'Content-Type' 'text/plain; charset=utf-8';
-        add_header 'Content-Length' 0;
-        return 204;
-     }
-     if ($request_method = 'POST') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
-        add_header 'Access-Control-Expose-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
-     }
-     if ($request_method = 'GET') {
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
-        add_header 'Access-Control-Expose-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
-     }
+    # assumes that the server default is configured or overriden by a specific location block as needed
+    # if explicitly set to empty, align it with the standard value allowing any origin
+    if ( $access_control_allow_origin ~ "^$" ) {
+       set $access_control_allow_origin '*';
+    }
+
+    set $vary_origin ""; # nginx will omit this header value if set to the empty string
+    if ( $access_control_allow_origin != '*' ) {
+       set $vary_origin Origin;
+    }
+
+    if ($request_method = 'OPTIONS') {
+       add_header 'Vary' $vary_origin;
+       add_header 'Access-Control-Allow-Origin' $access_control_allow_origin;
+       add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+       #
+       # Custom headers and headers various browsers *should* be OK with but aren't
+       #
+       add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+       #
+       # Tell client that this pre-flight info is valid for 20 days
+       #
+       add_header 'Access-Control-Max-Age' 1728000;
+       add_header 'Content-Type' 'text/plain; charset=utf-8';
+       add_header 'Content-Length' 0;
+       return 204;
+    }
+    if ($request_method = 'POST') {
+       add_header 'Vary' $vary_origin;
+       add_header 'Access-Control-Allow-Origin' $access_control_allow_origin;
+       add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+       add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+       add_header 'Access-Control-Expose-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+    }
+    if ($request_method = 'GET') {
+       add_header 'Vary' $vary_origin;
+       add_header 'Access-Control-Allow-Origin' $access_control_allow_origin;
+       add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+       add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+       add_header 'Access-Control-Expose-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+    }

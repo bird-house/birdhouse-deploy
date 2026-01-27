@@ -1,11 +1,3 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 x-objstore-config: &objstore-config |
     --objstore.config=type: S3
     config:
@@ -33,7 +25,6 @@ services:
       - prometheus-longterm-metrics
       - thanos-minio
     restart: always
-    logging: *default-logging
 
   thanos-query:
     image: ${THANOS_IMAGE}
@@ -47,8 +38,7 @@ services:
     depends_on:
       - thanos-sidecar
     restart: always
-    logging: *default-logging
-
+  
   thanos-compactor:
     image: ${THANOS_IMAGE}
     container_name: thanos-compactor
@@ -61,7 +51,6 @@ services:
     depends_on:
       - thanos-minio
     restart: always
-    logging: *default-logging
 
   thanos-minio:
     image: ${THANOS_MINIO_IMAGE}

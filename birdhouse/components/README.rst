@@ -707,30 +707,105 @@ information.
 Usage
 -----
 
-The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API 
-exposed by the current stack instance. Once this component is enabled, STAC API will be accessible at 
-``https://<BIRDHOUSE_FQDN_PUBLIC>/stac`` endpoint and the STAC browser will be available at
-``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` endpoint. In order to make the STAC browser the default entrypoint,
-define the following in the ``env.local`` file::
+The STAC API can be browsed via the ``stac-browser`` component. Once this component is enabled, STAC API 
+will be accessible at the ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac``.
 
-  export BIRDHOUSE_PROXY_ROOT_LOCATION='return 302 ${BIRDHOUSE_PROXY_SCHEME}://\$host/stac-browser;'
-
-Here is a sample search query using a CLI::
+Here is a sample search query using a the ``pystac-client`` python CLI:
 
 .. code-block:: shell
 
     pip install pystac-client
-    stac-client search $PAVIS_FQDN/stac -q "variable_id=txgt_32" "scenario=ssp585"
+    stac-client search $BIRDHOUSE_FQDN_PUBLIC/stac -q "variable_id=txgt_32" "scenario=ssp585"
 
-Calls to the STAC API pass through Twitcher in order to validate authorization. Unauthenticated users will have 
-read-only access by default to STAC API resources while members of the `stac-admin` group can create and modify 
-resources. STAC Browser is not protected by any authorization mechanism.
+Calls to the STAC API pass through Twitcher in order to validate authorization.
+By default, only users that belong to the ``administrator`` and ``stac-admin`` groups will have access to STAC
+endpoints. Additional access permissions can be set in ``Magpie`` as needed.
+To give unauthenticated users read-only access to STAC API resources, enable the ``optional-components/stac-public-access``
+component.
 
 How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy of `env.local.example`_)
 - Add ``./components/stac`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+
+
+STAC Browser
+============
+
+STAC Browser is a web UI used to interact with the STAC API.
+
+Usage
+-----
+
+The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API
+exposed by the current ``components/stac`` service. 
+Once this component is enabled, the STAC browser will be available
+at the ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` endpoint.
+
+If your STAC API contains GeoJSON data, it is recommended to set the ``STAC_CORS_ORIGINS`` value to accept the origin
+``https://geojson.io`` since the STAC Browser offers a link to open GeoJSON data at this URL.
+Note that you do not need to change the ``STAC_CORS_ORIGINS`` value from the default (which accepts all origins), but
+if you have changed it please update it to include this origin as well.
+If using ``BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN`` overrides, it is also recommended to reference its value within
+``STAC_CORS_ORIGINS`` to ensure consistency across the stack.
+
+For example:
+
+.. code-block:: shell
+
+  # If the STAC_CORS_ORIGINS is currently
+  export STAC_CORS_ORIGINS='http://example.com ~http:(www|other)\.api\.example\.com'
+
+  # you can update it to
+  export STAC_CORS_ORIGINS='http://example.com ~http:(www|other)\.api\.example\.com https://geojson.io'
+
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/stac-browser`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+
+
+.. _components_dggs:
+
+DGGS: Discrete Global Grid Systems API
+======================================
+
+`DGGS`_ is a spatial reference system combining a discrete global grid hierarchy with a zone identifier, in contrast
+to typical ``(lat, lon)`` spatial reference systems. By using a predefined and deterministic order of zone IDs and
+refinement sub-zones, DGGS enables efficient access, representation and analysis of spatial data that has been
+quantized over a certain grid reference system (DGGRS).
+
+The *OGC API - DGGS* definition implemented by this service is a RESTful API that provides access to DGGS resources,
+definitions, zonal query conversion, and data retrieval from precomputed datasets.
+
+.. _DGGS: https://ogcapi.ogc.org/dggs/
+
+Usage
+-----
+
+Once enabled, the API will be accessible (by default) on the ``/dggs-api`` endpoint.
+It will also be available through the common ``/ogcapi/dggs`` alias.
+
+Refer to the `DGGS`_ OGC API documentation for specific endpoints and features.
+
+Refer to `vgrid DGGS <https://github.com/opengeoshub#vgrid-dggs>`_ and
+the `vgrid repository <https://github.com/opengeoshub/vgrid>`_ for a relatively extensive
+collection of DGGS tools and its associated data manipulation ecosystem (using ``xarray``, QGIS plugin, etc.).
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/dggs`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Define ``DGGS_CONFIG_PATH`` in the ``env.local`` with custom definitions.
+  Alternatively, employ sample DGGS dataset and configuration by enabling ``./optional-components/dggs-data-sample``.
+  Enabling this optional component will set ``DGGS_CONFIG_PATH`` with a predefined configuration for this sample data.
+  See the `PyDGGS-API implementation <https://github.com/LandscapeGeoinformatics/pydggsapi>`_ for more details.
+- Optionally, configure variables in ``./components/dggs/default.env`` via ``env.local`` to customize the service.
+
 
 Canarie-API
 ===========
@@ -964,12 +1039,46 @@ of all processes executed by these services.
 Usage
 -----
 
-All outputs from these processes will become available at the ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs`` endpoint.
+All outputs from these processes will become available at
+the ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs`` endpoint.
 
 By default, this endpoint is not protected. To secure access to this endpoint it is highly recommended to enable the
-`./optional-components/secure-data-proxy` component as well.
+``./optional-components/secure-data-proxy`` component as well.
 
 How to Enable the Component
 ---------------------------
 
 - Do not enable this component directly. It will be enabled as a dependency of other components
+
+logging
+=======
+
+Sets default logging options for all docker compose services started by `birdhouse-deploy`.
+
+The default value is set by the ``BIRDHOUSE_DOCKER_LOGGING_DEFAULT`` environment variable. To change the default
+value, set the ``BIRDHOUSE_DOCKER_LOGGING_DEFAULT`` to a JSON string in the local environment file that contains
+a valid `docker compose logging configuration`_.
+
+For example, to set the default driver to "local" set the following in your local environment file:
+
+.. code::shell
+
+  export BIRDHOUSE_DOCKER_LOGGING_DEFAULT='{"driver": "local"}'
+
+You can also override logging options for a single service using environment variables using a variable
+``BIRDHOUSE_DOCKER_LOGGING_<service_name>`` where ``<service_name>`` is the uppercase name of the docker compose service 
+with hyphens replaced with underscores. For example, to set the default driver to "local" only for the ``weaver-worker``
+service:
+
+.. code::shell
+
+  export BIRDHOUSE_DOCKER_LOGGING_WEAVER_WORKER='{"driver": "local"}'
+
+Logging options can can also be set directly in a component's ``docker-compose-extra.yml`` file. The order of
+precedence for logging options are as follows:
+
+1. logging options specified by ``BIRDHOUSE_DOCKER_LOGGING_<service_name>`` environment variable
+2. logging options set in a ``docker-compose-extra.yml`` file
+3. logging options specified by ``BIRDHOUSE_DOCKER_LOGGING_DEFAULT`` environment variable
+
+.. _docker compose logging configuration: https://docs.docker.com/reference/compose-file/services/#logging

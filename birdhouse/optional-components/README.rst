@@ -175,6 +175,42 @@ The anonymous user will now have all the permissions described in |magpie-public
 .. |magpie-public-perms| replace:: optional-components/all-public-access/all-public-access-magpie-permission.cfg
 .. _env.local.example: ../env.local.example
 
+Control secured access to generic data
+--------------------------------------------------------
+
+It is possible to serve static data files through Nginx by mapping a directory to a specific URL path.
+This optional component provides a configurable location to serve such data.
+
+.. seealso::
+    Following components can also employ this feature.
+    However, they are not direct dependencies to allow flexibility.
+
+    - ``./components/wps-outputs_volume`` (`components_secure-data-proxy-wps_outputs`_)
+    - ``./optional-components/stac-data-proxy`` (`optional-components_stac-data-proxy`_)
+
+How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
+
+* Add ``./optional-components/secure-data-proxy`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+* Optionally, set ``SECURE_DATA_PROXY_ROOT`` to an alternate directory location on the machine to mount in ``proxy``.
+* Optionally, set ``SECURE_DATA_PROXY_LOCATIONS`` with additional Nginx definitions to protect and serve data from.
+
+Once enabled, if a Nginx ``location`` with path-mapping ``alias`` contains the ``${SECURE_DATA_PROXY_AUTH_INCLUDE}``
+definition, the data it would normally serve directly will *NOT* have public access from the specified ``location``,
+unless the authenticated user is granted access by relevant user or group permissions.
+
+Permission management of these resources is controlled through Magpie under
+the ``secure-data-proxy`` service (type: API). Resources names and nesting under ``secure-data-proxy`` service
+should match exactly the ``location`` path expected by Nginx ``proxy``.
+
+.. seealso::
+    Refer to the |secure-data-proxy-default-env|_ file for more details regarding the
+    structure of the ``SECURE_DATA_PROXY_LOCATIONS`` definition and all other variable
+    considerations implied with its usage.
+
+.. _secure-data-proxy-default-env: ./optional-components/secure-data-proxy/default.env
+.. |secure-data-proxy-default-env| replace:: optional-components/secure-data-proxy/default.env
+
+.. _components_secure-data-proxy-wps_outputs:
 
 Control secured access to WPS outputs
 --------------------------------------------------------
@@ -204,7 +240,7 @@ service to customize specific user access control to stored data files.
 .. |secure-data-proxy-perms| replace:: optional-components/secure-data-proxy/config/magpie/config.yml.template
 
 
-Control secured access to resources example
+Control secured access to THREDDS resources example
 --------------------------------------------------------
 
 Optional configuration |magpie-secure-perms|_ is provided as example to illustrate how to apply permissions on specific
@@ -444,12 +480,32 @@ To enable this optional-component:
         birdhouse compose up -d
 
 
+Use the DGGS sample data and configuration
+--------------------------------------------------------
+
+:ref:`components_dggs` requires a valid configuration and DGGRS-aligned data to start the API service.
+This sample definition provides a minimal example of such definition.
+
+In other circumstances, a custom definition would instead be employed with specific data sources, DGGRS definitions
+and other metadata. This sample is provided with minimal details to get things working.
+
+To enable this optional-component:
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./optional-components/dggs-data-sample`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+
+Important
+~~~~~~~~~~~~
+
+This component should not be employed if custom configurations are desired. Variables will conflict and override
+the definitions required by :ref:`components_dggs`.
+
 X-Robots-Tag Header
 ---------------------------
 
 Applies the ``X-Robots-Tag`` header value defined by the ``X_ROBOTS_TAG_HEADER`` variable globally for the server.
 
-If ``X_ROBOTS_TAG_HEADER`` is not overriden, it uses ``noindex, nofollow`` which will disallow most crawling and
+If ``X_ROBOTS_TAG_HEADER`` is not overridden, it uses ``noindex, nofollow`` which will disallow most crawling and
 indexing functionalities from robots. If omitting this optional component entirely, no ``X-Robots-Tag`` header
 will be applied, which is equivalent to the robots default ``X-Robots-Tag: all``, setting no restrictions regarding
 indexing and serving.
@@ -636,3 +692,41 @@ Note that you do *not* need an SSL certificate set up to deploy the stack in thi
 .. warning:: 
 
   **DO NOT** enable this component in production. This is intended for local development and test purposes only!
+
+Proxy Log Volume
+----------------
+
+This optional setting creates a named docker volume `proxy-logs` that contains the logs directory for the `proxy` component.
+
+It also creates an Nginx configuration that instructs the proxy service to write access logs to a regular file in that directory.
+
+.. note::
+
+    By default, access logs are only written to the stdout stream of the `proxy` docker container.
+
+.. note::
+
+    Because access logs are now being written to a regular file, enabling this component will also enable the 
+    `optional-components/scheduler-job-logrotate-nginx` scheduler job to ensure that this file is rotated and that it will not
+    get too big.
+
+.. warning::
+
+    **DO NOT** enable this setting directly. It will be enabled as a component dependency by other components that require access
+    to the `proxy` access logs as a regular file.
+
+
+If you are creating a custom component that requires access to the `proxy` access logs, add the following to that component's
+`default.env` file:
+
+.. code::shell
+
+    COMPONENT_DEPENDENCIES="
+        ./optional-components/proxy-log-volume
+    "
+
+This will ensure that the proxy log volume setting will be enabled. You can then mount the volume named `proxy-logs` to any container
+that your custom component creates and read the `proxy` access logs at a file defined by the configuration variable `PROXY_LOG_FILE`.
+
+For example, if `PROXY_LOG_FILE` is set to ``access_file.log`` (the default) and you mount the `proxy-logs` volume to the ``/logs``
+directory in your container, the `proxy` access logs can be read at ``/logs/access_file.log`` in your container.

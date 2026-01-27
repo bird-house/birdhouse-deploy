@@ -24,6 +24,700 @@
   
   (see `env.local.example` or the `scheduler` documentation for details).
 
+[2.21.0](https://github.com/bird-house/birdhouse-deploy/tree/2.21.0) (2026-01-27)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Remove `proxy` component's dependency on `scheduler` and `scheduler-job-logrotate-nginx`
+
+  Creates new settings in `optional-components/proxy-log-volume` that create the `proxy-logs` docker volume as well
+  as instructing Nginx to write access logs to an additional log file (specified by `PROXY_LOG_PATH`). These settings
+  are included as a `COMPONENT_DEPENDENCY` in components that require access to the the `proxy` access logs as a
+  regular file. If no components require access to these logs as a regular file then the `proxy` component will only
+  write access logs to the stdout stream for that container.
+
+  Right now, the only components that require access to logs in this way are `components/canarie-api` and
+  `optional-components/prometheus-log-parser`. Both of these now include `optional-components/proxy-log-volume` as a
+  `COMPONENT_DEPENDENCY`.
+
+  Note: this means that if no optional components require `optional-components/proxy-log-volume` as a dependency
+  then logs from the `proxy` container will only be written to stdout/stderr. This means that there is no need
+  for any additional custom log rotation handling since the logs are handled directly by docker. This means that
+  the `proxy` service itself no longer need to be dependant on the `scheduler` and `scheduler-job-logrotate-nginx`
+  components.
+
+  Note: a previous discussion suggested that logs could be parsed directly from the stdout stream of the `proxy`
+  container. However, there is no way to do so that doesn't require very hacky workarounds. Possible solutions that
+  were explored and rejected include:
+
+    - Mounting the log file from the `proxy` container from the host to the relevant containers.
+      Rejected because this practice is highly discouraged by docker as the actual storage location of log files
+      is not standardized and may be changed in future versions.
+    - Writing logs to a named pipe or socket within the `proxy` container.
+      Rejected because this is very difficult to set up and is untested when then mounted to other containers. 
+      Also, a different named pipe would be required for each consumer which is currently very difficult to set up 
+      using birdhouse's deployment tools. 
+
+  **Breaking Change**: if a custom component (not included in this repository) uses the `proxy-logs` named volume.
+  It must now include `optional-components/proxy-log-volume` as a `COMPONENT_DEPENDENCY` for that custom component.
+
+  **Breaking Change**: if `SCHEDULER_JOB_BACKUP_ARGS` specifies `-l proxy` explicitly (not `-l '*'`) then this should
+  be changed to `-l proxy-log-volume` since the backup script has been moved. Note that it is not necessary to
+  specify `-l proxy-log-volume` if `--birdhouse-logs` is also specified because the log data is identical in both.
+
+- Make docker compose logging options configurable
+
+  Introduce a new component `components/logging` that sets default logging options for all docker 
+  compose services started by `birdhouse-deploy`. This component is enabled by default.
+
+  The default value is set by the `BIRDHOUSE_DOCKER_LOGGING_DEFAULT` environment variable. To change the default
+  value, set the `BIRDHOUSE_DOCKER_LOGGING_DEFAULT` to a JSON string in the local environment file that contains
+  a valid 
+  [docker compose logging configuration](https://docs.docker.com/reference/compose-file/services/#logging).
+
+  For example, to set the default driver to "local" set the following in your local environment file:
+
+  ```sh
+  export BIRDHOUSE_DOCKER_LOGGING_DEFAULT='{"driver": "local"}'
+  ```
+
+  You can also override logging options for a single service using environment variables using a variable
+  `BIRDHOUSE_DOCKER_LOGGING_<service_name>` where `<service_name>` is the uppercase name of the docker compose 
+  service with hyphens replaced with underscores. For example, to set the default driver to "local" only for the 
+  `weaver-worker` service:
+
+  ```sh
+  export BIRDHOUSE_DOCKER_LOGGING_WEAVER_WORKER='{"driver": "local"}'
+  ```
+
+  Logging options can can also be set directly in a component's ``docker-compose-extra.yml`` file. 
+  The order of precedence for logging options are as follows:
+
+  1. logging options specified by `BIRDHOUSE_DOCKER_LOGGING_<service_name>` environment variable
+  2. logging options set in a `docker-compose-extra.yml` file
+  3. logging options specified by `BIRDHOUSE_DOCKER_LOGGING_DEFAULT` environment variable
+
+- Add script that automatically updates postgres databases to a later version
+
+  In anticipation of upgrading postgres databases in the future, this introduces a script that automatically
+  upgrades postgres databases using the backup/restore process.
+
+  This includes magpie and all WPS birds that use the postgres component. This does not include test component 
+  like `optional-components/generic_bird` and will not update custom components (ones not from this repository).
+
+  Test components are not assumed to have persistent data that needs to be updated and we cannot guarantee that
+  other postgres databases used by components outside this repository do not require additional steps (data
+  migrations) in order to comply with a different version of postgres. 
+
+  It will update postgres databases to the version specified by the `POSTGRES_VERSION_UPDATE` environment variable.
+  All of the old database files will be copied to a temporary directory in case you want to inspect them or revert 
+  this operation later on. To specify which directory to write these backups to set the `BIRDHOUSE_BACKUP_DATA_DIR` variable 
+  (default: `${TMPDIR:-/tmp}/birdhouse-postgres-migrate-backup/`)
+  
+  Note that backups in the form of database dumps will also be written to the named volume or directory specified 
+  by the `BIRDHOUSE_BACKUP_VOLUME` variable.
+
+  For example, to update the current postgres databases to version 18.1 and write backups to `/tmp/test/`
+  
+  ```sh
+  $ POSTGRES_VERSION_UPDATE=18.1 BIRDHOUSE_BACKUP_DATA_DIR=/tmp/test/ birdhouse/scripts/update-postgresh.sh
+  ```
+
+  In a future update we can update the postgres versions and tell users to run this script first in order to safely
+  migrate data from one version to the next.
+
+[2.20.4](https://github.com/bird-house/birdhouse-deploy/tree/2.20.4) (2026-01-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Update `scheduler` image version
+
+  Docker engine version 29.0 dropped support for docker API versions <1.44. That means that the docker client used
+  by the `scheduler` component cannot be used with modern versions of docker engine. To fix this, the `scheduler`
+  component's image has been updated to version [0.6-rc3](https://hub.docker.com/layers/pavics/crontab/0.6-rc3) which
+  uses a modern version of the docker client.
+
+
+[2.20.3](https://github.com/bird-house/birdhouse-deploy/tree/2.20.3) (2026-01-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix bugs in `get-components-json.include.sh` and simplify `get-services-json.include.sh`
+
+  `get-components-json.include.sh` was unable to handle the case where a component was commented out in
+  the `BIRDHOUSE_EXTRA_CONF_DIRS` variable.
+
+  This also simplifies the code in both files to make it easier to maintain:
+  
+  - removed unnecessary variable declarations
+  - simplify component discovery `get-components-json.include.sh`
+
+- Incorrect usage checks for `birdhouse backup create`
+
+  Running `birdhouse backup create` was failing without either the `--no-restic` or `--snapshot` options specified.
+  However, `--snapshot` is only required for the `restore` subargument (not `create`) and so `create` would often
+  fail with a confusing error message.
+
+  This fixes the issue by moving the check so that it is only triggered when restoring a backup.
+
+[2.20.2](https://github.com/bird-house/birdhouse-deploy/tree/2.20.2) (2026-01-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC API: Improve reported service links.
+
+  - Add `STAC_LICENSE_URL` to define the relevant license metadata location of the selected implementation.
+  - Add `STAC_OPENAPI_SPEC_PATH` and `STAC_OPENAPI_DOCS_PATH` to define endpoints of OpenAPI specification.
+  - Update the `/services/stac` response to provide more metadata links, including license details and better
+    API metadata references. Notably, replace the *generic* STAC API Core OpenAPI definition by the 
+    implementation-specific definition self-served by the selected docker image to document API extensions.
+
+[2.20.1](https://github.com/bird-house/birdhouse-deploy/tree/2.20.1) (2025-12-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Add log rotation scheduler job for the nginx logs
+
+  Currently, the nginx logs are not rotated so they can build up to quite a large size.
+
+  Previously, they were rotated by the `canarie-api` component but that is no longer a required
+  component and CanarieAPI hasn't handled log rotation since CanarieAPI version 1.0.0 (see 
+  https://github.com/bird-house/birdhouse-deploy/pull/452 for details).
+
+  Fixes https://github.com/bird-house/birdhouse-deploy/issues/593. Here is a summary of the issue:
+
+  - CanarieApi parses the log file every minute starting from the beginning of the file
+  - If the log file is really big it uses a lot of CPU and memory to read through the whole file
+  - This would use a lot less CPU and memory if the log file was smaller
+
+  This quick and least disruptive fix to get the production server out of the water should be a 
+  temporary solution until a better solution using container STDOUT parsing is implemented for 
+  the CanarieAPI and prometheus-log-parser (https://github.com/bird-house/birdhouse-deploy/issues/618).  
+  Then we can deprecate this scheduler job.
+
+[2.20.0](https://github.com/bird-house/birdhouse-deploy/tree/2.20.0) (2025-12-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC API: update to version [`2.1.0`](https://github.com/crim-ca/stac-app/releases/tag/2.1.0).
+
+  - Fix paging error on `/collections` responses causing requests with `limit` query or catalogs
+    with more than 10 collections (by default) to never return collections beyond the first page.
+
+- STAC Browser: update to version [`4.0.0-rc.2-crim`](https://github.com/crim-ca/stac-browser/releases/tag/v4.0.0-rc.2-crim).
+  
+  Apply upstream fixes, notably:
+
+  - Logo resizing issue when embedded in contact details.
+  - Handling of `geojson.io` external viewer references from compatible GeoJSON STAC Assets.
+  - Improvements to UI for better locales, content positioning and browsing experience.
+  - Alignment with latest OGC APIs requirements and conformance classes.
+  - Added support for multiple additional data representations and visualization.
+
+[2.19.0](https://github.com/bird-house/birdhouse-deploy/tree/2.19.0) (2025-12-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- DGGS: Add the new `components/dggs` providing an OGC API for Discrete Global Grid Systems.
+  - DGGS API available through `/dggs-api` path (default, configurable via `DGGS_API_PATH`).
+  - Redirects available for `/ogcapi/dggs/...` and  `/ogcapi/collections/.../dggs/...`.
+  - Sample configuration (minimum 1 resolvable data provider required) uses the new
+    feature of `optional-components/secure-data-proxy` on CRIM's Hirondelle server.
+
+- Data: Allow `optional-components/secure-data-proxy` to define generic and flexible locations.
+  - `SECURE_DATA_PROXY_ROOT` can be defined as mount directory inside the `proxy` service.
+  - `SECURE_DATA_PROXY_LOCATIONS` can be defined with any amount of custom locations.
+  - All locations can be configured (as desired) under Magpie `secure-data-proxy` service for access control.
+  - Other components (`wps_output-volume`, `stac-data-proxy`) that can optionally use this security middleware
+    via `SECURE_DATA_PROXY_AUTH_INCLUDE` can still do so. Their mount points are handled separately.
+
+- Weaver: Modified `/ogcapi/...` redirections strategy via `WEAVER_ALT_PREFIX_PROXY_LOCATION`. 
+  - Allows other OGC APIs to reuse the same prefix to provide a unified location to access them.
+
+[2.18.16](https://github.com/bird-house/birdhouse-deploy/tree/2.18.16) (2025-12-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Proxy: Allow `Access-Control-Allow-Origin` header to be configured using `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable.
+  - A `defaults.include.template` file is introduced to setup global nginx server defaults that can be overridden
+    by more specialized definitions in `location` blocks of components.
+  - The default `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN="*"` is used to retain the previous behaviour.
+  - The `BIRDHOUSE_PROXY_CORS_ALLOW_ORIGIN` variable can reference other variables to allow dynamic configuration
+    (notably, to reference `BIRDHOUSE_FQDN_PUBLIC` for same-origin allowance).
+  - Align the documentation with corresponding `STAC_CORS_ORIGINS` header implications.
+  - Avoids Nginx warnings flagged from using uninitialized `access_control_allow_origin` variable
+    (fixes https://github.com/bird-house/birdhouse-deploy/issues/610).
+
+[2.18.15](https://github.com/bird-house/birdhouse-deploy/tree/2.18.15) (2025-12-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- README: remind the user to source control `env.local` securely as it may contain passwords.
+
+## Fixes
+
+- Autodeploy broken due to new config variable precedence order.
+
+  Broken since `2.18.8` (https://github.com/bird-house/birdhouse-deploy/pull/600).
+
+  Example breakage scenario:
+
+  Autodeploy starts and calls `read_configs`, then git pull a newer
+  version of `env.local` (which might modify `EXTRA_CONF_DIRS` to enable
+  new components for example).  But since the new var precedence locked
+  all the values to the first call of `read_configs`, the new change to
+  `EXTRA_CONF_DIRS` (or any vars in `env.local`) never went into
+  effect at the end of the autodeploy process when we start the full
+  stack.
+
+  This is because `read_configs` returns all variables as environment
+  variables and the new variable precedence order gives environment
+  variables precedence higher than the values in `env.local`.  So after
+  the first call to `read_configs` (or `read_basic_configs_only`), all the
+  values are "locked" for all child processes even if they try to call
+  `read_configs` again to get the newest values from `env.local`.
+
+  The fix is to avoid getting these config variables as environment
+  variables which will avoid "locking" their values for child processes.
+
+- Autodeploy broken due to attempt to be compat with changing the location of `env.local` via `BIRDHOUSE_LOCAL_ENV`.
+
+  Broken since `2.18.9` (https://github.com/bird-house/birdhouse-deploy/pull/601).
+
+  It was working for the first run of autodeploy but on the next run, the value of
+  `BIRDHOUSE_LOCAL_ENV` in `optional-components/scheduler-job-autodeploy/config.yml`
+  is wrong !
+
+  Good value in first run:
+
+  `--volume /real/path/to/env.local:/tmp/birdhouse-local-env`
+
+  Bad value in subsequent run:
+
+  `--volume /tmp/birdhouse-local-env:/tmp/birdhouse-local-env`
+
+  This is because we override `--env BIRDHOUSE_LOCAL_ENV=/tmp/birdhouse-local-env` in
+  `optional-components/scheduler-job-autodeploy/config.yml.template` as env var so on
+  the subsequent runs the bad value persists because it is an env var.
+
+  This `BIRDHOUSE_LOCAL_ENV` is meant to be set "outside" the stack as env var
+  so there is nothing in the stack that will fix this value if it is bad.
+
+  The fix is to revert that attempt.  So autodeploy only supports changing the
+  location of `env.local` via symlink, or by manually adding the folder
+  containing the file `env.local` to `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS` if
+  `env.local` is set by `BIRDHOUSE_LOCAL_ENV` environment variable and not via
+  symlink.
+
+- One feature of autodeploy is broken due to a missing mapping in back-compat config var name change.
+
+  Broken since `2.4.0` but only if back-compat var name mode is required.
+
+  The `AUTODEPLOY_CODE_OWNERSHIP` old name mapping is missing in `BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`.
+
+  Autodeploy is missing the `chown` step to the good code owner because it does
+  not "see" the value of the old variable name since the mapping to the new
+  variable name is missing.
+
+- Missing default value for `BIRDHOUSE_HTTP_ONLY` causing inconsistent behavior
+  when the var is used in `env.local` then removed from `env.local`.  The
+  behavior never revert back as if it has never been initially used in
+  `env.local`.  See [discussion](https://github.com/bird-house/birdhouse-deploy/pull/600#issuecomment-3528058708).
+
+
+[2.18.14](https://github.com/bird-house/birdhouse-deploy/tree/2.18.14) (2025-12-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Ensure Jupyterlab container healthchecks don't fail because of leftover files
+
+  Leftover files from Jupyterlab containers that didn't shut down properly could cause the
+  healthcheck to always fail. Old files are now removed when the container starts up so this is avoided.
+
+  The full explanation:
+
+  If a Jupyterlab container is not shut down properly then it does not have a chance to 
+  [clean up](https://github.com/jupyter-server/jupyter_server/blob/dd435c/jupyter_server/serverapp.py#L3152) 
+  old runtime files. These runtime files are stored in the user's home directory which is
+  persisted between containers as a bind-mount.
+
+  When the Jupyterlab container is created again, it will create new versions of some of these files. One of which
+  is the jpserver JSON files which contains [a URL used by the 
+  healthchecks](https://github.com/jupyter/docker-stacks/blob/3b8a79/images/base-notebook/docker_healthcheck.py#L27).
+  
+  This URL contains the hostname of the Jupyterlab container which is different each time a new container is created. 
+  Different files will have different hostnames, only one of which will be the hostname for the current container.
+
+  Since the [healthchecks](https://github.com/jupyter/docker-stacks/blob/3b8a79/images/base-notebook/docker_healthcheck.py#L27)
+  use `glob` which returns files in an arbitrary order, the healthcheck can easily choose an old file with an old hostname.
+  If that is the case, the healthcheck will always fail.
+
+
+[2.18.13](https://github.com/bird-house/birdhouse-deploy/tree/2.18.13) (2025-12-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `prometheus-log-parser` component to use version 1.1.1 of the log-parser
+
+  See changes for versions [1.1.0](https://github.com/DACCS-Climate/log-parser/releases/tag/v1.1.0) and 
+  [1.1.1](https://github.com/DACCS-Climate/log-parser/releases/tag/v1.1.1).
+
+  The most relevant changes to this project are support for parsing logs from streams (like stdout) and a
+  safer way to kill the running log-parser container.
+
+[2.18.12](https://github.com/bird-house/birdhouse-deploy/tree/2.18.12) (2025-11-25)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add mechanism to set CPU and memory limits on Jupyterlab containers based on Magpie user or group name
+
+  Creates a new variable `JUPYTERHUB_RESOURCE_LIMITS` which sets resource limits for JupyterLab containers per 
+  Magpie user or group.
+ 
+  The value for this variable is a whitespace delimited string. Each section is delimited by colons (:) 
+  where the first element is either `group` or `user` and the second element is the name of the user or group
+  to apply the limits to. The rest are resource limits of the form `limit=amount`. For example:
+
+  ```sh
+  export JUPYTERHUB_RESOURCE_LIMITS="
+     user:user1:mem_limit=30G
+     group:group1:mem_limit=10G:cpu_limit=1
+     group:group2:cpu_limit=3
+  "
+  ```
+
+  Supported limits are: 
+  [mem_limit](https://jupyterhub-dockerspawner.readthedocs.io/en/latest/api/index.html#dockerspawner.DockerSpawner.mem_limit) 
+  and [cpu_limit](https://jupyterhub-dockerspawner.readthedocs.io/en/latest/api/index.html#dockerspawner.DockerSpawner.cpu_limit). 
+
+  Note that this will not create the groups in Magpie, that must be done by some other means (through configuration files or the
+  Magpie API or UI).
+
+  Note that if a user belongs to multiple groups, later values in `JUPYTERHUB_RESOURCE_LIMITS` will take
+  precedence. For example, if a user named user1 belongs to group1 and group2 then the following limits will apply:
+
+  - mem_limit=10G (because group1 is later in the list)
+  - cpu_limit=3 (because group2 is later in the list)
+
+[2.18.11](https://github.com/bird-house/birdhouse-deploy/tree/2.18.11) (2025-11-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `$schema` in all `service.config.json.template` files to version 1.3.0
+
+  Version [1.3.0](https://github.com/DACCS-Climate/Marble-node-registry/releases/tag/1.3.0) replaces "keywords"
+  with "types" and allow keywords to be any string.
+
+- Fix `bin/birdhouse configs --default` flag usage description
+
+  Previously the description made it seem like the local environment file would __not__ be read if this
+  option was specified. In fact, it's the components that won't be read.
+
+  Also rename the `--default` flag to `--basic` to reflect the function it calls (`read_basic_configs_only`)
+  but keep the old version for backwards compatibility.
+
+[2.18.10](https://github.com/bird-house/birdhouse-deploy/tree/2.18.10) (2025-11-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow each service to specify values for `Access-Control-Allow-Origin`
+
+  Previously, if a `location` block in the `nginx` configuration for a given service included the cors helper
+  configuration (with `include /etc/nginx/conf.d/cors.include;`) then all origins were allowed by default.
+
+  This was done by setting the header `Access-Control-Allow-Origin: *` which works well but is a bit too permissive
+  since it allowed __all__ origins.
+
+  This change introduces a mechanism to specify specific additional allowed origins by setting the 
+  `$access_control_allow_origin` nginx variable in the `location` block before including the `cors.include` file.
+
+  For example:
+
+  ```shell
+  set $access_control_allow_origin http://example.com;
+  include /etc/nginx/conf.d/cors.include;
+  ```
+
+  will set the value of the `Access-Control-Allow-Origin` response header to `http://example.com`.
+
+  By default, the header value will be `*` if `$access_control_allow_origin` is not set (to maintain backwards
+  compatibility).
+
+  To specify multiple allowed origins, use a `map` directive (see the implementation for `components/stac` for an
+  example).
+
+- Set allowed CORS origins for `stac` through an environment variable
+
+  This change implements this flexibility for the `components/stac` component. By setting the `STAC_CORS_ORIGINS`
+  variable a user can specify allowed origins for responses from the `components/stac` component.
+
+  For example, setting the following:
+  
+  ```shell
+  export STAC_CORS_ORIGINS='https://example.com ~^https?://(www\.)?other\.example\.com$' 
+  ```
+
+  then requests from https://example.com and http://other.example.com will get a response with the 
+  `Access-Control-Allow-Origin header` set to their origin, but http://example.ca will not.
+
+  Note that this breaks backwards compatibility slightly since previously all origins were allowed for `/stac` by
+  default. To match all origins and keep the backwards compatible behaviour you can set:
+
+  ```shell
+  export STAC_CORS_ORIGINS='~.*' 
+  ```
+
+[2.18.9](https://github.com/bird-house/birdhouse-deploy/tree/2.18.9) (2025-11-10)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Centralize management of `docker-compose` image version needed by `birdhouse-compose.sh` script.
+
+  To simplify future version update and to easily shared by other future components.
+
+  Backward compatible change:
+  * Added config variables
+    * `BIRDHOUSE_COMPOSE_DOCKER`
+    * `BIRDHOUSE_COMPOSE_VERSION`
+    * `BIRDHOUSE_COMPOSE_IMAGE`
+
+- Update `DOCKER_CLI_IMAGE` version.
+
+  Simply to match `BIRDHOUSE_COMPOSE_IMAGE` version.  Previous version was not
+  causing any problems.
+
+- Centralized usage of `DOCKER_CLI_IMAGE` in all scheduler jobs.
+
+  To ease future version update and for all jobs to be consistent.
+
+  Backward compatible change:
+  * Added config variables
+    * `DOCKER_CLI_DOCKER`
+    * `DOCKER_CLI_VERSION`
+
+- scheduler-job-autodeploy: make compatible with change of `BIRDHOUSE_LOCAL_ENV` via env var and not symlink
+
+  See https://github.com/bird-house/birdhouse-deploy/pull/597#issuecomment-3428179549.
+
+## Fixes
+
+- `scheduler-job-deploy_xclim_testdata` wrongly used variables from `scheduler-job-deploy_raven_testdata`.
+
+- scheduler-jobs: fix deploy raven and xclim testdata missing logs, forgot delayed eval
+
+
+[2.18.8](https://github.com/bird-house/birdhouse-deploy/tree/2.18.8) (2025-10-30)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Allow configuration options to be set as environment variables
+
+  Previously configuration options must be set in the local environment file (`birdhouse/env.local` by default).
+  This change allows configuration options to be set as environment variables which would take precedence over those
+  set in the local environment file.
+
+  For example, you can now set the `BIRDHOUSE_FQDN` variable when starting the stack like so:
+
+  ```sh
+  BIRDHOUSE_FQDN=myhost.example.com bin/birdhouse compose up -d
+
+  # OR 
+
+  export BIRDHOUSE_FQDN=myhost.example.com
+  bin/birdhouse compose up -d
+  ```
+
+  This change has the following advantages:
+
+  - flexibility: the user has more options for how they can customize their deployment
+  - good dev-ops: this change further aligns birdhouse with the [12 factor app principles](https://12factor.net/), 
+                  specifically the [Config](https://12factor.net/config) principle which recommends that configuration 
+                  options be settable as environment variables.
+  - security: sensitive settings (credentials, secrets) can be set as environment variables, ensuring that they are 
+              not easily visible in the plain text local environment file.
+  - consistency: users can store non-sensitive settings in the local environment file and share that file freely without
+                 worrying that sensitive setting will be leaked.
+
+
+[2.18.7](https://github.com/bird-house/birdhouse-deploy/tree/2.18.7) (2025-10-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Autodeploy unable to git pull the newer `env.local` file.
+
+  Previously the `env.local` file could be a symlink to a file anywhere on the
+  disk.
+
+  Now `env.local` can only be a symlink to a file under a folder listed in
+  `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`.
+
+  This is a new restriction from the newer autodeploy docker image in the
+  previous release 2.18.5 below.  We can not volume-mount both the parent dir
+  and the file at the same time and have write access.  We can only
+  volume-mount one of the two.  For read-only access, it is still okay to
+  volume-mount both.
+
+
+[2.18.6](https://github.com/bird-house/birdhouse-deploy/tree/2.18.6) (2025-10-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- STAC Browser: fix resolution against the pre-built prefix path to align with proxy configuration.
+  - Add `STAC_BROWSER_PATH_PREFIX` variable that makes the mapping more easily configurable.
+    However, changing its value requires building the corresponding docker wih the same prefix.
+    The change will not be effective "simply" by modifying the variable.
+  - Revert to `crim-ca/stac-browser:3.3.5` (rather than `crim-ca/stac-browser:3.4.0-dev`)
+    without need of the temporary patch (relates to https://github.com/radiantearth/stac-browser/pull/653).
+
+[2.18.5](https://github.com/bird-house/birdhouse-deploy/tree/2.18.5) (2025-10-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Modify Prometheus Thredds counter to record bytes instead of kb. 
+- Change longterm rule names to follow naming conventions.
+
+
+## Changes
+
+- Update autodeploy image to latest version
+
+  This makes autodeploy compatible with newer Docker engine installed on the
+  host [#246](https://github.com/bird-house/birdhouse-deploy/issues/246).
+
+  Also makes autodeploy compatible with newer docker-compose syntax version
+  [#505](https://github.com/bird-house/birdhouse-deploy/issues/505).
+
+
+[2.18.4](https://github.com/bird-house/birdhouse-deploy/tree/2.18.4) (2025-10-01)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- STAC: Update default API version to `crim-ca/stac-app:2.0.2`.
+
+  - Fix `rel: items` links causing invalid collection listing results
+    (relates to https://github.com/stac-utils/stac-fastapi-pgstac/pull/294,
+    https://github.com/stac-utils/stac-fastapi-pgstac/issues/285,
+    https://github.com/crim-ca/stac-populator/issues/109 and
+    https://github.com/crim-ca/stac-app/pull/50).
+
+[2.18.3](https://github.com/bird-house/birdhouse-deploy/tree/2.18.3) (2025-09-26)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix various bugs with backward-compatibility mode
+
+  - Missing template expansion for old variable names
+
+    This bug only affect external repos still using old variable names for
+    template expansion.
+
+  - Missing delayed eval for old variable names
+
+    This bug only affect external repos still using old variable names for
+    delayed eval.
+
+  - Lost new lines when new value is transfered to old value and vice-versa
+
+    Example: if `ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS` (old var) is set in
+    `env.local`, the new matching var `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` is
+    automatically set but lost the new lines from the old var.
+
+    This is bad because subsequently, when new var
+    `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` is used in
+    `components/jupyterhub/jupyterhub_config.py.template` for template expansion,
+    it will generate badly formatted code since the new lines are lost.
+
+    The reverse case: external repos still using old vars for template
+    expansion but in `env.local` the new var is used, the value transfered
+    from the new var to the old var is missing all the new lines and also
+    generate broken code.
+
+  - Wrong old var overriding new var during child invocation, even when new
+    var is set properly in `env.local`.
+
+    This bug is mostly visible with child invocation.  First level
+    invocation, to be affected, need to use the old var name, which means
+    external repos only because the current repo has all switched to use the
+    new var names.
+
+    Previously `set_old_backwards_compatible_variables` was called before
+    `read_env_local` which means old var names were initialized with default
+    values only, not the updated values from `env.local`.  On child
+    invocation, since the old var already exists, it overrides the new var
+    even if the new var is properly set in `env.local`.
+
+    For the autodeploy process, `triggerdeploy.sh` is the first level
+    invocation and `autodeploy.sh` is the child invocation.  It blows up in
+    the child invocation when `BIRDHOUSE_LOG_DIR` resets to the default value
+    even when `BIRDHOUSE_LOG_DIR` (new var) is sets properly in `env.local`.
+
+    Most other scripts do not have a child invocation so they all work fine
+    and that's why this back-compat bug is discovered so late.
+
+  - New var reset to default in child invocation even when old var is set properly in `env.local`
+
+    This bug happens for child invocation only.
+
+    Example: in autodeploy, `triggerdeploy.sh` is the first level invocation
+    and `deploy.sh` is the child invocation.  `SSL_CERTIFICATE` (old var) is
+    properly set in `env.local` but `BIRDHOUSE_SSL_CERTIFICATE` (new var)
+    resets to default value in `deploy.sh` and breaks autodepploy.
+
+    In `process_backwards_compatible_variables()`, it has to change to process
+    **all** old vars and not just those old vars not set in
+    `set_old_backwards_compatible_variables()`.
+
+    Technically this is safe because all the old vars set in
+    `set_old_backwards_compatible_variables()` are set from new var values or
+    default values so setting "new_var = old_value" back in
+    `process_backwards_compatible_variables()` is basically setting the same value again.
+
+- Fix process_delayed_eval() losing new lines and leading empty space after being eval'ed
+
+  Example: if `AUTODEPLOY_PLATFORM_EXTRA_DOCKER_ARGS` is set in `env.local` and
+  added to `DELAYED_EVAL` in `env.local` because it uses other variables,
+  the new lines and the 4 front spaces must be kept for proper yaml syntax when
+  template expanding in `components/scheduler/config.yml.template`.
+
+## Changes
+
+- Remove 5 duplicate intermediate unused `SERVER_` vars
+
+  The back-compat code and mapping syntax only support one rename.  Those
+  5 `SERVER_` vars are intermediate rename (orig -> `SERVER_orig` -> `BIRDHOUSE_orig`)
+  and not fully supported in the current state.
+
+  * SERVER_DOC_URL=BIRDHOUSE_DOC_URL
+  * SERVER_SUPPORT_EMAIL=BIRDHOUSE_SUPPORT_EMAIL
+  * SERVER_SSL_CERTIFICATE=BIRDHOUSE_SSL_CERTIFICATE
+  * SERVER_DATA_PERSIST_SHARED_ROOT=BIRDHOUSE_DATA_PERSIST_SHARED_ROOT
+  * SERVER_WPS_OUTPUTS_DIR=BIRDHOUSE_WPS_OUTPUTS_DIR
+
+  Those 5 `SERVER_` were intermediate rename inside a same PR so they never
+  made it to any release.  Nobody should ever have been aware of them.
+
+
 [2.18.2](https://github.com/bird-house/birdhouse-deploy/tree/2.18.2) (2025-09-24)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -703,6 +1397,7 @@
   host machine configuration. This change deprecates the component by moving it to the `deprecated-components`
   directory. It can still be enabled from that path if desired.
 
+
 [2.12.0](https://github.com/bird-house/birdhouse-deploy/tree/2.12.0) (2025-04-03)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -768,6 +1463,7 @@
     This is fixed by explicitly giving a value for the `COMPOSE_DIR` variable when using the `--print-config-command`
     option. The value is already correctly set in the `bin/birdhouse` script so it is easy to pass that 
     value on to the user. 
+
 
 [2.11.0](https://github.com/bird-house/birdhouse-deploy/tree/2.11.0) (2025-03-24)
 ------------------------------------------------------------------------------------------------------------------
@@ -836,6 +1532,7 @@
     - if you deploy any external components that use any of the old docker compose syntax you may want to update
       those docker compose files as well so that you aren't bombarded by deprecation warnings whenever you start
       the birdhouse stack.  
+
 
 [2.10.1](https://github.com/bird-house/birdhouse-deploy/tree/2.10.1) (2025-03-10)
 ------------------------------------------------------------------------------------------------------------------

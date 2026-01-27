@@ -1,5 +1,6 @@
 frontend.conf
 all-services.include
+defaults.include
 
 # from private config
 lb_catalog.conf

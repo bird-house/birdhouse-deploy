@@ -74,10 +74,24 @@ BIRDHOUSE_LOCAL_ENV="${1:-${BIRDHOUSE_LOCAL_ENV:-"${COMPOSE_DIR}/env.local"}}"
 # container and manually from the host.
 cd "${COMPOSE_DIR}" || exit
 
-. "${COMPOSE_DIR}/read-configs.include.sh"
+set -x
+BIRDHOUSE_EXE="${COMPOSE_DIR}/../bin/birdhouse"
+BIRDHOUSE_EXE_CONFIGS_OPTS="--backwards-compatible --quiet configs --basic --command"
 
-# Read BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS
-read_basic_configs_only
+# Similar to "read_basic_configs_only" but only get the vars we will need, not
+# everything like the full "read_basic_configs_only".
+# Note: NEVER turn these vars into env var because this will "lock" these
+# vars for all subsequent "read_configs" even if the env.local changes.  This
+# is because of the new variable precedence that gives higher precedence to env
+# var than env.local.  This will break the last step when we bring up the stack
+# that will have to read and use all the latest values of any changed vars.
+CONFIG_VARS_TO_EVAL="$("${BIRDHOUSE_EXE}" ${BIRDHOUSE_EXE_CONFIGS_OPTS} '
+    echo "BIRDHOUSE_LOG_DIR=\"${BIRDHOUSE_LOG_DIR}\"";
+    echo "BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS=\"${BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS}\"";
+    echo "BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR=\"${BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR}\"";
+')"
+eval "${CONFIG_VARS_TO_EVAL}"
+set +x
 
 if [ ! -z "${AUTODEPLOY_SILENT}" ]; then
     LOG_FILE="${BIRDHOUSE_LOG_DIR}/autodeploy.log"
@@ -132,8 +146,6 @@ done
 
 cd "${COMPOSE_DIR}" || exit
 
-read_basic_configs_only
-
 # stop all to force reload any changed config that are volume-mount into the containers
 "${BIRDHOUSE_COMPOSE}" stop
 
@@ -174,12 +186,10 @@ done
 
 cd "${COMPOSE_DIR}" || exit
 
-# reload again after git pull because this file could be changed by the pull
-. "${COMPOSE_DIR}/read-configs.include.sh"
-
-# reload again after default.env since env.local can override default.env
-# (ex: JUPYTERHUB_USER_DATA_DIR)
-read_basic_configs_only
+# NOTE: if other operations are needed at this point, re-read again the config
+# vars because both the code and the env.local could have changed after git pull.
+# And NEVER turn these vars into env var, see explanation at the first config
+# var read earlier in this file.
 
 # restart everything, only changed containers will be destroyed and recreated
 "${BIRDHOUSE_COMPOSE}" up -d

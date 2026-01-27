@@ -1,0 +1,52 @@
+services:
+  dggs:
+    container_name: dggs
+    image: ${DGGS_IMAGE}
+    environment:
+      HOSTNAME: ${BIRDHOUSE_FQDN}
+      HTTP_HOST: ${BIRDHOUSE_FQDN}
+      FORWARDED_ALLOW_IPS: "*"
+      API_TITLE: "${DGGS_API_TITLE}"
+      API_CONTACT: "${DGGS_API_CONTACT}"
+      API_DESCRIPTION: "${DGGS_API_DESCRIPTION}"
+      # WARNING: do NOT use 'ROOT_PATH' below
+      #    Although this is the recommended method by FastAPI (https://fastapi.tiangolo.com/advanced/behind-a-proxy/)
+      #    this parameter happens to break everything in that specific API's definition because it does not properly
+      #    handle URI rewriting of its nested 'links' definitions in responses. Enabling it in combination with our
+      #    particular proxy setup with dual dggs/tiles endpoint rewrites led to inconsistent URIs between the API's 
+      #    resource access paths and the ones it advertises in generated JSON contents.
+      #ROOT_PATH: "${DGGS_API_PATH}"
+      SERVICE_META_URL: "${BIRDHOUSE_FQDN_PUBLIC}/services/${DGGS_API_PATH}"
+      DOCS_URL: ${DGGS_API_PATH}${DGGS_DOCS_PATH_INTERNAL}
+      OPENAPI_URL: ${DGGS_API_PATH}/api
+      TILES_PREFIX: "${DGGS_TILES_PATH}"
+      DGGS_PREFIX: "${DGGS_API_PATH}"
+      PYDGGSAPI_PORT: 8000
+      PYDGGSAPI_WORKERS: ${DGGS_WORKERS}
+      PYDGGSAPI_LOG_LEVEL: ${DGGS_LOG_LEVEL}
+    networks:
+      - default
+    volumes:
+      # The below configuration file is mounted with read-write so that the API using it can operate.
+      # The service does not actually change it, but it employs it as a database connection that requires write access.
+      # NOTE:
+      #   variable 'DGGS_CONFIG_PATH' must be defined explicitly,
+      #   either by custom config with 'env.local' or using 'optional-components/dggs-data-sample'
+      - ${DGGS_CONFIG_PATH}:/opt/local/src/pydggsapi/config/pydggsapi-config.json:rw
+      # Following volume mount is provided for convenience to easily make static data files available to the service.
+      # Users should edit the 'DGGS_CONFIG_PATH' to a custom configuration which can include '/data/dggs/...' file paths.
+      # The volume is mounted read-write to allow creation of temporary/cache files by the service to accelerate access.
+      - ${DGGS_DATA_DIR}:/data/dggs:rw
+    restart: always
+    healthcheck:
+      test: [
+        "CMD",
+        "python",
+        "-c",
+        "import urllib.request; urllib.request.urlopen('http://localhost:8000${DGGS_API_PATH_INTERNAL}/')"
+      ]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
