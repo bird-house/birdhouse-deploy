@@ -17,6 +17,38 @@
 
 ## Changes
 
+- Make docker compose logging options configurable
+
+  Introduce a new component `components/logging` that sets default logging options for all docker 
+  compose services started by `birdhouse-deploy`. This component is enabled by default.
+
+  The default value is set by the `BIRDHOUSE_DOCKER_LOGGING_DEFAULT` environment variable. To change the default
+  value, set the `BIRDHOUSE_DOCKER_LOGGING_DEFAULT` to a JSON string in the local environment file that contains
+  a valid 
+  [docker compose logging configuration](https://docs.docker.com/reference/compose-file/services/#logging).
+
+  For example, to set the default driver to "local" set the following in your local environment file:
+
+  ```sh
+  export BIRDHOUSE_DOCKER_LOGGING_DEFAULT='{"driver": "local"}'
+  ```
+
+  You can also override logging options for a single service using environment variables using a variable
+  `BIRDHOUSE_DOCKER_LOGGING_<service_name>` where `<service_name>` is the uppercase name of the docker compose 
+  service with hyphens replaced with underscores. For example, to set the default driver to "local" only for the 
+  `weaver-worker` service:
+
+  ```sh
+  export BIRDHOUSE_DOCKER_LOGGING_WEAVER_WORKER='{"driver": "local"}'
+  ```
+
+  Logging options can can also be set directly in a component's ``docker-compose-extra.yml`` file. 
+  The order of precedence for logging options are as follows:
+
+  1. logging options specified by `BIRDHOUSE_DOCKER_LOGGING_<service_name>` environment variable
+  2. logging options set in a `docker-compose-extra.yml` file
+  3. logging options specified by `BIRDHOUSE_DOCKER_LOGGING_DEFAULT` environment variable
+
 - Add script that automatically updates postgres databases to a later version
 
   In anticipation of upgrading postgres databases in the future, this introduces a script that automatically

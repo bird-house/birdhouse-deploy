@@ -207,6 +207,7 @@ class TestReadConfigs(TestReadBasicConfigs):
         "./components/wps_outputs-volume",
         "./components/cowbird",
         "./components/stac",
+        "./components/logging",
     ]
 
     extra_conf_order: list[str] = [

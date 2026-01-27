@@ -1,4 +1,3 @@
-
 services:
   finch:
     volumes:

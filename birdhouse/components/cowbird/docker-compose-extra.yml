@@ -1,11 +1,3 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 services:
   cowbird:
     image: ${COWBIRD_IMAGE_API}
@@ -43,7 +35,6 @@ services:
       - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
       - "${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}:${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}"
     restart: always
-    logging: *default-logging
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://0.0.0.0:7000"]
       interval: 60s
@@ -79,7 +70,6 @@ services:
       - ./components/cowbird/config/cowbird/celeryconfig.py:/opt/local/src/cowbird/config/celeryconfig.py
       - "${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}:${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}/${USER_WORKSPACES}"
     restart: always
-    logging: *default-logging
     # TODO: create a stable healthcheck for this service (`inspect ping` or `status` is not reliable)
 
   # Dedicated database for Cowbird, since other 'mongodb' image does not employ the same version.
@@ -91,7 +81,6 @@ services:
     volumes:
       - ${COWBIRD_MONGODB_DATA_DIR}:/data/db
     restart: always
-    logging: *default-logging
     healthcheck:
       test: ["CMD", "mongo", "--eval", "print('connected')"]
       interval: 60s

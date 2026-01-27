@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+
+# Note: filename is not docker-compose-extra.yml so that it won't get added prematurely to COMPOSE_CONF_LIST
+DEFAULT_COMPOSE_FILE="${COMPOSE_DIR}/components/logging/docker-compose-extra-defaults.yml"
+SERVICE_COMPOSE_FILE="${COMPOSE_DIR}/components/logging/docker-compose-extra-services.yml"
+echo "services:" > "${DEFAULT_COMPOSE_FILE}"
+echo "services:" > "${SERVICE_COMPOSE_FILE}"
+
+SERVICES_ADDED=
+for service in $(PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} config --services 2> /dev/null); do
+    printf ' %s:\n  logging: %s\n' "$service" "$BIRDHOUSE_DOCKER_LOGGING_DEFAULT" >> "${DEFAULT_COMPOSE_FILE}"
+    service_settings="$(eval "echo \$BIRDHOUSE_DOCKER_LOGGING_$(echo $service | tr '-' '_' | tr '[:lower:]' '[:upper:]')")"
+    [ -n "$service_settings" ] && SERVICES_ADDED=true && printf ' %s:\n  logging: %s\n' "$service" "$service_settings" >> "${SERVICE_COMPOSE_FILE}"
+done
+
+# Insert DEFAULT_COMPOSE_FILE as the first docker compose file because we want to allow logging settings in later
+# docker compose files to override the defaults.
+# Append SERVICE_COMPOSE_FILE as the last docker compose file because we want settings in this file to take precedence
+# over other options.
+log INFO "adding ${DEFAULT_COMPOSE_FILE} to COMPOSE_CONF_LIST"
+COMPOSE_CONF_LIST="-f docker-compose.yml -f "${DEFAULT_COMPOSE_FILE}" ${COMPOSE_CONF_LIST#-f[[:space:]]+docker-compose.yml}"
+
+if [ -n "${SERVICES_ADDED}" ]; then 
+    log INFO "adding ${SERVICE_COMPOSE_FILE} to COMPOSE_CONF_LIST"
+    COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f ${SERVICE_COMPOSE_FILE}"
+fi
+
+unset DEFAULT_COMPOSE_FILE
+unset SERVICE_COMPOSE_FILE
+unset SERVICES_ADDED
