@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+if [ "$(echo "${MAGPIE_NETWORK_ENABLED}" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
+    if [ -z "${MAGPIE_NETWORK_INSTANCE_NAME}" ]; then
+        log ERROR "MAGPIE_NETWORK_INSTANCE_NAME must be set when MAGPIE_NETWORK_ENABLED is true"
+        exit 1
+    fi
+    if [ -z "${MAGPIE_NETWORK_PEM_FILES}" ]; then
+        log ERROR "MAGPIE_NETWORK_PEM_FILES must be set when MAGPIE_NETWORK_ENABLED is true"
+        exit 1
+    fi
+fi
