@@ -1,0 +1,16 @@
+line-length = 120
+target-version = "py312"
+
+[format]
+docstring-code-format = true
+line-ending = "lf"
+
+[lint]
+select = ["E4", "E7", "E9", "F", "D", "I", "ANN"]
+ignore = ["D100", "D104", "D417", "ANN002", "ANN003"]
+
+[lint.pydocstyle]
+convention = "numpy"
+
+[lint.per-file-ignores]
+"test/**.py" = ["D", "ANN"]
