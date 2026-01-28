@@ -197,16 +197,13 @@ class TestReadConfigs(TestReadBasicConfigs):
     ]
 
     default_all_conf_order_with_dependencies: list[str] = [
-        # TODO: remove the scheduler dependencies once 
-        #       https://github.com/bird-house/birdhouse-deploy/issues/618 is resolved
-        "./components/scheduler",
-        "./optional-components/scheduler-job-logrotate-nginx",
         "./components/proxy",
         "./components/magpie",
         "./components/twitcher",
         "./components/wps_outputs-volume",
         "./components/cowbird",
         "./components/stac",
+        "./components/logging",
     ]
 
     extra_conf_order: list[str] = [
