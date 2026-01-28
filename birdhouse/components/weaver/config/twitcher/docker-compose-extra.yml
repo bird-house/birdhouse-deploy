@@ -1,4 +1,3 @@
-
 services:
   # extend twitcher with MagpieAdapter hooks employed for weaver proxied requests
   twitcher:
