@@ -61,6 +61,11 @@ if constants.JUPYTERHUB_CRYPT_KEY_IS_SET:
 # Deprecated settings
 # ------------------------------------------------------------------------------
 
+# This import is required to support code inserted by JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS and
+# JUPYTERHUB_CONFIG_OVERRIDE that may use the legacy (lowercase) version of the constants. 
+# This import can be removed once we decide to drop support for these legacy constants.
+from jupyterhub_custom.constants import *  # noqa: F403
+
 # This is DEPRECATED: if you want to allow images other than those set by
 # the JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES and JUPYTERHUB_IMAGE_SELECTION_NAMES variables
 # use the JUPYTERHUB_ALLOWED_IMAGES variable.
@@ -74,10 +79,5 @@ if """${JUPYTERHUB_ADMIN_USERS}""":
 # ------------------------------------------------------------------------------
 # Configuration overrides
 # ------------------------------------------------------------------------------
-
-# This import is required to support code inserted by JUPYTERHUB_CONFIG_OVERRIDE
-# that may use the legacy (lowercase) version of the constants. This import can
-# be removed once we decide to drop support for these legacy constants.
-from jupyterhub_custom.constants import *  # noqa: F403
 
 ${JUPYTERHUB_CONFIG_OVERRIDE}    # noqa

@@ -4,6 +4,7 @@ services:
     container_name: jupyterhub
     hostname: jupyterhub
     environment:
+      # Note: values with :- are allowed to be empty
       JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES: ${JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES}
       JUPYTERHUB_IMAGE_SELECTION_NAMES: ${JUPYTERHUB_IMAGE_SELECTION_NAMES}
       DOCKER_NETWORK_NAME: jupyterhub_network
