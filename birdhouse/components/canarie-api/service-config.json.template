@@ -15,7 +15,7 @@
   "links": [
     {
       "rel": "service",
-      "type": "application/json",
+      "type": "text/html",
       "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/canarie/"
     },
     {
