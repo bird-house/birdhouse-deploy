@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.3.0/node_registry.schema.json#service",
-  "name": "canarie",
+  "name": "canarie-api",
   "version": "${CANARIE_VERSION}",
   "types": [
     "management"
