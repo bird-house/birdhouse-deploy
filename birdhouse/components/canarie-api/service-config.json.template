@@ -1,0 +1,48 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DACCS-Climate/Marble-node-registry/1.3.0/node_registry.schema.json#service",
+  "name": "canarie-api",
+  "version": "${CANARIE_VERSION}",
+  "types": [
+    "management"
+  ],
+  "keywords": [
+    "Canarie",
+    "Documentation",
+    "Monitoring",
+    "Status"
+  ],
+  "description": "An endpoint monitoring tool that shows the current status of other components in the software stack.",
+  "links": [
+    {
+      "rel": "service",
+      "type": "text/html",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/canarie/"
+    },
+    {
+      "rel": "service-meta",
+      "type": "application/vnd.oci.image.index.v1+json",
+      "href": "${CANARIE_IMAGE}",
+      "title": "Docker Image"
+    },
+    {
+      "rel": "service-doc",
+      "type": "text/html",
+      "href": "https://canarieapi.readthedocs.io"
+    },
+    {
+      "rel": "about",
+      "type": "text/html",
+      "href": "https://birdhouse-deploy.readthedocs.io/en/latest/birdhouse/components/README.html#canarie-api"
+    },
+    {
+      "rel": "source",
+      "type": "text/html",
+      "href": "https://github.com/Ouranosinc/CanarieAPI"
+    },
+    {
+      "rel": "license",
+      "type": "text/plain",
+      "href": "https://raw.githubusercontent.com/Ouranosinc/CanarieAPI/refs/heads/master/LICENSE"
+    }
+  ]
+}

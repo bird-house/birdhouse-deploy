@@ -17,6 +17,17 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.21.1](https://github.com/bird-house/birdhouse-deploy/tree/2.21.1) (2026-02-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Services: Update and fix certain `/services/...` definitions.
+
+  - Fix incorrectly defined links reporting OpenAPI or Docker URIs inappropriately or without adequate media-type.
+  - Add `/services/canarie` definition to provide metadata about CanarieAPI component if enabled.
+  - Fix outdated `service-config.json` definitions sometimes incorrectly detected by docker-compose due to reused inode.
+
 [2.21.0](https://github.com/bird-house/birdhouse-deploy/tree/2.21.0) (2026-01-27)
 ------------------------------------------------------------------------------------------------------------------
 
