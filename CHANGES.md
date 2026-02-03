@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Bug fixes for healthchecks and update-postgres.sh
+
+  - Fix healthchecks for `finch`, `raven`, and `postgres-magpie` containers
+  - update `scripts/update-postgres.sh` to ensure that the user calling the script has permissions to move
+    directories that may be owned by root.
 
 [2.21.0](https://github.com/bird-house/birdhouse-deploy/tree/2.21.0) (2026-01-27)
 ------------------------------------------------------------------------------------------------------------------
