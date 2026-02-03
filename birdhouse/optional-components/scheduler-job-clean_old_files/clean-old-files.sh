@@ -11,7 +11,7 @@ AGE="$1"
 MODE="$2"
 LOCATION="$3"
 
-ACCEPTABLE_MODES='|mtime|ctime|atime|'
+ACCEPTABLE_MODES='|mmin|mtime|ctime|atime|'
 
 if ! echo "$AGE" | grep -q '^[0-9][0-9]*$'; then
     >&2 echo "AGE argument set to '${AGE}'. It must be an unsigned integer"
@@ -19,7 +19,7 @@ if ! echo "$AGE" | grep -q '^[0-9][0-9]*$'; then
 fi
 
 if [ "${ACCEPTABLE_MODES#*"|${MODE}|"}" = "${ACCEPTABLE_MODES}" ]; then
-    >&2 echo "MODE argument set to '${MODE}'. It must be one of 'mtime', 'ctime', or 'atime'"
+    >&2 echo "MODE argument set to '${MODE}'. It must be one of 'mmin', 'mtime', 'ctime', or 'atime'"
     exit 1
 fi
 
@@ -30,3 +30,4 @@ fi
 
 echo "Removing files in ${LOCATION} that have a ${MODE} value greater than ${AGE} days"
 find "${LOCATION}" -type f "-${MODE}" +"${AGE}" -print -delete
+find "${LOCATION}" -type d "-${MODE}" +"${AGE}" -print -empty -delete

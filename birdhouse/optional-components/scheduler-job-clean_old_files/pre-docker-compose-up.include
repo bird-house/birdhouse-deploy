@@ -2,24 +2,24 @@ if ! echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q 'scheduler[[:space:]]*$'; the
   log WARN 'The scheduler-job-clean_old_files component is enabled but the scheduler component is not. This WILL cause problems. Please disable the scheduler-job-clean_old_files component.'
 fi
 
-_acceptable_modes='|mtime|ctime|atime|'
+_acceptable_modes='|mmin|mtime|ctime|atime|'
 
 if [ "${SCHEDULER_JOB_CLEAN_OLD_FILES_FINCH_ENABLED}" = "true" ] && ! echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q 'finch[[:space:]]*$'; then
   echo "$SCHEDULER_JOB_CLEAN_OLD_FILES_FINCH_OLDER_THAN_DAYS" | grep -q '^[0-9][0-9]*$' || log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_FINCH_OLDER_THAN_DAYS variable must be an integer not '${SCHEDULER_JOB_CLEAN_OLD_FILES_FINCH_OLDER_THAN_DAYS}'. Please set this variable to an integer or disable the finch file cleaning job. This job will not run properly!"
-  [ "${_acceptable_modes#*"${SCHEDULER_JOB_CLEAN_OLD_FILES_FINCH_TIME_MODE}"}" = "${_acceptable_modes}" ] && log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_FINCH_TIME_MODE variable must be one of 'mtime', 'atime', or 'ctime' not '${SCHEDULER_JOB_CLEAN_OLD_FILES_FINCH_TIME_MODE}'. Please set this variable to a valid option or disable the finch file cleaning job. This job will not run properly!"
+  [ "${_acceptable_modes#*"${SCHEDULER_JOB_CLEAN_OLD_FILES_FINCH_TIME_MODE}"}" = "${_acceptable_modes}" ] && log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_FINCH_TIME_MODE variable must be one of 'mmin', 'mtime', 'atime', or 'ctime' not '${SCHEDULER_JOB_CLEAN_OLD_FILES_FINCH_TIME_MODE}'. Please set this variable to a valid option or disable the finch file cleaning job. This job will not run properly!"
 fi
 
 if [ "${SCHEDULER_JOB_CLEAN_OLD_FILES_HUMMINGBIRD_ENABLED}" = "true" ] && ! echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q 'hummingbird[[:space:]]*$'; then
   echo "$SCHEDULER_JOB_CLEAN_OLD_FILES_HUMMINGBIRD_OLDER_THAN_DAYS" | grep -q '^[0-9][0-9]*$' || log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_HUMMINGBIRD_OLDER_THAN_DAYS variable must be an integer not '${SCHEDULER_JOB_CLEAN_OLD_FILES_HUMMINGBIRD_OLDER_THAN_DAYS}'. Please set this variable to an integer or disable the hummingbird file cleaning job. This job will not run properly!"
-  [ "${_acceptable_modes#*"${SCHEDULER_JOB_CLEAN_OLD_FILES_HUMMINGBIRD_TIME_MODE}"}" = "${_acceptable_modes}" ] && log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_HUMMINGBIRD_TIME_MODE variable must be one of 'mtime', 'atime', or 'ctime' not '${SCHEDULER_JOB_CLEAN_OLD_FILES_HUMMINGBIRD_TIME_MODE}'. Please set this variable to a valid option or disable the hummingbird file cleaning job. This job will not run properly!"
+  [ "${_acceptable_modes#*"${SCHEDULER_JOB_CLEAN_OLD_FILES_HUMMINGBIRD_TIME_MODE}"}" = "${_acceptable_modes}" ] && log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_HUMMINGBIRD_TIME_MODE variable must be one of 'mmin', 'mtime', 'atime', or 'ctime' not '${SCHEDULER_JOB_CLEAN_OLD_FILES_HUMMINGBIRD_TIME_MODE}'. Please set this variable to a valid option or disable the hummingbird file cleaning job. This job will not run properly!"
 fi
 
 if [ "${SCHEDULER_JOB_CLEAN_OLD_FILES_RAVEN_ENABLED}" = "true" ] && ! echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q 'raven[[:space:]]*$'; then
   echo "$SCHEDULER_JOB_CLEAN_OLD_FILES_RAVEN_OLDER_THAN_DAYS" | grep -q '^[0-9][0-9]*$' || log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_RAVEN_OLDER_THAN_DAYS variable must be an integer not '${SCHEDULER_JOB_CLEAN_OLD_FILES_RAVEN_OLDER_THAN_DAYS}'. Please set this variable to an integer or disable the raven file cleaning job. This job will not run properly!"
-  [ "${_acceptable_modes#*"${SCHEDULER_JOB_CLEAN_OLD_FILES_RAVEN_TIME_MODE}"}" = "${_acceptable_modes}" ] && log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_RAVEN_TIME_MODE variable must be one of 'mtime', 'atime', or 'ctime' not '${SCHEDULER_JOB_CLEAN_OLD_FILES_RAVEN_TIME_MODE}'. Please set this variable to a valid option or disable the raven file cleaning job. This job will not run properly!"
+  [ "${_acceptable_modes#*"${SCHEDULER_JOB_CLEAN_OLD_FILES_RAVEN_TIME_MODE}"}" = "${_acceptable_modes}" ] && log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_RAVEN_TIME_MODE variable must be one of 'mmin', 'mtime', 'atime', or 'ctime' not '${SCHEDULER_JOB_CLEAN_OLD_FILES_RAVEN_TIME_MODE}'. Please set this variable to a valid option or disable the raven file cleaning job. This job will not run properly!"
 fi
 
 if [ "${SCHEDULER_JOB_CLEAN_OLD_FILES_THREDDS_ENABLED}" = "true" ] && ! echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q 'thredds[[:space:]]*$'; then
   echo "$SCHEDULER_JOB_CLEAN_OLD_FILES_THREDDS_OLDER_THAN_DAYS" | grep -q '^[0-9][0-9]*$' || log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_THREDDS_OLDER_THAN_DAYS variable must be an integer not '${SCHEDULER_JOB_CLEAN_OLD_FILES_THREDDS_OLDER_THAN_DAYS}'. Please set this variable to an integer or disable the thredds file cleaning job. This job will not run properly!"
-  [ "${_acceptable_modes#*"${SCHEDULER_JOB_CLEAN_OLD_FILES_THREDDS_TIME_MODE}"}" = "${_acceptable_modes}" ] && log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_THREDDS_TIME_MODE variable must be one of 'mtime', 'atime', or 'ctime' not '${SCHEDULER_JOB_CLEAN_OLD_FILES_THREDDS_TIME_MODE}'. Please set this variable to a valid option or disable the thredds file cleaning job. This job will not run properly!"
+  [ "${_acceptable_modes#*"${SCHEDULER_JOB_CLEAN_OLD_FILES_THREDDS_TIME_MODE}"}" = "${_acceptable_modes}" ] && log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_THREDDS_TIME_MODE variable must be one of 'mmin', 'mtime', 'atime', or 'ctime' not '${SCHEDULER_JOB_CLEAN_OLD_FILES_THREDDS_TIME_MODE}'. Please set this variable to a valid option or disable the thredds file cleaning job. This job will not run properly!"
 fi
