@@ -61,6 +61,24 @@ if constants.JUPYTERHUB_CRYPT_KEY_IS_SET:
 # Deprecated settings
 # ------------------------------------------------------------------------------
 
+# These set the class variables to the variables that are realized when the defaults
+# are applied. This is in order to support code inserted by JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS
+# and JUPYTERHUB_CONFIG_OVERRIDE that modify the concrete implementation directly.
+# For example, in previous versions of this code, the volumes dictionary was modified through
+# item assignment instead of using the update method (which traitlets supports). In order to
+# maintain backwards compatibility, the code below is necessary.
+_spawner_instance = CustomDockerSpawner()
+c.DockerSpawner.volumes = _spawner_instance.volumes
+c.DockerSpawner.environment = _spawner_instance.environment
+c.DockerSpawner.extra_host_config = _spawner_instance.extra_host_config
+c.Spawner.args = _spawner_instance.args
+c.DockerSpawner.allowed_images = _spawner_instance.allowed_images
+
+# This import is required to support code inserted by JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS and
+# JUPYTERHUB_CONFIG_OVERRIDE that may use the legacy (lowercase) version of the constants. 
+# This import can be removed once we decide to drop support for these legacy constants.
+from jupyterhub_custom.constants import *  # noqa: F403
+
 # This is DEPRECATED: if you want to allow images other than those set by
 # the JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES and JUPYTERHUB_IMAGE_SELECTION_NAMES variables
 # use the JUPYTERHUB_ALLOWED_IMAGES variable.
@@ -74,10 +92,5 @@ if """${JUPYTERHUB_ADMIN_USERS}""":
 # ------------------------------------------------------------------------------
 # Configuration overrides
 # ------------------------------------------------------------------------------
-
-# This import is required to support code inserted by JUPYTERHUB_CONFIG_OVERRIDE
-# that may use the legacy (lowercase) version of the constants. This import can
-# be removed once we decide to drop support for these legacy constants.
-from jupyterhub_custom.constants import *  # noqa: F403
 
 ${JUPYTERHUB_CONFIG_OVERRIDE}    # noqa

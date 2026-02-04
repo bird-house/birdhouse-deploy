@@ -435,7 +435,7 @@ class TestCustomDockerSpawner:
                 constants.JUPYTERHUB_MOUNT_IMAGE_SPECIFIC_NOTEBOOKS = False
                 spawner_inst = generate_spawner_inst(spawner)
                 initial_volumes = dict(spawner_inst.volumes)
-                spawner_inst.pre_spawn_hook(spawner_inst)
+                spawner_inst.run_pre_spawn_hook()
                 assert spawner_inst.volumes == {
                     **initial_volumes,
                     os.path.join(constants.JUPYTERHUB_DATA_DIR, "tutorial-notebooks"): {
@@ -448,7 +448,7 @@ class TestCustomDockerSpawner:
                 constants.JUPYTERHUB_MOUNT_IMAGE_SPECIFIC_NOTEBOOKS = True
                 spawner_inst = generate_spawner_inst(spawner)
                 initial_volumes = dict(spawner_inst.volumes)
-                spawner_inst.pre_spawn_hook(spawner_inst)
+                spawner_inst.run_pre_spawn_hook()
                 assert spawner_inst.volumes == initial_volumes
 
             def test_image_specific_tutorials_dirs_exist(self, spawner, constants, generate_spawner_inst):
@@ -461,7 +461,7 @@ class TestCustomDockerSpawner:
                     spawner_inst.user_options["image"],
                 )
                 os.makedirs(tutorial_dir)
-                spawner_inst.pre_spawn_hook(spawner_inst)
+                spawner_inst.run_pre_spawn_hook()
                 assert spawner_inst.volumes == {
                     **initial_volumes,
                     tutorial_dir: {
@@ -482,7 +482,7 @@ class TestCustomDockerSpawner:
                     "image",
                 )
                 os.makedirs(tutorial_dir)
-                spawner_inst.pre_spawn_hook(spawner_inst)
+                spawner_inst.run_pre_spawn_hook()
                 assert spawner_inst.volumes == {
                     **initial_volumes,
                     tutorial_dir: {
@@ -494,13 +494,13 @@ class TestCustomDockerSpawner:
         class TestCreateDir:
             def test_creates_jupyterhub_user_dir(self, spawner, constants, generate_spawner_inst):
                 spawner_inst = generate_spawner_inst(spawner)
-                spawner_inst.pre_spawn_hook(spawner_inst)
+                spawner_inst.run_pre_spawn_hook()
                 assert os.path.isdir(os.path.join(constants.JUPYTERHUB_DATA_DIR, spawner_inst.user.name))
 
             def test_ownership_change_jupyterhub_user_dir(self, spawner, constants, generate_spawner_inst):
                 spawner_inst = generate_spawner_inst(spawner)
                 with patch("subprocess.call") as mock:
-                    spawner_inst.pre_spawn_hook(spawner_inst)
+                    spawner_inst.run_pre_spawn_hook()
                     assert mock.call_args_list[0][0][0] == [
                         "chown",
                         "-R",
@@ -510,7 +510,7 @@ class TestCustomDockerSpawner:
 
             def test_creates_workspace_symlink(self, spawner, constants, generate_spawner_inst):
                 spawner_inst = generate_spawner_inst(spawner)
-                spawner_inst.pre_spawn_hook(spawner_inst)
+                spawner_inst.run_pre_spawn_hook()
                 link_path = os.path.join(constants.WORKSPACE_DIR, spawner_inst.user.name)
                 target_path = os.path.join(constants.JUPYTERHUB_DATA_DIR, spawner_inst.user.name)
                 assert os.path.islink(link_path)
@@ -519,7 +519,7 @@ class TestCustomDockerSpawner:
             def test_ownership_change_workspace_symlink(self, spawner, constants, generate_spawner_inst):
                 spawner_inst = generate_spawner_inst(spawner)
                 with patch("subprocess.call") as mock:
-                    spawner_inst.pre_spawn_hook(spawner_inst)
+                    spawner_inst.run_pre_spawn_hook()
                     assert mock.call_args_list[1][0][0] == [
                         "chown",
                         f"{constants.USER_WORKSPACE_UID}:{constants.USER_WORKSPACE_GID}",
@@ -532,7 +532,7 @@ class TestCustomDockerSpawner:
                 spawner_inst = generate_spawner_inst(spawner)
                 link_path = os.path.join(constants.WORKSPACE_DIR, spawner_inst.user.name)
                 with patch("subprocess.call") as mock:
-                    spawner_inst.pre_spawn_hook(spawner_inst)
+                    spawner_inst.run_pre_spawn_hook()
                     assert not os.path.islink(link_path)
                     assert mock.call_count == 1
 
@@ -542,7 +542,7 @@ class TestCustomDockerSpawner:
                 constants.JUPYTER_DEMO_USER_MEM_LIMIT = f"{mem_limit_mb}M"
                 spawner_inst = generate_spawner_inst(spawner)
                 spawner_inst.user.name = constants.JUPYTER_DEMO_USER
-                spawner_inst.pre_spawn_hook(spawner_inst)
+                spawner_inst.run_pre_spawn_hook()
                 assert spawner_inst.cpu_limit == constants.JUPYTER_DEMO_USER_CPU_LIMIT
                 assert spawner_inst.mem_limit == mem_limit_mb * 1024**2
 
@@ -555,7 +555,7 @@ class TestCustomDockerSpawner:
                         "limits": {"cpu_limit": 3},
                     }
                 ]
-                spawner_inst.pre_spawn_hook(spawner_inst)
+                spawner_inst.run_pre_spawn_hook()
                 assert spawner_inst.cpu_limit == 3
 
             def test_user_name_matches_mem_limit(self, spawner, constants, generate_spawner_inst):
@@ -567,7 +567,7 @@ class TestCustomDockerSpawner:
                         "limits": {"mem_limit": "5M"},
                     }
                 ]
-                spawner_inst.pre_spawn_hook(spawner_inst)
+                spawner_inst.run_pre_spawn_hook()
                 assert spawner_inst.mem_limit == 5 * 1024**2
 
             def test_user_name_matches_gpu_ids_no_count(self, spawner, constants, generate_spawner_inst):
@@ -579,7 +579,7 @@ class TestCustomDockerSpawner:
                         "limits": {"gpu_ids": [1, 2, 3]},
                     }
                 ]
-                spawner_inst.pre_spawn_hook(spawner_inst)
+                spawner_inst.run_pre_spawn_hook()
                 device_ids = spawner_inst.extra_host_config["device_requests"][0].device_ids
                 assert len(device_ids) == 1
                 assert device_ids[0] in [1, 2, 3]
@@ -593,7 +593,7 @@ class TestCustomDockerSpawner:
                         "limits": {"gpu_ids": [1, 2, 3], "gpu_count": 2},
                     }
                 ]
-                spawner_inst.pre_spawn_hook(spawner_inst)
+                spawner_inst.run_pre_spawn_hook()
                 device_ids = spawner_inst.extra_host_config["device_requests"][0].device_ids
                 assert len(device_ids) == 2
                 assert set(device_ids) < {1, 2, 3}

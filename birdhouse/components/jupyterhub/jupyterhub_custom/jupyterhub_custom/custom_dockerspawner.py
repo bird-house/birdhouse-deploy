@@ -329,7 +329,13 @@ class CustomDockerSpawner(DockerSpawner):
                 docker.types.DeviceRequest(device_ids=gpu_ids, capabilities=[["gpu"]])
             ]
 
-    def pre_spawn_hook(self, _spawner: "CustomDockerSpawner") -> None:
+    def run_pre_spawn_hook(self) -> None:
+        """Run the builtin pre-spawn hooks as well as any set by pre_spawn_hook if defined."""
+        self._custom_pre_spawn_hook()
+        if self.pre_spawn_hook:
+            self.pre_spawn_hook(self)
+
+    def _custom_pre_spawn_hook(self) -> None:
         """Run before spawning a singleuser jupyterlab server."""
         self.__create_dir_hook()
         self.__limit_resource_hook()
