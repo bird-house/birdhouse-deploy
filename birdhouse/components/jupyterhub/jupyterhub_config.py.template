@@ -74,6 +74,13 @@ c.DockerSpawner.extra_host_config = _spawner_instance.extra_host_config
 c.Spawner.args = _spawner_instance.args
 c.DockerSpawner.allowed_images = _spawner_instance.allowed_images
 
+# In a previous version of this file, the following imports were used which means that some code inserted
+# by JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS and JUPYTERHUB_CONFIG_OVERRIDE might still expect them to be present
+# in this module. These are kept for backwards compatibility.
+import os
+from os.path import join
+import subprocess
+
 # This import is required to support code inserted by JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS and
 # JUPYTERHUB_CONFIG_OVERRIDE that may use the legacy (lowercase) version of the constants. 
 # This import can be removed once we decide to drop support for these legacy constants.
