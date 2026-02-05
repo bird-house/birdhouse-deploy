@@ -28,6 +28,12 @@ if [ -z "${LOCATION}" ]; then
     exit 1
 fi
 
-echo "[$(date)] Removing files in ${LOCATION} that have a ${MODE} value greater than ${AGE} days"
+if [ "${MODE}" = "mmin" ]; then
+    units=minutes
+else
+    units=days
+fi
+
+echo "[$(date)] Removing files in ${LOCATION} that have a ${MODE} value greater than ${AGE} ${units}"
 find "${LOCATION}" -type f "-${MODE}" +"${AGE}" -print -delete
 find "${LOCATION}" -type d "-${MODE}" +"${AGE}" -print -empty -delete
