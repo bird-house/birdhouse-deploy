@@ -58,12 +58,15 @@ log INFO "Backing up all postgres data to ${BIRDHOUSE_BACKUP_DATA_DIR}."
 eval "$(${BIRDHOUSE_EXE} -q configs -c 'echo "MAGPIE_PERSIST_DIR=$MAGPIE_PERSIST_DIR; POSTGRES_DATA_DIR=$POSTGRES_DATA_DIR"')"
 
 mkdir -p ${BIRDHOUSE_BACKUP_DATA_DIR}
-mv "${MAGPIE_PERSIST_DIR}" "${BIRDHOUSE_BACKUP_DATA_DIR}"
-mv "${POSTGRES_DATA_DIR}" "${BIRDHOUSE_BACKUP_DATA_DIR}"
+
+# In most cases, these data directories will be owned by root since the magpie and postgres databases
+# are run as the root user. sudo permissions will be required to move them.
+sudo mv "${MAGPIE_PERSIST_DIR}" "${BIRDHOUSE_BACKUP_DATA_DIR}"
+sudo mv "${POSTGRES_DATA_DIR}" "${BIRDHOUSE_BACKUP_DATA_DIR}"
 
 MAGPIE_POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE} POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE} ${BIRDHOUSE_EXE} compose up -d
 
-${BIRDHOUSE_EXE} backup restore --no-restic ${POSTGRES_COMPONENTS}
+MAGPIE_POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE} POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE} ${BIRDHOUSE_EXE} backup restore --no-restic ${POSTGRES_COMPONENTS}
 
 log WARN "Migration is now complete. Please ensure that the data has been upgraded properly.
 If you are satisfied that the databases have been updated properly please add the following to your local environment file:
@@ -74,9 +77,9 @@ export POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE}
 If you are not satified that the databases have been updated properly and you wish to revert these changes, you can do so by running:
 
 ${BIRDHOUSE_EXE} compose down
-rm -r "${MAGPIE_PERSIST_DIR}"
-rm -r "${POSTGRES_DATA_DIR}"
-mv "${BIRDHOUSE_BACKUP_DATA_DIR}/$(basename "${MAGPIE_PERSIST_DIR}")" "${MAGPIE_PERSIST_DIR}" 
-mv "${BIRDHOUSE_BACKUP_DATA_DIR}/$(basename "${POSTGRES_DATA_DIR}")" "${POSTGRES_DATA_DIR}" 
+sudo rm -r "${MAGPIE_PERSIST_DIR}"
+sudo rm -r "${POSTGRES_DATA_DIR}"
+sudo mv "${BIRDHOUSE_BACKUP_DATA_DIR}/$(basename "${MAGPIE_PERSIST_DIR}")" "${MAGPIE_PERSIST_DIR}" 
+sudo mv "${BIRDHOUSE_BACKUP_DATA_DIR}/$(basename "${POSTGRES_DATA_DIR}")" "${POSTGRES_DATA_DIR}" 
 ${BIRDHOUSE_EXE} compose up -d
 "
