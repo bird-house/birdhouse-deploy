@@ -1,337 +1,107 @@
-import os
-from os.path import join
 import logging
-import random
-import subprocess
 
-import docker
-import yaml
-from dockerspawner import DockerSpawner
+from jupyterhub_custom.custom_dockerspawner import CustomDockerSpawner
+from jupyterhub_custom.magpie_authenticator import MagpieAuthenticator
+from jupyterhub_custom import constants
 
-c = get_config()  # noqa  # can be called directy without import because injected by IPython
+# ------------------------------------------------------------------------------
+# Default application configuration
+# 
+# see: https://jupyterhub.readthedocs.io/en/latest/reference/api/app.html
+# ------------------------------------------------------------------------------
 
-c.JupyterHub.bind_url = 'http://:8000/jupyter'
+c = get_config()  # type: ignore # noqa  # can be called directy without import because injected by IPython
 
-## Whether to shutdown single-user servers when the Hub shuts down.
-c.JupyterHub.cleanup_servers = False
-
-c.JupyterHub.hub_ip = 'jupyterhub'
-
-c.JupyterHub.authenticator_class = 'jupyterhub_magpie_authenticator.MagpieAuthenticator'
-c.MagpieAuthenticator.magpie_url = "http://magpie:2001"
-c.MagpieAuthenticator.public_fqdn = "${BIRDHOUSE_FQDN_PUBLIC}"
-c.MagpieAuthenticator.authorization_url = "${JUPYTERHUB_AUTHENTICATOR_AUTHORIZATION_URL}"
-
-if os.getenv("JUPYTERHUB_CRYPT_KEY"):
-    c.MagpieAuthenticator.enable_auth_state = True
-    c.MagpieAuthenticator.refresh_pre_spawn = True
-    c.MagpieAuthenticator.auth_refresh_age = int("${JUPYTERHUB_AUTHENTICATOR_REFRESH_AGE}")
-
-    # Allow users to access their own auth_state in order to get their own magpie cookie
-    # See https://github.com/jupyterhub/jupyterhub/issues/3588 for details
-    c.JupyterHub.load_roles = [
-        {
-            "name": "user",
-            "description": "User Role for accessing auth_state via API",
-            "scopes": ["self", "admin:auth_state!user"],
-            "services": [],
-        }, {
-            "name": "server",
-            "description": "Allows parties to start and stop user servers",
-            "scopes": ["access:servers!user",
-                       "read:users:activity!user",
-                       "users:activity!user",
-                       "admin:auth_state!user"],
-            "services":[]
-        }
-    ]
-
-c.JupyterHub.cookie_secret_file = '/persist/jupyterhub_cookie_secret'
-c.JupyterHub.db_url = '/persist/jupyterhub.sqlite'
-
-c.JupyterHub.template_paths = ['/custom_templates']
-
-class CustomDockerSpawner(DockerSpawner):
-    @property
-    def escaped_name(self):
-        """
-        Return the username without escaping. This ensures that mounted directories on the
-        host machine are discovered properly since we expect the username to match the username
-        set by Magpie.
-        """
-        return self.user.name
-
-    async def start(self):
-        if(os.environ['JUPYTERHUB_MOUNT_IMAGE_SPECIFIC_NOTEBOOKS'] == 'true'):
-            host_dir = join(os.environ['JUPYTERHUB_USER_DATA_DIR'], 'tutorial-notebooks-specific-images')
-
-            # Mount a volume with a tutorial-notebook subfolder corresponding to the image name, if it exists
-            # The names are defined in the JUPYTERHUB_IMAGE_SELECTION_NAMES variable.
-            image_name = self.user_options.get('image')
-            if(os.path.isdir(join(host_dir, image_name))):
-                self.volumes[join(host_dir, image_name)] = {
-                    "bind": '/notebook_dir/tutorial-notebooks',
-                    "mode": "ro"
-                }
-            else:
-                # Try again, removing any colons and any following text. Useful if the image name contains
-                # the version number, which should not be used in the directory name.
-                image_name = image_name.split(':')[0]
-                if(os.path.isdir(join(host_dir, image_name))):
-                    self.volumes[join(host_dir, image_name)] = {
-                        "bind": '/notebook_dir/tutorial-notebooks',
-                        "mode": "ro"
-                    }
-        else:
-            # Mount the entire tutorial-notebooks directory
-            self.volumes[join(os.environ['JUPYTERHUB_USER_DATA_DIR'], "tutorial-notebooks")] = {
-                "bind": "/notebook_dir/tutorial-notebooks",
-                "mode": "ro"
-            }
-        return await super().start()
-
+c.JupyterHub.authenticator_class = MagpieAuthenticator
 c.JupyterHub.spawner_class = CustomDockerSpawner
 
-# Selects the first image from the list by default
-c.DockerSpawner.image = os.environ['JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES'].split()[0]
-c.DockerSpawner.use_internal_ip = True
-c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
-
-notebook_dir = '/notebook_dir'
-jupyterhub_data_dir = os.environ['JUPYTERHUB_USER_DATA_DIR']
-container_workspace_dir = join(notebook_dir, "writable-workspace")
-container_home_dir = join(container_workspace_dir, ".home")
-user_kernels_dir = "/var/tmp/user-kernels"
-
-c.DockerSpawner.notebook_dir = notebook_dir
-c.DockerSpawner.environment = {
-    "HOME": container_home_dir,
-    # Adds a custom path that jupyterlab will use to search for kernels so that
-    # user-generated kernels can be detected by jupyterlab (the default location
-    # in the home directory is not visible to jupyterlab for some reason).
-    # See c.DockerSpawner.post_start_cmd for more info.
-    "JUPYTER_PATH": user_kernels_dir,
-    # https://docs.bokeh.org/en/latest/docs/user_guide/jupyter.html#jupyterhub
-    # Issue https://github.com/bokeh/bokeh/issues/12090
-    # Post on Panel forum:
-    # https://discourse.holoviz.org/t/how-to-customize-the-display-url-from-panel-serve-for-use-behind-jupyterhub-with-jupyter-server-proxy/3571
-    # Issue about Panel Preview: https://github.com/holoviz/panel/issues/3440
-    "BIRDHOUSE_HOST_URL": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}",
-    # https://docs.dask.org/en/stable/configuration.html
-    # https://jupyterhub-on-hadoop.readthedocs.io/en/latest/dask.html
-    "DASK_DISTRIBUTED__DASHBOARD__LINK": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}{JUPYTERHUB_SERVICE_PREFIX}proxy/{port}/status"
-}
-
-host_user_data_dir = join(os.environ['WORKSPACE_DIR'], "{username}")
-c.DockerSpawner.volumes = {host_user_data_dir: container_workspace_dir}
-
-# Case for the cowbird setup, where the workspace_dir contains a symlink to the jupyterhub dir.
-# The jupyterhub dir must also be mounted in this case.
-if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
-    c.DockerSpawner.volumes[join(jupyterhub_data_dir, "{username}")] = {
-        "bind": join(jupyterhub_data_dir, "{username}"),
-        "mode": "rw"
-    }
-    c.DockerSpawner.volumes[join(os.environ['WORKSPACE_DIR'], os.environ['PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR'])] = {
-        "bind": join(notebook_dir, os.environ['PUBLIC_WORKSPACE_WPS_OUTPUTS_SUBDIR']),
-        "mode": "ro"
-    }
-
-container_gdrive_settings_path = join(container_home_dir, ".jupyter/lab/user-settings/@jupyterlab/google-drive/drive.jupyterlab-settings")
-host_gdrive_settings_path = os.environ['JUPYTER_GOOGLE_DRIVE_SETTINGS']
-
-# class LimitDict(TypedDict):
-#   mem_limit: NotRequired[str | int]
-#   cpu_limit: NotRequired[str | float | int]
-#   gpu_ids: NotRequired[list[int | str]]
-#   gpu_count: NotRequired[int]
-#
-# class LimitRule(TypedDict):
-#   type: Literal["user", "group"]
-#   name: str
-#   limits: LimitDict
-# resource_limits: LimitRule
-resource_limits = yaml.safe_load("""${JUPYTERHUB_RESOURCE_LIMITS}""") or []
-
-if len(host_gdrive_settings_path) > 0:
-    c.DockerSpawner.volumes[host_gdrive_settings_path] = {
-        "bind": container_gdrive_settings_path,
-        "mode": "ro"
-    }
-
-readme = os.environ.get('JUPYTERHUB_README', default="")
-if readme != "":
-    c.DockerSpawner.volumes[readme] = {
-        "bind": join(notebook_dir, "README.ipynb"),
-        "mode": "ro"
-    }
-
-def create_dir_hook(spawner):
-    username = spawner.user.name
-    jupyterhub_user_dir = join(jupyterhub_data_dir, username)
-
-    if not os.path.exists(jupyterhub_user_dir):
-        os.mkdir(jupyterhub_user_dir, 0o755)
-
-    subprocess.call(["chown", "-R", f"{os.environ['USER_WORKSPACE_UID']}:{os.environ['USER_WORKSPACE_GID']}",
-                     jupyterhub_user_dir])
-
-    if os.environ['WORKSPACE_DIR'] != jupyterhub_data_dir:
-        # Case for cowbird setup. The workspace directory should also have the user's ownership,
-        # to have working volume mounts with the DockerSpawner.
-        workspace_user_dir = join(os.environ['WORKSPACE_DIR'], username)
-        if not os.path.exists(workspace_user_dir):
-            os.symlink(jupyterhub_user_dir, workspace_user_dir, target_is_directory=True)
-        subprocess.call(["chown", f"{os.environ['USER_WORKSPACE_UID']}:{os.environ['USER_WORKSPACE_GID']}",
-                         workspace_user_dir])
-
-
-def limit_resource_hook(spawner):
-    if spawner.user.name == os.environ['JUPYTER_DEMO_USER']:
-        # Restrict resources for the public demo user
-        # CPU limit, seems not honored by DockerSpawner
-        spawner.cpu_limit = float(os.environ['JUPYTER_DEMO_USER_CPU_LIMIT'])
-        spawner.mem_limit = os.environ['JUPYTER_DEMO_USER_MEM_LIMIT']
-    
-    user_groups = {g.name for g in spawner.user.groups}
-    gpu_ids = []
-    gpu_count = 1
-    for rule in resource_limits:
-        rule_type = rule["type"]
-        name = rule["name"]
-        if rule_type == "user" and name == spawner.user.name or rule_type == "group" and name in user_groups:
-            for limit, value in rule["limits"].items():
-                if limit == "cpu_limit":
-                    spawner.cpu_limit = value
-                elif limit == "mem_limit":
-                    spawner.mem_limit = value
-                elif limit == "gpu_ids":
-                    gpu_ids = value
-                elif limit == "gpu_count":
-                    gpu_count = value
-    if gpu_ids:
-        # randomly assign GPUs in an attempt to evenly distribute GPU resources
-        random.shuffle(gpu_ids)
-        gpu_ids = gpu_ids[:gpu_count]
-        spawner.extra_host_config["device_requests"] = [
-            docker.types.DeviceRequest(device_ids=gpu_ids, capabilities=[["gpu"]])
-        ]
-
-def pre_spawn_hook(spawner):
-    create_dir_hook(spawner)
-    limit_resource_hook(spawner)
-
-c.Spawner.pre_spawn_hook = pre_spawn_hook
-
-## Disable per-user configuration of single-user servers.
-c.Spawner.disable_user_config = True
-
-c.DockerSpawner.default_url = '/lab'
-c.DockerSpawner.remove = True  # delete containers when servers are stopped
-${JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS}    # noqa
-
-c.DockerSpawner.pull_policy = "always"  # for images not using pinned version
-c.DockerSpawner.debug = True
+c.JupyterHub.bind_url = "http://:8000/jupyter"
+c.JupyterHub.cleanup_servers = False  # Whether to shutdown single-user servers when the Hub shuts down.
+c.JupyterHub.hub_ip = "jupyterhub"
+c.JupyterHub.cookie_secret_file = "/persist/jupyterhub_cookie_secret"
+c.JupyterHub.db_url = "/persist/jupyterhub.sqlite"
+c.JupyterHub.template_paths = ["/custom_templates"]
 c.JupyterHub.log_level = logging.DEBUG
-
-c.Spawner.debug = True
-
-## Timeout (in seconds) to wait for spawners to initialize
-c.JupyterHub.init_spawners_timeout = 20  # default 10
-
-## Timeout (in seconds) before giving up on a spawned HTTP server
-c.Spawner.http_timeout = 60  # default 30
-
-## Timeout (in seconds) before giving up on starting of single-user server.
-c.Spawner.start_timeout = 120  # default 60
-
-## Extra arguments to be passed to the single-user server.
-c.Spawner.args = [
-    # Allow non-empty directory deletion which enable recursive dir deletion.
-    # https://jupyter-server.readthedocs.io/en/latest/other/full-config.html
-    "--FileContentsManager.always_delete_dir=True",
-    ]
-
-## Note that JUPYTERHUB_DOCKER_EXTRA_HOSTS may be set by default in the local-dev-test component
-c.DockerSpawner.extra_host_config = {
-    # start init pid 1 process to reap defunct processes
-    'init': True,
-    'extra_hosts': dict(host_mapping.split(":") for host_mapping in os.getenv("JUPYTERHUB_DOCKER_EXTRA_HOSTS", "").split())
+c.JupyterHub.init_spawners_timeout = 20  # Timeout (in seconds) to wait for spawners to initialize (default 10)
+c.JupyterHub.load_roles = [
+    {
+        "name": "jupyterhub-admin",
+        "description": "Give full admin (super-user) access",
+        "scopes": ["admin-ui", "admin:users", "admin:servers"],
+        "groups": [constants.JUPYTERHUB_ADMIN_GROUP_NAME],
     }
+]
 
-c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}     # noqa
-
-## Force refresh of auth prior to spawn.
-# Do nothing right now, pending implementation of
-# MagpieAuthenticator.refresh_user() (see
-# https://github.com/Ouranosinc/jupyterhub/issues/2)
-c.Authenticator.refresh_pre_spawn = True
-
-## Blacklist of usernames that are not allowed to log in.
-# https://jupyterhub.readthedocs.io/en/stable/api/auth.html
-#
-# For security reasons, block user with known hardcoded public password or
-# non real Jupyter users.
-blocked_users = {'authtest', '${CATALOG_USERNAME}', 'anonymous'}
-c.Authenticator.blacklist = blocked_users  # v0.9+
-c.Authenticator.blocked_users = blocked_users  # v1.2+
-
-# Allow all users who can authenticate through Magpie to log in to JupyterHub.
-# This allows us to manage users on Magpie without having to also update the 
-# JupyterHub database manually to match Magpie permissions.
-#
-# Note that users on the blocked_users list will still be denied even though
-# they can authenticate through Magpie.
-c.Authenticator.allow_all = True # v5.0+
+if constants.JUPYTERHUB_CRYPT_KEY_IS_SET:
+    # Allow users to access their own auth_state in order to get their own magpie cookie
+    # See https://github.com/jupyterhub/jupyterhub/issues/3588 for details
+    c.JupyterHub.load_roles.extend(
+        [
+            {
+                "name": "user",
+                "description": "User Role for accessing auth_state via API",
+                "scopes": ["self", "admin:auth_state!user"],
+                "services": [],
+            },
+            {
+                "name": "server",
+                "description": "Allows parties to start and stop user servers",
+                "scopes": [
+                    "access:servers!user",
+                    "read:users:activity!user",
+                    "users:activity!user",
+                    "admin:auth_state!user",
+                ],
+                "services": [],
+            },
+        ]
+    )
 
 # ------------------------------------------------------------------------------
-# Shutdown idle user server based on configured timeouts.
+# Deprecated settings
 # ------------------------------------------------------------------------------
-# Timeout (in seconds, default: 3 days) to shut down the user server when no kernels or terminals
-# are running and there is no activity. If undefined or set to zero, the feature will not be enabled.
-jupyter_idle_server_cull_timeout = int("${JUPYTER_IDLE_SERVER_CULL_TIMEOUT}" or 0)
-if jupyter_idle_server_cull_timeout:
-    c.Spawner.args.append('--NotebookApp.shutdown_no_activity_timeout={}'.format(jupyter_idle_server_cull_timeout))
-# Timeout (in seconds, default: 1 day) after which individual
-# user kernels/terminals are considered idle and ready to be culled.
-jupyter_idle_kernel_cull_timeout = int("${JUPYTER_IDLE_KERNEL_CULL_TIMEOUT}" or 0)
-# Interval (in seconds, default: half of timeout) on which to check for idle kernels exceeding the cull timeout value.
-jupyter_idle_kernel_cull_interval = int("${JUPYTER_IDLE_KERNEL_CULL_INTERVAL}" or 0)
-if jupyter_idle_kernel_cull_timeout:
-    if not jupyter_idle_kernel_cull_interval or jupyter_idle_kernel_cull_interval > jupyter_idle_kernel_cull_timeout:
-        jupyter_idle_kernel_cull_interval = max(1, int(jupyter_idle_kernel_cull_timeout / 2))
-    c.Spawner.args.extend([
-        '--MappingKernelManager.cull_idle_timeout={}'.format(jupyter_idle_kernel_cull_timeout),
-        '--MappingKernelManager.cull_interval={}'.format(jupyter_idle_kernel_cull_interval),
-        '--TerminalManager.cull_inactive_timeout={}'.format(jupyter_idle_kernel_cull_timeout),
-        '--TerminalManager.cull_interval={}'.format(jupyter_idle_kernel_cull_interval),
-    ])
-# Culling kernels which have one or more connections for idle but open notebooks and/or terminals.
-# Otherwise, browser tabs, notebooks and terminals all have to be closed for culling to work.
-if jupyter_idle_server_cull_timeout or jupyter_idle_kernel_cull_timeout:
-    c.Spawner.args.extend([
-        '--MappingKernelManager.cull_connected=True',
-        '--TerminalManager.cull_connected=True',
-    ])
 
-# This ensures that the docker healthchecks pass for the jupyterlab containers
-# The healthchecks assume that the jupyter data directory is in /home/$NB_USER/.local
-# regardless of the value of $HOME.
-# It also makes a symlink between the kernels directory in the user space to another
-# location outside of the home directory. This is because jupyterlab is currently unable
-# to detect kernels inside the user's home directory for some reason.
-# This also removes any old server metadata files which may not be cleaned up if the container
-# exits unexpectedly. This is necessary to ensure that the healthcheck can detect the correct
-# hostname of the jupyterlab server (this changes every time a new container is created).
-_post_start_command = (
-    "ln -s $HOME/.local /home/$NB_USER/.local; "
-    f"mkdir -p {user_kernels_dir}; "
-    f"ln -s $HOME/.local/share/jupyter/kernels {user_kernels_dir}/kernels; "
-    "rm $HOME/.local/share/jupyter/runtime/jpserver-*.json"
-)
-c.DockerSpawner.post_start_cmd = f"sh -c '{_post_start_command}'"
+# These set the class variables to the variables that are realized when the defaults
+# are applied. This is in order to support code inserted by JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS
+# and JUPYTERHUB_CONFIG_OVERRIDE that modify the concrete implementation directly.
+# For example, in previous versions of this code, the volumes dictionary was modified through
+# item assignment instead of using the update method (which traitlets supports). In order to
+# maintain backwards compatibility, the code below is necessary.
+_spawner_instance = CustomDockerSpawner()
+c.DockerSpawner.volumes = _spawner_instance.volumes
+c.DockerSpawner.environment = _spawner_instance.environment
+c.DockerSpawner.extra_host_config = _spawner_instance.extra_host_config
+c.Spawner.args = _spawner_instance.args
+c.DockerSpawner.allowed_images = _spawner_instance.allowed_images
+
+# Add a dummy function that was used in an example previously. This is kept to maintain backwards compatibilty
+def create_dir_hook(*_, **__):
+    ...
+
+# In a previous version of this file, the following imports were used which means that some code inserted
+# by JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS and JUPYTERHUB_CONFIG_OVERRIDE might still expect them to be present
+# in this module. These are kept for backwards compatibility.
+import os
+from os.path import join
+import subprocess
+
+# This import is required to support code inserted by JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS and
+# JUPYTERHUB_CONFIG_OVERRIDE that may use the legacy (lowercase) version of the constants. 
+# This import can be removed once we decide to drop support for these legacy constants.
+from jupyterhub_custom.constants import *  # noqa: F403
+
+# This is DEPRECATED: if you want to allow images other than those set by
+# the JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES and JUPYTERHUB_IMAGE_SELECTION_NAMES variables
+# use the JUPYTERHUB_ALLOWED_IMAGES variable.
+${JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS}
+
+# This is DEPRECATED: add the admin users to the group with named by the
+# JUPYTERHUB_ADMIN_GROUP_NAME variable instead
+if """${JUPYTERHUB_ADMIN_USERS}""":
+    exec("c.Authenticator.admin_users = ${JUPYTERHUB_ADMIN_USERS}")
 
 # ------------------------------------------------------------------------------
 # Configuration overrides
 # ------------------------------------------------------------------------------
+
 ${JUPYTERHUB_CONFIG_OVERRIDE}    # noqa

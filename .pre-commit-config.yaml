@@ -1,0 +1,13 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.14.9
+    hooks:
+      # Run the linter.
+      - id: ruff-check
+        files: birdhouse/components/jupyterhub/jupyterhub_custom/jupyterhub_custom/
+        args: [ --config=birdhouse/components/jupyterhub/jupyterhub_custom/ruff.toml ]
+      # Run the formatter.
+      - id: ruff-format
+        files: birdhouse/components/jupyterhub/jupyterhub_custom/jupyterhub_custom/
+        args: [ --config=birdhouse/components/jupyterhub/jupyterhub_custom/ruff.toml ]

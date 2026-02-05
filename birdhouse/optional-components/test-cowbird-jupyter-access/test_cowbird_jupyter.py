@@ -75,6 +75,10 @@ def magpie_signin(user_name, password):
     return resp
 
 def create_magpie_user(user_name, password, session):
+    # check if user exists first
+    resp = magpie_admin_session.get(url=f"{MAGPIE_URL}/users/{user_name}", allow_redirects=False)
+    if resp.status_code == 200:
+        return resp.json()
     user_data = {"user_name": user_name,
                  "email": f"{user_name}@user.com",
                  "password": password,
