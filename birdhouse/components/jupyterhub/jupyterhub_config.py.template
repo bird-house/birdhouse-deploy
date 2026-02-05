@@ -74,6 +74,10 @@ c.DockerSpawner.extra_host_config = _spawner_instance.extra_host_config
 c.Spawner.args = _spawner_instance.args
 c.DockerSpawner.allowed_images = _spawner_instance.allowed_images
 
+# Add a dummy function that was used in an example previously. This is kept to maintain backwards compatibilty
+def create_dir_hook(*_, **__):
+    ...
+
 # In a previous version of this file, the following imports were used which means that some code inserted
 # by JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS and JUPYTERHUB_CONFIG_OVERRIDE might still expect them to be present
 # in this module. These are kept for backwards compatibility.
