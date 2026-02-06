@@ -21,8 +21,8 @@
   Before, `env.local` can not immediately use any of the delayed eval var
   because their real values are only available after `env.local` is fully read.
 
-  So something like this do not work because `JUPYTERHUB_USER_DATA_DIR` is a
-  delayed eval var:
+  So something like this in `env.local` do not work because `JUPYTERHUB_USER_DATA_DIR`
+  is a delayed eval var:
   ```sh
   export JUPYTERHUB_README_FR="$JUPYTERHUB_USER_DATA_DIR/jupyter-readme/LISMOI.ipynb"
 
@@ -36,21 +36,21 @@
   # /notebook_dir/LISMOI.ipynb
   lismoi_in_container = join(notebook_dir, 'LISMOI.ipynb')
 
-  c.DockerSpawner.volumes[lismoi_on_disk] = {
+  c.DockerSpawner.volumes.update({lismoi_on_disk: {
       'bind': lismoi_in_container,
       'mode': 'ro',
-  }
+  }))
   "
   fi  # end if [ -f "$JUPYTERHUB_README_FR" ]
   ```
 
-  With the new `eval_delayed_var`, we can do the following, because
-  `JUPYTERHUB_USER_DATA_DIR` is a delayed eval var, any vars that depend on it
-  should also be delayed eval'ed.
-
   `env.local` could simply append `JUPYTERHUB_README_FR` to `DELAYED_EVAL` list
   but since we need to use its value immediately in `env.local`, we need to
   eval it immediately.
+
+  With the new `eval_delayed_var`, we can do the following, because
+  `JUPYTERHUB_USER_DATA_DIR` is a delayed eval var, any vars that depend on it
+  should also be delayed eval'ed.
 
   ```sh
   export JUPYTERHUB_README_FR="$JUPYTERHUB_USER_DATA_DIR/jupyter-readme/LISMOI.ipynb"
