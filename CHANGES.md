@@ -15,7 +15,41 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- STAC API: Security update and minor OpenAPI version reporting fixes
+  using version [2.2.0](https://github.com/crim-ca/stac-app/releases/tag/2.2.0)
+  (relates to [crim-ca/stac-app#65](https://github.com/crim-ca/stac-app/pull/65)
+  and [crim-ca/stac-app#69](https://github.com/crim-ca/stac-app/pull/69)).
+
+- Weaver: Security update using version [6.8.1](https://github.com/crim-ca/weaver/releases/tag/6.8.1)
+  (relates to [crim-ca/weaver#868](https://github.com/crim-ca/weaver/pull/868)
+  and [crim-ca/weaver#869](https://github.com/crim-ca/weaver/pull/869)).
+
+- Cowbird: Security update using version [2.6.0](https://github.com/Ouranosinc/cowbird/releases/tag/2.6.0)
+  (relates to [Ouranosinc/cowbird#98](https://github.com/Ouranosinc/cowbird/pull/98)).
+
+- Magpie: Security update using version [4.3.1](https://github.com/Ouranosinc/Magpie/releases/tag/4.3.1)
+  (relates to [Ouranosinc/Magpie#640](https://github.com/Ouranosinc/Magpie/pull/640)
+  and [Ouranosinc/Magpie#642](https://github.com/Ouranosinc/Magpie/pull/642)).
+
+- Twitcher: Security update using version [0.11.0](https://github.com/bird-house/twitcher/releases/tag/v0.11.0)
+  (relates to [bird-house/twitcher#143](https://github.com/bird-house/twitcher/pull/143),
+  [bird-house/twitcher#145](https://github.com/bird-house/twitcher/pull/145),
+  [bird-house/twitcher#146](https://github.com/bird-house/twitcher/pull/146) and
+  [bird-house/twitcher#148](https://github.com/bird-house/twitcher/pull/148)).
+
+- Weaver: Update `post-docker-compose-up` script.
+  - Handle multiple Magpie cookies in response.
+    This can happen depending on specific internal HTTP libraries versions of the services.
+    To retain backward/forward compatibility, all cookies returned from Magpie are chained in following `curl` commands.
+  - Use birdhouse `log` utility to report operations produced by the script rather than custom "echo level".
+
+- Birdhouse: Allow `log <LEVEL> -n ...` and `log <LEVEL> -p ...` to generate log outputs without newline/prefixes.
+  
+  These options allow writing multiple log entries onto the same line for correct visual rendering of distinct `log`
+  calls separated to allow some intermediate logic. The `log` function invocations with these options respect the
+  log levels in order to make the messages consistent with enabled redirections and verbosity.
 
 [2.21.2](https://github.com/bird-house/birdhouse-deploy/tree/2.21.2) (2026-02-05)
 ------------------------------------------------------------------------------------------------------------------
