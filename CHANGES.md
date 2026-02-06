@@ -17,6 +17,37 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.21.2](https://github.com/bird-house/birdhouse-deploy/tree/2.21.2) (2026-02-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Bug fixes for healthchecks and update-postgres.sh
+
+  - Fix healthchecks for `finch`, `raven`, and `postgres-magpie` containers
+  - update `scripts/update-postgres.sh` to ensure that the user calling the script has permissions to move
+    directories that may be owned by root.
+
+
+## Changes
+
+- Set GPU access on Jupyterlab containers based on Magpie user or group name
+
+  Adds to the feature that lets resource allocations to Jupyterlab containers be assigned based on username or
+  group membership.
+
+  New settings for the `JUPYTERHUB_RESOURCE_LIMITS` variable are `gpu_ids` and `gpu_count`.
+
+  `gpu_ids` are an array of the GPU uuids or zero based indexes of the GPUs that you want to make available 
+  to the user or group. GPU uuids and indexes can be discovered by running the `nvidia-smi --list-gpus` command or similar
+  (such as `amd-smi list` for AMD GPUs). Uuids are preferred as they remain stable across the life of the GPU. Mixing indexes and uuids
+  is possible but discouraged since it makes it possible to select the same GPU multiple times.
+  If `gpu_count` is also specified, this is an integer indicating how many GPUs to make available to that user or group.
+  If `gpu_count` is not specified, then exactly one GPU will be randomly selected.
+  For example, if `{"gpu_ids": [1,2,6], "gpu_count": 2}` then two GPUs will be randomly selected from the `gpu_ids` list.
+
+  Also changes the format for `JUPYTERHUB_RESOURCE_LIMITS` to a yaml or JSON string. 
+
 [2.21.1](https://github.com/bird-house/birdhouse-deploy/tree/2.21.1) (2026-02-02)
 ------------------------------------------------------------------------------------------------------------------
 
