@@ -7,10 +7,10 @@ THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
 
 # Remove old definitions and ensure docker-dompose detects the change
-rm "${THIS_DIR}/static/services/*" || true
-rm "${THIS_DIR}/static/version.json" || true
-rm "${THIS_DIR}/static/services.json" || true
-rm "${THIS_DIR}/static/components.json" || true
+rm -f "${THIS_DIR}"/static/services/*
+rm -f "${THIS_DIR}/static/version.json"
+rm -f "${THIS_DIR}/static/services.json"
+rm -f "${THIS_DIR}/static/components.json"
 mkdir -p "${THIS_DIR}/static"
 
 echo "${BIRDHOUSE_VERSION_JSON}" > "${THIS_DIR}/static/version.json"
