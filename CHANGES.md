@@ -15,7 +15,51 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+- Allow `env.local` to use delayed eval var immediately
+
+  Before, `env.local` can not immediately use any of the delayed eval var
+  because their real values are only available after `env.local` is fully read.
+
+  So something like this do not work because `JUPYTERHUB_USER_DATA_DIR` is a
+  delayed eval var:
+  ```sh
+  export JUPYTERHUB_README_FR="$JUPYTERHUB_USER_DATA_DIR/jupyter-readme/LISMOI.ipynb"
+
+  if [ -f "$JUPYTERHUB_README_FR" ]; then
+
+    export JUPYTERHUB_CONFIG_OVERRIDE="$JUPYTERHUB_CONFIG_OVERRIDE
+
+  # /data/jupyterhub_user_data/jupyter-readme/LISMOI.ipynb
+  lismoi_on_disk = join(jupyterhub_data_dir, 'jupyter-readme', 'LISMOI.ipynb')
+
+  # /notebook_dir/LISMOI.ipynb
+  lismoi_in_container = join(notebook_dir, 'LISMOI.ipynb')
+
+  c.DockerSpawner.volumes[lismoi_on_disk] = {
+      'bind': lismoi_in_container,
+      'mode': 'ro',
+  }
+  "
+  fi  # end if [ -f "$JUPYTERHUB_README_FR" ]
+  ```
+
+  With the new `eval_delayed_var`, we can do the following, because
+  `JUPYTERHUB_USER_DATA_DIR` is a delayed eval var, any vars that depend on it
+  should also be delayed eval'ed.
+
+  `env.local` could simply append `JUPYTERHUB_README_FR` to `DELAYED_EVAL` list
+  but since we need to use its value immediately in `env.local`, we need to
+  eval it immediately.
+
+  ```sh
+  export JUPYTERHUB_README_FR="$JUPYTERHUB_USER_DATA_DIR/jupyter-readme/LISMOI.ipynb"
+  eval_delayed_var JUPYTERHUB_README_FR
+
+  if [ -f "$JUPYTERHUB_README_FR" ]; then
+  (...)
+  ```
+
 
 [2.21.2](https://github.com/bird-house/birdhouse-deploy/tree/2.21.2) (2026-02-05)
 ------------------------------------------------------------------------------------------------------------------
