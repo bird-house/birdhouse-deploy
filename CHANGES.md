@@ -15,7 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Prometheus sends alertmanager API requests to correct path
+
+  Prometheus communicates with alertmanager through its API which is accessible on docker's bridge network at
+  `http://altermanager:9093/alertmanager/api/v2`. But, prometheus was not configured to include the `/alertmanager`
+  subpath so it was actually sending alerts to `http://alertmanager:9093/api/v2` which returned a 404 error.
+
+  This fix updates the prometheus configuration so that it sends alerts to the correct URL.
 
 [2.21.2](https://github.com/bird-house/birdhouse-deploy/tree/2.21.2) (2026-02-05)
 ------------------------------------------------------------------------------------------------------------------
