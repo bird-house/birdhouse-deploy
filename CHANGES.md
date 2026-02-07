@@ -15,7 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- STAC: add environment variables to facilitate customization of the API's landing page and OpenAPI metadata.
+
+  - Adds `STAC_FASTAPI_VERSION`, `STAC_FASTAPI_TITLE`, `STAC_FASTAPI_DESCRIPTION`, `STAC_FASTAPI_LANDING_ID` variables.
+    These names are purposely selected to align natively with
+    [stac-fastapi settings](https://stac-utils.github.io/stac-fastapi/tips-and-tricks/#set-api-title-description-and-version).
+    Implementations previously had to manually inject the variables using a `docker-compose-extra.yml` configuration
+    extending the `stac` service with the relevant `environment` variables and values.
 
 [2.21.2](https://github.com/bird-house/birdhouse-deploy/tree/2.21.2) (2026-02-05)
 ------------------------------------------------------------------------------------------------------------------
