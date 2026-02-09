@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.22.0](https://github.com/bird-house/birdhouse-deploy/tree/2.22.0) (2026-02-09)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Service files not properly deleted when bringing up the stack
