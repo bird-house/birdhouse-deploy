@@ -29,7 +29,14 @@
     {
       "rel": "service-meta",
       "type": "application/vnd.oci.image.index.v1+json",
-      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/__api__"
+      "href": "${TWITCHER_IMAGE}",
+      "title": "Docker Image"
+    },
+    {
+      "rel": "openapi",
+      "type": "application/vnd.oai.openapi+json;version=3.0",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/twitcher/__api__",
+      "title": "OpenAPI Definition"
     },
     {
       "rel": "about",
