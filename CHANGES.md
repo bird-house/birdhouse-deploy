@@ -15,6 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Changes
+
+- Update `cadvisor` image version
+
+  Docker engine version 29.0 dropped support for docker API versions <1.44. That means that the docker client used
+  by the `cadvisor` component cannot be used with modern versions of docker engine. To fix this, the `cadvisor`
+  component's image has been updated to the most recent cAdvisor version [v0.54.1](https://gcr.io/cadvisor/cadvisor:v0.54.1) 
+  which uses a modern version of the docker client.
+
 - Refactor Jupyterhub configuration files
 
   Previously the jupyterhub configuration was defined in `components/jupyterhub/jupyterhub_config.py.template` 
