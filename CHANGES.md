@@ -15,7 +15,23 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.22.0](https://github.com/bird-house/birdhouse-deploy/tree/2.22.0) (2026-02-09)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
+
+- Service files not properly deleted when bringing up the stack
+
+  The service files served by the proxy container as static JSON files were not properly deleted because the command
+  used a path with `*` in quotes which matches the `*` character instead of treating it as a glob pattern.
+  This meant that the `rm` command was trying to remove a file named `*` instead of all files in the directory.
+
+  The files were also being removed by a plain `rm` command which is often an alias for `rm -i` in some shell environments
+  meaning that the deletion could be run interactively. By changing this to `rm -f` we can ensure that the
+  `rm` in this script is always in non-interactive mode and it also lets us remove the `|| true` since the `-f` flag
+  ensures that the return code from `rm` will always be 0 regardless of whether the command succeeded or failed.
 
 - Prometheus sends alertmanager API requests to correct path
 
