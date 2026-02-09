@@ -17,6 +17,143 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.22.0](https://github.com/bird-house/birdhouse-deploy/tree/2.22.0) (2026-02-09)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Service files not properly deleted when bringing up the stack
+
+  The service files served by the proxy container as static JSON files were not properly deleted because the command
+  used a path with `*` in quotes which matches the `*` character instead of treating it as a glob pattern.
+  This meant that the `rm` command was trying to remove a file named `*` instead of all files in the directory.
+
+  The files were also being removed by a plain `rm` command which is often an alias for `rm -i` in some shell environments
+  meaning that the deletion could be run interactively. By changing this to `rm -f` we can ensure that the
+  `rm` in this script is always in non-interactive mode and it also lets us remove the `|| true` since the `-f` flag
+  ensures that the return code from `rm` will always be 0 regardless of whether the command succeeded or failed.
+
+- Prometheus sends alertmanager API requests to correct path
+
+  Prometheus communicates with alertmanager through its API which is accessible on docker's bridge network at
+  `http://altermanager:9093/alertmanager/api/v2`. But, prometheus was not configured to include the `/alertmanager`
+  subpath so it was actually sending alerts to `http://alertmanager:9093/api/v2` which returned a 404 error.
+
+  This fix updates the prometheus configuration so that it sends alerts to the correct URL.
+
+## Changes
+
+- Update `cadvisor` image version
+
+  Docker engine version 29.0 dropped support for docker API versions <1.44. That means that the docker client used
+  by the `cadvisor` component cannot be used with modern versions of docker engine. To fix this, the `cadvisor`
+  component's image has been updated to the most recent cAdvisor version [v0.54.1](https://gcr.io/cadvisor/cadvisor:v0.54.1) 
+  which uses a modern version of the docker client.
+
+- Refactor Jupyterhub configuration files
+
+  Previously the jupyterhub configuration was defined in `components/jupyterhub/jupyterhub_config.py.template` 
+  except for the custom authenticator which was included in the `pavics/jupyterhub` docker image. This was fine, 
+  except that the configuration was split across two projects and as the configuration got more complex, 
+  maintaining these was getting more difficult.
+
+  This moves all configuration code including the authenticator to a python package named `jupyterhub_custom`
+  located at `components/jupyterhub/jupyterhub_custom/`. It moves all configurations for the authenticator
+  to the `magpie_authenticator.py` file and all the configurations for the spawner to the `custom_spawner.py`
+  file. All variables that are settable by environment variables are moved to the `constants.py` file. This 
+  makes it much easier to see which variables are configurable using environment variables all in one place.
+
+  This change introduces unit tests and style policies (enforced by [ruff](https://docs.astral.sh/ruff/) and 
+  [pre-commit](https://pre-commit.com/)) for this package to encourage better code practices.
+
+  This change should be fully backwards compatible with the exception of the change to how settings for 
+  `deprecated-components/catalog` is handled (see below). However, it does deprecate some environment variables in
+  favour of better configuration solutions:
+
+  - using the `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` variable to set the `DockerSpawner.allowed_images` variable
+    is deprecated.
+    - why?: this variable could be used to insert any python code into the middle of the 
+      `jupyterhub_config.py.template` file. This makes it too easy to accidentally insert code that breaks
+      the configuration settings later on. We should avoid code insertion like this whenever possible.
+    - new method: by default `DockerSpawner.allowed_images` will be set based on the values of 
+      `JUPYTERHUB_IMAGE_SELECTION_NAMES` and `JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES`. If more than one image
+      is specified by those variables then the user will be able to select which one they want. If you 
+      want to specify images other than those in the default, those can be set using the `JUPYTERHUB_ALLOWED_IMAGES`
+      which is a yaml or JSON mapping of image names to jupyterlab docker image tags.
+  - using the `JUPYTERHUB_ADMIN_USERS` variable to set the `DockerSpawner.admin_users` variable is deprecated.
+    - why?: this also executes arbitrary code (like above). Also, jupyterhub encourages assigning admin permissions
+      based on 
+      [roles](https://jupyterhub.readthedocs.io/en/latest/tutorial/getting-started/authenticators-users-basics.html#configure-admins-admin-users),
+      not by assigning them to the `admin_users` attribute. This makes it possible to easily revoke admin
+      permissions as well and does not require us to restart Jupyterhub to do so.
+    - new method: a new Magpie group is created. Its name is determined by the `JUPYTERHUB_ADMIN_GROUP_NAME` 
+      variable (default is "jupyterhub-admin"). Add users to this group in Magpie in order to give them admin permissions on Jupyterhub.
+  - using lowercase constants in `JUPYTERHUB_CONFIG_OVERRIDE` is deprecated.
+    - why?: [PEP8 recommends](https://peps.python.org/pep-0008/#constants) constants be written with capitals
+      with underscores separating them.
+    - new method: all the constants that were previously named with lowercase have an uppercase equivalent 
+      in `constants.py`. For example: `notebook_dir == constants.NOTEBOOK_DIR`. The uppercase version is 
+      preferred.
+
+  Note: if your deployment is still using the `deprecated-components/catalog` component. You may want to manually set the
+  following in `JUPYTERHUB_CONFIG_OVERRIDE` since the automatic addition of the the `CATALOG_USERNAME` to the `blocked_users`
+  set is no longer part of the default settings (since the `deprecated-components/catalog` component has been deprecated for 
+  a long time):
+
+  ```python
+  c.MagpieAuthenticator.blocked_users.add("${CATALOG_USERNAME}")
+  ```
+
+- Introduce a scheduler job to delete old files that may accumulate over time
+
+  Creates the `optional-component/clean_old_files` job that deletes old THREDDS log files and WPS output files.
+  Allows individual cleanup jobs to be enabled for each of `raven`, `finch`, `hummingbird`, and `thredds` components.
+  Allows the user to configure how old a file must be before it is deleted (age in days) and how to calculate the age
+  of the file (time since last modified, time since last accessed, time since created).
+  
+  (see `env.local.example` or the `scheduler` documentation for details).
+
+[2.21.2](https://github.com/bird-house/birdhouse-deploy/tree/2.21.2) (2026-02-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Bug fixes for healthchecks and update-postgres.sh
+
+  - Fix healthchecks for `finch`, `raven`, and `postgres-magpie` containers
+  - update `scripts/update-postgres.sh` to ensure that the user calling the script has permissions to move
+    directories that may be owned by root.
+
+## Changes
+
+- Set GPU access on Jupyterlab containers based on Magpie user or group name
+
+  Adds to the feature that lets resource allocations to Jupyterlab containers be assigned based on username or
+  group membership.
+
+  New settings for the `JUPYTERHUB_RESOURCE_LIMITS` variable are `gpu_ids` and `gpu_count`.
+
+  `gpu_ids` are an array of the GPU uuids or zero based indexes of the GPUs that you want to make available 
+  to the user or group. GPU uuids and indexes can be discovered by running the `nvidia-smi --list-gpus` command or similar
+  (such as `amd-smi list` for AMD GPUs). Uuids are preferred as they remain stable across the life of the GPU. Mixing indexes and uuids
+  is possible but discouraged since it makes it possible to select the same GPU multiple times.
+  If `gpu_count` is also specified, this is an integer indicating how many GPUs to make available to that user or group.
+  If `gpu_count` is not specified, then exactly one GPU will be randomly selected.
+  For example, if `{"gpu_ids": [1,2,6], "gpu_count": 2}` then two GPUs will be randomly selected from the `gpu_ids` list.
+
+  Also changes the format for `JUPYTERHUB_RESOURCE_LIMITS` to a yaml or JSON string. 
+
+[2.21.1](https://github.com/bird-house/birdhouse-deploy/tree/2.21.1) (2026-02-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Services: Update and fix certain `/services/...` definitions.
+
+  - Fix incorrectly defined links reporting OpenAPI or Docker URIs inappropriately or without adequate media-type.
+  - Add `/services/canarie` definition to provide metadata about CanarieAPI component if enabled.
+  - Fix outdated `service-config.json` definitions sometimes incorrectly detected by docker-compose due to reused inode.
+
 [2.21.0](https://github.com/bird-house/birdhouse-deploy/tree/2.21.0) (2026-01-27)
 ------------------------------------------------------------------------------------------------------------------
 
