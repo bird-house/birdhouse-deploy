@@ -8,3 +8,15 @@ providers:
     c4i: false
     type: api
     sync_type: api
+
+groups:
+  - name: ${JUPYTERHUB_ADMIN_GROUP_NAME}
+    description: Members of this group are given admin permissions on jupyterhub
+    discoverable: false
+
+permissions:
+  - service: jupyterhub
+    resource: /
+    permission: read
+    group: ${JUPYTERHUB_ADMIN_GROUP_NAME}
+    action: create

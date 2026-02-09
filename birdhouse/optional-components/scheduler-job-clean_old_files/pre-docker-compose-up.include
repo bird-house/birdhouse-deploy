@@ -1,0 +1,21 @@
+if ! echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q 'scheduler[[:space:]]*$'; then
+  log WARN 'The scheduler-job-clean_old_files component is enabled but the scheduler component is not. This WILL cause problems. Please disable the scheduler-job-clean_old_files component.'
+fi
+
+_acceptable_modes='|mmin|mtime|ctime|atime|'
+
+_warn_invalid_mode() {
+  component="$(echo "$1" | tr [:lower:] [:upper:])"
+  [ "$(eval "echo \$SCHEDULER_JOB_CLEAN_OLD_FILES_${component}_ENABLED")" = "true" ] || return
+  echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q "$1"'[[:space:]]*$' || return
+  older_than="$(eval "echo \$SCHEDULER_JOB_CLEAN_OLD_FILES_${component}_OLDER_THAN")"
+  echo "$older_than" | grep -q '^[0-9][0-9]*$' || log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_${component}_OLDER_THAN variable must be an integer not '${older_than}'. Please set this variable to an integer or disable the $1 file cleaning job. This job will not run properly!"
+  time_mode="$(eval "echo \$SCHEDULER_JOB_CLEAN_OLD_FILES_${component}_TIME_MODE")"
+  [ "${_acceptable_modes#*"${time_mode}"}" = "${_acceptable_modes}" ] && log WARN "SCHEDULER_JOB_CLEAN_OLD_FILES_${component}_TIME_MODE variable must be one of 'mmin', 'mtime', 'atime', or 'ctime' not '${time_mode}'. Please set this variable to a valid option or disable the $1 file cleaning job. This job will not run properly!"
+}
+
+_warn_invalid_mode finch
+_warn_invalid_mode hummingbird
+_warn_invalid_mode raven
+_warn_invalid_mode thredds
+
