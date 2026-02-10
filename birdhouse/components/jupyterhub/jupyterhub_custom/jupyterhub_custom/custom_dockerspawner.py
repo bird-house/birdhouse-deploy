@@ -5,7 +5,7 @@ from typing import Any
 
 import docker
 from dockerspawner import DockerSpawner
-from traitlets import default
+from traitlets import Callable, Dict, List, Unicode, default
 
 from . import constants
 
@@ -227,6 +227,35 @@ class CustomDockerSpawner(DockerSpawner):
         """Timeout (in seconds) before giving up on starting of single-user server."""
         return 120
 
+    resource_limit_callbacks = Dict(
+        value_trait=Callable(),
+        key_trait=Unicode(),
+        config=True,
+        help=(
+            "Dictionary mapping limit names to a callable that takes two arguments: "
+            "the spawner instance and the value for that limit. These can be used to "
+            "add additional resource limits that are enforced by optional components."
+        ),
+    )
+
+    pre_spawn_hooks = List(
+        Callable(),
+        config=True,
+        help=(
+            "List of pre spawn hooks to run as well as the pre_spawn_hook function. "
+            "This is intended to be set by internal tools, users should set the "
+            "pre_spawn_hook directly."
+        ),
+    )
+
+    @default("pre_spawn_hooks")
+    def _default_pre_spawn_hooks(self) -> list:
+        return [
+            CustomDockerSpawner.__create_dir_hook,
+            CustomDockerSpawner.__limit_resource_hook,
+            CustomDockerSpawner.__create_tutorial_notebook_hook,
+        ]
+
     @property
     def escaped_name(self) -> str:
         """
@@ -321,6 +350,8 @@ class CustomDockerSpawner(DockerSpawner):
                         gpu_ids = value
                     elif limit == "gpu_count":
                         gpu_count = value
+                    elif limit in self.resource_limit_callbacks:
+                        self.resource_limit_callbacks[limit](self, value)
         if gpu_ids:
             # randomly assign GPUs in an attempt to evenly distribute GPU resources
             random.shuffle(gpu_ids)
@@ -331,12 +362,7 @@ class CustomDockerSpawner(DockerSpawner):
 
     def run_pre_spawn_hook(self) -> None:
         """Run the builtin pre-spawn hooks as well as any set by pre_spawn_hook if defined."""
-        self._custom_pre_spawn_hook()
+        for hook in self.pre_spawn_hooks:
+            hook(self)
         if self.pre_spawn_hook:
             self.pre_spawn_hook(self)
-
-    def _custom_pre_spawn_hook(self) -> None:
-        """Run before spawning a singleuser jupyterlab server."""
-        self.__create_dir_hook()
-        self.__limit_resource_hook()
-        self.__create_tutorial_notebook_hook()

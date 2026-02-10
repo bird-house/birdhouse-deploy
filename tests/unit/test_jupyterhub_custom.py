@@ -598,6 +598,28 @@ class TestCustomDockerSpawner:
                 assert len(device_ids) == 2
                 assert set(device_ids) < {1, 2, 3}
 
+            def test_additional_resource_limits(self, spawner, constants, generate_spawner_inst):
+                mock = Mock()
+                spawner_inst = generate_spawner_inst(spawner)
+                spawner_inst.resource_limit_callbacks["test_limit"] = mock
+                constants.RESOURCE_LIMITS = [
+                    {
+                        "type": "user",
+                        "name": spawner_inst.user.name,
+                        "limits": {"test_limit": 22},
+                    }
+                ]
+                spawner_inst.run_pre_spawn_hook()
+                assert mock.call_args == ((spawner_inst, 22),)
+        
+        class TestAdditionalPreSpawnHooks:
+
+            def test_custom_pre_spawn_hook(self, spawner, generate_spawner_inst):
+                mock = Mock()
+                spawner_inst = generate_spawner_inst(spawner)
+                spawner_inst.pre_spawn_hooks.append(mock)
+                spawner_inst.run_pre_spawn_hook()
+                assert mock.call_args == ((spawner_inst,),)
 
 # @pytest.mark.asyncio
 class TestMagpieAuthenticator:
