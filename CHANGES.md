@@ -63,6 +63,15 @@
   with custom settings created by the user. Note that `JUPYTERHUB_CONFIG_OVERRIDE` has precedence over 
   `JUPYTERHUB_CONFIG_OVERRIDE_INTERNAL`.
 
+## Fixes
+
+- Update GPU limit examples to show expected syntax
+
+  Fixes some examples that showed that `gpu_ids` could be given as integers if they were meant to be indexes. However, 
+  due to limitation of docker they must be strings. This modifies examples so that it is clear that strings must be 
+  used and also updates the code to ensure that string values are only ever passed to docker when spawning a new 
+  jupyterlab server.
+
 [2.22.0](https://github.com/bird-house/birdhouse-deploy/tree/2.22.0) (2026-02-09)
 ------------------------------------------------------------------------------------------------------------------
 
