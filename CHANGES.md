@@ -19,36 +19,49 @@
 
 - Add Nvidia MPS component for managing Nvidia GPU resources
 
-This creates a container running Nvidia's Multi Process Service ([MPS](https://docs.nvidia.com/deploy/mps/index.html)) 
-which helps manage multi-user GPU access.
-It runs an alternative CUDA interface which manages resource allocation when multiple processes are running simultaneously
-on the same GPU.
-It also allows the node admin to set additional per-user limits through the `JUPYTERHUB_RESOURCE_LIMITS` variable
-which configures Jupyterlab containers:
+  This creates a container running Nvidia's Multi Process Service ([MPS](https://docs.nvidia.com/deploy/mps/index.html)) 
+  which helps manage multi-user GPU access.
+  It runs an alternative CUDA interface which manages resource allocation when multiple processes are running simultaneously
+  on the same GPU.
+  It also allows the node admin to set additional per-user limits through the `JUPYTERHUB_RESOURCE_LIMITS` variable
+  which configures Jupyterlab containers:
 
-- `"gpu_device_mem_limit"`: sets the `CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` environment variable
-- `"gpu_active_thread_percentage"`: sets the `CUDA_MPS_ACTIVE_THREAD_PERCENTAGE` environment variable
+  - `"gpu_device_mem_limit"`: sets the `CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` environment variable
+  - `"gpu_active_thread_percentage"`: sets the `CUDA_MPS_ACTIVE_THREAD_PERCENTAGE` environment variable
 
-For example, the following will give all users in the group named `"users"` access to three GPUs in their Jupyterlab
-container. On the first one (id = 0) only 1GB of memory is available, on the second (id = 1) only 5GB, and on the third 
-(id = 2) only 10GB. Additionally, the container will be able to use 10% of available threads on the GPUs.
+  For example, the following will give all users in the group named `"users"` access to three GPUs in their Jupyterlab
+  container. On the first one (id = 0) only 1GB of memory is available, on the second (id = 1) only 5GB, and on the third 
+  (id = 2) only 10GB. Additionally, the container will be able to use 10% of available threads on the GPUs.
 
-```shell
-export JUPYTERHUB_RESOURCE_LIMITS='
-[{
-      "type": "group", 
-      "name": "users", 
-      "limits": {
-        "gpu_ids": ["0", "1", "2"], 
-        "gpu_count": 3, 
-        "gpu_device_mem_limit": "0=1G,1=5G,2=10G", 
-        "gpu_active_thread_percentage": "10"
-      }
-}]
-'
-```
+  ```shell
+  export JUPYTERHUB_RESOURCE_LIMITS='
+  [{
+        "type": "group", 
+        "name": "users", 
+        "limits": {
+          "gpu_ids": ["0", "1", "2"], 
+          "gpu_count": 3, 
+          "gpu_device_mem_limit": "0=1G,1=5G,2=10G", 
+          "gpu_active_thread_percentage": "10"
+        }
+  }]
+  '
+  ```
 
-Note that leaving any of these limits unset will default to allowing the user full access to the given resource.
+  Note that leaving any of these limits unset will default to allowing the user full access to the given resource.
+
+- Update `CustomDockerSpawner` to make pre spawn hooks and resource limits more configurable
+
+  Introduce `pre_spawn_hooks` and `resource_limit_callbacks` attributes to the `CustomDockerSpawner` class which 
+  can be used to further customize the `CustomDockerSpawner` from optional components. This gives us a way to 
+  add additional functionality without having to directly modify existing functions which may be overwritten by the
+  user when they configure the spawner in `JUPYTERHUB_CONFIG_OVERRIDE`.
+
+  This also introduces the `JUPYTERHUB_CONFIG_OVERRIDE_INTERNAL` variable which is identical to the 
+  `JUPYTERHUB_CONFIG_OVERRIDE` variable except that it is intended to only be set by other components (not be the
+  user in the local environment file). This allows components to customize Jupyterhub deployments without interfering
+  with custom settings created by the user. Note that `JUPYTERHUB_CONFIG_OVERRIDE` has precedence over 
+  `JUPYTERHUB_CONFIG_OVERRIDE_INTERNAL`.
 
 [2.22.0](https://github.com/bird-house/birdhouse-deploy/tree/2.22.0) (2026-02-09)
 ------------------------------------------------------------------------------------------------------------------
