@@ -582,7 +582,7 @@ class TestCustomDockerSpawner:
                 spawner_inst.run_pre_spawn_hook()
                 device_ids = spawner_inst.extra_host_config["device_requests"][0].device_ids
                 assert len(device_ids) == 1
-                assert device_ids[0] in [1, 2, 3]
+                assert device_ids[0] in ["1", "2", "3"]
 
             def test_user_name_matches_gpu_ids_with_count(self, spawner, constants, generate_spawner_inst):
                 spawner_inst = generate_spawner_inst(spawner)
@@ -596,7 +596,7 @@ class TestCustomDockerSpawner:
                 spawner_inst.run_pre_spawn_hook()
                 device_ids = spawner_inst.extra_host_config["device_requests"][0].device_ids
                 assert len(device_ids) == 2
-                assert set(device_ids) < {1, 2, 3}
+                assert set(device_ids) < {"1", "2", "3"}
 
             def test_additional_resource_limits(self, spawner, constants, generate_spawner_inst):
                 mock = Mock()

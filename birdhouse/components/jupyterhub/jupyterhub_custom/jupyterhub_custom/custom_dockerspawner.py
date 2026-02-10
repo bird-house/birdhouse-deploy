@@ -357,7 +357,7 @@ class CustomDockerSpawner(DockerSpawner):
             random.shuffle(gpu_ids)
             gpu_ids = gpu_ids[:gpu_count]
             self.extra_host_config["device_requests"] = [
-                docker.types.DeviceRequest(device_ids=gpu_ids, capabilities=[["gpu"]])
+                docker.types.DeviceRequest(device_ids=[str(i) for i in gpu_ids], capabilities=[["gpu"]])
             ]
 
     def run_pre_spawn_hook(self) -> None:
