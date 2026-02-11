@@ -58,10 +58,13 @@
   user when they configure the spawner in `JUPYTERHUB_CONFIG_OVERRIDE`.
 
   This also introduces the `JUPYTERHUB_CONFIG_OVERRIDE_INTERNAL` variable which is identical to the 
-  `JUPYTERHUB_CONFIG_OVERRIDE` variable except that it is intended to only be set by other components (not be the
+  `JUPYTERHUB_CONFIG_OVERRIDE` variable except that it is intended to only be set by other components (not by the
   user in the local environment file). This allows components to customize Jupyterhub deployments without interfering
-  with custom settings created by the user. Note that `JUPYTERHUB_CONFIG_OVERRIDE` has precedence over 
-  `JUPYTERHUB_CONFIG_OVERRIDE_INTERNAL`.
+  with custom settings created by the user. 
+  
+  Note that the contents of `JUPYTERHUB_CONFIG_OVERRIDE` have precedence over the contents of 
+  `JUPYTERHUB_CONFIG_OVERRIDE_INTERNAL`. So for example if you create a volume mount named `my_volume` in both, only
+  the one defined in `JUPYTERHUB_CONFIG_OVERRIDE` will be applied.
 
 ## Fixes
 

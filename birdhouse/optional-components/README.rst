@@ -764,4 +764,24 @@ container. On the first one (id = 0) only 1GB of memory is available, on the sec
 
 Note that leaving any of these limits unset will default to allowing the user full access to the given resource.
 
+.. note::
+
+    The ``mps`` docker container currently applies the MPS server to all GPUs. If you want to only apply the MPS server
+    to a subset of the GPUs available on your machine, you will need to create an additional component with a 
+    ``docker-compose-extra.yml`` file that specifically overrides the container device settings for the ``mps`` container.
+
+    For example, the docker compose configuration below would set the MPS server to only apply to GPUs with ids `"0"` and `"1"`.
+
+.. code-block:: yaml
+
+    services:
+      mps:
+        deploy:
+          resources:
+            reservations:
+              devices: !override
+                - capabilities: [gpu]
+                  driver: nvidia
+                  device_ids: ["0", "1"]
+
 .. _MPS: https://docs.nvidia.com/deploy/mps/index.html
