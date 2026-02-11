@@ -26,22 +26,11 @@
   ```sh
   export JUPYTERHUB_README_FR="$JUPYTERHUB_USER_DATA_DIR/jupyter-readme/LISMOI.ipynb"
 
+  # Error, file not found even if the file is actually on disk
+  # because JUPYTERHUB_README_FR resolve to "${BIRDHOUSE_DATA_PERSIST_ROOT}/jupyterhub_user_data/jupyter-readme/LISMOI.ipynb"
+  # because JUPYTERHUB_USER_DATA_DIR is a delayed eval var.
   if [ -f "$JUPYTERHUB_README_FR" ]; then
-
-    export JUPYTERHUB_CONFIG_OVERRIDE="$JUPYTERHUB_CONFIG_OVERRIDE
-
-  # /data/jupyterhub_user_data/jupyter-readme/LISMOI.ipynb
-  lismoi_on_disk = join(jupyterhub_data_dir, 'jupyter-readme', 'LISMOI.ipynb')
-
-  # /notebook_dir/LISMOI.ipynb
-  lismoi_in_container = join(notebook_dir, 'LISMOI.ipynb')
-
-  c.DockerSpawner.volumes.update({lismoi_on_disk: {
-      'bind': lismoi_in_container,
-      'mode': 'ro',
-  }))
-  "
-  fi  # end if [ -f "$JUPYTERHUB_README_FR" ]
+    (...)
   ```
 
   `env.local` could simply append `JUPYTERHUB_README_FR` to `DELAYED_EVAL` list
@@ -56,8 +45,9 @@
   export JUPYTERHUB_README_FR="$JUPYTERHUB_USER_DATA_DIR/jupyter-readme/LISMOI.ipynb"
   eval_delayed_var JUPYTERHUB_README_FR
 
+  # Now this works because JUPYTERHUB_README_FR resolve properly to  "/data/jupyterhub_user_data/jupyter-readme/LISMOI.ipynb"
   if [ -f "$JUPYTERHUB_README_FR" ]; then
-  (...)
+    (...)
   ```
 
 
