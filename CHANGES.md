@@ -17,10 +17,11 @@
 
 ## Changes
 
-- STAC API: Security update and minor OpenAPI version reporting fixes
-  using version [2.2.0](https://github.com/crim-ca/stac-app/releases/tag/2.2.0)
-  (relates to [crim-ca/stac-app#65](https://github.com/crim-ca/stac-app/pull/65)
-  and [crim-ca/stac-app#69](https://github.com/crim-ca/stac-app/pull/69)).
+- STAC API: Security update, minor OpenAPI version reporting fixes, and `stac-fastapi`/`starlette` compatibility fix
+  using version [2.3.0](https://github.com/crim-ca/stac-app/releases/tag/2.3.0)
+  (relates to [crim-ca/stac-app#65](https://github.com/crim-ca/stac-app/pull/65),
+  [crim-ca/stac-app#69](https://github.com/crim-ca/stac-app/pull/69) and
+  [crim-ca/stac-app#74](https://github.com/crim-ca/stac-app/pull/74)).
 
 - Weaver: Security update using version [6.8.1](https://github.com/crim-ca/weaver/releases/tag/6.8.1)
   (relates to [crim-ca/weaver#868](https://github.com/crim-ca/weaver/pull/868)
