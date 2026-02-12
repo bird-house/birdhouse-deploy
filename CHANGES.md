@@ -23,9 +23,10 @@
   [crim-ca/stac-app#69](https://github.com/crim-ca/stac-app/pull/69) and
   [crim-ca/stac-app#74](https://github.com/crim-ca/stac-app/pull/74)).
 
-- Weaver: Security update using version [6.8.1](https://github.com/crim-ca/weaver/releases/tag/6.8.1)
-  (relates to [crim-ca/weaver#868](https://github.com/crim-ca/weaver/pull/868)
-  and [crim-ca/weaver#869](https://github.com/crim-ca/weaver/pull/869)).
+- Weaver: Security and dependency fix update using version [6.8.2](https://github.com/crim-ca/weaver/releases/tag/6.8.2)
+  (relates to [crim-ca/weaver#868](https://github.com/crim-ca/weaver/pull/868),
+  [crim-ca/weaver#869](https://github.com/crim-ca/weaver/pull/869) and
+  [crim-ca/weaver#877](https://github.com/crim-ca/weaver/pull/877)).
 
 - Cowbird: Security update using version [2.6.0](https://github.com/Ouranosinc/cowbird/releases/tag/2.6.0)
   (relates to [Ouranosinc/cowbird#98](https://github.com/Ouranosinc/cowbird/pull/98)).
