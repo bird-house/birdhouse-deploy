@@ -1,23 +1,16 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 services:
   jupyterhub:
     image: ${JUPYTERHUB_IMAGE}
     container_name: jupyterhub
     hostname: jupyterhub
     environment:
+      # Note: values with :- are allowed to be empty
       JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES: ${JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES}
       JUPYTERHUB_IMAGE_SELECTION_NAMES: ${JUPYTERHUB_IMAGE_SELECTION_NAMES}
       DOCKER_NETWORK_NAME: jupyterhub_network
       JUPYTERHUB_USER_DATA_DIR: ${JUPYTERHUB_USER_DATA_DIR}
       WORKSPACE_DIR: ${JUPYTERHUB_USER_DATA_DIR}
-      JUPYTERHUB_ADMIN_USERS: ${JUPYTERHUB_ADMIN_USERS}
+      JUPYTERHUB_ADMIN_USERS: ${JUPYTERHUB_ADMIN_USERS} # DEPRECATED: see default.env for details
       JUPYTER_DEMO_USER: ${JUPYTER_DEMO_USER}
       JUPYTER_DEMO_USER_MEM_LIMIT: ${JUPYTER_DEMO_USER_MEM_LIMIT}
       JUPYTER_DEMO_USER_CPU_LIMIT: ${JUPYTER_DEMO_USER_CPU_LIMIT}
@@ -28,7 +21,19 @@ services:
       USER_WORKSPACE_GID: ${USER_WORKSPACE_GID}
       JUPYTERHUB_CRYPT_KEY: ${JUPYTERHUB_CRYPT_KEY}
       JUPYTERHUB_DOCKER_EXTRA_HOSTS: ${JUPYTERHUB_DOCKER_EXTRA_HOSTS:-}
+      JUPYTERHUB_AUTHENTICATOR_AUTHORIZATION_URL: ${JUPYTERHUB_AUTHENTICATOR_AUTHORIZATION_URL:-}
+      JUPYTERHUB_AUTHENTICATOR_REFRESH_AGE: ${JUPYTERHUB_AUTHENTICATOR_REFRESH_AGE:-}
+      JUPYTERHUB_ADMIN_GROUP_NAME: ${JUPYTERHUB_ADMIN_GROUP_NAME}
+      BIRDHOUSE_FQDN_PUBLIC: ${BIRDHOUSE_FQDN_PUBLIC}
+      BIRDHOUSE_PROXY_SCHEME: ${BIRDHOUSE_PROXY_SCHEME}
+      JUPYTER_IDLE_SERVER_CULL_TIMEOUT: ${JUPYTER_IDLE_SERVER_CULL_TIMEOUT:-}
+      JUPYTER_IDLE_KERNEL_CULL_TIMEOUT: ${JUPYTER_IDLE_KERNEL_CULL_TIMEOUT:-}
+      JUPYTER_IDLE_KERNEL_CULL_INTERVAL: ${JUPYTER_IDLE_KERNEL_CULL_INTERVAL:-}
+      JUPYTERHUB_ALLOWED_IMAGES: ${JUPYTERHUB_ALLOWED_IMAGES:-}
+      JUPYTERHUB_RESOURCE_LIMITS: ${JUPYTERHUB_RESOURCE_LIMITS:-}
+      PYTHONPATH: /srv/jupyterhub/jupyterhub_custom
     volumes:
+      - ./components/jupyterhub/jupyterhub_custom:/srv/jupyterhub/jupyterhub_custom:ro
       - ./components/jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
       - ./components/jupyterhub/custom_templates:/custom_templates:ro
       - ${JUPYTERHUB_USER_DATA_DIR}:${JUPYTERHUB_USER_DATA_DIR}
@@ -44,7 +49,6 @@ services:
     # ensure the deployment does not fail when upgrading Jupyterhub version
     command: bash -c "jupyterhub upgrade-db && jupyterhub"
     restart: always
-    logging: *default-logging
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8000/jupyter"]
       interval: 60s

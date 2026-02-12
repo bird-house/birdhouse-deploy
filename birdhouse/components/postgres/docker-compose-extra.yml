@@ -1,14 +1,6 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 services:
   postgres:
-    image: postgres:9.6
+    image: ${POSTGRES_IMAGE}
     container_name: postgres
     # ports:  # should not be exposed directly, enable 'optional-components/database-external-ports' as needed
     volumes:
@@ -20,9 +12,8 @@ services:
     env_file:
       - ./components/postgres/credentials.env
     restart: always
-    logging: *default-logging
     healthcheck:
-      test: ["CMD", "pg_isready"]
+      test: ["CMD", "pg_isready", "-U", "$${POSTGRES_USER}", "-d", "$${POSTGRES_DB}"]
       interval: 60s
       timeout: 5s
       retries: 3

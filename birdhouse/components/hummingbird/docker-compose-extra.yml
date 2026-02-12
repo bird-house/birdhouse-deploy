@@ -1,11 +1,3 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 services:
   hummingbird:
     image: ${HUMMINGBIRD_IMAGE}
@@ -17,7 +9,6 @@ services:
     depends_on:
       - postgres
     restart: always
-    logging: *default-logging
     healthcheck:
       test:
         [

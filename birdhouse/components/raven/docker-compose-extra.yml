@@ -1,11 +1,3 @@
-
-x-logging:
-  &default-logging
-  driver: "json-file"
-  options:
-    max-size: "50m"
-    max-file: "10"
-
 services:
   raven:
     image: ${RAVEN_IMAGE}
@@ -17,13 +9,12 @@ services:
       - ./components/raven/wps.cfg:/wps.cfg
       - /tmp
     restart: always
-    logging: *default-logging
     healthcheck:
       test:
         [
           "CMD",
-          "curl",
-          "--fail",
+          "wget",
+          "-qO-",
           "http://localhost:9099/wps?service=WPS&request=GetCapabilities",
         ]
       interval: 60s

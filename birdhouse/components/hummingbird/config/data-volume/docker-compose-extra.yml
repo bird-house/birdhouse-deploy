@@ -1,4 +1,3 @@
-
 services:
   hummingbird:
     volumes:
