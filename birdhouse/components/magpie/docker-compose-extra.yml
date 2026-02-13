@@ -24,6 +24,7 @@ services:
       - ./components/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/providers.cfg
       - ./components/magpie/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/permissions.cfg
       - ./components/magpie/magpie.ini:/opt/local/src/magpie/config/magpie.ini
+      - ${MAGPIE_NETWORK_PEM_DIR}:/magpie-pem
     restart: always
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://0.0.0.0:2001"]

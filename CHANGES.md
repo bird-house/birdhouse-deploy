@@ -15,7 +15,26 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Update `magpie` to version 5.0.0
+
+  This update to Magpie introduces 
+  [network mode](https://pavics-magpie.readthedocs.io/en/latest/authentication.html#network-mode).
+
+  This is disabled by default to ensure backwards compatibility but can be enabled by setting
+  `MAGPIE_NETWORK_ENABLED=true` in your local environment file.
+  Note that enabling network mode also requires setting `MAGPIE_NETWORK_INSTANCE_NAME` to a unique
+  name within the network.
+
+  Upgrading to this version does not require any database migration and is fully backwards compatible
+  with previous versions.
+
+  This change also introduces the ability to set 
+  [all configuration options](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#network-mode-settings) 
+  for Magpie's network mode as environment variables in the local environment file.
+  Note that all of these configuration options will be ignored if `MAGPIE_NETWORK_ENABLED` is `false`.
+
 
 [2.23.0](https://github.com/bird-house/birdhouse-deploy/tree/2.23.0) (2026-02-13)
 ------------------------------------------------------------------------------------------------------------------
