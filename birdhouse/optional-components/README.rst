@@ -730,3 +730,58 @@ that your custom component creates and read the `proxy` access logs at a file de
 
 For example, if `PROXY_LOG_FILE` is set to ``access_file.log`` (the default) and you mount the `proxy-logs` volume to the ``/logs``
 directory in your container, the `proxy` access logs can be read at ``/logs/access_file.log`` in your container.
+
+Nvidia multi process service
+----------------------------
+
+This creates a container running Nvidia's Multi Process Service (MPS_) which helps manage multi-user GPU access.
+It runs an alternative CUDA interface which manages resource allocation when multiple processes are running simultaneously
+on the same GPU.
+It also allows the node admin to set additional per-user limits through the ``JUPYTERHUB_RESOURCE_LIMITS`` variable
+which configures Jupyterlab containers:
+
+* ``"gpu_device_mem_limit"``: sets the ``CUDA_MPS_PINNED_DEVICE_MEM_LIMIT`` environment variable
+* ``"gpu_active_thread_percentage"``: sets the ``CUDA_MPS_ACTIVE_THREAD_PERCENTAGE`` environment variable
+
+For example, the following will give all users in the group named ``"users"`` access to three GPUs in their Jupyterlab
+container. On the first one (id = 0) only 1GB of memory is available, on the second (id = 1) only 5GB, and on the third 
+(id = 2) only 10GB. Additionally, the container will be able to use 10% of available threads on the GPUs.
+
+.. code::shell
+
+    export JUPYTERHUB_RESOURCE_LIMITS='
+    [{
+         "type": "group", 
+         "name": "users", 
+         "limits": {
+            "gpu_ids": ["0", "1", "2"], 
+            "gpu_count": 3, 
+            "gpu_device_mem_limit": "0=1G,1=5G,2=10G", 
+            "gpu_active_thread_percentage": "10"
+         }
+    }]
+    '
+
+Note that leaving any of these limits unset will default to allowing the user full access to the given resource.
+
+.. note::
+
+    The ``mps`` docker container currently applies the MPS server to all GPUs. If you want to only apply the MPS server
+    to a subset of the GPUs available on your machine, you will need to create an additional component with a 
+    ``docker-compose-extra.yml`` file that specifically overrides the container device settings for the ``mps`` container.
+
+    For example, the docker compose configuration below would set the MPS server to only apply to GPUs with ids `"0"` and `"1"`.
+
+.. code-block:: yaml
+
+    services:
+      mps:
+        deploy:
+          resources:
+            reservations:
+              devices: !override
+                - capabilities: [gpu]
+                  driver: nvidia
+                  device_ids: ["0", "1"]
+
+.. _MPS: https://docs.nvidia.com/deploy/mps/index.html
