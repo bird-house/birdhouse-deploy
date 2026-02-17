@@ -228,7 +228,7 @@ print_config_command() {
 }
 
 print_log_command() {
-  echo ". ${COMPOSE_DIR}/scripts/logging.include.sh"
+  echo "export __BIRDHOUSE_SUPPORTED_INTERFACE=True ; . ${COMPOSE_DIR}/scripts/logging.include.sh"
 }
 
 # Support multiple short flags together (ex: -abc instead of -a -b -c)

@@ -17,6 +17,58 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.23.1](https://github.com/bird-house/birdhouse-deploy/tree/2.23.1) (2026-02-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC API: Security update, minor OpenAPI version reporting fixes, and `stac-fastapi`/`starlette` compatibility fix
+  using version [2.3.0](https://github.com/crim-ca/stac-app/releases/tag/2.3.0)
+  (relates to [crim-ca/stac-app#65](https://github.com/crim-ca/stac-app/pull/65),
+  [crim-ca/stac-app#69](https://github.com/crim-ca/stac-app/pull/69) and
+  [crim-ca/stac-app#74](https://github.com/crim-ca/stac-app/pull/74)).
+
+- Cowbird: Security update using version [2.6.0](https://github.com/Ouranosinc/cowbird/releases/tag/2.6.0)
+  (relates to [Ouranosinc/cowbird#98](https://github.com/Ouranosinc/cowbird/pull/98)).
+
+- Magpie: Security update using version [4.3.1](https://github.com/Ouranosinc/Magpie/releases/tag/4.3.1)
+  (relates to [Ouranosinc/Magpie#640](https://github.com/Ouranosinc/Magpie/pull/640)
+  and [Ouranosinc/Magpie#642](https://github.com/Ouranosinc/Magpie/pull/642)).
+
+- Twitcher: Security update using version [0.11.0](https://github.com/bird-house/twitcher/releases/tag/v0.11.0)
+  (relates to [bird-house/twitcher#143](https://github.com/bird-house/twitcher/pull/143),
+  [bird-house/twitcher#145](https://github.com/bird-house/twitcher/pull/145),
+  [bird-house/twitcher#146](https://github.com/bird-house/twitcher/pull/146) and
+  [bird-house/twitcher#148](https://github.com/bird-house/twitcher/pull/148)).
+
+- Weaver: Security and dependency fix update using version [6.8.3](https://github.com/crim-ca/weaver/releases/tag/6.8.3)
+  (relates to [crim-ca/weaver#868](https://github.com/crim-ca/weaver/pull/868),
+  [crim-ca/weaver#869](https://github.com/crim-ca/weaver/pull/869),
+  [crim-ca/weaver#877](https://github.com/crim-ca/weaver/pull/877) and
+  [crim-ca/weaver#881](https://github.com/crim-ca/weaver/pull/881)).
+
+- Weaver: Update `post-docker-compose-up` script.
+  - Handle multiple Magpie cookies in response.
+    This can happen depending on specific internal HTTP libraries versions of the services.
+    To retain backward/forward compatibility, all cookies returned from Magpie are chained in following `curl` commands.
+  - Use birdhouse `log` utility to report operations produced by the script rather than custom "echo level".
+
+- Weaver: Job Result Proxy Buffers
+  - The *Job Results* responses of `weaver` can return a lot of `Link` headers. This is done to provide job metadata
+    references and provenance traceability details, but also for actual results locations that can vary in quantity
+    depending on the actual process execution.
+    Therefore, the Ngnix `proxy_buffer_size` and `proxy_buffers` directives of the `proxy` service must be added with
+    sufficiently large values to avoid HTTP 502 errors when the response headers exceed the default buffer sizes.
+    The `WEAVER_PROXY_RESPONSE_BUFFER_SIZE` and `WEAVER_PROXY_RESPONSE_BUFFER_COUNT` variables are added to allow
+    further customization as needed by the server. Their defaults are reasonable values to meet minimal requirements
+    by `weaver`'s metadata `Link` and a few result outputs.
+
+- Birdhouse: Allow `log <LEVEL> -n ...` and `log <LEVEL> -p ...` to generate log outputs without newline/prefixes.
+  
+  These options allow writing multiple log entries onto the same line for correct visual rendering of distinct `log`
+  calls separated to allow some intermediate logic. The `log` function invocations with these options respect the
+  log levels in order to make the messages consistent with enabled redirections and verbosity.
+
 [2.23.0](https://github.com/bird-house/birdhouse-deploy/tree/2.23.0) (2026-02-13)
 ------------------------------------------------------------------------------------------------------------------
 
