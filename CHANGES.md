@@ -64,6 +64,24 @@
   calls separated to allow some intermediate logic. The `log` function invocations with these options respect the
   log levels in order to make the messages consistent with enabled redirections and verbosity.
 
+[2.23.0](https://github.com/bird-house/birdhouse-deploy/tree/2.23.0) (2026-02-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- DGGS: Update API metadata and version from `v0.1.6-rc7` to `v0.1.6-rc12`.
+
+  - Set default version to [`ghcr.io/crim-ca/pydggsapi:v0.1.6-rc12`](https://github.com/crim-ca/pydggsapi/pkgs/container/pydggsapi/682138353?tag=v0.1.6-rc12).
+    This includes multiple DGGS-API features such as supporting alternate response media-types (Zarr, UBJSON, binary, etc.),
+    adds optimizations like GZIP compression when requested, reduces the Docker image size (~1GB smaller),
+    improves the OpenAPI definitions, the collection metadata for better discovery of queryables and grid dimensions,
+    as well as various bug fixes.
+
+    Full changes: https://github.com/crim-ca/pydggsapi/compare/crim-ca:pydggsapi:v0.1.6-rc7...crim-ca:pydggsapi:v0.1.6-rc12 
+
+  - Fix `SERVICE_META_URL` value not reporting a resolvable `/services/dggs` location.
+  - Fix the missing volume mount for `/services/dggs` definition.
+
 [2.22.1](https://github.com/bird-house/birdhouse-deploy/tree/2.22.1) (2026-02-09)
 ------------------------------------------------------------------------------------------------------------------
 
