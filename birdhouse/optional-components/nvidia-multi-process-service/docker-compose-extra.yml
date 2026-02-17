@@ -1,0 +1,24 @@
+services:
+  mps:
+    image: ${NVIDIA_MULTIPROCESS_SERVICE_IMAGE}
+    container_name: mps
+    restart: always
+    ipc: shareable
+    volumes:      
+      - nvidia_mps:/tmp/nvidia-mps
+    init: true
+    command: ["nvidia-cuda-mps-control", "-f"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+volumes:
+  nvidia_mps:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs

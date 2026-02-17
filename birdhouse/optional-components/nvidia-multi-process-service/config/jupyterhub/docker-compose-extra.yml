@@ -1,0 +1,4 @@
+services:
+  jupyterhub:
+    environment:
+      - NVIDIA_MPS_PROFILE_SCRIPT=${COMPOSE_DIR}/optional-components/nvidia-multi-process-service/02-readonly-cuda-vars.sh
