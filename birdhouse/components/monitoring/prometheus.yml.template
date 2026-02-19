@@ -29,6 +29,7 @@ rule_files:
 alerting:
   alertmanagers:
   - scheme: http
+    path_prefix: /alertmanager
     static_configs:
     - targets:
       - alertmanager:9093

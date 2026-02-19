@@ -5,6 +5,12 @@ import subprocess
 import pytest
 
 LOG_LEVELS = ("DEBUG", "INFO", "WARN", "ERROR")
+LOG_PREFIX = {
+    "DEBUG": "DEBUG",
+    "INFO": "INFO",
+    "WARN": "WARNING",
+    "ERROR": "ERROR",
+}
 
 
 @pytest.fixture
@@ -243,3 +249,37 @@ def test_write_multiline_keep_spacing(run):
     """
     proc = run("log INFO 'test\n  test2'")
     assert proc.stderr.strip().endswith("test\n            test2")  # second line is indented 12 (10+2) spaces
+
+
+@pytest.mark.parametrize("level", LOG_LEVELS)
+def test_log_multiple_on_line(run, tmp_path, level):
+    """
+    Test that omitting newlines/prefix for line continuations are handled correctly.
+    """
+    log_file = tmp_path / "test.log"
+    env = {"BIRDHOUSE_LOG_FILE": str(log_file), "BIRDHOUSE_COLOR": "0"}
+    cmd = f"log {level} -n 'test'; log {level} -n -p ' line '; log {level} -p 'end'"
+    proc = run(cmd, log_level=level, env=env)
+    std_line = proc.stderr.strip()
+    log_line = log_file.read_text().strip()
+    prefix = LOG_PREFIX[level]
+    assert re.match(rf"{prefix}:\s* test line end", std_line)
+    assert re.match(rf"{prefix}:\s* test line end", log_line)
+
+
+def test_log_empty_string(run):
+    """
+    Test that logging empty strings is supported
+    """
+    proc = run("log INFO ''")
+    assert proc.returncode == 0
+    assert "INFO" in proc.stderr # not CRITICAL   
+
+
+@pytest.mark.parametrize("flag", ("-n", ""))
+def test_log_multi_empty_line(run, flag):
+    """
+    Test that logging multiple empty lines is supported
+    """
+    proc = run(f"log INFO {flag} '\n\n\n'")
+    assert proc.stderr.count("\n") == (3 if flag else 4)

@@ -16,7 +16,7 @@ services:
       #    particular proxy setup with dual dggs/tiles endpoint rewrites led to inconsistent URIs between the API's 
       #    resource access paths and the ones it advertises in generated JSON contents.
       #ROOT_PATH: "${DGGS_API_PATH}"
-      SERVICE_META_URL: "${BIRDHOUSE_FQDN_PUBLIC}/services/${DGGS_API_PATH}"
+      SERVICE_META_URL: "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/services/dggs"
       DOCS_URL: ${DGGS_API_PATH}${DGGS_DOCS_PATH_INTERNAL}
       OPENAPI_URL: ${DGGS_API_PATH}/api
       TILES_PREFIX: "${DGGS_TILES_PATH}"

@@ -33,10 +33,11 @@ export LOG_ERROR="${RED}ERROR${NORMAL}:    "
 export LOG_CRITICAL="${REG_BG_BOLD}CRITICAL${NORMAL}: "  # to report misuse of functions
 
 
-# Determines where to send log messages:
+# Determines where and how to send log messages:
 # - to the file descriptor set by BIRDHOUSE_LOG_FD, or if there is a "fd" option in BIRDHOUSE_LOG_DEST_OVERRIDE for the given log level
 # - to the file set by BIRDHOUSE_LOG_FILE, or if there is a "file" option in BIRDHOUSE_LOG_DEST_OVERRIDE for the given log level
 # - suppresses writing to a file descriptor if BIRDHOUSE_LOG_QUIET is "True" or if there is a "quiet" option in BIRDHOUSE_LOG_DEST_OVERRIDE for the given log level
+# - an optional '-n' before the message(s) prevents a newline from being appended to the log message (see the 'log' function for details)
 #
 # The BIRDHOUSE_LOG_DEST_OVERRIDE contains a ':' delimited string that determines how to override the log destination for specific log levels.
 # BIRDHOUSE_LOG_DEST_OVERRIDE sections contain '<log-level>:<option>:<argument>', this can be repeated multiple times to allow for different settings for different
@@ -58,48 +59,45 @@ export LOG_CRITICAL="${REG_BG_BOLD}CRITICAL${NORMAL}: "  # to report misuse of f
 #    - all log levels will be written to stderr (the default) except for ERROR which will be suppressed and WARN which will be written to stdout
 log_dest() {
     level=$1
+    end_line="\n"
+    if [ "$2" = "-n" ]; then
+      end_line=""
+      shift || true
+    fi
     option=$2
-    log_line=
-    while IFS= read -r line; do
-        if [ -z "${log_line}" ]; then
-            log_line="$line"
-        else
-            # pad the next line by 10 space characters so that it aligns with the first line in the message.
-            log_line="${log_line}\n          ${line}"
-        fi
-    done
-    if [ -n "${log_line}" ]; then
-        log_quiet="${BIRDHOUSE_LOG_QUIET}"
-        log_fd="${BIRDHOUSE_LOG_FD}"
-        log_file="${BIRDHOUSE_LOG_FILE}"
-        if [ "${option}" != "NO_OVERRIDE" ]; then
-            override_string="${BIRDHOUSE_LOG_DEST_OVERRIDE}"
+    # pad every line with 10 spaces (except for the first) to align with the first line in the message
+    # sed is used for brevity and because it will pad the last line in a log message even if it doesn't end with a newline.
+    log_line="$(sed '2,$s/^/          /')"
+    log_quiet="${BIRDHOUSE_LOG_QUIET}"
+    log_fd="${BIRDHOUSE_LOG_FD}"
+    log_file="${BIRDHOUSE_LOG_FILE}"
+    if [ "${option}" != "NO_OVERRIDE" ]; then
+        override_string="${BIRDHOUSE_LOG_DEST_OVERRIDE}"
+        override_section="${override_string#*"${level}:"}"
+        while [ "${override_string}" != "${override_section}" ]; do
+            override="$(echo "${override_section}" | cut -d: -f 1-2)"
+            case "${override}" in
+                quiet:*)
+                    log_quiet=True
+                ;;
+                fd:*)
+                    log_fd="$(echo "${override}" | cut -d: -f 2)"
+                ;;
+                file:*)
+                    log_file="$(echo "${override}" | cut -d: -f 2)"
+                ;;
+            esac
+            override_string="${override_string#*"${level}:${override}"}"
             override_section="${override_string#*"${level}:"}"
-            while [ "${override_string}" != "${override_section}" ]; do
-                override="$(echo "${override_section}" | cut -d: -f 1-2)"
-                case "${override}" in
-                    quiet:*)
-                        log_quiet=True
-                    ;;
-                    fd:*)
-                        log_fd="$(echo "${override}" | cut -d: -f 2)"
-                    ;;
-                    file:*)
-                        log_file="$(echo "${override}" | cut -d: -f 2)"
-                    ;;
-                esac
-                override_string="${override_string#*"${level}:${override}"}"
-                override_section="${override_string#*"${level}:"}"
-            done
-        fi
-        if [ "${log_quiet}" = "True" ]; then
-            printf "${log_line}\n" >> "${log_file:-/dev/null}"
+        done
+    fi
+    if [ "${log_quiet}" = "True" ]; then
+        printf "${log_line}${end_line}" >> "${log_file:-/dev/null}"
+    else
+        if [ -n "${log_file}" ]; then
+            printf "${log_line}${end_line}" | tee -a "${log_file}" 1>&"${log_fd}"
         else
-            if [ -n "${log_file}" ]; then
-                printf "${log_line}\n" | tee -a "${log_file}" 1>&"${log_fd}"
-            else
-                printf "${log_line}\n" 1>&"${log_fd}"
-            fi
+            printf "${log_line}${end_line}" 1>&"${log_fd}"
         fi
     fi
 }
@@ -126,40 +124,72 @@ if [ -z "${BIRDHOUSE_LOG_FD##*[!0-9]*}" ]; then
     exit 2
 fi
 
-# Usage: log {LEVEL} "{message}" [...]
+# Usage: log {LEVEL} [-n] [-p] "{message}" [...]
 # Any amount of messages can be passed to the function.
+# If provided, the '-n' option prevents a newline from being appended to the log message.
+# If provided, the '-p' option prevents the log prefix from being added to the message.
+# The 'log <LEVEL> -p ...' combination is typically employed to provide a continued message from a
+# previous 'log <LEVEL> -n ...' call, ensuring consistent formatting and logging destination based on the level.
+# The '-n' and '-p' options can be combined to perform multiple log calls one after the other on the same line.
+# Note that consistent '<LEVEL>' values should be used when using '-n/-p' options to ensure proper logging behavior that
+# considers the log level and file/fd redirections. A 'log <LEVEL> -n ...' call should typically never be by itself.
 log() {
     level="$1"
     shift || true
+    log_opts=""
+    log_prefix=""
+    log_with_prefix=1
+    while [ "$1" = "-n" ] || [ "$1" = "-p" ]; do
+        if [ "$1" = "-n" ]; then
+            log_opts="-n"
+        fi
+        if [ "$1" = "-p" ]; then
+            log_with_prefix=0
+        fi
+        shift || true
+    done
+
     case "${BIRDHOUSE_LOG_LEVEL}" in
         DEBUG|INFO|WARN|ERROR)
-            if [ "$*" = "" ]; then
+            if [ "$#" -eq 0 ]; then
                 echo "${LOG_CRITICAL}Invalid: log message is missing." | log_dest CRITICAL
                 exit 2
             fi
             case "${BIRDHOUSE_LOG_LEVEL}-${level}" in
                 DEBUG-DEBUG)
-                    echo "${LOG_DEBUG}$*" | log_dest DEBUG
+                    if [ ${log_with_prefix} -eq 1 ]; then
+                        log_prefix="${LOG_DEBUG}"
+                    fi
+                    printf "${log_prefix}$*\n" | log_dest DEBUG ${log_opts}
                 ;;
                 DEBUG-INFO|INFO-INFO)
-                    echo "${LOG_INFO}$*" | log_dest INFO
+                    if [ ${log_with_prefix} -eq 1 ]; then
+                        log_prefix="${LOG_INFO}"
+                    fi
+                    printf "${log_prefix}$*\n" | log_dest INFO ${log_opts}
                 ;;
                 DEBUG-WARN|INFO-WARN|WARN-WARN)
-                    echo "${LOG_WARN}$*" | log_dest WARN
+                    if [ ${log_with_prefix} -eq 1 ]; then
+                        log_prefix="${LOG_WARN}"
+                    fi
+                    printf "${log_prefix}$*\n" | log_dest WARN ${log_opts}
                 ;;
                 *-ERROR)
-                    echo "${LOG_ERROR}$*" | log_dest ERROR
+                    if [ ${log_with_prefix} -eq 1 ]; then
+                        log_prefix="${LOG_ERROR}"
+                    fi
+                    printf "${log_prefix}$*\n" | log_dest ERROR ${log_opts}
                 ;;
                 *-DEBUG|*-INFO|*-WARN)
                 ;;
                 *)
-                    echo "${LOG_CRITICAL}Invalid log level: [${level}]" | log_dest CRITICAL
+                    echo "${LOG_CRITICAL}Invalid log level: [${level}]" | log_dest CRITICAL ${log_opts}
                     exit 2
                 ;;
             esac
         ;;
         *)
-            echo "${LOG_CRITICAL}Invalid log level setting: [BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL}]." | log_dest CRITICAL
+            echo "${LOG_CRITICAL}Invalid log level setting: [BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL}]." | log_dest CRITICAL ${log_opts}
             exit 2
         ;;
     esac
