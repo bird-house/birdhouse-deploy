@@ -21,6 +21,8 @@
 
   Only when back-compat mode is used.  Regression since `2.4.0`.
 
+  Missing mapping `PROXY_ROOT_LOCATION=BIRDHOUSE_PROXY_ROOT_LOCATION`.
+
 
 [2.23.1](https://github.com/bird-house/birdhouse-deploy/tree/2.23.1) (2026-02-17)
 ------------------------------------------------------------------------------------------------------------------
