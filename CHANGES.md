@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.23.2](https://github.com/bird-house/birdhouse-deploy/tree/2.23.2) (2026-02-20)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Unable to set custom homepage due to a missing back-compat config var mapping
