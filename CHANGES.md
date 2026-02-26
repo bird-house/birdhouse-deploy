@@ -15,7 +15,21 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- generic_bird: wrong DB credential provided
+
+  Missing template explansion (since `2.4.0`) and wrong credential file (since the beginning!).
+
+  `docker logs generic_bird` had this error:
+  ```
+  sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "postgres_generic_bird" (172.23.0.20),
+  port 5432 failed: FATAL:  database "generic_bird" does not exist
+  ```
+
+  When upgrading from a working existing generic_bird, it is fine but when
+  spinning up a brand new instance, it does not work.
+
 
 [2.23.2](https://github.com/bird-house/birdhouse-deploy/tree/2.23.2) (2026-02-20)
 ------------------------------------------------------------------------------------------------------------------
