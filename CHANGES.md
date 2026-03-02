@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- CanarieAPI: update to version [`1.1.0`](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.1.0).
+
+  - Reduces the Docker image size by >50%.
+  - Rebuild the Docker image for security fixes.
 
 [2.23.3](https://github.com/bird-house/birdhouse-deploy/tree/2.23.3) (2026-02-26)
 ------------------------------------------------------------------------------------------------------------------
