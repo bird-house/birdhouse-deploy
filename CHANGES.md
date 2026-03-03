@@ -17,7 +17,7 @@
 
 ## Changes
 
-- Update `magpie` to version 5.0.0
+- Update `magpie` to version 5.0.1
 
   This update to Magpie introduces 
   [network mode](https://pavics-magpie.readthedocs.io/en/latest/authentication.html#network-mode).
