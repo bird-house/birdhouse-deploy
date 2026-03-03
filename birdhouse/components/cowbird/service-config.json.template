@@ -29,7 +29,19 @@
     {
       "rel": "service-meta",
       "type": "application/vnd.oci.image.index.v1+json",
-      "href": "${COWBIRD_IMAGE_URI}"
+      "href": "${COWBIRD_IMAGE_URI}",
+      "title": "Docker Image"
+    },
+    {
+      "rel": "swagger",
+      "type": "text/html",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/cowbird/api"
+    },
+    {
+      "rel": "openapi",
+      "type": "application/swagger+json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/cowbird/json",
+      "title": "OpenAPI Definition"
     },
     {
       "rel": "about",

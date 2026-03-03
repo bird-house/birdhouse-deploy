@@ -1,0 +1,47 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "type": {
+        "type": "string",
+        "enum": [
+          "user",
+          "group"
+        ]
+      },
+      "name": {
+        "type": "string",
+        "pattern": "^.+$"
+      },
+      "limits": {
+        "type": "object",
+        "properties": {
+          "mem_limit": {
+            "type": "string"
+          },
+          "cpu_limit": {
+            "type": "number"
+          },
+          "gpu_ids": {
+            "type": "array"
+          },
+          "gpu_count": {
+            "type": "number"
+          }
+        },
+        "dependentRequired": {
+          "gpu_count": [
+            "gpu_ids"
+          ]
+        },
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "type",
+      "name",
+      "limits"
+    ]
+  }
+}

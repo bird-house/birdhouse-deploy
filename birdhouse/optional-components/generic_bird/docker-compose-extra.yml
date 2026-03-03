@@ -20,7 +20,7 @@ services:
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
     env_file:
-      - ./components/postgres/credentials.env
+      - ./optional-components/generic_bird/postgres/credentials.env
     restart: always
 
 volumes:

@@ -15,6 +15,10 @@ services:
       - ROUTER_PREFIX=/stac
       - OPENAPI_URL=/stac${STAC_OPENAPI_SPEC_PATH}
       - DOCS_URL=/stac${STAC_OPENAPI_DOCS_PATH}
+      - STAC_FASTAPI_TITLE=${STAC_FASTAPI_TITLE}
+      - STAC_FASTAPI_VERSION=${STAC_FASTAPI_VERSION}
+      - STAC_FASTAPI_DESCRIPTION=${STAC_FASTAPI_DESCRIPTION}
+      - STAC_FASTAPI_LANDING_ID=${STAC_FASTAPI_LANDING_ID}
     restart: always
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/stac')"]

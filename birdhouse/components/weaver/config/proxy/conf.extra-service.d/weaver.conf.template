@@ -33,6 +33,11 @@
         proxy_set_header X-Forwarded-Proto $real_scheme;
         proxy_set_header X-Forwarded-Host $http_host:$server_port;
         proxy_buffering off;
+        # allow larger buffer size for endpoints that return more metadata in headers
+        # even if (body) buffering is disabled above, headers are still buffered by nginx since it must process them
+        # notably, job results can return varying amount of metadata and per-output link headers if requested this way
+        proxy_buffer_size ${WEAVER_PROXY_RESPONSE_BUFFER_SIZE};
+        proxy_buffers ${WEAVER_PROXY_RESPONSE_BUFFER_COUNT} ${WEAVER_PROXY_RESPONSE_BUFFER_SIZE};
     }
 
     # NOTE:

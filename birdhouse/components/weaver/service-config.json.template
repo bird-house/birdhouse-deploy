@@ -27,6 +27,18 @@
       "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/?f=json"
     },
     {
+      "rel": "swagger",
+      "type": "text/html",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/api",
+      "title": "Swagger UI"
+    },
+    {
+      "rel": "openapi",
+      "type": "application/vnd.oai.openapi+json; version=3.0",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/api?f=json",
+      "title": "OpenAPI Definition"
+    },
+    {
       "rel": "conformance",
       "type": "application/json",
       "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${WEAVER_MANAGER_NAME}/conformance/"
@@ -44,7 +56,8 @@
     {
       "rel": "service-meta",
       "type": "application/vnd.oci.image.index.v1+json",
-      "href": "${WEAVER_IMAGE_URI}"
+      "href": "${WEAVER_IMAGE_URI}",
+      "title": "Docker Image"
     },
     {
       "rel": "license",

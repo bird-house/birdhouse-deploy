@@ -1,4 +1,7 @@
 services:
   proxy:
     volumes:
+      # note: purposely map to an additional '/canarie' location to match the proxy service location for convenience
+      - ./components/canarie-api/service-config.json:/static/services/canarie.json:ro
+      - ./components/canarie-api/service-config.json:/static/services/canarie-api.json:ro
       - ./components/canarie-api/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/canarie-api:ro

@@ -1,4 +1,5 @@
 services:
   magpie:
     volumes:
-    - ./components/jupyterhub/config/magpie/providers.cfg:${MAGPIE_PROVIDERS_CONFIG_PATH}/jupyter.cfg:ro
+    - ./components/jupyterhub/config/magpie/config.yml:${MAGPIE_PROVIDERS_CONFIG_PATH}/jupyter.yml:ro
+    - ./components/jupyterhub/config/magpie/config.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/jupyter.yml:ro

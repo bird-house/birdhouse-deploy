@@ -23,13 +23,25 @@
     },
     {
       "rel": "service-desc",
-      "type": "application/json",
+      "type": "application/swagger+json",
       "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/magpie/json"
     },
     {
       "rel": "service-meta",
       "type": "application/vnd.oci.image.index.v1+json",
-      "href": "${MAGPIE_IMAGE_URI}"
+      "href": "${MAGPIE_IMAGE_URI}",
+      "title": "Docker Image"
+    },
+    {
+      "rel": "swagger",
+      "type": "text/html",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/magpie/api"
+    },
+    {
+      "rel": "openapi",
+      "type": "application/swagger+json",
+      "href": "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/magpie/json",
+      "title": "OpenAPI Definition"
     },
     {
       "rel": "about",

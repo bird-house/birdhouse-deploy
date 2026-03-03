@@ -16,7 +16,7 @@ services:
     volumes:
       - ${COWBIRD_JUPYTER_ACCESS_DIR}/test_cowbird_jupyter.py:/test_cowbird_jupyter.py
       - ./optional-components/test-geoserver-secured-access/test-data:/geoserver-test-data:ro
-      - ${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}:/data
+      - ${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}:${BIRDHOUSE_DATA_PERSIST_SHARED_ROOT}
     command: python /test_cowbird_jupyter.py
     # root access required to create files in the user workspace and other WPS outputs files in the data dir
     user: root:root

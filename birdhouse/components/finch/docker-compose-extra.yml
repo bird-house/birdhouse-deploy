@@ -15,8 +15,8 @@ services:
       test:
         [
           "CMD",
-          "curl",
-          "--fail",
+          "wget",
+          "-qO-",
           "http://localhost:5000?service=WPS&request=GetCapabilities",
         ]
       interval: 60s

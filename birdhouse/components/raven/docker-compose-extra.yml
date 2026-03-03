@@ -13,8 +13,8 @@ services:
       test:
         [
           "CMD",
-          "curl",
-          "--fail",
+          "wget",
+          "-qO-",
           "http://localhost:9099/wps?service=WPS&request=GetCapabilities",
         ]
       interval: 60s
