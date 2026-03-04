@@ -104,4 +104,6 @@ if """${JUPYTERHUB_ADMIN_USERS}""":
 # Configuration overrides
 # ------------------------------------------------------------------------------
 
+${JUPYTERHUB_CONFIG_OVERRIDE_INTERNAL}  # noqa
+
 ${JUPYTERHUB_CONFIG_OVERRIDE}    # noqa
