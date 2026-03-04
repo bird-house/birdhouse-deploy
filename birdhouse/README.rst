@@ -109,6 +109,14 @@ See `env.local.example <env.local.example>`_ (:download:`download </birdhouse/en
 Most variables that can be set in the local environment file (``env.local`` by default) can also be specified as environment variables when running ``bin/birdhouse`` 
 commands. Environment variables will take precedence over those specified in the ``env.local`` file.
 
+In `env.local`, if you wish to immediately use any of the delayed eval variable value, you can use `eval_delayed_var DELAYED_VAR_NAME`
+to compute their value. If not, their real values are only available after `env.local` is read.  If that delayed eval variable depends
+on another variable that you override in `env.local`, then you should define the override before calling `eval_delayed_var`.  Ex:
+`JUPYTERHUB_USER_DATA_DIR` is a delayed eval var because it depends on the value of `BIRDHOUSE_DATA_PERSIST_ROOT` which can be
+overridden in `env.local`.  So if you need the value of `JUPYTERHUB_USER_DATA_DIR` immediately in `env.local`, you need to
+`eval_delayed_var JUPYTERHUB_USER_DATA_DIR` and if you need to override `BIRDHOUSE_DATA_PERSIST_ROOT`, then you need to override it
+before calling `eval_delayed_var JUPYTERHUB_USER_DATA_DIR`.
+
 If the file `env.local` is somewhere else, symlink it here, next to `docker-compose.yml <docker-compose.yml>`_ (:download:`download </birdhouse/docker-compose.yml>`) because many scripts assume this location.
 If autodeploy scheduler job is enabled, the folder containing the `env.local` file needs to be added to `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`.
 
