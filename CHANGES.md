@@ -15,7 +15,52 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Create S3 service
+
+  Introduces a new service that allows users to download data using an S3 interface. This S3 interface is read-only
+  for users and it's intended purpose is to serve data (like Thredds, Geoserver, or the secure data proxy).
+
+  Administrators can create buckets on S3 using the `make-s3-bucket.sh` script. This will create a bucket and 
+  create a Magpie resource for that bucket. By default, only admin users will be able to interact with a new bucket
+  but additional read permissions can be added to users and groups through Magpie.
+
+  For example, to create a bucket named "birdhouse":
+
+  ```sh
+  ./birdhouse/scripts/make-s3-bucket.sh birdhouse
+  ```
+
+  Administrators can interact with the S3 interface with admin permissions through the `s3-cli` service.
+  This uses the [AWS CLI](https://aws.amazon.com/cli/) tool and supports all subcommands.
+  
+  For example, to list all buckets:
+
+  ```sh
+  ./bin/birdhouse compose run --rm s3-cli s3 ls
+  ```
+
+  or to upload some files to the "birdhouse" bucket
+
+  ```sh
+  ./bin/birdhouse compose run --rm -v ./files-to-upload:/data:ro s3-cli s3 cp /data s3://birdhouse
+  ```
+
+  Administrators can also add files to the birdhouse bucket by adding them directly to the directory
+  specified by the `S3_DATA_STORE` config variable. For example, if `S3_DATA_STORE=/data/s3-data` and
+  I want to add the same files in the example above to the "birdhouse" bucket:
+
+  ```sh
+  cp -r ./files-to-upload /data/s3-data/birdhouse/
+  ```
+
+  Note that when setting permission in Magpie that write permissions are ignored and read permissions
+  only apply for buckets and individual files. For example, I can set read permissions on the "birdhouse"
+  bucket and a file in that bucket at "birdhouse/subdir/file.nc" and that will effect whether a user can
+  see the files in "birdhouse" and whether they can read that one file. 
+  However, if I set a read permission on "birdhouse/subdir/" this will have no effect on whether the user 
+  can or cannot read or browse files in the "subdir/" folder.
 
 [2.24.1](https://github.com/bird-house/birdhouse-deploy/tree/2.24.1) (2026-03-04)
 ------------------------------------------------------------------------------------------------------------------

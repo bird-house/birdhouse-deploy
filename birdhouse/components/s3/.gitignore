@@ -1,0 +1,3 @@
+config/magpie/config.yml
+config/proxy/conf.extra-service.d/s3.conf
+service-config.json

@@ -1,0 +1,20 @@
+providers:
+  s3:
+    # below URL is only used to fill in the required location in Magpie
+    # actual auth validation is performed with Twitcher 'verify' endpoint without accessing this proxied URL
+    url: http://proxy:80
+    title: s3
+    public: true
+    c4i: false
+    type: api
+    sync_type: api
+
+permissions:
+  - service: s3
+    permission: read
+    group: administrators
+    action: create
+  - service: s3
+    permission: write
+    group: administrators
+    action: create
