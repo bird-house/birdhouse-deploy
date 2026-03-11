@@ -14,7 +14,3 @@ permissions:
     permission: read
     group: administrators
     action: create
-  - service: s3
-    permission: write
-    group: administrators
-    action: create

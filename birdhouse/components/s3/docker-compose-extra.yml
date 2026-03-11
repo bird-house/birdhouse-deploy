@@ -21,7 +21,7 @@ services:
       start_interval: 5s
 
   s3-cli:
-    image: ${AWS_CLI_IMAGE}
+    image: ${S3_CLI_IMAGE}
     container_name: s3-cli
     # setting a profile ensures that this is not run by default with `birdhouse compose up`
     # instead, this is intended to be called later on with `birdhouse compose run s3-cli`

@@ -1122,14 +1122,64 @@ This will create a bucket and create a Magpie resource for that bucket. By defau
 only admin users will be able to interact with a new bucket but additional read 
 permissions can be added to users and groups through Magpie.
 
-For example, to create a bucket named "birdhouse":
+For example, to create a bucket named ``birdhouse``:
 
 .. code-block:: shell
 
   ./birdhouse/scripts/make-s3-bucket.sh birdhouse
 
+Users with permission to access the bucket can then list objects in the bucket or download objects
+with an S3 tool or SDK. 
+
+For example, to list all the object in the birdhouse bucket with the 
+`boto3 the AWS python SDK <https://aws.amazon.com/sdk-for-python/>`_:
+
+.. code-block:: python
+
+  import boto3
+  from botocore import UNSIGNED
+  from botocore.config import Config
+
+  client = boto3.client(
+    service_name="s3", 
+    endpoint_url="http://example.com/s3/", 
+    config=Config(signature_version=UNSIGNED)
+  )
+
+  client.list_objects(Bucket="birdhouse")
+
+The above code will work for resources that are available publicly (i.e. you do not need to log in to
+Magpie in order to access the resource). If the resource is protected by Magpie you can ensure that you're
+passing the relevant authentication information with the request by injecting the session cookies into the
+request headers.
+
+.. code-block:: python
+
+  import boto3
+  from botocore import UNSIGNED
+  from botocore.config import Config
+  from requests import Session
+
+  session = Session()
+  session.post(
+    "http://example.com/magpie/signin", 
+    json={"user_name": "myusername", "password": "secretpassword"}
+  )
+
+  def add_headers(**kwargs):
+    cookie = "; ".join([f"{k}={v}" for k, v in session.cookies.get_dict().items()])
+    kwargs["params"]["headers"]["Cookie"] = cookie
+
+  client = boto3.client(
+    service_name="s3", 
+    endpoint_url="http://example.com/s3/", 
+    config=Config(signature_version=UNSIGNED)
+  )
+  client.meta.events.register_first("before_sign.s3.*", add_headers)
+  client.list_objects(Bucket="birdhouse")
+
 Administrators can interact with the S3 interface with admin permissions through the 
-``s3-cli`` service. This uses the [AWS CLI](https://aws.amazon.com/cli/) tool and supports all subcommands.
+``s3-cli`` service. This uses the `AWS CLI <https://aws.amazon.com/cli/>`_ tool and supports all subcommands.
   
 For example, to list all buckets:
 
@@ -1137,31 +1187,34 @@ For example, to list all buckets:
 
   ./bin/birdhouse compose run --rm s3-cli s3 ls
 
-or to upload some files to the "birdhouse" bucket
+or to add some files to the ``birdhouse`` bucket
 
 .. code-block:: shell
 
-  ./bin/birdhouse compose run --rm -v ./files-to-upload:/data:ro s3-cli s3 cp /data s3://birdhouse
+  ./bin/birdhouse compose run --rm -v ./files-to-add:/data:ro s3-cli s3 cp /data s3://birdhouse
 
 Administrators can also add files to the birdhouse bucket by adding them directly to the directory
 specified by the ``S3_DATA_STORE`` config variable. For example, if ``S3_DATA_STORE=/data/s3-data`` 
-and we want to add the same files in the example above to the "birdhouse" bucket:
+and we want to add the same files in the example above to the ``birdhouse`` bucket:
 
 .. code-block:: shell
   
-  cp -r ./files-to-upload /data/s3-data/birdhouse/
+  cp -r ./files-to-add /data/s3-data/birdhouse/
 
 .. note::
 
   When setting permission in Magpie, write permissions are ignored and read permissions
   only apply for buckets and individual files. 
   
-  For example, I can set read permissions on the "birdhouse" bucket and a file in that bucket 
-  at "birdhouse/subdir/file.nc" and that will effect whether a user can see the files in "birdhouse" 
+  For example, an admin can set read permissions on the ``birdhouse`` bucket and a file in that bucket 
+  at ``birdhouse/subdir/file.nc`` and that will affect whether a user can see the files in ``birdhouse`` 
   and whether they can read that one file. 
   
-  However, if I set a read permission on "birdhouse/subdir/" this will have no effect on whether the user 
-  can or cannot read or browse files with the "subdir/" directory prefix.
+  However, if the admin sets a read permission on ``birdhouse/subdir/`` this will have no effect on whether 
+  the user can or cannot read or browse files with the ``subdir/`` directory prefix. This is because s3 
+  does not have a concept of nested directories within a bucket and ``subdir`` is treated as a file name 
+  prefix, not a directory. Because of this, the S3 API does not specify these prefixes in a way that Magpie
+  can interpret as a nested resource.
 
 How to Enable the Component
 ---------------------------
