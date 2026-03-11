@@ -1,0 +1,8 @@
+if ! command -v nvidia-smi >/dev/null; then
+    log ERROR "The optional-components/nvidia-multi-process-service component is enabled but no Nvidia GPUs or drivers can be detected on this system (no nvidia-smi command exists). Please ensure that GPUs are installed properly or disable this component."
+    expect_exit 1
+fi
+
+if [ "$(nvidia-smi --query-gpu=compute_mode --format=csv,noheader | grep -vc 'Exclusive_Process')" -ne 0 ]; then
+    log WARN "Nvidia GPUs with compute mode set to something other than EXCLUSIVE_PROCESS detected. We recommend you set the compute mode to EXCLUSIVE_PROCESS when enabling nvidia's Multi Process Service (MPS)."
+fi
