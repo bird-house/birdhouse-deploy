@@ -52,7 +52,7 @@
 
 - Update `CustomDockerSpawner` to make pre spawn hooks and resource limits more configurable
 
-  Introduce `pre_spawn_hooks` and `resource_limit_callbacks` attributes to the `CustomDockerSpawner` class which 
+  Introduce `builtin_pre_spawn_hooks` and `resource_limit_callbacks` attributes to the `CustomDockerSpawner` class which 
   can be used to further customize the `CustomDockerSpawner` from optional components. This gives us a way to 
   add additional functionality without having to directly modify existing functions which may be overwritten by the
   user when they configure the spawner in `JUPYTERHUB_CONFIG_OVERRIDE`.

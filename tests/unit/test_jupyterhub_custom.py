@@ -617,7 +617,7 @@ class TestCustomDockerSpawner:
             def test_custom_pre_spawn_hook(self, spawner, generate_spawner_inst):
                 mock = Mock()
                 spawner_inst = generate_spawner_inst(spawner)
-                spawner_inst.pre_spawn_hooks.append(mock)
+                spawner_inst.builtin_pre_spawn_hooks.append(mock)
                 spawner_inst.run_pre_spawn_hook()
                 assert mock.call_args == ((spawner_inst,),)
 

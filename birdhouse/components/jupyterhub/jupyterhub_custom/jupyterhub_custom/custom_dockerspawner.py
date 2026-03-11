@@ -238,7 +238,7 @@ class CustomDockerSpawner(DockerSpawner):
         ),
     )
 
-    pre_spawn_hooks = List(
+    builtin_pre_spawn_hooks = List(
         Callable(),
         config=True,
         help=(
@@ -248,8 +248,8 @@ class CustomDockerSpawner(DockerSpawner):
         ),
     )
 
-    @default("pre_spawn_hooks")
-    def _default_pre_spawn_hooks(self) -> list:
+    @default("builtin_pre_spawn_hooks")
+    def _default_builtin_pre_spawn_hooks(self) -> list:
         return [
             CustomDockerSpawner.__create_dir_hook,
             CustomDockerSpawner.__limit_resource_hook,
@@ -362,7 +362,7 @@ class CustomDockerSpawner(DockerSpawner):
 
     def run_pre_spawn_hook(self) -> None:
         """Run the builtin pre-spawn hooks as well as any set by pre_spawn_hook if defined."""
-        for hook in self.pre_spawn_hooks:
+        for hook in self.builtin_pre_spawn_hooks:
             hook(self)
         if self.pre_spawn_hook:
             self.pre_spawn_hook(self)
