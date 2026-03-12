@@ -2,6 +2,7 @@ import glob
 import json
 import os
 from string import Template
+import subprocess
 from typing import Any, Dict, List
 
 import dotenv
@@ -34,13 +35,22 @@ def component_service_configs(component_paths):
 
 
 @pytest.fixture(scope="module")
-def template_substitutions(component_paths):
+def template_substitutions(component_paths, root_dir, local_env_file):
     # type: (List[str]) -> Dict[str, Any]
-    templates = {}
-    for component in component_paths:
-        component_default = os.path.join(component, "default.env")
-        if os.path.isfile(component_default):
-            templates.update(dotenv.dotenv_values(component_default))
+    split_str = "##### this splits out the logs if any are written to stdout #####"
+    proc = subprocess.run(
+        f'. {os.path.join(root_dir, "birdhouse", "read-configs.include.sh")}; read_configs; echo "{split_str}"; env -0;', 
+        env={
+            "BIRDHOUSE_EXTRA_CONF_DIRS": " ".join([os.path.relpath(path, root_dir / "birdhouse") for path in component_paths]),
+            "BIRDHOUSE_LOCAL_ENV": local_env_file
+        },
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        universal_newlines=True,
+    )
+    proc_out = proc.stdout.split(split_str, 1)[-1]
+    templates = dict(line.split("=", 1) for line in proc_out.split("\x00") if "=" in line)
     templates.update(TEMPLATE_SUBSTITUTIONS)
     return templates
 

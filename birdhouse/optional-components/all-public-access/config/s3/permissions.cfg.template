@@ -1,0 +1,5 @@
+permissions:
+  - service: s3
+    permission: read
+    group: anonymous
+    action: create
