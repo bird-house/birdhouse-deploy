@@ -1131,8 +1131,8 @@ For example, to create a bucket named ``birdhouse``:
 Users with permission to access the bucket can then list objects in the bucket or download objects
 with an S3 tool or SDK. 
 
-For example, to list all the object in the birdhouse bucket with the 
-`boto3 the AWS python SDK <https://aws.amazon.com/sdk-for-python/>`_:
+For example, to list all the object in the birdhouse bucket with the
+`boto3 AWS python SDK <https://aws.amazon.com/sdk-for-python/>`_:
 
 .. code-block:: python
 
@@ -1158,16 +1158,15 @@ request headers.
   import boto3
   from botocore import UNSIGNED
   from botocore.config import Config
-  from requests import Session
+  import requests
 
-  session = Session()
-  session.post(
+  resp = requests.post(
     "http://example.com/magpie/signin", 
     json={"user_name": "myusername", "password": "secretpassword"}
   )
 
   def add_headers(**kwargs):
-    cookie = "; ".join([f"{k}={v}" for k, v in session.cookies.get_dict().items()])
+    cookie = "; ".join([f"{k}={v}" for k, v in resp.cookies.get_dict().items()])
     kwargs["params"]["headers"]["Cookie"] = cookie
 
   client = boto3.client(
@@ -1177,6 +1176,28 @@ request headers.
   )
   client.meta.events.register_first("before_sign.s3.*", add_headers)
   client.list_objects(Bucket="birdhouse")
+
+Here is another example using the `obstore <https://developmentseed.org/obstore>`_ library:
+
+.. code-block:: python
+
+  from obstore.store import S3Store
+  import requests
+
+  resp = requests.post(
+    "http://example.com/magpie/signin", 
+    json={"user_name": "myusername", "password": "secretpassword"}
+  )
+
+  cookie = "; ".join([f"{k}={v}" for k, v in resp.cookies.get_dict().items()])
+
+  store = S3Store(
+    bucket="birdhouse", 
+    skip_signature=True, 
+    endpoint="http://example.com/s3/", 
+    client_options={"default_headers": {"Cookie": cookie}, "allow_http": True})
+
+  store.list()
 
 Administrators can interact with the S3 interface with admin permissions through the 
 ``s3-cli`` service. This uses the `AWS CLI <https://aws.amazon.com/cli/>`_ tool and supports all subcommands.
@@ -1200,6 +1221,21 @@ and we want to add the same files in the example above to the ``birdhouse`` buck
 .. code-block:: shell
   
   cp -r ./files-to-add /data/s3-data/birdhouse/
+
+.. note::
+
+  The ``s3-cli`` service is recommended as the preferred way for admins to interact with the S3 service
+  for two main reasons:
+
+  1. The ``s3-cli`` service runs in a container with the admin credentials pre-populated. You could also use 
+     these credentials through ``aws-cli`` but you'd have to set them manually. The credentials are defined 
+     by the ``S3_ROOT_ACCESS_KEY`` and ``S3_ROOT_SECRET_KEY`` environment variables.
+
+  2. The ``s3-cli`` service runs on the same internal docker network as the S3 service so we can target 
+     its URL on the docker network directly and bypass ``Magpie``, giving the admin full control. 
+     In order to do the same thing with ``aws-cli`` an admin would have to also include the ``Magpie`` 
+     token/cookie with the ``aws-cli`` request and there's no good way of injecting arbitrary headers 
+     through the ``aws-cli`` interface.
 
 .. note::
 
