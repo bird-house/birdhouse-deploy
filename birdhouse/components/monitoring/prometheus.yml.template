@@ -4,6 +4,9 @@ global:
   scrape_interval:     60s
   evaluation_interval: 30s
   # scrape_timeout is set to the global default (10s).
+  # external labels are required to ensure that scraping this instance's federate endpoint works as intended
+  external_labels:
+    instance: prometheus
 
 scrape_configs:
 - job_name: cadvisor
