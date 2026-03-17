@@ -1,0 +1,5 @@
+services:
+  proxy:
+    volumes:
+      - ./components/s3/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/s3:ro
+      - ./components/s3/service-config.json:/static/services/s3.json:ro

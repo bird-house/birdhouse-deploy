@@ -1105,3 +1105,155 @@ precedence for logging options are as follows:
 3. logging options specified by ``BIRDHOUSE_DOCKER_LOGGING_DEFAULT`` environment variable
 
 .. _docker compose logging configuration: https://docs.docker.com/reference/compose-file/services/#logging
+
+S3
+==
+
+An S3 interface for serving data.
+
+Usage
+-----
+
+This S3 interface is read-only for users and it's intended purpose is to serve data 
+(like Thredds, Geoserver, or the secure data proxy).
+
+Administrators can create buckets on S3 using the ``make-s3-bucket.sh`` script. 
+This will create a bucket and create a Magpie resource for that bucket. By default, 
+only admin users will be able to interact with a new bucket but additional read 
+permissions can be added to users and groups through Magpie.
+
+For example, to create a bucket named ``birdhouse``:
+
+.. code-block:: shell
+
+  ./birdhouse/scripts/make-s3-bucket.sh birdhouse
+
+Users with permission to access the bucket can then list objects in the bucket or download objects
+with an S3 tool or SDK. 
+
+For example, to list all the object in the birdhouse bucket with the
+`boto3 AWS python SDK <https://aws.amazon.com/sdk-for-python/>`_:
+
+.. code-block:: python
+
+  import boto3
+  from botocore import UNSIGNED
+  from botocore.config import Config
+
+  client = boto3.client(
+    service_name="s3", 
+    endpoint_url="http://example.com/s3/", 
+    config=Config(signature_version=UNSIGNED)
+  )
+
+  client.list_objects(Bucket="birdhouse")
+
+The above code will work for resources that are available publicly (i.e. you do not need to log in to
+Magpie in order to access the resource). If the resource is protected by Magpie you can ensure that you're
+passing the relevant authentication information with the request by injecting the session cookies into the
+request headers.
+
+.. code-block:: python
+
+  import boto3
+  from botocore import UNSIGNED
+  from botocore.config import Config
+  import requests
+
+  resp = requests.post(
+    "http://example.com/magpie/signin", 
+    json={"user_name": "myusername", "password": "secretpassword"}
+  )
+
+  def add_headers(**kwargs):
+    cookie = "; ".join([f"{k}={v}" for k, v in resp.cookies.get_dict().items()])
+    kwargs["params"]["headers"]["Cookie"] = cookie
+
+  client = boto3.client(
+    service_name="s3", 
+    endpoint_url="http://example.com/s3/", 
+    config=Config(signature_version=UNSIGNED)
+  )
+  client.meta.events.register_first("before_sign.s3.*", add_headers)
+  client.list_objects(Bucket="birdhouse")
+
+Here is another example using the `obstore <https://developmentseed.org/obstore>`_ library:
+
+.. code-block:: python
+
+  from obstore.store import S3Store
+  import requests
+
+  resp = requests.post(
+    "http://example.com/magpie/signin", 
+    json={"user_name": "myusername", "password": "secretpassword"}
+  )
+
+  cookie = "; ".join([f"{k}={v}" for k, v in resp.cookies.get_dict().items()])
+
+  store = S3Store(
+    bucket="birdhouse", 
+    skip_signature=True, 
+    endpoint="http://example.com/s3/", 
+    client_options={"default_headers": {"Cookie": cookie}, "allow_http": True})
+
+  store.list()
+
+Administrators can interact with the S3 interface with admin permissions through the 
+``s3-cli`` service. This uses the `AWS CLI <https://aws.amazon.com/cli/>`_ tool and supports all subcommands.
+  
+For example, to list all buckets:
+
+.. code-block:: shell
+
+  ./bin/birdhouse compose run --rm s3-cli s3 ls
+
+or to add some files to the ``birdhouse`` bucket
+
+.. code-block:: shell
+
+  ./bin/birdhouse compose run --rm -v ./files-to-add:/data:ro s3-cli s3 cp /data s3://birdhouse
+
+Administrators can also add files to the birdhouse bucket by adding them directly to the directory
+specified by the ``S3_DATA_STORE`` config variable. For example, if ``S3_DATA_STORE=/data/s3-data`` 
+and we want to add the same files in the example above to the ``birdhouse`` bucket:
+
+.. code-block:: shell
+  
+  cp -r ./files-to-add /data/s3-data/birdhouse/
+
+.. note::
+
+  The ``s3-cli`` service is recommended as the preferred way for admins to interact with the S3 service
+  for two main reasons:
+
+  1. The ``s3-cli`` service runs in a container with the admin credentials pre-populated. You could also use 
+     these credentials through ``aws-cli`` but you'd have to set them manually. The credentials are defined 
+     by the ``S3_ROOT_ACCESS_KEY`` and ``S3_ROOT_SECRET_KEY`` environment variables.
+
+  2. The ``s3-cli`` service runs on the same internal docker network as the S3 service so we can target 
+     its URL on the docker network directly and bypass ``Magpie``, giving the admin full control. 
+     In order to do the same thing with ``aws-cli`` an admin would have to also include the ``Magpie`` 
+     token/cookie with the ``aws-cli`` request and there's no good way of injecting arbitrary headers 
+     through the ``aws-cli`` interface.
+
+.. note::
+
+  When setting permission in Magpie, write permissions are ignored and read permissions
+  only apply for buckets and individual files. 
+  
+  For example, an admin can set read permissions on the ``birdhouse`` bucket and a file in that bucket 
+  at ``birdhouse/subdir/file.nc`` and that will affect whether a user can see the files in ``birdhouse`` 
+  and whether they can read that one file. 
+  
+  However, if the admin sets a read permission on ``birdhouse/subdir/`` this will have no effect on whether 
+  the user can or cannot read or browse files with the ``subdir/`` directory prefix. This is because s3 
+  does not have a concept of nested directories within a bucket and ``subdir`` is treated as a file name 
+  prefix, not a directory. Because of this, the S3 API does not specify these prefixes in a way that Magpie
+  can interpret as a nested resource.
+
+How to Enable the Component
+---------------------------
+
+- Edit ``env.local`` (a copy of `env.local.example`_)
+- Add ``./components/s3`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.

@@ -1,0 +1,4 @@
+services:
+  magpie:
+    volumes:
+      - ./optional-components/all-public-access/config/s3/permissions.cfg:${MAGPIE_PERMISSIONS_CONFIG_PATH}/all-public-access-s3-permissions.cfg:ro

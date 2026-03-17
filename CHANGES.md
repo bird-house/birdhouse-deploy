@@ -17,6 +17,126 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.25.0](https://github.com/bird-house/birdhouse-deploy/tree/2.25.0) (2026-03-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Create S3 service
+
+  Introduces a new service that allows users to download data using an S3 interface. This S3 interface is read-only
+  for users and it's intended purpose is to serve data (like Thredds, Geoserver, or the secure data proxy).
+
+  Administrators can create buckets on S3 using the `make-s3-bucket.sh` script. This will create a bucket and 
+  create a Magpie resource for that bucket. By default, only admin users will be able to interact with a new bucket
+  but additional read permissions can be added to users and groups through Magpie.
+
+  For example, to create a bucket named "birdhouse":
+
+  ```sh
+  ./birdhouse/scripts/make-s3-bucket.sh birdhouse
+  ```
+
+  Administrators can interact with the S3 interface with admin permissions through the `s3-cli` service.
+  This uses the [AWS CLI](https://aws.amazon.com/cli/) tool and supports all subcommands.
+  
+  For example, to list all buckets:
+
+  ```sh
+  ./bin/birdhouse compose run --rm s3-cli s3 ls
+  ```
+
+  or to upload some files to the "birdhouse" bucket
+
+  ```sh
+  ./bin/birdhouse compose run --rm -v ./files-to-upload:/data:ro s3-cli s3 cp /data s3://birdhouse
+  ```
+
+  Administrators can also add files to the birdhouse bucket by adding them directly to the directory
+  specified by the `S3_DATA_STORE` config variable. For example, if `S3_DATA_STORE=/data/s3-data` and
+  I want to add the same files in the example above to the "birdhouse" bucket:
+
+  ```sh
+  cp -r ./files-to-upload /data/s3-data/birdhouse/
+  ```
+
+  Note that when setting permission in Magpie that write permissions are ignored and read permissions
+  only apply for buckets and individual files. For example, I can set read permissions on the "birdhouse"
+  bucket and a file in that bucket at "birdhouse/subdir/file.nc" and that will effect whether a user can
+  see the files in "birdhouse" and whether they can read that one file. 
+  However, if I set a read permission on "birdhouse/subdir/" this will have no effect on whether the user 
+  can or cannot read or browse files in the "subdir/" folder.
+
+- Add Nvidia MPS component for managing Nvidia GPU resources
+
+  This creates a container running Nvidia's Multi Process Service ([MPS](https://docs.nvidia.com/deploy/mps/index.html)) 
+  which helps manage multi-user GPU access.
+  It runs an alternative CUDA interface which manages resource allocation when multiple processes are running simultaneously
+  on the same GPU.
+  It also allows the node admin to set additional per-user limits through the `JUPYTERHUB_RESOURCE_LIMITS` variable
+  which configures Jupyterlab containers:
+
+  - `"gpu_device_mem_limit"`: sets the `CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` environment variable
+  - `"gpu_active_thread_percentage"`: sets the `CUDA_MPS_ACTIVE_THREAD_PERCENTAGE` environment variable
+
+  For example, the following will give all users in the group named `"users"` access to three GPUs in their Jupyterlab
+  container. On the first one (id = 0) only 1GB of memory is available, on the second (id = 1) only 5GB, and on the third 
+  (id = 2) only 10GB. Additionally, the container will be able to use 10% of available threads on the GPUs.
+
+  ```shell
+  export JUPYTERHUB_RESOURCE_LIMITS='
+  [{
+        "type": "group", 
+        "name": "users", 
+        "limits": {
+          "gpu_ids": ["0", "1", "2"], 
+          "gpu_count": 3, 
+          "gpu_device_mem_limit": "0=1G,1=5G,2=10G", 
+          "gpu_active_thread_percentage": "10"
+        }
+  }]
+  '
+  ```
+
+  Note that leaving any of these limits unset will default to allowing the user full access to the given resource.
+
+- Update `CustomDockerSpawner` to make pre spawn hooks and resource limits more configurable
+
+  Introduce `builtin_pre_spawn_hooks` and `resource_limit_callbacks` attributes to the `CustomDockerSpawner` class which 
+  can be used to further customize the `CustomDockerSpawner` from optional components. This gives us a way to 
+  add additional functionality without having to directly modify existing functions which may be overwritten by the
+  user when they configure the spawner in `JUPYTERHUB_CONFIG_OVERRIDE`.
+
+  This also introduces the `JUPYTERHUB_CONFIG_OVERRIDE_INTERNAL` variable which is identical to the 
+  `JUPYTERHUB_CONFIG_OVERRIDE` variable except that it is intended to only be set by other components (not by the
+  user in the local environment file). This allows components to customize Jupyterhub deployments without interfering
+  with custom settings created by the user. 
+  
+  Note that the contents of `JUPYTERHUB_CONFIG_OVERRIDE` have precedence over the contents of 
+  `JUPYTERHUB_CONFIG_OVERRIDE_INTERNAL`. So for example if you create a volume mount named `my_volume` in both, only
+  the one defined in `JUPYTERHUB_CONFIG_OVERRIDE` will be applied.
+
+## Fixes
+
+- Update GPU limit examples to show expected syntax
+
+  Fixes some examples that showed that `gpu_ids` could be given as integers if they were meant to be indexes. However, 
+  due to limitation of docker they must be strings. This modifies examples so that it is clear that strings must be 
+  used and also updates the code to ensure that string values are only ever passed to docker when spawning a new 
+  jupyterlab server.
+
+- Improve prometheus-longterm-metrics scraping
+
+  The prometheus-longterm-metrics service scrapes longterm data rules from the prometheus service. However, the 
+  scrape interval was set too long (1 hour) which meant that some data was probably lost in between scrapes. Also,
+  the prometheus documentation recommends setting unique `external_labels` when exporting data to a different 
+  federated prometheus instance.
+
+  Note that I don't know how long is too long for a scrape interval before data starts being lost but with some 
+  experimentation it seems that 5 minutes is at least below that threshold and it's not so frequent that it seems
+  like a waste to be polling so often. 
+
+
 [2.24.1](https://github.com/bird-house/birdhouse-deploy/tree/2.24.1) (2026-03-04)
 ------------------------------------------------------------------------------------------------------------------
 
