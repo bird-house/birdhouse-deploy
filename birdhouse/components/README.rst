@@ -13,7 +13,7 @@ service but this runs in docker containers and is specifically designed to inter
 Birdhouse stack.
 
 Available jobs
--------------
+--------------
 
 Scheduler jobs can be enabled by enabling optional components. Birdhouse comes with a variety of
 these jobs in the ``optional-components`` directory. To enable any of these jobs, add the relevant
@@ -622,6 +622,29 @@ Customizing the Component
     If the original ``/weaver/`` endpoint is deemed sufficient, and you would rather omit this additional alias
     entirely, the ``WEAVER_ALT_PREFIX`` variable should be explicitly set to an empty value.
 
+
+Managing Large Job Results
+--------------------------
+
+The `Job Results <https://pavics-weaver.readthedocs.io/en/latest/processes.html#job-results>`_ responses from `Weaver`
+can return a lot of ``Link`` headers. This is done to provide job metadata references and provenance traceability
+details, but also for actual results locations that can vary in quantity depending on the actual process execution.
+
+By default, the Ngnix `proxy_buffer_size <https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_buffer_size>`_
+and `proxy_buffers <https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_buffers>`_ directives of
+the ``proxy`` service are added to the `Weaver` API endpoints with sufficiently large values to avoid HTTP 502 errors
+when the response headers exceed the default buffer sizes.
+
+If your processes happen to generate even larger results (e.g.: they return many NetCDF files from batch processing),
+you may need to further increase these buffer sizes using
+the ``WEAVER_PROXY_RESPONSE_BUFFER_SIZE`` and ``WEAVER_PROXY_RESPONSE_BUFFER_COUNT`` variables.
+
+If your processes generate a *very large* number of results, you may also want to consider
+alternate *content negotiation strategies* as described in
+the `Job Results <https://pavics-weaver.readthedocs.io/en/latest/processes.html#job-results>`_
+and `Process Execution Results <https://pavics-weaver.readthedocs.io/en/latest/processes.html#proc-exec-results>`_
+sections of the `Weaver` documentation. Certain execution request parameters can be explicitly provided to limit
+the number of returned headers and their representation in the responses.
 
 .. _finch: https://github.com/bird-house/finch
 .. _flyingpigeon: https://github.com/bird-house/flyingpigeon

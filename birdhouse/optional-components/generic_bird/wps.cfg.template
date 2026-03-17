@@ -10,6 +10,6 @@ parallelprocesses = 10
 
 [logging]
 level = INFO
-database=postgresql://${BIRDHOUSE_POSTGRES_USERNAME}:${BIRDHOUSE_POSTGRES_PASSWORD}@postgres_generic_bird/generic_bird
+database=postgresql://${BIRDHOUSE_POSTGRES_USERNAME}:${BIRDHOUSE_POSTGRES_PASSWORD}@postgres_generic_bird/${BIRDHOUSE_GENERIC_BIRD_POSTGRES_DB}
 
 ${BIRDHOUSE_EXTRA_PYWPS_CONFIG}

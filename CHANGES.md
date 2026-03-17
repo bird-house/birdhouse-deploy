@@ -75,6 +75,166 @@
   used and also updates the code to ensure that string values are only ever passed to docker when spawning a new 
   jupyterlab server.
 
+- Improve prometheus-longterm-metrics scraping
+
+  The prometheus-longterm-metrics service scrapes longterm data rules from the prometheus service. However, the 
+  scrape interval was set too long (1 hour) which meant that some data was probably lost in between scrapes. Also,
+  the prometheus documentation recommends setting unique `external_labels` when exporting data to a different 
+  federated prometheus instance.
+
+  Note that I don't know how long is too long for a scrape interval before data starts being lost but with some 
+  experimentation it seems that 5 minutes is at least below that threshold and it's not so frequent that it seems
+  like a waste to be polling so often. 
+
+
+[2.24.1](https://github.com/bird-house/birdhouse-deploy/tree/2.24.1) (2026-03-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- CanarieAPI: update to version [`1.1.0`](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.1.0).
+
+  - Reduces the Docker image size by >50%.
+  - Rebuild the Docker image for security fixes.
+
+[2.24.0](https://github.com/bird-house/birdhouse-deploy/tree/2.24.0) (2026-03-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Update `magpie` to version 5.0.1
+
+  This update to Magpie introduces 
+  [network mode](https://pavics-magpie.readthedocs.io/en/latest/authentication.html#network-mode).
+
+  This is disabled by default to ensure backwards compatibility but can be enabled by setting
+  `MAGPIE_NETWORK_ENABLED=true` in your local environment file.
+  Note that enabling network mode also requires setting `MAGPIE_NETWORK_INSTANCE_NAME` to a unique
+  name within the network.
+
+  Upgrading to this version does not require any database migration and is fully backwards compatible
+  with previous versions.
+
+  This change also introduces the ability to set 
+  [all configuration options](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#network-mode-settings) 
+  for Magpie's network mode as environment variables in the local environment file.
+  Note that all of these configuration options will be ignored if `MAGPIE_NETWORK_ENABLED` is `false`.
+
+
+[2.23.3](https://github.com/bird-house/birdhouse-deploy/tree/2.23.3) (2026-02-26)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- generic_bird: wrong DB credential provided
+
+  Missing template explansion (since `2.4.0`) and wrong credential file (since the beginning!).
+
+  `docker logs generic_bird` had this error:
+  ```
+  sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "postgres_generic_bird" (172.23.0.20),
+  port 5432 failed: FATAL:  database "generic_bird" does not exist
+  ```
+
+  When upgrading from a working existing generic_bird, it is fine but when
+  spinning up a brand new instance, it does not work.
+
+
+[2.23.2](https://github.com/bird-house/birdhouse-deploy/tree/2.23.2) (2026-02-20)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Unable to set custom homepage due to a missing back-compat config var mapping
+
+  Only when back-compat mode is used.  Regression since `2.4.0`.
+
+  Missing mapping `PROXY_ROOT_LOCATION=BIRDHOUSE_PROXY_ROOT_LOCATION`.
+
+
+[2.23.1](https://github.com/bird-house/birdhouse-deploy/tree/2.23.1) (2026-02-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC API: Security update, minor OpenAPI version reporting fixes, and `stac-fastapi`/`starlette` compatibility fix
+  using version [2.3.0](https://github.com/crim-ca/stac-app/releases/tag/2.3.0)
+  (relates to [crim-ca/stac-app#65](https://github.com/crim-ca/stac-app/pull/65),
+  [crim-ca/stac-app#69](https://github.com/crim-ca/stac-app/pull/69) and
+  [crim-ca/stac-app#74](https://github.com/crim-ca/stac-app/pull/74)).
+
+- Cowbird: Security update using version [2.6.0](https://github.com/Ouranosinc/cowbird/releases/tag/2.6.0)
+  (relates to [Ouranosinc/cowbird#98](https://github.com/Ouranosinc/cowbird/pull/98)).
+
+- Magpie: Security update using version [4.3.1](https://github.com/Ouranosinc/Magpie/releases/tag/4.3.1)
+  (relates to [Ouranosinc/Magpie#640](https://github.com/Ouranosinc/Magpie/pull/640)
+  and [Ouranosinc/Magpie#642](https://github.com/Ouranosinc/Magpie/pull/642)).
+
+- Twitcher: Security update using version [0.11.0](https://github.com/bird-house/twitcher/releases/tag/v0.11.0)
+  (relates to [bird-house/twitcher#143](https://github.com/bird-house/twitcher/pull/143),
+  [bird-house/twitcher#145](https://github.com/bird-house/twitcher/pull/145),
+  [bird-house/twitcher#146](https://github.com/bird-house/twitcher/pull/146) and
+  [bird-house/twitcher#148](https://github.com/bird-house/twitcher/pull/148)).
+
+- Weaver: Security and dependency fix update using version [6.8.3](https://github.com/crim-ca/weaver/releases/tag/6.8.3)
+  (relates to [crim-ca/weaver#868](https://github.com/crim-ca/weaver/pull/868),
+  [crim-ca/weaver#869](https://github.com/crim-ca/weaver/pull/869),
+  [crim-ca/weaver#877](https://github.com/crim-ca/weaver/pull/877) and
+  [crim-ca/weaver#881](https://github.com/crim-ca/weaver/pull/881)).
+
+- Weaver: Update `post-docker-compose-up` script.
+  - Handle multiple Magpie cookies in response.
+    This can happen depending on specific internal HTTP libraries versions of the services.
+    To retain backward/forward compatibility, all cookies returned from Magpie are chained in following `curl` commands.
+  - Use birdhouse `log` utility to report operations produced by the script rather than custom "echo level".
+
+- Weaver: Job Result Proxy Buffers
+  - The *Job Results* responses of `weaver` can return a lot of `Link` headers. This is done to provide job metadata
+    references and provenance traceability details, but also for actual results locations that can vary in quantity
+    depending on the actual process execution.
+    Therefore, the Ngnix `proxy_buffer_size` and `proxy_buffers` directives of the `proxy` service must be added with
+    sufficiently large values to avoid HTTP 502 errors when the response headers exceed the default buffer sizes.
+    The `WEAVER_PROXY_RESPONSE_BUFFER_SIZE` and `WEAVER_PROXY_RESPONSE_BUFFER_COUNT` variables are added to allow
+    further customization as needed by the server. Their defaults are reasonable values to meet minimal requirements
+    by `weaver`'s metadata `Link` and a few result outputs.
+
+- Birdhouse: Allow `log <LEVEL> -n ...` and `log <LEVEL> -p ...` to generate log outputs without newline/prefixes.
+  
+  These options allow writing multiple log entries onto the same line for correct visual rendering of distinct `log`
+  calls separated to allow some intermediate logic. The `log` function invocations with these options respect the
+  log levels in order to make the messages consistent with enabled redirections and verbosity.
+
+[2.23.0](https://github.com/bird-house/birdhouse-deploy/tree/2.23.0) (2026-02-13)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- DGGS: Update API metadata and version from `v0.1.6-rc7` to `v0.1.6-rc12`.
+
+  - Set default version to [`ghcr.io/crim-ca/pydggsapi:v0.1.6-rc12`](https://github.com/crim-ca/pydggsapi/pkgs/container/pydggsapi/682138353?tag=v0.1.6-rc12).
+    This includes multiple DGGS-API features such as supporting alternate response media-types (Zarr, UBJSON, binary, etc.),
+    adds optimizations like GZIP compression when requested, reduces the Docker image size (~1GB smaller),
+    improves the OpenAPI definitions, the collection metadata for better discovery of queryables and grid dimensions,
+    as well as various bug fixes.
+
+    Full changes: https://github.com/crim-ca/pydggsapi/compare/crim-ca:pydggsapi:v0.1.6-rc7...crim-ca:pydggsapi:v0.1.6-rc12 
+
+  - Fix `SERVICE_META_URL` value not reporting a resolvable `/services/dggs` location.
+  - Fix the missing volume mount for `/services/dggs` definition.
+
+[2.22.1](https://github.com/bird-house/birdhouse-deploy/tree/2.22.1) (2026-02-09)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: add environment variables to facilitate customization of the API's landing page and OpenAPI metadata.
+
+  - Adds `STAC_FASTAPI_VERSION`, `STAC_FASTAPI_TITLE`, `STAC_FASTAPI_DESCRIPTION`, `STAC_FASTAPI_LANDING_ID` variables.
+    These names are purposely selected to align natively with
+    [stac-fastapi settings](https://stac-utils.github.io/stac-fastapi/tips-and-tricks/#set-api-title-description-and-version).
+    Implementations previously had to manually inject the variables using a `docker-compose-extra.yml` configuration
+    extending the `stac` service with the relevant `environment` variables and values.
+
 [2.22.0](https://github.com/bird-house/birdhouse-deploy/tree/2.22.0) (2026-02-09)
 ------------------------------------------------------------------------------------------------------------------
 
