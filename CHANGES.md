@@ -15,7 +15,19 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Improve prometheus-longterm-metrics scraping
+
+  The prometheus-longterm-metrics service scrapes longterm data rules from the prometheus service. However, the 
+  scrape interval was set too long (1 hour) which meant that some data was probably lost in between scrapes. Also,
+  the prometheus documentation recommends setting unique `external_labels` when exporting data to a different 
+  federated prometheus instance.
+
+  Note that I don't know how long is too long for a scrape interval before data starts being lost but with some 
+  experimentation it seems that 5 minutes is at least below that threshold and it's not so frequent that it seems
+  like a waste to be polling so often. 
+
 
 [2.24.1](https://github.com/bird-house/birdhouse-deploy/tree/2.24.1) (2026-03-04)
 ------------------------------------------------------------------------------------------------------------------
