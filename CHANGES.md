@@ -62,6 +62,76 @@
   However, if I set a read permission on "birdhouse/subdir/" this will have no effect on whether the user 
   can or cannot read or browse files in the "subdir/" folder.
 
+- Add Nvidia MPS component for managing Nvidia GPU resources
+
+  This creates a container running Nvidia's Multi Process Service ([MPS](https://docs.nvidia.com/deploy/mps/index.html)) 
+  which helps manage multi-user GPU access.
+  It runs an alternative CUDA interface which manages resource allocation when multiple processes are running simultaneously
+  on the same GPU.
+  It also allows the node admin to set additional per-user limits through the `JUPYTERHUB_RESOURCE_LIMITS` variable
+  which configures Jupyterlab containers:
+
+  - `"gpu_device_mem_limit"`: sets the `CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` environment variable
+  - `"gpu_active_thread_percentage"`: sets the `CUDA_MPS_ACTIVE_THREAD_PERCENTAGE` environment variable
+
+  For example, the following will give all users in the group named `"users"` access to three GPUs in their Jupyterlab
+  container. On the first one (id = 0) only 1GB of memory is available, on the second (id = 1) only 5GB, and on the third 
+  (id = 2) only 10GB. Additionally, the container will be able to use 10% of available threads on the GPUs.
+
+  ```shell
+  export JUPYTERHUB_RESOURCE_LIMITS='
+  [{
+        "type": "group", 
+        "name": "users", 
+        "limits": {
+          "gpu_ids": ["0", "1", "2"], 
+          "gpu_count": 3, 
+          "gpu_device_mem_limit": "0=1G,1=5G,2=10G", 
+          "gpu_active_thread_percentage": "10"
+        }
+  }]
+  '
+  ```
+
+  Note that leaving any of these limits unset will default to allowing the user full access to the given resource.
+
+- Update `CustomDockerSpawner` to make pre spawn hooks and resource limits more configurable
+
+  Introduce `builtin_pre_spawn_hooks` and `resource_limit_callbacks` attributes to the `CustomDockerSpawner` class which 
+  can be used to further customize the `CustomDockerSpawner` from optional components. This gives us a way to 
+  add additional functionality without having to directly modify existing functions which may be overwritten by the
+  user when they configure the spawner in `JUPYTERHUB_CONFIG_OVERRIDE`.
+
+  This also introduces the `JUPYTERHUB_CONFIG_OVERRIDE_INTERNAL` variable which is identical to the 
+  `JUPYTERHUB_CONFIG_OVERRIDE` variable except that it is intended to only be set by other components (not by the
+  user in the local environment file). This allows components to customize Jupyterhub deployments without interfering
+  with custom settings created by the user. 
+  
+  Note that the contents of `JUPYTERHUB_CONFIG_OVERRIDE` have precedence over the contents of 
+  `JUPYTERHUB_CONFIG_OVERRIDE_INTERNAL`. So for example if you create a volume mount named `my_volume` in both, only
+  the one defined in `JUPYTERHUB_CONFIG_OVERRIDE` will be applied.
+
+## Fixes
+
+- Update GPU limit examples to show expected syntax
+
+  Fixes some examples that showed that `gpu_ids` could be given as integers if they were meant to be indexes. However, 
+  due to limitation of docker they must be strings. This modifies examples so that it is clear that strings must be 
+  used and also updates the code to ensure that string values are only ever passed to docker when spawning a new 
+  jupyterlab server.
+
+- Improve prometheus-longterm-metrics scraping
+
+  The prometheus-longterm-metrics service scrapes longterm data rules from the prometheus service. However, the 
+  scrape interval was set too long (1 hour) which meant that some data was probably lost in between scrapes. Also,
+  the prometheus documentation recommends setting unique `external_labels` when exporting data to a different 
+  federated prometheus instance.
+
+  Note that I don't know how long is too long for a scrape interval before data starts being lost but with some 
+  experimentation it seems that 5 minutes is at least below that threshold and it's not so frequent that it seems
+  like a waste to be polling so often. 
+
+
 [2.24.1](https://github.com/bird-house/birdhouse-deploy/tree/2.24.1) (2026-03-04)
 ------------------------------------------------------------------------------------------------------------------
 
