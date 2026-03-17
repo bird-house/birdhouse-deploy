@@ -1,0 +1,21 @@
+    location /s3/ {
+        auth_request /secure-s3-auth;
+        auth_request_set $auth_status $upstream_status;
+        proxy_pass http://s3:3000/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location = /secure-s3-auth {
+        internal;
+        proxy_pass ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_VERIFY_PATH}$request_uri;
+        proxy_pass_request_body off;
+        proxy_set_header Host $host;
+        proxy_set_header Content-Length "";
+        proxy_set_header X-Original-URI $request_uri;
+        proxy_set_header X-Forwarded-Proto $real_scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host:$server_port;
+    }

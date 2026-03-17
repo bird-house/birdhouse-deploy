@@ -1,0 +1,5 @@
+services:
+  magpie:
+    volumes:
+      - ./components/s3/config/magpie/config.yml:${MAGPIE_PERMISSIONS_CONFIG_PATH}/s3.yml:ro
+      - ./components/s3/config/magpie/config.yml:${MAGPIE_PROVIDERS_CONFIG_PATH}/s3.yml:ro
