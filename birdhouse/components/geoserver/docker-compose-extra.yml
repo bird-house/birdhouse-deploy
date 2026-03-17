@@ -16,6 +16,7 @@ services:
     volumes:
       # run deployment/fix-geoserver-data-dir-perm on existing
       # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image
+      # only needed for versions before pavics/geoserver:2.25.2--v2024.06.25-kartoza
       - ${GEOSERVER_DATA_DIR}:/opt/geoserver/data_dir
     links:
       - postgis
