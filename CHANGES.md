@@ -29,6 +29,16 @@
   like a waste to be polling so often. 
 
 
+[2.24.1](https://github.com/bird-house/birdhouse-deploy/tree/2.24.1) (2026-03-04)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- CanarieAPI: update to version [`1.1.0`](https://github.com/Ouranosinc/CanarieAPI/releases/tag/1.1.0).
+
+  - Reduces the Docker image size by >50%.
+  - Rebuild the Docker image for security fixes.
+
 [2.24.0](https://github.com/bird-house/birdhouse-deploy/tree/2.24.0) (2026-03-03)
 ------------------------------------------------------------------------------------------------------------------
 
