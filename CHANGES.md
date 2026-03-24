@@ -15,7 +15,17 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Don't call `read_configs` multiple times unnecessarily when setting up Geoserver
+
+  The `pre-docker-compose-up` script for Geoserver was calling `read_configs` which was re-setting variables that
+  were already set through `birdhouse-compose.sh`. Then it was potentially calling `read_configs` again if it
+  subsequently called `scripts/fix-geoserver-data-dir-perm`. Not only is this unnecessary but it slows down the
+  script and means that duplicate log messages get displayed to the user.
+
+  Since it is not necessary to call this up to 3 times, this change ensures that `read_configs` is only called when
+  necessary.
 
 [2.25.0](https://github.com/bird-house/birdhouse-deploy/tree/2.25.0) (2026-03-17)
 ------------------------------------------------------------------------------------------------------------------

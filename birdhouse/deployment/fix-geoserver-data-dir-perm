@@ -11,20 +11,16 @@
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
 COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
+BIRDHOUSE_EXE="${COMPOSE_DIR}/../bin/birdhouse"
 
-. "${COMPOSE_DIR}/read-configs.include.sh"
-
-# Get BASH_IMAGE
-# Get GEOSERVER_DATA_DIR
-read_configs
+if [ -z "${1:-"${GEOSERVER_DATA_DIR}"}" ] || [ -z "${BASH_IMAGE}" ]; then
+    eval "$(${BIRDHOUSE_EXE} configs --print-config-command)"
+    read_configs
+fi
 
 set -x
 
-DATA_DIR="${GEOSERVER_DATA_DIR}"
-
-if [ -n "$1" ]; then
-    DATA_DIR="$1"; shift
-fi
+DATA_DIR="${1:-"${GEOSERVER_DATA_DIR}"}"
 
 docker run --rm --name fix-geoserver-data-dir-perm \
     --volume "${DATA_DIR}":/datadir \
