@@ -372,6 +372,16 @@ check_required_vars() {
 }
 
 
+# env.local can call this function if it wishes to use a delayed eval var.
+# Otherwise all delayed eval vars are only available after env.local is fully read.
+eval_delayed_var() {
+    DELAYED_VAR_NAME="$1"
+    v="`eval "echo \\"\\$${DELAYED_VAR_NAME}\\""`"  # should keep new lines and leading empty spaces
+    value=`eval "echo \"${v}\""`
+    eval 'export ${DELAYED_VAR_NAME}="${value}"'
+}
+
+
 # All scripts sourcing default.env and env.local and needing to use any vars
 # in DELAYED_EVAL list need to call this function to actually resolve the
 # value of each var in DELAYED_EVAL list.
@@ -382,9 +392,7 @@ process_delayed_eval() {
           # only eval each variable once (in case it was added to the list multiple times)
           continue
         fi
-        v="`eval "echo \\"\\$${i}\\""`"  # should keep new lines and leading empty spaces
-        value=`eval "echo \"${v}\""`
-        eval 'export ${i}="${value}"'
+        eval_delayed_var ${i}
         log DEBUG "delayed eval '$(env | grep -e "^${i}=")'"
         ALREADY_EVALED="
           ${ALREADY_EVALED}
