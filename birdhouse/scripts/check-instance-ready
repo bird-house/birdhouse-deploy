@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # Quick smoke test for Birdhouse instance.
 #
 # This is absolutely not a comprehensive test.
@@ -39,7 +39,7 @@ Will sleep for about 1 minute and try again since the canarie-api refresh every 
 
 Will retry only once more and exit immediately.
 "
-set -x
+    set -x
     sleep 65
     curl --include --silent "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN}/canarie/node/service/stats" | head
 fi

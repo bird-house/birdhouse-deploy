@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 # Create authtest user for testsuite at
 # https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 #
