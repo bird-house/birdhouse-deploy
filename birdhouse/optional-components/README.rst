@@ -174,6 +174,7 @@ The anonymous user will now have all the permissions described in |magpie-public
     cannot be enforced as a component dependency.
 
 .. links to section anchors use HTML form purposely to work both on GitHub and Sphinx rendered documentation
+.. see 'docs/source/conf.py:convert_rst_links_to_html'
 .. note::
     Enabling |optional-components-all-public-access|_ *could* impact behaviour of other components
     such as |components-wps_outputs-volume|_ and |optional-components-secure-data-proxy|_ if those are also included.
@@ -568,7 +569,7 @@ How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.examp
     .. seealso::
         See the `env.local.example`_ file for more details about this ``BIRDHOUSE_PROXY_ROOT_LOCATION`` behaviour.
 
-.. _prometheus-longterm-metrics
+.. _prometheus-longterm-metrics:
 
 Prometheus Long-term Metrics
 ----------------------------
@@ -607,7 +608,7 @@ instance's API is available at `https://example.com/prometheus:9090` the you can
 
 Enabling this component creates the additional endpoint ``/prometheus-longterm-metrics``.
 
-.. _prometheus-longterm-rules
+.. _prometheus-longterm-rules:
 
 Prometheus Long-term Rules
 --------------------------
@@ -618,7 +619,7 @@ component. These rules all have the label ``group: longterm-metrics``.
 To see which rules are added, check out the
 `optional-components/prometheus-longterm-rules/config/monitoring/prometheus.rules` file.
 
-.. _thanos
+.. _thanos:
 
 Thanos
 ------
@@ -686,7 +687,7 @@ For developers, to create a new parser that can be used to track log files:
 .. _log-parser: https://github.com/DACCS-Climate/log-parser/
 .. _prometheus_python_metrics: https://prometheus.github.io/client_python/instrumenting/
 
-.. _local-dev-test
+.. _local-dev-test:
 
 Local Dev Test
 --------------

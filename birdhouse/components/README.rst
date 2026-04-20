@@ -483,7 +483,7 @@ AlertManager for Alert Dashboard and Silencing
 .. image:: monitoring/images/alertmanager-dashboard.png
 .. image:: monitoring/images/alertmanager-silence-alert.png
 
-.. _monitoring-customize-the-component
+.. _monitoring-customize-the-component:
 
 Customizing the Component
 -------------------------
@@ -567,7 +567,7 @@ their execution to the corresponding service.
 Finally, `Weaver`_ also adds `Docker` image execution capabilities as a WPS process, allowing deployment
 and execution of custom applications and workflows.
 
-.. image:: weaver/images/components-diagram.png
+.. image:: weaver/images/component-diagram.png
 
 Usage
 -----
