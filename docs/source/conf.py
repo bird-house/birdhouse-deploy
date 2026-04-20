@@ -52,6 +52,44 @@ templates_path = ['_templates']
 #
 source_suffix = ['.rst', '.md']
 
+
+def convert_rst_links_to_html(app, exception):
+    """
+    Post-process HTML files to convert .rst links to .html links.
+
+    This allows RST source files to use .rst links (which work on GitHub),
+    while the generated HTML uses .html links (which work in browsers).
+    """
+    if exception or app.builder.format != 'html':
+        return
+
+    import re
+    from pathlib import Path
+
+    html_dir = Path(app.outdir)
+
+    # Pattern to match href attributes with .rst files (including anchors)
+    # Captures: (path before .rst)(#anchor if exists)(closing quote)
+    rst_link_pattern = re.compile(r'href="([^"]*?)\.rst(#[^"]*)?(")')
+
+    for html_file in html_dir.rglob('*.html'):
+        try:
+            content = html_file.read_text(encoding='utf-8')
+            original_content = content
+
+            # Replace .rst with .html in href attributes
+            content = rst_link_pattern.sub(r'href="\1.html\2\3', content)
+
+            # Only write if content changed
+            if content != original_content:
+                html_file.write_text(content, encoding='utf-8')
+        except Exception as e:
+            app.warn(f'Error processing {html_file}: {e}')
+
+
+def setup(app):
+    app.connect('build-finished', convert_rst_links_to_html)
+
 # The encoding of source files.
 #
 # source_encoding = 'utf-8-sig'

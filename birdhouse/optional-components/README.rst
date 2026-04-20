@@ -150,30 +150,50 @@ Give public access to all resources for testing purposes
 --------------------------------------------------------
 
 By enabling this component, all WPS services and data on THREDDS are completely public, please beware.
-Once enabled, if you need to revert the change, you have to do it manually by logging into Magpie.
-Just disabling this component will not revert the change.
-Alternatively, you can create a similar file to |magpie-public-perms|_ and replace all desired ``action: create``
-entries by ``action: remove`` to make sure the permissions are removed at startup if they exist.
+
+.. warning::
+    Once enabled, if you need to revert the change, you have to do it manually by logging into Magpie.
+    Just disabling this component will not revert the change.
+    Alternatively, you can create a similar file to |magpie-public-perms|_ and replace all desired ``action: create``
+    entries by ``action: remove`` to make sure the permissions are removed at startup if they exist.
 
 This optional component is required for the test suite at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 
 How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
 
-* Add ``./optional-components/all-public-access`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+* Add |optional-components-all-public-access|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 The anonymous user will now have all the permissions described in |magpie-public-perms|_
 (:download:`download </birdhouse/optional-components/all-public-access/all-public-access-magpie-permission.cfg>`).
 
 .. note::
-    If using the ``./components/stac`` feature, the corresponding ``./optional-components/stac-public-access``
-    must be applied as well to obtain similar functionalities to ``./optional-components/all-public-access``.
-    This optional component is kept separate since ``./components/stac`` is not required by default, and therefore
+    If using the |components-stac|_ feature, the corresponding |optional-components-stac-public-access|_
+    must be applied as well to obtain similar functionalities to |optional-components-all-public-access|_.
+    This optional component is kept separate since |components-stac|_ is not required by default, and therefore
     cannot be enforced as a component dependency.
+
+.. links to section anchors use HTML form purposely to work both on GitHub and Sphinx rendered documentation
+.. note::
+    Enabling |optional-components-all-public-access|_ *could* impact behaviour of other components
+    such as |components-wps_outputs-volume|_ and |optional-components-secure-data-proxy|_ if those are also included.
+    Please refer to their respective sections
+    (`WPS Outputs Volume <../components/README.rst#wps-outputs-volume>`_
+    and `Secure Data Proxy <#control-secured-access-to-wps-outputs>`_) for more details.
 
 .. _magpie-public-perms: ./all-public-access/all-public-access-magpie-permission.cfg
 .. |magpie-public-perms| replace:: optional-components/all-public-access/all-public-access-magpie-permission.cfg
 .. _env.local.example: ../env.local.example
+.. |optional-components-all-public-access| replace:: ./optional-components/all-public-access
+.. _optional-components-all-public-access: ./optional-components/all-public-access
+.. |optional-components-stac-public-access| replace:: ./optional-components/stac-public-access
+.. _optional-components-stac-public-access: ./optional-components/stac-public-access
+.. |optional-components-secure-data-proxy| replace:: ./optional-components/secure-data-proxy
+.. _optional-components-secure-data-proxy: ./optional-components/secure-data-proxy
+.. |components-stac| replace:: ./components/stac
+.. _components-stac: ../components/stac
+.. |components-wps_outputs-volume| replace:: ./components/wps_outputs-volume
+.. _components-wps_outputs-volume: ../components/wps_outputs-volume
 
 Control secured access to generic data
 --------------------------------------------------------
@@ -185,7 +205,7 @@ This optional component provides a configurable location to serve such data.
     Following components can also employ this feature.
     However, they are not direct dependencies to allow flexibility.
 
-    - ``./components/wps-outputs_volume`` (`components_secure-data-proxy-wps_outputs`_)
+    - |components-wps_outputs-volume|_
     - ``./optional-components/stac-data-proxy`` (`optional-components_stac-data-proxy`_)
 
 How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`download </birdhouse/env.local.example>`)):
@@ -211,6 +231,7 @@ should match exactly the ``location`` path expected by Nginx ``proxy``.
 .. |secure-data-proxy-default-env| replace:: optional-components/secure-data-proxy/default.env
 
 .. _components_secure-data-proxy-wps_outputs:
+.. _control-secured-access-to-wps-outputs:
 
 Control secured access to WPS outputs
 --------------------------------------------------------
@@ -312,17 +333,17 @@ How to enable in ``env.local`` (a copy from `env.local.example`_ (:download:`dow
 Test Geoserver Secured Access
 -----------------------------
 
-This optional component adds a new provider and location for Geoserver, ``test-geoserver-secured-access``, 
+This optional component adds a new provider and location for Geoserver, ``test-geoserver-secured-access``,
 in order to test secured access to this service before it is moved behind Twitcher (undetermined date).
 
 The old ``/geoserver`` path is still available, so current workflows are not affected.
 
 The new ``/geoserver-secured`` path is available for testing once the optional component is activated.
 
-To test the ``geoserver-secured`` service through Magpie, each workspace needs to be added to the new service and then 
+To test the ``geoserver-secured`` service through Magpie, each workspace needs to be added to the new service and then
 permissions can be set on a per-workspace or even layer basis.
 
-A ``GetFeature`` request for a layer in a public workspace (named public in this example) will succeed for any user 
+A ``GetFeature`` request for a layer in a public workspace (named public in this example) will succeed for any user
 using any of these two request types:
 
 * {BASE_URL}/geoserver-secured/wfs?version=2.0.0&request=GetFeature&typeNames=public:{LAYER_NAME}
@@ -362,9 +383,9 @@ Populate STAC catalog with sample data
 
 STAC Populator contains the workflow logic to ingest sample STAC item into the STAC catalog.
 
-Once enabled in the stack, this component will run automatically on stack boot time in order to populate the catalog. 
-On stack initialization, STAC item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds in order 
-to populate the catalog with sample data. Change this timeout as needed, as there are no impact on the stack boot, 
+Once enabled in the stack, this component will run automatically on stack boot time in order to populate the catalog.
+On stack initialization, STAC item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds in order
+to populate the catalog with sample data. Change this timeout as needed, as there are no impact on the stack boot,
 except time required to feed the catalog.
 
 To enable this optional-component:
@@ -559,7 +580,7 @@ Longterm metrics are any prometheus rule that have the label ``group: longterm-m
 selectable using prometheus' ``'{group="longterm-metrics"}'`` query filter. To add some default longterm metrics rules
 also enable the ``prometheus-longterm-rules`` component.
 
-You may also choose to create your own set of rules instead of, or as well as, the default ones. See how to 
+You may also choose to create your own set of rules instead of, or as well as, the default ones. See how to
 :ref:`add additional rules here <monitoring-customize-the-component>`.
 
 To configure this component:
@@ -567,9 +588,9 @@ To configure this component:
     * update the ``PROMETHEUS_LONGTERM_RETENTION_TIME`` variable to set how long the data will be kept by prometheus
 
 If the monitoring Prometheus instance that this Prometheus instance is tracking is not deployed on the same machine
-(or at a non-default network address on the same machine), you may configure the network location of the monitoring 
-Prometheus instance by setting the ``PROMETHEUS_LONGTERM_TARGETS`` variable. For example, if the monitoring Prometheus 
-instance's API is available at `https://example.com/prometheus:9090` the you can set the variable: 
+(or at a non-default network address on the same machine), you may configure the network location of the monitoring
+Prometheus instance by setting the ``PROMETHEUS_LONGTERM_TARGETS`` variable. For example, if the monitoring Prometheus
+instance's API is available at `https://example.com/prometheus:9090` the you can set the variable:
 
 .. code::
 
@@ -649,14 +670,14 @@ For developers, to create a new parser that can be used to track log files:
     1. create a python file that can be mounted as a volume to the ``PROMETHEUS_LOG_PARSER_PARSERS_DIR``
        directory on the ``prometheus-log-parser`` container.
     2. mount any log files that you want to parse as a volume on the ``prometheus-log-parser`` container.
-    3. the python script should create at least one `prometheus metric using the prometheus_client 
-       library <prometheus_python_metrics>`_ and must contain a global constant named ``LOG_PARSER_CONFIG`` 
-       which is a dictionary where keys are paths to log files (mounted in the container) and values are a 
+    3. the python script should create at least one `prometheus metric using the prometheus_client
+       library <prometheus_python_metrics>`_ and must contain a global constant named ``LOG_PARSER_CONFIG``
+       which is a dictionary where keys are paths to log files (mounted in the container) and values are a
        list of "line parser" functions.
        * a "line parser" is any function that takes a string as a single argument (a single line from a
          log file). These functions are where you'd write the code that parses the line and converts it
          into a prometheus metric.
-       * your line parser function should update one of the prometheus metrics you created previously. 
+       * your line parser function should update one of the prometheus metrics you created previously.
 
     For an example of a working log parser, see
     `birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py`_
@@ -682,14 +703,14 @@ generated by Birdhouse that refer to ``host.docker.internal`` will resolve prope
 
 .. code:: shell
 
-  echo '127.0.0.1    host.docker.internal' | sudo tee -a /etc/hosts 
+  echo '127.0.0.1    host.docker.internal' | sudo tee -a /etc/hosts
 
 After deploying the stack, you can now interact with the Birdhouse software at ``http://host.docker.internal`` from the
 machine that is the docker host.
 
 Note that you do *not* need an SSL certificate set up to deploy the stack in this way.
 
-.. warning:: 
+.. warning::
 
   **DO NOT** enable this component in production. This is intended for local development and test purposes only!
 
@@ -706,7 +727,7 @@ It also creates an Nginx configuration that instructs the proxy service to write
 
 .. note::
 
-    Because access logs are now being written to a regular file, enabling this component will also enable the 
+    Because access logs are now being written to a regular file, enabling this component will also enable the
     `optional-components/scheduler-job-logrotate-nginx` scheduler job to ensure that this file is rotated and that it will not
     get too big.
 
@@ -744,19 +765,19 @@ which configures Jupyterlab containers:
 * ``"gpu_active_thread_percentage"``: sets the ``CUDA_MPS_ACTIVE_THREAD_PERCENTAGE`` environment variable
 
 For example, the following will give all users in the group named ``"users"`` access to three GPUs in their Jupyterlab
-container. On the first one (id = 0) only 1GB of memory is available, on the second (id = 1) only 5GB, and on the third 
+container. On the first one (id = 0) only 1GB of memory is available, on the second (id = 1) only 5GB, and on the third
 (id = 2) only 10GB. Additionally, the container will be able to use 10% of available threads on the GPUs.
 
 .. code::shell
 
     export JUPYTERHUB_RESOURCE_LIMITS='
     [{
-         "type": "group", 
-         "name": "users", 
+         "type": "group",
+         "name": "users",
          "limits": {
-            "gpu_ids": ["0", "1", "2"], 
-            "gpu_count": 3, 
-            "gpu_device_mem_limit": "0=1G,1=5G,2=10G", 
+            "gpu_ids": ["0", "1", "2"],
+            "gpu_count": 3,
+            "gpu_device_mem_limit": "0=1G,1=5G,2=10G",
             "gpu_active_thread_percentage": "10"
          }
     }]
@@ -767,7 +788,7 @@ Note that leaving any of these limits unset will default to allowing the user fu
 .. note::
 
     The ``mps`` docker container currently applies the MPS server to all GPUs. If you want to only apply the MPS server
-    to a subset of the GPUs available on your machine, you will need to create an additional component with a 
+    to a subset of the GPUs available on your machine, you will need to create an additional component with a
     ``docker-compose-extra.yml`` file that specifically overrides the container device settings for the ``mps`` container.
 
     For example, the docker compose configuration below would set the MPS server to only apply to GPUs with ids `"0"` and `"1"`.
@@ -791,15 +812,15 @@ Mount THREDDS to S3
 
 Automatically mount data in THREDDS to the S3 services.
 
-This creates a new bucket named ``thredds`` by default (can be changed by setting the 
-``THREDDS_S3_BUCKET_NAME`` variable) which contains a symlink to the thredds data which is mounted separately to 
+This creates a new bucket named ``thredds`` by default (can be changed by setting the
+``THREDDS_S3_BUCKET_NAME`` variable) which contains a symlink to the thredds data which is mounted separately to
 the `s3` container.
 
-A symlink is used so that the THREDDS data itself does not get added as a subdirectory of S3 data which is itself 
+A symlink is used so that the THREDDS data itself does not get added as a subdirectory of S3 data which is itself
 mounted to the S3 component from a bind mount on the host machine.
 
-A user accessing this data through S3 has the same permissions as if they were accessing the file through THREDDS. 
-Users are currently not permitted to list the files in the ``thredds`` bucket since there is no good way to check 
+A user accessing this data through S3 has the same permissions as if they were accessing the file through THREDDS.
+Users are currently not permitted to list the files in the ``thredds`` bucket since there is no good way to check
 whether the user has permission to list specific files according to the Magpie resource permissions for THREDDS.
 
 Access permissions for the ``thredds`` bucket are determined by the ``thredds`` resource rules in Magpie.

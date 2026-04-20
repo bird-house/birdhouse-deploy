@@ -260,3 +260,25 @@ test-online: install-tests	## Run tests with online stack
 test-all: install-tests	## Run all tests
 	@-$(MSG_I) "Run all tests..."
 	@pytest "$(TEST_DIR)"
+
+
+### Documentation Targets ###
+
+BIRDHOUSE_DOCS_DIR ?= $(BIRDHOUSE_MAKE_DIR)/docs
+
+.PHONY: docs
+docs: docs-build
+.PHONY: docs-build
+docs-build:	## Build documentation
+	@-$(MSG_I) "Building documentation..."
+	@$(MAKE) -C "$(BIRDHOUSE_DOCS_DIR)" html
+
+.PHONY: docs-install
+docs-install:	## Install documentation dependencies
+	@-$(MSG_I) "Building documentation..."
+	@pip install -r "$(BIRDHOUSE_DOCS_DIR)/requirements.txt"
+
+.PHONY: docs-clean
+docs-clean:	## Clean documentation artifacts
+	@-$(MSG_I) "Cleaning documentation..."
+	@$(MAKE) -C "$(BIRDHOUSE_DOCS_DIR)" clean

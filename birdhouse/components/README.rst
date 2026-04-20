@@ -56,7 +56,7 @@ component directory to the ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable in your local 
   * adds test data used by the raven WPS component to the thredds server and keeps it up to date (for test purposes).
 
   * this requires that the ``thredds`` and ``raven`` components also be enabled
-  
+
   * component location: ``optional-components/scheduler-job-deploy_raven_testdata``
 
 * Automatically remove old files
@@ -512,11 +512,11 @@ additional components:
 - :ref:`prometheus-longterm-metrics`: a second Prometheus instance used to collect the metrics that you want to store longterm
 - :ref:`thanos`: a service that enables more efficient storage of the metrics collected by the :ref:`prometheus-longterm-metrics`
   component.
-- :ref:`prometheus-longterm-rules`: adds some example rules to the monitoring Prometheus instance (the one deployed by this `monitoring` 
-  component) that can be stored longterm by the `prometheus-longterm-metrics` component. 
+- :ref:`prometheus-longterm-rules`: adds some example rules to the monitoring Prometheus instance (the one deployed by this `monitoring`
+  component) that can be stored longterm by the `prometheus-longterm-metrics` component.
 
 .. note::
-    A separate prometheus instance is necessary since the retention time for prometheus metrics is set at the 
+    A separate prometheus instance is necessary since the retention time for prometheus metrics is set at the
     instance level. This means that increasing the retention time must be done for all metrics at once which is undesirable
     because you probably don't need to store every metric for a long period of time and you'll end up using a lot more
     disk space than needed.
@@ -524,31 +524,31 @@ additional components:
 If some or all of these additional components are enabled, they interact in the following way to store certain metrics for
 longer than 90 days:
 
-1. 
+1.
   - `recording rules`_ are added to the monitoring Prometheus instance (the one deployed by this `monitoring` component). These
-    rules are any that have the `longterm-metrics` label. 
+    rules are any that have the `longterm-metrics` label.
   - The metrics described by these rules are collected/calculated by the monitoring Prometheus instance. The monitoring Prometheus
     instance treats these rules the same as any other (ie. only stores them for 90 days by default).
-  - To enable some example longterm `recording rules`_, enable the :ref:`prometheus-longterm-rules` component. You can also choose 
-    to create your own rules (see :ref:`prometheus-longterm-metrics` for details on how to create these longterm metrics rules). 
-2. 
-  - The :ref:`prometheus-longterm-metrics` Prometheus instance collects/copies only the rules with the `longterm-metrics` label from the 
+  - To enable some example longterm `recording rules`_, enable the :ref:`prometheus-longterm-rules` component. You can also choose
+    to create your own rules (see :ref:`prometheus-longterm-metrics` for details on how to create these longterm metrics rules).
+2.
+  - The :ref:`prometheus-longterm-metrics` Prometheus instance collects/copies only the rules with the `longterm-metrics` label from the
     monitoring Prometheus instance.
   - The :ref:`prometheus-longterm-metrics` Prometheus instance stores only these metrics for a custom duration (can be longer than
     90 days).
-3. 
+3.
   - The :ref:`thanos` component can be deployed alongside the :ref:`prometheus-longterm-metrics` Prometheus instance in order to store
     the metrics that the :ref:`prometheus-longterm-metrics` Prometheus instance has already collected.
   - The :ref:`thanos` component collects the metrics collected by the :ref:`prometheus-longterm-metrics` Prometheus instance and
-    stores them in an S3 object store. 
+    stores them in an S3 object store.
   - The :ref:`thanos` object store stores the metrics more efficiently, meaning that metrics can be stored for even longer and they'll
-    take up less disk space than if they were just stored by the :ref:`prometheus-longterm-metrics` Prometheus instance. 
+    take up less disk space than if they were just stored by the :ref:`prometheus-longterm-metrics` Prometheus instance.
 
 .. note::
 
   It is possible to deploy the :ref:`prometheus-longterm-metrics` Prometheus instance and the :ref:`thanos` instance on a different
   machine than the monitoring Prometheus instance. However, note that both the :ref:`prometheus-longterm-metrics` and :ref:`thanos`
-  components *must* be deployed on the same machine (if both are in use). Also note that this is untested and may require serious 
+  components *must* be deployed on the same machine (if both are in use). Also note that this is untested and may require serious
   troubleshooting to work properly.
 
 .. _recording rules: https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/
@@ -567,7 +567,7 @@ their execution to the corresponding service.
 Finally, `Weaver`_ also adds `Docker` image execution capabilities as a WPS process, allowing deployment
 and execution of custom applications and workflows.
 
-.. image:: weaver/images/component-diagram.png
+.. image:: weaver/images/components-diagram.png
 
 Usage
 -----
@@ -722,7 +722,7 @@ define your custom values in ``env.local`` directly.
 STAC
 ====
 
-`STAC`_ is the common name of the REST API that implements the STAC specification, common representation of geospatial 
+`STAC`_ is the common name of the REST API that implements the STAC specification, common representation of geospatial
 information.
 
 .. _STAC: https://stacspec.org/en
@@ -730,7 +730,7 @@ information.
 Usage
 -----
 
-The STAC API can be browsed via the ``stac-browser`` component. Once this component is enabled, STAC API 
+The STAC API can be browsed via the ``stac-browser`` component. Once this component is enabled, STAC API
 will be accessible at the ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac``.
 
 Here is a sample search query using a the ``pystac-client`` python CLI:
@@ -762,7 +762,7 @@ Usage
 -----
 
 The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API
-exposed by the current ``components/stac`` service. 
+exposed by the current ``components/stac`` service.
 Once this component is enabled, the STAC browser will be available
 at the ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` endpoint.
 
@@ -1066,7 +1066,14 @@ All outputs from these processes will become available at
 the ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs`` endpoint.
 
 By default, this endpoint is not protected. To secure access to this endpoint it is highly recommended to enable the
-``./optional-components/secure-data-proxy`` component as well.
+|optional-components-secure-data-proxy|_ component as well. Not that this component can also be further customized
+with fined-grained access permissions, while retaining the usual public access by combining the the
+|optional-components-secure-data-proxy|_ component with the |optional-components-all-public-access|_ component.
+
+.. |optional-components-all-public-access| replace:: ``./optional-components/all-public-access``
+.. _optional-components-all-public-access: ../optional-components/all-public-access
+.. |optional-components-secure-data-proxy| replace:: ``./optional-components/secure-data-proxy``
+.. _optional-components-secure-data-proxy: ../optional-components/secure-data-proxy
 
 How to Enable the Component
 ---------------------------
@@ -1089,7 +1096,7 @@ For example, to set the default driver to "local" set the following in your loca
   export BIRDHOUSE_DOCKER_LOGGING_DEFAULT='{"driver": "local"}'
 
 You can also override logging options for a single service using environment variables using a variable
-``BIRDHOUSE_DOCKER_LOGGING_<service_name>`` where ``<service_name>`` is the uppercase name of the docker compose service 
+``BIRDHOUSE_DOCKER_LOGGING_<service_name>`` where ``<service_name>`` is the uppercase name of the docker compose service
 with hyphens replaced with underscores. For example, to set the default driver to "local" only for the ``weaver-worker``
 service:
 
@@ -1114,12 +1121,12 @@ An S3 interface for serving data.
 Usage
 -----
 
-This S3 interface is read-only for users and it's intended purpose is to serve data 
+This S3 interface is read-only for users and it's intended purpose is to serve data
 (like Thredds, Geoserver, or the secure data proxy).
 
-Administrators can create buckets on S3 using the ``make-s3-bucket.sh`` script. 
-This will create a bucket and create a Magpie resource for that bucket. By default, 
-only admin users will be able to interact with a new bucket but additional read 
+Administrators can create buckets on S3 using the ``make-s3-bucket.sh`` script.
+This will create a bucket and create a Magpie resource for that bucket. By default,
+only admin users will be able to interact with a new bucket but additional read
 permissions can be added to users and groups through Magpie.
 
 For example, to create a bucket named ``birdhouse``:
@@ -1129,7 +1136,7 @@ For example, to create a bucket named ``birdhouse``:
   ./birdhouse/scripts/make-s3-bucket.sh birdhouse
 
 Users with permission to access the bucket can then list objects in the bucket or download objects
-with an S3 tool or SDK. 
+with an S3 tool or SDK.
 
 For example, to list all the object in the birdhouse bucket with the
 `boto3 AWS python SDK <https://aws.amazon.com/sdk-for-python/>`_:
@@ -1141,8 +1148,8 @@ For example, to list all the object in the birdhouse bucket with the
   from botocore.config import Config
 
   client = boto3.client(
-    service_name="s3", 
-    endpoint_url="http://example.com/s3/", 
+    service_name="s3",
+    endpoint_url="http://example.com/s3/",
     config=Config(signature_version=UNSIGNED)
   )
 
@@ -1161,7 +1168,7 @@ request headers.
   import requests
 
   resp = requests.post(
-    "http://example.com/magpie/signin", 
+    "http://example.com/magpie/signin",
     json={"user_name": "myusername", "password": "secretpassword"}
   )
 
@@ -1170,8 +1177,8 @@ request headers.
     kwargs["params"]["headers"]["Cookie"] = cookie
 
   client = boto3.client(
-    service_name="s3", 
-    endpoint_url="http://example.com/s3/", 
+    service_name="s3",
+    endpoint_url="http://example.com/s3/",
     config=Config(signature_version=UNSIGNED)
   )
   client.meta.events.register_first("before_sign.s3.*", add_headers)
@@ -1185,23 +1192,23 @@ Here is another example using the `obstore <https://developmentseed.org/obstore>
   import requests
 
   resp = requests.post(
-    "http://example.com/magpie/signin", 
+    "http://example.com/magpie/signin",
     json={"user_name": "myusername", "password": "secretpassword"}
   )
 
   cookie = "; ".join([f"{k}={v}" for k, v in resp.cookies.get_dict().items()])
 
   store = S3Store(
-    bucket="birdhouse", 
-    skip_signature=True, 
-    endpoint="http://example.com/s3/", 
+    bucket="birdhouse",
+    skip_signature=True,
+    endpoint="http://example.com/s3/",
     client_options={"default_headers": {"Cookie": cookie}, "allow_http": True})
 
   store.list()
 
-Administrators can interact with the S3 interface with admin permissions through the 
+Administrators can interact with the S3 interface with admin permissions through the
 ``s3-cli`` service. This uses the `AWS CLI <https://aws.amazon.com/cli/>`_ tool and supports all subcommands.
-  
+
 For example, to list all buckets:
 
 .. code-block:: shell
@@ -1215,11 +1222,11 @@ or to add some files to the ``birdhouse`` bucket
   ./bin/birdhouse compose run --rm -v ./files-to-add:/data:ro s3-cli s3 cp /data s3://birdhouse
 
 Administrators can also add files to the birdhouse bucket by adding them directly to the directory
-specified by the ``S3_DATA_STORE`` config variable. For example, if ``S3_DATA_STORE=/data/s3-data`` 
+specified by the ``S3_DATA_STORE`` config variable. For example, if ``S3_DATA_STORE=/data/s3-data``
 and we want to add the same files in the example above to the ``birdhouse`` bucket:
 
 .. code-block:: shell
-  
+
   cp -r ./files-to-add /data/s3-data/birdhouse/
 
 .. note::
@@ -1227,28 +1234,28 @@ and we want to add the same files in the example above to the ``birdhouse`` buck
   The ``s3-cli`` service is recommended as the preferred way for admins to interact with the S3 service
   for two main reasons:
 
-  1. The ``s3-cli`` service runs in a container with the admin credentials pre-populated. You could also use 
-     these credentials through ``aws-cli`` but you'd have to set them manually. The credentials are defined 
+  1. The ``s3-cli`` service runs in a container with the admin credentials pre-populated. You could also use
+     these credentials through ``aws-cli`` but you'd have to set them manually. The credentials are defined
      by the ``S3_ROOT_ACCESS_KEY`` and ``S3_ROOT_SECRET_KEY`` environment variables.
 
-  2. The ``s3-cli`` service runs on the same internal docker network as the S3 service so we can target 
-     its URL on the docker network directly and bypass ``Magpie``, giving the admin full control. 
-     In order to do the same thing with ``aws-cli`` an admin would have to also include the ``Magpie`` 
-     token/cookie with the ``aws-cli`` request and there's no good way of injecting arbitrary headers 
+  2. The ``s3-cli`` service runs on the same internal docker network as the S3 service so we can target
+     its URL on the docker network directly and bypass ``Magpie``, giving the admin full control.
+     In order to do the same thing with ``aws-cli`` an admin would have to also include the ``Magpie``
+     token/cookie with the ``aws-cli`` request and there's no good way of injecting arbitrary headers
      through the ``aws-cli`` interface.
 
 .. note::
 
   When setting permission in Magpie, write permissions are ignored and read permissions
-  only apply for buckets and individual files. 
-  
-  For example, an admin can set read permissions on the ``birdhouse`` bucket and a file in that bucket 
-  at ``birdhouse/subdir/file.nc`` and that will affect whether a user can see the files in ``birdhouse`` 
-  and whether they can read that one file. 
-  
-  However, if the admin sets a read permission on ``birdhouse/subdir/`` this will have no effect on whether 
-  the user can or cannot read or browse files with the ``subdir/`` directory prefix. This is because s3 
-  does not have a concept of nested directories within a bucket and ``subdir`` is treated as a file name 
+  only apply for buckets and individual files.
+
+  For example, an admin can set read permissions on the ``birdhouse`` bucket and a file in that bucket
+  at ``birdhouse/subdir/file.nc`` and that will affect whether a user can see the files in ``birdhouse``
+  and whether they can read that one file.
+
+  However, if the admin sets a read permission on ``birdhouse/subdir/`` this will have no effect on whether
+  the user can or cannot read or browse files with the ``subdir/`` directory prefix. This is because s3
+  does not have a concept of nested directories within a bucket and ``subdir`` is treated as a file name
   prefix, not a directory. Because of this, the S3 API does not specify these prefixes in a way that Magpie
   can interpret as a nested resource.
 
