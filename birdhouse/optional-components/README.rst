@@ -569,17 +569,18 @@ How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.examp
     .. seealso::
         See the `env.local.example`_ file for more details about this ``BIRDHOUSE_PROXY_ROOT_LOCATION`` behaviour.
 
+.. |prometheus-longterm-metrics| replace:: ``./optional-components/prometheus-longterm-rules``
 .. _prometheus-longterm-metrics:
 
 Prometheus Long-term Metrics
 ----------------------------
 
 This is a second prometheus instance that collects longterm monitoring metrics from the monitoring Prometheus instance
-(the one created by the ``components/monitoring`` component).
+(the one created by the |components-monitoring|_ component).
 
 Longterm metrics are any prometheus rule that have the label ``group: longterm-metrics`` or in other words are
 selectable using prometheus' ``'{group="longterm-metrics"}'`` query filter. To add some default longterm metrics rules
-also enable the ``prometheus-longterm-rules`` component.
+also enable the |prometheus-longterm-rules|_ component.
 
 You may also choose to create your own set of rules instead of, or as well as, the default ones. See how to
 :ref:`add additional rules here <monitoring-customize-the-component>`.
@@ -591,7 +592,7 @@ To configure this component:
 If the monitoring Prometheus instance that this Prometheus instance is tracking is not deployed on the same machine
 (or at a non-default network address on the same machine), you may configure the network location of the monitoring
 Prometheus instance by setting the ``PROMETHEUS_LONGTERM_TARGETS`` variable. For example, if the monitoring Prometheus
-instance's API is available at `https://example.com/prometheus:9090` the you can set the variable:
+instance's API is available at ``https://example.com/prometheus:9090`` the you can set the variable:
 
 .. code::
 
@@ -608,42 +609,23 @@ instance's API is available at `https://example.com/prometheus:9090` the you can
 
 Enabling this component creates the additional endpoint ``/prometheus-longterm-metrics``.
 
+.. |prometheus-longterm-rules| replace:: ``./optional-components/prometheus-longterm-rules``
 .. _prometheus-longterm-rules:
 
 Prometheus Long-term Rules
 --------------------------
 
-This adds some default longterm metrics rules to the `prometheus` component for use by the `prometheus-longterm-metrics`
-component. These rules all have the label ``group: longterm-metrics``.
+This adds some default longterm metrics rules to the ``prometheus`` service defined by |components-monitoring|_.
+These rules all have the label ``group: longterm-metrics``.
 
-To see which rules are added, check out the
-`optional-components/prometheus-longterm-rules/config/monitoring/prometheus.rules` file.
+To see which rules are added, check out the |longterm-rules-config|_ file.
 
-.. _thanos:
-
-Thanos
-------
-
-This enables better storage of longterm metrics collected by the ``optional-components/prometheus-longterm-metrics``
-component. Data will be collected from the ``prometheus-longterm-metrics`` and stored in an S3 object store
-indefinitely.
-
-When enabling this component, please change the default values for the ``THANOS_MINIO_ROOT_USER`` and
-``THANOS_MINIO_ROOT_PASSWORD`` by updating the ``env.local`` file. These set the login credentials for the root user
-that runs the minio_ object store.
-
-Enabling this component creates the additional endpoints:
-    * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
-    * ``/thanos-minio``: a minio_ web console to inspect the data stored by minio_.
-
-.. note::
-
-    The `thanos` component must be deployed on the same machine as the `prometheus-longterm-metrics` component since
-    `thanos` needs access to the data stored by prometheus on disk (in docker this is acheived by sharing a named volume).
-
-.. _minio: https://min.io/
-
-.. _prometheus-log-parser
+.. |components-monitoring| replace:: ``./components/monitoring``
+.. _components-monitoring: ../components/README.rst#monitoring
+.. |longterm-rules-config| replace:: ``optional-components/prometheus-longterm-rules/config/monitoring/prometheus.rules``
+.. _longterm-rules-config: prometheus-longterm-rules/config/monitoring/prometheus.rules
+.. |prometheus-log-parser| replace:: ``./optional-components/prometheus-log-parser``
+.. _prometheus-log-parser:
 
 Prometheus Log Parser
 ---------------------
@@ -681,11 +663,37 @@ For developers, to create a new parser that can be used to track log files:
        * your line parser function should update one of the prometheus metrics you created previously.
 
     For an example of a working log parser, see
-    `birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py`_
+    |prometheus-log-parser-exporter|_
     (:download:`download <birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py>`).
 
 .. _log-parser: https://github.com/DACCS-Climate/log-parser/
 .. _prometheus_python_metrics: https://prometheus.github.io/client_python/instrumenting/
+.. |prometheus-log-parser-exporter| replace:: ``birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py``
+.. _prometheus-log-parser-exporter: prometheus-log-parser/config/thredds/prometheus-log-exporter.py
+
+.. _thanos:
+
+Thanos
+------
+
+This enables better storage of longterm metrics collected by the |prometheus-longterm-metrics|_
+component. Data will be collected from the ``prometheus-longterm-metrics`` and stored in an S3 object store
+indefinitely.
+
+When enabling this component, please change the default values for the ``THANOS_MINIO_ROOT_USER`` and
+``THANOS_MINIO_ROOT_PASSWORD`` by updating the ``env.local`` file. These set the login credentials for the root user
+that runs the minio_ object store.
+
+Enabling this component creates the additional endpoints:
+    * ``/thanos-query``: a prometheus-like query interface to inspect the data stored by thanos
+    * ``/thanos-minio``: a minio_ web console to inspect the data stored by minio_.
+
+.. note::
+
+    The ``thanos`` service must be deployed on the same machine as the |prometheus-longterm-metrics|_ component since
+    ``thanos`` needs access to the data stored by prometheus on disk (in docker this is achieved by sharing a named volume).
+
+.. _minio: https://min.io/
 
 .. _local-dev-test:
 
@@ -718,13 +726,13 @@ Note that you do *not* need an SSL certificate set up to deploy the stack in thi
 Proxy Log Volume
 ----------------
 
-This optional setting creates a named docker volume `proxy-logs` that contains the logs directory for the `proxy` component.
+This optional setting creates a named docker volume ``proxy-logs`` that contains the logs directory for the ``proxy`` component.
 
 It also creates an Nginx configuration that instructs the proxy service to write access logs to a regular file in that directory.
 
 .. note::
 
-    By default, access logs are only written to the stdout stream of the `proxy` docker container.
+    By default, access logs are only written to the stdout stream of the ``proxy`` docker container.
 
 .. note::
 
@@ -738,8 +746,8 @@ It also creates an Nginx configuration that instructs the proxy service to write
     to the `proxy` access logs as a regular file.
 
 
-If you are creating a custom component that requires access to the `proxy` access logs, add the following to that component's
-`default.env` file:
+If you are creating a custom component that requires access to the ``proxy`` access logs, add the following to that component's
+``default.env`` file:
 
 .. code::shell
 

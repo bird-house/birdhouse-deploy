@@ -19,6 +19,8 @@
 #
 import os
 import sys
+import re
+from pathlib import Path
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../../.'))
 
@@ -63,9 +65,6 @@ def convert_rst_links_to_html(app, exception):
     if exception or app.builder.format != 'html':
         return
 
-    import re
-    from pathlib import Path
-
     html_dir = Path(app.outdir)
 
     # Pattern to match href attributes with .rst files (including anchors)
@@ -87,8 +86,49 @@ def convert_rst_links_to_html(app, exception):
             app.warn(f'Error processing {html_file}: {e}')
 
 
+def copy_non_rst_files(app, exception):
+    """
+    Copy all non-RST files from birdhouse directory to HTML output.
+
+    Sphinx processes RST files into HTML, but non-RST files (like .sh, .yml, .env)
+    need to be copied manually to be available for download links in the documentation.
+    """
+    if exception or app.builder.format != 'html':
+        return
+
+    import shutil
+
+    src_dir = Path(app.srcdir) / 'birdhouse'
+    dst_dir = Path(app.outdir) / 'birdhouse'
+
+    if src_dir.is_symlink():
+        src_dir = src_dir.resolve()
+
+    if not src_dir.exists():
+        return
+
+    dst_dir.mkdir(parents=True, exist_ok=True)
+
+    # Copy all non-RST files recursively
+    for src_file in src_dir.rglob('*'):
+        if src_file.is_file() and not src_file.suffix in ['.rst', '.md']:
+            rel_path = src_file.relative_to(src_dir)
+            dst_file = dst_dir / rel_path
+
+            dst_file.parent.mkdir(parents=True, exist_ok=True)
+
+            try:
+                shutil.copy2(src_file, dst_file)
+            except Exception as e:
+                app.warn(f'Error copying {src_file}: {e}')
+
+
 def setup(app):
+    """
+    Register Sphinx build event handlers.
+    """
     app.connect('build-finished', convert_rst_links_to_html)
+    app.connect('build-finished', copy_non_rst_files)
 
 # The encoding of source files.
 #
@@ -214,7 +254,10 @@ html_extra_path = [
     'birdhouse/README.rst',
     'birdhouse/env.local.example',
     'birdhouse/birdhouse-compose.sh',
+    'birdhouse/pavics-compose.sh',
     'birdhouse/docker-compose.yml',
+    'birdhouse/default.env',
+    'birdhouse/read-configs.include.sh',
 ]
 
 # If not None, a 'Last updated on:' timestamp is inserted at every page
