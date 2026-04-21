@@ -20,6 +20,7 @@
 import os
 import sys
 import re
+import shutil
 from pathlib import Path
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../../.'))
@@ -86,6 +87,12 @@ def convert_rst_links_to_html(app, exception):
             app.warn(f'Error processing {html_file}: {e}')
 
 
+copy_directories = [
+    "birdhouse",
+    "bin",
+]
+
+
 def copy_non_rst_files(app, exception):
     """
     Copy all non-RST files from birdhouse directory to HTML output.
@@ -96,31 +103,30 @@ def copy_non_rst_files(app, exception):
     if exception or app.builder.format != 'html':
         return
 
-    import shutil
+    for cp_dir in copy_directories:
+        src_dir = Path(app.srcdir) / cp_dir
+        dst_dir = Path(app.outdir) / cp_dir
 
-    src_dir = Path(app.srcdir) / 'birdhouse'
-    dst_dir = Path(app.outdir) / 'birdhouse'
+        if src_dir.is_symlink():
+            src_dir = src_dir.resolve()
 
-    if src_dir.is_symlink():
-        src_dir = src_dir.resolve()
+        if not src_dir.exists():
+            return
 
-    if not src_dir.exists():
-        return
+        dst_dir.mkdir(parents=True, exist_ok=True)
 
-    dst_dir.mkdir(parents=True, exist_ok=True)
+        # Copy all non-RST files recursively
+        for src_file in src_dir.rglob('*'):
+            if src_file.is_file() and src_file.suffix not in ['.rst', '.md']:
+                rel_path = src_file.relative_to(src_dir)
+                dst_file = dst_dir / rel_path
 
-    # Copy all non-RST files recursively
-    for src_file in src_dir.rglob('*'):
-        if src_file.is_file() and not src_file.suffix in ['.rst', '.md']:
-            rel_path = src_file.relative_to(src_dir)
-            dst_file = dst_dir / rel_path
+                dst_file.parent.mkdir(parents=True, exist_ok=True)
 
-            dst_file.parent.mkdir(parents=True, exist_ok=True)
-
-            try:
-                shutil.copy2(src_file, dst_file)
-            except Exception as e:
-                app.warn(f'Error copying {src_file}: {e}')
+                try:
+                    shutil.copy2(src_file, dst_file)
+                except Exception as e:
+                    app.warn(f'Error copying {src_file}: {e}')
 
 
 def setup(app):
@@ -156,7 +162,7 @@ release = '2.26.4'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:

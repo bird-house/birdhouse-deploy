@@ -1,6 +1,9 @@
 Birdhouse Components
-#################
+####################
 
+.. shared references by multiple components definitions
+.. |env.local.example| replace:: ``env.local.example``
+.. _env.local.example: ../env.local.example
 
 .. contents::
 
@@ -115,7 +118,7 @@ Given the unattended nature, there is no UI.  Logs are used to keep trace.
 How to Enable the Component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Edit ``env.local`` (a copy of env.local.example_ (:download:`download <../env.local.example>`))
+- Edit ``env.local`` (a copy of |env.local.example|_)
 
   - Add "./components/scheduler" to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
   - Set ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``, ``BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR``,
@@ -123,47 +126,71 @@ How to Enable the Component
     full documentation in `env.local.example`_.
   - Run once fix-write-perm_ (:download:`download <../deployment/fix-write-perm>`), see doc in script.
 
+.. _fix-write-perm: ../deployment/fix-write-perm
+
 
 Old way to deploy the automatic deployment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Superseded by this new ``scheduler`` component.  Keeping for reference only.
+.. |deploy.sh| replace:: ``deployment/deploy.sh``
+.. _deploy.sh: ../deployment/deploy.sh
+.. |triggerdeploy.sh| replace:: ``deployment/triggerdeploy.sh``
+.. _triggerdeploy.sh: ../deployment/triggerdeploy.sh
+
+Superseded by this new |components-scheduler|_ component.  Keeping for reference only.
 
 Doing it this old way do not need the ``scheduler`` component but lose the
 ability for the autodeploy system to update itself.
 
-Configure logrotate for all following automations to prevent disk full::
+Configure logrotate for all following automations to prevent disk full:
 
-  deployment/install-logrotate-config .. $USER
+.. code-block:: shell
 
-To enable continuous deployment of Birdhouse::
+    deployment/install-logrotate-config .. $USER
 
-  deployment/install-automated-deployment.sh .. $USER [daily|5-mins]
-  # read the script for more options/details
+To enable continuous deployment of Birdhouse:
+
+.. code-block:: shell
+
+    deployment/install-automated-deployment.sh .. $USER [daily|5-mins]
+    # read the script for more options/details
 
 If you want to manually force a deployment of Birdhouse (note this might not use
-latest version of deploy.sh_ script (:download:`download <../deployment/deploy.sh>`)::
+latest version of |deploy.sh|_ script:
 
-  deployment/deploy.sh .
-  # read the script for more options/details
+.. code-block:: shell
 
-To enable continuous deployment of tutorial Jupyter notebooks::
+    deployment/deploy.sh .
+    # read the script for more options/details
 
-  deployment/install-deploy-notebook .. $USER
-  # read the script for more details
+To enable continuous deployment of tutorial Jupyter notebooks:
 
-To trigger tutorial Jupyter notebooks deploy manually::
+.. code-block:: shell
 
-  # configure logrotate before because this script will log to
-  # ${BIRDHOUSE_LOG_DIR}/notebookdeploy.log
+    deployment/install-deploy-notebook .. $USER
+    # read the script for more details
 
-  deployment/trigger-deploy-notebook
-  # read the script for more details
+To trigger tutorial Jupyter notebooks deploy manually:
+
+.. code-block:: shell
+
+    # configure logrotate before because this script will log to
+    # ${BIRDHOUSE_LOG_DIR}/notebookdeploy.log
+
+    deployment/trigger-deploy-notebook
+    # read the script for more details
 
 Migrating to the new mechanism requires manual deletion of all the artifacts
-created by the old install scripts: ``sudo rm /etc/cron.d/Birdhouse-deploy
-/etc/cron.hourly/birdhouse-deploy-notebooks /etc/logrotate.d/Birdhouse-deploy
-/usr/local/sbin/triggerdeploy.sh``.  Both can not co-exist at the same time.
+created by the old install scripts:
+
+.. code-block:: shell
+
+    sudo rm /etc/cron.d/Birdhouse-deploy
+    sudo rm /etc/cron.hourly/birdhouse-deploy-notebooks
+    sudo rm /etc/logrotate.d/Birdhouse-deploy
+    sudo rm /usr/local/sbin/triggerdeploy.sh
+
+Both can not co-exist at the same time.
 
 
 Comparison between the old and new autodeploy mechanism
@@ -201,140 +228,149 @@ There are 2 tests that need to be performed:
 
 * Can autodeploy deploy the PR from ``master`` branch, the stable reference point?
 
-  * This could fail if some changes in the PR are incompatible with autodeploy. For example: ``birdhouse compose`` calls some binaries that do not exist in the autodeploy docker image.
+  * This could fail if some changes in the PR are incompatible with autodeploy.
+    For example: ``birdhouse compose`` calls some binaries that do not exist in the autodeploy docker image.
 
 * Can autodeploy be triggered again successfully, after the PR is live?
 
-  * This could fail if the PR renamed some files and forgot to add the old file names to a ``.gitignore`` file.  Then old file names will appear as new uncommitted files and autodeploy will halt because it expects a clean working directory.
+  * This could fail if the PR renamed some files and forgot to add the old file names to a ``.gitignore`` file.
+    Then old file names will appear as new uncommitted files and autodeploy will halt because it expects a clean working directory.
 
 Here is a sample setup to test autodeploy:
 
-* Have 2 checkout directories.  One is for starting the stack using ``birdhouse compose``, the other one is to push new bogus changes to trigger the autodeploy mechanism.
+* Have 2 checkout directories.  One is for starting the stack using ``birdhouse compose``,
+  the other one is to push new bogus changes to trigger the autodeploy mechanism.
 
 .. code-block:: shell
 
-  # this one for running birdhouse compose
-  git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy
+    # this one for running birdhouse compose
+    git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy
 
-  # this one for triggering autodeploy
-  git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy-trigger
+    # this one for triggering autodeploy
+    git clone git@github.com:bird-house/birdhouse-deploy.git birdhouse-deploy-trigger
 
-* Set ``BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY`` in ``env.local`` to a very frequent value so you do not have to wait too long for autodeploy to trigger.
-
-.. code-block:: shell
-
-  # go to the main checkout
-  cd birdhouse-deploy/birdhouse
-
-  # ensure the scheduler component is enabled, otherwise autodeploy will not work
-  echo 'export BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./components/scheduler" >> env.local
-
-  # set BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY
-  # can set to more frequent than 5 minutes if your machine is capable enough
-  echo 'export BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY="@every 5m"' >> env.local
-
-  # if scheduler container already running:
-  # recreate scheduler container for new BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to be effective
-  birdhouse compose stop scheduler && birdhouse compose rm -vf scheduler && birdhouse compose up -d
-
-  # if scheduler container not running yet: start the newly added scheduler component
-  birdhouse compose up -d
-
-* Create a ``${USER}-test`` branch so you can add bogus commits without affecting your real PR.  Set up your main checkout (birdhouse-deploy) to track that test branch so it will detect new changes on the test branch and trigger the autodeploy.
+* Set ``BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY`` in ``env.local`` to a very frequent value so you do not have
+  to wait too long for autodeploy to trigger.
 
 .. code-block:: shell
 
-  # go to the main checkout
-  cd birdhouse-deploy/birdhouse
+    # go to the main checkout
+    cd birdhouse-deploy/birdhouse
 
-  # initially create the ${USER}-test branch from master
-  # the ${USER} prefix is to avoid name clash if another user is also testing autodeploy
-  git checkout master
-  git pull
-  git checkout -b ${USER}-test
-  git push -u ${USER}-test
+    # ensure the scheduler component is enabled, otherwise autodeploy will not work
+    echo 'export BIRDHOUSE_EXTRA_CONF_DIRS="$BIRDHOUSE_EXTRA_CONF_DIRS ./components/scheduler"' >> env.local
 
-  # ensure your runnings code is at "master" and is working correctly
-  # if you do not have a working baseline, you will not know if the breakage is due to autodeploy or your code
-  birdhouse compose up -d
+    # set BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY
+    # can set to more frequent than 5 minutes if your machine is capable enough
+    echo 'export BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY="@every 5m"' >> env.local
+
+    # if scheduler container already running:
+    # recreate scheduler container for new BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to be effective
+    birdhouse compose stop scheduler && birdhouse compose rm -vf scheduler && birdhouse compose up -d
+
+    # if scheduler container not running yet: start the newly added scheduler component
+    birdhouse compose up -d
+
+* Create a ``${USER}-test`` branch so you can add bogus commits without affecting your real PR.
+  Set up your main checkout (birdhouse-deploy) to track that test branch so it will detect new
+  changes on the test branch and trigger the autodeploy.
+
+.. code-block:: shell
+
+    # go to the main checkout
+    cd birdhouse-deploy/birdhouse
+
+    # initially create the ${USER}-test branch from master
+    # the ${USER} prefix is to avoid name clash if another user is also testing autodeploy
+    git checkout master
+    git pull
+    git checkout -b ${USER}-test
+    git push -u ${USER}-test
+
+    # ensure your runnings code is at "master" and is working correctly
+    # if you do not have a working baseline, you will not know if the breakage is due to autodeploy or your code
+    birdhouse compose up -d
 
 * Test scenario 1, from ``master`` to your PR
 
 .. code-block:: shell
 
-  # go to the other checkout to trigger autodeploy
-  cd birdhouse-deploy-trigger/birdhouse
+    # go to the other checkout to trigger autodeploy
+    cd birdhouse-deploy-trigger/birdhouse
 
-  # set branch ${USER}-test to the same commit as your PR, this will trigger autodeploy from master to your PR
-  git pull
-  git checkout ${USER}-test
-  git reset --hard YOUR_PR_BRANCH
-  git push
+    # set branch ${USER}-test to the same commit as your PR, this will trigger autodeploy from master to your PR
+    git pull
+    git checkout ${USER}-test
+    git reset --hard YOUR_PR_BRANCH
+    git push
 
-  # now that the remote "${USER}-test" branch differs from the local "${USER}-test" branch in the birdhouse-deploy repo,
-  # the autodeploy mechanism will detect that the remote branch has changed and attempt to update the local branch
+    # now that the remote "${USER}-test" branch differs from the local "${USER}-test" branch in the birdhouse-deploy repo,
+    # the autodeploy mechanism will detect that the remote branch has changed and attempt to update the local branch
 
-  # follow logs, check for errors
-  tail -f ${BIRDHOUSE_LOG_DIR}/autodeploy.log
+    # follow logs, check for errors
+    tail -f ${BIRDHOUSE_LOG_DIR}/autodeploy.log
 
-  # each autodeploy trigger will start the log with
-  #   ==========
-  #   triggerdeploy START_TIME=2023-06-15T05:07:01+0000
+    # each autodeploy trigger will start the log with
+    #   ==========
+    #   triggerdeploy START_TIME=2023-06-15T05:07:01+0000
 
-  # each autodeploy trigger will end the log with
-  #   triggerdeploy finished START_TIME=2023-06-15T05:07:01+0000
-  #   triggerdeploy finished   END_TIME=2023-06-15T05:07:06+0000
+    # each autodeploy trigger will end the log with
+    #   triggerdeploy finished START_TIME=2023-06-15T05:07:01+0000
+    #   triggerdeploy finished   END_TIME=2023-06-15T05:07:06+0000
 
-  # do spot checks in the log, run Jenkins on your deployment if needed
+    # do spot checks in the log, run Jenkins on your deployment if needed
 
 * Test scenario 2, from your PR to later changes
 
 .. code-block:: shell
 
-  # go to the other checkout to trigger autodeploy
-  cd birdhouse-deploy-trigger/birdhouse
+    # go to the other checkout to trigger autodeploy
+    cd birdhouse-deploy-trigger/birdhouse
 
-  # add any bogus commit to trigger autodeploy again
-  echo >> README.rst
-  git add README.rst
-  git commit -m "trigger autodeploy"
-  git push
+    # add any bogus commit to trigger autodeploy again
+    echo >> README.rst
+    git add README.rst
+    git commit -m "trigger autodeploy"
+    git push
 
-  # now that the remote "${USER}-test" branch differs from the local "${USER}-test" branch in the birdhouse-deploy repo,
-  # the autodeploy mechanism will detect that the remote branch has changed and attempt to update the local branch
+    # now that the remote "${USER}-test" branch differs from the local "${USER}-test" branch in the birdhouse-deploy repo,
+    # the autodeploy mechanism will detect that the remote branch has changed and attempt to update the local branch
 
-  # follow logs, check for errors
-  tail -f ${BIRDHOUSE_LOG_DIR}/autodeploy.log
+    # follow logs, check for errors
+    tail -f ${BIRDHOUSE_LOG_DIR}/autodeploy.log
 
 * Test done, clean up the bogus ``${USER}-test`` branch and optionally relax ``BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY``
 
 .. code-block:: shell
 
-  # go to the other checkout to trigger autodeploy
-  cd birdhouse-deploy-trigger/birdhouse
+    # go to the other checkout to trigger autodeploy
+    cd birdhouse-deploy-trigger/birdhouse
 
-  # go to master so we can delete the ${USER}-test branch
-  git checkout master
-  git push origin --delete ${USER}-test
-  git branch -D ${USER}-test
+    # go to master so we can delete the ${USER}-test branch
+    git checkout master
+    git push origin --delete ${USER}-test
+    git branch -D ${USER}-test
 
-  # go to the main checkout
-  cd birdhouse-deploy/birdhouse
+    # go to the main checkout
+    cd birdhouse-deploy/birdhouse
 
-  # go to YOUR_PR_BRANCH so we can delete the ${USER}-test branch
-  git checkout YOUR_PR_BRANCH
-  git branch -D ${USER}-test
+    # go to YOUR_PR_BRANCH so we can delete the ${USER}-test branch
+    git checkout YOUR_PR_BRANCH
+    git branch -D ${USER}-test
 
-  # edit env.local and change BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to something less frequent to save your cpu
-  # do not remove the scheduler component from the stack yet or the next command will fail
+    # edit env.local and change BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to something less frequent to save your cpu
+    # do not remove the scheduler component from the stack yet or the next command will fail
 
-  # recreate scheduler container for new BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to be effective
-  birdhouse compose stop scheduler && birdhouse compose rm -vf scheduler && birdhouse compose up -d
+    # recreate scheduler container for new BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY to be effective
+    birdhouse compose stop scheduler && birdhouse compose rm -vf scheduler && birdhouse compose up -d
 
-  # optionally edit env.local to remove the scheduler component from the stack
-  # then remove the running scheduler container
-  birdhouse compose up -d --remove-orphans
+    # optionally edit env.local to remove the scheduler component from the stack
+    # then remove the running scheduler container
+    birdhouse compose up -d --remove-orphans
 
+
+.. |components-monitoring| replace:: ``./components/monitoring``
+.. _components-monitoring:
 .. _Monitoring:
 
 Monitoring
@@ -371,7 +407,7 @@ This way, we do not need to share the ``MAGPIE_ADMIN_USERNAME`` user account and
 How to Enable the Component
 ---------------------------
 
-- Edit ``env.local`` (a copy of `env.local.example`_ (:download:`download <../env.local.example>`))
+- Edit ``env.local`` (a copy of |env.local.example|_)
 
   - Add "./components/monitoring" to ``BIRDHOUSE_EXTRA_CONF_DIRS``
   - Set ``GRAFANA_ADMIN_PASSWORD`` to login to Grafana
@@ -385,8 +421,11 @@ How to Enable the Component
     - ``ALERTMANAGER_EXTRA_RECEIVERS`` to add more receivers than the admin emails
 
   - Alert thresholds can be customized by setting the various ``PROMETHEUS_*_ALERT``
-    vars in ``env.local``.  The list of ``PROMETHEUS_*_ALERT`` vars are in
-    monitoring_default.env_ (:download:`download <monitoring/default.env>`).
+    vars in ``env.local``.  The list of ``PROMETHEUS_*_ALERT`` vars are in |monitoring_default.env|_.
+
+.. |monitoring_default.env| replace:: ``monitoring/default.env``
+.. _monitoring_default.env: monitoring/default.env
+
 
 
 Grafana Dashboard
@@ -457,11 +496,13 @@ Prometheus stores metrics for 90 days by default. This may be sufficient for som
 some metrics for longer. In order to store certain metrics for a longer than 90 days, you can enable the following
 additional components:
 
-- :ref:`prometheus-longterm-metrics`: a second Prometheus instance used to collect the metrics that you want to store longterm
-- :ref:`thanos`: a service that enables more efficient storage of the metrics collected by the :ref:`prometheus-longterm-metrics`
-  component.
-- :ref:`prometheus-longterm-rules`: adds some example rules to the monitoring Prometheus instance (the one deployed by this `monitoring`
-  component) that can be stored longterm by the `prometheus-longterm-metrics` component.
+- |optional-components-prometheus-longterm-metrics|_: a second Prometheus instance used to collect the metrics
+  that you want to store longterm
+- |optional-components-thanos|_: a service that enables more efficient storage of the metrics collected by
+  the |optional-components-prometheus-longterm-metrics|_ component.
+- |optional-components-prometheus-longterm-rules|_: adds some example rules to the monitoring Prometheus instance
+  (the one deployed by this |components-monitoring|_) that can be stored longterm by
+  the |optional-components-prometheus-longterm-metrics|_ component.
 
 .. note::
     A separate prometheus instance is necessary since the retention time for prometheus metrics is set at the
@@ -473,32 +514,43 @@ If some or all of these additional components are enabled, they interact in the 
 longer than 90 days:
 
 1.
-  - `recording rules`_ are added to the monitoring Prometheus instance (the one deployed by this `monitoring` component). These
-    rules are any that have the `longterm-metrics` label.
+  - `recording rules`_ are added to the monitoring Prometheus instance (the one deployed by |components-monitoring|_).
+    These rules are any that have the ``longterm-metrics`` label.
   - The metrics described by these rules are collected/calculated by the monitoring Prometheus instance. The monitoring Prometheus
     instance treats these rules the same as any other (ie. only stores them for 90 days by default).
-  - To enable some example longterm `recording rules`_, enable the :ref:`prometheus-longterm-rules` component. You can also choose
-    to create your own rules (see :ref:`prometheus-longterm-metrics` for details on how to create these longterm metrics rules).
+  - To enable some example longterm `recording rules`_, enable the |optional-components-prometheus-longterm-rules|_ component. You can also choose
+    to create your own rules (see |optional-components-prometheus-longterm-metrics|_ for details on how to create these longterm metrics rules).
 2.
-  - The :ref:`prometheus-longterm-metrics` Prometheus instance collects/copies only the rules with the `longterm-metrics` label from the
+  - The |optional-components-prometheus-longterm-metrics|_ Prometheus instance collects/copies only the rules with the `longterm-metrics` label from the
     monitoring Prometheus instance.
-  - The :ref:`prometheus-longterm-metrics` Prometheus instance stores only these metrics for a custom duration (can be longer than
+  - The |optional-components-prometheus-longterm-metrics|_ Prometheus instance stores only these metrics for a custom duration (can be longer than
     90 days).
 3.
-  - The :ref:`thanos` component can be deployed alongside the :ref:`prometheus-longterm-metrics` Prometheus instance in order to store
-    the metrics that the :ref:`prometheus-longterm-metrics` Prometheus instance has already collected.
-  - The :ref:`thanos` component collects the metrics collected by the :ref:`prometheus-longterm-metrics` Prometheus instance and
+  - The |optional-components-thanos|_ component can be deployed alongside the
+    |optional-components-prometheus-longterm-metrics|_ Prometheus instance in order to store
+    the metrics that the |optional-components-prometheus-longterm-metrics|_ Prometheus instance has already collected.
+  - The |optional-components-thanos|_ component collects the metrics collected by
+    the |optional-components-prometheus-longterm-metrics|_ Prometheus instance and
     stores them in an S3 object store.
-  - The :ref:`thanos` object store stores the metrics more efficiently, meaning that metrics can be stored for even longer and they'll
-    take up less disk space than if they were just stored by the :ref:`prometheus-longterm-metrics` Prometheus instance.
+  - The |optional-components-thanos|_ object store stores the metrics more efficiently, meaning that metrics can
+    be stored for even longer and they'll
+    take up less disk space than if they were just stored by the |optional-components-prometheus-longterm-metrics|_
+    Prometheus instance.
 
 .. note::
 
-  It is possible to deploy the :ref:`prometheus-longterm-metrics` Prometheus instance and the :ref:`thanos` instance on a different
-  machine than the monitoring Prometheus instance. However, note that both the :ref:`prometheus-longterm-metrics` and :ref:`thanos`
-  components *must* be deployed on the same machine (if both are in use). Also note that this is untested and may require serious
-  troubleshooting to work properly.
+    It is possible to deploy the |optional-components-prometheus-longterm-metrics|_ Prometheus instance and
+    the |optional-components-thanos|_ instance on a different machine than the monitoring Prometheus instance.
+    However, note that both the |optional-components-prometheus-longterm-metrics|_ and |optional-components-thanos|_
+    components *must* be deployed on the same machine (if both are in use). Also note that this is untested and may
+    require serious troubleshooting to work properly.
 
+.. |optional-components-prometheus-longterm-metrics| replace:: ``./optional-components/prometheus-longterm-metrics``
+.. _optional-components-prometheus-longterm-metrics: ../optional-components/README.rst#prometheus-longterm-metrics
+.. |optional-components-prometheus-longterm-rules| replace:: ``./optional-components/prometheus-longterm-rules``
+.. _optional-components-prometheus-longterm-rules: ../optional-components/README.rst#prometheus-longterm-rules
+.. |optional-components-thanos| replace:: ``./optional-components/thanos``
+.. _optional-components-thanos: ../optional-components/README.rst#thanos
 .. _recording rules: https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/
 
 Weaver
@@ -600,11 +652,6 @@ the number of returned headers and their representation in the responses.
 .. _Weaver OpenAPI: https://pavics-weaver.readthedocs.io/en/latest/api.html
 .. _weaver/default.env: ./weaver/default.env
 .. _OGC API - Processes: https://github.com/opengeospatial/ogcapi-processes
-.. _env.local.example: ../env.local.example
-.. _fix-write-perm: ../deployment/fix-write-perm
-.. _deploy.sh: ../deployment/deploy.sh
-.. _triggerdeploy.sh: ../deployment/triggerdeploy.sh
-.. _monitoring_default.env: monitoring/default.env
 
 
 Cowbird
@@ -777,6 +824,9 @@ How to Enable the Component
   See the `PyDGGS-API implementation <https://github.com/LandscapeGeoinformatics/pydggsapi>`_ for more details.
 - Optionally, configure variables in ``./components/dggs/default.env`` via ``env.local`` to customize the service.
 
+
+.. |components-canarie-api| replace:: ``./components/canarie-api``
+.. _components-canarie-api:
 
 Canarie-API
 ===========

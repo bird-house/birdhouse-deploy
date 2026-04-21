@@ -2,14 +2,34 @@ Optional components
 ===================
 
 .. shared references by multiple components definitions
-.. |components-magpie| replace:: `Magpie`
+.. the short form refers to the "header" of the components section, for reference of a service by name
+.. the long form can be used to refer to the component itself, such as when to include it in a configuration
+.. links to section anchors use HTML form purposely to work both on GitHub and Sphinx rendered documentation
+.. see 'docs/source/conf.py:convert_rst_links_to_html'
+.. |magpie| replace:: `Magpie`
+.. _magpie: ../components/README.rst#magpie
+.. |components-magpie| replace:: ``./components/magpie``
 .. _components-magpie: ../components/README.rst#magpie
-.. |components-weaver| replace:: `Weaver`
+.. |weaver| replace:: `Weaver`
+.. _weaver: ../components/README.rst#weaver
+.. |components-weaver| replace:: ``./components/weaver``
 .. _components-weaver: ../components/README.rst#weaver
+.. |stac| replace:: `STAC`
+.. _stac: ../components/README.rst#stac
+.. |components-stac| replace:: ``./components/stac``
+.. _components-stac: ../components/stac
+.. |dggs| replace:: `DGGS`
+.. _dggs: ../components/README.rst#dggs
+.. |components-dggs| replace:: ``./components/dggs``
+.. _components-dggs: ../components/README.rst#dggs
+.. |thredds| replace:: `THREDDS`
+.. _thredds: ../components/README.rst#thredds
 .. |components-proxy| replace:: ``proxy``
 .. _components-proxy: ../components/README.rst#proxy
 .. |env.local.example| replace:: ``env.local.example``
 .. _env.local.example: ../env.local.example
+.. |components-wps_outputs-volume| replace:: ``./components/wps_outputs-volume``
+.. _components-wps_outputs-volume: ../components/wps_outputs-volume
 
 .. contents::
 
@@ -27,8 +47,7 @@ the end user).
 This assume all the WPS services are public.  If not the case, make a copy of
 this config and adjust accordingly.
 
-How to enable this config in ``env.local`` (a copy from env.local.example_
-(:download:`download </birdhouse/env.local.example>`)):
+How to enable this config in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-canarie-monitoring|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -59,7 +78,7 @@ Enable automatic deployment.
 
 Additional description of this can be found in the :ref:`Automated Deployment` section.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-scheduler-job-autodeploy|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -72,9 +91,24 @@ Scheduler Job - Log Rotate
 
 Automatically rotate and manage the birdhouse log files located in the directory specified by ``BIRDHOUSE_LOG_DIR``.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-scheduler-job-logrotate|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+
+
+.. |optional-components-scheduler-job-logrotate-nginx| replace:: ``./optional-components/scheduler-job-logrotate-nginx``
+.. _optional-components-scheduler-job-logrotate-nginx:
+
+Scheduler Job - Log Rotate Nginx
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creates a configuration to automatically rotate and manage the |components-proxy|_ log files.
+It is relevant to rotate those files when they are parsed by |components-canarie-api|_ for service access
+and monitoring purposes, to avoid parsing excessively large log files.
+
+How to enable in ``env.local`` (a copy from |env.local.example|_):
+
+* Add |optional-components-scheduler-job-logrotate-nginx|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 .. |optional-components-scheduler-job-notebookdeploy| replace:: ``./optional-components/scheduler-job-notebookdeploy``
@@ -88,7 +122,7 @@ through the ``jupyterhub`` component.
 
 This requires that the ``jupyterhub`` component is also enabled.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-scheduler-job-notebookdeploy|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -101,7 +135,7 @@ Scheduler Job - Renew LetsEncrypt SSL Certificate
 
 Automatically renew an SSL certificate issued by LetsEncrypt on a schedule.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-scheduler-job-renew-letsencrypt-ssl-cert|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -116,7 +150,7 @@ Automatically deploy xclim test data to the thredds server and keeps it up to da
 
 This requires that the ``thredds`` component is also enabled.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-scheduler-job-deploy-xclim-testdata|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -131,7 +165,7 @@ Automatically deploy test data used by the ``raven`` WPS component to the thredd
 
 This requires that the ``thredds`` and ``raven`` components also be enabled.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-scheduler-job-deploy-raven-testdata|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -148,7 +182,7 @@ automatically by those components.
 Currently supports removing WPS output files from the ``finch``, ``raven``, and ``hummingbird`` components
 as well as log files from the ``thredds`` component.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-scheduler-job-clean-old-files|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -164,7 +198,7 @@ or a docker volume.
 
 This uses the ``bin/birdhouse backup create`` command (see additional information in the :ref:`backups` documentation).
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-scheduler-job-backup|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -182,29 +216,26 @@ alternative configuration of existing birds.
 No Postgres DB configured.  If need Postgres DB, use generic_bird component
 instead.
 
-How to enable Emu in ``env.local`` (a copy from env.local.example_
-(:download:`download </birdhouse/env.local.example>`)):
+How to enable Emu in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-emu|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 * Optionally set ``EMU_IMAGE``,
   ``EMU_NAME``, ``EMU_INTERNAL_PORT``,
   ``EMU_WPS_OUTPUTS_VOL`` in ``env.local`` for further customizations.
-  Default values are in |emu-default-env|_
-  (:download:`download </birdhouse/optional-components/emu/default.env>`).
+  Default values are in |emu-default-env|_.
+
+.. |emu-default-env| replace:: ``optional-components/emu/default.env``
+.. _emu-default-env: emu/default.env
 
 Emu service will be available at ``http://BIRDHOUSE_FQDN:EMU_PORT/wps`` or
 ``https://BIRDHOUSE_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/EMU_NAME`` where
-``BIRDHOUSE_FQDN``\ , ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
+``BIRDHOUSE_FQDN``, ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
 in your ``env.local``.
 
 Magpie will be automatically configured to give complete public anonymous
 access for this Emu WPS service.
 
-CANARIE monitoring will also be automatically configured for this Emu WPS
-service.
-
-.. |emu-default-env| replace:: ``optional-components/emu/default.env``
-.. _emu-default-env: emu/default.env
+CANARIE monitoring will also be automatically configured for this Emu WPS service.
 
 
 .. |optional-components-testthredds| replace:: ``./optional-components/testthredds``
@@ -213,15 +244,17 @@ service.
 A second THREDDS server for testing
 -----------------------------------
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-testthredds|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 * Optionally set ``TESTTHREDDS_IMAGE``\ , ``TESTTHREDDS_PORT``\ ,
   ``TESTTHREDDS_CONTEXT_ROOT``\ , ``TESTTHREDDS_WARFILE_NAME``\ ,
   ``TESTTHREDDS_INTERNAL_PORT``\ , ``TESTTHREDDS_NAME``\ ,  in ``env.local`` for further
-  customizations.  Default values are in |testthredds-default-env|_
-  (:download:`download </birdhouse/optional-components/testthredds/default.env>`).
+  customizations.  Default values are in |testthredds-default-env|_.
+
+.. |testthredds-default-env| replace:: ``optional-components/testthredds/default.env``
+.. _testthredds-default-env: testthredds/default.env
 
 Test THREDDS service will be available at
 ``http://BIRDHOUSE_FQDN:TESTTHREDDS_PORT/TESTTHREDDS_CONTEXT_ROOT`` or
@@ -232,11 +265,11 @@ Use same docker image as regular THREDDS by default but can be customized.
 
 New container have new ``TestDatasets`` with volume-mount to ``/data/testdatasets``
 on the host.  So your testing ``.nc`` and ``.ncml`` files should be added to
-``/data/testdatasets`` on the host for them to show up on this Test THREDDs
+``/data/testdatasets`` on the host for them to show up on this Test THREDDS
 server.
 
 ``TestWps_Output`` dataset is for other WPS services to write to, similar to
-``birdhouse/wps_outputs`` dataset in the production THREDDs.  With Emu, add
+``birdhouse/wps_outputs`` dataset in the production THREDDS.  With Emu, add
 ``export EMU_WPS_OUTPUTS_VOL=testwps_outputs`` to ``env.local`` for Emu to write to
 ``TestWps_Output`` dataset.
 
@@ -245,9 +278,6 @@ Nginx proxy.
 
 CANARIE monitoring will also be automatically configured for this second
 THREDDS server.
-
-.. |testthredds-default-env| replace:: ``optional-components/testthredds/default.env``
-.. _testthredds-default-env: testthredds/default.env
 
 
 .. |optional-components-generic-bird| replace:: ``./optional-components/generic_bird``
@@ -259,15 +289,17 @@ A generic bird WPS service
 Can be used to quickly deploy any birds temporarily without changing code.
 Good to preview new birds or test alternative configuration of existing birds.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-generic-bird|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 * Optionally set ``GENERIC_BIRD_IMAGE``, ``GENERIC_BIRD_PORT``,
   ``GENERIC_BIRD_NAME``, ``GENERIC_BIRD_INTERNAL_PORT``, and
   ``GENERIC_BIRD_POSTGRES_IMAGE`` in ``env.local`` for further customizations.
-  Default values are in |generic-bird-default-env|_
-  (:download:`download </birdhouse/optional-components/generic_bird/default.env>`).
+  Default values are in |generic-bird-default-env|_.
+
+.. |generic-bird-default-env| replace:: ``optional-components/generic_bird/default.env``
+.. _generic-bird-default-env: generic_bird/default.env
 
 The WPS service will be available at ``http://BIRDHOUSE_FQDN:GENERIC_BIRD_PORT/wps``
 or ``https://BIRDHOUSE_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME`` where
@@ -287,9 +319,6 @@ access for this WPS service.
 
 CANARIE monitoring will also be automatically configured for this WPS service.
 
-.. |generic-bird-default-env| replace:: ``optional-components/generic_bird/default.env``
-.. _generic-bird-default-env: generic_bird/default.env
-
 
 .. |optional-components-wps-healthchecks| replace:: ``./optional-components/wps-healthchecks``
 .. _optional-components-wps-healthchecks:
@@ -305,7 +334,7 @@ Since the various WPS services are executed using a different applications and d
 Docker images, the method required to validate their status can vary a lot for each case. This optional component
 defines all the appropriate ``healthcheck`` for all known WPS services in Birdhouse.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-wps-healthchecks|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -332,12 +361,14 @@ By enabling this component, all WPS services and data on THREDDS are completely 
 This optional component is required for the test suite at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-all-public-access|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
-The anonymous user will now have all the permissions described in |magpie-public-perms|_
-(:download:`download </birdhouse/optional-components/all-public-access/all-public-access-magpie-permission.cfg>`).
+The anonymous user will now have all the permissions described in |magpie-public-perms|_.
+
+.. |magpie-public-perms| replace:: ``optional-components/all-public-access/all-public-access-magpie-permission.cfg``
+.. _magpie-public-perms: ./all-public-access/all-public-access-magpie-permission.cfg
 
 .. note::
     If using the |components-stac|_ feature, the corresponding |optional-components-stac-public-access|_
@@ -345,21 +376,12 @@ The anonymous user will now have all the permissions described in |magpie-public
     This optional component is kept separate since |components-stac|_ is not required by default, and therefore
     cannot be enforced as a component dependency.
 
-.. links to section anchors use HTML form purposely to work both on GitHub and Sphinx rendered documentation
-.. see 'docs/source/conf.py:convert_rst_links_to_html'
 .. note::
     Enabling |optional-components-all-public-access|_ *could* impact behaviour of other components
     such as |components-wps_outputs-volume|_ and |optional-components-secure-data-proxy|_ if those are also included.
     Please refer to their respective sections
     (`WPS Outputs Volume <../components/README.rst#wps-outputs-volume>`_
     and `Secure Data Proxy <#control-secured-access-to-wps-outputs>`_) for more details.
-
-.. |magpie-public-perms| replace:: ``optional-components/all-public-access/all-public-access-magpie-permission.cfg``
-.. _magpie-public-perms: ./all-public-access/all-public-access-magpie-permission.cfg
-.. |components-stac| replace:: ``./components/stac``
-.. _components-stac: ../components/stac
-.. |components-wps_outputs-volume| replace:: ``./components/wps_outputs-volume``
-.. _components-wps_outputs-volume: ../components/wps_outputs-volume
 
 
 .. |optional-components-secure-data-proxy| replace:: ``./optional-components/secure-data-proxy``
@@ -378,7 +400,7 @@ This optional component provides a configurable location to serve such data.
     - |components-wps_outputs-volume|_
     - |optional-components-stac-data-proxy|_
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-secure-data-proxy|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 * Optionally, set ``SECURE_DATA_PROXY_ROOT`` to an alternate directory location on the machine to mount in ``proxy``.
@@ -418,7 +440,7 @@ request user can obtain access to it.
 
 .. image:: secure-data-proxy/images/magpie-service.png
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-secure-data-proxy|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -442,7 +464,7 @@ THREDDS resources to limit their access publicly. This permission configuration 
 `magpie-public-access-config`_ ones to formulate specific permissions schemes that matches your data structure and
 desired access rules.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-secure-thredds|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -469,7 +491,7 @@ On the other hand, accessing them remotely can be practical for testing such as 
 
 This component is intended to automatically map the databases (``PostgreSQL``, ``MongoDB``) as such.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-database-external-ports|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
@@ -483,18 +505,18 @@ Test Permissions for Weaver
 --------------------------------------------------------
 
 In order to test functionalities offered by |components-weaver|_ component, this optional component
-adds |components-magpie|_ permissions to a test server in order to grant access to specific endpoints.
+adds |magpie|_ permissions to a test server in order to grant access to specific endpoints.
 This will open public access to specified resources in file |test-weaver-perms|_.
 
 .. warning::
-    It also disables SSL verification for the corresponding process that is granted public access to allow `Weaver` to
+    It also disables SSL verification for the corresponding process that is granted public access to allow |weaver|_ to
     requests its WPS execution through the providers reference without error. This is mainly to ignore test servers
     self-signed SSL certificates. This should be avoided on production servers by using a real and valid SSL certificate
     and leaving verification active to avoid man-in-the-middle attacks.
 
 This optional component is intended to be employed in combination with test notebook |pavics-sdi-weaver|_.
 
-How to enable in ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`):
+How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-test-weaver|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``
 
@@ -523,8 +545,8 @@ The old ``/geoserver`` path is still available, so current workflows are not aff
 
 The new ``/geoserver-secured`` path is available for testing once the optional component is activated.
 
-To test the ``geoserver-secured`` service through |components-magpie|_, each workspace needs to be added to the new service and then
-permissions can be set on a per-workspace or even layer basis.
+To test the ``geoserver-secured`` service through |magpie|_, each workspace needs to be added to the new service
+and then permissions can be set on a per-workspace or even layer basis.
 
 A ``GetFeature`` request for a layer in a public workspace (named public in this example) will succeed for any user
 using any of these two request types:
@@ -533,7 +555,7 @@ using any of these two request types:
 * {BASE_URL}/geoserver-secured/public/wfs?version=2.0.0&request=GetFeature&typeNames={LAYER_NAME}
 
 Whereas access to a private workspace will require a user or group be given explicit permissions through
-the |components-magpie|_ interface.
+the |magpie|_ interface.
 
 See |geoserver_secured_pr|_ for more details.
 
@@ -570,16 +592,19 @@ correctly. This component also customizes the JupyterHub config according to the
 Populate STAC catalog with sample data
 --------------------------------------------------------
 
-STAC Populator contains the workflow logic to ingest sample STAC item into the STAC catalog.
+|stac-populator|_ contains the workflow logic to ingest sample |stac|_ Item and Collection into the STAC catalog.
+
+.. |stac-populator| replace:: `STAC Populator`
+.. _stac-populator: https://github.com/crim-ca/stac-populator
 
 Once enabled in the stack, this component will run automatically on stack boot time in order to populate the catalog.
-On stack initialization, STAC item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds in order
+On stack initialization, STAC Item generation workflows will run for ``STAC_ASSET_GENERATOR_TIMEOUT`` seconds in order
 to populate the catalog with sample data. Change this timeout as needed, as there are no impact on the stack boot,
 except time required to feed the catalog.
 
 To enable this optional-component:
 
-- Edit ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`)
+- Edit ``env.local`` (a copy from |env.local.example|_)
 - Add |optional-components-stac-populator|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
@@ -589,11 +614,11 @@ To enable this optional-component:
 Allow public access to STAC catalog
 --------------------------------------------------------
 
-STAC Public Access allows STAC catalog to be accessed by anyone, without authentication.
+STAC Public Access allows |STAC|_ catalog to be accessed by anyone, without authentication.
 
 To enable this optional-component:
 
-- Edit ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`)
+- Edit ``env.local`` (a copy from |env.local.example|_)
 - Add |optional-components-stac-public-access|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
@@ -612,7 +637,7 @@ location of new data, or to make a new local replication of remote data.
 
 To enable this optional-component:
 
-- Edit ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`)
+- Edit ``env.local`` (a copy from |env.local.example|_)
 - Add |optional-components-stac-data-proxy|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 - Optionally, add any other relevant components to control access as desired (see below).
 
@@ -641,13 +666,13 @@ Following are the possible combinations and obtained behaviors:
       - All data under ``STAC_DATA_PROXY_URL_PATH`` is protected (by default, admin-only), but can be granted access
         on a per-user, per-group and per-resource basis according to permissions applied by the administrator.
         Since STAC-API is not made public by default, the administrator can decide whether they grant access only to
-        STAC metadata (Catalog, Collection, Items) with permission applied on the ``stac`` Magpie service, only to
+        STAC metadata (Catalog, Collection, Items) with permission applied on the ``stac`` |magpie|_ service, only to
         assets data with permission under the ``stac-data-proxy``, or both.
 
     * - All of |optional-components-stac-data-proxy|_, |optional-components-stac-public-access|_ and
         |optional-components-secure-data-proxy|_ are enabled.
       - Similar to the previous case, allowing full authorization management control by the administrator, but contents
-        are publicly accessible by default. To revoke access, a Magpie administrator has to apply a ``deny`` permission.
+        are publicly accessible by default. To revoke access, a |magpie|_ administrator has to apply a ``deny`` permission.
 
 
 .. |optional-components-stac-db-persist| replace:: ``./optional-components/stac-db-persist``
@@ -663,7 +688,7 @@ as drive mount bind. By default, this value will be set to ``${BIRDHOUSE_DATA_PE
 
 To enable this optional-component:
 
-- Edit ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`)
+- Edit ``env.local`` (a copy from |env.local.example|_)
 - Add |optional-components-stac-db-persist|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 - Optionally, configure any desired overrides for ``STAC_DB_PERSIST_DIR`` and/or ``BIRDHOUSE_DATA_PERSIST_ROOT``
   (note that setting ``BIRDHOUSE_DATA_PERSIST_ROOT`` affects other components using the same root directory).
@@ -703,7 +728,7 @@ To enable this optional-component:
 Use the DGGS sample data and configuration
 --------------------------------------------------------
 
-:ref:`components_dggs` requires a valid configuration and DGGRS-aligned data to start the API service.
+The |components-dggs|_ requires a valid configuration and data aligned with |DGGS|_ to start the API service.
 This sample definition provides a minimal example of such definition.
 
 In other circumstances, a custom definition would instead be employed with specific data sources, DGGRS definitions
@@ -711,14 +736,14 @@ and other metadata. This sample is provided with minimal details to get things w
 
 To enable this optional-component:
 
-- Edit ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`)
+- Edit ``env.local`` (a copy from |env.local.example|_)
 - Add |optional-components-dggs-data-sample|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Important
 ~~~~~~~~~~~~
 
 This component should not be employed if custom configurations are desired. Variables will conflict and override
-the definitions required by :ref:`components_dggs`.
+the definitions required by |components-dggs|_.
 
 
 .. |optional-components-x-robots-tag| replace:: ``./optional-components/x-robots-tag-header``
@@ -737,8 +762,7 @@ indexing and serving.
 .. seealso::
     https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag#directives
 
-How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.example`_
-(:download:`download </birdhouse/env.local.example>`)):
+How to enable X-Robots-Tag Header in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-x-robots-tag|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 * Optionally set ``X_ROBOTS_TAG_HEADER`` to an alternate directive as desired.
@@ -776,6 +800,7 @@ How to enable X-Robots-Tag Header in ``env.local`` (a copy from `env.local.examp
 
 .. |optional-components-prometheus-longterm-metrics| replace:: ``./optional-components/prometheus-longterm-metrics``
 .. _optional-components-prometheus-longterm-metrics:
+.. _prometheus-longterm-metrics:
 
 Prometheus Long-term Metrics
 ----------------------------
@@ -817,6 +842,7 @@ Enabling this component creates the additional endpoint ``/prometheus-longterm-m
 
 .. |optional-components-prometheus-longterm-rules| replace:: ``./optional-components/prometheus-longterm-rules``
 .. _optional-components-prometheus-longterm-rules:
+.. _prometheus-longterm-rules:
 
 Prometheus Long-term Rules
 --------------------------
@@ -870,9 +896,7 @@ For developers, to create a new parser that can be used to track log files:
          into a prometheus metric.
        * your line parser function should update one of the prometheus metrics you created previously.
 
-    For an example of a working log parser, see
-    |prometheus-log-parser-exporter|_
-    (:download:`download <birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py>`).
+    For an example of a working log parser, see |prometheus-log-parser-exporter|_.
 
 .. |prometheus-log-parser-exporter| replace:: ``birdhouse/optional-components/prometheus-log-parser/config/thredds/prometheus-log-exporter.py``
 .. _prometheus-log-parser-exporter: prometheus-log-parser/config/thredds/prometheus-log-exporter.py
@@ -957,7 +981,7 @@ It also creates an Nginx configuration that instructs the ``proxy`` service to w
 .. note::
 
     Because access logs are now being written to a regular file, enabling this component will also enable the
-    ``optional-components/scheduler-job-logrotate-nginx`` scheduler job to ensure that this file is rotated and that it will not
+    |optional-components-scheduler-job-logrotate-nginx|_ scheduler job to ensure that this file is rotated and that it will not
     get too big.
 
 .. warning::
@@ -1086,7 +1110,7 @@ For additional information regarding creating a custom robots.txt file see:
 
 To enable this optional-component:
 
-- Edit ``env.local`` (a copy from :download:`env.local.example </birdhouse/env.local.example>`)
+- Edit ``env.local`` (a copy from |env.local.example|_)
 - Add |optional-components-robots|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 .. _rfc9309: https://www.rfc-editor.org/rfc/rfc9309.html
