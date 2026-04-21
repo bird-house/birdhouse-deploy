@@ -22,6 +22,9 @@ The scheduler component runs specific jobs on a schedule. This is similar to usi
 service but this runs in docker containers and is specifically designed to interact with the
 Birdhouse stack.
 
+.. note::
+    The |components-scheduler|_ MUST
+
 Available jobs
 --------------
 

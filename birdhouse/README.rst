@@ -1,3 +1,5 @@
+Birdhouse Deployment
+====================
 
 .. shared references by multiple components definitions
 .. |bin-birdhouse| replace:: ``bin/birdhouse``
@@ -176,9 +178,9 @@ Resource usage monitoring (CPU, memory, ..) and alerting for the host and each
 of the containers can be enabled by following the |components-monitoring|_ instructions.
 
 .. |components-monitoring| replace:: ``components/monitoring``
-.. _components-monitoring: ./birdhouse/components/README.rst#monitoring
+.. _components-monitoring: ./components/README.rst#monitoring
 .. |components-scheduler| replace:: ``components/scheduler``
-.. _components-scheduler: ./birdhouse/components/README.rst#scheduler
+.. _components-scheduler: ./components/README.rst#scheduler
 
 To launch all the containers, use the following command:
 
