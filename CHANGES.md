@@ -32,6 +32,66 @@
 - STAC Populator: update to 
   [`crim-ca/stac-populator:0.15.0`](https://github.com/crim-ca/stac-populator/releases/tag/0.15.0).
 
+- Update long-term Prometheus metrics: replace `increase` by `rate` and rename metrics. 
+  Filter THREDDS downloads to keep only values larger than 0. 
+
+[2.26.4](https://github.com/bird-house/birdhouse-deploy/tree/2.26.4) (2026-04-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Avoid excessive command logging from `birdhouse/scripts/bootstrap-instance-for-testsuite` and related scripts.
+
+  Because `set -x` was used before invoking `read_configs` and all its nested calls which prints large list of variables
+  and component definitions to configure them, produced logs would reach excessive lengths (tens of thousands of lines)
+  before even reaching the relevant portion of the script to be debugged. The options are moved after the call and each
+  nested script reset its state to better manage their verbosity independently.
+
+  Fixes [#673](https://github.com/bird-house/birdhouse-deploy/issues/673).
+
+[2.26.3](https://github.com/bird-house/birdhouse-deploy/tree/2.26.3) (2026-04-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyter env: Updated jupyter image (`py312-260415`). The image has undergone some notable changes:
+
+  - The base Python version has been updated to Python3.12.
+  - The image now includes common build tools (`x86_64-conda-linux-gnu-{gcc|g++|gfortran}`, `make`, `cmake`) installed via `conda`.
+    They are exposed to the userspace via their expected tool names so that common build tools use them by default.
+  - The "birdy" `ipython` kernel has been removed. There are still two `conda` environments (`base` and `birdy`),
+    but the kernels offered to users are now `python` and the `xeus-python` kernels (`xpython` and `xpython-raw`).
+  - `jupyterlab` has been upgraded from v3.x to v4.x (v4.5.6). This allowed for the removal of several workarounds required
+    for legacy `jupyterlab` plugins. Modern `jupyterlab` plugin support no longer requires explicit build/install steps. 
+  - Updates to all Ouranos software libraries: `xclim` (v0.60.0), `xsdba` (v0.6.1), `xscen` (v0.14.0), `figanos` (v0.6.0)
+  - The latest `ravenpy` (v0.21.0) conda package now requires the `raven` model to be explicitly installed (`raven-hydro`).
+    This was done to more easily allow for users installing custom `raven` binaries in their environments.
+  - Most `PyPI`-based packages have been removed with the exception of new `jupyterlab` interface plugins (`jupyterlab-logout`
+    and `jupyterlab-theme-toggler`).
+
+  See [Ouranosinc/PAVICS-e2e-workflow-tests#161](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/161)
+  and [Ouranosinc/PAVICS-e2e-workflow-tests#157](https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests/pull/157)
+  for more info.
+
+[2.26.2](https://github.com/bird-house/birdhouse-deploy/tree/2.26.2) (2026-04-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- New `./optional-components/robots` in `2.26.0` broke the stack
+
+  Enabling `./optional-components/robots` result in the error `services must be a mapping` when
+  bringing up the stack with `birdhouse compose up -d`.
+
+  The new config var `ROBOTS_TXT_FILE` is not an env var so it is not visible to `docker compose`.
+
+- Display warning message for proxy log rotation properly
+
+  Since the `./optional-components/proxy-log-volume` can be enabled as a component dependency of
+  `./components/canarie-api` we should be checking for it's presence in `ALL_CONF_DIRS`. Previously
+  we were checking for it in `BIRDHOUSE_EXTRA_CONF_DIRS` which is manually set by the user and doesn't
+  include dynamically added components that are dependants of others.
+
 [2.26.1](https://github.com/bird-house/birdhouse-deploy/tree/2.26.1) (2026-04-09)
 ------------------------------------------------------------------------------------------------------------------
 

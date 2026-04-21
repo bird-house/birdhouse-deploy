@@ -108,8 +108,8 @@ SERVICES = {
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '2.26.1',
-            'releaseTime': '2026-04-09T17:22:18Z',
+            'version': '2.26.4',
+            'releaseTime': '2026-04-16T20:40:54Z',
             'institution': '${BIRDHOUSE_INSTITUTION}',
             'researchSubject': '${BIRDHOUSE_SUBJECT}',
             'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
@@ -141,8 +141,8 @@ PLATFORMS = {
             # NOTE:
             #   Below version and release time auto-managed by 'make VERSION=x.y.z bump'.
             #   Do NOT modify it manually. See 'Tagging policy' in 'birdhouse/README.rst'.
-            'version': '2.26.1',
-            'releaseTime': '2026-04-09T17:22:18Z',
+            'version': '2.26.4',
+            'releaseTime': '2026-04-16T20:40:54Z',
             'institution': '${BIRDHOUSE_INSTITUTION}',
             'researchSubject': '${BIRDHOUSE_SUBJECT}',
             'supportEmail': '${BIRDHOUSE_SUPPORT_EMAIL}',
