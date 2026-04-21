@@ -259,7 +259,6 @@ html_static_path = ['_static']
 html_extra_path = [
     # this README is purposely omitted
     # sphinx could complain that it is missing, but it gets handled by the post-operation that converts RST->HTML
-    # this file is special because GitHub refers to "birdhouse/", but is included by "deployment.rst" for the index
     #'birdhouse/README.rst',
     'birdhouse/env.local.example',
     'birdhouse/birdhouse-compose.sh',
