@@ -63,6 +63,12 @@ Scheduler Jobs
 All jobs depend on the |components-scheduler|_ component.
 Refer to its documentation for more details about the scheduler and its functionalities.
 
+.. note::
+
+    The |components-scheduler|_ MUST be added explicitly to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+    The respective jobs will NOT auto-include it as ``COMPONENT_DEPENDENCIES`` in order to allow quick configuration
+    and activation/deactivation of the main component without the need to configure each job individually.
+
 Following are the available jobs that are predefined for convenience.
 Further custom jobs can be added by following the instructions in the |components-scheduler|_ documentation.
 
