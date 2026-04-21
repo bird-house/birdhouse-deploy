@@ -2,12 +2,20 @@ services:
   thredds:
     image: ${THREDDS_IMAGE}
     container_name: thredds
-    env_file:
-      - ./components/thredds/thredds.env
     environment:
       # for reconstructing proper URL back to user when Thredds behind proxy
       # because Twitcher eats the "Host" http header set by Nginx
       BIRDHOUSE_FQDN_PUBLIC: $BIRDHOUSE_FQDN_PUBLIC
+      THREDDS_XMX_SIZE: $THREDDS_XMX_SIZE
+      THREDDS_XMS_SIZE: $THREDDS_XMS_SIZE
+      TDM_PW: $THREDDS_TDM_PW
+      TDS_HOST: $THREDDS_TDS_HOST
+      TDM_XMX_SIZE: $THREDDS_TDM_XMX_SIZE
+      TDM_XMS_SIZE: $THREDDS_TDM_XMS_SIZE
+      TDS_CONTENT_ROOT_PATH: $THREDDS_TDS_CONTENT_ROOT_PATH
+      TOMCAT_USER_ID: $THREDDS_TOMCAT_USER_ID
+      TOMCAT_GROUP_ID: $THREDDS_TOMCAT_GROUP_ID
+      CATALINA_OPTS: $THREDDS_CATALINA_OPTS
     volumes:
       - thredds_persistence:/usr/local/tomcat/content/thredds
       - ${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}

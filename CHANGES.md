@@ -15,7 +15,24 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Thredds: enable Dap4 and CdmRemote data access protocols and add extra customization options
+
+  Existing dodsC is Dap2 (old, getting deprecated) and cdmremote appears
+  to have some performance gain, according to
+  https://deepwiki.com/Unidata/netcdf-java/6.3-cdm-remote-protocol
+
+  We currently do not have any example use of these 2 new protocols but
+  have to enable them so we can start experimenting with them.
+
+  Previously all the env var customizations for Thredds and TestThredds are
+  hardcoded.  Now they are all configurable via `env.local`, like other configs.
+
+  Added a new config var `THREDDS_CONFIG_XML_EXTRA` for customizing the
+  threddsConfig.xml file and a sample usage is provided in `env.local.example` to
+  increase the OpenDap binary response max size to avoid having to chunk small datasets.
+
 
 [2.27.0](https://github.com/bird-house/birdhouse-deploy/tree/2.27.0) (2026-04-21)
 ------------------------------------------------------------------------------------------------------------------
