@@ -742,11 +742,10 @@ To enable this optional-component:
 - Edit ``env.local`` (a copy from |env.local.example|_)
 - Add |optional-components-dggs-data-sample|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
-Important
-~~~~~~~~~~~~
+.. warning::
 
-This component should not be employed if custom configurations are desired. Variables will conflict and override
-the definitions required by |components-dggs|_.
+    This component should not be employed if custom configurations are desired.
+    Variables will conflict and override the definitions required by |components-dggs|_.
 
 
 .. |optional-components-x-robots-tag| replace:: ``./optional-components/x-robots-tag-header``

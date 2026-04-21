@@ -1,13 +1,26 @@
-.. contents::
 
+.. shared references by multiple components definitions
 .. |bin-birdhouse| replace:: ``bin/birdhouse``
 .. _bin-birdhouse: ../bin/birdhouse
 .. |env.local.example| replace:: ``env.local.example``
 .. _env.local.example: ./env.local.example
 .. |birdhouse-compose.sh| replace:: ``birdhouse-compose.sh``
-.. _birdhouse-compose.sh: ./scripts/birdhouse-compose.sh
+.. _birdhouse-compose.sh: ./birdhouse-compose.sh
+.. |birdhouse-default.env| replace:: ``birdhouse/default.env``
+.. _birdhouse-default.env: ./default.env
+.. |birdhouse-docker-compose.yml| replace:: ``birdhouse/docker-compose.yml``
+.. _birdhouse-docker-compose.yml: ./docker-compose.yml
 .. |read-configs.include.sh| replace:: ``read-configs.include.sh``
-.. _read-configs.include.sh: ./scripts/read-configs.include.sh
+.. _read-configs.include.sh: ./read-configs.include.sh
+.. |components| replace:: ``components/``
+.. _components: ./components/README.rst
+.. |optional-components| replace:: ``optional-components/``
+.. _optional-components: ./optional-components/README.rst
+.. |twitcher| replace:: Twitcher
+.. _twitcher: ./components/README.rst#twitcher
+
+
+.. contents::
 
 Docker instructions
 -------------------
@@ -108,26 +121,32 @@ Quick-start
 Further explanations
 ^^^^^^^^^^^^^^^^^^^^
 
-To run ``docker-compose`` for Birdhouse, the |bin-birdhouse|_ file can be run with the ``compose`` argument.
-This will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration files
-".template", and run ``docker-compose`` with all the command line arguments after the ``compose`` argument.
+To run ``docker-compose`` for Birdhouse, the |bin-birdhouse|_ file can be run with the ``compose`` command.
+This will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration
+``".template"`` files, and run ``docker-compose`` with all the command line arguments after the ``compose`` command.
 See |env.local.example|_ for more details on what can go into the ``env.local`` file.
 
-Most variables that can be set in the local environment file (``env.local`` by default) can also be specified as environment variables when running ``bin/birdhouse``
+Most variables that can be set in the local environment file (``env.local`` by default, a copy of |env.local.example|_)
+can also be specified as environment variables when running ``bin/birdhouse``
 commands. Environment variables will take precedence over those specified in the ``env.local`` file.
 
-If the file ``env.local`` is somewhere else, symlink it here, next to `docker-compose.yml <docker-compose.yml>`_ (:download:`download </birdhouse/docker-compose.yml>`) because many scripts assume this location.
-If autodeploy scheduler job is enabled, the folder containing the ``env.local`` file needs to be added to `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`.
+If the file ``env.local`` is somewhere else, symlink it here, next to |birdhouse-docker-compose.yml|_ because many scripts assume this location.
+If autodeploy scheduler job is enabled, the folder containing the ``env.local`` file needs to be added to ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``.
 
 To follow infrastructure-as-code, it is encouraged to source control the above
-`env.local` file and any override needed to customized this Birdhouse deployment
+``env.local`` file and any override needed to customized this Birdhouse deployment
 for your organization.  Note this ``env.local`` file might contains **sensitive**
 infos like passwords so it should be in a limited access private source control
 repo, ideally not on the internet.
 
-For an example of possible override, see how the `emu service <optional-components/emu/docker-compose-extra.yml>`_ (:download:`download </birdhouse/optional-components/emu/docker-compose-extra.yml>`)
-(`README <optional-components/README.rst#emu-wps-service-for-testing>`_) can be optionally added to the deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_.
-Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repo.
+For an example of possible override, see how the |emu-service-compose|_ (details: |optional-components-emu|_)
+can be optionally added to the deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_.
+Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repository.
+
+.. |emu-service-compose| replace:: ``emu`` service configuration
+.. _emu-service-compose: birdhouse/optional-components/emu/docker-compose-extra.yml
+.. |optional-components-emu| replace:: ``./optional-components/emu``
+.. _optional-components-emu: birdhouse/optional-components/README.rst#emu-wps-service-for-testing
 
 Suggested deployment layout:
 
@@ -151,10 +170,15 @@ below and the variable ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`` in |env.local.exampl
 
 The automatic deployment of the Birdhouse platform, of the Jupyter tutorial
 notebooks and of the automatic deployment mechanism itself can all be
-enabled by following the `scheduling instructions <components/README.rst#scheduler>`_.
+enabled by following the |components-scheduler|_ instructions.
 
 Resource usage monitoring (CPU, memory, ..) and alerting for the host and each
-of the containers can be enabled by following the `monitoring instructions <components/README.rst#monitoring>`_.
+of the containers can be enabled by following the |components-monitoring|_ instructions.
+
+.. |components-monitoring| replace:: ``components/monitoring``
+.. _components-monitoring: ./birdhouse/components/README.rst#monitoring
+.. |components-scheduler| replace:: ``components/scheduler``
+.. _components-scheduler: ./birdhouse/components/README.rst#scheduler
 
 To launch all the containers, use the following command:
 
@@ -162,13 +186,18 @@ To launch all the containers, use the following command:
 
    ./bin/birdhouse compose up -d
 
-If you get a ``'No applicable error code, please check error log'`` error from the WPS processes, please make sure that the WPS databases exists in the
-postgres instance. See `create-wps-pgsql-databases.sh <scripts/create-wps-pgsql-databases.sh>`_ (:download:`download </birdhouse/scripts/create-wps-pgsql-databases.sh>`).
+If you get a ``'No applicable error code, please check error log'`` error from the WPS processes,
+please make sure that the WPS databases exists in the
+postgres instance. See |create-wps-pgsql-databases.sh|_.
+
+.. |create-wps-pgsql-databases.sh| replace:: ``birdhouse/scripts/create-wps-pgsql-databases.sh``
+.. _create-wps-pgsql-databases.sh: birdhouse/scripts/create-wps-pgsql-databases.sh
+
 
 Production deployment hardware recommendations
 ----------------------------------------------
 
-RAM: at least 128 GB, Thredds 32+ GB, Geoserver 8+ GB, leaving spaces for other components and all the various Jupyter users
+RAM: at least 128 GB, THREDDS 32+ GB, GeoServer 8+ GB, leaving spaces for other components and all the various Jupyter users
 
 CPU: at least 48 cores for parallel computations
 
@@ -183,7 +212,7 @@ Note about WPS request timeout
   Nginx proxy, see `nginx.conf`_ (:download:`download <birdhouse/components/proxy/nginx.conf>`).
   Any WPS requests that will take longer should use the async mode.
 
-  Default value ``PROXY_READ_TIMEOUT_VALUE`` in `default.env`_ (:download:`download <birdhouse/default.env>`).
+  Default value ``PROXY_READ_TIMEOUT_VALUE`` in |birdhouse-default.env|_.
 
   Overrideable in ``env.local`` file, as usual for all values in ``default.env`` file.
 
@@ -229,14 +258,12 @@ An end-to-end integration test suite is available at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests with pre-configured
 Jenkins at https://github.com/Ouranosinc/jenkins-config.
 
-For that test suite to pass, run the script
-`scripts/bootstrap-instance-for-testsuite <scripts/bootstrap-instance-for-testsuite>`_ (:download:`download </birdhouse/scripts/bootstrap-instance-for-testsuite>`)
+For that test suite to pass, run the script |bootstrap-instance-for-testsuite|_
 to prepare your new instance.  Further documentation inside the script.
 
-Optional components
-`all-public-access <./optional-components#give-public-access-to-all-resources-for-testing-purposes>`_
-and `secure-thredds <./optional-components/#control-secured-access-to-resources-example>`_
-also need to be enabled in ``env.local`` using ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable.
+Configure additional |components|_ and |optional-components|_ as needed for the test suite.
+For example, both |optional-components-all-public-access|_ and |optional-components-secure-thredds|_
+need to be enabled in ``env.local`` using ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable for certain tests.
 
 ESGF login is also needed for
 https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebooks/esgf-dap.ipynb
@@ -247,6 +274,14 @@ The canarie monitoring link
 ``https://<BIRDHOUSE_FQDN>/canarie/node/service/stats`` can be used to confirm the
 instance is ready to run the automated end-to-end test suite.  That link should
 return the HTTP response code ``200``.
+
+.. |bootstrap-instance-for-testsuite| replace:: ``scripts/bootstrap-instance-for-testsuite``
+.. _bootstrap-instance-for-testsuite: scripts/bootstrap-instance-for-testsuite
+.. |optional-components-all-public-access| replace:: ``./optional-components/all-public-access``
+.. _optional-components-all-public-access: ./optional-components/README.rst#all-public-access
+.. |optional-components-secure-thredds| replace:: ``./optional-components/secure-thredds``
+.. _optional-components-secure-thredds: ./optional-components/README.rst#control-secured-access-to-resources-example
+
 
 Vagrant instructions
 --------------------
@@ -342,7 +377,7 @@ The `Use HTTP scheme deployment`_ strategy described above will send all informa
 If there are any features that you want to test locally using ``https``, you can deploy locally using a self-signed
 SSL certificate.
 
-You may also need to add the following to the ``docker compose`` settings for the ``twitcher`` component if you're
+You may also need to add the following to the ``docker compose`` settings for |twitcher|_ if you're
 not able to access protected URLs:
 
 .. code:: yaml

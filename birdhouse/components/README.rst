@@ -749,7 +749,7 @@ Here is a sample search query using a the ``pystac-client`` python CLI:
     pip install pystac-client
     stac-client search $BIRDHOUSE_FQDN_PUBLIC/stac -q "variable_id=txgt_32" "scenario=ssp585"
 
-Calls to the STAC API pass through Twitcher in order to validate authorization.
+Calls to the STAC API pass through |Twitcher|_ in order to validate authorization.
 By default, only users that belong to the ``administrator`` and ``stac-admin`` groups will have access to STAC
 endpoints. Additional access permissions can be set in ``Magpie`` as needed.
 To give unauthenticated users read-only access to STAC API resources, enable the ``optional-components/stac-public-access``
@@ -759,7 +759,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/stac`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-stac|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 .. |stac-browser| replace:: STAC Browser
@@ -807,11 +807,12 @@ How to Enable the Component
 .. |dggs| replace:: DGGS
 .. |components-dggs| replace:: ``./components/dggs``
 .. _components-dggs:
+.. _dggs:
 
 DGGS: Discrete Global Grid Systems API
 ======================================
 
-`DGGS`_ is a spatial reference system combining a discrete global grid hierarchy with a zone identifier, in contrast
+|DGGS-spec|_ is a spatial reference system combining a discrete global grid hierarchy with a zone identifier, in contrast
 to typical ``(lat, lon)`` spatial reference systems. By using a predefined and deterministic order of zone IDs and
 refinement sub-zones, DGGS enables efficient access, representation and analysis of spatial data that has been
 quantized over a certain grid reference system (DGGRS).
@@ -819,7 +820,8 @@ quantized over a certain grid reference system (DGGRS).
 The *OGC API - DGGS* definition implemented by this service is a RESTful API that provides access to DGGS resources,
 definitions, zonal query conversion, and data retrieval from precomputed datasets.
 
-.. _DGGS: https://ogcapi.ogc.org/dggs/
+.. |DGGS-spec| replace:: `OGC API - DGGS`
+.. _DGGS-spec: https://ogcapi.ogc.org/dggs/
 
 Usage
 -----
@@ -837,7 +839,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/dggs`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-dggs|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 - Define ``DGGS_CONFIG_PATH`` in the ``env.local`` with custom definitions.
   Alternatively, employ sample DGGS dataset and configuration by enabling ``./optional-components/dggs-data-sample``.
   Enabling this optional component will set ``DGGS_CONFIG_PATH`` with a predefined configuration for this sample data.
@@ -892,7 +894,7 @@ How to Enable the Component
 .. _components-geoserver:
 .. _geoserver:
 
-Geoserver
+GeoServer
 =========
 
 GeoServer is the reference implementation of the Open Geospatial Consortium (OGC) Web Feature Service (WFS) and Web
@@ -910,7 +912,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/geoserver`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-geoserver|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 .. |components-hummingbird| replace:: ``./components/hummingbird``
@@ -999,7 +1001,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/raven`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-raven|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 .. |thredds| replace:: THREDDS
@@ -1175,7 +1177,7 @@ Usage
 -----
 
 This S3 interface is read-only for users and it's intended purpose is to serve data
-(like Thredds, Geoserver, or the secure data proxy).
+(like |THREDDS|_, |GeoServer|_, or the |optional-components-secure-data-proxy|_).
 
 Administrators can create buckets on S3 using the ``make-s3-bucket.sh`` script.
 This will create a bucket and create a |magpie|_ resource for that bucket. By default,
