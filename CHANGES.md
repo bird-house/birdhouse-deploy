@@ -29,6 +29,9 @@
   Fix issue related to STAC Item search paging of `next` links due to `token` parameter misinterpretation
   (relates to https://github.com/crim-ca/stac-app/pull/85).
 
+- STAC Populator: update to 
+  [`crim-ca/stac-populator:0.15.0`](https://github.com/crim-ca/stac-populator/releases/tag/0.15.0).
+
 [2.26.1](https://github.com/bird-house/birdhouse-deploy/tree/2.26.1) (2026-04-09)
 ------------------------------------------------------------------------------------------------------------------
 
