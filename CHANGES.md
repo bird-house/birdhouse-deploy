@@ -33,6 +33,9 @@
   - Fix inconsistent single/double code-quotes for italic/code fragments.
   - Fix some typos found along the way.
 
+- Update long-term Prometheus metrics: replace `increase` by `rate` and rename metrics. 
+  Filter THREDDS downloads to keep only values larger than 0. 
+
 [2.26.4](https://github.com/bird-house/birdhouse-deploy/tree/2.26.4) (2026-04-16)
 ------------------------------------------------------------------------------------------------------------------
 
@@ -46,7 +49,6 @@
   nested script reset its state to better manage their verbosity independently.
 
   Fixes [#673](https://github.com/bird-house/birdhouse-deploy/issues/673).
-
 
 [2.26.3](https://github.com/bird-house/birdhouse-deploy/tree/2.26.3) (2026-04-15)
 ------------------------------------------------------------------------------------------------------------------
