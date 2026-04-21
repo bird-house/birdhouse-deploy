@@ -211,12 +211,15 @@ Note about WPS request timeout
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * All WPS requests should be completed within ``proxy_read_timeout`` of the
-  Nginx proxy, see `nginx.conf`_ (:download:`download <birdhouse/components/proxy/nginx.conf>`).
+  Nginx proxy, see |components-proxy-nginx.conf|_.
   Any WPS requests that will take longer should use the async mode.
 
   Default value ``PROXY_READ_TIMEOUT_VALUE`` in |birdhouse-default.env|_.
 
   Overrideable in ``env.local`` file, as usual for all values in ``default.env`` file.
+
+.. |components-proxy-nginx.conf| replace:: ``components/proxy/nginx.conf``
+.. _components-proxy-nginx.conf: ./components/proxy/nginx.conf
 
 Manual steps post deployment
 ----------------------------
@@ -802,7 +805,6 @@ the backup and restore jobs.
   * Warning! Using this option may overwrite other docker options that are required for restic to run properly.
     Make sure you are familiar with restic commands and know what you are doing before using this feature.
 
-.. _nginx.conf: ./components/proxy/nginx.conf
 .. _default.env: ./default.env
 .. _`.bumpversion.toml`: ../.bumpversion.toml
 .. _CHANGES.md: ../CHANGES.md

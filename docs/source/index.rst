@@ -18,7 +18,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   deployment
+   birdhouse/README
    birdhouse/components/README
    birdhouse/optional-components/README
    birdhouse/deprecated-components/README

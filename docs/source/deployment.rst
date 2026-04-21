@@ -1,1 +1,0 @@
-.. include:: birdhouse/README.rst
