@@ -15,6 +15,28 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.27.0](https://github.com/bird-house/birdhouse-deploy/tree/2.27.0) (2026-04-21)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC Browser: update to [`5.0.0-rc.0-crim`](https://github.com/crim-ca/stac-browser/releases/tag/v5.0.0-rc.0-crim).
+
+  * Adds a code snippet generator to help users obtain a working program in various languages using
+    their search parameters.
+  * Includes various UI rendering improvements.
+  * Includes dependency and security updates.
+
+- STAC API: update to [`crim-ca/stac-app:2.3.1`](https://github.com/crim-ca/stac-app/releases/tag/2.3.1).
+
+  Fix issue related to STAC Item search paging of `next` links due to `token` parameter misinterpretation
+  (relates to https://github.com/crim-ca/stac-app/pull/85).
+
+- STAC Populator: update to 
+  [`crim-ca/stac-populator:0.15.0`](https://github.com/crim-ca/stac-populator/releases/tag/0.15.0).
+
 - Update long-term Prometheus metrics: replace `increase` by `rate` and rename metrics. 
   Filter THREDDS downloads to keep only values larger than 0. 
 
