@@ -6,24 +6,26 @@ Optional components
 .. the long form can be used to refer to the component itself, such as when to include it in a configuration
 .. links to section anchors use HTML form purposely to work both on GitHub and Sphinx rendered documentation
 .. see 'docs/source/conf.py:convert_rst_links_to_html'
-.. |magpie| replace:: `Magpie`
+.. |magpie| replace:: Magpie
 .. _magpie: ../components/README.rst#magpie
 .. |components-magpie| replace:: ``./components/magpie``
 .. _components-magpie: ../components/README.rst#magpie
-.. |weaver| replace:: `Weaver`
+.. |weaver| replace:: Weaver
 .. _weaver: ../components/README.rst#weaver
 .. |components-weaver| replace:: ``./components/weaver``
 .. _components-weaver: ../components/README.rst#weaver
-.. |stac| replace:: `STAC`
+.. |stac| replace:: STAC
 .. _stac: ../components/README.rst#stac
 .. |components-stac| replace:: ``./components/stac``
 .. _components-stac: ../components/stac
-.. |dggs| replace:: `DGGS`
+.. |dggs| replace:: DGGS
 .. _dggs: ../components/README.rst#dggs
 .. |components-dggs| replace:: ``./components/dggs``
 .. _components-dggs: ../components/README.rst#dggs
-.. |thredds| replace:: `THREDDS`
+.. |thredds| replace:: THREDDS
 .. _thredds: ../components/README.rst#thredds
+.. |components-canarie-api| replace:: ``./components/canarie-api``
+.. _components-canarie-api: ../components/README.rst#canarie-api
 .. |components-proxy| replace:: ``proxy``
 .. _components-proxy: ../components/README.rst#proxy
 .. |env.local.example| replace:: ``env.local.example``
@@ -346,6 +348,7 @@ reported by each ``healthcheck``.
 .. |optional-components-all-public-access| replace:: ``./optional-components/all-public-access``
 .. _optional-components-all-public-access:
 .. _magpie-public-access-config:
+.. _all-public-access:
 
 Give public access to all resources for testing purposes
 --------------------------------------------------------
@@ -529,7 +532,7 @@ How to enable in ``env.local`` (a copy from |env.local.example|_):
 .. |test-weaver-perms| replace:: ``optional-components/test-weaver/config/magpie/test-weaver-permission.cfg``
 .. _test-weaver-perms: ./optional-components/test-weaver/config/magpie/test-weaver-permission.cfg
 .. |pavics-sdi-weaver| replace:: Ouranosinc/pavics-sdi Weaver Example
-.. _pavics-sdi-weaver|: https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebook-components/weaver_example.ipynb
+.. _pavics-sdi-weaver: https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebook-components/weaver_example.ipynb
 
 
 .. |optional-components-geoserver-secured| replace:: ``./optional-components/test-geoserver-secured-access``
@@ -865,36 +868,38 @@ Prometheus Log Parser
 ---------------------
 
 Parses log files from other components and converts their logs to prometheus metrics that are then ingested by the
-monitoring Prometheus instance (the one created by the :ref:`Monitoring` component).
+monitoring Prometheus instance (the one created by the |components-monitoring|_).
 
 For more information on how this component reads log files and converts them to prometheus components see
 the log-parser_ documentation.
 
 To configure this component:
 
-    * set the ``PROMETHEUS_LOG_PARSER_POLL_DELAY`` variable to a number of seconds to set how often the log parser
-      checks if new lines have been added to log files (default: 1)
-    * set the ``PROMETHEUS_LOG_PARSER_TAIL`` variable to ``"true"`` to only parse new lines in log files. If unset,
-      this will parse all existing lines in the log file as well (default: ``"true"``)
+* set the ``PROMETHEUS_LOG_PARSER_POLL_DELAY`` variable to a number of seconds to set how often the log parser
+  checks if new lines have been added to log files (default: 1)
+* set the ``PROMETHEUS_LOG_PARSER_TAIL`` variable to ``"true"`` to only parse new lines in log files. If unset,
+  this will parse all existing lines in the log file as well (default: ``"true"``)
 
 To view all metrics exported by the log parser:
 
-    * Navigate to the ``https://<BIRDHOUSE_FQDN>/prometheus/graph`` search page
-    * Put ``{job="log_parser"}`` in the search bar and click the "Execute" button
+* Navigate to the ``https://<BIRDHOUSE_FQDN>/prometheus/graph`` search page
+* Put ``{job="log_parser"}`` in the search bar and click the "Execute" button
 
 For developers, to create a new parser that can be used to track log files:
 
-    1. create a python file that can be mounted as a volume to the ``PROMETHEUS_LOG_PARSER_PARSERS_DIR``
-       directory on the ``prometheus-log-parser`` container.
-    2. mount any log files that you want to parse as a volume on the ``prometheus-log-parser`` container.
-    3. the python script should create at least one `prometheus metric using the prometheus_client
-       library <prometheus_python_metrics>`_ and must contain a global constant named ``LOG_PARSER_CONFIG``
-       which is a dictionary where keys are paths to log files (mounted in the container) and values are a
-       list of "line parser" functions.
-       * a "line parser" is any function that takes a string as a single argument (a single line from a
-         log file). These functions are where you'd write the code that parses the line and converts it
-         into a prometheus metric.
-       * your line parser function should update one of the prometheus metrics you created previously.
+1. create a python file that can be mounted as a volume to the ``PROMETHEUS_LOG_PARSER_PARSERS_DIR``
+   directory on the ``prometheus-log-parser`` container.
+2. mount any log files that you want to parse as a volume on the ``prometheus-log-parser`` container.
+3. the python script should create at least one
+   `prometheus metric using the prometheus_client library <prometheus_python_metrics>`_
+   and must contain a global constant named ``LOG_PARSER_CONFIG``
+   which is a dictionary where keys are paths to log files (mounted in the container) and values are a
+   list of "line parser" functions.
+
+    * a "line parser" is any function that takes a string as a single argument (a single line from a
+      log file). These functions are where you'd write the code that parses the line and converts it
+      into a prometheus metric.
+    * your line parser function should update one of the prometheus metrics you created previously.
 
     For an example of a working log parser, see |prometheus-log-parser-exporter|_.
 

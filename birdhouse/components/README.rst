@@ -206,8 +206,7 @@ Maximum backward-compatibility has been kept with the old install scripts style:
 
 Features missing in old install scripts or how the new mechanism improves on the old install scripts:
 
-* Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if triggerdeploy.sh_
-  (:download:`download <../deployment/triggerdeploy.sh>`)
+* Autodeploy of the autodeploy itself !  This is the biggest win.  Previously, if |triggerdeploy.sh|_
   or the deployed ``/etc/cron.hourly/birdhouse-deploy-notebooks`` script changes, they have to be deployed manually.
   It's very annoying.  Now they are volume-mount in so are fresh on each run.
 * ``env.local`` now drives absolutely everything, source control that file and we've got a true DevOPS pipeline.
@@ -516,15 +515,16 @@ longer than 90 days:
 1.
   - `recording rules`_ are added to the monitoring Prometheus instance (the one deployed by |components-monitoring|_).
     These rules are any that have the ``longterm-metrics`` label.
-  - The metrics described by these rules are collected/calculated by the monitoring Prometheus instance. The monitoring Prometheus
-    instance treats these rules the same as any other (ie. only stores them for 90 days by default).
-  - To enable some example longterm `recording rules`_, enable the |optional-components-prometheus-longterm-rules|_ component. You can also choose
-    to create your own rules (see |optional-components-prometheus-longterm-metrics|_ for details on how to create these longterm metrics rules).
+  - The metrics described by these rules are collected/calculated by the monitoring Prometheus instance.
+    The monitoring Prometheus instance treats these rules the same as any other (ie. only stores them for 90 days by default).
+  - To enable some example longterm `recording rules`_, enable the |optional-components-prometheus-longterm-rules|_ component.
+    You can also choose to create your own rules (see |optional-components-prometheus-longterm-metrics|_ for details
+    on how to create these longterm metrics rules).
 2.
-  - The |optional-components-prometheus-longterm-metrics|_ Prometheus instance collects/copies only the rules with the `longterm-metrics` label from the
-    monitoring Prometheus instance.
-  - The |optional-components-prometheus-longterm-metrics|_ Prometheus instance stores only these metrics for a custom duration (can be longer than
-    90 days).
+  - The |optional-components-prometheus-longterm-metrics|_ Prometheus instance collects/copies only
+    the rules with the ``longterm-metrics`` label from the monitoring Prometheus instance.
+  - The |optional-components-prometheus-longterm-metrics|_ Prometheus instance stores only these metrics
+    for a custom duration (can be longer than 90 days).
 3.
   - The |optional-components-thanos|_ component can be deployed alongside the
     |optional-components-prometheus-longterm-metrics|_ Prometheus instance in order to store
@@ -553,18 +553,22 @@ longer than 90 days:
 .. _optional-components-thanos: ../optional-components/README.rst#thanos
 .. _recording rules: https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/
 
+
+.. |components-weaver| replace:: ``./components/weaver``
+.. _components-weaver:
+
 Weaver
 ======
 
-By enabling this component, the `Weaver`_ service will be integrated into the stack.
+By enabling this component, the |weaver|_ service will be integrated into the stack.
 
-This component offers `OGC API - Processes`_ interface to WPS components (a.k.a `WPS-REST bindings` and
+This component offers |ogcapi-processes|_ interface to WPS components (a.k.a `WPS-REST bindings` and
 `WPS-T (Transactional)` support).
 This provides a RESTful JSON interface with asynchronous WPS processes execution over remote instances.
 Other WPS components of the birdhouse stack (`finch`_, `flyingpigeon`_, etc.) will also all be registered
-under `Weaver`_ in order to provide a common endpoint to retrieve all available processes, and dispatch
+under |weaver|_ in order to provide a common endpoint to retrieve all available processes, and dispatch
 their execution to the corresponding service.
-Finally, `Weaver`_ also adds `Docker` image execution capabilities as a WPS process, allowing deployment
+Finally, |weaver|_ also adds `Docker` image execution capabilities as a WPS process, allowing deployment
 and execution of custom applications and workflows.
 
 .. image:: weaver/images/component-diagram.png
@@ -572,19 +576,19 @@ and execution of custom applications and workflows.
 Usage
 -----
 
-Once this component is enabled, `Weaver`_ will be accessible at ``https://<BIRDHOUSE_FQDN_PUBLIC>/weaver`` endpoint,
-where ``BIRDHOUSE_FQDN_PUBLIC`` is defined in your ``env.local`` file.
+Once this component is enabled, |weaver|_ will be accessible at ``https://<BIRDHOUSE_FQDN_PUBLIC>/weaver`` endpoint,
+where ``BIRDHOUSE_FQDN_PUBLIC`` is defined in your ``env.local`` file (a copy of |env.local.example|_).
 
 Full process listing (across WPS providers) should be available using request:
 
-.. code-block::
+.. code-block:: http
 
-    GET https://<BIRDHOUSE_FQDN_PUBLIC>/weaver/processes?providers=true
+    GET https://<BIRDHOUSE_FQDN_PUBLIC>/weaver/processes?providers=true HTTP/1.1
 
-Please refer to the `Weaver OpenAPI`_ for complete description of available requests.
+Please refer to the |weaver-openapi|_ for complete description of available requests.
 This description will also be accessible via ``https://<BIRDHOUSE_FQDN_PUBLIC>/weaver/api`` once the instance is started.
 
-For any specific details about `Weaver`_ configuration parameters, functionalities or questions, please refer to its
+For any specific details about |weaver|_ configuration parameters, functionalities or questions, please refer to its
 `documentation <https://pavics-weaver.readthedocs.io/en/latest/>`_.
 
 How to Enable the Component
@@ -604,9 +608,9 @@ Customizing the Component
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
 
-  - Optionally, set any additional environment variable overrides amongst values defined in `weaver/default.env`_.
+  - Optionally, set any additional environment variable overrides amongst values defined in |weaver-default.env|_.
 
-  - Optionally, mount any additional `Weaver`_-specific configuration files
+  - Optionally, mount any additional |weaver|_-specific configuration files
     (see contents of ``birdhouse/components/weaver/config/weaver``) if extended functionalities need to be defined.
     Further ``docker-compose-extra.yml`` could be needed to define
     any other ``volumes`` entries where these component would need to be mounted to.
@@ -626,13 +630,13 @@ Customizing the Component
 Managing Large Job Results
 --------------------------
 
-The `Job Results <https://pavics-weaver.readthedocs.io/en/latest/processes.html#job-results>`_ responses from `Weaver`
+The `Job Results <https://pavics-weaver.readthedocs.io/en/latest/processes.html#job-results>`_ responses from |weaver|_
 can return a lot of ``Link`` headers. This is done to provide job metadata references and provenance traceability
 details, but also for actual results locations that can vary in quantity depending on the actual process execution.
 
 By default, the Ngnix `proxy_buffer_size <https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_buffer_size>`_
 and `proxy_buffers <https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_buffers>`_ directives of
-the ``proxy`` service are added to the `Weaver` API endpoints with sufficiently large values to avoid HTTP 502 errors
+the |proxy|_ service are added to the |weaver|_ API endpoints with sufficiently large values to avoid HTTP 502 errors
 when the response headers exceed the default buffer sizes.
 
 If your processes happen to generate even larger results (e.g.: they return many NetCDF files from batch processing),
@@ -643,16 +647,22 @@ If your processes generate a *very large* number of results, you may also want t
 alternate *content negotiation strategies* as described in
 the `Job Results <https://pavics-weaver.readthedocs.io/en/latest/processes.html#job-results>`_
 and `Process Execution Results <https://pavics-weaver.readthedocs.io/en/latest/processes.html#proc-exec-results>`_
-sections of the `Weaver` documentation. Certain execution request parameters can be explicitly provided to limit
+sections of the |weaver|_ documentation. Certain execution request parameters can be explicitly provided to limit
 the number of returned headers and their representation in the responses.
 
-.. _finch: https://github.com/bird-house/finch
 .. _flyingpigeon: https://github.com/bird-house/flyingpigeon
-.. _Weaver: https://github.com/crim-ca/weaver
-.. _Weaver OpenAPI: https://pavics-weaver.readthedocs.io/en/latest/api.html
-.. _weaver/default.env: ./weaver/default.env
-.. _OGC API - Processes: https://github.com/opengeospatial/ogcapi-processes
+.. |weaver| replace:: `Weaver`
+.. _weaver: https://github.com/crim-ca/weaver
+.. |weaver-openapi| replace:: `Weaver OpenAPI`
+.. _weaver-openapi: https://pavics-weaver.readthedocs.io/en/latest/api.html
+.. |weaver-default.env| replace:: ``weaver/default.env``
+.. _weaver-default.env: ./weaver/default.env
+.. |ogcapi-processes| replace:: `OGC API - Processes`
+.. _ogcapi-processes: https://github.com/opengeospatial/ogcapi-processes
 
+
+.. |components-cowbird| replace:: ``./components/cowbird``
+.. _components-cowbird:
 
 Cowbird
 =======
@@ -664,7 +674,7 @@ those services such that the complete ecosystem can seamlessly operate together 
 
 The code of this service is located in |cowbird-repo|_. Its documentation is provided on |cowbird-rtd|_.
 
-.. _bird-house: https://github.com/bird-house/birdhouse-deploy
+.. _bird-house: https://github.com/bird-house
 .. |cowbird-diagram| replace:: Components Diagram
 .. _cowbird-diagram: https://github.com/Ouranosinc/cowbird/blob/master/docs/_static/cowbird_components.png
 .. |cowbird-repo| replace:: Ouranosinc/cowbird
@@ -675,9 +685,9 @@ The code of this service is located in |cowbird-repo|_. Its documentation is pro
 Operations Performed by Cowbird
 -------------------------------
 
-- Synchronize Magpie user and group permissions between "corresponding files" located under different services.
-  For example, THREDDS user-workspace files visualized in the catalog will be accessible by the same user under
-  the corresponding user-workspace under GeoServer.
+- Synchronize |magpie|_ user and group permissions between "corresponding files" located under different services.
+  For example, |THREDDS|_ user-workspace files visualized in the catalog will be accessible by the same user under
+  the corresponding user-workspace under |GeoServer|_.
 - Synchronize Weaver endpoints to retrieve equivalent definitions under various paths and access to generated WPS
   outputs following a job execution by a given user.
 - Synchronize permissions between API endpoints and local storage files.
@@ -705,7 +715,7 @@ Customizing the Component
 
 Cowbird can be affected by multiple variables defined globally on the
 stack (i.e.: ``env.local``, a copy of `env.local.example`_). It also considers variables of other services such as
-THREDDS, GeoServer, Magpie, etc. in order to perform required interactions between them.
+|THREDDS|_, |geoserver|_, |magpie|_, etc. in order to perform required interactions between them.
 
 By default, variables defined in |cowbird-default|_ will be used unless overridden in ``env.local``. To apply changes
 define your custom values in ``env.local`` directly.
@@ -713,6 +723,10 @@ define your custom values in ``env.local`` directly.
 .. |cowbird-default| replace:: cowbird/default.env
 .. _cowbird-default: ./cowbird/default.env
 
+
+.. |stac| replace:: STAC
+.. |components-stac| replace:: ``./components/stac``
+.. _components-stac:
 
 STAC
 ====
@@ -748,6 +762,10 @@ How to Enable the Component
 - Add ``./components/stac`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
+.. |stac-browser| replace:: STAC Browser
+.. |components-stac-browser| replace:: ``./components/stac-browser``
+.. _components-stac-browser:
+
 STAC Browser
 ============
 
@@ -757,7 +775,7 @@ Usage
 -----
 
 The STAC API can be browsed via the ``stac-browser`` component. By default, the browser will point to the STAC API
-exposed by the current ``components/stac`` service.
+exposed by the current |components-stac|_ service.
 Once this component is enabled, the STAC browser will be available
 at the ``https://<BIRDHOUSE_FQDN_PUBLIC>/stac-browser`` endpoint.
 
@@ -786,7 +804,9 @@ How to Enable the Component
 - Add ``./components/stac-browser`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
-.. _components_dggs:
+.. |dggs| replace:: DGGS
+.. |components-dggs| replace:: ``./components/dggs``
+.. _components-dggs:
 
 DGGS: Discrete Global Grid Systems API
 ======================================
@@ -844,6 +864,10 @@ How to Enable the Component
 - Edit ``env.local`` (a copy from |env.local.example|_)
 - Add ``./components/canarie`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
+
+.. |components-finch| replace:: ``./components/finch``
+.. _components-finch:
+
 Finch
 =====
 Users of climate data are interested in specific indices such as the number of freeze-thaw cycles, the number of
@@ -860,6 +884,14 @@ How to Enable the Component
 - Edit ``env.local`` (a copy from |env.local.example|_)
 - Add ``./components/finch`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
+.. _finch: https://github.com/bird-house/finch
+
+
+.. |geoserver| replace:: GeoServer
+.. |components-geoserver| replace:: ``./components/geoserver``
+.. _components-geoserver:
+.. _geoserver:
+
 Geoserver
 =========
 
@@ -872,15 +904,17 @@ Usage
 -----
 
 The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/geoserver``. For usage and
-configuration options please refer to the `Geoserver documentation`_.
-
-.. _Geoserver documentation: https://docs.geoserver.org
+configuration options please refer to the `Geoserver documentation <https://docs.geoserver.org>`_.
 
 How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
 - Add ``./components/geoserver`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+
+
+.. |components-hummingbird| replace:: ``./components/hummingbird``
+.. _components-hummingbird:
 
 Hummingbird
 ===========
@@ -898,6 +932,10 @@ How to Enable the Component
 - Edit ``env.local`` (a copy from |env.local.example|_)
 - Add ``./components/hummingbird`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
+
+.. |components-jupyterhub| replace:: ``./components/jupyterhub``
+.. _components-jupyterhub:
+
 Jupyterhub
 ==========
 
@@ -907,7 +945,8 @@ end-users.
 Usage
 -----
 
-The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/jupyter``. Users are able to log in to Jupyterhub using the
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/jupyter``.
+Users are able to log in to Jupyterhub using the
 same user name and password as Magpie. They will then be able to launch a personal jupyterlab server.
 
 How to Enable the Component
@@ -916,6 +955,12 @@ How to Enable the Component
 - Edit ``env.local`` (a copy from |env.local.example|_)
 - Add ``./components/jupyterhub`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 - Set the ``JUPYTERHUB_CRYPT_KEY`` environment variable
+
+
+.. |magpie| replace:: Magpie
+.. |components-magpie| replace:: ``./components/magpie``
+.. _components-magpie:
+.. _magpie:
 
 Magpie
 ======
@@ -926,45 +971,18 @@ User/Group/Service/Resource/Permission management and integrates with Twitcher.
 Usage
 -----
 
-The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/magpie``. For usage and configuration options please
-refer to the `Magpie documentation`_.
-
-.. _Magpie documentation: https://pavics-magpie.readthedocs.io
+The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/magpie``.
+For usage and configuration options please refer to
+the `Magpie documentation <https://pavics-magpie.readthedocs.io>`_.
 
 How to Enable the Component
 ---------------------------
 
 - This component is enabled by default as it is required to securely run the stack
 
-mongodb
-=======
 
-A NoSQL database used by various other components in the stack as a database backend.
-
-Usage
------
-
-This component is directly visible to the end-user. It is used by other components in the stack.
-
-How to Enable the Component
----------------------------
-
-- Do not enable this component directly. It will be enabled as a dependency of other components.
-
-postgres
-========
-
-A relational database used by various other components in the stack as a database backend.
-
-Usage
------
-
-This component is directly visible to the end-user. It is used by other components in the stack.
-
-How to Enable the Component
----------------------------
-
-- Do not enable this component directly. It will be enabled as a dependency of other components
+.. |components-raven| replace:: ``./components/raven``
+.. _components-raven:
 
 Raven
 =====
@@ -983,12 +1001,17 @@ How to Enable the Component
 - Edit ``env.local`` (a copy from |env.local.example|_)
 - Add ``./components/raven`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
-Thredds
+
+.. |thredds| replace:: THREDDS
+.. |components-thredds| replace:: ``./components/thredds``
+.. _components-thredds:
+.. _thredds:
+
+THREDDS
 =======
 
-Climate Data Catalog and Format Renderers. See the `Thredds documentation`_ for details.
-
-.. _Thredds documentation: https://www.unidata.ucar.edu/software/tds/
+Climate Data Catalog and Format Renderers.
+See the `THREDDS documentation <https://www.unidata.ucar.edu/software/tds/>`_ for details.
 
 Usage
 -----
@@ -1001,19 +1024,23 @@ How to Enable the Component
 - Edit ``env.local`` (a copy from |env.local.example|_)
 - Add ``./components/thredds`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
+
+.. |twitcher| replace:: Twitcher
+.. |components-twitcher| replace:: ``./components/twitcher``
+.. _components-twitcher:
+.. _twitcher:
+
 Twitcher
 ========
 
 Twitcher is a security proxy that provides secure access to other components in the stack. The proxy service uses OAuth2
-access tokens to protect the OWS service access using Magpie permissions.
+access tokens to protect the OWS service access using |magpie|_ permissions.
 
 Usage
 -----
 
-Twitcher should always be used in conjunction with Magpie and should work already without any additional configuration.
-For details please refer to the `twitcher documentation`_.
-
-.. _twitcher documentation: https://twitcher.readthedocs.io/en/latest/
+Twitcher should always be used in conjunction with |magpie|_ and should work already without any additional configuration.
+For details please refer to the `Twitcher documentation <https://twitcher.readthedocs.io/en/latest/>`_.
 
 How to Enable the Component
 ---------------------------
@@ -1021,13 +1048,18 @@ How to Enable the Component
 - This component is enabled by default as it is required to securely run the stack
 
 
-.. |components-proxy| replace:: replace:: ``./components/proxy``
+.. |proxy| replace:: ``proxy``
+.. |components-proxy| replace:: ``./components/proxy``
 .. _components-proxy:
+.. _proxy:
 
 Proxy
 =====
 
-An nginx reverse proxy that serves all other components in the stack through a single proxy endpoint.
+An |nginx|_ reverse proxy that serves all other components in the stack through a single proxy endpoint.
+
+.. |nginx| replace:: Nginx
+.. _nginx: https://nginx.org
 
 Usage
 -----
@@ -1038,6 +1070,50 @@ How to Enable the Component
 ---------------------------
 
 - This component is enabled by default
+
+
+.. |mongodb| replace:: MongoDB
+.. |components-mongodb| replace:: ``./components/mongodb``
+.. _components-mongodb:
+.. _mongodb:
+
+mongodb
+=======
+
+A NoSQL database used by various other components in the stack as a database backend.
+
+Usage
+-----
+
+This component is directly visible to the end-user. It is used by other components in the stack.
+
+How to Enable the Component
+---------------------------
+
+- Do not enable this component directly. It will be enabled as a dependency of other components.
+
+
+.. |components-postgres| replace:: ``./components/postgres``
+.. _components-postgres:
+
+postgres
+========
+
+A relational database used by various other components in the stack as a database backend.
+
+Usage
+-----
+
+This component is directly visible to the end-user. It is used by other components in the stack.
+
+How to Enable the Component
+---------------------------
+
+- Do not enable this component directly. It will be enabled as a dependency of other components
+
+
+.. |components-wps_outputs-volume| replace:: ``./components/wps_outputs-volume``
+.. _components-wps_outputs-volume:
 
 wps_outputs-volume
 ==================
@@ -1066,6 +1142,10 @@ How to Enable the Component
 
 - Do not enable this component directly. It will be enabled as a dependency of other components
 
+
+.. |components-data-volume| replace:: ``./components/data-volume``
+.. _components-data-volume:
+
 data-volume
 ===========
 
@@ -1082,6 +1162,10 @@ How to Enable the Component
 
 - Do not enable this component directly. It will be enabled as a dependency of other components
 
+
+.. |components-s3| replace:: ``./components/s3``
+.. _components-s3:
+
 S3
 ==
 
@@ -1094,9 +1178,9 @@ This S3 interface is read-only for users and it's intended purpose is to serve d
 (like Thredds, Geoserver, or the secure data proxy).
 
 Administrators can create buckets on S3 using the ``make-s3-bucket.sh`` script.
-This will create a bucket and create a Magpie resource for that bucket. By default,
+This will create a bucket and create a |magpie|_ resource for that bucket. By default,
 only admin users will be able to interact with a new bucket but additional read
-permissions can be added to users and groups through Magpie.
+permissions can be added to users and groups through |magpie|_.
 
 For example, to create a bucket named ``birdhouse``:
 
@@ -1125,7 +1209,7 @@ For example, to list all the object in the birdhouse bucket with the
   client.list_objects(Bucket="birdhouse")
 
 The above code will work for resources that are available publicly (i.e. you do not need to log in to
-Magpie in order to access the resource). If the resource is protected by Magpie you can ensure that you're
+Magpie in order to access the resource). If the resource is protected by |magpie|_ you can ensure that you're
 passing the relevant authentication information with the request by injecting the session cookies into the
 request headers.
 
@@ -1208,8 +1292,8 @@ and we want to add the same files in the example above to the ``birdhouse`` buck
      by the ``S3_ROOT_ACCESS_KEY`` and ``S3_ROOT_SECRET_KEY`` environment variables.
 
   2. The ``s3-cli`` service runs on the same internal docker network as the S3 service so we can target
-     its URL on the docker network directly and bypass ``Magpie``, giving the admin full control.
-     In order to do the same thing with ``aws-cli`` an admin would have to also include the ``Magpie``
+     its URL on the docker network directly and bypass |magpie|_, giving the admin full control.
+     In order to do the same thing with ``aws-cli`` an admin would have to also include the |magpie|_
      token/cookie with the ``aws-cli`` request and there's no good way of injecting arbitrary headers
      through the ``aws-cli`` interface.
 
@@ -1234,6 +1318,10 @@ How to Enable the Component
 - Edit ``env.local`` (a copy from |env.local.example|_)
 - Add ``./components/s3`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
+
+.. |components-logging| replace:: ``./components/logging``
+.. _components-logging:
+
 logging
 =======
 
@@ -1243,7 +1331,7 @@ The default value is set by the ``BIRDHOUSE_DOCKER_LOGGING_DEFAULT`` environment
 value, set the ``BIRDHOUSE_DOCKER_LOGGING_DEFAULT`` to a JSON string in the local environment file that contains
 a valid `docker compose logging configuration`_.
 
-For example, to set the default driver to "local" set the following in your local environment file:
+For example, to set the default driver to ``"local"`` set the following in your local environment file:
 
 .. code::shell
 
@@ -1251,8 +1339,8 @@ For example, to set the default driver to "local" set the following in your loca
 
 You can also override logging options for a single service using environment variables using a variable
 ``BIRDHOUSE_DOCKER_LOGGING_<service_name>`` where ``<service_name>`` is the uppercase name of the docker compose service
-with hyphens replaced with underscores. For example, to set the default driver to "local" only for the ``weaver-worker``
-service:
+with hyphens replaced with underscores. For example, to set the default driver to ``"local"`` only for
+the ``weaver-worker`` service:
 
 .. code::shell
 
