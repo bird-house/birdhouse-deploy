@@ -727,6 +727,7 @@ To enable this optional-component:
 
 .. |optional-components-dggs-data-sample| replace:: ``./optional-components/dggs-data-sample``
 .. _optional-components-dggs-data-sample:
+.. _dggs-data-sample:
 
 Use the DGGS sample data and configuration
 --------------------------------------------------------

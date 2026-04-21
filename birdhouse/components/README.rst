@@ -2,6 +2,10 @@ Birdhouse Components
 ####################
 
 .. shared references by multiple components definitions
+.. |bin-birdhouse| replace:: ``bin/birdhouse``
+.. _bin-birdhouse: ../../bin/birdhouse
+.. |birdhouse-compose.sh| replace:: ``birdhouse-compose.sh``
+.. _birdhouse-compose.sh: ../birdhouse-compose.sh
 .. |env.local.example| replace:: ``env.local.example``
 .. _env.local.example: ../env.local.example
 
@@ -120,7 +124,7 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy of |env.local.example|_)
 
-  - Add "./components/scheduler" to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+  - Add |components-scheduler|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
   - Set ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``, ``BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR``,
     ``BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY``, ``BIRDHOUSE_AUTODEPLOY_NOTEBOOK_FREQUENCY`` as desired,
     full documentation in `env.local.example`_.
@@ -408,7 +412,7 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy of |env.local.example|_)
 
-  - Add "./components/monitoring" to ``BIRDHOUSE_EXTRA_CONF_DIRS``
+  - Add |components-monitoring|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``
   - Set ``GRAFANA_ADMIN_PASSWORD`` to login to Grafana
   - Set ``ALERTMANAGER_ADMIN_EMAIL_RECEIVER`` for receiving alerts
   - Set ``ALERTMANAGER_SMTP_SERVER`` for sending alerts
@@ -596,9 +600,9 @@ How to Enable the Component
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
 
-  - Add ``./components/weaver`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+  - Add |components-weaver|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
-  - Component ``birdhouse/optional-components/all-public-access`` should also be enabled to ensure that `Weaver`_
+  - Component |optional-components-all-public-access|_ should also be enabled to ensure that `Weaver`_
     can request ``GetCapabilities`` of every WPS provider to be registered. Publicly inaccessible services will not
     succeed registration and will not provide the WPS-REST interface.
 
@@ -651,9 +655,9 @@ sections of the |weaver|_ documentation. Certain execution request parameters ca
 the number of returned headers and their representation in the responses.
 
 .. _flyingpigeon: https://github.com/bird-house/flyingpigeon
-.. |weaver| replace:: `Weaver`
+.. |weaver| replace:: Weaver
 .. _weaver: https://github.com/crim-ca/weaver
-.. |weaver-openapi| replace:: `Weaver OpenAPI`
+.. |weaver-openapi| replace:: Weaver OpenAPI
 .. _weaver-openapi: https://pavics-weaver.readthedocs.io/en/latest/api.html
 .. |weaver-default.env| replace:: ``weaver/default.env``
 .. _weaver-default.env: ./weaver/default.env
@@ -708,7 +712,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/cowbird`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-cowbird|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 Customizing the Component
 -------------------------
@@ -801,7 +805,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/stac-browser`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-stac-browser|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 .. |dggs| replace:: DGGS
@@ -841,10 +845,15 @@ How to Enable the Component
 - Edit ``env.local`` (a copy from |env.local.example|_)
 - Add |components-dggs|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 - Define ``DGGS_CONFIG_PATH`` in the ``env.local`` with custom definitions.
-  Alternatively, employ sample DGGS dataset and configuration by enabling ``./optional-components/dggs-data-sample``.
+  Alternatively, employ sample DGGS dataset and configuration by enabling |optional-components-dggs-data-sample|_.
   Enabling this optional component will set ``DGGS_CONFIG_PATH`` with a predefined configuration for this sample data.
   See the `PyDGGS-API implementation <https://github.com/LandscapeGeoinformatics/pydggsapi>`_ for more details.
-- Optionally, configure variables in ``./components/dggs/default.env`` via ``env.local`` to customize the service.
+- Optionally, configure variables in |components-dggs-default.env|_ via ``env.local`` to customize the service.
+
+.. |components-dggs-default.env| replace:: ``./components/dggs/default.env``
+.. _components-dggs-default.env: ./components/dggs/default.env
+.. |optional-components-dggs-data-sample| replace:: ``./optional-components/dggs-data-sample``
+.. _optional-components-dggs-data-sample: ../optional-components/README.rst#dggs-data-sample
 
 
 .. |components-canarie-api| replace:: ``./components/canarie-api``
@@ -864,7 +873,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/canarie`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-canarie-api|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 .. |components-finch| replace:: ``./components/finch``
@@ -884,7 +893,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/finch`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-finch|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 .. _finch: https://github.com/bird-house/finch
 
@@ -932,7 +941,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/hummingbird`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-hummingbird|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 .. |components-jupyterhub| replace:: ``./components/jupyterhub``
@@ -955,7 +964,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/jupyterhub`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-jupyterhub|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 - Set the ``JUPYTERHUB_CRYPT_KEY`` environment variable
 
 
@@ -1024,7 +1033,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/thredds`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-thredds|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 .. |twitcher| replace:: Twitcher
@@ -1135,9 +1144,9 @@ with fined-grained access permissions, while retaining the usual public access b
 |optional-components-secure-data-proxy|_ component with the |optional-components-all-public-access|_ component.
 
 .. |optional-components-all-public-access| replace:: ``./optional-components/all-public-access``
-.. _optional-components-all-public-access: ../optional-components/all-public-access
+.. _optional-components-all-public-access: ../optional-components/README.rst#all-public-access
 .. |optional-components-secure-data-proxy| replace:: ``./optional-components/secure-data-proxy``
-.. _optional-components-secure-data-proxy: ../optional-components/secure-data-proxy
+.. _optional-components-secure-data-proxy: ../optional-components/README.rst#secure-data-proxy
 
 How to Enable the Component
 ---------------------------
@@ -1318,7 +1327,7 @@ How to Enable the Component
 ---------------------------
 
 - Edit ``env.local`` (a copy from |env.local.example|_)
-- Add ``./components/s3`` to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
+- Add |components-s3|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
 
 .. |components-logging| replace:: ``./components/logging``
@@ -1327,7 +1336,7 @@ How to Enable the Component
 logging
 =======
 
-Sets default logging options for all docker compose services started by `birdhouse-deploy`.
+Sets default logging options for all docker compose services started by |bin-birdhouse|_ and |birdhouse-compose.sh|_.
 
 The default value is set by the ``BIRDHOUSE_DOCKER_LOGGING_DEFAULT`` environment variable. To change the default
 value, set the ``BIRDHOUSE_DOCKER_LOGGING_DEFAULT`` to a JSON string in the local environment file that contains
