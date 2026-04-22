@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Add `title` field to all docker image links in `service-config.json` files
+
+  Each service definition has a link to the docker image used by that service but not all links had a title.
+  This add the title in every case so that we're consistent. This is not strictly necessary but it makes things
+  a bit cleaner.
 
 [2.27.0](https://github.com/bird-house/birdhouse-deploy/tree/2.27.0) (2026-04-21)
 ------------------------------------------------------------------------------------------------------------------
