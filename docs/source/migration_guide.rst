@@ -2,6 +2,10 @@ Migration Guide
 ===============
 
 .. shared references by multiple components definitions
+.. NOTE:
+..  because this file is in 'docs/source' rather than birdhouse root, the link hack won't work on GitHub.
+..  there is no way to provide a common link in this case since their structure are fundamentally different
+..  at the very least, we will render them the same way and they will resolve on the Sphinx RST side.
 .. |birdhouse-default.env| replace:: ``birdhouse/default.env``
 .. _birdhouse-default.env: ./birdhouse/default.env
 .. |birdhouse-env.local.example| replace:: ``birdhouse/env.local.example``
@@ -85,14 +89,14 @@ To upgrade to version 2.4 from an earlier version, please follow these steps:
 
         * - old file name
           - new file name
-        * - pavics-compose.sh
-          - birdhouse-compose.sh
-        * - PAVICS-deploy.logrotate
-          - birdhouse-deploy.logrotate
-        * - configure-pavics.sh
-          - configure-birdhouse.sh
-        * - trigger-pavicscrawler
-          - trigger-birdhousecrawler
+        * - ``pavics-compose.sh``
+          - ``birdhouse-compose.sh``
+        * - ``PAVICS-deploy.logrotate``
+          - ``birdhouse-deploy.logrotate``
+        * - ``configure-pavics.sh``
+          - ``configure-birdhouse.sh``
+        * - ``trigger-pavicscrawler``
+          - ``trigger-birdhousecrawler``
 
   - Update any external scripts that called ``pavics-compose.sh`` or ``read-configs.include.sh`` to use the CLI
     entrypoint in ``bin/birdhouse`` instead.
@@ -106,38 +110,38 @@ To upgrade to version 2.4 from an earlier version, please follow these steps:
           - new variable name
           - old default value
           - new default value
-        * - POSTGRES_PAVICS_USERNAME
-          - BIRDHOUSE_POSTGRES_USERNAME
-          - postgres-pavics
-          - postgres-birdhouse
-        * - THREDDS_DATASET_LOCATION_ON_CONTAINER
+        * - ``POSTGRES_PAVICS_USERNAME``
+          - ``BIRDHOUSE_POSTGRES_USERNAME``
+          - ``postgres-pavics``
+          - ``postgres-birdhouse``
+        * - ``THREDDS_DATASET_LOCATION_ON_CONTAINER``
           - (no change)
-          - /pavics-ncml
-          - /birdhouse-ncml
-        * - THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER
+          - ``/pavics-ncml``
+          - ``/birdhouse-ncml``
+        * - ``THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER``
           - (no change)
-          - /pavics-data
-          - /birdhouse-data
+          - ``/pavics-data``
+          - ``/birdhouse-data``
         * - (hardcoded)
-          - BIRDHOUSE_POSTGRES_DB
-          - pavics
-          - birdhouse
-        * - PAVICS_LOG_DIR
-          - BIRDHOUSE_LOG_DIR
-          - /var/log/PAVICS
-          - /var/log/birdhouse
+          - ``BIRDHOUSE_POSTGRES_DB``
+          - ``pavics``
+          - ``birdhouse``
+        * - ``PAVICS_LOG_DIR``
+          - ``BIRDHOUSE_LOG_DIR``
+          - ``/var/log/PAVICS``
+          - ``/var/log/birdhouse``
         * - (hardcoded)
-          - GRAFANA_DEFAULT_PROVIDER_FOLDER
-          - Local-PAVICS
-          - Local-Birdhouse
+          - ``GRAFANA_DEFAULT_PROVIDER_FOLDER``
+          - ``Local-PAVICS``
+          - ``Local-Birdhouse``
         * - (hardcoded)
-          - GRAFANA_DEFAULT_PROVIDER_FOLDER_UUID
-          - local-pavics
-          - local-birdhouse
+          - ``GRAFANA_DEFAULT_PROVIDER_FOLDER_UUID``
+          - ``local-pavics``
+          - ``local-birdhouse``
         * - (hardcoded)
-          - GRAFANA_PROMETHEUS_DATASOURCE_UUID
-          - local_pavics_prometheus
-          - local_birdhouse_prometheus
+          - ``GRAFANA_PROMETHEUS_DATASOURCE_UUID``
+          - ``local_pavics_prometheus``
+          - ``local_birdhouse_prometheus``
 
     Note that the ``PAVICS_LOG_DIR`` variable was actually hardcoded as ``/var/log/PAVICS`` in some scripts. If
     ``PAVICS_LOG_DIR`` was set to anything other than ``/var/log/PAVICS`` you'll end up with inconsistent log outputs as
