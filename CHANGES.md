@@ -15,7 +15,30 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Magpie / Twitcher / Cowbird: Address error with permission synchronization under a special user.
+
+  When a special user with reserved keyword such as the main Magpie "administrator" was applied a permission,
+  the registration process of the permissions could, in certain cases, yield an error causing the procedure to
+  fail. Notably, if the admin user already exists, which is typically the case since it is required and the service
+  auto-generates it if missing on startup, the permission registration would cause an error since it itself tries to
+  create the user, which is forbidden by the API. This is normally automatically handled by 409 conflict by the 
+  registration script, but another 400 error code is used for the special user case, which was not caught.
+
+  In most deployments, this error is not observed since the administrator *group* is typically employed to
+  apply permissions on multiple "admins" simultaneously, and it does not have the same error handling conditions.
+
+  Because the registration procedure is leveraged by Cowbird to perform a batch multi-permission/resource update,
+  which is the same operation employed by the loaded Magpie configurations, it needs to align with the Magpie API.
+  Cowbird happened to have been using a slightly outdated (although compatible) Magpie 4.3.0 version.
+  Because Magpie and Twitcher have synchronized releases, it is also updated.
+  Both Cowbird, Twitcher and Magpie itself are now aligned with version 5.1.0.
+  These updates also include various dependency security fixes that they share.
+
+  - Relates to [Ouranosinc/Magpie#650](https://github.com/Ouranosinc/Magpie/pull/650).
+  - Relates to [Ouranosinc/Magpie#651](https://github.com/Ouranosinc/Magpie/pull/651).
+  - Relates to [Ouranosinc/cowbird#104](https://github.com/Ouranosinc/cowbird/pull/104).
 
 [2.27.0](https://github.com/bird-house/birdhouse-deploy/tree/2.27.0) (2026-04-21)
 ------------------------------------------------------------------------------------------------------------------
