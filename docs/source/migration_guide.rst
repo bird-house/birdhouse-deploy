@@ -3,9 +3,9 @@ Migration Guide
 
 .. shared references by multiple components definitions
 .. |birdhouse-default.env| replace:: ``birdhouse/default.env``
-.. _birdhouse-default.env: ../../../birdhouse/default.env
+.. _birdhouse-default.env: ./birdhouse/default.env
 .. |birdhouse-env.local.example| replace:: ``birdhouse/env.local.example``
-.. _birdhouse-env.local.example: ../../../birdhouse/env.local.example
+.. _birdhouse-env.local.example: ./birdhouse/env.local.example
 
 .. contents::
 
@@ -22,7 +22,7 @@ Consider using a different solution than ``portainer`` going forward since this 
 completely in future versions.
 
 .. |deprecated-components-portainer| replace:: ``deprecated-components/portainer``
-.. _deprecated-components-portainer: ../deprecated-components/portainer/
+.. _deprecated-components-portainer: ./birdhouse/deprecated-components/portainer/
 
 Version 2.9
 -----------
