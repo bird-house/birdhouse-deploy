@@ -1,8 +1,9 @@
 Deprecated Components
 #####################
 
+.. shared references by multiple components definitions
 .. |deprecated-scripts| replace:: ``scripts/deprecated``
-.. _deprecated-scripts: ../scripts/deprecated/README.rst
+.. _deprecated-scripts: ../scripts/deprecated/
 .. |optional-components| replace:: ``birdhouse/optional-components``
 .. _optional-components: ../optional-components/
 .. |optional-components-all-public-access| replace:: ``./optional-components/all-public-access``

@@ -1,18 +1,28 @@
-.. contents::
-
 Migration Guide
 ===============
+
+.. shared references by multiple components definitions
+.. |birdhouse-default.env| replace:: ``birdhouse/default.env``
+.. _birdhouse-default.env: ../../../birdhouse/default.env
+.. |birdhouse-env.local.example| replace:: ``birdhouse/env.local.example``
+.. _birdhouse-env.local.example: ../../../birdhouse/env.local.example
+
+.. contents::
+
 
 Version 2.13
 --------------
 
-Version 2.13 deprecates the `portainer` component
+Version 2.13 deprecates the ``portainer`` component
 
-If you are currently using the `portainer` component in your stack change the entry in the
-`BIRDHOUSE_EXTRA_CONF_DIRS` variable from `./components/portainer` to `./deprecated-components/portainer`.
+If you are currently using the ``portainer`` component in your stack change the entry in the
+``BIRDHOUSE_EXTRA_CONF_DIRS`` variable from ``./components/portainer`` to |deprecated-components-portainer|_.
 
-Consider using a different solution than `portainer` going forward since this component may be removed 
+Consider using a different solution than ``portainer`` going forward since this component may be removed
 completely in future versions.
+
+.. |deprecated-components-portainer| replace:: ``deprecated-components/portainer``
+.. _deprecated-components-portainer: ../deprecated-components/portainer/
 
 Version 2.9
 -----------
@@ -21,20 +31,20 @@ Version 2.9 updates JupyterHub to version 5.
 
 To upgrade to version 2.9 from an earlier version:
 
-- If your local environment file sets the `c.DockerSpawner.image_whitelist` config option in the
-  `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` environnment variable. Change `c.DockerSpawner.image_whitelist`
-  to `c.DockerSpawner.allowed_images`.
+- If your local environment file sets the ``c.DockerSpawner.image_whitelist`` config option in the
+  ``JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS`` environment variable. Change ``c.DockerSpawner.image_whitelist``
+  to ``c.DockerSpawner.allowed_images``.
 
-  If you have changed any of the default `jupyterhub` settings you may need to consult the [JupyterHub upgrade
-  guide](https://jupyterhub.readthedocs.io/en/latest/howto/upgrading-v5.html) to see if any of those settings
-  have been changed.
+  If you have changed any of the default ``jupyterhub`` settings you may need to consult the
+  `JupyterHub upgrade guide <https://jupyterhub.readthedocs.io/en/latest/howto/upgrading-v5.html>`_
+  to see if any of those settings have been changed.
 
 Version 2.7.3
 -------------
 
 Version 2.7.3 introduced docker compose syntax that is incompatible with docker compose versions older than ``2.20.2``.
 
-- If your docker compose version is older than ``2.20.2`` you should update to the latest version of docker compose 
+- If your docker compose version is older than ``2.20.2`` you should update to the latest version of docker compose
   as soon as possible.
 
 - You may also want to update any docker compose version 1 syntax at this time to avoid deprecation warnings right now
@@ -44,13 +54,13 @@ Version 2.7.3 introduced docker compose syntax that is incompatible with docker 
 
     * top level ``version`` keys
 
-    * declaring volumes and networks as external with the ``external: <name>`` syntax 
+    * declaring volumes and networks as external with the ``external: <name>`` syntax
       (where name is the name of the volume or network) instead of ``external: true``.
 
 Version 2.4
 -----------
 
-Version 2.4 renames files and variables that included the string PAVICS.
+Version 2.4 renames files and variables that included the string ``PAVICS``.
 
 For historical reasons the name PAVICS was used in variable names, constants and filenames in this repo to refer to
 the software stack in general. This was because, for a long time, the PAVICS deployment of this stack was the only one
@@ -63,8 +73,8 @@ To upgrade to version 2.4 from an earlier version, please follow these steps:
   - Update ``env.local`` file to replace all variables that contain ``PAVICS`` with ``BIRDHOUSE``.
     Variable names have also been updated to ensure that they start with the prefix ``BIRDHOUSE_``.
 
-    * see `birdhouse/env.local.example <birdhouse/env.local.example>`_ to see new variable names
-    * see the ``BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in `birdhouse/default.env <birdhouse/default.env>`_)
+    * see |birdhouse-env.local.example|_ to see new variable names
+    * see the ``BIRDHOUSE_BACKWARDS_COMPATIBLE_VARIABLES`` variable (defined in |birdhouse-default.env|_)
       for a full list of changed environment variable names.
 
   - Update any external scripts that access the old variable names directly to use the updated variable names.
