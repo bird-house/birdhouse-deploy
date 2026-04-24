@@ -129,10 +129,26 @@ def copy_non_rst_files(app, exception):
                     app.warn(f'Error copying {src_file}: {e}')
 
 
+def rewrite_github_paths(app, docname, source):
+    """
+    Rewrite GitHub-friendly paths to Sphinx-friendly paths in RST source.
+
+    Files in docs/source/ need different paths for GitHub vs Sphinx:
+    - GitHub: ../../birdhouse/ (relative to docs/source/)
+    - Sphinx: ./birdhouse/ (via symlink docs/source/birdhouse -> ../../birdhouse)
+
+    This handler rewrites paths during Sphinx processing so source files work on GitHub.
+    Applies to all files directly under docs/source/ (not in subdirectories).
+    """
+    if '/' not in docname:
+        source[0] = source[0].replace('../../birdhouse/', './birdhouse/')
+
+
 def setup(app):
     """
     Register Sphinx build event handlers.
     """
+    app.connect('source-read', rewrite_github_paths)
     app.connect('build-finished', convert_rst_links_to_html)
     app.connect('build-finished', copy_non_rst_files)
 

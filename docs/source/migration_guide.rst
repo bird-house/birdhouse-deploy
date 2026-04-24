@@ -3,13 +3,14 @@ Migration Guide
 
 .. shared references by multiple components definitions
 .. NOTE:
-..  because this file is in 'docs/source' rather than birdhouse root, the link hack won't work on GitHub.
-..  there is no way to provide a common link in this case since their structure are fundamentally different
-..  at the very least, we will render them the same way and they will resolve on the Sphinx RST side.
+..  Because this file is in 'docs/source' rather than under 'birdhouse' like other 'README.rst', the link hack won't work here.
+..  There is no way to provide a common link in this case since their directory structure are fundamentally different,
+..  and GitHub will not process the 'birdhouse' symlink directly. As a workaround, the links in this file will use the
+..  native path that works on GitHub, and the Sphinx pre-processor will rewrite them to the correct path during build.
 .. |birdhouse-default.env| replace:: ``birdhouse/default.env``
-.. _birdhouse-default.env: ./birdhouse/default.env
+.. _birdhouse-default.env: ../../birdhouse/default.env
 .. |birdhouse-env.local.example| replace:: ``birdhouse/env.local.example``
-.. _birdhouse-env.local.example: ./birdhouse/env.local.example
+.. _birdhouse-env.local.example: ../../birdhouse/env.local.example
 
 .. contents::
 
@@ -26,7 +27,7 @@ Consider using a different solution than ``portainer`` going forward since this 
 completely in future versions.
 
 .. |deprecated-components-portainer| replace:: ``deprecated-components/portainer``
-.. _deprecated-components-portainer: ./birdhouse/deprecated-components/portainer/
+.. _deprecated-components-portainer: ../../birdhouse/deprecated-components/portainer/
 
 Version 2.9
 -----------

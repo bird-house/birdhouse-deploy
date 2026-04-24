@@ -148,7 +148,7 @@ Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https:
 .. |emu-service-compose| replace:: ``emu`` service configuration
 .. _emu-service-compose: birdhouse/optional-components/emu/docker-compose-extra.yml
 .. |optional-components-emu| replace:: ``./optional-components/emu``
-.. _optional-components-emu: birdhouse/optional-components/README.rst#emu-wps-service-for-testing
+.. _optional-components-emu: optional-components/README.rst#emu-wps-service-for-testing
 
 Suggested deployment layout:
 
@@ -227,8 +227,10 @@ Manual steps post deployment
 Create public demo user in Magpie for JupyterHub login
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Use `create-magpie-users <scripts/create-magpie-users>`_ (:download:`download </birdhouse/scripts/create-magpie-users>`) or follow manual
-instructions below.
+Use |create-magpie-users|_ or follow manual instructions below.
+
+.. |create-magpie-users| replace:: ``scripts/create-magpie-users``
+.. _create-magpie-users: scripts/create-magpie-users
 
 ``config.yml`` file if using ``create-magpie-users``:
 
