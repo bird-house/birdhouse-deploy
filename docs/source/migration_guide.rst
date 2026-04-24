@@ -57,10 +57,10 @@ Version 2.7.3 introduced docker compose syntax that is incompatible with docker 
 
   Version 1 syntax may include:
 
-    * top level ``version`` keys
+  * top level ``version`` keys
 
-    * declaring volumes and networks as external with the ``external: <name>`` syntax
-      (where name is the name of the volume or network) instead of ``external: true``.
+  * declaring volumes and networks as external with the ``external: <name>`` syntax
+    (where name is the name of the volume or network) instead of ``external: true``.
 
 Version 2.4
 -----------
