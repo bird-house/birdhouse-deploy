@@ -1068,7 +1068,8 @@ Note that leaving any of these limits unset will default to allowing the user fu
     to a subset of the GPUs available on your machine, you will need to create an additional component with a
     ``docker-compose-extra.yml`` file that specifically overrides the container device settings for the ``mps`` container.
 
-    For example, the docker compose configuration below would set the MPS server to only apply to GPUs with ids `"0"` and `"1"`.
+    For example, the docker compose configuration below would set the MPS server to only apply to GPUs with
+    ids ``"0"`` and ``"1"``.
 
 .. code-block:: yaml
 
@@ -1135,18 +1136,4 @@ To enable this optional-component:
 
 .. _rfc9309: https://www.rfc-editor.org/rfc/rfc9309.html
 .. _google_robots_txt: https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
