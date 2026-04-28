@@ -710,7 +710,7 @@ To enable this optional-component:
 
 .. note::
     This does not affect STAC *data* storage (i.e.: the referenced Assets) if any are defined on the server.
-    Refer to :ref:`optional-components_stac-data-proxy` for these considerations.
+    Refer to |optional-components-stac-data-proxy|_ for these considerations.
 
 .. warning::
     If the server was started prior to configuring this component, Docker might issue some warnings regarding the
@@ -827,8 +827,11 @@ Longterm metrics are any prometheus rule that have the label ``group: longterm-m
 selectable using prometheus' ``'{group="longterm-metrics"}'`` query filter. To add some default longterm metrics rules
 also enable the |optional-components-prometheus-longterm-rules|_ component.
 
-You may also choose to create your own set of rules instead of, or as well as, the default ones. See how to
-:ref:`add additional rules here <monitoring-customize-the-component>`.
+You may also choose to create your own set of rules instead of, or as well as, the default ones.
+See how to add |monitoring-custom-rules|_.
+
+.. |monitoring-custom-rules| replace:: Monitoring Custom Rules
+.. _monitoring-custom-rules: ../components/README.rst#monitoring-customize-the-component
 
 To configure this component:
 
