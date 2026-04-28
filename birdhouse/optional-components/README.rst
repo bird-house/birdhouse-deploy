@@ -10,6 +10,10 @@ Optional components
 .. _magpie: ../components/README.rst#magpie
 .. |components-magpie| replace:: ``./components/magpie``
 .. _components-magpie: ../components/README.rst#magpie
+.. |twitcher| replace:: Twitcher
+.. _twitcher: ../components/README.rst#twitcher
+.. |components-twitcher| replace:: ``./components/twitcher``
+.. _components-twitcher: ../components/README.rst#twitcher
 .. |weaver| replace:: Weaver
 .. _weaver: ../components/README.rst#weaver
 .. |components-weaver| replace:: ``./components/weaver``
@@ -217,12 +221,11 @@ How to enable in ``env.local`` (a copy from |env.local.example|_):
 Emu WPS service for testing
 ---------------------------
 
-Preconfigured for Emu but can also be used to quickly deploy any birds
+Preconfigured for |emu|_ but can also be used to quickly deploy any WPS birds
 temporarily without changing code.  Good to preview new birds or test
 alternative configuration of existing birds.
 
-No Postgres DB configured.  If need Postgres DB, use generic_bird component
-instead.
+No Postgres DB configured.  If need Postgres DB, use |optional-components-generic-bird|_ instead.
 
 How to enable Emu in ``env.local`` (a copy from |env.local.example|_):
 
@@ -235,15 +238,18 @@ How to enable Emu in ``env.local`` (a copy from |env.local.example|_):
 .. |emu-default-env| replace:: ``optional-components/emu/default.env``
 .. _emu-default-env: emu/default.env
 
-Emu service will be available at ``http://BIRDHOUSE_FQDN:EMU_PORT/wps`` or
-``https://BIRDHOUSE_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/EMU_NAME`` where
-``BIRDHOUSE_FQDN``, ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
+|emu|_ service will be available at
+``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/${EMU_NAME}`` where
+``BIRDHOUSE_PROXY_SCHEME``, ``BIRDHOUSE_FQDN``, ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
 in your ``env.local``.
 
-Magpie will be automatically configured to give complete public anonymous
+|magpie|_ will be automatically configured to give complete public anonymous
 access for this Emu WPS service.
 
-CANARIE monitoring will also be automatically configured for this Emu WPS service.
+|components-canarie-api|_ monitoring will also be automatically configured for this |emu|_ WPS service.
+
+.. |emu| replace:: Emu
+.. _emu: https://emu.readthedocs.io/en/latest/
 
 
 .. |optional-components-testthredds| replace:: ``./optional-components/testthredds``
@@ -269,7 +275,7 @@ Test THREDDS service will be available at
 ``https://BIRDHOUSE_FQDN_PUBLIC/TESTTHREDDS_CONTEXT_ROOT`` where ``BIRDHOUSE_FQDN`` and
 ``BIRDHOUSE_FQDN_PUBLIC`` are defined in your ``env.local``.
 
-Use same docker image as regular THREDDS by default but can be customized.
+Use same docker image as regular |thredds|_ by default but can be customized.
 
 New container have new ``TestDatasets`` with volume-mount to ``/data/testdatasets``
 on the host.  So your testing ``.nc`` and ``.ncml`` files should be added to
@@ -281,10 +287,10 @@ server.
 ``export EMU_WPS_OUTPUTS_VOL=testwps_outputs`` to ``env.local`` for Emu to write to
 ``TestWps_Output`` dataset.
 
-No Twitcher/Magpie access control, this Test THREDDS is directly behind the
+No |twitcher|_/|magpie|_ access control, this Test THREDDS is directly behind the
 Nginx proxy.
 
-CANARIE monitoring will also be automatically configured for this second
+|components-canarie-api|_ monitoring will also be automatically configured for this second
 THREDDS server.
 
 
@@ -309,9 +315,9 @@ How to enable in ``env.local`` (a copy from |env.local.example|_):
 .. |generic-bird-default-env| replace:: ``optional-components/generic_bird/default.env``
 .. _generic-bird-default-env: generic_bird/default.env
 
-The WPS service will be available at ``http://BIRDHOUSE_FQDN:GENERIC_BIRD_PORT/wps``
-or ``https://BIRDHOUSE_FQDN_PUBLIC/TWITCHER_PROTECTED_PATH/GENERIC_BIRD_NAME`` where
-``BIRDHOUSE_FQDN``\ , ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
+The WPS service will be available at
+``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/${TWITCHER_PROTECTED_PATH}/${GENERIC_BIRD_NAME}`` where
+``BIRDHOUSE_PROXY_SCHEME``, ``BIRDHOUSE_FQDN``, ``BIRDHOUSE_FQDN_PUBLIC`` and ``TWITCHER_PROTECTED_PATH`` are defined
 in your ``env.local``.
 
 Use same docker image as regular Finch by default but can be customized.
@@ -325,7 +331,7 @@ in case that name clashes with the ``BIRDHOUSE_POSTGRES_DB`` variable.
 Magpie will be automatically configured to give complete public anonymous
 access for this WPS service.
 
-CANARIE monitoring will also be automatically configured for this WPS service.
+|components-canarie-api|_ monitoring will also be automatically configured for this WPS service.
 
 
 .. |optional-components-wps-healthchecks| replace:: ``./optional-components/wps-healthchecks``
