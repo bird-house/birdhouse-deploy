@@ -1,4 +1,4 @@
-name: "Stage Birdhouse-Deploy Release"
+name: "Prepare Release"
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   release:
-    name: Draft Release
+    name: Create Release from Tag
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     permissions:
