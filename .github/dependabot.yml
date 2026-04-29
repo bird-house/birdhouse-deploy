@@ -3,6 +3,9 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /.github/workflows
+    commit-message:
+      include: scope
+      prefix: "[skip ci]"
     schedule:
       interval: "quarterly"
     groups:
