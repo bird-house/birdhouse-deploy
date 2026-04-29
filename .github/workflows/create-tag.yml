@@ -1,0 +1,50 @@
+name: "Create Tag"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - CHANGES.md
+      - RELEASE.txt
+
+permissions:
+  contents: read
+
+jobs:
+  tag:
+    name: Tag New Version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
+      - name: Generate GitHub App token
+        id: token_generator
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+        with:
+          app-id: ${{ secrets.BIRDHOUSE_HELPER_BOT_ID }}
+          private-key: ${{ secrets.BIRDHOUSE_HELPER_BOT_KEY }}
+
+      - name: Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          token: ${{ steps.token_generator.outputs.token }}
+
+      - name: Create Tag
+        run: |
+          CURRENT_VERSION=$(bump-my-version show current_version)
+          git tag -s $CURRENT_VERSION -m $CURRENT_VERSION 
+
+      - name: Push Changes
+        uses: ad-m/github-push-action@77c5b412c50b723d2a4fbc6d71fb5723bcd439aa # v1.0.0
+        with:
+          force: false
+          tags: true
+          github_token: ${{ steps.token_generator.outputs.token }}
