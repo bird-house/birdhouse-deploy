@@ -564,10 +564,10 @@ Release Procedure
     info nicely.  That page was previously used as an ad-hoc changelog before
     CHANGES.md_ was formally introduced.
 
-  * Run ``git tag`` on the commit created the by merge, with the same tag as
-    ``make bump <major|minor|patch>`` generated.
-
-  * Run ``git push --tags`` to upload the new version.
+  * Once merged to ``master`` the ``create-tag.yml`` and ``release.yml`` workflows will run.
+    If the version has changed, automation will tag this version then push the tag
+    directly to the repository. The new tag will then trigger the workflow that
+    creates a new release.
 
 .. backups::
 
