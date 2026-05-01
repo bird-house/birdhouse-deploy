@@ -567,7 +567,7 @@ Release Procedure
   * Once merged to ``master`` the ``create-tag.yml`` and ``release.yml`` workflows will run.
     If the version has changed, automation will tag this version then push the tag
     directly to the repository. The new tag will then trigger the workflow that
-    creates a new release.
+    creates a new release. Please do not create tags or releases manually for this repository.
 
 .. backups::
 

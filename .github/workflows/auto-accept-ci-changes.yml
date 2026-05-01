@@ -3,7 +3,7 @@ name: Dependabot CI Updates
 on:
   pull_request:
     branches:
-      - main
+      - master
     paths:
       - .github/**/*.yml
     types:
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   dependabot-auto-approve:
-    name: Auto-approve and auto-merge safe Dependabot updates
+    name: Auto-approve and auto-merge safe Dependabot updates for GitHUb Actions
     runs-on: ubuntu-latest
     environment: automation
     if: >
