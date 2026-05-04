@@ -5,7 +5,7 @@ updates:
     directory: /.github/workflows
     commit-message:
       include: scope
-      prefix: "[skip ci]"
+      prefix: "[skip jenkins] "
     schedule:
       interval: "quarterly"
     groups:
