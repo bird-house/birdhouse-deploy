@@ -35,6 +35,12 @@
 
   Updates to GitHub Workflows from Dependabot are now prefixed with `[skip jenkins]` in order to prevent redundant testing.
 
+- `pre-commit` has been replaced by `prek` in dependencies and workflows. `prek` is Rust-built reimplementation
+  of `pre-commit` that can use the same configuration files and runs much faster with less storage usage.
+
+- All workflow jobs/steps have names for easier-to-understand build summaries as well as constrained permissions
+  for less potentially attack surface. 
+
 [2.27.0](https://github.com/bird-house/birdhouse-deploy/tree/2.27.0) (2026-04-21)
 ------------------------------------------------------------------------------------------------------------------
 
