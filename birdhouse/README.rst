@@ -555,19 +555,18 @@ Release Procedure
     CHANGES.md_ items were inserted following merge to make sure the new ones by
     this PR are under "unreleased".
 
-  * Run ``make bump <major|minor|patch>`` with appropriate options, as described in "Tagging
-    policy" section above.  Push.
+  * Run ``make bump <major|minor|patch>`` with appropriate options, as described
+    in "Tagging policy" section above.  Push the changes.
 
-  * Merge this PR, copying the entire PR description into the merge commit
-    description.  This is so that the page
-    https://github.com/bird-house/birdhouse-deploy/tags will contain relevant
-    info nicely.  That page was previously used as an ad-hoc changelog before
-    CHANGES.md_ was formally introduced.
+  * Merge this PR, copying the entire PR description into the merge commit description.
+    This is so that the page https://github.com/bird-house/birdhouse-deploy/tags
+    will contain relevant info nicely.  That page was previously used as an ad-hoc
+    changelog before CHANGES.md_ was formally introduced.
 
   * Once merged to ``master`` the ``create-tag.yml`` and ``release.yml`` workflows will run.
     If the version has changed, automation will tag this version then push the tag
-    directly to the repository. The new tag will then trigger the workflow that
-    creates a new release. Please do not create tags or releases manually for this repository.
+    directly to the repository.  The new tag will then trigger the workflow that
+    creates a new release.  Please do not create tags or releases manually for this repository.
 
 .. backups::
 

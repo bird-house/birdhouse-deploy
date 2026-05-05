@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   dependabot-auto-approve:
-    name: Auto-approve and auto-merge safe Dependabot updates for GitHUb Actions
+    name: Auto-approve and auto-merge safe Dependabot updates for GitHub Actions
     runs-on: ubuntu-latest
     environment: automation
     if: >
@@ -47,10 +47,9 @@ jobs:
       - name: Stop workflow if not minor update or patch update
         id: skip-condition
         if: >
-          steps.dependabot-metadata.outputs.update-type != 'version-update:semver-minor' &&
-          steps.dependabot-metadata.outputs.update-type != 'version-update:semver-patch'
+          steps.dependabot-metadata.outputs.update-type == 'version-update:semver-major'
         run: |
-          echo "Not a minor or patch update; skipping auto-approval."
+          echo "Not a minor or patch update; Skipping auto-approval."
           echo "skip=true" >> $GITHUB_OUTPUT
 
       - name: Checkout Repository
