@@ -15,7 +15,15 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Update jupyterhub version to `5.4.5-20260506`
+
+  This update includes bug fixes and a fix for 
+  [CVE-2026-33709](https://github.com/jupyterhub/jupyterhub/security/advisories/GHSA-3vff-hjqv-m7h8).
+
+  This update also removes the source code for the magpie authenticator from the jupyterhub package
+  since that code is now maintained in this repo since version [2.22.0](#2220-2026-02-09).
 
 [2.27.0](https://github.com/bird-house/birdhouse-deploy/tree/2.27.0) (2026-04-21)
 ------------------------------------------------------------------------------------------------------------------
