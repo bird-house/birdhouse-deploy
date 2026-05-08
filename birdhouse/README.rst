@@ -161,7 +161,7 @@ can be optionally added to the deployment via the `override mechanism <https://d
 Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repository.
 
 .. |emu-service-compose| replace:: ``emu`` service configuration
-.. _emu-service-compose: birdhouse/optional-components/emu/docker-compose-extra.yml
+.. _emu-service-compose: ./optional-components/emu/docker-compose-extra.yml
 .. |optional-components-emu| replace:: ``./optional-components/emu``
 .. _optional-components-emu: optional-components/README.rst#emu-wps-service-for-testing
 
