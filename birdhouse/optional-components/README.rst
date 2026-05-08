@@ -1,4 +1,4 @@
-Optional components
+Optional Components
 ===================
 
 .. shared references by multiple components definitions
@@ -1115,8 +1115,8 @@ Add |optional-components-mount-thredds-to-s3|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS`` 
 .. |optional-components-robots| replace:: ``./optional-components/robots``
 .. _optional-components-robots:
 
-Robots
-------
+Add ``robots.txt`` file for bots and web crawlers
+-------------------------------------------------
 
 This adds a robots.txt file to the birdhouse stack which can be used to ask bots and web crawlers to not
 scrape this website.
