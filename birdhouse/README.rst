@@ -208,7 +208,7 @@ please make sure that the WPS databases exists in the
 postgres instance. See |create-wps-pgsql-databases.sh|_.
 
 .. |create-wps-pgsql-databases.sh| replace:: ``birdhouse/scripts/create-wps-pgsql-databases.sh``
-.. _create-wps-pgsql-databases.sh: birdhouse/scripts/create-wps-pgsql-databases.sh
+.. _create-wps-pgsql-databases.sh: ./scripts/create-wps-pgsql-databases.sh
 
 
 Production deployment hardware recommendations
