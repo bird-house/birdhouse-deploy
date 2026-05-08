@@ -87,9 +87,11 @@ def convert_rst_links_to_html(app, exception):
             app.warn(f'Error processing {html_file}: {e}')
 
 
+# NOTE: if the file is a root-level item to include, use 'html_extra_path' instead
 copy_directories = [
     "birdhouse",
     "bin",
+    "tests",
 ]
 
 
@@ -282,6 +284,13 @@ html_extra_path = [
     'birdhouse/docker-compose.yml',
     'birdhouse/default.env',
     'birdhouse/read-configs.include.sh',
+    # add these manually to avoid massive copy of all the repository for docs
+    '../../vagrant_variables.yml.example',
+    '../../environment-dev.yml',
+    '../../.bumpversion.toml',
+    '../../CHANGES.md',
+    '../../RELEASE.txt',
+    '../../Makefile',
 ]
 
 # If not None, a 'Last updated on:' timestamp is inserted at every page

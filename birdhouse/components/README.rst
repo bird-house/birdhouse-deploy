@@ -6,8 +6,15 @@ Birdhouse Components
 .. _bin-birdhouse: ../../bin/birdhouse
 .. |birdhouse-compose.sh| replace:: ``birdhouse-compose.sh``
 .. _birdhouse-compose.sh: ../birdhouse-compose.sh
+.. |docker-compose.yml| replace:: ``docker-compose.yml``
+.. _docker-compose.yml: ../docker-compose.yml
 .. |env.local.example| replace:: ``env.local.example``
 .. _env.local.example: ../env.local.example
+.. |deploy.sh| replace:: ``deployment/deploy.sh``
+.. _deploy.sh: ../deployment/deploy.sh
+.. |triggerdeploy.sh| replace:: ``deployment/triggerdeploy.sh``
+.. _triggerdeploy.sh: ../deployment/triggerdeploy.sh
+
 
 .. contents::
 
@@ -86,7 +93,7 @@ update all other containers.
 
 Automated unattended continuous deployment means if code change in the remote
 repo, matching the same currently checkout branch (ex: config changes,
-``docker-compose.yml`` changes) a deployment will be performed automatically
+|docker-compose.yml|_ changes) a deployment will be performed automatically
 without human intervention.
 
 The trigger for the deployment is new code change on the server on the current
@@ -102,8 +109,7 @@ A suggested "Birdhouse stack" is made of at least 2 repos, this repo and another
 private repo containing the source controlled ``env.local`` file and any other
 docker-compose override for true infrastructure-as-code.
 
-Note: there are still cases where a human intervention is needed. See note in
-script deploy.sh_ (:download:`download <../deployment/deploy.sh>`).
+Note: there are still cases where a human intervention is needed. See note in script |deploy.sh|_.
 
 
 Usage
@@ -127,19 +133,15 @@ How to Enable the Component
   - Add |components-scheduler|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
   - Set ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``, ``BIRDHOUSE_AUTODEPLOY_DEPLOY_KEY_ROOT_DIR``,
     ``BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY``, ``BIRDHOUSE_AUTODEPLOY_NOTEBOOK_FREQUENCY`` as desired,
-    full documentation in `env.local.example`_.
-  - Run once fix-write-perm_ (:download:`download <../deployment/fix-write-perm>`), see doc in script.
+    full documentation in |env.local.example|_.
+  - Run once |fix-write-perm|_, see doc in script.
 
+.. |fix-write-perm| replace:: ``deployment/fix-write-perm``
 .. _fix-write-perm: ../deployment/fix-write-perm
 
 
 Old way to deploy the automatic deployment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. |deploy.sh| replace:: ``deployment/deploy.sh``
-.. _deploy.sh: ../deployment/deploy.sh
-.. |triggerdeploy.sh| replace:: ``deployment/triggerdeploy.sh``
-.. _triggerdeploy.sh: ../deployment/triggerdeploy.sh
 
 Superseded by this new |components-scheduler|_ component.  Keeping for reference only.
 

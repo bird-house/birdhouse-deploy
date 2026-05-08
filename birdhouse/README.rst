@@ -14,13 +14,28 @@ Birdhouse Deployment
 .. _birdhouse-docker-compose.yml: ./docker-compose.yml
 .. |read-configs.include.sh| replace:: ``read-configs.include.sh``
 .. _read-configs.include.sh: ./read-configs.include.sh
+.. |environment-dev.yml| replace:: ``environment-dev.yml``
+.. _environment-dev.yml: ../environment-dev.yml
+.. |tests-requirements.txt| replace:: ``tests/requirements.txt``
+.. _tests-requirements.txt: ../tests/requirements.txt
+.. |tests-requirements.in| replace:: ``tests/requirements.in``
+.. _tests-requirements.in: ../tests/requirements.in
+.. |Makefile| replace:: ``Makefile``
+.. _Makefile: ../Makefile
 .. |components| replace:: ``components/``
 .. _components: ./components/README.rst
 .. |optional-components| replace:: ``optional-components/``
 .. _optional-components: ./optional-components/README.rst
 .. |twitcher| replace:: Twitcher
 .. _twitcher: ./components/README.rst#twitcher
-
+.. |bump-my-version| replace:: ``bump-my-version``
+.. _bump-my-version: https://github.com/callowayproject/bump-my-version
+.. |.bumpversion.toml| replace:: ``.bumpversion.toml``
+.. _.bumpversion.toml: ../.bumpversion.toml
+.. |CHANGES.md| replace:: ``CHANGES.md``
+.. _CHANGES.md: ../CHANGES.md
+.. |RELEASE.txt| replace:: ``RELEASE.txt``
+.. _RELEASE.txt: ../RELEASE.txt
 
 .. contents::
 
@@ -245,7 +260,8 @@ Use |create-magpie-users|_ or follow manual instructions below.
 Manual instructions:
 
 * Go to
-  ``https://<BIRDHOUSE_FQDN>/magpie/ui/login`` and login with the ``MAGPIE_ADMIN_USERNAME`` user. The password should be in ``env.local``.
+  ``https://<BIRDHOUSE_FQDN>/magpie/ui/login`` and login with the ``MAGPIE_ADMIN_USERNAME`` user.
+  The password should be in ``env.local``.
 
 * Then go to ``https://<BIRDHOUSE_FQDN>/magpie/ui/users/add``.
 
@@ -290,7 +306,13 @@ return the HTTP response code ``200``.
 .. _optional-components-secure-thredds: ./optional-components/README.rst#control-secured-access-to-resources-example
 
 
-Vagrant instructions
+.. |vagrant-variables| replace:: ``vagrant_variables.yml.example``
+.. _vagrant-variables: ../vagrant_variables.yml.example
+.. |vagrant-disk-resize| replace:: ``vagrant-utils/disk-resize``
+.. _vagrant-disk-resize: ./vagrant-utils/disk-resize
+.. _vagrant-instructions:
+
+Vagrant Instructions
 --------------------
 
 Vagrant allows us to quickly spin up a VM to easily reproduce the runtime
@@ -298,10 +320,9 @@ environment for testing or to have multiple flavors of Birdhouse with slightly
 different combinations of the parts all running simultaneously in their
 respective VM, allowing us to see the differences in behavior.
 
-See `vagrant_variables.yml.example </vagrant_variables.yml.example>`_ (:download:`download </vagrant_variables.yml.example>`) for what's
-configurable with Vagrant.
+See |vagrant-variables|_ for what's configurable with Vagrant.
 
-If using Centos box, follow `disk-resize <vagrant-utils/disk-resize>`_ (:download:`download </birdhouse/vagrant-utils/disk-resize>`) after
+If using Centos box, follow |vagrant-disk-resize|_ after
 first ``vagrant up`` failure due to disk full.  Then ``vagrant reload && vagrant
 provision`` to continue.  If using Ubuntu box, no manual steps required,
 everything just works.
@@ -407,7 +428,7 @@ Docker rootless configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you are using `Docker Rootless Mode <https://docs.docker.com/engine/security/rootless/>`_ on your machine,
-you *might* need to execute the following command to allow the `proxy` (Nginx) service to connect to the relevant
+you *might* need to execute the following command to allow the ``proxy`` (Nginx) service to connect to the relevant
 HTTP ports.
 
 .. code-block:: shell
@@ -442,9 +463,9 @@ Development and testing
 
 To set up a development environment, we recommend using an Anaconda environment.
 
-The repository contains an `environment-dev.yml` file for conda that lists dependencies needed to run the development
-environment (including `bump-my-version` for version management and `pip-tools` for managing Python dependencies).
-This file will install the libraries listed in the `tests/requirements.txt` file that are needed to run the tests.
+The repository contains an |environment-dev.yml|_ file for conda that lists dependencies needed to run the development
+environment (including |bump-my-version|_ for version management and ``pip-tools`` for managing Python dependencies).
+This file will install the libraries listed in the |tests-requirements.txt|_ file that are needed to run the tests.
 
 In order to set up the development environment, run the following commands:
 
@@ -456,7 +477,7 @@ In order to set up the development environment, run the following commands:
     # Activate the conda environment
     conda activate birdhouse-dev
 
-Framework tests
+Framework Tests
 ^^^^^^^^^^^^^^^
 
 Core features of the platform include tests to prevent regressions.
@@ -471,7 +492,7 @@ Some tests require internet access (to access JSON schemas used to validate
 JSON structure). If you need to run tests offline, you can skip the tests that
 require internet access by using the ``-k 'not online'`` pytest option.
 
-Alternatively, testing-related targets are available via the `Makefile <../Makefile>`_:
+Alternatively, testing-related targets are available via the |Makefile|_:
 
 .. code-block:: shell
 
@@ -496,23 +517,24 @@ Alternatively, testing-related targets are available via the `Makefile <../Makef
 Housekeeping
 ^^^^^^^^^^^^
 
-The testing requirements (`requirements.txt`) are managed by Dependabot, which will automatically create pull requests
-to update the dependencies in the `requirements.in` file and regenerate `requirements.txt` based on it.  This ensures
+The testing requirements (|tests-requirements.txt|_) are managed by Dependabot,
+which will automatically create pull requests  to update the dependencies in the |tests-requirements.in|_
+file and regenerate |tests-requirements.txt|_ based on it.  This ensures
 that the dependencies are kept up to date and that the tests can be run with the latest versions of the dependencies.
 
-Periodically, we may want to modify `requirements.txt` between scheduled updates.  These dependencies are controlled
-from `requirements.in` pins and then generated with `pip-compile` to provide all packages with their commit hashes
-(via `pip-tools`).  This allows us to have a reproducible set of dependencies that can be used to run the tests
-locally and on CI.
+Periodically, we may want to modify |tests-requirements.txt|_ between scheduled updates.
+These dependencies are controlled from |tests-requirements.in|_ pins and then generated with ``pip-compile``
+to provide all packages with their commit hashes (via ``pip-tools``).
+This allows us to have a reproducible set of dependencies that can be used to run the tests locally and on CI.
 
-After updating the dependency pins found in `requirements.in`, you can run the following command:
+After updating the dependency pins found in |tests-requirements.in|_, you can run the following command:
 
 .. code-block:: shell
 
     # Update the dependencies in requirements.txt
     pip-compile --generate-hashes --output-file=tests/requirements.txt tests/requirements.in
 
-Note that the version of Python used to run the `pip-compile` command should match the minimum supported version
+Note that the version of Python used to run the ``pip-compile`` command should match the minimum supported version
 of Python used in the Birdhouse stack!
 
 Tagging policy
@@ -541,13 +563,13 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
    component.
 
 To help properly update versions in all files that could reference to the latest tag,
-the `bump-my-version <https://github.com/callowayproject/bump-my-version>`_ utility is employed.
+the |bump-my-version|_ utility is employed.
 Running this tool will modify versions in files referencing to the latest revision
-(as defined in `.bumpversion.toml`_) and apply change logs
+(as defined in |.bumpversion.toml|_) and apply change logs
 updates by moving ``Unreleased`` items under a new version matching the new version.
 
 In order to handle auto-update of the ``releaseTime`` value simultaneously to the
-generated release version, the ``bump-my-version`` call is wrapped in `Makefile <../Makefile>`_.
+generated release version, the |bump-my-version|_ call is wrapped in |Makefile|_.
 
 One of the following commands should be used to generate a new version.
 
@@ -563,7 +585,7 @@ One of the following commands should be used to generate a new version.
     make VERSION="<MAJOR>.<MINOR>.<PATCH>" bump dry
 
 To validate, you can look up the resulting version and release time that
-will be written to `RELEASE.txt <../RELEASE.txt>`_. The current version can also be requested
+will be written to |RELEASE.txt|_. The current version can also be requested
 using the following command.
 
 .. code-block:: shell
@@ -572,21 +594,21 @@ using the following command.
 
 Once the version as been bumped and the PR is merged, a corresponding version tag should be added
 to the commit generated by the merge. This step is intentionally manual instead of leaving it up
-to ``bump-my-version`` to auto-generate the tag in other to apply it directly on ``master`` branch
+to |bump-my-version|_ to auto-generate the tag in other to apply it directly on ``master`` branch
 (onto the merge commit itself), instead of onto the commits in the PR prior merging.
 
 Release Procedure
 -----------------
 
 * Pull/merge latest ``master`` to make sure modifications are applied in
-  CHANGES.md_, in next step, are under the most recent "unreleased" section.
+  |CHANGES.md|_, in next step, are under the most recent "unreleased" section.
 
-* Update CHANGES.md_, commit, push.
+* Update |CHANGES.md|_, commit, push.
 
-* Open a PR with the new content from CHANGES.md_ as the PR description.  PR
+* Open a PR with the new content from |CHANGES.md|_ as the PR description.  PR
   description can have more pertinent info, ex: test results, staging server
   location, other discussion topics, that might or might not be relevant in
-  CHANGES.md_.  Use your judgement.
+  |CHANGES.md|_.  Use your judgement.
 
 * Wait for a PR approval.
 
@@ -630,7 +652,7 @@ Backups
 Backups of data used by the birdhouse stack can be generated using the ``bin/birdhouse backup`` command
 and its various subcommands.
 
-Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository and can be restored
+Backups are stored in a |restic|_ repository and can be restored
 either to a named volume (determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable) or in the case
 of user data and application data, it can directly overwrite the current data with the backup.
 
@@ -709,7 +731,7 @@ Users can backup and restore the following data from the birdhouse stack:
 Configure the restic repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository which can be
+Backups are stored in a |restic|_ repository which can be
 configured by creating a file at the location determined by the ``BIRDHOUSE_BACKUP_RESTIC_ENV_FILE`` configuration
 variable (default: ``birdhouse/restic.env``).
 
@@ -769,8 +791,7 @@ the backup and restore jobs.
     ssh server you are trying to log into. At time of writing, the RSA algorithm is considered insecure
     by most modern standards; an algorithm such as ECDSA is preferred.
 
-  * You can test whether your keys are sufficient for restic by running the ``birdhouse/scripts/test-restic-keypair.sh``
-    script.
+  * You can test whether your keys are sufficient for restic by running the |test-restic-keypair.sh|_ script.
 
 * ``BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS``
 
@@ -807,6 +828,7 @@ the backup and restore jobs.
   * Warning! Using this option may overwrite other docker options that are required for restic to run properly.
     Make sure you are familiar with restic commands and know what you are doing before using this feature.
 
-.. _default.env: ./default.env
-.. _`.bumpversion.toml`: ../.bumpversion.toml
-.. _CHANGES.md: ../CHANGES.md
+.. |restic| replace:: ``restic``
+.. _restic: https://restic.readthedocs.io/en/stable/
+.. |test-restic-keypair.sh| replace:: ``birdhouse/scripts/test-restic-keypair.sh``
+.. _test-restic-keypair.sh: scripts/test-restic-keypair.sh
