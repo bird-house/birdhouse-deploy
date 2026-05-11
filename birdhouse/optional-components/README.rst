@@ -448,25 +448,54 @@ backward compatibility with previous instances. However, enabling this optional 
 stored under ``/wpsoutputs``.
 
 To provide secured access, all requests sent to ``/wpsoutputs`` require a prior authorization from a new service added
-to Magpie, called ``secure-data-proxy``. As shown below, this service should replicate the file system directory
-hierarchy defined to store the data. A file located under ``/wpsoutputs/weaver/public`` for example would use the
-corresponding resources and user/group permissions defined under this service to validate that the authenticated
-request user can obtain access to it.
+to |magpie|_ through |optional-components-secure-data-proxy|_.
+As shown below, this service should replicate the file system directory hierarchy defined to store the data.
+For example, a file located under ``/wpsoutputs/weaver/public`` would use the corresponding resources and user/group
+permissions defined under this ``secure-data-proxy`` service and its ``/wpsoutputs/[...]`` resources to
+validate that the authenticated request user can obtain access to them.
 
-.. image:: secure-data-proxy/images/magpie-service.png
+.. figure:: secure-data-proxy/images/magpie-service.png
+    :alt: Magpie Service for Secure Data Proxy
+    :align: center
+
+    Magpie Service for ``secure-data-proxy``
+
+As a result of combining |components-wps_outputs-volume|_ and |optional-components-secure-data-proxy|_,
+access control to the WPS outputs requests will be pre-validated as presented below. Access to the contents
+will be controlled as defined by |magpie|_ permissions resolution applied to the corresponding resources.
+Because a pre-request operation is employed, once validated by |magpie|_, the authorized request will perform
+the same way as when using |components-wps_outputs-volume|_ alone (public access).
+The resulting data access will occur transparently by invoking services and users.
+
+.. figure:: secure-data-proxy/images/secure-data-proxy-wps-outputs.svg
+    :alt: Secure Data Proxy WPS Outputs
+    :align: center
+
+    WPS outputs data requests using secured or public access control.
+
+.. note::
+    Using |optional-components-secure-data-proxy|_ and |components-wps_outputs-volume|_ MAY allow public access
+    if the ``MAGPIE_ANONYMOUS_GROUP`` is granted ``read`` permission at the root of for the corresponding
+    ``secure-data-proxy/wpsoutputs`` resource. An example of such configuration is provided in
+    |public-access-secured-proxy|_ when |optional-components-all-public-access|_ is enabled.
+    Alternatively, corresponding permissions can be set manually by the platform administrator for their specific needs.
+    The main difference of using this approach in contrast to pure |components-wps_outputs-volume|_ access would
+    be that platform administrator can leverage which users are accessing WPS outputs data when they are logged in,
+    and still allows them to revoke access (``read-deny`` permission) to lower directory levels if needed.
 
 How to enable in ``env.local`` (a copy from |env.local.example|_):
 
 * Add |optional-components-secure-data-proxy|_ to ``BIRDHOUSE_EXTRA_CONF_DIRS``.
 
-Once enabled, users will *NOT* have public access to files under ``/wpsoutputs`` anymore, except for items defined
-with authorized ``read`` permissions for the ``anonymous`` group under |secure-data-proxy-perms|_. As any other Magpie
-configuration file, any combination of user/group/resource/permission could be defined for the ``secure-data-proxy``
-service to customize specific user access control to stored data files.
+Once enabled, users will _**NOT**_ have public access to files under ``/wpsoutputs`` anymore, except for items defined
+with authorized ``read`` permissions for the ``anonymous`` group under |secure-data-proxy-perms|_. As any other
+|magpie|_ configuration file, any combination of user/group/resource/permission could be defined for
+the |optional-components-secure-data-proxy|_ service to customize specific user access control to stored data files.
 
 .. |secure-data-proxy-perms| replace:: ``optional-components/secure-data-proxy/config/magpie/config.yml.template``
 .. _secure-data-proxy-perms: ./secure-data-proxy/config/magpie/config.yml.template
-
+.. |public-access-secured-proxy| replace:: ``optional-components/all-public-access/secure-data-proxy/permissions.cfg``
+.. _public-access-secured-proxy: ./all-public-access/secure-data-proxy//secure-data-proxy/permissions.cfg
 
 .. |optional-components-secure-thredds| replace:: ``./optional-components/secure-thredds``
 .. _optional-components-secure-thredds:
