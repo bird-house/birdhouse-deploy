@@ -595,8 +595,8 @@ and then permissions can be set on a per-workspace or even layer basis.
 A ``GetFeature`` request for a layer in a public workspace (named public in this example) will succeed for any user
 using any of these two request types:
 
-* {BASE_URL}/geoserver-secured/wfs?version=2.0.0&request=GetFeature&typeNames=public:{LAYER_NAME}
-* {BASE_URL}/geoserver-secured/public/wfs?version=2.0.0&request=GetFeature&typeNames={LAYER_NAME}
+* ``{BASE_URL}/geoserver-secured/wfs?version=2.0.0&request=GetFeature&typeNames=public:{LAYER_NAME}``
+* ``{BASE_URL}/geoserver-secured/public/wfs?version=2.0.0&request=GetFeature&typeNames={LAYER_NAME}``
 
 Whereas access to a private workspace will require a user or group be given explicit permissions through
 the |magpie|_ interface.
