@@ -17,7 +17,7 @@
 
 ## Changes
 
-- The `birdhouse/birdhouse-deploy` repositiory now makes more effective use of GitHub Workflows in order to automate
+- The `birdhouse/birdhouse-deploy` repository now makes more effective use of GitHub Workflows in order to automate
   the release procedure.
 
   When preparing a new version, the tagging and release steps are now handled by the `create-tag.yml` and 
