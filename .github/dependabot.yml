@@ -3,18 +3,37 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /.github/workflows
+    commit-message:
+      include: scope
+      # Skip comment specifically for Jenkins CI builds on CRIM infrastructure
+      # [skip ci] cannot be used here in order for auto-accept-ci-changes.yml to function
+      prefix: "[skip jenkins] "
     schedule:
       interval: "quarterly"
     groups:
       actions:
         patterns:
           - "*"
+        update-types:
+          - patch
+          - minor
+          - major
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: pip
-    directory: /tests
+    directories:
+      - /.github
+      - /tests
     schedule:
       interval: "quarterly"
     groups:
       python:
         patterns:
           - "*"
+        update-types:
+          - patch
+          - minor
+          - major
+    cooldown:
+      default-days: 7

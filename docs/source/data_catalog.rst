@@ -1,23 +1,24 @@
-Data Catalog 
+Data Catalog
 ============
 
 Birdhouse bundles a number of cataloguing services that allow you to search
-for data and add data to the catalog. 
+for data and add data to the catalog.
 
 Birdhouse Catalogue Search
------------------------
+--------------------------
+
 +--------------+---------------------------------------------------------------------+
 | |deprecated| | this is no longer maintained and may be removed in a future version |
 +--------------+---------------------------------------------------------------------+
 
 .. |deprecated| image:: https://img.shields.io/badge/status-deprecated-orange
 
-The ``pavicssearch`` service closely mimics the API for the Earth 
+The ``pavicssearch`` service closely mimics the API for the Earth
 System Grid Federation (ESGF) search. The search fields (or *facets*)
-include author, category, cf_standard_name, experiment, frequency, 
+include author, category, cf_standard_name, experiment, frequency,
 institute, model, project, source, subject, title, units, variable and
 variable_long_name. The search results are returned in a ``json`` file and
-include the URL to download the file or access it through DAP. 
+include the URL to download the file or access it through DAP.
 
 
 Examples
@@ -31,6 +32,6 @@ will search for all files that are part of the RCP8.5 experiment and based on th
 
 
 
- 
+
 
 

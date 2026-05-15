@@ -19,6 +19,9 @@
 #
 import os
 import sys
+import re
+import shutil
+from pathlib import Path
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../../.'))
 
@@ -52,6 +55,105 @@ templates_path = ['_templates']
 #
 source_suffix = ['.rst', '.md']
 
+
+def convert_rst_links_to_html(app, exception):
+    """
+    Post-process HTML files to convert .rst links to .html links.
+
+    This allows RST source files to use .rst links (which work on GitHub),
+    while the generated HTML uses .html links (which work in browsers).
+    """
+    if exception or app.builder.format != 'html':
+        return
+
+    html_dir = Path(app.outdir)
+
+    # Pattern to match href attributes with .rst files (including anchors)
+    # Captures: (path before .rst)(#anchor if exists)(closing quote)
+    rst_link_pattern = re.compile(r'href="([^"]*?)\.rst(#[^"]*)?(")')
+
+    for html_file in html_dir.rglob('*.html'):
+        try:
+            content = html_file.read_text(encoding='utf-8')
+            original_content = content
+
+            # Replace .rst with .html in href attributes
+            content = rst_link_pattern.sub(r'href="\1.html\2\3', content)
+
+            # Only write if content changed
+            if content != original_content:
+                html_file.write_text(content, encoding='utf-8')
+        except Exception as e:
+            app.warn(f'Error processing {html_file}: {e}')
+
+
+# NOTE: if the file is a root-level item to include, use 'html_extra_path' instead
+copy_directories = [
+    "birdhouse",
+    "bin",
+    "tests",
+]
+
+
+def copy_non_rst_files(app, exception):
+    """
+    Copy all non-RST files from birdhouse directory to HTML output.
+
+    Sphinx processes RST files into HTML, but non-RST files (like .sh, .yml, .env)
+    need to be copied manually to be available for download links in the documentation.
+    """
+    if exception or app.builder.format != 'html':
+        return
+
+    for cp_dir in copy_directories:
+        src_dir = Path(app.srcdir) / cp_dir
+        dst_dir = Path(app.outdir) / cp_dir
+
+        if src_dir.is_symlink():
+            src_dir = src_dir.resolve()
+
+        if not src_dir.exists():
+            return
+
+        dst_dir.mkdir(parents=True, exist_ok=True)
+
+        # Copy all non-RST files recursively
+        for src_file in src_dir.rglob('*'):
+            if src_file.is_file() and src_file.suffix not in ['.rst', '.md']:
+                rel_path = src_file.relative_to(src_dir)
+                dst_file = dst_dir / rel_path
+
+                dst_file.parent.mkdir(parents=True, exist_ok=True)
+
+                try:
+                    shutil.copy2(src_file, dst_file)
+                except Exception as e:
+                    app.warn(f'Error copying {src_file}: {e}')
+
+
+def rewrite_github_paths(app, docname, source):
+    """
+    Rewrite GitHub-friendly paths to Sphinx-friendly paths in RST source.
+
+    Files in docs/source/ need different paths for GitHub vs Sphinx:
+    - GitHub: ../../birdhouse/ (relative to docs/source/)
+    - Sphinx: ./birdhouse/ (via symlink docs/source/birdhouse -> ../../birdhouse)
+
+    This handler rewrites paths during Sphinx processing so source files work on GitHub.
+    Applies to all files directly under docs/source/ (not in subdirectories).
+    """
+    if '/' not in docname:
+        source[0] = source[0].replace('../../birdhouse/', './birdhouse/')
+
+
+def setup(app):
+    """
+    Register Sphinx build event handlers.
+    """
+    app.connect('source-read', rewrite_github_paths)
+    app.connect('build-finished', convert_rst_links_to_html)
+    app.connect('build-finished', copy_non_rst_files)
+
 # The encoding of source files.
 #
 # source_encoding = 'utf-8-sig'
@@ -78,7 +180,7 @@ release = '2.27.0'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -137,7 +239,11 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'fixed_sidebar': True,
+    'page_width': '60%',
+    # 'body_text_align': 'justify',  # does not work, see '_static/custom.css' instead
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -166,6 +272,7 @@ html_theme = 'alabaster'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_css_files = ['custom.css']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -173,10 +280,22 @@ html_static_path = ['_static']
 #
 # html_extra_path = []
 html_extra_path = [
-    'birdhouse/README.rst',
+    # this README is purposely omitted
+    # sphinx could complain that it is missing, but it gets handled by the post-operation that converts RST->HTML
+    #'birdhouse/README.rst',
     'birdhouse/env.local.example',
     'birdhouse/birdhouse-compose.sh',
+    'birdhouse/pavics-compose.sh',
     'birdhouse/docker-compose.yml',
+    'birdhouse/default.env',
+    'birdhouse/read-configs.include.sh',
+    # add these manually to avoid massive copy of all the repository for docs
+    '../../vagrant_variables.yml.example',
+    '../../environment-dev.yml',
+    '../../.bumpversion.toml',
+    '../../CHANGES.md',
+    '../../RELEASE.txt',
+    '../../Makefile',
 ]
 
 # If not None, a 'Last updated on:' timestamp is inserted at every page
