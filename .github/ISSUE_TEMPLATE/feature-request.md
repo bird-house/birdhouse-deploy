@@ -4,7 +4,6 @@ about: Suggest an idea, new feature or enhancement to existing functionalities.
 title: ":bulb: [Feature]"
 labels: enhancement 
 assignees: tlvu, fmigneault, mishaschwartz
-
 ---
 
 ## Description
@@ -20,9 +19,8 @@ assignees: tlvu, fmigneault, mishaschwartz
 
 ## References
 
-<!-- 
-  Additional screenshots or links to help understand the request?
--->
+<!-- Additional screenshots or links to help understand the request? -->
+
 
 
 ## Concerned Organizations

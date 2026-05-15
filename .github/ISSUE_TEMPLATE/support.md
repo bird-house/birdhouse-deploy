@@ -8,16 +8,14 @@ assignees: tlvu, fmigneault, mishaschwartz
 
 ## Questions
 
-
 <!-- Please provide your question details. -->
 
 
 
 ## References
 
-<!-- 
-  Additional screenshots or links to help identify the issue?
--->
+<!-- Additional screenshots or links to help identify the issue? -->
+
 
 
 ## Environment

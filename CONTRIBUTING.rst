@@ -41,6 +41,7 @@ Policy rules
    * The test suite can be run using a different DACCS config with ``birdhouse_daccs_configs_branch: {branch_name}`` in the PR description.
    * To globally skip the test suite regardless of the commit message use ``birdhouse_skip_ci: true`` in the PR description.
    * It is possible to skip the test suite if the latest commit message contains ``[skip ci]``.
+   * *For GitHub Actions/Workflows-specific changes, ``[skip jenkins]`` should be prepended to commit messages.*
 
 4. Contributions must be reviewed by every willing organizations
    (Default reviewers are `@mishaschwartz`_ for `UofT` , `@tlvu`_ for `Ouranos`_ and `@fmigneault`_ for `CRIM`_).
