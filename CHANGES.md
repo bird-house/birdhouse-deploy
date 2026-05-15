@@ -15,7 +15,19 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+- Reduce number of metrics exported by prometheus log parser
+
+  The `optional-components/prometheus-log-parser` was creating way too many metrics and it was taking a really
+  long time for prometheus to scrape the metrics from the log parser. This reduces the number of metrics created
+  by: 
+
+  - turning off the `_created` metrics by default (can be turned on by setting 
+    `PROMETHEUS_LOG_PARSER_PROMETHEUS_DISABLE_CREATED_SERIES=False`)
+  - moving the `tds_service` label to its own counter named `thredds_transfer_size_by_service_bytes`
+
+  This means that the `thredds_transfer_size_bytes` counter no longer contains information about which TDS service
+  was used to download the data. Instead the total amount of data downloaded per-service is calculated in the
+  new counter.
 
 [2.27.0](https://github.com/bird-house/birdhouse-deploy/tree/2.27.0) (2026-04-21)
 ------------------------------------------------------------------------------------------------------------------
