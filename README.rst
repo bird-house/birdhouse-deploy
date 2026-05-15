@@ -49,3 +49,4 @@ For GitHub navigation, see the following README pages:
 * `README for general deployment <birdhouse/README.rst>`_
 * `README for extra core components <birdhouse/components/README.rst>`_
 * `README for optional components <birdhouse/optional-components/README.rst>`_
+* `README for deprecated components <birdhouse/deprecated-components/README.rst>`_
