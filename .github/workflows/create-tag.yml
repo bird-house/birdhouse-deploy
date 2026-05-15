@@ -50,7 +50,7 @@ jobs:
           gpg_private_key: ${{ secrets.BIRDHOUSE_HELPER_BOT_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.BIRDHOUSE_HELPER_BOT_GPG_PRIVATE_KEY_PASSWORD }}
           git_user_signingkey: true
-          git_commit_gpgsign: true
+          git_tag_gpgsign: true
           trust_level: 5
 
       - name: Install Python CI Dependencies
