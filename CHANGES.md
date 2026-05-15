@@ -15,6 +15,16 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Fixes
+
+- Postgres container healthchecks were logging error messages
+
+  The postgres healthchecks were written in docker's exec syntax instead of the shell syntax which meant that the
+  environment variables were not actually being interpreted. This didn't cause the healthcheck to fail but it did
+  cause the postgres logger to write an error message saying that the provided posgtres user could not be found.
+
+  This changes the healthcheck syntax to shell style to ensure that the environment variables are actually used.
+
 ## Changes
 
 - Update documentation only, no "stack" feature
