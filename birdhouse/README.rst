@@ -1,5 +1,43 @@
-.. contents::
+Birdhouse Deployment
+====================
 
+.. shared references by multiple components definitions
+.. |bin-birdhouse| replace:: ``bin/birdhouse``
+.. _bin-birdhouse: ../bin/birdhouse
+.. |env.local.example| replace:: ``env.local.example``
+.. _env.local.example: ./env.local.example
+.. |birdhouse-compose.sh| replace:: ``birdhouse-compose.sh``
+.. _birdhouse-compose.sh: ./birdhouse-compose.sh
+.. |birdhouse-default.env| replace:: ``birdhouse/default.env``
+.. _birdhouse-default.env: ./default.env
+.. |birdhouse-docker-compose.yml| replace:: ``birdhouse/docker-compose.yml``
+.. _birdhouse-docker-compose.yml: ./docker-compose.yml
+.. |read-configs.include.sh| replace:: ``read-configs.include.sh``
+.. _read-configs.include.sh: ./read-configs.include.sh
+.. |environment-dev.yml| replace:: ``environment-dev.yml``
+.. _environment-dev.yml: ../environment-dev.yml
+.. |tests-requirements.txt| replace:: ``tests/requirements.txt``
+.. _tests-requirements.txt: ../tests/requirements.txt
+.. |tests-requirements.in| replace:: ``tests/requirements.in``
+.. _tests-requirements.in: ../tests/requirements.in
+.. |Makefile| replace:: ``Makefile``
+.. _Makefile: ../Makefile
+.. |components| replace:: ``components/``
+.. _components: ./components/README.rst
+.. |optional-components| replace:: ``optional-components/``
+.. _optional-components: ./optional-components/README.rst
+.. |twitcher| replace:: Twitcher
+.. _twitcher: ./components/README.rst#twitcher
+.. |bump-my-version| replace:: ``bump-my-version``
+.. _bump-my-version: https://github.com/callowayproject/bump-my-version
+.. |.bumpversion.toml| replace:: ``.bumpversion.toml``
+.. _.bumpversion.toml: ../.bumpversion.toml
+.. |CHANGES.md| replace:: ``CHANGES.md``
+.. _CHANGES.md: ../CHANGES.md
+.. |RELEASE.txt| replace:: ``RELEASE.txt``
+.. _RELEASE.txt: ../RELEASE.txt
+
+.. contents::
 
 Docker instructions
 -------------------
@@ -15,7 +53,7 @@ Requirements
 * User running ``BIRDHOUSE_COMPOSE`` below must not be ``root`` but a regular user
   belonging to the ``docker`` group.
 
-* `Install latest version of docker <https://docs.docker.com/engine/install/>`_ for the chosen distro 
+* `Install latest version of docker <https://docs.docker.com/engine/install/>`_ for the chosen distro
    (not the version from the distro).
 
   * Please ensure the latest versions of the following packages and any of their dependencies
@@ -24,7 +62,7 @@ Requirements
     * docker engine
     * docker CLI
     * docker compose plugin (``v2.20.2+`` is required)
-  
+
 * Have a real SSL Certificate, self-signed SSL Certificate do not work properly.
   Let's Encrypt offers free SSL Certificate.
 
@@ -36,8 +74,7 @@ Requirements
 Command Line Interface (CLI)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The command line interface for interacting with the Birdhouse software can be found in
-`bin/birdhouse <bin/birdhouse>`_ (:download:`download </bin/birdhouse`).
+The command line interface for interacting with the Birdhouse software can be found in |bin-birdhouse|_.
 
 This CLI provides utilities to manage the Birdhouse software like a docker compose project, display build information,
 etc. It also provides a mechanism to execute commands in the Birdhouse configuration environment so that you can ensure
@@ -69,8 +106,8 @@ For convenience we recommend adding the ``birdhouse-deploy/bin/`` directory to y
 
 .. warning::
   It is no longer recommended to call scripts other than
-  `bin/birdhouse <bin/birdhouse>`_ (:download:`download </bin/birdhouse`) directly. In previous versions, we recommended
-  interacting with the platform by calling scripts (like ``birdhouse-compose.sh`` or ``read-configs.include.sh``)
+  |bin-birdhouse|_ directly. In previous versions, we recommended
+  interacting with the platform by calling scripts (like |birdhouse-compose.sh|_ or |read-configs.include.sh|_)
   directly. These scripts have been left in place for backwards compatibility **for now** but may be moved or modified
   in some future version. We recommend updating any external scripts to use the CLI as soon as possible.
 
@@ -84,13 +121,13 @@ Quick-start
   git clone https://github.com/bird-house/birdhouse-deploy.git
   cd birdhouse-deploy/birdhouse
   cp env.local.example env.local
-  
+
   $EDITOR env.local
-  # Set the following variables at the minimun:
+  # Set the following variables at the minimum:
   #BIRDHOUSE_SSL_CERTIFICATE='/path/to/cert.pem'
   #BIRDHOUSE_FQDN='<full qualified hostname of the current host>'
   # Only needed if using LetsEncrypt SSL certificate
-  #BIRDHOUSE_SUPPORT_EMAIL='a real email to receivez LetsEncrypt renewal notification'
+  #BIRDHOUSE_SUPPORT_EMAIL='a real email to receive LetsEncrypt renewal notification'
 
   # Get the SSL Cert from LetsEncrypt, written to path of var BIRDHOUSE_SSL_CERTIFICATE.
   FORCE_CERTBOT_E2E=1 FORCE_CERTBOT_E2E_NO_START_PROXY=1 deployment/certbotwrapper
@@ -101,26 +138,32 @@ Quick-start
 Further explanations
 ^^^^^^^^^^^^^^^^^^^^
 
-To run ``docker-compose`` for Birdhouse, the `bin/birdhouse <bin/birdhouse>`_ (:download:`download </bin/birdhouse`) file can be run with the ``compose`` argument.
-This will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration files
-".template", and run ``docker-compose`` with all the command line arguments after the ``compose`` argument.
-See `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`) for more details on what can go into the ``env.local`` file.
+To run ``docker-compose`` for Birdhouse, the |bin-birdhouse|_ file can be run with the ``compose`` command.
+This will source the ``env.local`` file, apply the appropriate variable substitutions on all the configuration
+``".template"`` files, and run ``docker-compose`` with all the command line arguments after the ``compose`` command.
+See |env.local.example|_ for more details on what can go into the ``env.local`` file.
 
-Most variables that can be set in the local environment file (``env.local`` by default) can also be specified as environment variables when running ``bin/birdhouse`` 
+Most variables that can be set in the local environment file (``env.local`` by default, a copy of |env.local.example|_)
+can also be specified as environment variables when running ``bin/birdhouse``
 commands. Environment variables will take precedence over those specified in the ``env.local`` file.
 
-If the file `env.local` is somewhere else, symlink it here, next to `docker-compose.yml <docker-compose.yml>`_ (:download:`download </birdhouse/docker-compose.yml>`) because many scripts assume this location.
-If autodeploy scheduler job is enabled, the folder containing the `env.local` file needs to be added to `BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`.
+If the file ``env.local`` is somewhere else, symlink it here, next to |birdhouse-docker-compose.yml|_ because many scripts assume this location.
+If autodeploy scheduler job is enabled, the folder containing the ``env.local`` file needs to be added to ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS``.
 
 To follow infrastructure-as-code, it is encouraged to source control the above
-`env.local` file and any override needed to customized this Birdhouse deployment
-for your organization.  Note this `env.local` file might contains **sensitive**
-infos like passwords so it should be in a limitted access private source control
-repo, idealy not on the internet.
+``env.local`` file and any override needed to customized this Birdhouse deployment
+for your organization.  Note this ``env.local`` file might contains **sensitive**
+infos like passwords so it should be in a limited access private source control
+repo, ideally not on the internet.
 
-For an example of possible override, see how the `emu service <optional-components/emu/docker-compose-extra.yml>`_ (:download:`download </birdhouse/optional-components/emu/docker-compose-extra.yml>`)
-(`README <optional-components/README.rst#emu-wps-service-for-testing>`_) can be optionally added to the deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_.
-Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repo.
+For an example of possible override, see how the |emu-service-compose|_ (details: |optional-components-emu|_)
+can be optionally added to the deployment via the `override mechanism <https://docs.docker.com/compose/extends/>`_.
+Ouranos specific override can be found in this `birdhouse-deploy-ouranos <https://github.com/bird-house/birdhouse-deploy-ouranos>`_ repository.
+
+.. |emu-service-compose| replace:: ``emu`` service configuration
+.. _emu-service-compose: ./optional-components/emu/docker-compose-extra.yml
+.. |optional-components-emu| replace:: ``./optional-components/emu``
+.. _optional-components-emu: optional-components/README.rst#emu-wps-service-for-testing
 
 Suggested deployment layout:
 
@@ -140,14 +183,19 @@ Suggested deployment layout:
 The automatic deployment is able to handle multiple repos, so will trigger if
 this repo or your private-personalized-config repo changes, giving you
 automated continuous deployment.  See the continuous deployment setup section
-below and the variable ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`` in `env.local.example <env.local.example>`_ (:download:`download </birdhouse/env.local.example>`).
+below and the variable ``BIRDHOUSE_AUTODEPLOY_EXTRA_REPOS`` in |env.local.example|_.
 
 The automatic deployment of the Birdhouse platform, of the Jupyter tutorial
 notebooks and of the automatic deployment mechanism itself can all be
-enabled by following the `scheduling instructions <components/README.rst#scheduler>`_.
+enabled by following the |components-scheduler|_ instructions.
 
 Resource usage monitoring (CPU, memory, ..) and alerting for the host and each
-of the containers can be enabled by following the `monitoring instructions <components/README.rst#monitoring>`_.
+of the containers can be enabled by following the |components-monitoring|_ instructions.
+
+.. |components-monitoring| replace:: ``components/monitoring``
+.. _components-monitoring: ./components/README.rst#monitoring
+.. |components-scheduler| replace:: ``components/scheduler``
+.. _components-scheduler: ./components/README.rst#scheduler
 
 To launch all the containers, use the following command:
 
@@ -155,13 +203,18 @@ To launch all the containers, use the following command:
 
    ./bin/birdhouse compose up -d
 
-If you get a ``'No applicable error code, please check error log'`` error from the WPS processes, please make sure that the WPS databases exists in the
-postgres instance. See `create-wps-pgsql-databases.sh <scripts/create-wps-pgsql-databases.sh>`_ (:download:`download </birdhouse/scripts/create-wps-pgsql-databases.sh>`).
+If you get a ``'No applicable error code, please check error log'`` error from the WPS processes,
+please make sure that the WPS databases exists in the
+postgres instance. See |create-wps-pgsql-databases.sh|_.
+
+.. |create-wps-pgsql-databases.sh| replace:: ``birdhouse/scripts/create-wps-pgsql-databases.sh``
+.. _create-wps-pgsql-databases.sh: ./scripts/create-wps-pgsql-databases.sh
+
 
 Production deployment hardware recommendations
 ----------------------------------------------
 
-RAM: at least 128 GB, Thredds 32+ GB, Geoserver 8+ GB, leaving spaces for other components and all the various Jupyter users
+RAM: at least 128 GB, THREDDS 32+ GB, GeoServer 8+ GB, leaving spaces for other components and all the various Jupyter users
 
 CPU: at least 48 cores for parallel computations
 
@@ -173,12 +226,15 @@ Note about WPS request timeout
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * All WPS requests should be completed within ``proxy_read_timeout`` of the
-  Nginx proxy, see `nginx.conf`_ (:download:`download <birdhouse/components/proxy/nginx.conf>`).
+  Nginx proxy, see |components-proxy-nginx.conf|_.
   Any WPS requests that will take longer should use the async mode.
 
-  Default value ``PROXY_READ_TIMEOUT_VALUE`` in `default.env`_ (:download:`download <birdhouse/default.env>`).
+  Default value ``PROXY_READ_TIMEOUT_VALUE`` in |birdhouse-default.env|_.
 
   Overrideable in ``env.local`` file, as usual for all values in ``default.env`` file.
+
+.. |components-proxy-nginx.conf| replace:: ``components/proxy/nginx.conf``
+.. _components-proxy-nginx.conf: ./components/proxy/nginx.conf
 
 Manual steps post deployment
 ----------------------------
@@ -186,15 +242,17 @@ Manual steps post deployment
 Create public demo user in Magpie for JupyterHub login
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Use `create-magpie-users <scripts/create-magpie-users>`_ (:download:`download </birdhouse/scripts/create-magpie-users>`) or follow manual
-instructions below.
+Use |create-magpie-users|_ or follow manual instructions below.
+
+.. |create-magpie-users| replace:: ``scripts/create-magpie-users``
+.. _create-magpie-users: scripts/create-magpie-users
 
 ``config.yml`` file if using ``create-magpie-users``:
 
 .. code-block::
 
    users:
-     - username: < value of JUPYTER_DEMO_USER in `env.local` >
+     - username: < value of JUPYTER_DEMO_USER in ``env.local`` >
        password: < you decide, at least 12 in length >
        email: < anything is fine >
        group: anonymous
@@ -202,7 +260,8 @@ instructions below.
 Manual instructions:
 
 * Go to
-  ``https://<BIRDHOUSE_FQDN>/magpie/ui/login`` and login with the ``MAGPIE_ADMIN_USERNAME`` user. The password should be in ``env.local``.
+  ``https://<BIRDHOUSE_FQDN>/magpie/ui/login`` and login with the ``MAGPIE_ADMIN_USERNAME`` user.
+  The password should be in ``env.local``.
 
 * Then go to ``https://<BIRDHOUSE_FQDN>/magpie/ui/users/add``.
 
@@ -222,14 +281,12 @@ An end-to-end integration test suite is available at
 https://github.com/Ouranosinc/PAVICS-e2e-workflow-tests with pre-configured
 Jenkins at https://github.com/Ouranosinc/jenkins-config.
 
-For that test suite to pass, run the script
-`scripts/bootstrap-instance-for-testsuite <scripts/bootstrap-instance-for-testsuite>`_ (:download:`download </birdhouse/scripts/bootstrap-instance-for-testsuite>`)
+For that test suite to pass, run the script |bootstrap-instance-for-testsuite|_
 to prepare your new instance.  Further documentation inside the script.
 
-Optional components
-`all-public-access <./optional-components#give-public-access-to-all-resources-for-testing-purposes>`_
-and `secure-thredds <./optional-components/#control-secured-access-to-resources-example>`_
-also need to be enabled in ``env.local`` using ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable.
+Configure additional |components|_ and |optional-components|_ as needed for the test suite.
+For example, both |optional-components-all-public-access|_ and |optional-components-secure-thredds|_
+need to be enabled in ``env.local`` using ``BIRDHOUSE_EXTRA_CONF_DIRS`` variable for certain tests.
 
 ESGF login is also needed for
 https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebooks/esgf-dap.ipynb
@@ -241,7 +298,21 @@ The canarie monitoring link
 instance is ready to run the automated end-to-end test suite.  That link should
 return the HTTP response code ``200``.
 
-Vagrant instructions
+.. |bootstrap-instance-for-testsuite| replace:: ``scripts/bootstrap-instance-for-testsuite``
+.. _bootstrap-instance-for-testsuite: scripts/bootstrap-instance-for-testsuite
+.. |optional-components-all-public-access| replace:: ``./optional-components/all-public-access``
+.. _optional-components-all-public-access: ./optional-components/README.rst#all-public-access
+.. |optional-components-secure-thredds| replace:: ``./optional-components/secure-thredds``
+.. _optional-components-secure-thredds: ./optional-components/README.rst#control-secured-access-to-resources-example
+
+
+.. |vagrant-variables| replace:: ``vagrant_variables.yml.example``
+.. _vagrant-variables: ../vagrant_variables.yml.example
+.. |vagrant-disk-resize| replace:: ``vagrant-utils/disk-resize``
+.. _vagrant-disk-resize: ./vagrant-utils/disk-resize
+.. _vagrant-instructions:
+
+Vagrant Instructions
 --------------------
 
 Vagrant allows us to quickly spin up a VM to easily reproduce the runtime
@@ -249,10 +320,9 @@ environment for testing or to have multiple flavors of Birdhouse with slightly
 different combinations of the parts all running simultaneously in their
 respective VM, allowing us to see the differences in behavior.
 
-See `vagrant_variables.yml.example </vagrant_variables.yml.example>`_ (:download:`download </vagrant_variables.yml.example>`) for what's
-configurable with Vagrant.
+See |vagrant-variables|_ for what's configurable with Vagrant.
 
-If using Centos box, follow `disk-resize <vagrant-utils/disk-resize>`_ (:download:`download </birdhouse/vagrant-utils/disk-resize>`) after
+If using Centos box, follow |vagrant-disk-resize|_ after
 first ``vagrant up`` failure due to disk full.  Then ``vagrant reload && vagrant
 provision`` to continue.  If using Ubuntu box, no manual steps required,
 everything just works.
@@ -305,13 +375,13 @@ Starting and managing the lifecycle of the VM:
 Deploy locally for development or test purposes
 -----------------------------------------------
 
-If you are developing this code base or want to test out a new feature locally on a machine, you may want to deploy 
+If you are developing this code base or want to test out a new feature locally on a machine, you may want to deploy
 the Birdhouse stack locally.
 
 There are two strategies available to deploy the Birdhouse stack locally:
 
 - `Use HTTP scheme deployment`_
-- `Use a Self-Signed SSL certificate`_ 
+- `Use a Self-Signed SSL certificate`_
 
 Use HTTP scheme deployment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -322,20 +392,20 @@ environment file:
 - ``export BIRDHOUSE_FQDN=host.docker.internal``
 - ``export BIRDHOUSE_HTTP_ONLY=True``
 
-This will allow you to access the Birdhouse software in a browser on your local machine using 
-the URL ``http://host.docker.internal`` without the need for an SSL certificate or to expose ports 80 and 443 
+This will allow you to access the Birdhouse software in a browser on your local machine using
+the URL ``http://host.docker.internal`` without the need for an SSL certificate or to expose ports 80 and 443
 publicly.
 
 Use a Self-Signed SSL certificate
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The `Use HTTP scheme deployment`_ strategy described above will send all information over ``http`` instead of using 
+The `Use HTTP scheme deployment`_ strategy described above will send all information over ``http`` instead of using
 ``https``.
 
 If there are any features that you want to test locally using ``https``, you can deploy locally using a self-signed
 SSL certificate.
 
-You may also need to add the following to the ``docker compose`` settings for the ``twitcher`` component if you're 
+You may also need to add the following to the ``docker compose`` settings for |twitcher|_ if you're
 not able to access protected URLs:
 
 .. code:: yaml
@@ -358,15 +428,17 @@ Docker rootless configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you are using `Docker Rootless Mode <https://docs.docker.com/engine/security/rootless/>`_ on your machine,
-you *might* need to execute the following command to allow the `proxy` (Nginx) service to connect to the relevant
+you *might* need to execute the following command to allow the ``proxy`` (Nginx) service to connect to the relevant
 HTTP ports.
 
 .. code-block:: shell
+
     sudo sysctl -w net.ipv4.ip_unprivileged_port_start=80
 
 Notably, this could be required when encountering errors such as the following when invoking ``bin/birdhouse compose up -d``.
 
 .. code-block:: text
+
     Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint proxy
 
 .. warning::
@@ -379,9 +451,11 @@ Notably, this could be required when encountering errors such as the following w
     Evaluate alternative strategies to limit ports exposure.
 
 .. code-block:: shell
+
     sudo setcap cap_net_bind_service=ep $(which rootlesskit)
 
 .. code-block:: shell
+
     sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
 
 Development and testing
@@ -389,9 +463,9 @@ Development and testing
 
 To set up a development environment, we recommend using an Anaconda environment.
 
-The repository contains an `environment-dev.yml` file for conda that lists dependencies needed to run the development
-environment (including `bump-my-version` for version management and `pip-tools` for managing Python dependencies).
-This file will install the libraries listed in the `tests/requirements.txt` file that are needed to run the tests.
+The repository contains an |environment-dev.yml|_ file for conda that lists dependencies needed to run the development
+environment (including |bump-my-version|_ for version management and ``pip-tools`` for managing Python dependencies).
+This file will install the libraries listed in the |tests-requirements.txt|_ file that are needed to run the tests.
 
 In order to set up the development environment, run the following commands:
 
@@ -403,7 +477,7 @@ In order to set up the development environment, run the following commands:
     # Activate the conda environment
     conda activate birdhouse-dev
 
-Framework tests
+Framework Tests
 ^^^^^^^^^^^^^^^
 
 Core features of the platform include tests to prevent regressions.
@@ -418,7 +492,7 @@ Some tests require internet access (to access JSON schemas used to validate
 JSON structure). If you need to run tests offline, you can skip the tests that
 require internet access by using the ``-k 'not online'`` pytest option.
 
-Alternatively, testing-related targets are available via the `Makefile <../Makefile>`_:
+Alternatively, testing-related targets are available via the |Makefile|_:
 
 .. code-block:: shell
 
@@ -443,23 +517,24 @@ Alternatively, testing-related targets are available via the `Makefile <../Makef
 Housekeeping
 ^^^^^^^^^^^^
 
-The testing requirements (`requirements.txt`) are managed by Dependabot, which will automatically create pull requests
-to update the dependencies in the `requirements.in` file and regenerate `requirements.txt` based on it.  This ensures
+The testing requirements (|tests-requirements.txt|_) are managed by Dependabot,
+which will automatically create pull requests  to update the dependencies in the |tests-requirements.in|_
+file and regenerate |tests-requirements.txt|_ based on it.  This ensures
 that the dependencies are kept up to date and that the tests can be run with the latest versions of the dependencies.
 
-Periodically, we may want to modify `requirements.txt` between scheduled updates.  These dependencies are controlled
-from `requirements.in` pins and then generated with `pip-compile` to provide all packages with their commit hashes
-(via `pip-tools`).  This allows us to have a reproducible set of dependencies that can be used to run the tests
-locally and on CI.
+Periodically, we may want to modify |tests-requirements.txt|_ between scheduled updates.
+These dependencies are controlled from |tests-requirements.in|_ pins and then generated with ``pip-compile``
+to provide all packages with their commit hashes (via ``pip-tools``).
+This allows us to have a reproducible set of dependencies that can be used to run the tests locally and on CI.
 
-After updating the dependency pins found in `requirements.in`, you can run the following command:
+After updating the dependency pins found in |tests-requirements.in|_, you can run the following command:
 
 .. code-block:: shell
 
     # Update the dependencies in requirements.txt
     pip-compile --generate-hashes --output-file=tests/requirements.txt tests/requirements.in
 
-Note that the version of Python used to run the `pip-compile` command should match the minimum supported version
+Note that the version of Python used to run the ``pip-compile`` command should match the minimum supported version
 of Python used in the Birdhouse stack!
 
 Versioning policy
@@ -493,13 +568,13 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
    component.
 
 To help properly update versions in all files that could reference to the latest tag,
-the `bump-my-version <https://github.com/callowayproject/bump-my-version>`_ utility is employed.
+the |bump-my-version|_ utility is employed.
 Running this tool will modify versions in files referencing to the latest revision
-(as defined in `.bumpversion.toml`_) and apply change logs
+(as defined in |.bumpversion.toml|_) and apply change logs
 updates by moving ``Unreleased`` items under a new version matching the new version.
 
 In order to handle auto-update of the ``releaseTime`` value simultaneously to the
-generated release version, the ``bump-my-version`` call is wrapped in `Makefile <../Makefile>`_.
+generated release version, the |bump-my-version|_ call is wrapped in |Makefile|_.
 
 One of the following commands should be used to generate a new version.
 
@@ -515,7 +590,7 @@ One of the following commands should be used to generate a new version.
     make VERSION="<MAJOR>.<MINOR>.<PATCH>" bump dry
 
 To validate, you can look up the resulting version and release time that
-will be written to `RELEASE.txt <../RELEASE.txt>`_. The current version can also be requested
+will be written to |RELEASE.txt|_. The current version can also be requested
 using the following command.
 
 .. code-block:: shell
@@ -532,14 +607,14 @@ Release Procedure
 -----------------
 
 * Pull/merge latest ``master`` to make sure modifications are applied in
-  CHANGES.md_, in next step, are under the most recent "unreleased" section.
+  |CHANGES.md|_, in next step, are under the most recent "unreleased" section.
 
-* Update CHANGES.md_, commit, push.
+* Update |CHANGES.md|_, commit, push.
 
-* Open a PR with the new content from CHANGES.md_ as the PR description.  PR
+* Open a PR with the new content from |CHANGES.md|_ as the PR description.  PR
   description can have more pertinent info, ex: test results, staging server
   location, other discussion topics, that might or might not be relevant in
-  CHANGES.md_.  Use your judgement.
+  |CHANGES.md|_.  Use your judgement.
 
 * Wait for a PR approval.
 
@@ -581,7 +656,7 @@ Release Procedure
     and [`.github/workflows/release.yml`](../.github/workflows/release.yml) workflows will run.
     The CI will automatically generate the tags and releases. No human intervention should be required.
 
-.. backups::
+.. _backups:
 
 Backups
 -------
@@ -589,7 +664,7 @@ Backups
 Backups of data used by the birdhouse stack can be generated using the ``bin/birdhouse backup`` command
 and its various subcommands.
 
-Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository and can be restored
+Backups are stored in a |restic|_ repository and can be restored
 either to a named volume (determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable) or in the case
 of user data and application data, it can directly overwrite the current data with the backup.
 
@@ -617,7 +692,7 @@ Users can backup and restore the following data from the birdhouse stack:
 
 * representative data
 
-  * an application agnostic version of the stateful data used by components to store 
+  * an application agnostic version of the stateful data used by components to store
     the current state of the running service
 
   * this contains the same information as the application data (above) but in a form that can be
@@ -629,7 +704,7 @@ Users can backup and restore the following data from the birdhouse stack:
     component version has been updated since the last backup. For example, if a database
     has been updated between versions and there is no easy way to cleanly migrate the existing
     database data between versions, the representative data can be used.
-    
+
   * backing up and restoring representative data will probably take a much longer time than
     application data.
 
@@ -660,7 +735,7 @@ Users can backup and restore the following data from the birdhouse stack:
 
   * for example: ``magpie`` container logs
 
-* local environement file
+* local environment file
 
   * the local environment file specified by ``BIRDHOUSE_LOCAL_ENV``
 
@@ -668,44 +743,44 @@ Users can backup and restore the following data from the birdhouse stack:
 Configure the restic repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Backups are stored in a `restic <https://restic.readthedocs.io/en/stable/>`_ repository which can be 
+Backups are stored in a |restic|_ repository which can be
 configured by creating a file at the location determined by the ``BIRDHOUSE_BACKUP_RESTIC_ENV_FILE`` configuration
-variable (default: ``birdhouse/restic.env``). 
+variable (default: ``birdhouse/restic.env``).
 
-This file contains environment variables which are used by restic to determine how to create and access the 
-repository where backups are stored. 
+This file contains environment variables which are used by restic to determine how to create and access the
+repository where backups are stored.
 
-A list of all environment variables that are used by restic can be found in the 
+A list of all environment variables that are used by restic can be found in the
 `documentation <https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables>`_.
 
-Restic supports backing up data locally, remotely using the SFTP protocol, as well as remotely to a variety of 
+Restic supports backing up data locally, remotely using the SFTP protocol, as well as remotely to a variety of
 repository types including AWS, Azure, S3, restic REST server, and many more.
 
 Depending on which repository type and access method you want to use, different environment variables may be required.
 
-Some basic examples can be found in the ``birdhouse/restic.env.example`` file but please refer to the 
+Some basic examples can be found in the ``birdhouse/restic.env.example`` file but please refer to the
 `documentation <https://restic.readthedocs.io/en/stable/040_backup.html#environment-variables>`_ for all available
 options.
 
 Additional backup/restore workflows
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When running the ``backup create`` command, the files to be backed up are first written to a volume 
-(determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable). Then they are backed up from there to 
+When running the ``backup create`` command, the files to be backed up are first written to a volume
+(determined by the ``BIRDHOUSE_BACKUP_VOLUME`` configuration variable). Then they are backed up from there to
 the restic repository.
 
-Alternatively, you can specify the ``--no-restic`` command line option to skip the step that backs up the files to 
+Alternatively, you can specify the ``--no-restic`` command line option to skip the step that backs up the files to
 the restic repository. You can then choose to access the files to backup directly in the volume.
 
 This allows users to inspect the files, integrate them into a different custom backup solution, etc.
 
 Similarly, when restoring files from restic with the ``backup restore`` command, the files are first restored
-to the same volume before being copied to the appropriate location in the birdhouse stack. 
+to the same volume before being copied to the appropriate location in the birdhouse stack.
 
 For example, restoring the ``magpie`` database will first restore the backup file from restic to the working
 directory and then overwrite the ``magpie`` database with the information contained in the backup file.
 
-If you want to skip the step that overwrites the current data in the birdhouse stack, you can specify the 
+If you want to skip the step that overwrites the current data in the birdhouse stack, you can specify the
 ``--no-clobber`` command line option. This will still restore the files to the volume.
 
 .. note::
@@ -728,8 +803,7 @@ the backup and restore jobs.
     ssh server you are trying to log into. At time of writing, the RSA algorithm is considered insecure
     by most modern standards; an algorithm such as ECDSA is preferred.
 
-  * You can test whether your keys are sufficient for restic by running the ``birdhouse/scripts/test-restic-keypair.sh``
-    script.
+  * You can test whether your keys are sufficient for restic by running the |test-restic-keypair.sh|_ script.
 
 * ``BIRDHOUSE_BACKUP_RESTIC_BACKUP_ARGS``
 
@@ -739,11 +813,11 @@ the backup and restore jobs.
 
 * ``BIRDHOUSE_BACKUP_RESTIC_FORGET_ARGS``
 
-  * Additional options to pass to the ``restic forget`` command after running the backup job. 
-  
+  * Additional options to pass to the ``restic forget`` command after running the backup job.
+
   * This allows you to ensure that restic deletes old backups according to your backup retention policy.
 
-  * If this is set, then restic will also run the ``restic prune`` command after every backup to clean up 
+  * If this is set, then restic will also run the ``restic prune`` command after every backup to clean up
     old backup files.
 
   * For example, to store backups daily for 1 week, weekly for 1 month, and monthly for a year:
@@ -756,7 +830,7 @@ the backup and restore jobs.
   * This can be useful if you want to mount additional directories to the container running restic
     in order to back up data not directly managed by Birdhouse.
 
-    * For example, to backup files in a directory named `/home/other_project/` you could run:
+    * For example, to backup files in a directory named ``/home/other_project/`` you could run:
       ``BIRDHOUSE_BACKUP_RESTIC_EXTRA_DOCKER_OPTIONS='-v /home/other_project:/backup2' birdhouse backup restic backup /backup2``
 
     * Note: in the example above, ``birdhouse backup restic`` runs the ``restic`` command in a docker container.
@@ -766,7 +840,7 @@ the backup and restore jobs.
   * Warning! Using this option may overwrite other docker options that are required for restic to run properly.
     Make sure you are familiar with restic commands and know what you are doing before using this feature.
 
-.. _nginx.conf: ./components/proxy/nginx.conf
-.. _default.env: ./default.env
-.. _`.bumpversion.toml`: ../.bumpversion.toml
-.. _CHANGES.md: ../CHANGES.md
+.. |restic| replace:: ``restic``
+.. _restic: https://restic.readthedocs.io/en/stable/
+.. |test-restic-keypair.sh| replace:: ``birdhouse/scripts/test-restic-keypair.sh``
+.. _test-restic-keypair.sh: scripts/test-restic-keypair.sh

@@ -1,0 +1,22 @@
+/* 1. Only justify paragraph text, leaving headers left-aligned */
+div.body p {
+    /*  removed, too many whitespaces
+    text-align: justify;
+    text-justify: auto;
+    */
+
+    /* 2. Standard hyphenation for regular long words */
+    hyphens: auto;
+    -webkit-hyphens: auto;
+}
+
+/* 3. Keep headers left-aligned explicitly */
+h1, h2, h3, h4, h5, h6 {
+    text-align: left;
+}
+
+/* 4. Prevent inline code from creating massive gaps */
+code.docutils.literal {
+    word-break: break-word;
+    white-space: normal;
+}
