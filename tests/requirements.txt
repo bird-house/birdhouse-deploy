@@ -386,9 +386,9 @@ jupyter-events==0.12.0 \
     --hash=sha256:6464b2fa5ad10451c3d35fabc75eab39556ae1e2853ad0c0cc31b656731a97fb \
     --hash=sha256:fc3fce98865f6784c9cd0a56a20644fc6098f21c8c33834a8d9fe383c17e554b
     # via jupyterhub
-jupyterhub==5.4.4 \
-    --hash=sha256:34b4287ee55a38d505f6fd25df6aa69ee9c391309cc579f307ba626e5a6e90b5 \
-    --hash=sha256:b385fe081fd7b3dbd31640a9db69ef389e8adf474b1dea06ca8489553ffb0c3e
+jupyterhub==5.4.5 \
+    --hash=sha256:b1c98f6959224413327faf4cae122c47114ccaf27224fe931582596642162d91 \
+    --hash=sha256:bc9f7abd049982df64e9dd6f7d7dd03306a3d243c9660a0045884d099cae181e
     # via dockerspawner
 lark==1.3.1 \
     --hash=sha256:b426a7a6d6d53189d318f2b6236ab5d6429eaf09259f1ca33eb716eed10d2905 \
