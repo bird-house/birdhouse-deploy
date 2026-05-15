@@ -15,7 +15,100 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Fixes
+
+- Postgres container healthchecks were logging error messages
+
+  The postgres healthchecks were written in docker's exec syntax instead of the shell syntax which meant that the
+  environment variables were not actually being interpreted. This didn't cause the healthcheck to fail but it did
+  cause the postgres logger to write an error message saying that the provided posgtres user could not be found.
+
+  This changes the healthcheck syntax to shell style to ensure that the environment variables are actually used.
+
 ## Changes
+
+- Update documentation only, no "stack" feature
+  - Update doc links and cross-references to work both on GitHub (direct sections links)
+    and rendered Sphinx docs (things resolve where expected).
+  - Remove the `:download:` and `:ref:` for a unified `|<ref>|_` structure.
+    Since all files are provided as-is for quick access, there is no need for explicit download.
+    Because of relative references, the URIs are rendered correctly on GitHub as well, rather than plain `:ref:`
+    that do not resolve when rendered by GitHub.
+  - Update some code blocks to use expected lexers, which identified some syntax errors embedded within their code
+  - Add Makefile `docs-...` targets for convenience.
+  - Reorder certain components to make reading more consistent
+    (WPS/birds/data services, followed by auth, followed by proxies/data/volumes) rather than mixed all over the place.
+  - Move scheduler jobs under optional-components README to align with their actual location.
+  - Fix multiple links. For example `bin/birdhouse` not resolving.
+  - Fix inconsistent single/double code-quotes for italic/code fragments.
+  - Fix some typos found along the way.
+
+- Reduce number of metrics exported by prometheus log parser
+
+  The `optional-components/prometheus-log-parser` was creating way too many metrics and it was taking a really
+  long time for prometheus to scrape the metrics from the log parser. This reduces the number of metrics created
+  by: 
+
+  - turning off the `_created` metrics by default (can be turned on by setting 
+    `PROMETHEUS_LOG_PARSER_PROMETHEUS_DISABLE_CREATED_SERIES=False`)
+  - moving the `tds_service` label to its own counter named `thredds_transfer_size_by_service_bytes`
+
+  This means that the `thredds_transfer_size_bytes` counter no longer contains information about which TDS service
+  was used to download the data. Instead the total amount of data downloaded per-service is calculated in the
+  new counter.
+
+- Add `title` field to all docker image links in `service-config.json` files
+
+  Each service definition has a link to the docker image used by that service but not all links had a title.
+  This add the title in every case so that we're consistent. This is not strictly necessary but it makes things
+  a bit cleaner.
+
+- Magpie / Twitcher / Cowbird: Address error with permission synchronization under a special user.
+
+  When a special user with reserved keyword such as the main Magpie "administrator" was applied a permission,
+  the registration process of the permissions could, in certain cases, yield an error causing the procedure to
+  fail. Notably, if the admin user already exists, which is typically the case since it is required and the service
+  auto-generates it if missing on startup, the permission registration would cause an error since it itself tries to
+  create the user, which is forbidden by the API. This is normally automatically handled by 409 conflict by the 
+  registration script, but another 400 error code is used for the special user case, which was not caught.
+
+  In most deployments, this error is not observed since the administrator *group* is typically employed to
+  apply permissions on multiple "admins" simultaneously, and it does not have the same error handling conditions.
+
+  Because the registration procedure is leveraged by Cowbird to perform a batch multi-permission/resource update,
+  which is the same operation employed by the loaded Magpie configurations, it needs to align with the Magpie API.
+  Cowbird happened to have been using a slightly outdated (although compatible) Magpie 4.3.0 version.
+  Because Magpie and Twitcher have synchronized releases, it is also updated.
+  Both Cowbird, Twitcher and Magpie itself are now aligned with version 5.1.0.
+  These updates also include various dependency security fixes that they share.
+
+  - Relates to [Ouranosinc/Magpie#650](https://github.com/Ouranosinc/Magpie/pull/650).
+  - Relates to [Ouranosinc/Magpie#651](https://github.com/Ouranosinc/Magpie/pull/651).
+  - Relates to [Ouranosinc/cowbird#104](https://github.com/Ouranosinc/cowbird/pull/104).
+
+- The `birdhouse/birdhouse-deploy` repository now makes more effective use of GitHub Workflows in order to automate
+  the release procedure.
+
+  When preparing a new version, the tagging and release steps are now handled by the `create-tag.yml` and 
+  `release.yml` workflows, respectively. When changes are detected to `RELEASE.txt` on pushes to `master`, a new
+  tag is created (`create-tag.yml`); this then triggers the second workflow (`release.yml`) to automatically publish
+  the new tag with an autogenerated summary of changes. Developers should no longer tag new releases manually.
+
+- New GitHub Workflow for automatically accepting minor/patch GitHub Actions updates.
+
+  The `auto-accept-ci-changes.yml` workflow will now automatically approve and set to auto-merge `minor` and `patch`
+  updates of existing GitHub Actions. The approval and merge is performed with a short-lived token created by the 
+  `Bird-house Helper App`, and should handle most updates automatically.
+
+- Pull Request titles and commits containing `[skip jenkins]` will no longer trigger Jenkins on CRIM infrastructure.
+
+  Updates to GitHub Workflows from Dependabot are now prefixed with `[skip jenkins]` in order to prevent redundant testing.
+
+- `pre-commit` has been replaced by `prek` in dependencies and workflows. `prek` is Rust-built reimplementation
+  of `pre-commit` that can use the same configuration files and runs much faster with less storage usage.
+
+- All workflow jobs/steps have names for easier-to-understand build summaries as well as constrained permissions
+  for less potentially attack surface. 
 
 - Update jupyterhub version to `5.4.5-20260506`
 
@@ -43,11 +136,11 @@
   Fix issue related to STAC Item search paging of `next` links due to `token` parameter misinterpretation
   (relates to https://github.com/crim-ca/stac-app/pull/85).
 
-- STAC Populator: update to 
+- STAC Populator: update to
   [`crim-ca/stac-populator:0.15.0`](https://github.com/crim-ca/stac-populator/releases/tag/0.15.0).
 
-- Update long-term Prometheus metrics: replace `increase` by `rate` and rename metrics. 
-  Filter THREDDS downloads to keep only values larger than 0. 
+- Update long-term Prometheus metrics: replace `increase` by `rate` and rename metrics.
+  Filter THREDDS downloads to keep only values larger than 0.
 
 [2.26.4](https://github.com/bird-house/birdhouse-deploy/tree/2.26.4) (2026-04-16)
 ------------------------------------------------------------------------------------------------------------------
@@ -76,7 +169,7 @@
   - The "birdy" `ipython` kernel has been removed. There are still two `conda` environments (`base` and `birdy`),
     but the kernels offered to users are now `python` and the `xeus-python` kernels (`xpython` and `xpython-raw`).
   - `jupyterlab` has been upgraded from v3.x to v4.x (v4.5.6). This allowed for the removal of several workarounds required
-    for legacy `jupyterlab` plugins. Modern `jupyterlab` plugin support no longer requires explicit build/install steps. 
+    for legacy `jupyterlab` plugins. Modern `jupyterlab` plugin support no longer requires explicit build/install steps.
   - Updates to all Ouranos software libraries: `xclim` (v0.60.0), `xsdba` (v0.6.1), `xscen` (v0.14.0), `figanos` (v0.6.0)
   - The latest `ravenpy` (v0.21.0) conda package now requires the `raven` model to be explicitly installed (`raven-hydro`).
     This was done to more easily allow for users installing custom `raven` binaries in their environments.
