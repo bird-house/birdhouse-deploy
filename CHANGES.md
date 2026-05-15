@@ -15,6 +15,24 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Changes
+
+- Update documentation only, no "stack" feature
+  - Update doc links and cross-references to work both on GitHub (direct sections links)
+    and rendered Sphinx docs (things resolve where expected).
+  - Remove the `:download:` and `:ref:` for a unified `|<ref>|_` structure.
+    Since all files are provided as-is for quick access, there is no need for explicit download.
+    Because of relative references, the URIs are rendered correctly on GitHub as well, rather than plain `:ref:`
+    that do not resolve when rendered by GitHub.
+  - Update some code blocks to use expected lexers, which identified some syntax errors embedded within their code
+  - Add Makefile `docs-...` targets for convenience.
+  - Reorder certain components to make reading more consistent
+    (WPS/birds/data services, followed by auth, followed by proxies/data/volumes) rather than mixed all over the place.
+  - Move scheduler jobs under optional-components README to align with their actual location.
+  - Fix multiple links. For example `bin/birdhouse` not resolving.
+  - Fix inconsistent single/double code-quotes for italic/code fragments.
+  - Fix some typos found along the way.
+
 - Reduce number of metrics exported by prometheus log parser
 
   The `optional-components/prometheus-log-parser` was creating way too many metrics and it was taking a really
@@ -46,11 +64,11 @@
   Fix issue related to STAC Item search paging of `next` links due to `token` parameter misinterpretation
   (relates to https://github.com/crim-ca/stac-app/pull/85).
 
-- STAC Populator: update to 
+- STAC Populator: update to
   [`crim-ca/stac-populator:0.15.0`](https://github.com/crim-ca/stac-populator/releases/tag/0.15.0).
 
-- Update long-term Prometheus metrics: replace `increase` by `rate` and rename metrics. 
-  Filter THREDDS downloads to keep only values larger than 0. 
+- Update long-term Prometheus metrics: replace `increase` by `rate` and rename metrics.
+  Filter THREDDS downloads to keep only values larger than 0.
 
 [2.26.4](https://github.com/bird-house/birdhouse-deploy/tree/2.26.4) (2026-04-16)
 ------------------------------------------------------------------------------------------------------------------
@@ -79,7 +97,7 @@
   - The "birdy" `ipython` kernel has been removed. There are still two `conda` environments (`base` and `birdy`),
     but the kernels offered to users are now `python` and the `xeus-python` kernels (`xpython` and `xpython-raw`).
   - `jupyterlab` has been upgraded from v3.x to v4.x (v4.5.6). This allowed for the removal of several workarounds required
-    for legacy `jupyterlab` plugins. Modern `jupyterlab` plugin support no longer requires explicit build/install steps. 
+    for legacy `jupyterlab` plugins. Modern `jupyterlab` plugin support no longer requires explicit build/install steps.
   - Updates to all Ouranos software libraries: `xclim` (v0.60.0), `xsdba` (v0.6.1), `xscen` (v0.14.0), `figanos` (v0.6.0)
   - The latest `ravenpy` (v0.21.0) conda package now requires the `raven` model to be explicitly installed (`raven-hydro`).
     This was done to more easily allow for users installing custom `raven` binaries in their environments.
