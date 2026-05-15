@@ -42,13 +42,22 @@ REGEX = re.compile(
     r'\"(?P<user_agent>[^\"]+)\"\s'
     r'\"(?P<forward_for>[^\"]+)\"')
 
-LABEL_KEYS = ("remote_addr", "tds_service", "dataset", "variable")
+_BASE_KEYS = ("remote_addr", "dataset", "variable")
+_SERVICE_KEYS = ("tds_service",)
+LABEL_KEYS = _BASE_KEYS + _SERVICE_KEYS
 
 counter = prometheus_client.Counter(
     name="thredds_transfer_size_bytes",
     documentation="THREDDS data transferred",
-    labelnames=LABEL_KEYS,
+    labelnames=_BASE_KEYS,
     unit="bytes",
+)
+
+service_counter = prometheus_client.Counter(
+    name="thredds_transfer_size_by_service_bytes",
+    documentation="THREDDS data transferred per TDS service",
+    labelnames=_SERVICE_KEYS,
+    unit="bytes"
 )
 
 def parse_line(line):
@@ -73,6 +82,8 @@ def parse_line(line):
 
         if body_byte_sent := match.group("body_byte_sent"):
             body_byte_sent = int(body_byte_sent)
-            counter.labels(**labels).inc(body_byte_sent)
+            counter.labels(**{k: v for k,v in labels.items() if k in _BASE_KEYS}).inc(body_byte_sent)
+            service_counter.labels(**{k: v for k,v in labels.items() if k in _SERVICE_KEYS}).inc(body_byte_sent)
+
 
 LOG_PARSER_CONFIG = {f"/var/log/proxy/{os.getenv('PROXY_LOG_FILE')}": [parse_line]}
