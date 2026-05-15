@@ -29,7 +29,9 @@
     {
       "rel": "service-meta",
       "type": "application/vnd.oci.image.index.v1+json",
-      "href": "${GEOSERVER_IMAGE_URI}"
+      "href": "${GEOSERVER_IMAGE_URI}",
+      "title": "Docker Image"
+
     }
   ]
 }

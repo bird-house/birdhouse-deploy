@@ -29,11 +29,14 @@ def test_550(plex):
     s1, s2 = samples
     assert s1.value == 584 + 3684 + 584, "Total size does not match expected value"
     assert s1.labels["dataset"] == "birdhouse/testdata/ta_Amon_MRI-CGCM3_decadal1980_r1i1p1_199101-200012.nc"
-    assert s1.labels["tds_service"] == "dodsC", "Service type does not match expected value"
     assert s1.labels["variable"] == ""
 
     assert s2.value == 15027
     assert s2.labels["variable"] == "time,time_bnds,plev,lat,lat_bnds,lon,lon_bnds"
+
+    service_samples = list(get_samples(plex.service_counter.collect(), "thredds_transfer_size_by_service_bytes"))
+    assert len(service_samples) == 1
+    assert service_samples[0].labels["tds_service"] == "dodsC", "Service type does not match expected value"
 
 
 def test_dodsC(plex):
@@ -46,12 +49,15 @@ def test_dodsC(plex):
     samples = get_samples(plex.counter.collect(), "thredds_transfer_size_bytes")
     s = next(samples)
 
-    assert s.labels["tds_service"] == "dodsC"
     assert s.labels["dataset"] == "datasets/reanalyses/day_ERA5-Land_NAM.ncml"
     assert s.labels["variable"] == "tasmin"
 
     s = next(samples)
     assert s.labels["variable"] == "pr,lat,lon,time"
+
+    service_samples = list(get_samples(plex.service_counter.collect(), "thredds_transfer_size_by_service_bytes"))
+    assert len(service_samples) == 1
+    assert service_samples[0].labels["tds_service"] == "dodsC", "Service type does not match expected value"
 
 
 def test_wcs(plex):
@@ -62,9 +68,12 @@ def test_wcs(plex):
 
     s = next(get_samples(plex.counter.collect(), "thredds_transfer_size_bytes"))
 
-    assert s.labels["tds_service"] == "wcs"
     assert s.labels["dataset"] == "birdhouse/disk2/ouranos/CORDEX/CMIP6/DD/NAM-12/OURANOS/MPI-ESM1-2-LR/historical/r1i1p1f1/CRCM5/v1-r1/1hr/vas/v20231129/vas_NAM-12_MPI-ESM1-2-LR_historical_r1i1p1f1_OURANOS_CRCM5_v1-r1_1hr_198601010000-198612312300.nc"
     assert s.labels["variable"] == ""
+
+    service_samples = list(get_samples(plex.service_counter.collect(), "thredds_transfer_size_by_service_bytes"))
+    assert len(service_samples) == 1
+    assert service_samples[0].labels["tds_service"] == "wcs", "Service type does not match expected value"
 
 
 def test_fileserver(plex):
@@ -75,9 +84,12 @@ def test_fileserver(plex):
 
     s = next(get_samples(plex.counter.collect(), "thredds_transfer_size_bytes"))
 
-    assert s.labels["tds_service"] == "fileServer"
     assert s.labels["dataset"] == "birdhouse/disk2/ouranos/CORDEX/CMIP6/DD/NAM-12/OURANOS/MPI-ESM1-2-LR/ssp370/r2i1p1f1/CRCM5/v1-r1/1hr/tas/v20250325/tas_NAM-12_MPI-ESM1-2-LR_ssp370_r2i1p1f1_OURANOS_CRCM5_v1-r1_1hr_206101010000-206112312300.nc"
     assert s.labels["variable"] == ""
+
+    service_samples = list(get_samples(plex.service_counter.collect(), "thredds_transfer_size_by_service_bytes"))
+    assert len(service_samples) == 1
+    assert service_samples[0].labels["tds_service"] == "fileServer", "Service type does not match expected value"
 
 
 def test_ncss(plex):
@@ -91,11 +103,14 @@ def test_ncss(plex):
     samples = get_samples(plex.counter.collect(), "thredds_transfer_size_bytes")
 
     s = next(samples)
-    assert s.labels["tds_service"] == "ncss/point"
     assert s.labels["dataset"] == "birdhouse/wps_outputs/59aca2ba-0f4e-11ed-84db-0242ac1d0013/out.nc"
     assert s.labels["variable"] == ""
 
     s = next(samples)
-    assert s.labels["tds_service"] == "ncss/grid"
     assert s.labels["dataset"] == "datasets/simulations/bias_adjusted/cmip6/ouranos/ESPO-G/ESPO-G6-E5Lv1.0.0/day_ESPO-G6-E5L_v1.0.0_CMIP6_ScenarioMIP_NAM_AS-RCEC_TaiESM1_ssp370_r1i1p1f1_1950-2100.ncml"
     assert s.labels["variable"] == "tasmin"
+
+    service_samples = list(get_samples(plex.service_counter.collect(), "thredds_transfer_size_by_service_bytes"))
+    assert len(service_samples) == 2
+    assert service_samples[0].labels["tds_service"] == "ncss/point", "Service type does not match expected value"
+    assert service_samples[1].labels["tds_service"] == "ncss/grid", "Service type does not match expected value"
