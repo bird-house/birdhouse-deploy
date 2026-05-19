@@ -844,3 +844,42 @@ the backup and restore jobs.
 .. _restic: https://restic.readthedocs.io/en/stable/
 .. |test-restic-keypair.sh| replace:: ``birdhouse/scripts/test-restic-keypair.sh``
 .. _test-restic-keypair.sh: scripts/test-restic-keypair.sh
+
+GitHub Workflows configurations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following section is meant for project maintainers which describes the requirements for setting up the various 
+GitHub Workflow automations. Only administrators and users with repository secrets provilieges can use this information.
+
+There are a handful of automations that require specialized secrets, configurations, and tokens.
+Workflows thats specifically depend on the *Birdhouse-Helper-Bot* App require that the app have certain repositiory
+privileges, specifically:
+    
+  * Read access to actions, issues, metadata, and organization secrets 
+  * Read and write access to code, projects, and pull requests
+
+Additionally, a set of secrets is also required in order to make use of the specialized workflows, specifically:
+
+  * ``BIRDHOUSE_HELPER_BOT_GPG_PRIVATE_KEY`` : The private key used to perform commits.
+    This must be either associated with a user or a bot account that has tag creation privileges for the project.
+    As of time of writing, the RSA key type with AES256 encryption and a key length of 4096 is suggested.
+    **This key must be associated with a valid GitHub user account**. The associated public key does not need to
+    be uploaded to a public keyserver. The key should have an expiration date. 
+
+  * ``BIRDHOUSE_HELPER_BOT_GPG_PRIVATE_KEY_PASSWORD`` : The private key password. This should be adequately long
+    hard enough to not be easily guessed/brute-forced.
+
+  * ``BIRDHOUSE_HELPER_BOT_ID`` : The ID number of the App. Available within the relevant entry under GitHub Apps.
+
+  * ``BIRDHOUSE_HELPER_BOT_KEY`` : The unqiue key of the App. If this needs to be changed, it must be regenerated.
+    This is only shown once in order to prevent misuse/distribution.
+
+All the above prvilieges and keys must be visible/accessible to the repository that uses workflows that rely on
+the following workflows:
+
+  * ``auto-accept-ci-changes.yml`` and ``create-tag.yml``
+    * Additionally, ``auto-accept-ci-changes.yml`` requires a valid ``dependabot.yml`` configuration
+  (see: https://docs.github.com/en/code-security/tutorials/secure-your-dependencies/dependabot-quickstart-guide).
+
+Finally, the ``label.yml`` workflow is a specialized workflow that requires a ``labeler.yml`` configuration.
+This workflow does not depend on any specific provileges (see: https://github.com/actions/labeler)
