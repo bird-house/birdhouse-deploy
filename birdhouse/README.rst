@@ -231,7 +231,7 @@ Note about WPS request timeout
 
   Default value ``PROXY_READ_TIMEOUT_VALUE`` in |birdhouse-default.env|_.
 
-  Overrideable in ``env.local`` file, as usual for all values in ``default.env`` file.
+  Overridable in ``env.local`` file, as usual for all values in ``default.env`` file.
 
 .. |components-proxy-nginx.conf| replace:: ``components/proxy/nginx.conf``
 .. _components-proxy-nginx.conf: ./components/proxy/nginx.conf
@@ -620,7 +620,7 @@ Release Procedure
 
 * Review PR description if something needs to be added or updated after the PR
   review process.  The goal is for the PR description to capture all the
-  essential informations for someone else not participating in the PR review
+  essential information for someone else not participating in the PR review
   process to understand it easily.  This "someone else" might even be your
   future self trying to understand what was going through your mind when you
   opened this PR :)

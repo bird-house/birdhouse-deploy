@@ -11,3 +11,8 @@ repos:
       - id: ruff-format
         files: birdhouse/components/jupyterhub/jupyterhub_custom/jupyterhub_custom/
         args: [ --config=birdhouse/components/jupyterhub/jupyterhub_custom/ruff.toml ]
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.2
+    hooks:
+      - id: codespell
+        args: [ '--ignore-words-list=afile,bu,te,tre,vas' ]

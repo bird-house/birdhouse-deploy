@@ -10,7 +10,7 @@
 #
 # This is meant to be run on the same host running Birdhouse.
 #
-# Logs to ${BIRDHOUSE_LOG_DIR}/notebookdeploy.log, re-use existing logrotate.
+# Logs to ${BIRDHOUSE_LOG_DIR}/notebookdeploy.log, reuse existing logrotate.
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
