@@ -15,7 +15,14 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Fix non-posix shell syntax in the `optional-components/emu` component
+
+  The `default.env` file in the `emu` component was using `==` to do string comparison which is not a bash-ism.
+  When loading this component in a non-bash shell (bourne shell `sh` is used by default) this will cause a syntax
+  error and the relevant `if` block will always fail. This may cause the `wps_volume` to not be properly loaded
+  causing the component to be misconfigured.
 
 [2.28.0](https://github.com/bird-house/birdhouse-deploy/tree/2.28.0) (2026-05-15)
 ------------------------------------------------------------------------------------------------------------------
