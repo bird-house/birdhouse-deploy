@@ -3,7 +3,15 @@
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
 THIS_BASENAME="$(basename "${THIS_FILE}")"
+
+# save previous values of variables so they can be reverted if needed
 COMPOSE_DIR_PREV="${COMPOSE_DIR}"
+BIRDHOUSE_LOG_QUIET_PREV="${BIRDHOUSE_LOG_QUIET}"
+BIRDHOUSE_LOG_DEST_OVERRIDE_PREV="${BIRDHOUSE_LOG_DEST_OVERRIDE}"
+BIRDHOUSE_LOG_FD_PREV="${BIRDHOUSE_LOG_FD}"
+BIRDHOUSE_LOG_FILE_PREV="${BIRDHOUSE_LOG_FILE}"
+BIRDHOUSE_LOG_LEVEL_PREV="${BIRDHOUSE_LOG_LEVEL}"
+
 COMPOSE_DIR="$(dirname "${THIS_DIR}")/birdhouse"
 
 export BIRDHOUSE_COMPOSE="${BIRDHOUSE_COMPOSE:-"${COMPOSE_DIR}/birdhouse-compose.sh"}"
@@ -201,17 +209,9 @@ READ_CONFIGS_CMD=read_configs
 #   True
 print_config_command() {
   option="$1"
-  configs_cmd_prefix="export __BIRDHOUSE_SUPPORTED_INTERFACE=True ; export COMPOSE_DIR=${COMPOSE_DIR} ;"
-  configs_cmd_suffix="unset __BIRDHOUSE_SUPPORTED_INTERFACE ; COMPOSE_DIR='${COMPOSE_DIR_PREV}' ; "
-  if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED+set}" = 'set' ]; then
-    configs_cmd_prefix="${configs_cmd_prefix} export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}' ;"
-  fi
-  if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV+set}" = 'set' ]; then
-    configs_cmd_suffix="${configs_cmd_suffix} export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV}' ;"
-  elif [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_UNSET}" = 'True' ]; then
-    configs_cmd_suffix="${configs_cmd_suffix} unset BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED ;"
-  fi
-
+  configs_cmd_prefix="export __BIRDHOUSE_SUPPORTED_INTERFACE=True ; export COMPOSE_DIR=${COMPOSE_DIR} ; $(_print_log_variable_set) $(_print_back_compat_variable_set) "
+  configs_cmd_suffix="unset __BIRDHOUSE_SUPPORTED_INTERFACE ; COMPOSE_DIR='${COMPOSE_DIR_PREV}' ; $(_print_log_variable_unset) $(_print_back_compat_variable_unset) "
+  
   if [ "${BIRDHOUSE_LOCAL_ENV+set}" = 'set' ]; then
     configs_cmd_prefix="${configs_cmd_prefix} export BIRDHOUSE_LOCAL_ENV='${BIRDHOUSE_LOCAL_ENV}' ;"
   fi
@@ -227,8 +227,32 @@ print_config_command() {
   echo "${configs_cmd_prefix} . ${COMPOSE_DIR}/read-configs.include.sh; ${READ_CONFIGS_CMD} ; ${configs_cmd_suffix}"
 }
 
+# Print a command that can be used to load the logging variables and functions into the current process.
 print_log_command() {
-  echo "export __BIRDHOUSE_SUPPORTED_INTERFACE=True ; . ${COMPOSE_DIR}/scripts/logging.include.sh"
+  echo "export __BIRDHOUSE_SUPPORTED_INTERFACE=True ; $(_print_log_variable_set) $(_print_back_compat_variable_set) . ${COMPOSE_DIR}/scripts/logging.include.sh"
+}
+
+_print_log_variable_set() {
+  echo "export BIRDHOUSE_LOG_QUIET=${BIRDHOUSE_LOG_QUIET}; export BIRDHOUSE_LOG_DEST_OVERRIDE=${BIRDHOUSE_LOG_DEST_OVERRIDE}; export BIRDHOUSE_LOG_FD=${BIRDHOUSE_LOG_FD}; export BIRDHOUSE_LOG_FILE=${BIRDHOUSE_LOG_FILE}; export BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL}; "
+}
+
+_print_log_variable_unset() {
+  echo "BIRDHOUSE_LOG_QUIET='${BIRDHOUSE_LOG_QUIET_PREV}'; BIRDHOUSE_LOG_DEST_OVERRIDE='${BIRDHOUSE_LOG_DEST_OVERRIDE_PREV}'; BIRDHOUSE_LOG_FD='${BIRDHOUSE_LOG_FD_PREV}'; BIRDHOUSE_LOG_FILE='${BIRDHOUSE_LOG_FILE_PREV}'; BIRDHOUSE_LOG_LEVEL='${BIRDHOUSE_LOG_LEVEL_PREV}'; "
+}
+
+# Note: this variable is treated differently because it matters if it is unset vs empty
+_print_back_compat_variable_set() {
+  if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED+set}" = 'set' ]; then
+    echo "export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED}' ;"
+  fi
+}
+
+_print_back_compat_variable_unset() {
+  if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV+set}" = 'set' ]; then
+    echo "export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV}' ;"
+  elif [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_UNSET}" = 'True' ]; then
+    echo "unset BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED ;"
+  fi
 }
 
 # Support multiple short flags together (ex: -abc instead of -a -b -c)
