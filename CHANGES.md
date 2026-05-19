@@ -532,7 +532,7 @@
   - The *Job Results* responses of `weaver` can return a lot of `Link` headers. This is done to provide job metadata
     references and provenance traceability details, but also for actual results locations that can vary in quantity
     depending on the actual process execution.
-    Therefore, the Ngnix `proxy_buffer_size` and `proxy_buffers` directives of the `proxy` service must be added with
+    Therefore, the Nginx `proxy_buffer_size` and `proxy_buffers` directives of the `proxy` service must be added with
     sufficiently large values to avoid HTTP 502 errors when the response headers exceed the default buffer sizes.
     The `WEAVER_PROXY_RESPONSE_BUFFER_SIZE` and `WEAVER_PROXY_RESPONSE_BUFFER_COUNT` variables are added to allow
     further customization as needed by the server. Their defaults are reasonable values to meet minimal requirements
@@ -732,7 +732,7 @@
   Note: this means that if no optional components require `optional-components/proxy-log-volume` as a dependency
   then logs from the `proxy` container will only be written to stdout/stderr. This means that there is no need
   for any additional custom log rotation handling since the logs are handled directly by docker. This means that
-  the `proxy` service itself no longer need to be dependant on the `scheduler` and `scheduler-job-logrotate-nginx`
+  the `proxy` service itself no longer need to be dependent on the `scheduler` and `scheduler-job-logrotate-nginx`
   components.
 
   Note: a previous discussion suggested that logs could be parsed directly from the stdout stream of the `proxy`
@@ -1270,7 +1270,7 @@
 
 - STAC Browser: fix resolution against the pre-built prefix path to align with proxy configuration.
   - Add `STAC_BROWSER_PATH_PREFIX` variable that makes the mapping more easily configurable.
-    However, changing its value requires building the corresponding docker wih the same prefix.
+    However, changing its value requires building the corresponding docker with the same prefix.
     The change will not be effective "simply" by modifying the variable.
   - Revert to `crim-ca/stac-browser:3.3.5` (rather than `crim-ca/stac-browser:3.4.0-dev`)
     without need of the temporary patch (relates to https://github.com/radiantearth/stac-browser/pull/653).
@@ -1325,7 +1325,7 @@
     This bug only affect external repos still using old variable names for
     delayed eval.
 
-  - Lost new lines when new value is transfered to old value and vice-versa
+  - Lost new lines when new value is transferred to old value and vice-versa
 
     Example: if `ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS` (old var) is set in
     `env.local`, the new matching var `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` is
@@ -1337,7 +1337,7 @@
     it will generate badly formatted code since the new lines are lost.
 
     The reverse case: external repos still using old vars for template
-    expansion but in `env.local` the new var is used, the value transfered
+    expansion but in `env.local` the new var is used, the value transferred
     from the new var to the old var is missing all the new lines and also
     generate broken code.
 
@@ -1815,7 +1815,7 @@
     - application data, user data, and log data for all components
     - birdhouse logs
     - docker container logs
-    - local environement file
+    - local environment file
 
   Restoring data either involves restoring it to a named volume (determined by `BIRDHOUSE_BACKUP_VOLUME`) or in the case
   of user data and application data, to overwrite the current data with the backup.
@@ -1963,7 +1963,7 @@
     create additional jobs by adding them as custom components instead.
 
   What about... ?
-    - just schedule these jobs for a non-existant day like February 31st?
+    - just schedule these jobs for a non-existent day like February 31st?
       - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
     - just set the schedule to the `'#'` string?
       - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
@@ -2134,7 +2134,7 @@
 
 - Fix bug where compose directory can't be found in `bin/birdhouse` script
 
-    The `COMPOSE_DIR` variable cannnot be discovered properly if:
+    The `COMPOSE_DIR` variable cannot be discovered properly if:
 
     - the `bin/birdhouse` script is called with the `configs --print-config-command` options.
     - the result of that call is `eval`ed in order to load the birdhouse configuration settings into
@@ -2372,7 +2372,7 @@
   - new integration tests are written in the `tests/integration/` directory. More tests will be added in the
     future!
   - `conftest.py` scripts updated to bring the stack up/down in a consistent way for the integration tests.
-  - unit tests updated to accomodate new testing infrastructure as needed.
+  - unit tests updated to accommodate new testing infrastructure as needed.
   - unit tests updated to test logging outputs better
   - `birdhouse` interface script updated to support testing infrastructure (this should not change anything for
     other end-users).
@@ -2406,7 +2406,7 @@
 
 - Add resolver for http nginx configuration
 
-  Nginx requires a resolver to be explicity defined when using `proxy_pass` with a variable in the argument passed
+  Nginx requires a resolver to be explicitly defined when using `proxy_pass` with a variable in the argument passed
   to `proxy_pass`. This resolver is defined explicitly for the https server block but not for the http server block.
 
   This adds the explicit resolver for the http server block as well so that `proxy_pass` works when called using using
@@ -3100,7 +3100,7 @@
 
 ## Fixes
 
-- Autodeploy broken due to instanciated left-over files in ./config/ dir
+- Autodeploy broken due to instantiated left-over files in ./config/ dir
 
   The `.gitignore` syntax was wrong.  Regression from v2.0.0.
 
@@ -3630,7 +3630,7 @@ described for Weaver in
 - Monitoring: allow access to magpie members of group `monitoring`
 
   To allow accessing the various monitoring WebUI without having full blown
-  magpie admin priviledge to add and remove users.
+  magpie admin privileges to add and remove users.
 
   Add existing users to this new `monitoring` group to allow them access to the
   various monitoring WebUI.  This way, we do not need to share the `admin` user
@@ -3769,7 +3769,7 @@ described for Weaver in
 
   Before, test runs can only be started from inside the checkout, at some
   "popular" locations inside the checkout.  Now it can be started from
-  litterally anywhere.
+  literally anywhere.
 
 
 [1.26.7](https://github.com/bird-house/birdhouse-deploy/tree/1.26.7) (2023-06-19)
@@ -3892,12 +3892,12 @@ described for Weaver in
 - CanarieAPI: update to `0.7.1`.
 
   - The server node now provides a generic ``server`` configuration for the current ``platform`` definition.
-  - Added multiple missing docuementation references for all the services included within `CanarieAPI` configurations.
+  - Added multiple missing documentation references for all the services included within `CanarieAPI` configurations.
   - With new `CanarieAPI` version, a slightly improved UI with more service details are provided for the active server:
 
 ![image](https://user-images.githubusercontent.com/19194484/232822454-e39c0111-54dc-4f9b-adf6-5ea6e59d67e3.png)
 
-- Add optional variables witht defaults to define reference Docker image version tags.
+- Add optional variables with defaults to define reference Docker image version tags.
 
   Following optional variables are defined by default. These are used as reference in the respective Docker compose
   service definition of these components, as well as in their `CanarieAPI` configuration to retrieve the release time
@@ -3998,7 +3998,7 @@ described for Weaver in
 
 ## Fixes
 
-- Fix disapearing Thredds docker image
+- Fix disappearing Thredds docker image
 
   The current docker image version for thredds (4.6.18) is no longer hosted in the
   [Unidata docker repository](https://hub.docker.com/r/unidata/thredds-docker/tags).
@@ -4029,9 +4029,9 @@ described for Weaver in
 ## Fixes
 - Enforce the load order of components defined in env.local
 
-  Extra components defined in the `EXTRA_CONF_DIRS` variables were being loaded before the dependant components
+  Extra components defined in the `EXTRA_CONF_DIRS` variables were being loaded before the dependent components
   defined in the `COMPONENT_DEPENDENCIES` variables in each default.env file. This meant that if an extra component
-  was meant to override some setting defined in a dependant component, the setting would not be overridden by the
+  was meant to override some setting defined in a dependent component, the setting would not be overridden by the
   extra component.
 
   This change enforces the following load order rules:
@@ -4249,7 +4249,7 @@ described for Weaver in
 
 - env.local.example: change default Geoserver admin user from 'admin' to 'admingeo'
 
-  This only impacts new deployment when `env.local.example` is instanciated
+  This only impacts new deployment when `env.local.example` is instantiated
   to `env.local`.
 
   This is to avoid confusion with the admin user of Magpie, which is also 'admin'.
@@ -4576,7 +4576,7 @@ described for Weaver in
   `env.local` is the last file to be read.  However those steps should not be
   forgotten in any `default.env` for all components.
 
-  So the impact or burden is on the developpers to write their `default.env`
+  So the impact or burden is on the developers to write their `default.env`
   file properly, not on the users that only modify the `env.local` file.
 
   All `default.env` files header have been updated with notice about this new
@@ -4982,12 +4982,12 @@ described for Weaver in
 
   All the major browsers and OS platform has previously added the new root
   certificate "ISRG Root X1" ahead of time so the transition to the new
-  root certificate is seemless for all clients.
+  root certificate is seamless for all clients.
 
   Python `requests` package bundle their own copy of known root
   certificates and is late to add this new root cert "ISRG Root X1".  Had
   it automatically fallback to the OS copy of the root cert bundle, this
-  would have been seemless.
+  would have been seamless.
 
   The fix is to force `requests` to use the OS copy of the root cert bundle.
 
@@ -5190,7 +5190,7 @@ described for Weaver in
   for the moment so will have to be handle in another PR.
 
   So for the moment we have not achieved full non-root user in cronjobs
-  launched by the `scheduler` compoment but the most important part, the part
+  launched by the `scheduler` component but the most important part, the part
   that perform the actual job (rsync or execute custom command using an
   external docker container) is running as non-root.
 
@@ -7776,13 +7776,13 @@ Deployed to https://medus.ouranos.ca/jupyter/ for acceptance testing.
 
 [1.11.0](https://github.com/bird-house/birdhouse-deploy/tree/1.11.0) (2020-08-25)
 ------------------------------------------------------------------------------------------------------------------
-- Improved plugable component architecture.
+- Improved pluggable component architecture.
 
   Before this PR, components needing default values, needing template variable substitution, needing to execute commands pre and post `docker-compose up` are hardcoding their needs directly to the "core" system, basically "leaking" their requirements out even when they are not activated (fixes https://github.com/bird-house/birdhouse-deploy/issues/62).
 
-  This PR provides true plugable architecture for the components so they can provide all their needs without having to modify the code of the "core" system.
+  This PR provides true pluggable architecture for the components so they can provide all their needs without having to modify the code of the "core" system.
 
-  All the components (monitoring, generic_bird, emu, testthredds) are modified to leverage the new plugable architecture, with additional customizations given it is cleaner/easier to have default configuration values.
+  All the components (monitoring, generic_bird, emu, testthredds) are modified to leverage the new pluggable architecture, with additional customizations given it is cleaner/easier to have default configuration values.
 
   Given this PR both changes the architecture and modify many components at the same time, it is best to read each commit separately to easier understand which code change belongs to which "goal".
 
