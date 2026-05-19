@@ -883,4 +883,4 @@ the following workflows:
     (see: https://docs.github.com/en/code-security/tutorials/secure-your-dependencies/dependabot-quickstart-guide).
 
 Finally, the ``label.yml`` workflow is a specialized workflow that requires a ``labeler.yml`` configuration.
-This workflow does not depend on any specific provileges (see: https://github.com/actions/labeler).
+This workflow does not depend on any specific privileges (see: https://github.com/actions/labeler).
