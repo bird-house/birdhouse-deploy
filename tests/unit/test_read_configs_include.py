@@ -595,7 +595,7 @@ class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
                                                                  exit_on_error, from_name, to_name):
         """
         Test that formatting (new lines, leading spaces, quotes) are preserved when old var
-        value is transfered to new var and vice-versa.  This is important during template expansion.
+        value is transferred to new var and vice-versa.  This is important during template expansion.
         """
         expected = ("\n"
                     "    # python code requires keeping formatting  \n"

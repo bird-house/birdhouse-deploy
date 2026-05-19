@@ -9,7 +9,7 @@
 #
 # One time Setup for each *private* repository (not applicable for *public* repos):
 #
-# * create a ssh deploy key (do not re-use your personal key)
+# * create a ssh deploy key (do not reuse your personal key)
 #   `ssh-keygen -b 4096 -t rsa -f ~/.ssh/{repo-name}_deploy_key` (no passphrase)
 #
 # * add the public key ~/.ssh/{repo-name}_deploy_key.pub to the repo as read-only deploy key

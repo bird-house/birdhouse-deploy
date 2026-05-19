@@ -7,7 +7,7 @@
 [//]: # (   see: https://github.com/c4urself/bump2version/issues/99)
 [//]: # ( - bump2version will not tag automatically, so it must be done manually after PR is merged and approved)
 [//]: # (   This is to ensure that new tags are applied directly on merge-commit, an not a commit within the PR)
-[//]: # (   see decission: https://github.com/bird-house/birdhouse-deploy/pull/161#discussion_r661746230)
+[//]: # (   see decision: https://github.com/bird-house/birdhouse-deploy/pull/161#discussion_r661746230)
 
 [//]: # (**DEFINE LATEST CHANGES UNDER BELOW 'Unreleased' SECTION - THEY WILL BE INTEGRATED IN NEXT RELEASE VERSION**)
 [//]: # (  bump2version will take care to generate a new empty 'Unreleased' section after version bump)
@@ -8451,7 +8451,7 @@ Deployed to https://medus.ouranos.ca/jupyter/ for acceptance testing.
   ab56994 jupyter: limit memory of public user to 500 MB
   90c1950 jupyter: prevent user from loading user-owned config at spawner server startup
   e8f2fa3 jupyter: avoid terminating user running jobs on Hub update
-  3f97cc7 jupyter: get ready to prevent browser session re-use even if password changed
+  3f97cc7 jupyter: get ready to prevent browser session reuse even if password changed
   e2ebcc3 jupyter: disable notebook terminal for security reasons
 
 [1.8.0](https://github.com/bird-house/birdhouse-deploy/tree/1.8.0) (2020-02-03)

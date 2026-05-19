@@ -3,7 +3,7 @@ SERVICES['renderer'] = {
         'name': 'High-resolution spatial gridded data renderer',
         'synopsis': (
             'This service renders gridded data on the server and sends images to the client for display within '
-            'mapping applications using Open Geospatial Consortium (OGC) Web Mappping Service (WMS) standard.'
+            'mapping applications using Open Geospatial Consortium (OGC) Web Mapping Service (WMS) standard.'
         ),
         'version': '4.6.15',
         'institution': 'Unidata',
