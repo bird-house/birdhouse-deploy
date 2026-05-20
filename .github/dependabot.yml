@@ -15,9 +15,10 @@ updates:
         patterns:
           - "*"
         update-types:
+          # only group patch and minor updates which will allow the dependabot-auto-approve job to approve and
+          # merge these updates without having to wait for approval if the group only includes minor or patch update.  Major update will need human manual approval.
           - patch
           - minor
-          - major
     cooldown:
       default-days: 7
 
