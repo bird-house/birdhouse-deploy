@@ -19,9 +19,9 @@
 
 - Group dependabot updates for better handling by other workflows
 
-  Only group patch and minor updates together for updates to github actions. This will allow the 
-  `dependabot-auto-approve` job to approve and merge these updates without having to wait for approval 
-  if the group also includes a major update.
+  Only group patch and minor updates which will allow the `dependabot-auto-approve` job to approve and
+  merge these updates without having to wait for approval. 
+  Major updates will go into their own pull request and will require manual human approval.
 
 [2.28.0](https://github.com/bird-house/birdhouse-deploy/tree/2.28.0) (2026-05-15)
 ------------------------------------------------------------------------------------------------------------------
