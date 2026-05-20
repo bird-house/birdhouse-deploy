@@ -216,7 +216,7 @@ print_config_command() {
     configs_cmd_prefix="${configs_cmd_prefix} export BIRDHOUSE_LOCAL_ENV='${BIRDHOUSE_LOCAL_ENV}' ;"
   fi
   if [ "${BIRDHOUSE_LOCAL_ENV_PREV+set}" = 'set' ]; then
-    configs_cmd_suffix="${configs_cmd_suffix} export BIRDHOUSE_LOCAL_ENV='${BIRDHOUSE_LOCAL_ENV_PREV}' ;"
+    configs_cmd_suffix="${configs_cmd_suffix} BIRDHOUSE_LOCAL_ENV='${BIRDHOUSE_LOCAL_ENV_PREV}' ;"
   elif [ "${BIRDHOUSE_LOCAL_ENV_UNSET}" = 'True' ]; then
     configs_cmd_suffix="${configs_cmd_suffix} unset BIRDHOUSE_LOCAL_ENV ;"
   fi
@@ -233,7 +233,7 @@ print_log_command() {
 }
 
 _print_log_variable_set() {
-  echo "export BIRDHOUSE_LOG_QUIET=${BIRDHOUSE_LOG_QUIET}; export BIRDHOUSE_LOG_DEST_OVERRIDE=${BIRDHOUSE_LOG_DEST_OVERRIDE}; export BIRDHOUSE_LOG_FD=${BIRDHOUSE_LOG_FD}; export BIRDHOUSE_LOG_FILE=${BIRDHOUSE_LOG_FILE}; export BIRDHOUSE_LOG_LEVEL=${BIRDHOUSE_LOG_LEVEL}; "
+  echo "export BIRDHOUSE_LOG_QUIET='${BIRDHOUSE_LOG_QUIET}'; export BIRDHOUSE_LOG_DEST_OVERRIDE='${BIRDHOUSE_LOG_DEST_OVERRIDE}'; export BIRDHOUSE_LOG_FD='${BIRDHOUSE_LOG_FD}'; export BIRDHOUSE_LOG_FILE='${BIRDHOUSE_LOG_FILE}'; export BIRDHOUSE_LOG_LEVEL='${BIRDHOUSE_LOG_LEVEL}'; "
 }
 
 _print_log_variable_unset() {
@@ -249,7 +249,7 @@ _print_back_compat_variable_set() {
 
 _print_back_compat_variable_unset() {
   if [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV+set}" = 'set' ]; then
-    echo "export BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV}' ;"
+    echo "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED='${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_PREV}' ;"
   elif [ "${BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED_UNSET}" = 'True' ]; then
     echo "unset BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED ;"
   fi

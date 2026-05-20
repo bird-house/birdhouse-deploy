@@ -1,3 +1,4 @@
+from pathlib import Path
 import subprocess
 
 import pytest
@@ -34,7 +35,7 @@ def logging_script(root_dir):
 
 @pytest.fixture
 def run(local_env_file):
-    def _(command, expect_error=False, compose=None, **kwargs):
+    def _(command, expect_error=False, compose=None, unset_env=None, **kwargs):
         # WARNING: DO NOT forward 'os.environ', could break certain test assumptions
         kwargs_env = kwargs.get("env", {})
         kwargs["env"] = {
@@ -45,6 +46,9 @@ def run(local_env_file):
         }
         if compose:
             kwargs["env"]["BIRDHOUSE_COMPOSE"] = compose
+        if unset_env:
+            for var in unset_env:
+                kwargs["env"].pop(var)
         proc = subprocess.run(
             str(command),
             shell=True,
@@ -178,6 +182,83 @@ def test_configs_set_env_file(cli_path, run, local_env_file, tmp_path, flag):
     proc = run(f"{cli_path} {flag}{other_local_env_file} configs -p")
     assert f"BIRDHOUSE_LOCAL_ENV='{other_local_env_file}'" in proc.stdout
     assert f"BIRDHOUSE_LOCAL_ENV='{local_env_file}'" in proc.stdout.split(str(other_local_env_file))[-1]
+
+
+@pytest.fixture
+def config_command_env():
+    return {
+        "COMPOSE_DIR": "/some/other/path/",
+        "BIRDHOUSE_LOG_QUIET": "False",
+        "BIRDHOUSE_LOG_DEST_OVERRIDE": ":DEBUG:fd:1",
+        "BIRDHOUSE_LOG_FD": "3",
+        "BIRDHOUSE_LOG_FILE": "test.log",
+        "BIRDHOUSE_LOG_LEVEL": "WARN",
+        "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED": "False",
+        "BIRDHOUSE_LOCAL_ENV": Path.cwd() / "example.env"
+    }
+
+
+CONFIG_PARAMS=(("--quiet", "", "BIRDHOUSE_LOG_QUIET", "True"),
+               ("--quiet", "INFO", "BIRDHOUSE_LOG_DEST_OVERRIDE", ":DEBUG:fd:1:INFO:quiet:", ":INFO:quiet:"),
+               ("--log-stdout", "", "BIRDHOUSE_LOG_FD", "1"),
+               ("--log-stdout", "INFO", "BIRDHOUSE_LOG_DEST_OVERRIDE", ":DEBUG:fd:1:INFO:fd:1", ":INFO:fd:1"),
+               ("--log-file", "test2.log", "BIRDHOUSE_LOG_FILE", Path.cwd() / "test2.log"),
+               ("--log-file", "INFO test2.log", "BIRDHOUSE_LOG_DEST_OVERRIDE", f":DEBUG:fd:1:INFO:file:{Path.cwd() / 'test2.log'}", f":INFO:file:{Path.cwd() / 'test2.log'}"),
+               ("--log-level", "INFO", "BIRDHOUSE_LOG_LEVEL", "INFO"),
+               ("--backwards-compatible", "", "BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED", "True"),
+               ("--env-file", Path.cwd() / "example2.env", "BIRDHOUSE_LOCAL_ENV", Path.cwd() / "example2.env"))
+
+
+@pytest.mark.parametrize("env", ("full", "empty"))
+@pytest.mark.parametrize("params", CONFIG_PARAMS, ids=[f"{c[0]}{' <arg>' if c[1] else ''}" for c in CONFIG_PARAMS])
+def test_configs_print_config_command(cli_path, run, config_command_env, root_dir, params, env):
+    flag, flag_value, env_var, env_value, *empty_values = params
+    unset_env = [] if env == "full" else ["BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED", "BIRDHOUSE_LOCAL_ENV"]
+    env = config_command_env if env == "full" else {}
+    proc = run(f"{cli_path} {flag} {flag_value} configs --print-config-command", unset_env=unset_env, env=env)
+    out = [s for line in proc.stdout.split(";") if (s := line.strip())]
+    source_i = next(i for i, x in enumerate(out) if x.startswith(". "))
+    cmd_i = out.index("read_configs")
+    prefix = out[:source_i]
+    cmd = out[source_i:cmd_i + 1]
+    suffix = out[cmd_i + 1:]
+    assert not proc.stderr
+    assert "export __BIRDHOUSE_SUPPORTED_INTERFACE=True" in prefix
+    assert "unset __BIRDHOUSE_SUPPORTED_INTERFACE" in suffix
+    assert f"export COMPOSE_DIR={root_dir / 'birdhouse'}" in prefix
+    assert cmd == [f". {root_dir / 'birdhouse' / 'read-configs.include.sh'}", "read_configs"]
+    if env:
+        assert f"export {env_var}='{env_value}'" in prefix
+        assert f"COMPOSE_DIR='{env['COMPOSE_DIR']}'" in suffix
+        assert f"{env_var}='{env[env_var]}'" in suffix
+    else:
+        assert f"export {env_var}='{empty_values[0] if empty_values else env_value}'" in prefix
+        assert "COMPOSE_DIR=''" in suffix
+        if env_var in unset_env:
+            assert f"unset {env_var}" in suffix
+        else:
+            assert f"{env_var}=''" in suffix
+
+
+@pytest.mark.parametrize("env", ("full", "empty"))
+@pytest.mark.parametrize("params", CONFIG_PARAMS[:-1], ids=[f"{c[0]}{' <arg>' if c[1] else ''}" for c in CONFIG_PARAMS[:-1]])
+def test_configs_print_log_command(cli_path, run, config_command_env, root_dir, params, env):
+    flag, flag_value, env_var, env_value, *empty_values = params
+    unset_env = [] if env == "full" else ["BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED", "BIRDHOUSE_LOCAL_ENV"]
+    env = config_command_env if env == "full" else {}
+    proc = run(f"{cli_path} {flag} {flag_value} configs --print-log-command", unset_env=unset_env, env=env)
+    out = [s for line in proc.stdout.split(";") if (s := line.strip())]
+    source_i = next(i for i, x in enumerate(out) if x.startswith(". "))
+    prefix = out[:source_i]
+    cmd = out[source_i]
+    suffix = out[source_i + 1:]
+    assert not proc.stderr
+    assert not suffix
+    assert cmd == f". {root_dir / 'birdhouse' / 'scripts' / 'logging.include.sh'}"
+    if env:
+        assert f"export {env_var}='{env_value}'" in prefix
+    else:
+        assert f"export {env_var}='{empty_values[0] if empty_values else env_value}'" in prefix
 
 
 @pytest.mark.parametrize("flag", ["-s", "--log-stdout"])
