@@ -17,13 +17,19 @@
 
 ## Fixes
 
-- Cowbird: Fix `COWBIRD_MONGODB_DATA_DIR` missing an `export` and its inclusion in `VARS`.
+- Fix compose env resolution to preserve internal `DELAYED_EVAL` list when re-applying caller environment.
 
-  Because `COWBIRD_MONGODB_DATA_DIR` is referenced by `DELAYED_EVAL`, the omitted `export` would cause it to be set
-  only locally, which in turn maded it unavailable when the delayed variable evaluation takes place. Also, it was not
-  referenced in `VARS` (via `EXTRA_VARS`), which meant that it was not considered in certain places.
-  Any configuration that did not set `COWBIRD_MONGODB_DATA_DIR` explicitly (expecting to use the default) could lead to
-  an empty variable creating an invalid `:/data/db` volume mapping configuration in the Cowbird docker-compose file.
+  Calling `read_configs` re-applies exported variables from the caller process using `reset_process_env`.
+  If the caller shell had already exported `DELAYED_EVAL` preemptively (by mistake or by sourcing a file exporting it),
+  that step could overwrite the internally assembled delayed-eval list, causing following invocations to rely on a stale
+  list of variables. Many derived paths (e.g.: `${BIRDHOUSE_DATA_PERSIST_ROOT}/...`) would then remain unresolved.
+  Notably, this could fail compose commands (not files using `.template`, but directly including delayed-eval variables)
+  with errors such as `undefined volume ${BIRDHOUSE_DATA_PERSIST_ROOT}/...` due to invalid portions of volume mounts
+  (e.g.: `${COWBIRD_MONGODB_DATA_DIR}:/data/db` becomes `${BIRDHOUSE_DATA_PERSIST_ROOT}/mongodb_cowbird_persist:/data/db`)
+  because the environment variables are used directly in the compose files rather than by shell/templating resolution.
+
+  The fix filters `DELAYED_EVAL` from the staged caller environment before running `reset_process_env`,
+  ensuring the internally computed list (if any) is not overwritten by caller values breaking following references.
 
 [2.28.0](https://github.com/bird-house/birdhouse-deploy/tree/2.28.0) (2026-05-15)
 ------------------------------------------------------------------------------------------------------------------

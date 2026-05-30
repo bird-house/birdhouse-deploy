@@ -327,6 +327,118 @@ class TestReadConfigs(TestReadBasicConfigs):
             == "public.example.com - /my-data-root/jupyterhub_user_data - /my-geoserver-data"
         )
 
+    @pytest.mark.usefixtures("run_in_compose_dir")
+    @pytest.mark.parametrize(
+        "process_env",
+        [
+            {},
+            {"DELAYED_EVAL": "STALE_ONLY_VAR"},
+        ],
+        ids=["default-process-env", "stale-delayed-eval-in-process-env"],
+    )
+    def test_delayed_eval_component_registry_ignores_process_override(
+        self,
+        read_config_include_file,
+        exit_on_error,
+        process_env,
+    ) -> None:
+        """
+        Validate delayed-eval behavior when caller process optionally exports stale ``DELAYED_EVAL``.
+
+        Functionally, ``DELAYED_EVAL`` is the control list used by ``process_delayed_eval`` to know
+        which variables must be re-expanded after all configs are loaded. The list is assembled while
+        sourcing component ``default.env`` files, which append entries using patterns like
+        ``DELAYED_EVAL="$DELAYED_EVAL ..."``. Therefore, each ``default.env`` invocation
+        (or any other sourced env file) has the potential to break the aggregation within that internal list.
+
+        This regression test runs ``read_configs`` with either a clean process environment or one
+        containing a stale ``DELAYED_EVAL`` token. It confirms that:
+        1. cowbird delayed-eval registration is still present (precondition, otherwise the test doesn't work)
+        2. ``COWBIRD_MONGODB_DATA_DIR`` is resolved from ``BIRDHOUSE_DATA_PERSIST_ROOT``
+        3. stale process-provided delayed-eval entries are not retained
+        """
+        extra = {
+            # BIRDHOUSE_DATA_PERSIST_ROOT used since delayed-eval in COWBIRD_MONGODB_DATA_DIR
+            "BIRDHOUSE_DATA_PERSIST_ROOT": '"/tmp/birdhouse-data-root"',
+        }
+        proc = self.run_func(
+            read_config_include_file,
+            extra,
+            (
+                'echo "$COWBIRD_MONGODB_DATA_DIR"; '
+                'echo "PRECOND_HAS_COWBIRD_DELAYED=$(echo \" $DELAYED_EVAL \" | tr "\\n" " " '
+                '| grep -q "[[:space:]]COWBIRD_MONGODB_DATA_DIR[[:space:]]" && echo 1 || echo 0)"; '
+                'echo "HAS_COWBIRD_DELAYED=$(echo \" $DELAYED_EVAL \" | tr "\\n" " " '
+                '| grep -q "[[:space:]]COWBIRD_MONGODB_DATA_DIR[[:space:]]" && echo 1 || echo 0)"; '
+                'echo "HAS_STALE_DELAYED=$(echo \" $DELAYED_EVAL \" | tr "\\n" " " '
+                '| grep -q "[[:space:]]STALE_ONLY_VAR[[:space:]]" && echo 1 || echo 0)"'
+            ),
+            exit_on_error=exit_on_error,
+            process_env=process_env,
+        )
+
+        output = split_and_strip(get_command_stdout(proc))
+        assert output[0] == "/tmp/birdhouse-data-root/mongodb_cowbird_persist"
+        assert "PRECOND_HAS_COWBIRD_DELAYED=1" in output, (
+            "Precondition failed: COWBIRD_MONGODB_DATA_DIR is not present in DELAYED_EVAL. "
+            "This test requires cowbird delayed-eval registration to be active."
+        )
+        assert "HAS_COWBIRD_DELAYED=1" in output
+        assert "HAS_STALE_DELAYED=0" in output
+
+    @pytest.mark.usefixtures("run_in_compose_dir")
+    @pytest.mark.parametrize(
+        "component_override",
+        [
+            "export COWBIRD_MONGODB_DATA_DIR='${BIRDHOUSE_DATA_PERSIST_ROOT}/mongodb_from_test_exported'",
+            "COWBIRD_MONGODB_DATA_DIR='${BIRDHOUSE_DATA_PERSIST_ROOT}/mongodb_from_test_non_exported'",
+        ],
+        ids=["exported-override", "non-exported-override"],
+    )
+    def test_delayed_eval_component_override_export_and_non_exported(
+        self,
+        read_config_include_file,
+        exit_on_error,
+        component_override,
+    ) -> None:
+        """
+        Ensure equivalent delayed-eval results for exported and non-exported component overrides.
+
+        The test parameterizes two ``env.local`` assignment forms:
+        - ``export COWBIRD_MONGODB_DATA_DIR=...``
+        - ``COWBIRD_MONGODB_DATA_DIR=...``
+
+        It verifies that both variants resolve through delayed evaluation and that the resulting
+        value is exported after configuration loading. This protects against regressions where
+        assignment style would change delayed-eval behavior.
+        """
+        env_local = f'''
+            export BIRDHOUSE_DATA_PERSIST_ROOT="/tmp/birdhouse-data-root"
+            {component_override}
+        '''
+        proc = self.run_func(
+            read_config_include_file,
+            env_local,
+            (
+                'echo "$COWBIRD_MONGODB_DATA_DIR"; '
+                'echo "PRECOND_HAS_COWBIRD_DELAYED=$(echo \" $DELAYED_EVAL \" | tr "\\n" " " '
+                '| grep -q "[[:space:]]COWBIRD_MONGODB_DATA_DIR[[:space:]]" && echo 1 || echo 0)"; '
+                'echo "POST_READ_IS_EXPORTED=$(env | grep -q "^COWBIRD_MONGODB_DATA_DIR=" && echo 1 || echo 0)"'
+            ),
+            exit_on_error=exit_on_error,
+        )
+
+        output = split_and_strip(get_command_stdout(proc))
+        assert "PRECOND_HAS_COWBIRD_DELAYED=1" in output, (
+            "Precondition failed: COWBIRD_MONGODB_DATA_DIR is not present in DELAYED_EVAL. "
+            "Cannot validate exported/non-exported override equivalence."
+        )
+        assert output[0] in {
+            "/tmp/birdhouse-data-root/mongodb_from_test_exported",
+            "/tmp/birdhouse-data-root/mongodb_from_test_non_exported",
+        }
+        assert "POST_READ_IS_EXPORTED=1" in output
+
 
 class TestBackwardsCompatible(_ReadConfigsFromEnvFile):
     command = "read_configs"
