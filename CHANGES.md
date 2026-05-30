@@ -31,6 +31,8 @@
   The fix filters `DELAYED_EVAL` from the staged caller environment before running `reset_process_env`,
   ensuring the internally computed list (if any) is not overwritten by caller values breaking following references.
 
+- Cowbird: Fix missing `export` for `COWBIRD_MONGODB_DATA_DIR` default delayed-eval variable.
+
 [2.28.0](https://github.com/bird-house/birdhouse-deploy/tree/2.28.0) (2026-05-15)
 ------------------------------------------------------------------------------------------------------------------
 
