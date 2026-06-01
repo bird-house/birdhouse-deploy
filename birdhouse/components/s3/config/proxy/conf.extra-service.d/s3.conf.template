@@ -12,6 +12,13 @@
         internal;
         proxy_pass ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_VERIFY_PATH}$request_uri;
         proxy_pass_request_body off;
+
+        # cache auth requests so we don't overwhelm twitcher when a client is accessing multiple chunks
+        # of the same file in parallel (for example).
+        proxy_cache "s3_auth_cache";
+        proxy_cache_key "$http_authorization:cache:$cookie_${MAGPIE_COOKIE_NAME}";
+        proxy_cache_valid 200 401 403 1m;
+        proxy_ignore_headers Cache-Control Expires Set-Cookie; 
         proxy_set_header Host $host;
         proxy_set_header Content-Length "";
         proxy_set_header X-Original-URI $request_uri;
