@@ -30,10 +30,6 @@ COMPOSE_DIR="$(pwd)"
 . "${COMPOSE_DIR}/read-configs.include.sh"
 read_configs # this sets ALL_CONF_DIRS
 
-. "${COMPOSE_DIR}/scripts/get-components-json.include.sh"
-. "${COMPOSE_DIR}/scripts/get-services-json.include.sh"
-. "${COMPOSE_DIR}/scripts/get-version-json.include.sh"
-
 check_required_vars || exit $?
 
 # we apply all the templates

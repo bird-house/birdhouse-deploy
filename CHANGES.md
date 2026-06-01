@@ -15,7 +15,17 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+# Fixes
+
+- JSON endpoints were being set before template variable expansion
+
+  Because `service`, `components`, and `version` endpoints were being written before 
+  `.template` files were being processed, the `service` JSON endpoint could contain information that was out of date.
+
+  This fixes the issue by moving all of the logic that determines the content and 
+  creates the files for these endpoints to the `proxy/pre-docker-compose-up.include`
+  file which will always run after the `.template files are processed.
+
 
 [2.28.0](https://github.com/bird-house/birdhouse-deploy/tree/2.28.0) (2026-05-15)
 ------------------------------------------------------------------------------------------------------------------
