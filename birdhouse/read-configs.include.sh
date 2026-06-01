@@ -473,13 +473,13 @@ stage_process_env() {
   __BIRDHOUSE_PROCESS_ENV="$(export -p)"
 }
 
-# Re-export and set all environment variables that were exported when stage_process_env was last called. This 
+# Re-export and set all environment variables that were exported when stage_process_env was last called. This
 # effectively resets these variables to the values that they had when stage_process_env was last called.
 #
 # Note that this will not unset variables that were not exported when stage_process_env was last called.
 #
 # For example:
-# 
+#
 # export X=10
 # stage_process_env
 # echo $X  # prints 10

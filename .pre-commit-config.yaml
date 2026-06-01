@@ -11,3 +11,11 @@ repos:
       - id: ruff-format
         files: birdhouse/components/jupyterhub/jupyterhub_custom/jupyterhub_custom/
         args: [ --config=birdhouse/components/jupyterhub/jupyterhub_custom/ruff.toml ]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0  # Use the ref you want to point at
+    hooks:
+      - id: trailing-whitespace
+      - id: pretty-format-json
+        args: [ --autofix ]
+      - id: detect-private-key
+      - id: end-of-file-fixer

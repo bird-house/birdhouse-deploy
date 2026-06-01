@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
 
 error=
-if [ "${BIRDHOUSE_FQDN}" != "host.docker.internal" ]; then 
+if [ "${BIRDHOUSE_FQDN}" != "host.docker.internal" ]; then
     log ERROR 'BIRDHOUSE_FQDN should be set to 'host.docker.internal' when the local-dev-test optional component is enabled'
     error=True
 fi
 
-if [ "${BIRDHOUSE_HTTP_ONLY}" != "True" ]; then 
+if [ "${BIRDHOUSE_HTTP_ONLY}" != "True" ]; then
     log ERROR 'BIRDHOUSE_HTTP_ONLY should be set to 'True' when the local-dev-test optional component is enabled'
     error=True
 fi

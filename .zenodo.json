@@ -1,76 +1,4 @@
 {
-  "creators": [
-    {
-      "name": "Vu, Tuan Long",
-      "affiliation": "Ouranos"
-    },
-    {
-      "name": "Charette-Migneault, Francis",
-      "affiliation": "CRIM",
-      "orcid": "0000-0003-4862-3349"
-    },
-    {
-      "name": "Cummings, Charles-William",
-      "affiliation": "CRIM"
-    },
-    { 
-      "name": "Misha Schwartz", 
-      "affiliation": "University of Toronto"
-    },
-    {
-      "name": "Huard, David",
-      "affiliation": "Ouranos",
-      "orcid": "0000-0003-0311-5498"
-    },
-    {
-      "name": "Smith, Trevor James",
-      "affiliation": "Ouranos",
-      "orcid": "0000-0001-5393-8359"
-    },
-    {
-      "name": "Provencher, Mathieu",
-      "affiliation": "CRIM"
-    },
-    {
-      "name": "Pelletier, Francis",
-      "affiliation": "CRIM",
-      "orcid": "0000-0002-4708-5182"
-    },
-    {
-      "name": "Byrns, David",
-      "affiliation": "Intact"
-    },
-    {
-      "name": "Nik Radoš",
-      "affiliation": "Quartech"
-    },
-    {
-      "name": "Gagnon-Grenier, Félix",
-      "orcid": "0000-0003-3389-9406"
-    },
-    {
-      "name": "Perron, Louis-David",
-      "affiliation": "CRIM"
-    },
-    {
-      "name": "Jauvin, Christian",
-      "affiliation": "K2 Geospatial",
-      "orcid": "0000-0002-2257-5636"
-    },
-    {
-      "name": "Bourgault, Pascal",
-      "affiliation": "Ouranos",
-      "orcid": "0000-0003-1192-0403"
-    }
-  ],
-  "keywords": [
-    "climate",
-    "climatology",
-    "PAVICS",
-    "bird-house",
-    "wps",
-    "web processing services"
-  ],
   "communities": [
     {
       "identifier": "ouranos"
@@ -81,6 +9,78 @@
     {
       "identifier": "birdhouse"
     }
+  ],
+  "creators": [
+    {
+      "affiliation": "Ouranos",
+      "name": "Vu, Tuan Long"
+    },
+    {
+      "affiliation": "CRIM",
+      "name": "Charette-Migneault, Francis",
+      "orcid": "0000-0003-4862-3349"
+    },
+    {
+      "affiliation": "CRIM",
+      "name": "Cummings, Charles-William"
+    },
+    {
+      "affiliation": "University of Toronto",
+      "name": "Misha Schwartz"
+    },
+    {
+      "affiliation": "Ouranos",
+      "name": "Huard, David",
+      "orcid": "0000-0003-0311-5498"
+    },
+    {
+      "affiliation": "Ouranos",
+      "name": "Smith, Trevor James",
+      "orcid": "0000-0001-5393-8359"
+    },
+    {
+      "affiliation": "CRIM",
+      "name": "Provencher, Mathieu"
+    },
+    {
+      "affiliation": "CRIM",
+      "name": "Pelletier, Francis",
+      "orcid": "0000-0002-4708-5182"
+    },
+    {
+      "affiliation": "Intact",
+      "name": "Byrns, David"
+    },
+    {
+      "affiliation": "Quartech",
+      "name": "Nik Rado\u0161"
+    },
+    {
+      "name": "Gagnon-Grenier, F\u00e9lix",
+      "orcid": "0000-0003-3389-9406"
+    },
+    {
+      "affiliation": "CRIM",
+      "name": "Perron, Louis-David"
+    },
+    {
+      "affiliation": "K2 Geospatial",
+      "name": "Jauvin, Christian",
+      "orcid": "0000-0002-2257-5636"
+    },
+    {
+      "affiliation": "Ouranos",
+      "name": "Bourgault, Pascal",
+      "orcid": "0000-0003-1192-0403"
+    }
+  ],
+  "keywords": [
+    "climate",
+    "climatology",
+    "PAVICS",
+    "bird-house",
+    "wps",
+    "web processing services"
   ],
   "upload_type": "software"
 }

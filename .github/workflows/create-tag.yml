@@ -51,7 +51,7 @@ jobs:
       - name: Create Tag
         run: |
           CURRENT_VERSION=$(bump-my-version show current_version)
-          git tag -s $CURRENT_VERSION -m $CURRENT_VERSION 
+          git tag -s $CURRENT_VERSION -m $CURRENT_VERSION
 
       - name: Push Changes
         uses: ad-m/github-push-action@77c5b412c50b723d2a4fbc6d71fb5723bcd439aa # v1.0.0

@@ -1,47 +1,47 @@
 {
-  "type": "array",
   "items": {
-    "type": "object",
     "properties": {
-      "type": {
-        "type": "string",
-        "enum": [
-          "user",
-          "group"
-        ]
-      },
-      "name": {
-        "type": "string",
-        "pattern": "^.+$"
-      },
       "limits": {
-        "type": "object",
-        "properties": {
-          "mem_limit": {
-            "type": "string"
-          },
-          "cpu_limit": {
-            "type": "number"
-          },
-          "gpu_ids": {
-            "type": "array"
-          },
-          "gpu_count": {
-            "type": "number"
-          }
-        },
+        "additionalProperties": false,
         "dependentRequired": {
           "gpu_count": [
             "gpu_ids"
           ]
         },
-        "additionalProperties": false
+        "properties": {
+          "cpu_limit": {
+            "type": "number"
+          },
+          "gpu_count": {
+            "type": "number"
+          },
+          "gpu_ids": {
+            "type": "array"
+          },
+          "mem_limit": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "name": {
+        "pattern": "^.+$",
+        "type": "string"
+      },
+      "type": {
+        "enum": [
+          "user",
+          "group"
+        ],
+        "type": "string"
       }
     },
     "required": [
       "type",
       "name",
       "limits"
-    ]
-  }
+    ],
+    "type": "object"
+  },
+  "type": "array"
 }
