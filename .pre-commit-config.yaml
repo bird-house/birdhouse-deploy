@@ -17,5 +17,6 @@ repos:
       - id: trailing-whitespace
       - id: pretty-format-json
         args: [ --autofix ]
+        exclude: .ipynb
       - id: detect-private-key
       - id: end-of-file-fixer
