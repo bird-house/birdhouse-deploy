@@ -18,13 +18,13 @@ for a full-fledged production platform.
     * - citation
       - | |citation|
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/bird-house/birdhouse-deploy/2.26.4.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/bird-house/birdhouse-deploy/2.28.0.svg
     :alt: Commits since latest release
-    :target: https://github.com/bird-house/birdhouse-deploy/compare/2.26.4...master
+    :target: https://github.com/bird-house/birdhouse-deploy/compare/2.28.0...master
 
-.. |latest-version| image:: https://img.shields.io/badge/tag-2.26.4-blue.svg?style=flat
+.. |latest-version| image:: https://img.shields.io/badge/tag-2.28.0-blue.svg?style=flat
     :alt: Latest Tag
-    :target: https://github.com/bird-house/birdhouse-deploy/tree/2.26.4
+    :target: https://github.com/bird-house/birdhouse-deploy/tree/2.28.0
 
 .. |readthedocs| image:: https://readthedocs.org/projects/birdhouse-deploy/badge/?version=latest
     :alt: ReadTheDocs Build Status (latest version)
@@ -49,3 +49,4 @@ For GitHub navigation, see the following README pages:
 * `README for general deployment <birdhouse/README.rst>`_
 * `README for extra core components <birdhouse/components/README.rst>`_
 * `README for optional components <birdhouse/optional-components/README.rst>`_
+* `README for deprecated components <birdhouse/deprecated-components/README.rst>`_

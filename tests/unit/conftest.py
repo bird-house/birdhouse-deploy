@@ -32,4 +32,5 @@ def plex(session_plex):
     """
     # Clear the counter before each test
     session_plex.counter.clear()
+    session_plex.service_counter.clear()
     return session_plex

@@ -45,7 +45,8 @@
     {
       "rel": "service-meta",
       "type": "application/vnd.oci.image.index.v1+json",
-      "href": "${STAC_IMAGE_URI}"
+      "href": "${STAC_IMAGE_URI}",
+      "title": "Docker Image"
     },
     {
       "rel": "alternate",

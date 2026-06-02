@@ -14,9 +14,7 @@ assignees: tlvu, fmigneault, mishaschwartz
 
 ## References
 
-<!-- 
-  Additional screenshots or links to help identify the issue?
--->
+<!-- Additional screenshots or links to help identify the issue?-->
 
 
 | Information           | Value

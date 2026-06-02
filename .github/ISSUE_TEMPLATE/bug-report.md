@@ -4,12 +4,12 @@ about: Create an issue related to a bug or encountered problem.
 title: ":bug: [BUG]: "
 labels: bug
 assignees: tlvu, fmigneault, mishaschwartz
-
 ---
 
 ## Summary
 
 <!-- A simple TL;DR one/two-liner summary of your problem -->
+
 
 
 ## Details
@@ -25,7 +25,6 @@ Steps to reproduce the behavior:
 1.
 2.
 3.
-
 
 ## Environment
 

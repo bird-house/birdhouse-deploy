@@ -23,7 +23,8 @@
     {
       "rel": "service-meta",
       "type": "application/vnd.oci.image.index.v1+json",
-      "href": "${JUPYTERHUB_IMAGE_URI}"
+      "href": "${JUPYTERHUB_IMAGE_URI}",
+      "title": "Docker Image"
     }
   ]
 }

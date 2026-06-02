@@ -28,7 +28,8 @@
     {
       "rel": "service-meta",
       "type": "application/vnd.oci.image.index.v1+json",
-      "href": "${FINCH_IMAGE_URI}"
+      "href": "${FINCH_IMAGE_URI}",
+      "title": "Docker Image"
     }
   ]
 }

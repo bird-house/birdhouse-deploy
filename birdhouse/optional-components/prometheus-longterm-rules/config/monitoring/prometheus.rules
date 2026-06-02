@@ -39,9 +39,9 @@ groups:
           labels:
             group: longterm-metrics
 
-        # Total download volume in the last 1 hour logged by the prometheus-log-exporter counter (bytes)
-        - record: instance:thredds_transfer_size_bytes:increase1h
-          expr: increase(thredds_transfer_size_bytes_total[1h])
+        # Total download rate in the last 1 hour logged by the prometheus-log-exporter counter (bytes)
+        - record: instance:thredds_transfer_size_bytes:rate1h
+          expr: rate(thredds_transfer_size_bytes_total[1h]) > 0
           labels:
             group: longterm-metrics
 
@@ -74,15 +74,15 @@ groups:
         # --- Users ---
         # To aggregate user numbers over a month or a year, we need to keep the name labels.
 
-        # JupyterLab container writes to disk in the last hour (bytes, filtered on > 0)
-        - record: jupyter:container_fs_writes_bytes:sum_increase1h
-          expr: (sum by(name) (increase(container_fs_writes_bytes_total{name=~"jupyter-.+"}[1h])) > 0)
+        # JupyterLab container writes rate to disk in the last hour (bytes, filtered on > 0)
+        - record: jupyter:container_fs_writes_bytes:sum_rate1h
+          expr: (sum by(name) (rate(container_fs_writes_bytes_total{name=~"jupyter-.+"}[1h])) > 0)
           labels:
             group: longterm-metrics
 
         # JupyterLab container CPU usage (seconds, filtered on > 60 seconds per hour)
-        - record: jupyter:container_cpu_user_seconds:sum_increase1h
-          expr: (sum by(name) (increase(container_cpu_user_seconds_total{name=~"jupyter-.+"}[1h])) > 60)
+        - record: jupyter:container_cpu_user_seconds:sum_rate1h
+          expr: (sum by(name) (rate(container_cpu_user_seconds_total{name=~"jupyter-.+"}[1h])) > 60)
           labels:
             group: longterm-metrics
 
