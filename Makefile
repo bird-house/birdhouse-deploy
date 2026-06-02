@@ -8,7 +8,7 @@ override BIRDHOUSE_MAKE_DIR := $(shell realpath -P $$(dirname $(BIRDHOUSE_MAKE_C
 # Generic variables
 override SHELL       := bash
 override APP_NAME    := birdhouse-deploy
-override APP_VERSION := 2.28.0
+override APP_VERSION := 2.28.1
 
 # utility to remove comments after value of an option variable
 override clean_opt = $(shell echo "$(1)" | $(_SED) -r -e "s/[ '$'\t'']+$$//g")
@@ -236,28 +236,33 @@ install-tests:	## Install development dependencies
 	@-$(MSG_I) "Installing development dependencies..."
 	@$(SHELL) -c '$(CONDA_CMD) pip install -r "$(BIRDHOUSE_MAKE_DIR)/tests/requirements.txt"'
 
-.PHONY: test-unit
-test-unit: install-tests	## Run unit tests
+.PHONY: test-unit test-unit-only
+test-unit: install-tests test-unit-only	## Run unit tests (with dependency installation)
+test-unit-only:	## Run unit tests
 	@-$(MSG_I) "Running unit tests..."
 	@pytest "$(TEST_DIR)/unit"
 
-.PHONY: test-integration
-test-integration: install-tests	## Run integration tests
+.PHONY: test-integration test-integration-only
+test-integration: install-tests test-integration-only	## Run integration tests (with dependency installation)
+test-integration-only:	## Run integration tests
 	@-$(MSG_I) "Running integration tests..."
 	@pytest "$(TEST_DIR)/integration"
 
-.PHONY: test-minimal
-test-minimal: install-tests	## Run tests with minimal stack
+.PHONY: test-minimal test-minimal-only
+test-minimal: install-tests test-minimal-only	## Run tests with minimal stack (with dependency installation)
+test-minimal-only:	## Run tests with minimal stack
 	@-$(MSG_I) "Run tests with minimal stack..."
 	@pytest -m "minimal" "$(TEST_DIR)"
 
-.PHONY: test-online
-test-online: install-tests	## Run tests with online stack
+.PHONY: test-online test-online-only
+test-online: install-tests test-online-only	## Run tests with online stack (with dependency installation)
+test-online-only:	## Run tests with online stack
 	@-$(MSG_I) "Run tests with online stack..."
 	@pytest -m "online" "$(TEST_DIR)"
 
-.PHONY: test-all
-test-all: install-tests	## Run all tests
+.PHONY: test-all test-all-only
+test-all: install-tests test-all-only	## Run all tests (with dependency installation)
+test-all-only:	## Run all tests
 	@-$(MSG_I) "Run all tests..."
 	@pytest "$(TEST_DIR)"
 
