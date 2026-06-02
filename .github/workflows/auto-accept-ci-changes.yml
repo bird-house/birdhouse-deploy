@@ -20,7 +20,7 @@ jobs:
     environment: automation
     if: >
       github.event.pull_request.user.login == 'dependabot[bot]' &&
-      contains(github.event.pull_request.labels.*.name, 'ci/operations')
+      contains(github.event.pull_request.labels.*.name, 'github_actions')
     permissions:
       contents: write
       pull-requests: write
