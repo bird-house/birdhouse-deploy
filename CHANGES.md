@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.28.1](https://github.com/bird-house/birdhouse-deploy/tree/2.28.1) (2026-06-02)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Fix compose env resolution to preserve internal `DELAYED_EVAL` list when re-applying caller environment.
