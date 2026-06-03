@@ -1,11 +1,11 @@
 server {
-    listen       443 ${PROXY_LISTEN_443_PARAMS};
+    listen       443 ssl ${PROXY_LISTEN_443_PARAMS};
+    http2 ${PROXY_HTTP2_ON_OFF};
     server_name  localhost;
     proxy_buffering off;
 
     resolver 127.0.0.11;
 
-    ssl    on;
     ssl_certificate     /etc/nginx/cert.pem;
     ssl_certificate_key /etc/nginx/cert.pem;
 

@@ -19,7 +19,13 @@
 
 - Update Nginx version to `1.31.1`
 
-  This update includes a fix for [CVE-2026-9256](https://github.com/advisories/GHSA-h78r-86c6-jgp4).
+  This update includes: 
+
+    - a fix for [CVE-2026-9256](https://github.com/advisories/GHSA-h78r-86c6-jgp4)
+    - traffic is now routed to upstream servers with HTTP/1.1 and with keep-alive enabled by default.
+    - The `ssl on;` directive is no longer supported (replaced with `listen 443 ssl;`)
+    - The `listen 443 http2` directive is no longer supported (replaced with `http2 on;`)
+  
 
 [2.28.0](https://github.com/bird-house/birdhouse-deploy/tree/2.28.0) (2026-05-15)
 ------------------------------------------------------------------------------------------------------------------
