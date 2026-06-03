@@ -1,76 +1,65 @@
 {
-  "communities": [
-    {
-      "identifier": "ouranos"
-    },
-    {
-      "identifier": "crim"
-    },
-    {
-      "identifier": "birdhouse"
-    }
-  ],
   "creators": [
     {
-      "affiliation": "Ouranos",
-      "name": "Vu, Tuan Long"
+      "name": "Vu, Tuan Long",
+      "affiliation": "Ouranos"
     },
     {
-      "affiliation": "CRIM",
       "name": "Charette-Migneault, Francis",
+      "affiliation": "CRIM",
       "orcid": "0000-0003-4862-3349"
     },
     {
-      "affiliation": "CRIM",
-      "name": "Cummings, Charles-William"
+      "name": "Cummings, Charles-William",
+      "affiliation": "CRIM"
     },
     {
-      "affiliation": "University of Toronto",
-      "name": "Misha Schwartz"
+      "name": "Misha Schwartz",
+      "affiliation": "University of Toronto"
     },
     {
-      "affiliation": "Ouranos",
       "name": "Huard, David",
+      "affiliation": "Ouranos",
       "orcid": "0000-0003-0311-5498"
     },
     {
-      "affiliation": "Ouranos",
       "name": "Smith, Trevor James",
+      "affiliation": "Ouranos",
       "orcid": "0000-0001-5393-8359"
     },
     {
-      "affiliation": "CRIM",
-      "name": "Provencher, Mathieu"
+      "name": "Provencher, Mathieu",
+      "affiliation": "CRIM"
     },
     {
-      "affiliation": "CRIM",
       "name": "Pelletier, Francis",
+      "affiliation": "CRIM",
       "orcid": "0000-0002-4708-5182"
     },
     {
-      "affiliation": "Intact",
-      "name": "Byrns, David"
+      "name": "Byrns, David",
+      "affiliation": "Intact"
     },
     {
-      "affiliation": "Quartech",
-      "name": "Nik Rado\u0161"
+      "name": "Nik Radoš",
+      "affiliation": "Quartech"
     },
     {
-      "name": "Gagnon-Grenier, F\u00e9lix",
+      "name": "Gagnon-Grenier, Félix",
       "orcid": "0000-0003-3389-9406"
     },
     {
-      "affiliation": "CRIM",
-      "name": "Perron, Louis-David"
+      "name": "Perron, Louis-David",
+      "affiliation": "CRIM"
     },
     {
-      "affiliation": "K2 Geospatial",
       "name": "Jauvin, Christian",
+      "affiliation": "K2 Geospatial",
       "orcid": "0000-0002-2257-5636"
     },
     {
-      "affiliation": "Ouranos",
       "name": "Bourgault, Pascal",
+      "affiliation": "Ouranos",
       "orcid": "0000-0003-1192-0403"
     }
   ],
@@ -81,6 +70,17 @@
     "bird-house",
     "wps",
     "web processing services"
+  ],
+  "communities": [
+    {
+      "identifier": "ouranos"
+    },
+    {
+      "identifier": "crim"
+    },
+    {
+      "identifier": "birdhouse"
+    }
   ],
   "upload_type": "software"
 }
