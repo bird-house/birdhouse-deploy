@@ -17,7 +17,7 @@
         # of the same file in parallel (for example).
         proxy_cache "s3_auth_cache";
         proxy_cache_key "$request_uri:uri:$http_authorization:cache:$cookie_${MAGPIE_COOKIE_NAME}";
-        proxy_cache_valid 200 401 403 1m;
+        proxy_cache_valid 200 401 403 ${S3_AUTH_CACHE_TIMEOUT};
         proxy_ignore_headers Cache-Control Expires Set-Cookie; 
         proxy_set_header Host $host;
         proxy_set_header Content-Length "";
