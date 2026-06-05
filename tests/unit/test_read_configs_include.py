@@ -391,7 +391,7 @@ class TestReadConfigs(TestReadBasicConfigs):
             read_config_include_file,
             env_local_sourced,
             (
-                # first line to compare the resolved value direclty, then post-checks to validate behaviour/cleanup
+                # first line to compare the resolved value directly, then post-checks to validate behaviour/cleanup
                 'echo "$COWBIRD_MONGODB_DATA_DIR"; '
                 'echo "HAS_COWBIRD_DELAYED=$(echo " $DELAYED_EVAL " | tr "\\n" " " '
                 '| grep -q "[[:space:]]COWBIRD_MONGODB_DATA_DIR[[:space:]]" && echo 1 || echo 0)"; '

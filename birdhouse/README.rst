@@ -852,7 +852,7 @@ The following section is meant for project maintainers which describes the requi
 GitHub Workflow automations. Only administrators and users with repository secrets privilieges can use this information.
 
 There are a handful of automations that require specialized secrets, configurations, and tokens.
-Workflows thats specifically depend on the *Birdhouse-Helper-Bot* App require that the app have certain repositiory
+Workflows that specifically depend on the *Birdhouse-Helper-Bot* App require that the app have certain repository
 privileges, specifically:
     
 * Read access to actions, issues, metadata, and organization secrets 
@@ -871,7 +871,7 @@ Additionally, a set of secrets is also required in order to make use of the spec
 
 * ``BIRDHOUSE_HELPER_BOT_ID`` : The ID number of the App. Available within the relevant entry under GitHub Apps.
 
-* ``BIRDHOUSE_HELPER_BOT_KEY`` : The unqiue key of the App. If this needs to be changed, it must be regenerated.
+* ``BIRDHOUSE_HELPER_BOT_KEY`` : The unique key of the App. If this needs to be changed, it must be regenerated.
   This is only shown once in order to prevent misuse/distribution.
 
 All the above prvilieges and keys must be visible/accessible to the repository that uses workflows that rely on
