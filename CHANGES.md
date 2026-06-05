@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.28.2](https://github.com/bird-house/birdhouse-deploy/tree/2.28.2) (2026-06-05)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - JupyterHub: Fix invalid `JUPYTER_VERSION` instead of `JUPYTERHUB_VERSION` in CanarieAPI configuration.
