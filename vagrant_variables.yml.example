@@ -34,12 +34,12 @@ domain: example.com
 # - { srcdir: "/data/geoserver.clone", destdir: "/data/geoserver", mount_opts: "rw" }
 
 # If you want to provide a SSL certificate yourself, name it
-# '/home/vagrant/certkey.pem' and it won't be overriden, see
+# '/home/vagrant/certkey.pem' and it won't be overridden, see
 # vagrant-utils/configure-birdhouse.sh.  Otherwise one
 # will be generated automatically for you.
 
 # If you want to provide an env.local yourself, just create it and it won't be
-# overriden, see vagrant-utils/configure-birdhouse.sh for what values vagrant
+# overridden, see vagrant-utils/configure-birdhouse.sh for what values vagrant
 # expects and try to match it.  Otherwise one will be generated automatically
 # for you from the default values in env.local.example.
 

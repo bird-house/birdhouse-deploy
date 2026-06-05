@@ -74,7 +74,7 @@ If you are satisfied that the databases have been updated properly please add th
 export MAGPIE_POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE} 
 export POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE}
 
-If you are not satified that the databases have been updated properly and you wish to revert these changes, you can do so by running:
+If you are not satisfied that the databases have been updated properly and you wish to revert these changes, you can do so by running:
 
 ${BIRDHOUSE_EXE} compose down
 sudo rm -r "${MAGPIE_PERSIST_DIR}"

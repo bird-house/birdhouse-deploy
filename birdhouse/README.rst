@@ -231,7 +231,7 @@ Note about WPS request timeout
 
   Default value ``PROXY_READ_TIMEOUT_VALUE`` in |birdhouse-default.env|_.
 
-  Overrideable in ``env.local`` file, as usual for all values in ``default.env`` file.
+  Overridable in ``env.local`` file, as usual for all values in ``default.env`` file.
 
 .. |components-proxy-nginx.conf| replace:: ``components/proxy/nginx.conf``
 .. _components-proxy-nginx.conf: ./components/proxy/nginx.conf
@@ -620,7 +620,7 @@ Release Procedure
 
 * Review PR description if something needs to be added or updated after the PR
   review process.  The goal is for the PR description to capture all the
-  essential informations for someone else not participating in the PR review
+  essential information for someone else not participating in the PR review
   process to understand it easily.  This "someone else" might even be your
   future self trying to understand what was going through your mind when you
   opened this PR :)
@@ -852,7 +852,7 @@ The following section is meant for project maintainers which describes the requi
 GitHub Workflow automations. Only administrators and users with repository secrets privilieges can use this information.
 
 There are a handful of automations that require specialized secrets, configurations, and tokens.
-Workflows thats specifically depend on the *Birdhouse-Helper-Bot* App require that the app have certain repositiory
+Workflows that specifically depend on the *Birdhouse-Helper-Bot* App require that the app have certain repository
 privileges, specifically:
     
 * Read access to actions, issues, metadata, and organization secrets 
@@ -871,7 +871,7 @@ Additionally, a set of secrets is also required in order to make use of the spec
 
 * ``BIRDHOUSE_HELPER_BOT_ID`` : The ID number of the App. Available within the relevant entry under GitHub Apps.
 
-* ``BIRDHOUSE_HELPER_BOT_KEY`` : The unqiue key of the App. If this needs to be changed, it must be regenerated.
+* ``BIRDHOUSE_HELPER_BOT_KEY`` : The unique key of the App. If this needs to be changed, it must be regenerated.
   This is only shown once in order to prevent misuse/distribution.
 
 All the above prvilieges and keys must be visible/accessible to the repository that uses workflows that rely on
