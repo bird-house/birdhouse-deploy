@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Common spelling errors throughout the code base have been corrected via `codespell` pre-commit hook
+
+  The `codespell` hook scans for words that are suspected to be misspelled English words and suggests corrections
+  by way of pre-commit. A newline-separated list of words (`.github/codespell.txt`) is used to track ignored patterns.
 
 [2.28.2](https://github.com/bird-house/birdhouse-deploy/tree/2.28.2) (2026-06-05)
 ------------------------------------------------------------------------------------------------------------------
