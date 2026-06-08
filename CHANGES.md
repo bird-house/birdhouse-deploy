@@ -17,6 +17,12 @@
 
 ## Changes
 
+- Group dependabot updates for better handling by other workflows
+
+  Only group patch and minor updates which will allow the `dependabot-auto-approve` job to approve and
+  merge these updates without having to wait for approval.
+  Major updates will go into their own pull request and will require manual human approval.
+
 - Add additional pre-commit hooks to enforce file format styles
 
   These hooks do the following:
