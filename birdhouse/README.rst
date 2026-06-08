@@ -848,14 +848,14 @@ the backup and restore jobs.
 GitHub Workflows configurations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The following section is meant for project maintainers which describes the requirements for setting up the various 
+The following section is meant for project maintainers which describes the requirements for setting up the various
 GitHub Workflow automations. Only administrators and users with repository secrets privilieges can use this information.
 
 There are a handful of automations that require specialized secrets, configurations, and tokens.
 Workflows that specifically depend on the *Birdhouse-Helper-Bot* App require that the app have certain repository
 privileges, specifically:
-    
-* Read access to actions, issues, metadata, and organization secrets 
+
+* Read access to actions, issues, metadata, and organization secrets
 * Read and write access to code, organization projects, and pull requests
 
 Additionally, a set of secrets is also required in order to make use of the specialized workflows, specifically:
@@ -864,7 +864,7 @@ Additionally, a set of secrets is also required in order to make use of the spec
   This must be either associated with a user or a bot account that has tag creation privileges for the project.
   As of time of writing, the RSA key type with AES256 encryption and a key length of 4096 is suggested.
   **This key must be associated with a valid GitHub user account**. The associated public key does not need to
-  be uploaded to a public keyserver. The key should have an expiration date. 
+  be uploaded to a public keyserver. The key should have an expiration date.
 
 * ``BIRDHOUSE_HELPER_BOT_GPG_PRIVATE_KEY_PASSWORD`` : The private key password. This should be adequately long
   hard enough to not be easily guessed/brute-forced.
