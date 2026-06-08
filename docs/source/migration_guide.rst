@@ -14,6 +14,21 @@ Migration Guide
 
 .. contents::
 
+Version 2.29
+------------
+
+Version 2.29 updates the Nginx version to 1.31.1 which includes several syntax deprecations including
+a syntax change for enabling http2. If you have http2 enabled please make the following change:
+
+- Remove ``http2`` from the ``PROXY_LISTEN_443_PARAMS`` configuration variable
+- Set the ``PROXY_HTTP2_ON_OFF`` configuration variable to ``on``
+
+For example in your local environment file set:
+
+```
+export PROXY_HTTP2_ON_OFF=on
+```
+
 
 Version 2.13
 --------------

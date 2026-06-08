@@ -26,6 +26,7 @@
     - The `ssl on;` directive is no longer supported (replaced with `listen 443 ssl;`)
     - The `listen 443 http2` directive is no longer supported (replaced with `http2 on;`)
   
+  See migration guide for configuration update details.
 
 [2.28.0](https://github.com/bird-house/birdhouse-deploy/tree/2.28.0) (2026-05-15)
 ------------------------------------------------------------------------------------------------------------------
