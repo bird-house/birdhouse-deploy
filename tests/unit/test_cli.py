@@ -212,6 +212,10 @@ CONFIG_PARAMS=(("--quiet", "", "BIRDHOUSE_LOG_QUIET", "True"),
 @pytest.mark.parametrize("env", ("full", "empty"))
 @pytest.mark.parametrize("params", CONFIG_PARAMS, ids=[f"{c[0]}{' <arg>' if c[1] else ''}" for c in CONFIG_PARAMS])
 def test_configs_print_config_command(cli_path, run, config_command_env, root_dir, params, env):
+    """
+    Test whether --print-config-command returns a well formed command that executes the read_config
+    function and unsets/resets previously set variables as expected.
+    """
     flag, flag_value, env_var, env_value, *empty_values = params
     unset_env = [] if env == "full" else ["BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED", "BIRDHOUSE_LOCAL_ENV"]
     env = config_command_env if env == "full" else {}
@@ -243,6 +247,10 @@ def test_configs_print_config_command(cli_path, run, config_command_env, root_di
 @pytest.mark.parametrize("env", ("full", "empty"))
 @pytest.mark.parametrize("params", CONFIG_PARAMS[:-1], ids=[f"{c[0]}{' <arg>' if c[1] else ''}" for c in CONFIG_PARAMS[:-1]])
 def test_configs_print_log_command(cli_path, run, config_command_env, root_dir, params, env):
+    """
+    Test whether --print-log-command returns a well formed command that loads the log functions
+    function and sets the logging variables set by other CLI flags as expected.
+    """
     flag, flag_value, env_var, env_value, *empty_values = params
     unset_env = [] if env == "full" else ["BIRDHOUSE_BACKWARD_COMPATIBLE_ALLOWED", "BIRDHOUSE_LOCAL_ENV"]
     env = config_command_env if env == "full" else {}
