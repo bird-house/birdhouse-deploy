@@ -4,8 +4,8 @@
 # SOLRCONFIGPATH env variable and the core name in SOLRCORE.
 #export SOLRCONFIGPATH="/opt/solr/server/solr/core_name/conf"
 #export SOLRCORE="core_name"
-
-# This will slighly mess up the xml indentation & leave superfluous blank lines.
+ 
+# This will slightly mess up the xml indentation & leave superfluous blank lines.
 mv /opt/conda/envs/birdhouse/var/lib/solr/birdhouse/conf/managed-schema /opt/conda/envs/birdhouse/var/lib/solr/birdhouse/conf/schema.xml
 if grep '<schemaFactory class="ManagedIndexSchemaFactory">' /opt/conda/envs/birdhouse/var/lib/solr/birdhouse/conf/solrconfig.xml
     then

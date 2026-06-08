@@ -20,3 +20,8 @@ repos:
         exclude: .ipynb
       - id: detect-private-key
       - id: end-of-file-fixer
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.2
+    hooks:
+      - id: codespell
+        args: [ '--ignore-words=.github/codespell.txt' ]

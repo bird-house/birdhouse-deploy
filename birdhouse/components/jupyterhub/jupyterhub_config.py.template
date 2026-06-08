@@ -10,7 +10,7 @@ from jupyterhub_custom import constants
 # see: https://jupyterhub.readthedocs.io/en/latest/reference/api/app.html
 # ------------------------------------------------------------------------------
 
-c = get_config()  # type: ignore # noqa  # can be called directy without import because injected by IPython
+c = get_config()  # type: ignore # noqa  # can be called directly without import because injected by IPython
 
 c.JupyterHub.authenticator_class = MagpieAuthenticator
 c.JupyterHub.spawner_class = CustomDockerSpawner
@@ -74,7 +74,7 @@ c.DockerSpawner.extra_host_config = _spawner_instance.extra_host_config
 c.Spawner.args = _spawner_instance.args
 c.DockerSpawner.allowed_images = _spawner_instance.allowed_images
 
-# Add a dummy function that was used in an example previously. This is kept to maintain backwards compatibilty
+# Add a dummy function that was used in an example previously. This is kept to maintain backwards compatibility
 def create_dir_hook(*_, **__):
     ...
 
