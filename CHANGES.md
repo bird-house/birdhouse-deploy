@@ -24,7 +24,7 @@
 
   This fixes the issue by moving all of the logic that determines the content and 
   creates the files for these endpoints to the `proxy/pre-docker-compose-up.include`
-  file which will always run after the `.template files are processed.
+  file which will always run after the `.template` files are processed.
 
 
 [2.28.0](https://github.com/bird-house/birdhouse-deploy/tree/2.28.0) (2026-05-15)
