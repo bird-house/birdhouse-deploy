@@ -8,13 +8,13 @@
 # It will update postgres databases to the version specified by the POSTGRES_VERSION_UPDATE
 # environment variable.
 # All of the old database files will be copied to a temporary directory in case you want to inspect
-# them or revert this operation later on. To specify which directory to write these backups to 
+# them or revert this operation later on. To specify which directory to write these backups to
 # set the BIRDHOUSE_BACKUP_DATA_DIR variable (default: ${TMPDIR:-/tmp}/birdhouse-postgres-migrate-backup/)
 # Note that backups in the form of database dumps will also be written to the named volume or directory
 # specified by the BIRDHOUSE_BACKUP_VOLUME variable.
-# 
+#
 # For example, to update the current postgres databases to version 18.1 and write backups to /tmp/test/
-# 
+#
 # $ POSTGRES_VERSION_UPDATE=18.1 BIRDHOUSE_BACKUP_DATA_DIR=/tmp/test/ ./update-postgresh.sh
 #
 # This script will not update other postgres databases that may be present in this deployment but it can
@@ -71,7 +71,7 @@ MAGPIE_POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE} POSTGRES_VERSION=${POSTGRES_V
 log WARN "Migration is now complete. Please ensure that the data has been upgraded properly.
 If you are satisfied that the databases have been updated properly please add the following to your local environment file:
 
-export MAGPIE_POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE} 
+export MAGPIE_POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE}
 export POSTGRES_VERSION=${POSTGRES_VERSION_UPDATE}
 
 If you are not satisfied that the databases have been updated properly and you wish to revert these changes, you can do so by running:
@@ -79,7 +79,7 @@ If you are not satisfied that the databases have been updated properly and you w
 ${BIRDHOUSE_EXE} compose down
 sudo rm -r "${MAGPIE_PERSIST_DIR}"
 sudo rm -r "${POSTGRES_DATA_DIR}"
-sudo mv "${BIRDHOUSE_BACKUP_DATA_DIR}/$(basename "${MAGPIE_PERSIST_DIR}")" "${MAGPIE_PERSIST_DIR}" 
-sudo mv "${BIRDHOUSE_BACKUP_DATA_DIR}/$(basename "${POSTGRES_DATA_DIR}")" "${POSTGRES_DATA_DIR}" 
+sudo mv "${BIRDHOUSE_BACKUP_DATA_DIR}/$(basename "${MAGPIE_PERSIST_DIR}")" "${MAGPIE_PERSIST_DIR}"
+sudo mv "${BIRDHOUSE_BACKUP_DATA_DIR}/$(basename "${POSTGRES_DATA_DIR}")" "${POSTGRES_DATA_DIR}"
 ${BIRDHOUSE_EXE} compose up -d
 "

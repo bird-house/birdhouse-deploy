@@ -6,7 +6,7 @@ from jupyterhub_custom import constants
 
 # ------------------------------------------------------------------------------
 # Default application configuration
-# 
+#
 # see: https://jupyterhub.readthedocs.io/en/latest/reference/api/app.html
 # ------------------------------------------------------------------------------
 
@@ -86,7 +86,7 @@ from os.path import join
 import subprocess
 
 # This import is required to support code inserted by JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS and
-# JUPYTERHUB_CONFIG_OVERRIDE that may use the legacy (lowercase) version of the constants. 
+# JUPYTERHUB_CONFIG_OVERRIDE that may use the legacy (lowercase) version of the constants.
 # This import can be removed once we decide to drop support for these legacy constants.
 from jupyterhub_custom.constants import *  # noqa: F403
 

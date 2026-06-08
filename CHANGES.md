@@ -15,6 +15,21 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+## Changes
+
+- Add additional pre-commit hooks to enforce file format styles
+
+  These hooks do the following:
+
+  - fix trailing whitespace at the end of lines
+  - format JSON files
+  - detect whether a private key is being committed
+  - ensures a single newline at the end of each file
+
+  This is to enforce styles for this project and to also keep other PRs uncluttered
+  since some developers use local tools that automatically enforce similar style
+  rules on files and others don't.
+
 ## Fixes
 
 - Common spelling errors throughout the code base have been corrected via `codespell` pre-commit hook

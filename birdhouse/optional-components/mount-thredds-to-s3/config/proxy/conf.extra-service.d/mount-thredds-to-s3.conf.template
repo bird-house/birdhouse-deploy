@@ -9,7 +9,7 @@
     }
 
     # s3:// clients often do not handle 301 redirects so requests to the thredds bucket without
-    # a trailing slash will fail because nginx will send a redirect. 
+    # a trailing slash will fail because nginx will send a redirect.
     # With the following location block, nginx will instead handle it internally.
     location = /s3/${THREDDS_S3_BUCKET_NAME} {
         rewrite ^/s3/${THREDDS_S3_BUCKET_NAME}$ /s3/${THREDDS_S3_BUCKET_NAME}/ last;
