@@ -1,4 +1,4 @@
 services:
   scheduler:
-    volumes: 
+    volumes:
       - ./optional-components/scheduler-job-backup/config.yml:/scheduler-job-configs/backup.yml:ro

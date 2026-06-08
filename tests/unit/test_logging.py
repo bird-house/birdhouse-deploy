@@ -273,7 +273,7 @@ def test_log_empty_string(run):
     """
     proc = run("log INFO ''")
     assert proc.returncode == 0
-    assert "INFO" in proc.stderr # not CRITICAL   
+    assert "INFO" in proc.stderr # not CRITICAL
 
 
 @pytest.mark.parametrize("flag", ("-n", ""))

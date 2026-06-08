@@ -4,11 +4,11 @@ backup_application() {
   _do_backup() {
     ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup --entrypoint sh cowbird-mongodb -c "mongodump --host=cowbird-mongodb --out=/backup/cowbird/"
   }
-  backup_create_runner 'cowbird mongodb database' _do_backup 'cowbird cowbird-worker' 
+  backup_create_runner 'cowbird mongodb database' _do_backup 'cowbird cowbird-worker'
 }
 
 restore_application() {
-  _do_restore() { 
+  _do_restore() {
     ${BIRDHOUSE_EXE} --quiet compose run --rm -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup --entrypoint sh cowbird-mongodb -c "mongorestore --host cowbird-mongodb --drop --dir /backup/cowbird"
   }
   backup_restore_runner 'cowbird mongodb database' _do_restore 'cowbird' 'cowbird cowbird-worker'
