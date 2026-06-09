@@ -52,6 +52,29 @@
   creates the files for these endpoints to the `proxy/pre-docker-compose-up.include`
   file which will always run after the `.template` files are processed.
 
+- Apply logging arguments when running configuration "print" commands through `bin/birdhouse`
+
+  The logging flags available through the `bin/birdhouse` interface are not applied to the current shell if
+  the output of the `configs --print-config-command` and `configs --print-log-command` are `eval`ed in order to
+  load configuration settings or log functions in the current shell environment.
+
+  For example, if you run:
+
+  ```sh
+  eval $(bin/birdhouse --quiet configs --print-config-command)
+  ```
+
+  the log outputs will *not* be silenced as expected. Similarly, the following:
+
+  ```sh
+  eval $(bin/birdhouse --log-file example.log configs --print-log-command)
+  ```
+
+  will *not* write logs to `example.log`.
+
+  This change ensures that the expected logging variables are set properly so that setting these values
+  will have the expected effect.
+
 [2.28.2](https://github.com/bird-house/birdhouse-deploy/tree/2.28.2) (2026-06-05)
 ------------------------------------------------------------------------------------------------------------------
 
