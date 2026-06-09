@@ -9,14 +9,14 @@ HELP="$USAGE
 
 Create a new bucket for the s3 service and create the equivalent resources on Magpie for this new bucket.
 
-This will also set the s3 ACLs and permissions appropriately so that the bucket can be accessed through 
+This will also set the s3 ACLs and permissions appropriately so that the bucket can be accessed through
 the birdhouse proxy.
 
-If you have already created a bucket manually (not through this script) you should still run this script 
+If you have already created a bucket manually (not through this script) you should still run this script
 afterwards to ensure that the bucket is accessible through the birdhouse proxy.
 "
 
-if [ -z "$1" ]; then 
+if [ -z "$1" ]; then
     >&2 echo $USAGE
     exit 1
 fi

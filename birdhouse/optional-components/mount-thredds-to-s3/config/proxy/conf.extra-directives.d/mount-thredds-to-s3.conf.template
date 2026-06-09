@@ -1,5 +1,5 @@
     map $request_uri $request_uri_s3_thredds_path {
-        # translate the S3 path to the resolved THREDDS fileServer path 
+        # translate the S3 path to the resolved THREDDS fileServer path
         # see also the '/secure-mount-thredds-to-s3-auth' location
         ~^(?:/s3/${THREDDS_S3_BUCKET_NAME})(.*)$ $1;
     }
