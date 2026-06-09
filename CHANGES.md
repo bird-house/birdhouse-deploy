@@ -92,6 +92,13 @@
   This change ensures that the expected logging variables are set properly so that setting these values
   will have the expected effect.
 
+- Fix non-posix shell syntax in the `optional-components/emu` component
+
+  The `default.env` file in the `emu` component was using `==` to do string comparison which is not a bash-ism.
+  When loading this component in a non-bash shell (bourne shell `sh` is used by default) this will cause a syntax
+  error and the relevant `if` block will always fail. This may cause the `wps_volume` to not be properly loaded
+  causing the component to be misconfigured.
+
 [2.28.2](https://github.com/bird-house/birdhouse-deploy/tree/2.28.2) (2026-06-05)
 ------------------------------------------------------------------------------------------------------------------
 
