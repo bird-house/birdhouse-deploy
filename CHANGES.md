@@ -17,6 +17,23 @@
 
 ## Changes
 
+- Add auth cache in nginx for s3 endpoint
+
+  Adds a cache for the `s3` auth endpoint (that calls Twitcher's verify endpoint) so that repeated requests to the
+  S3 store don't overwhelm twitcher and cause client connection issues if twitcher or nginx fails to properly authorize
+  access to a resource.
+
+  This issue may arise if a client is processing a large S3 object in parallel by accessing different byte-ranges
+  simultaneously. This results in many simultaneous requests to the same resource, each of which hits twitcher's verify
+  endpoint. With this change, only the first request each minute will hit twitcher and the rest will only hit the cache.
+
+  Some implementation details to note:
+
+  - responses are only cached for 1 minute to ensure that if a user's permissions are changed (on Magpie) their previous
+    permissions expire quickly
+  - the value of Magpie's cookie as well as the auth header is used as a cache key which allows us to cache cookie based
+    and token-based authentication methods
+
 - Group dependabot updates for better handling by other workflows
 
   Only group patch and minor updates which will allow the `dependabot-auto-approve` job to approve and
