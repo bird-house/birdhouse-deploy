@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.29.0](https://github.com/bird-house/birdhouse-deploy/tree/2.29.0) (2026-06-09)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Add auth cache in nginx for s3 endpoint
@@ -52,6 +57,17 @@
   This is to enforce styles for this project and to also keep other PRs uncluttered
   since some developers use local tools that automatically enforce similar style
   rules on files and others don't.
+
+- Update Nginx version to `1.31.1`
+
+  This update includes:
+
+    - a fix for [CVE-2026-9256](https://github.com/advisories/GHSA-h78r-86c6-jgp4)
+    - traffic is now routed to upstream servers with HTTP/1.1 and with keep-alive enabled by default.
+    - The `ssl on;` directive is no longer supported (replaced with `listen 443 ssl;`)
+    - The `listen 443 http2` directive is no longer supported (replaced with `http2 on;`)
+
+  See migration guide for configuration update details.
 
 ## Fixes
 
