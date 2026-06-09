@@ -2,8 +2,10 @@
 
 # Note: filename is not docker-compose-extra.yml so that it won't get added prematurely to COMPOSE_CONF_LIST
 
+THIS_DIR="${COMPOSE_DIR}/components/proxy"
+
 if [ x"$BIRDHOUSE_HTTP_ONLY" != x"True" ]; then
-    THIS_COMPOSE_FILE="${COMPOSE_DIR}/components/proxy/docker-compose-ssl-cert.yml"
+    THIS_COMPOSE_FILE="${THIS_DIR}/docker-compose-ssl-cert.yml"
 
     COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f ${THIS_COMPOSE_FILE}"
 
@@ -11,3 +13,22 @@ if [ x"$BIRDHOUSE_HTTP_ONLY" != x"True" ]; then
 
     unset THIS_COMPOSE_FILE
 fi
+
+# Create JSON files containing the version information, available services, and
+# enabled components. These files will be served by the nginx proxy as static files.
+
+. "${COMPOSE_DIR}/scripts/get-components-json.include.sh"
+. "${COMPOSE_DIR}/scripts/get-services-json.include.sh"
+. "${COMPOSE_DIR}/scripts/get-version-json.include.sh"
+
+# Remove old definitions and ensure docker compose detects the change
+rm -f "${THIS_DIR}/static/version.json"
+rm -f "${THIS_DIR}/static/services.json"
+rm -f "${THIS_DIR}/static/components.json"
+mkdir -p "${THIS_DIR}/static"
+
+echo "${BIRDHOUSE_VERSION_JSON}" > "${THIS_DIR}/static/version.json"
+echo "${BIRDHOUSE_DEPLOY_SERVICES_JSON}" > "${THIS_DIR}/static/services.json"
+echo "${BIRDHOUSE_DEPLOY_COMPONENTS_JSON}" > "${THIS_DIR}/static/components.json"
+
+unset THIS_DIR
