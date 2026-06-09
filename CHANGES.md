@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.29.0](https://github.com/bird-house/birdhouse-deploy/tree/2.29.0) (2026-06-09)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Add auth cache in nginx for s3 endpoint
