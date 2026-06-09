@@ -211,7 +211,7 @@ print_config_command() {
   option="$1"
   configs_cmd_prefix="export __BIRDHOUSE_SUPPORTED_INTERFACE=True ; export COMPOSE_DIR=${COMPOSE_DIR} ; $(_print_log_variable_set) $(_print_back_compat_variable_set) "
   configs_cmd_suffix="unset __BIRDHOUSE_SUPPORTED_INTERFACE ; COMPOSE_DIR='${COMPOSE_DIR_PREV}' ; $(_print_log_variable_unset) $(_print_back_compat_variable_unset) "
-  
+
   if [ "${BIRDHOUSE_LOCAL_ENV+set}" = 'set' ]; then
     configs_cmd_prefix="${configs_cmd_prefix} export BIRDHOUSE_LOCAL_ENV='${BIRDHOUSE_LOCAL_ENV}' ;"
   fi
