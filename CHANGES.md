@@ -43,6 +43,15 @@
   The `codespell` hook scans for words that are suspected to be misspelled English words and suggests corrections
   by way of pre-commit. A newline-separated list of words (`.github/codespell.txt`) is used to track ignored patterns.
 
+- JSON endpoints were being set before template variable expansion
+
+  Because `service`, `components`, and `version` endpoints were being written before
+  `.template` files were being processed, the `service` JSON endpoint could contain information that was out of date.
+
+  This fixes the issue by moving all of the logic that determines the content and
+  creates the files for these endpoints to the `proxy/pre-docker-compose-up.include`
+  file which will always run after the `.template` files are processed.
+
 [2.28.2](https://github.com/bird-house/birdhouse-deploy/tree/2.28.2) (2026-06-05)
 ------------------------------------------------------------------------------------------------------------------
 
