@@ -2,7 +2,7 @@ SERVICES['Jupyter'] = {
     'info': {
         'name': 'Jupyter',
         'synopsis': 'Jupyter notebooks portal.',
-        'version': "${JUPYTER_VERSION}",
+        'version': "${JUPYTERHUB_VERSION}",
         'releaseTime': get_release_time_from_repo_tag("docker", "${JUPYTERHUB_DOCKER}", "${JUPYTERHUB_VERSION}"),
         'institution': 'Ouranos',
         'researchSubject': 'Any',

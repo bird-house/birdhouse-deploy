@@ -5,10 +5,10 @@
 name=${RANDOM}
 url='http://localhost:9093/api/v1/alerts'
 
-echo "firing up alert ${name}" 
+echo "firing up alert ${name}"
 
 # change url o
-curl -XPOST $url -d "[{ 
+curl -XPOST $url -d "[{
 	\"status\": \"firing\",
 	\"labels\": {
 		\"alertname\": \"${name}\",
