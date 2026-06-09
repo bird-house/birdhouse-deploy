@@ -25,13 +25,3 @@ Examples
 ~~~~~~~~
 The request `pavicsearch&DataInputs=constraints=model:CRCM4,experiment:rcp85 <http://132.217.140.45:8009/pywps?service=WPS&request=execute&version=1.0.0&identifier=pavicsearch&DataInputs=constraints=model:CRCM4,experiment:rcp85>`_
 will search for all files that are part of the RCP8.5 experiment and based on the CRCM4 model.
-
-
-
-
-
-
-
-
-
-

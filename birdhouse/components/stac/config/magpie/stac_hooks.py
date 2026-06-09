@@ -51,7 +51,7 @@ def create_collection_resource(response):
 
     except Exception as exc:
         LOGGER.error("Unexpected error while creating the collection %s %s", display_name, str(exc), exc_info=exc)
-        session.rollback() 
+        session.rollback()
 
     return response
 
@@ -101,17 +101,17 @@ def extract_display_name(links):
     if not display_name:
         raise ValueError("The display name was not extracted properly")
 
-    return display_name 
+    return display_name
 
 def create_resource_tree(resource_tree, current_depth, parent_id, session, display_name):
-    # type: (str, int, int, session, str) -> None 
+    # type: (str, int, int, session, str) -> None
     """
     Create the resource tree on Magpie
     """
     tree = resource_tree.split("/")
     # We are at the max depth of the tree.
     if current_depth > len(tree) - 1:
-        return 
+        return
 
     resource_name = tree[current_depth]
     query = session.query(ResourceService.model).filter(ResourceService.model.resource_name == resource_name, ResourceService.model.parent_id == parent_id)

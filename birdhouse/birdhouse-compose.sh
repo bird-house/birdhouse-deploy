@@ -93,7 +93,7 @@ fi
 
 log INFO "Executing docker-compose with extra options: $@ ${COMPOSE_EXTRA_OPTS}"
 # the PROXY_HTTP_PORT is a little trick to make the compose file invalid without the usage of this wrapper script
-# Use "$@" instead of $* so that quoted arguments are respected and passed to the docker compose command as expected 
+# Use "$@" instead of $* so that quoted arguments are respected and passed to the docker compose command as expected
 PROXY_HTTP_PORT=80 HOSTNAME=${BIRDHOUSE_FQDN} ${DOCKER_COMPOSE} ${COMPOSE_CONF_LIST} "$@" ${COMPOSE_EXTRA_OPTS} || expect_exit
 
 # execute post-compose function if exists and no error occurred

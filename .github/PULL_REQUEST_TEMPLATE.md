@@ -1,8 +1,8 @@
 ## Overview
 
-Please include a summary of the changes and which issues are fixed. 
+Please include a summary of the changes and which issues are fixed.
 
-Please also include relevant motivation and context. 
+Please also include relevant motivation and context.
 
 List any dependencies that are required for this change.
 
