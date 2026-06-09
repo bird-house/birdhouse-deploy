@@ -196,7 +196,7 @@ os.makedirs(os.path.dirname(user_wpsoutputs_filepath), exist_ok=True)
 
 Path(user_wpsoutputs_filepath).touch()
 
-# Make sure cowbird has created the user WPS outputs hardlink successfuly before continuing with the tests.
+# Make sure cowbird has created the user WPS outputs hardlink successfully before continuing with the tests.
 expected_user_wps_outputs_hardlink = f"{user_workspace_dir}/wps_outputs/weaver/test_user_file.txt"
 for i in range(MAX_ATTEMPTS):
     time.sleep(i * TIMEOUT_DELAY)

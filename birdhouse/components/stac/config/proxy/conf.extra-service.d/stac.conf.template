@@ -13,7 +13,7 @@
         include /etc/nginx/conf.d/cors.include;
     }
 
-    # Automatically redirect to /stac/stac and exclude redirect when already using /stac 
+    # Automatically redirect to /stac/stac and exclude redirect when already using /stac
     location ~ ^${TWITCHER_PROTECTED_PATH}/stac(?!/stac) {
         return 302 ${TWITCHER_PROTECTED_PATH}/stac/stac/;
     }
