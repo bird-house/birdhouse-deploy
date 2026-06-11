@@ -16,4 +16,5 @@ services:
     # and corresponding metadata is available from other static file locations. Create a dependency to force reload.
     depends_on:
       proxy:
+        condition: service_started
         restart: true
