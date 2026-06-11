@@ -17,7 +17,7 @@
 
 ## Fixes
 
-- CanarieAPI: Fix reflected metadata from server udpates.
+- CanarieAPI: Fix reflected metadata from server updates.
 
   Add a dependency on `canarie-api -> proxy` such that `canarie-api` is always restarted (since `proxy` always restarts)
   to make sure that server metadata updates in `docker_configuration.py` are considered by its internal API process to
