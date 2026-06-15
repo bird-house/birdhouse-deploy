@@ -101,7 +101,7 @@ https://www.unidata.ucar.edu/software/tds/current/reference/ThreddsConfigXMLFile
   If alwaysUse is true, these temporary files will always be written to the cache
   directory specified by dir (choosing a cache directory). If alwaysUse is false,
   TDS will try to write them to the same directory as the original file, and if
-  the TDS doesnt have write permission it will then write the files to the cache
+  the TDS doesn't have write permission it will then write the files to the cache
   directory. Write permission will be determined by what rights the Tomcat user
   has (the user that starts up Tomcat). For security reasons, you want to
   carefully limit the file permissions of the Tomcat user.

@@ -10,9 +10,9 @@ backup_application() {
                -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
                -v jupyterhub_data_persistence:/persist \
                "${BASH_IMAGE}" \
-               sh -c 'mkdir -p /backup/jupyterhub; cp -a /persist/jupyterhub.sqlite /backup/jupyterhub/'  
+               sh -c 'mkdir -p /backup/jupyterhub; cp -a /persist/jupyterhub.sqlite /backup/jupyterhub/'
   }
-  backup_create_runner 'jupyterhub sqlite database' _do_backup "$(_get_jupyterhub_containers)" 
+  backup_create_runner 'jupyterhub sqlite database' _do_backup "$(_get_jupyterhub_containers)"
 }
 
 restore_application() {
