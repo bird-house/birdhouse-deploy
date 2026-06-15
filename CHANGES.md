@@ -17,6 +17,19 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.29.1](https://github.com/bird-house/birdhouse-deploy/tree/2.29.1) (2026-06-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- CanarieAPI: Fix reflected metadata from server updates.
+
+  Add a dependency on `canarie-api -> proxy` such that `canarie-api` is always restarted (since `proxy` always restarts)
+  to make sure that server metadata updates in `docker_configuration.py` are considered by its internal API process to
+  reload them. Without this, updating the server (e.g.: pulling a new version and doing `bin/birdhouse compose up -d`)
+  would not reflect the updated server/node version changes reported by CanarieAPI endpoints, since the actual service
+  definition of `canarie-api` would not have changed (volume-mount/service config unchanged, only file contents change).
+
 [2.29.0](https://github.com/bird-house/birdhouse-deploy/tree/2.29.0) (2026-06-09)
 ------------------------------------------------------------------------------------------------------------------
 

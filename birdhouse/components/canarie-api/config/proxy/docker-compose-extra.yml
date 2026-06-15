@@ -5,3 +5,16 @@ services:
       - ./components/canarie-api/service-config.json:/static-services/canarie.json:ro
       - ./components/canarie-api/service-config.json:/static-services/canarie-api.json:ro
       - ./components/canarie-api/config/proxy/conf.extra-service.d:/etc/nginx/conf.extra-service.d/canarie-api:ro
+
+  canarie-api:
+    # Ensure canarie-api reloads templated config updates after proxy restart.
+    # Because canarie-api relies on 'docker_configuration.py' with templated variables, which themselves are
+    # server-wide metadata parameters, updating the stack with new metadata does not automatically trigger a
+    # reload of the canarie-api container (file content changes are not detected since volume mount remains identical).
+    # Therefore, updating the server (which includes 'proxy' always restarted) can leave canarie-api in a weird state
+    # where the API service does not detect and reflect the new metadata, although they are available in the container,
+    # and corresponding metadata is available from other static file locations. Create a dependency to force reload.
+    depends_on:
+      proxy:
+        condition: service_started
+        restart: true
