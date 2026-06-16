@@ -3,6 +3,8 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /.github/workflows
+    labels:
+      - "ci/actions"
     commit-message:
       include: scope
       # Skip comment specifically for Jenkins CI builds on CRIM infrastructure
@@ -27,6 +29,8 @@ updates:
     directories:
       - /.github
       - /tests
+    labels:
+      - "ci/python"
     schedule:
       interval: "quarterly"
     groups:

@@ -9,6 +9,9 @@ on:
     types:
       - opened
       - synchronize
+  pull_request_review:
+    types:
+      - submitted
 
 permissions:
   contents: read
@@ -20,7 +23,9 @@ jobs:
     environment: automation
     if: >
       github.event.pull_request.user.login == 'dependabot[bot]' &&
-      contains(github.event.pull_request.labels.*.name, 'github_actions')
+      ((contains(github.event.pull_request.labels.*.name, 'ci/actions') ||
+      contains(github.event.pull_request.labels.*.name, 'ci/python')) ||
+      github.event.review.state == 'approved')
     permissions:
       contents: write
       pull-requests: write
