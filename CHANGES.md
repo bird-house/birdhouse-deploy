@@ -33,6 +33,9 @@
   threddsConfig.xml file and a sample usage is provided in `env.local.example` to
   increase the OpenDap binary response max size to avoid having to chunk small datasets.
 
+[2.29.2](https://github.com/bird-house/birdhouse-deploy/tree/2.29.2) (2026-06-16)
+------------------------------------------------------------------------------------------------------------------
+
 ## Fixes
 
 - Filter internal variables from `process_env` in a posix compliant manner
@@ -65,6 +68,19 @@
   In order to fix this issue and allow for filtering out variables even when their values span multiple lines, this
   change prevents them from being stored in the first place instead of storing them and then filtering them out
   later.
+
+[2.29.1](https://github.com/bird-house/birdhouse-deploy/tree/2.29.1) (2026-06-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- CanarieAPI: Fix reflected metadata from server updates.
+
+  Add a dependency on `canarie-api -> proxy` such that `canarie-api` is always restarted (since `proxy` always restarts)
+  to make sure that server metadata updates in `docker_configuration.py` are considered by its internal API process to
+  reload them. Without this, updating the server (e.g.: pulling a new version and doing `bin/birdhouse compose up -d`)
+  would not reflect the updated server/node version changes reported by CanarieAPI endpoints, since the actual service
+  definition of `canarie-api` would not have changed (volume-mount/service config unchanged, only file contents change).
 
 [2.29.0](https://github.com/bird-house/birdhouse-deploy/tree/2.29.0) (2026-06-09)
 ------------------------------------------------------------------------------------------------------------------
