@@ -33,6 +33,18 @@
   threddsConfig.xml file and a sample usage is provided in `env.local.example` to
   increase the OpenDap binary response max size to avoid having to chunk small datasets.
 
+[2.29.3](https://github.com/bird-house/birdhouse-deploy/tree/2.29.3) (2026-06-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- CanarieAPI: Maintenance release to version 1.2.0
+
+  - Update CI/CD pipeline to Python 3.12 (note: docker image was already based on 3.12).
+  - Update CI/CD to build and push docker image directly.
+  - Rebuild docker images with updated dependencies and security fixes.
+  - Relates to [Ouranosinc/CanarieAPI#56](https://github.com/Ouranosinc/CanarieAPI/pull/56)
+
 [2.29.2](https://github.com/bird-house/birdhouse-deploy/tree/2.29.2) (2026-06-16)
 ------------------------------------------------------------------------------------------------------------------
 
