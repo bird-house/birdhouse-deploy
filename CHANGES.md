@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Magpie/Twitcher: Maintenance release to version Magpie 5.1.1
+
+  - Update base Docker image with more recent security updates of OS and Python packages.
+  - Relates to [Ouranosinc/Magpie#658](https://github.com/Ouranosinc/Magpie/pull/658).
 
 [2.29.3](https://github.com/bird-house/birdhouse-deploy/tree/2.29.3) (2026-06-17)
 ------------------------------------------------------------------------------------------------------------------
