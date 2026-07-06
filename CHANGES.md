@@ -15,7 +15,12 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- STAC: Update default API version to `crim-ca/stac-app:2.4.0` for dependency updates and security fixes.
+
+  - Update Docker with Python 3.13.14 for security fixes.
+  - Update `stac-fastapi.api==6.3.2` and `stac-fastapi.pgstac==6.3.1` with extension breaking change from `core` module.
 
 [2.29.4](https://github.com/bird-house/birdhouse-deploy/tree/2.29.4) (2026-06-23)
 ------------------------------------------------------------------------------------------------------------------
