@@ -17,6 +17,38 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.30.0](https://github.com/bird-house/birdhouse-deploy/tree/2.30.0) (2026-07-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: Update default API version to `crim-ca/stac-app:2.4.0` for dependency updates and security fixes.
+
+  - Update Docker with Python 3.13.14 for security fixes.
+  - Update `stac-fastapi.api==6.3.2` and `stac-fastapi.pgstac==6.3.1` with extension breaking change from `core` module.
+
+[2.29.4](https://github.com/bird-house/birdhouse-deploy/tree/2.29.4) (2026-06-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Magpie/Twitcher: Maintenance release to version Magpie 5.1.1
+
+  - Update base Docker image with more recent security updates of OS and Python packages.
+  - Relates to [Ouranosinc/Magpie#658](https://github.com/Ouranosinc/Magpie/pull/658).
+
+[2.29.3](https://github.com/bird-house/birdhouse-deploy/tree/2.29.3) (2026-06-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- CanarieAPI: Maintenance release to version 1.2.0
+
+  - Update CI/CD pipeline to Python 3.12 (note: docker image was already based on 3.12).
+  - Update CI/CD to build and push docker image directly.
+  - Rebuild docker images with updated dependencies and security fixes.
+  - Relates to [Ouranosinc/CanarieAPI#56](https://github.com/Ouranosinc/CanarieAPI/pull/56)
+
 [2.29.2](https://github.com/bird-house/birdhouse-deploy/tree/2.29.2) (2026-06-16)
 ------------------------------------------------------------------------------------------------------------------
 
