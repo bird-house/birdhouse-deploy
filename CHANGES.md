@@ -15,7 +15,13 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Jupyterhub: bump version to 5.5.0
+
+  This version includes some bug fixes and changes to an authenticator not used by birdhouse.
+  See [the changelog](https://jupyterhub.readthedocs.io/en/stable/reference/changelog.html#id3)
+  for specifics.
 
 [2.30.0](https://github.com/bird-house/birdhouse-deploy/tree/2.30.0) (2026-07-08)
 ------------------------------------------------------------------------------------------------------------------
