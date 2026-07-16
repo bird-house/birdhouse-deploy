@@ -33,6 +33,26 @@
   threddsConfig.xml file and a sample usage is provided in `env.local.example` to
   increase the OpenDap binary response max size to avoid having to chunk small datasets.
 
+[2.30.0](https://github.com/bird-house/birdhouse-deploy/tree/2.30.0) (2026-07-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: Update default API version to `crim-ca/stac-app:2.4.0` for dependency updates and security fixes.
+
+  - Update Docker with Python 3.13.14 for security fixes.
+  - Update `stac-fastapi.api==6.3.2` and `stac-fastapi.pgstac==6.3.1` with extension breaking change from `core` module.
+
+[2.29.4](https://github.com/bird-house/birdhouse-deploy/tree/2.29.4) (2026-06-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Magpie/Twitcher: Maintenance release to version Magpie 5.1.1
+
+  - Update base Docker image with more recent security updates of OS and Python packages.
+  - Relates to [Ouranosinc/Magpie#658](https://github.com/Ouranosinc/Magpie/pull/658).
+
 [2.29.3](https://github.com/bird-house/birdhouse-deploy/tree/2.29.3) (2026-06-17)
 ------------------------------------------------------------------------------------------------------------------
 
