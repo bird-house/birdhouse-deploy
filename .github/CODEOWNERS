@@ -6,7 +6,8 @@
 # review when someone opens a pull request.
 *       @tlvu @fmigneault @mishaschwartz
 
-# For automated GitHub Workflow and other CI updates
-/.github/workflows/*.yml    @birdhouse-helper-bot
-/.gihub/requirements_ci.*   @birdhouse-helper-bot
-/tests/requirements.*       @birdhouse-helper-bot
+# Don't automatically assign reviewers on PRs that only modify these files.
+# As they have no owner listed, these files are not owned by anyone.
+/.github/workflows/*.yml
+/.gihub/requirements_ci.*
+/tests/requirements.*
