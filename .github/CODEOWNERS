@@ -5,3 +5,8 @@
 # @global-owner1 and @global-owner2 will be requested for
 # review when someone opens a pull request.
 *       @tlvu @fmigneault @mishaschwartz
+
+# For automated GitHub Workflow and other CI updates
+/.github/workflows/*.yml    @birdhouse-helper-bot
+/.gihub/requirements_ci.*   @birdhouse-helper-bot
+/tests/requirements.*       @birdhouse-helper-bot
