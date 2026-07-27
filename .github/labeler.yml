@@ -16,6 +16,11 @@ ci/operations:
       - birdhouse/docker/**/*
       - tests/**/*
 
+ci/actions:
+  - changed-files:
+    - any-glob-to-any-file:
+      - .github/workflows/*.yml
+
 ci/deployment:
   - changed-files:
     - any-glob-to-any-file:
@@ -28,6 +33,12 @@ ci/deployment:
       - birdhouse/**/*.include.sh
       - birdhouse/pavics-compose.sh
       - birdhouse/birdhouse-compose.sh
+
+ci/python:
+  - changed-files:
+    - any-glob-to-any-file:
+      - .github/workflows/requirements_ci.*
+      - tests/requirements.*
 
 ci/tests:
   - changed-files:

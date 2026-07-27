@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - .github/**/*.yml
+      - tests/requirements.*
     types:
       - opened
       - synchronize
@@ -15,12 +16,10 @@ permissions:
 
 jobs:
   dependabot-auto-approve:
-    name: Auto-approve and auto-merge safe Dependabot updates for GitHub Actions
+    name: Auto-approve and set auto-merge safe Dependabot updates
     runs-on: ubuntu-latest
-    environment: automation
     if: >
-      github.event.pull_request.user.login == 'dependabot[bot]' &&
-      contains(github.event.pull_request.labels.*.name, 'github_actions')
+      github.event.pull_request.user.login == 'dependabot[bot]'
     permissions:
       contents: write
       pull-requests: write
