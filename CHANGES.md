@@ -15,7 +15,21 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Thredds: authenticate with twitcher verify instead of going through twitcher's proxy
+
+  The Thredds endpoints go through Twitcher's proxy (`twitcher/ows/proxy` by default) which adds some overhead
+  to the requests. In order to avoid this and increase efficiency, Twitcher endpoints now authenticate with the
+  Twitcher verify endpoint (`twitcher/ows/verify` by default) and then access the thredds service directly.
+
+  **Deprecations**
+
+  Note that some older scripts and notebooks were prone to accessing Thredds directly through Twitcher itself
+  (e.g. `twitcher/ows/proxy/thredds/...`). In order to continue supporting these requests this change adds an
+  Nginx rewrite rule to permanently redirect to the equivalent `thredds/...` endpoint. However, accessing Thredds
+  through the Twitcher proxy directly is now considered deprecated and support for this will be dropped in a later
+  version.
 
 [2.30.1](https://github.com/bird-house/birdhouse-deploy/tree/2.30.1) (2026-07-24)
 ------------------------------------------------------------------------------------------------------------------
