@@ -28,7 +28,7 @@
   Note that some older scripts and notebooks were prone to accessing Thredds directly through Twitcher itself
   (e.g. `twitcher/ows/proxy/thredds/...`). In order to continue supporting these requests this change adds an
   Nginx rewrite rule to permanently redirect to the equivalent `thredds/...` endpoint. However, accessing Thredds
-  through the Twitcher proxy directly is now considered deprecated and support for this will be dropped in a later
+  through the Twitcher proxy directly is allowed to avoid breaking older projects using the older link (ensure reproducible science)
   version.
 
 [2.30.1](https://github.com/bird-house/birdhouse-deploy/tree/2.30.1) (2026-07-24)
