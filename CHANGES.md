@@ -23,13 +23,10 @@
   to the requests. In order to avoid this and increase efficiency, Twitcher endpoints now authenticate with the
   Twitcher verify endpoint (`twitcher/ows/verify` by default) and then access the thredds service directly.
 
-  **Deprecations**
-
   Note that some older scripts and notebooks were prone to accessing Thredds directly through Twitcher itself
   (e.g. `twitcher/ows/proxy/thredds/...`). In order to continue supporting these requests this change adds an
   Nginx rewrite rule to permanently redirect to the equivalent `thredds/...` endpoint. However, accessing Thredds
-  through the Twitcher proxy directly is allowed to avoid breaking older projects using the older link (ensure reproducible science)
-  version.
+  through the Twitcher proxy directly is not encouraged for new scripts in order to avoid an unnecessary redirect.
 
 [2.30.1](https://github.com/bird-house/birdhouse-deploy/tree/2.30.1) (2026-07-24)
 ------------------------------------------------------------------------------------------------------------------
