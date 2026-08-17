@@ -252,6 +252,7 @@ By default, all services are blocked.  We will need to allow access for a group 
 * Login to Magpie < https://BIRDHOUSE_FQND/magpie > with the admin user
 
 * Authorize the group or user to access various services, example
+
   - allow everyone to access Thredds: https://BIRDHOUSE_FQDN/magpie/ui/groups/anonymous/thredds
   - allow everyone to access GeoServer: https://BIRDHOUSE_FQDN/magpie/ui/groups/anonymous/geoserver
   - allow everyone to access Finch or another WPS service: https://BIRDHOUSE_FQDN/magpie/ui/groups/anonymous/wps
