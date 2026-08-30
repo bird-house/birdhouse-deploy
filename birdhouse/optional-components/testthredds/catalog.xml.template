@@ -6,6 +6,8 @@
     <service name="all" serviceType="Compound" base="" >
         <service name="http" serviceType="HTTPServer" base="/${TESTTHREDDS_CONTEXT_ROOT}/fileServer/" />
         <service name="odap" serviceType="OpenDAP" base="/${TESTTHREDDS_CONTEXT_ROOT}/dodsC/" />
+        <service name="dap4" serviceType="DAP4" base="/${TESTTHREDDS_CONTEXT_ROOT}/dap4/" />
+        <service name="cdmremote" serviceType="CdmRemote" base="/${TESTTHREDDS_CONTEXT_ROOT}/cdmremote/" />
         <service name="ncml" serviceType="NCML" base="/${TESTTHREDDS_CONTEXT_ROOT}/ncml/"/>
         <service name="uddc" serviceType="UDDC" base="/${TESTTHREDDS_CONTEXT_ROOT}/uddc/"/>
         <service name="iso" serviceType="ISO" base="/${TESTTHREDDS_CONTEXT_ROOT}/iso/"/>

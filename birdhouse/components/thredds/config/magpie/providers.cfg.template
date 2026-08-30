@@ -32,6 +32,8 @@ providers:
         prefixes: [
           fileServer,
           dodsC,
+          dap4,
+          cdmremote,
           wcs,
           wms,
           ncss,
