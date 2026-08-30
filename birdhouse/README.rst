@@ -135,6 +135,11 @@ Quick-start
   # Start the full stack.
   ./bin/birdhouse compose up -d
 
+  # Allow services access via Magpie, example
+  #   allow everyone to access Thredds: https://BIRDHOUSE_FQDN/magpie/ui/groups/anonymous/thredds
+  #   allow everyone to access GeoServer: https://BIRDHOUSE_FQDN/magpie/ui/groups/anonymous/geoserver
+  #   allow everyone to access Finch or another WPS service: https://BIRDHOUSE_FQDN/magpie/ui/groups/anonymous/wps
+
 Further explanations
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -238,6 +243,20 @@ Note about WPS request timeout
 
 Manual steps post deployment
 ----------------------------
+
+Allow services access
+^^^^^^^^^^^^^^^^^^^^^
+
+By default, all services are blocked.  We will need to allow access for a group or for a specific user.
+
+* Login to Magpie < https://BIRDHOUSE_FQND/magpie > with the admin user
+
+* Authorize the group or user to access various services, example
+
+  - allow everyone to access Thredds: https://BIRDHOUSE_FQDN/magpie/ui/groups/anonymous/thredds
+  - allow everyone to access GeoServer: https://BIRDHOUSE_FQDN/magpie/ui/groups/anonymous/geoserver
+  - allow everyone to access Finch or another WPS service: https://BIRDHOUSE_FQDN/magpie/ui/groups/anonymous/wps
+
 
 Create public demo user in Magpie for JupyterHub login
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
