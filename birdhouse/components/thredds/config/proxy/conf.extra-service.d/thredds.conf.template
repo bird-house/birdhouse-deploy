@@ -19,8 +19,3 @@
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Host $host:$server_port;
     }
-
-    # Some old scripts and notebooks accessed threads via the twitcher proxy directly.
-    # In order to support this older syntax this redirects to the correct location.
-    # Accessing Thredds through the TWITCHER_PROTECTED_PATH is not recommended for all new scripts.
-    rewrite ^${TWITCHER_PROTECTED_PATH}/thredds/(.*) /thredds/$1 permanent;
