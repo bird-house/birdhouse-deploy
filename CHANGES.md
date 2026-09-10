@@ -22,7 +22,7 @@
 
 ## Changes
 
-- Birdhouse: Add file code metadata declarations to help higlight and parse unconventional extensions.
+- Birdhouse: Add file code metadata declarations to help highlight and parse unconventional extensions.
 
   All `.template`, `.example` or alternative YAML-like `.cfg` files that cannot be directly interpreted by their
   file extension have been updated to provide either/all off an Editor Modelines (Emacs style) comment, a shebang
