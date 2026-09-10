@@ -22,6 +22,10 @@
 
 ## Changes
 
+- CanarieAPI: bump to version 1.2.1
+
+  Security updates and Docker rebuild from updated GitHub CI pipeline publishing the image on DockerHub.
+
 - Jupyterhub: bump version to 5.5.0
 
   This version includes some bug fixes and changes to an authenticator not used by birdhouse.
