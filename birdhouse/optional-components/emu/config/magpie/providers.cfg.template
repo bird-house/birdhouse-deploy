@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   ${EMU_NAME}:
     url: http://emu:${EMU_INTERNAL_PORT}/wps

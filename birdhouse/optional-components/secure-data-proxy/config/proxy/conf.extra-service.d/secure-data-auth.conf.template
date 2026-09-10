@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
 
     location = /secure-data-auth {
         internal;

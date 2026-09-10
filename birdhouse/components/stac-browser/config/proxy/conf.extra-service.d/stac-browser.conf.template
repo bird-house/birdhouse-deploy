@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
 
     location ${STAC_BROWSER_PATH_PREFIX} {
         # STAC API is protected behind Twitcher so we might not need to protect the browser as well.

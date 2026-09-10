@@ -1,3 +1,4 @@
+# -*- mode: ini -*-
 # NOTE:
 #   See example: https://github.com/Ouranosinc/cowbird/blob/master/config/cowbird.example.ini
 #   See details: https://pavics-cowbird.readthedocs.io/en/latest/configuration.html#loading-settings.
