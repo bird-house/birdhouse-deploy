@@ -24,9 +24,11 @@
 
 *.cfg.template           linguist-language=INI
 *.ini.template           linguist-language=INI
-# Magpie configuration files are YAML formatted
+# Magpie configuration files are YAML formatted, whether templated or not
 providers.cfg.template   linguist-language=YAML
+providers.cfg            linguist-language=YAML
 permissions.cfg.template linguist-language=YAML
+permissions.cfg          linguist-language=YAML
 # ncops config is actually a dotenv-style KEY=VALUE file
 ncops.cfg.template       linguist-language=Dotenv
 
