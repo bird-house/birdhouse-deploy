@@ -281,7 +281,7 @@ new file types not already covered in the current configuration, they should be 
 .. |github-linguist| replace:: GitHub Linguist
 .. _github-linguist: https://github.com/github-linguist/linguist
 .. |gitattributes| replace:: ``.gitattributes``
-.. _gitattributes: ../.gitattributes
+.. _gitattributes: https://github.com/bird-house/birdhouse-deploy/blob/master/.gitattributes
 
 
 Production deployment hardware recommendations
