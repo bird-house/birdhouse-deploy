@@ -38,8 +38,12 @@ ncops.cfg.template       linguist-language=Dotenv
 
 *.conf.template          linguist-language=Nginx
 *.include.template       linguist-language=Nginx
-# docker-compose lifecycle hooks as shell scripts without extension
-pre-docker-compose-up.include linguist-language=Shell
+
+# docker-compose lifecycle hooks as shell scripts
+pre-docker-compose-up            linguist-language=Shell
+pre-docker-compose-up.include    linguist-language=Shell
+post-docker-compose-up           linguist-language=Shell
+post-docker-compose-up.include   linguist-language=Shell
 
 *.logrotate.template     linguist-language=Text
 
