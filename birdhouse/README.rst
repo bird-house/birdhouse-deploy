@@ -135,6 +135,8 @@ Quick-start
   # Start the full stack.
   ./bin/birdhouse compose up -d
 
+.. _further-explanations:
+
 Further explanations
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -209,6 +211,77 @@ postgres instance. See |create-wps-pgsql-databases.sh|_.
 
 .. |create-wps-pgsql-databases.sh| replace:: ``birdhouse/scripts/create-wps-pgsql-databases.sh``
 .. _create-wps-pgsql-databases.sh: ./scripts/create-wps-pgsql-databases.sh
+
+.. _special-file-formatting:
+
+Special File Formatting
+~~~~~~~~~~~~~~~~~~~~~~~
+
+As indicated in the above `Explanations <further-explanations>`_, the infrastructure as code offered in this repository
+relies on special `".template"` files. Other files such as `".include"` scripts, Nginx configurations and even pre/post
+`docker compose` procedures are also employed. Some files also employ `".example"` suffixes to document expected
+definitions from their non-example counterparts (the concrete configuration files the insfratructure will employ).
+Finally, certain files employ alternative suffixes such `env.local` instead of `local.env` and `.cfg` instead
+of `.yaml` for historical or backward-compatibility reasons.
+
+In each of those cases, some IDEs, web-rendering or parser utilities might have trouble identifying the actual format
+of the file's contents from the extension alone. For such cases, it is strongly recommended that contributors provide
+appropriate metadata indicators in the files when possible. This section provides some guidance how to define this
+metadata.
+
+For example, a YAML file with another extension can indicate an Emacs-style hint about its YAML format using:
+
+.. code-block:: yaml
+
+    # -*- mode: yaml -*-
+    config: "..."  # rest of YAML config as necessary by the application
+
+Similarly, certain programming-language shebangs can be employed in specific cases.
+It is recommended to combine them with the above hints to ensure maximum coverage by parsers.
+Furthermore, the env-agnostic paths should be provided to allow alternate resolved paths when invoking those scripts,
+rather than enforcing OS-specific locations. For example:
+
+.. code-block:: python
+
+    #!/usr/bin/env python3
+    # -*- coding: utf-8; mode: python -*-
+
+.. code-block:: shell
+
+    #!/usr/bin/env sh
+    # -*- mode: shell -*-
+
+.. note::
+
+    In the case of a `.env` file that happens to execute `export` commands, but that is intended only to contain
+    environment variable overrides, it is recommended to combine the shell shebang with an Emacs dotenv hint to
+    properly relect the mixed use of this kind of definition.
+
+    .. code-block:: shell
+
+        #!/usr/bin/env sh
+        # -*- mode: dotenv -*-
+
+
+Certain files do not need additional comment hints because of their native definitions that provide similar strategies
+to identify their content's format. This is notably the case of XML that provides the following header. In such case,
+redundant comments should be avoided in favour of the well-known native definition for that format.
+
+.. code-block:: xml
+
+    <?xml version="1.0" encoding="UTF-8"?>
+
+
+Finally, the |gitattributes|_ are defined as a last resort to identify patterns using |github-linguist|_.
+This tool is automatically executed by GitHub to render formatted contents when viewing code in the web browser
+through Pull Requests, diffs, or any generic code navigation. If a new contribution is provided which defines
+new file types not already covered in the current configuration, they should be added to ensure proper rendering.
+
+
+.. |github-linguist| replace:: GitHub Linguist
+.. _github-linguist: https://github.com/github-linguist/linguist
+.. |gitattributes| replace:: ``.gitattributes``
+.. _gitattributes: ../.gitattributes
 
 
 Production deployment hardware recommendations
@@ -537,6 +610,8 @@ After updating the dependency pins found in |tests-requirements.in|_, you can ru
 Note that the version of Python used to run the ``pip-compile`` command should match the minimum supported version
 of Python used in the Birdhouse stack!
 
+.. _versioning-policy:
+
 Versioning policy
 -----------------
 
@@ -603,6 +678,8 @@ intentionally automated to ensure that there are less opportunities for human er
 tagging new releases.  Tags are only ever triggered on the ``master`` branch, once all changes
 have been approved and merged.
 
+.. _release-procedure:
+
 Release Procedure
 -----------------
 
@@ -652,9 +729,13 @@ Release Procedure
 .. warning::
     **Do not create tags or releases manually for this repository.**
 
-    Once merged to master, the [`.github/workflows/create-tag.yml`](../.github/workflows/create-tag.yml)
-    and [`.github/workflows/release.yml`](../.github/workflows/release.yml) workflows will run.
+    Once merged to `master`, the |create-tag.yml|_ and |release.yml|_ workflows will run.
     The CI will automatically generate the tags and releases. No human intervention should be required.
+
+.. |create-tag.yml| replace:: ``.github/workflows/create-tag.yml``
+.. _create-tag.yml: ../.github/workflows/create-tag.yml
+.. |release.yml| replace:: ``.github/workflows/release.yml``
+.. _release.yml: ../.github/workflows/release.yml
 
 .. _backups:
 
