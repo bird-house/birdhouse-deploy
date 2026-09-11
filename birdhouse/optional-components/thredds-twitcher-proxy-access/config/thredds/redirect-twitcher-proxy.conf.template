@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
 # Some old scripts and notebooks accessed threads via the twitcher proxy directly.
 # In order to support this older syntax this redirects to the correct location.
 # Accessing Thredds through the TWITCHER_PROTECTED_PATH is not recommended for all new scripts.
