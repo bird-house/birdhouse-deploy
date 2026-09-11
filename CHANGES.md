@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.31.0](https://github.com/bird-house/birdhouse-deploy/tree/2.31.0) (2026-09-11)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Thredds: authenticate with twitcher verify instead of going through twitcher's proxy
