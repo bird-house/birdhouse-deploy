@@ -215,7 +215,7 @@ postgres instance. See |create-wps-pgsql-databases.sh|_.
 .. _special-file-formatting:
 
 Special File Formatting
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 
 As indicated in the above `Explanations <further-explanations>`_, the infrastructure as code offered in this repository
 relies on special `".template"` files. Other files such as `".include"` scripts, Nginx configurations and even pre/post
