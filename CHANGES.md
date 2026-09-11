@@ -15,7 +15,20 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Magpie/THREDDS : Allow `remoteCatalogService` urls for THREDDS in Magpie.
+
+  Remote catalogs were already allowed in the default THREDDS config. This feature is usable by adding `<catalogRef>`
+  entries to the THREDDS catalog, via the `THREDDS_ADDITIONAL_CATALOG` variable of `env.local`. Example:
+
+  ```bash
+  export THREDDS_ADDITIONAL_CATALOG='<catalogRef xlink:title="External catalog" name="remote" xlink:href="https://EXTERNAL_URL/thredds/catalog/catalog.xml" />'
+  ```
+  Where `EXTERNAL_URL` is an URL to another THREDDS service. The generated HTML page will show "External catalog" as a
+  folder and navigating down the catalog will appear to the user as if it was hosted on the current instance. However,
+  any data links will direct to the other instance. The default THREDDS config only allows HTTP and OPeNDAP services
+  to be listed for remote catalogs.
 
 [2.30.1](https://github.com/bird-house/birdhouse-deploy/tree/2.30.1) (2026-07-24)
 ------------------------------------------------------------------------------------------------------------------
