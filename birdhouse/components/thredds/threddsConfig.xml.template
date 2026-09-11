@@ -134,4 +134,6 @@ https://www.unidata.ucar.edu/software/tds/current/reference/ThreddsConfigXMLFile
     <allow>true</allow>
   </NetcdfSubsetService>
 
+  ${THREDDS_CONFIG_XML_EXTRA}
+
 </threddsConfig>

@@ -6,6 +6,8 @@
     <service name="all" serviceType="Compound" base="" >
         <service name="http" serviceType="HTTPServer" base="${TWITCHER_PROTECTED_PATH}/thredds/fileServer/" />
         <service name="odap" serviceType="OpenDAP" base="${TWITCHER_PROTECTED_PATH}/thredds/dodsC/" />
+        <service name="dap4" serviceType="DAP4" base="${TWITCHER_PROTECTED_PATH}/thredds/dap4/"/>
+        <service name="cdmremote" serviceType="CdmRemote" base="${TWITCHER_PROTECTED_PATH}/thredds/cdmremote/"/>
         <service name="ncml" serviceType="NCML" base="${TWITCHER_PROTECTED_PATH}/thredds/ncml/"/>
         <service name="uddc" serviceType="UDDC" base="${TWITCHER_PROTECTED_PATH}/thredds/uddc/"/>
         <service name="iso" serviceType="ISO" base="${TWITCHER_PROTECTED_PATH}/thredds/iso/"/>
