@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 - name: deploy_raven_testdata_to_thredds
   comment: 'Auto-deploy Raven testdata to Thredds for Raven tutorial notebooks.'
   schedule: '${SCHEDULER_JOB_RAVEN_DEPLOY_DATA_JOB_SCHEDULE}'

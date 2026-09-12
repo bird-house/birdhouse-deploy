@@ -7,10 +7,14 @@ Please read the Birdhouse `Developer Documentation`_ to get started.
 
 .. _Developer Documentation: https://birdhouse-deploy.readthedocs.io/en/latest/
 
+.. _policy:
+
 Policy
 ------
 
 Since Birdhouse is used in production by multiple organizations, this deployment repository also has a policy regarding contributions.
+
+.. _policy-objectives:
 
 Policy objectives
 ~~~~~~~~~~~~~~~~~
@@ -20,6 +24,8 @@ Policy objectives
 3. Achieve the two previous objectives
     * by weighing down everyone's workflow as little as possible
     * by having an approach that scales well as more nodes go into production and the number of PR increases
+
+.. _policy-rules:
 
 Policy rules
 ~~~~~~~~~~~~
@@ -85,6 +91,10 @@ Policy rules
     * Example: The main branch is at ``2.1.8``, and a contribution is made in a production fork from ``2.1.8``.
       The tag ``2.1.9`` cannot be applied because this version could possibly exists in the main branch.
       A tag looking like ``2.1.8.orgXrev1`` would be preferred.
+
+.. seealso::
+    - `Versioning Policy <./birdhouse/README.rst#versioning-policy>`_
+    - `Release Procedure <./birdhouse/README.rst#release-procedure>`_
 
 Birdhouse multi organization git repository management
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   thredds:
     url: http://thredds:8080/twitcher/ows/proxy/thredds
@@ -22,6 +23,7 @@ providers:
           "\\w+\\.css",  # tds.css
           "catalog\\.\\w+",  # note: special case for `THREDDS` top-level directory (root) accessed for `BROWSE`
           catalog,
+          remoteCatalogService,
           info,
           ncml,
           uddc,

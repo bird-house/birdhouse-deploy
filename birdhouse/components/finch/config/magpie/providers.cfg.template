@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   finch:
     url: http://finch:5000/wps

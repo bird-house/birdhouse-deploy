@@ -25,7 +25,7 @@ services:
           "CMD",
           "curl",
           "--fail",
-          "http://localhost:8080${TWITCHER_PROTECTED_PATH}/thredds/catalog.html"
+          "http://localhost:8080/thredds/catalog.html"
         ]
       interval: 60s
       timeout: 5s
