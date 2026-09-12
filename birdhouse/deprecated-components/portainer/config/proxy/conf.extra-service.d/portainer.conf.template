@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
     location /portainer/ {
         proxy_pass http://portainer:9000/;
         proxy_set_header Host $host;

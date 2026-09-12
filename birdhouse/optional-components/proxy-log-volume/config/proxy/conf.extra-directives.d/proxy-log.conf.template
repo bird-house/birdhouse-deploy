@@ -1,2 +1,3 @@
+# -*- mode: nginx -*-
     access_log  ${PROXY_LOG_PATH}  main;
     access_log  /var/log/nginx/access.log  main;  # this is a symlink to /dev/stdout in the proxy container

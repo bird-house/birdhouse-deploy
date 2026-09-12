@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
 
     location = /dggs-auth {
         internal;

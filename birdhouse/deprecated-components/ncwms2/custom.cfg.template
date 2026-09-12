@@ -1,3 +1,4 @@
+# -*- mode: ini -*-
 [buildout]
 extends = buildout.cfg
 

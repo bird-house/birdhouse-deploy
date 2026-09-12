@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 global:
   external_labels:
     instance_name: prometheus-longterm-metrics

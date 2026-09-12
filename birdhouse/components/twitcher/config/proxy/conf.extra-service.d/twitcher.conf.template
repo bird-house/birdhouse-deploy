@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
     location /twitcher/ {
         proxy_pass http://twitcher:8000/;
         proxy_set_header Host $host;

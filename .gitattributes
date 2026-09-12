@@ -1,0 +1,56 @@
+# This repository uses pseudo-extensions (e.g. ".template", ".example") that
+# are appended after the "real" file extension to indicate that the file
+# requires further processing (variable substitution, manual instantiation,
+# etc.) before it becomes usable as-is. Since editors, IDEs and linters
+# typically only recognize the last extension, these attributes restore the
+# correct language detection for such files based on their real syntax.
+#
+# NOTE: files also carry a corresponding "-*- mode: <language> -*-" comment
+# near the top (Emacs-style, but recognized by many other editors too) for
+# tools that rely on file content rather than gitattributes/linguist.
+# JSON pseudo-extension files are the exception: JSON has no comment syntax,
+# so they are only covered here, not with an in-file modeline.
+# XML pseudo-extension files need neither: their native "<?xml ... ?>"
+# declaration is already sufficient for both editors and linguist to detect
+# the language, so no override or in-file modeline is needed for them.
+
+*.yml.template           linguist-language=YAML
+*.yml.example            linguist-language=YAML
+*.yaml.template          linguist-language=YAML
+*.yaml.example           linguist-language=YAML
+*.rules.template         linguist-language=YAML
+
+*.py.template            linguist-language=Python
+
+*.cfg.template           linguist-language=INI
+*.ini.template           linguist-language=INI
+# Magpie configuration files are YAML formatted, whether templated or not
+providers.cfg.template   linguist-language=YAML
+providers.cfg            linguist-language=YAML
+permissions.cfg.template linguist-language=YAML
+permissions.cfg          linguist-language=YAML
+# ncops config is actually a dotenv-style KEY=VALUE file
+ncops.cfg.template       linguist-language=Dotenv
+
+*.env.template           linguist-language=Dotenv
+*.env.example            linguist-language=Dotenv
+*.local.example          linguist-language=Dotenv
+
+*.conf.template          linguist-language=Nginx
+*.include.template       linguist-language=Nginx
+
+# docker-compose lifecycle hooks as shell scripts
+pre-docker-compose-up            linguist-language=Shell
+pre-docker-compose-up.include    linguist-language=Shell
+post-docker-compose-up           linguist-language=Shell
+post-docker-compose-up.include   linguist-language=Shell
+
+*.logrotate.template     linguist-language=Text
+
+*.sql.template           linguist-language=SQL
+
+*.html.template          linguist-language=HTML
+
+*.json.template          linguist-language=JSON
+
+cron.template            linguist-language=Crontab

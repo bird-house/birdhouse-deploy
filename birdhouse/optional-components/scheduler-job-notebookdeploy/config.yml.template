@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 - name: notebookdeploy
   comment: Auto-deploy tutorial notebooks
   schedule: '${BIRDHOUSE_AUTODEPLOY_NOTEBOOK_FREQUENCY}'

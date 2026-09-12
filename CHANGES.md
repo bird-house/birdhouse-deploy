@@ -61,6 +61,13 @@
 
 ## Changes
 
+- Birdhouse: Add file code metadata declarations to help highlight and parse unconventional extensions.
+
+  All `.template`, `.example` or alternative YAML-like `.cfg` files that cannot be directly interpreted by their
+  file extension have been updated to provide either/all off an Editor Modelines (Emacs style) comment, a shebang
+  and `.gitattribute` linguist definitions to help parsers, IDEs and GitHub parse and highlight their code contents
+  in the appropriate format and coding language.
+
 - Jupyterhub: bump version to 5.5.0
 
   This version includes some bug fixes and changes to an authenticator not used by birdhouse.
