@@ -15,7 +15,23 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.31.1](https://github.com/bird-house/birdhouse-deploy/tree/2.31.1) (2026-09-12)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
+
+- CanarieAPI: bump to version 1.2.1
+
+  Security updates and Docker rebuild from updated GitHub CI pipeline publishing the image on DockerHub.
+
+- Birdhouse: Add file code metadata declarations to help highlight and parse unconventional extensions.
+
+  All `.template`, `.example` or alternative YAML-like `.cfg` files that cannot be directly interpreted by their
+  file extension have been updated to provide either/all off an Editor Modelines (Emacs style) comment, a shebang
+  and `.gitattribute` linguist definitions to help parsers, IDEs and GitHub parse and highlight their code contents
+  in the appropriate format and coding language.
 
 - Remove [skip ci] from bumpversion commits
 
@@ -60,13 +76,6 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
-
-- Birdhouse: Add file code metadata declarations to help highlight and parse unconventional extensions.
-
-  All `.template`, `.example` or alternative YAML-like `.cfg` files that cannot be directly interpreted by their
-  file extension have been updated to provide either/all off an Editor Modelines (Emacs style) comment, a shebang
-  and `.gitattribute` linguist definitions to help parsers, IDEs and GitHub parse and highlight their code contents
-  in the appropriate format and coding language.
 
 - Jupyterhub: bump version to 5.5.0
 
