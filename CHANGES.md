@@ -15,7 +15,46 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Remove [skip ci] from bumpversion commits
+
+  Commits created by the `bumpversion` tool were not triggering unit tests in the CI which are required by
+  github before a pull request can be merged. The previous workaround was to create an empty commit *after*
+  the commit that bumps the version. This is not an intuitive workflow and will likely continue to cause
+  confusion going forward.
+
+  To avoid this confusion, `[skip ci]` has been changed to `[skip jenkins]` so that the unit tests will
+  run as expected and only the integration tests run through jenkins will be skipped.
+
+[2.31.0](https://github.com/bird-house/birdhouse-deploy/tree/2.31.0) (2026-09-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Thredds: authenticate with twitcher verify instead of going through twitcher's proxy
+
+  The Thredds endpoints go through Twitcher's proxy (`twitcher/ows/proxy` by default) which adds some overhead
+  to the requests. In order to avoid this and increase efficiency, Twitcher endpoints now authenticate with the
+  Twitcher verify endpoint (`twitcher/ows/verify` by default) and then access the thredds service directly.
+
+  Note that some older scripts and notebooks were prone to accessing Thredds directly through Twitcher itself
+  (e.g. `twitcher/ows/proxy/thredds/...`). In order to continue supporting these requests this change adds an
+  Nginx rewrite rule to permanently redirect to the equivalent `thredds/...` endpoint. However, accessing Thredds
+  through the Twitcher proxy directly is not encouraged for new scripts in order to avoid an unnecessary redirect.
+
+- Magpie/THREDDS : Allow `remoteCatalogService` urls for THREDDS in Magpie.
+
+  Remote catalogs were already allowed in the default THREDDS config. This feature is usable by adding `<catalogRef>`
+  entries to the THREDDS catalog, via the `THREDDS_ADDITIONAL_CATALOG` variable of `env.local`. Example:
+
+  ```bash
+  export THREDDS_ADDITIONAL_CATALOG='<catalogRef xlink:title="External catalog" name="remote" xlink:href="https://EXTERNAL_URL/thredds/catalog/catalog.xml" />'
+  ```
+  Where `EXTERNAL_URL` is an URL to another THREDDS service. The generated HTML page will show "External catalog" as a
+  folder and navigating down the catalog will appear to the user as if it was hosted on the current instance. However,
+  any data links will direct to the other instance. The default THREDDS config only allows HTTP and OPeNDAP services
+  to be listed for remote catalogs.
 
 [2.30.1](https://github.com/bird-house/birdhouse-deploy/tree/2.30.1) (2026-07-24)
 ------------------------------------------------------------------------------------------------------------------
