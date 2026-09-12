@@ -15,7 +15,17 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Remove [skip ci] from bumpversion commits
+
+  Commits created by the `bumpversion` tool were not triggering unit tests in the CI which are required by
+  github before a pull request can be merged. The previous workaround was to create an empty commit *after*
+  the commit that bumps the version. This is not an intuitive workflow and will likely continue to cause
+  confusion going forward.
+
+  To avoid this confusion, `[skip ci]` has been changed to `[skip jenkins]` so that the unit tests will
+  run as expected and only the integration tests run through jenkins will be skipped.
 
 [2.31.0](https://github.com/bird-house/birdhouse-deploy/tree/2.31.0) (2026-09-11)
 ------------------------------------------------------------------------------------------------------------------
