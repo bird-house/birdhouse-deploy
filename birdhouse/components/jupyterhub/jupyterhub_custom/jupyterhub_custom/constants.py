@@ -48,6 +48,10 @@ JUPYTERHUB_ADMIN_GROUP_NAME: str = os.environ["JUPYTERHUB_ADMIN_GROUP_NAME"]
 JUPYTERHUB_DOCKER_EXTRA_HOSTS: dict = dict(
     host_mapping.split(":") for host_mapping in os.getenv("JUPYTERHUB_DOCKER_EXTRA_HOSTS", "").split()
 )
+JUPYTERHUB_RTC_ENABLED: bool = os.environ["JUPYTERHUB_RTC_ENABLED"] == "true"
+JUPYTERHUB_RTC_GROUP_PREFIX: str = os.environ["JUPYTERHUB_RTC_GROUP_PREFIX"]
+JUPYTERHUB_RTC_GROUP_NAME: str = os.environ["JUPYTERHUB_RTC_GROUP_NAME"]
+JUPYTERHUB_RTC_ALLOWED_IMAGES: dict[str, str] = yaml.safe_load(os.getenv("JUPYTERHUB_RTC_ALLOWED_IMAGES", ""))
 
 # The following constants have lowercase variable names for backwards compatibility
 # in case any legacy code in JUPYTERHUB_CONFIG_OVERRIDE uses these variables.

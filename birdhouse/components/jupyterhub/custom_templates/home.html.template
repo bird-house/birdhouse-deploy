@@ -1,0 +1,84 @@
+{% extends "templates/home.html" %}
+
+{% block main %}
+{{ super() }}
+<div class="error" id="group-server-error" style="display: none;">
+    Group servers are enabled but JupyterHub was unable to determine your group memberships.
+    <br />
+    Try logging out and back in again in order to refresh your group membership statuses.
+</div>
+<div class="container" id="group-container" style="display: none;">
+    <h2>Group Servers</h2>
+    <table class="server-table table table-striped">
+        <thead>
+            <tr>
+                <th>Server name</th>
+                <th>Last activity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="group-server-table-body">
+            <template id="group-server-row-template">
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="actions">
+                        <a role="button" class="btn btn-xs btn-primary">Start Server</a>
+                        <button type="button" class="btn btn-xs btn-danger">Stop Server</button>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</div>
+{% if rtc_enabled %}
+<script>
+    require(["jhapi"], (JHAPI) => {
+        const api = new JHAPI("{{ base_url }}");
+        fetch(
+            "{{ base_url }}/api/users?include_stopped_servers=1"
+        ).then(resp => {
+            if (resp.ok) {
+                return resp.json()
+            } else {
+                return null
+            }
+        }
+        ).then(json => {
+            if (json === null) {
+                document.getElementById("group-server-error").style.display = "block";
+                return
+            }
+            const tableBody = document.getElementById("group-server-table-body");
+            const template = document.getElementById("group-server-row-template")
+            for (groupUser of json) {
+                document.getElementById("group-container").style.display = "block";
+                const serverData = Object.values(groupUser.servers)[0]
+                console.log(serverData)
+                const clone = document.importNode(template.content, true)
+                clone.querySelector("td").innerText = groupUser.name.replace(/^collab-user-/, "")
+                clone.querySelector("td:nth-of-type(2)").innerText = serverData.last_activity || "Never"
+                const start = clone.querySelector(".btn-primary")
+                const stop = clone.querySelector(".btn-danger")
+                start.setAttribute("href", serverData.url)
+                if (serverData.ready) {
+                    start.innerText = "Access Server"
+                }
+                if (serverData.stopped) {
+                    stop.classList.add("hidden")
+                } else {
+                    stop.addEventListener("click", e => {
+                        const response = confirm("Other users may still be using this server and stopping it will interrupt their progress. Are you sure you want to continue?")
+                        if (response) {
+                            api.stop_server(groupUser.name, {success: () => window.location.reload()})
+                        }
+                    })
+                }
+                tableBody.appendChild(clone)
+            }
+        })
+    })
+
+</script>
+{% endif %}
+{% endblock main %}

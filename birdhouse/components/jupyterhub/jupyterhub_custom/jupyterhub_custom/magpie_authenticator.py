@@ -73,12 +73,27 @@ class MagpieAuthenticator(Authenticator):
         "jupyterhub",
     )
 
+    _base_user_role = {
+        "name": "user",
+        "description": "User Role for accessing auth_state via API",
+        "scopes": ["self", "admin:auth_state!user"],
+        "services": [],
+    }
+
     # The following values override defaults in the Authenticator base class.
     # See the Authenticator documentation for more details:
     # https://jupyterhub.readthedocs.io/en/latest/reference/api/auth.html#jupyterhub.auth.Authenticator
 
     @default("manage_groups")
     def _default_manage_groups(self) -> bool:
+        return True
+
+    @default("manage_roles")
+    def _default_manage_roles(self) -> bool:
+        return True
+
+    @default("reset_managed_roles_on_startup")
+    def _default_reset_managed_roles_on_startup(self) -> bool:
         return True
 
     @default("enable_auth_state")
@@ -115,6 +130,63 @@ class MagpieAuthenticator(Authenticator):
         """Return any custom handlers the authenticator needs to register."""
         return [("/logout", MagpieLogoutHandler)]
 
+    async def load_managed_roles(self) -> list[dict]:
+        """Load roles managed by authenticator."""
+        roles = [
+            {
+                "name": "jupyterhub-admin",
+                "description": "Give full admin (super-user) access",
+                "scopes": ["admin-ui", "admin:users", "admin:servers", "admin:groups"],
+                "groups": [constants.JUPYTERHUB_ADMIN_GROUP_NAME],
+            }
+        ]
+        if constants.JUPYTERHUB_CRYPT_KEY_IS_SET:
+            # Allow users to access their own auth_state in order to get their own magpie cookie
+            # See https://github.com/jupyterhub/jupyterhub/issues/3588 for details
+            roles.extend(
+                [
+                    {
+                        "name": "server",
+                        "description": "Allows parties to start and stop user servers",
+                        "scopes": [
+                            "access:servers!user",
+                            "read:users:activity!user",
+                            "users:activity!user",
+                            "admin:auth_state!user",
+                        ],
+                        "services": [],
+                    },
+                ]
+            )
+        return roles
+
+    async def _setup_collab_roles(self, handler: BaseHandler, groups: list[str]) -> list[dict]:
+        roles = []
+        for group in groups:
+            if group.startswith(constants.JUPYTERHUB_RTC_GROUP_PREFIX):
+                collab_username = f"collab-user-{group}"
+                await handler.auth_to_user(
+                    {
+                        "name": collab_username,
+                        "admin": False,
+                        "groups": [constants.JUPYTERHUB_RTC_GROUP_NAME],
+                        "roles": [self._base_user_role],
+                    }
+                )
+                roles.append(
+                    {
+                        "name": f"collab-access-{group}",
+                        "scopes": [
+                            f"access:servers!user={collab_username}",
+                            f"admin:servers!user={collab_username}",
+                            "admin-ui",
+                            f"list:users!user={collab_username}",
+                        ],
+                        "groups": [group],
+                    }
+                )
+        return roles
+
     async def authenticate(self, handler: BaseHandler, data: dict) -> dict[str, Any] | None:
         """Authenticate a user with login form data."""
         signin_url = self.magpie_url.rstrip("/") + "/signin"
@@ -147,14 +219,14 @@ class MagpieAuthenticator(Authenticator):
                     path=cookie.path,
                     secure=cookie.secure,
                 )
+            user_info = {"name": user_name, "groups": groups}
             if self.enable_auth_state:
-                return {
-                    "name": user_name,
-                    "groups": groups,
-                    "auth_state": {"magpie_cookies": response.cookies.get_dict()},
-                }
-            else:
-                return {"name": user_name, "groups": groups}
+                user_info["auth_state"] = {"magpie_cookies": response.cookies.get_dict()}
+            if self.manage_roles:
+                user_info["roles"] = [self._base_user_role]
+                if constants.JUPYTERHUB_RTC_ENABLED:
+                    user_info["roles"].extend(await self._setup_collab_roles(handler, groups))
+            return user_info
 
     async def refresh_user(self, user: User, handler: BaseHandler | None = None) -> bool:
         """Refresh auth data for a given user."""

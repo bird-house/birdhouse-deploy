@@ -173,14 +173,17 @@ class CustomDockerSpawner(DockerSpawner):
         )
         return f"sh -c '{post_start_command}'"
 
-    @default("allowed_images")
-    def _default_allowed_images(self) -> list[str] | dict[str, str]:
-        """
-        Return a dictionary or list containing images that a user is allowed to select.
-
-        This is used to set CustomDockerSpawner.allowed_images
-        """
-        images = constants.JUPYTERHUB_ALLOWED_IMAGES
+    def allowed_images(self, _spawner: DockerSpawner) -> list[str] | dict[str, str]:
+        """Return a dictionary or list containing images that a user is allowed to select."""
+        # Provide a different list of images that support real-time-collaboration if specified.
+        if (
+            constants.JUPYTERHUB_RTC_ENABLED
+            and any(group.name == constants.JUPYTERHUB_RTC_GROUP_NAME for group in self.user.groups)
+            and constants.JUPYTERHUB_RTC_ALLOWED_IMAGES
+        ):
+            images = constants.JUPYTERHUB_RTC_ALLOWED_IMAGES
+        else:
+            images = constants.JUPYTERHUB_ALLOWED_IMAGES
         if images is None:
             if constants.JUPYTERHUB_IMAGE_SELECTION_NAMES:
                 images = dict(
