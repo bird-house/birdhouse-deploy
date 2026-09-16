@@ -54,9 +54,8 @@
             for (groupUser of json) {
                 document.getElementById("group-container").style.display = "block";
                 const serverData = Object.values(groupUser.servers)[0]
-                console.log(serverData)
                 const clone = document.importNode(template.content, true)
-                clone.querySelector("td").innerText = groupUser.name.replace(/^collab-user-/, "")
+                clone.querySelector("td").innerText = groupUser.name
                 clone.querySelector("td:nth-of-type(2)").innerText = serverData.last_activity || "Never"
                 const start = clone.querySelector(".btn-primary")
                 const stop = clone.querySelector(".btn-danger")

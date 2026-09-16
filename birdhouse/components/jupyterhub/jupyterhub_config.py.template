@@ -23,7 +23,10 @@ c.JupyterHub.hub_ip = "jupyterhub"
 c.JupyterHub.cookie_secret_file = "/persist/jupyterhub_cookie_secret"
 c.JupyterHub.db_url = "/persist/jupyterhub.sqlite"
 c.JupyterHub.template_paths = ["/custom_templates"]
-c.JupyterHub.template_vars = {"rtc_enabled": constants.JUPYTERHUB_RTC_ENABLED, "rtc_group_prefix": constants.JUPYTERHUB_RTC_GROUP_PREFIX}
+c.JupyterHub.template_vars = {
+    "rtc_enabled": constants.JUPYTERHUB_RTC_ENABLED,
+    "rtc_group_prefix": constants.JUPYTERHUB_RTC_GROUP_PREFIX,
+}
 c.JupyterHub.log_level = logging.DEBUG
 # don't automatically redirect to the user's server so users have a chance to select a group server instead
 c.JupyterHub.redirect_to_server = not constants.JUPYTERHUB_RTC_ENABLED

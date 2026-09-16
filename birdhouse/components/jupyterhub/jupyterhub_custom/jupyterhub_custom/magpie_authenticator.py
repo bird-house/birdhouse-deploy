@@ -164,13 +164,20 @@ class MagpieAuthenticator(Authenticator):
         roles = []
         for group in groups:
             if group.startswith(constants.JUPYTERHUB_RTC_GROUP_PREFIX):
-                collab_username = f"collab-user-{group}"
+                collab_username = (
+                    group  # the collaboration group will have the same name as the associated collaboration user
+                )
                 await handler.auth_to_user(
                     {
                         "name": collab_username,
                         "admin": False,
-                        "groups": [constants.JUPYTERHUB_RTC_GROUP_NAME],
-                        "roles": [self._base_user_role],
+                        "groups": [
+                            constants.JUPYTERHUB_RTC_GROUP_NAME,
+                            group,
+                        ],  # add collab user to shared group so that it can easily determine the other members at spawn time
+                        "roles": [
+                            self._base_user_role,
+                        ],
                     }
                 )
                 roles.append(
@@ -179,7 +186,6 @@ class MagpieAuthenticator(Authenticator):
                         "scopes": [
                             f"access:servers!user={collab_username}",
                             f"admin:servers!user={collab_username}",
-                            "admin-ui",
                             f"list:users!user={collab_username}",
                         ],
                         "groups": [group],
