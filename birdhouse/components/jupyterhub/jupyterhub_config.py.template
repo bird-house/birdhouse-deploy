@@ -23,41 +23,14 @@ c.JupyterHub.hub_ip = "jupyterhub"
 c.JupyterHub.cookie_secret_file = "/persist/jupyterhub_cookie_secret"
 c.JupyterHub.db_url = "/persist/jupyterhub.sqlite"
 c.JupyterHub.template_paths = ["/custom_templates"]
+c.JupyterHub.template_vars = {
+    "rtc_enabled": constants.JUPYTERHUB_COLLAB_ENABLED,
+    "rtc_group_prefix": constants.JUPYTERHUB_COLLAB_GROUP_PREFIX,
+}
 c.JupyterHub.log_level = logging.DEBUG
+# don't automatically redirect to the user's server so users have a chance to select a group server instead
+c.JupyterHub.redirect_to_server = not constants.JUPYTERHUB_COLLAB_ENABLED
 c.JupyterHub.init_spawners_timeout = 20  # Timeout (in seconds) to wait for spawners to initialize (default 10)
-c.JupyterHub.load_roles = [
-    {
-        "name": "jupyterhub-admin",
-        "description": "Give full admin (super-user) access",
-        "scopes": ["admin-ui", "admin:users", "admin:servers"],
-        "groups": [constants.JUPYTERHUB_ADMIN_GROUP_NAME],
-    }
-]
-
-if constants.JUPYTERHUB_CRYPT_KEY_IS_SET:
-    # Allow users to access their own auth_state in order to get their own magpie cookie
-    # See https://github.com/jupyterhub/jupyterhub/issues/3588 for details
-    c.JupyterHub.load_roles.extend(
-        [
-            {
-                "name": "user",
-                "description": "User Role for accessing auth_state via API",
-                "scopes": ["self", "admin:auth_state!user"],
-                "services": [],
-            },
-            {
-                "name": "server",
-                "description": "Allows parties to start and stop user servers",
-                "scopes": [
-                    "access:servers!user",
-                    "read:users:activity!user",
-                    "users:activity!user",
-                    "admin:auth_state!user",
-                ],
-                "services": [],
-            },
-        ]
-    )
 
 # ------------------------------------------------------------------------------
 # Deprecated settings
