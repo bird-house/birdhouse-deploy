@@ -370,30 +370,27 @@ class CustomDockerSpawner(DockerSpawner):
 
     def __create_collaborative_shared_volumes(self) -> None:
         """Create shared volumes for collaborative servers."""
-        if constants.JUPYTERHUB_RTC_ENABLED:
-            if self._is_collaborative_server():
-                collab_groups = [
-                    group for group in self.user.groups if group.name != constants.JUPYTERHUB_RTC_GROUP_NAME
-                ]
-                if collab_groups:
-                    # each collab user should only belong to the JUPYTERHUB_RTC_GROUP_NAME group and the current collaboration group
-                    collab_group = collab_groups[0]
-                    for user in collab_group.users:
-                        # NOTE: these subdirs will be created the first time the collab server is spawned
-                        if user.name != self.user.name:
-                            self.volumes[
-                                os.path.join(
-                                    constants.WORKSPACE_DIR,
-                                    user.name,
-                                    constants.JUPYTERHUB_RTC_SHARED_SUBDIR,
-                                    collab_group.name,
-                                )
-                            ] = {
-                                "bind": os.path.join(
-                                    constants.NOTEBOOK_DIR, constants.JUPYTERHUB_RTC_SHARED_SUBDIR, user.name
-                                ),
-                                "mode": "ro",  # read-only to avoid concurrently updating the files from multiple servers
-                            }
+        if constants.JUPYTERHUB_RTC_ENABLED and self._is_collaborative_server():
+            collab_groups = [group for group in self.user.groups if group.name != constants.JUPYTERHUB_RTC_GROUP_NAME]
+            if not collab_groups:
+                # each collab user should only belong to the JUPYTERHUB_RTC_GROUP_NAME group and the current collaboration group
+                # fail silently instead of raising an error so that the container is still spawned
+                return
+            collab_group = collab_groups[0]
+            for user in collab_group.users:
+                # NOTE: these subdirs will be created the first time the collab server is spawned
+                if user.name != self.user.name:
+                    self.volumes[
+                        os.path.join(
+                            constants.WORKSPACE_DIR,
+                            user.name,
+                            constants.JUPYTERHUB_RTC_SHARED_SUBDIR,
+                            collab_group.name,
+                        )
+                    ] = {
+                        "bind": os.path.join(constants.NOTEBOOK_DIR, constants.JUPYTERHUB_RTC_SHARED_SUBDIR, user.name),
+                        "mode": "ro",  # read-only to avoid concurrently updating the files from multiple servers
+                    }
 
     def run_pre_spawn_hook(self) -> None:
         """Run the builtin pre-spawn hooks as well as any set by pre_spawn_hook if defined."""

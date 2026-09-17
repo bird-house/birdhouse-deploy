@@ -53,6 +53,15 @@ class MagpieAuthenticator(Authenticator):
 
     The `manage_groups` attribute tells Jupyterhub that the Authenticator can set group memberships based on
     the values returned by the `authenticate` method. This is True by default for this Authenticator.
+
+    The `manage_roles` attribute tells Jupyterhub that the Authenticator can set user roles based on the
+    values returned by the `authenticate` method. This is True by default for this Authenticator.
+
+    The `reset_managed_roles_on_startup` attribute tells Jupyterhub that the Hub should reset the user
+    roles when the hub restarts. This is True by default for this Authenticator.
+
+    If real-time-collaboration is enabled for JupyterHub (constants.JUPYTERHUB_RTC_ENABLED is True) then `manage_groups`,
+    `manage_roles`, and `reset_managed_roles_on_startup` must all be set to True.
     """
 
     default_provider = "ziggurat"
@@ -164,12 +173,9 @@ class MagpieAuthenticator(Authenticator):
         roles = []
         for group in groups:
             if group.startswith(constants.JUPYTERHUB_RTC_GROUP_PREFIX):
-                collab_username = (
-                    group  # the collaboration group will have the same name as the associated collaboration user
-                )
                 await handler.auth_to_user(
                     {
-                        "name": collab_username,
+                        "name": group,  # the collaboration user will have the same name as the associated group
                         "admin": False,
                         "groups": [
                             constants.JUPYTERHUB_RTC_GROUP_NAME,
@@ -184,9 +190,9 @@ class MagpieAuthenticator(Authenticator):
                     {
                         "name": f"collab-access-{group}",
                         "scopes": [
-                            f"access:servers!user={collab_username}",
-                            f"admin:servers!user={collab_username}",
-                            f"list:users!user={collab_username}",
+                            f"access:servers!user={group}",
+                            f"admin:servers!user={group}",
+                            f"list:users!user={group}",
                         ],
                         "groups": [group],
                     }
