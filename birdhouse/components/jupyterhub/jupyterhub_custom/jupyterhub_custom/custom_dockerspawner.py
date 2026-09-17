@@ -177,11 +177,11 @@ class CustomDockerSpawner(DockerSpawner):
         """Return a dictionary or list containing images that a user is allowed to select."""
         # Provide a different list of images that support real-time-collaboration if specified.
         if (
-            constants.JUPYTERHUB_RTC_ENABLED
+            constants.JUPYTERHUB_COLLAB_ENABLED
             and self._is_collaborative_server()
-            and constants.JUPYTERHUB_RTC_ALLOWED_IMAGES
+            and constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES
         ):
-            images = constants.JUPYTERHUB_RTC_ALLOWED_IMAGES
+            images = constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES
         else:
             images = constants.JUPYTERHUB_ALLOWED_IMAGES
         if images is None:
@@ -272,7 +272,7 @@ class CustomDockerSpawner(DockerSpawner):
 
     def _is_collaborative_server(self) -> bool:
         """Return true if the server being spawned is a collaborative (shared) server."""
-        return any(group.name == constants.JUPYTERHUB_RTC_GROUP_NAME for group in self.user.groups)
+        return any(group.name == constants.JUPYTERHUB_COLLAB_GROUP_NAME for group in self.user.groups)
 
     def __create_tutorial_notebook_hook(self) -> None:
         """Mount tutorial notebooks as volumes based on the selected singleuser jupyterlab image."""
@@ -370,10 +370,12 @@ class CustomDockerSpawner(DockerSpawner):
 
     def __create_collaborative_shared_volumes(self) -> None:
         """Create shared volumes for collaborative servers."""
-        if constants.JUPYTERHUB_RTC_ENABLED and self._is_collaborative_server():
-            collab_groups = [group for group in self.user.groups if group.name != constants.JUPYTERHUB_RTC_GROUP_NAME]
+        if constants.JUPYTERHUB_COLLAB_ENABLED and self._is_collaborative_server():
+            collab_groups = [
+                group for group in self.user.groups if group.name != constants.JUPYTERHUB_COLLAB_GROUP_NAME
+            ]
             if not collab_groups:
-                # each collab user should only belong to the JUPYTERHUB_RTC_GROUP_NAME group and the current collaboration group
+                # each collab user should only belong to the JUPYTERHUB_COLLAB_GROUP_NAME group and the current collaboration group
                 # fail silently instead of raising an error so that the container is still spawned
                 return
             collab_group = collab_groups[0]
@@ -384,11 +386,13 @@ class CustomDockerSpawner(DockerSpawner):
                         os.path.join(
                             constants.WORKSPACE_DIR,
                             user.name,
-                            constants.JUPYTERHUB_RTC_SHARED_SUBDIR,
+                            constants.JUPYTERHUB_COLLAB_SHARED_SUBDIR,
                             collab_group.name,
                         )
                     ] = {
-                        "bind": os.path.join(constants.NOTEBOOK_DIR, constants.JUPYTERHUB_RTC_SHARED_SUBDIR, user.name),
+                        "bind": os.path.join(
+                            constants.NOTEBOOK_DIR, constants.JUPYTERHUB_COLLAB_SHARED_SUBDIR, user.name
+                        ),
                         "mode": "ro",  # read-only to avoid concurrently updating the files from multiple servers
                     }
 

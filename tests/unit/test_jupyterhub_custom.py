@@ -51,11 +51,11 @@ TEST_ENV = {
     "JUPYTER_DEMO_USER_MEM_LIMIT": "3M",
     "JUPYTERHUB_ADMIN_GROUP_NAME": "admin-group",
     "JUPYTERHUB_DOCKER_EXTRA_HOSTS": "hostname:network other:other-network",
-    "JUPYTERHUB_RTC_ENABLED": "true",
-    "JUPYTERHUB_RTC_GROUP_PREFIX": "jupyterhub-collab-",
-    "JUPYTERHUB_RTC_GROUP_NAME": "test-rtc-group-name",
-    "JUPYTERHUB_RTC_ALLOWED_IMAGES": '{"d": "test4", "e": "test5", "f": "test6"}',
-    "JUPYTERHUB_RTC_SHARED_SUBDIR": "shared-dir",
+    "JUPYTERHUB_COLLAB_ENABLED": "true",
+    "JUPYTERHUB_COLLAB_GROUP_PREFIX": "jupyterhub-collab-",
+    "JUPYTERHUB_COLLAB_GROUP_NAME": "test-rtc-group-name",
+    "JUPYTERHUB_COLLAB_ALLOWED_IMAGES": '{"d": "test4", "e": "test5", "f": "test6"}',
+    "JUPYTERHUB_COLLAB_SHARED_SUBDIR": "shared-dir",
 }
 
 BACK_COMPAT_VARS = [
@@ -240,36 +240,36 @@ class TestConstants:
         monkeypatch.delenv("JUPYTERHUB_DOCKER_EXTRA_HOSTS")
         reload(constants).JUPYTERHUB_DOCKER_EXTRA_HOSTS == {}
 
-    def test_JUPYTERHUB_RTC_ENABLED(self, constants, monkeypatch):
-        assert constants.JUPYTERHUB_RTC_ENABLED
-        self.check_required("JUPYTERHUB_RTC_ENABLED", constants, monkeypatch)
-        monkeypatch.setenv("JUPYTERHUB_RTC_ENABLED", "false")
-        assert not reload(constants).JUPYTERHUB_RTC_ENABLED
-        monkeypatch.setenv("JUPYTERHUB_RTC_ENABLED", "")
-        assert not reload(constants).JUPYTERHUB_RTC_ENABLED
+    def test_JUPYTERHUB_COLLAB_ENABLED(self, constants, monkeypatch):
+        assert constants.JUPYTERHUB_COLLAB_ENABLED
+        self.check_required("JUPYTERHUB_COLLAB_ENABLED", constants, monkeypatch)
+        monkeypatch.setenv("JUPYTERHUB_COLLAB_ENABLED", "false")
+        assert not reload(constants).JUPYTERHUB_COLLAB_ENABLED
+        monkeypatch.setenv("JUPYTERHUB_COLLAB_ENABLED", "")
+        assert not reload(constants).JUPYTERHUB_COLLAB_ENABLED
 
-    def test_JUPYTERHUB_RTC_GROUP_PREFIX(self, constants, monkeypatch):
-        assert constants.JUPYTERHUB_RTC_GROUP_PREFIX
-        self.check_required("JUPYTERHUB_RTC_GROUP_PREFIX", constants, monkeypatch)
+    def test_JUPYTERHUB_COLLAB_GROUP_PREFIX(self, constants, monkeypatch):
+        assert constants.JUPYTERHUB_COLLAB_GROUP_PREFIX
+        self.check_required("JUPYTERHUB_COLLAB_GROUP_PREFIX", constants, monkeypatch)
 
-    def test_JUPYTERHUB_RTC_GROUP_NAME(self, constants, monkeypatch):
-        assert constants.JUPYTERHUB_RTC_GROUP_NAME
-        self.check_required("JUPYTERHUB_RTC_GROUP_NAME", constants, monkeypatch)
+    def test_JUPYTERHUB_COLLAB_GROUP_NAME(self, constants, monkeypatch):
+        assert constants.JUPYTERHUB_COLLAB_GROUP_NAME
+        self.check_required("JUPYTERHUB_COLLAB_GROUP_NAME", constants, monkeypatch)
 
-    def test_JUPYTERHUB_RTC_ALLOWED_IMAGES(self, constants, monkeypatch):
-        assert constants.JUPYTERHUB_RTC_ALLOWED_IMAGES == yaml.safe_load(TEST_ENV["JUPYTERHUB_RTC_ALLOWED_IMAGES"])
+    def test_JUPYTERHUB_COLLAB_ALLOWED_IMAGES(self, constants, monkeypatch):
+        assert constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES == yaml.safe_load(TEST_ENV["JUPYTERHUB_COLLAB_ALLOWED_IMAGES"])
         json_val = {"a": "b"}
         yaml_val = {"c": "d"}
-        monkeypatch.setenv("JUPYTERHUB_RTC_ALLOWED_IMAGES", json.dumps(json_val))
-        assert reload(constants).JUPYTERHUB_RTC_ALLOWED_IMAGES == json_val
-        monkeypatch.setenv("JUPYTERHUB_RTC_ALLOWED_IMAGES", yaml.dump(yaml_val))
-        assert reload(constants).JUPYTERHUB_RTC_ALLOWED_IMAGES == yaml_val
-        monkeypatch.delenv("JUPYTERHUB_RTC_ALLOWED_IMAGES")
-        assert reload(constants).JUPYTERHUB_RTC_ALLOWED_IMAGES is None
+        monkeypatch.setenv("JUPYTERHUB_COLLAB_ALLOWED_IMAGES", json.dumps(json_val))
+        assert reload(constants).JUPYTERHUB_COLLAB_ALLOWED_IMAGES == json_val
+        monkeypatch.setenv("JUPYTERHUB_COLLAB_ALLOWED_IMAGES", yaml.dump(yaml_val))
+        assert reload(constants).JUPYTERHUB_COLLAB_ALLOWED_IMAGES == yaml_val
+        monkeypatch.delenv("JUPYTERHUB_COLLAB_ALLOWED_IMAGES")
+        assert reload(constants).JUPYTERHUB_COLLAB_ALLOWED_IMAGES is None
 
-    def test_JUPYTERHUB_RTC_SHARED_SUBDIR(self, constants, monkeypatch):
-        assert constants.JUPYTERHUB_RTC_SHARED_SUBDIR
-        self.check_required("JUPYTERHUB_RTC_SHARED_SUBDIR", constants, monkeypatch)
+    def test_JUPYTERHUB_COLLAB_SHARED_SUBDIR(self, constants, monkeypatch):
+        assert constants.JUPYTERHUB_COLLAB_SHARED_SUBDIR
+        self.check_required("JUPYTERHUB_COLLAB_SHARED_SUBDIR", constants, monkeypatch)
 
     def test_backwards_compatible_star_importable(self, constants):
         assert constants.__all__ == BACK_COMPAT_VARS
@@ -376,15 +376,15 @@ class TestCustomDockerSpawner:
 
         def test_custom_collaborative_server(self, constants, allowed_images):
             group = Mock()
-            group.name = constants.JUPYTERHUB_RTC_GROUP_NAME
-            assert allowed_images(groups=[group]) == constants.JUPYTERHUB_RTC_ALLOWED_IMAGES
+            group.name = constants.JUPYTERHUB_COLLAB_GROUP_NAME
+            assert allowed_images(groups=[group]) == constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES
 
         def test_custom_is_collaborative_server_rtc_disabled(self, constants, allowed_images):
-            constants.JUPYTERHUB_RTC_ENABLED = False
+            constants.JUPYTERHUB_COLLAB_ENABLED = False
             assert allowed_images() == constants.JUPYTERHUB_ALLOWED_IMAGES
 
         def test_custom_is_collaborative_server_rtc_no_images_specified(self, constants, allowed_images):
-            constants.JUPYTERHUB_RTC_ALLOWED_IMAGES = {}
+            constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES = {}
             assert allowed_images() == constants.JUPYTERHUB_ALLOWED_IMAGES
 
         def test_custom_single(self, allowed_images, constants):
@@ -393,8 +393,8 @@ class TestCustomDockerSpawner:
 
         def test_custom_collaborative_server_single(self, constants, allowed_images):
             group = Mock()
-            group.name = constants.JUPYTERHUB_RTC_GROUP_NAME
-            constants.JUPYTERHUB_RTC_ALLOWED_IMAGES = {"d": "image5"}
+            group.name = constants.JUPYTERHUB_COLLAB_GROUP_NAME
+            constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES = {"d": "image5"}
             assert allowed_images(groups=[group]) == []
 
         def test_with_names(self, allowed_images, constants):
@@ -683,8 +683,8 @@ class TestCustomDockerSpawner:
                 def _(spawner):
                     group1 = Mock()
                     group2 = Mock()
-                    group1.name = constants.JUPYTERHUB_RTC_GROUP_NAME
-                    group2.name = constants.JUPYTERHUB_RTC_GROUP_PREFIX + "test"
+                    group1.name = constants.JUPYTERHUB_COLLAB_GROUP_NAME
+                    group2.name = constants.JUPYTERHUB_COLLAB_GROUP_PREFIX + "test"
                     inst = generate_spawner_inst(spawner, groups=[group1, group2])
                     user2 = Mock()
                     user2.name = "other-user"
@@ -696,12 +696,12 @@ class TestCustomDockerSpawner:
                 return os.path.join(
                     constants.WORKSPACE_DIR,
                     spawner_inst.user.groups[1].users[1].name,
-                    constants.JUPYTERHUB_RTC_SHARED_SUBDIR,
+                    constants.JUPYTERHUB_COLLAB_SHARED_SUBDIR,
                     spawner_inst.user.groups[1].name
                 )
 
             def test_rtc_disabled(self, spawner, constants, generate_spawner_inst_for_collab):
-                constants.JUPYTERHUB_RTC_ENABLED = False
+                constants.JUPYTERHUB_COLLAB_ENABLED = False
                 spawner_inst = generate_spawner_inst_for_collab(spawner)
                 spawner_inst.run_pre_spawn_hook()
                 assert self.expected_volume_key(spawner_inst, constants) not in spawner_inst.volumes
@@ -720,7 +720,7 @@ class TestCustomDockerSpawner:
                 assert spawner_inst.volumes[key]["mode"] == "ro"
                 assert spawner_inst.volumes[key]["bind"] == os.path.join(
                     constants.NOTEBOOK_DIR,
-                    constants.JUPYTERHUB_RTC_SHARED_SUBDIR,
+                    constants.JUPYTERHUB_COLLAB_SHARED_SUBDIR,
                     spawner_inst.user.groups[1].users[1].name,
                 )
 
@@ -951,11 +951,11 @@ class TestMagpieAuthenticator:
                     first_resp.ok = second_resp.ok = True
                     second_resp.json.return_value = {
                         "user": {"user_name": "user1", "group_names": [
-                            "group1", f"{constants.JUPYTERHUB_RTC_GROUP_PREFIX}group2"
+                            "group1", f"{constants.JUPYTERHUB_COLLAB_GROUP_PREFIX}group2"
                         ]}
                     }
                     authz_mock.side_effect = [first_resp, second_resp]
-                    constants.JUPYTERHUB_RTC_ENABLED = False
+                    constants.JUPYTERHUB_COLLAB_ENABLED = False
                     data = await magpie_authenticator.authenticate(MagicMock(), auth_data)
                     assert data["roles"] == [magpie_authenticator._base_user_role]
 
@@ -963,7 +963,7 @@ class TestMagpieAuthenticator:
                 with patch("requests.get") as authz_mock:
                     first_resp, second_resp = Mock(), Mock()
                     first_resp.ok = second_resp.ok = True
-                    group2 = f"{constants.JUPYTERHUB_RTC_GROUP_PREFIX}group2"
+                    group2 = f"{constants.JUPYTERHUB_COLLAB_GROUP_PREFIX}group2"
                     second_resp.json.return_value = {
                         "user": {"user_name": "user1", "group_names": [
                             "group1", group2
@@ -976,7 +976,7 @@ class TestMagpieAuthenticator:
                     assert handler.auth_to_user.await_args_list[0].args == ({
                         "name": group2,
                         "admin": False,
-                        "groups": [constants.JUPYTERHUB_RTC_GROUP_NAME, group2],
+                        "groups": [constants.JUPYTERHUB_COLLAB_GROUP_NAME, group2],
                         "roles": [magpie_authenticator._base_user_role]
                     },)
                     assert data["roles"] == [

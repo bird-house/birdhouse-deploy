@@ -60,7 +60,7 @@ class MagpieAuthenticator(Authenticator):
     The `reset_managed_roles_on_startup` attribute tells Jupyterhub that the Hub should reset the user
     roles when the hub restarts. This is True by default for this Authenticator.
 
-    If real-time-collaboration is enabled for JupyterHub (constants.JUPYTERHUB_RTC_ENABLED is True) then `manage_groups`,
+    If real-time-collaboration is enabled for JupyterHub (constants.JUPYTERHUB_COLLAB_ENABLED is True) then `manage_groups`,
     `manage_roles`, and `reset_managed_roles_on_startup` must all be set to True.
     """
 
@@ -172,13 +172,13 @@ class MagpieAuthenticator(Authenticator):
     async def _setup_collab_roles(self, handler: BaseHandler, groups: list[str]) -> list[dict]:
         roles = []
         for group in groups:
-            if group.startswith(constants.JUPYTERHUB_RTC_GROUP_PREFIX):
+            if group.startswith(constants.JUPYTERHUB_COLLAB_GROUP_PREFIX):
                 await handler.auth_to_user(
                     {
                         "name": group,  # the collaboration user will have the same name as the associated group
                         "admin": False,
                         "groups": [
-                            constants.JUPYTERHUB_RTC_GROUP_NAME,
+                            constants.JUPYTERHUB_COLLAB_GROUP_NAME,
                             group,
                         ],  # add collab user to shared group so that it can easily determine the other members at spawn time
                         "roles": [
@@ -236,7 +236,7 @@ class MagpieAuthenticator(Authenticator):
                 user_info["auth_state"] = {"magpie_cookies": response.cookies.get_dict()}
             if self.manage_roles:
                 user_info["roles"] = [self._base_user_role]
-                if constants.JUPYTERHUB_RTC_ENABLED:
+                if constants.JUPYTERHUB_COLLAB_ENABLED:
                     user_info["roles"].extend(await self._setup_collab_roles(handler, groups))
             return user_info
 
