@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   catalog:
     url: http://${BIRDHOUSE_FQDN}:8086/pywps

@@ -33,6 +33,126 @@
   threddsConfig.xml file and a sample usage is provided in `env.local.example` to
   increase the OpenDap binary response max size to avoid having to chunk small datasets.
 
+- Collaborative Jupyterlab Servers
+
+Jupyterhub allows users to create one personal jupyterlab server which only that user has access to. Jupyterhub can
+also optionally allow users to share jupyterlab servers in order to collaborate and work on projects together.
+
+This mode is disabled by default and if it is disabled there are no changes that are visible to the user from
+before this feature was added (i.e. this change is fully backwards compatible).
+
+In this mode, users can spawn a jupyterlab server owned by a group of users, not just a single user. Every
+member of the group can access that server simultaneously and can synchronously work on tasks within that server.
+
+To enable this mode:
+
+- Set the ``JUPYTERHUB_COLLAB_ENABLED`` environment variable to ``true`` in the local environment file
+- Create a group in Magpie whose name starts with the value of the ``JUPYTERHUB_COLLAB_GROUP_PREFIX`` variable (which is
+  ``jupyterhub-collab-`` by default)
+- Add some users to the group in Magpie
+
+The next time one of these users logs in to Jupyterhub they will be given the option to access their personal server
+or the server that belongs to this group. Once they start or access the group's jupyterlab server they will be able to
+use the server as normal except for the following differences:
+
+- The file system will contain the group's workspace, not their personal workspace
+- The file system will contain a subfolder named the value of the ``JUPYTERHUB_COLLAB_SHARED_SUBDIR`` variable (which is
+  ``group-share`` by default). Within that subfolder will be a folder for each user in the group, these are read-only
+  in the group's server but can be modified from within each user's personal server (see below).
+
+The next time the user logs in to their personal server they will also see the following difference:
+
+- The file system will contain a subfolder named the value of the ``JUPYTERHUB_COLLAB_SHARED_SUBDIR`` variable (which is
+  ``group-share`` by default). Within that subfolder will be a folder for each group that the user belongs to. Users can add
+  files to this folder and the contents of this folder will be visible in that group's server's filesystem (see above).
+
+Note:
+
+Because of the way that jupyterhub manages roles allowing access to these shared servers, a user may need to log out of
+jupyterhub and back in again to see changes in group memberships reflected in jupyterhub.
+
+Additionally, if the jupyterhub server restarts, users will have to log out and log in again in order to refresh their
+group memberships. In this case a warning is displayed to the user on their home screen prompting them to log in again.
+
+Note:
+
+Jupyterlab also provides a plugin that allow for real-time-collaboration (RTC) between users on a shared jupyterlab server.
+This can be enabled by installing the [juptyer-collaboration](https://github.com/jupyterlab/jupyter-collaboration) package
+in the jupyterlab image. It is highly recommended to create a jupyterlab image that contains this package and add it to the
+``JUPYTERHUB_COLLAB_ALLOWED_IMAGES`` variable in the local environment file.
+
+``JUPYTERHUB_COLLAB_ALLOWED_IMAGES`` will determine which images are allowed for the group owned jupyterlab servers (not the
+ones for individual users). The admin may even consider creating two versions of each image, one which contains the
+juptyer-collaboration package for group owned servers and on which doesn't for the individual servers.
+
+
+
+[2.31.1](https://github.com/bird-house/birdhouse-deploy/tree/2.31.1) (2026-09-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- CanarieAPI: bump to version 1.2.1
+
+  Security updates and Docker rebuild from updated GitHub CI pipeline publishing the image on DockerHub.
+
+- Birdhouse: Add file code metadata declarations to help highlight and parse unconventional extensions.
+
+  All `.template`, `.example` or alternative YAML-like `.cfg` files that cannot be directly interpreted by their
+  file extension have been updated to provide either/all off an Editor Modelines (Emacs style) comment, a shebang
+  and `.gitattribute` linguist definitions to help parsers, IDEs and GitHub parse and highlight their code contents
+  in the appropriate format and coding language.
+
+- Remove [skip ci] from bumpversion commits
+
+  Commits created by the `bumpversion` tool were not triggering unit tests in the CI which are required by
+  github before a pull request can be merged. The previous workaround was to create an empty commit *after*
+  the commit that bumps the version. This is not an intuitive workflow and will likely continue to cause
+  confusion going forward.
+
+  To avoid this confusion, `[skip ci]` has been changed to `[skip jenkins]` so that the unit tests will
+  run as expected and only the integration tests run through jenkins will be skipped.
+
+[2.31.0](https://github.com/bird-house/birdhouse-deploy/tree/2.31.0) (2026-09-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Thredds: authenticate with twitcher verify instead of going through twitcher's proxy
+
+  The Thredds endpoints go through Twitcher's proxy (`twitcher/ows/proxy` by default) which adds some overhead
+  to the requests. In order to avoid this and increase efficiency, Twitcher endpoints now authenticate with the
+  Twitcher verify endpoint (`twitcher/ows/verify` by default) and then access the thredds service directly.
+
+  Note that some older scripts and notebooks were prone to accessing Thredds directly through Twitcher itself
+  (e.g. `twitcher/ows/proxy/thredds/...`). In order to continue supporting these requests this change adds an
+  Nginx rewrite rule to permanently redirect to the equivalent `thredds/...` endpoint. However, accessing Thredds
+  through the Twitcher proxy directly is not encouraged for new scripts in order to avoid an unnecessary redirect.
+
+- Magpie/THREDDS : Allow `remoteCatalogService` urls for THREDDS in Magpie.
+
+  Remote catalogs were already allowed in the default THREDDS config. This feature is usable by adding `<catalogRef>`
+  entries to the THREDDS catalog, via the `THREDDS_ADDITIONAL_CATALOG` variable of `env.local`. Example:
+
+  ```bash
+  export THREDDS_ADDITIONAL_CATALOG='<catalogRef xlink:title="External catalog" name="remote" xlink:href="https://EXTERNAL_URL/thredds/catalog/catalog.xml" />'
+  ```
+  Where `EXTERNAL_URL` is an URL to another THREDDS service. The generated HTML page will show "External catalog" as a
+  folder and navigating down the catalog will appear to the user as if it was hosted on the current instance. However,
+  any data links will direct to the other instance. The default THREDDS config only allows HTTP and OPeNDAP services
+  to be listed for remote catalogs.
+
+[2.30.1](https://github.com/bird-house/birdhouse-deploy/tree/2.30.1) (2026-07-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyterhub: bump version to 5.5.0
+
+  This version includes some bug fixes and changes to an authenticator not used by birdhouse.
+  See [the changelog](https://jupyterhub.readthedocs.io/en/stable/reference/changelog.html#id3)
+  for specifics.
+
 [2.30.0](https://github.com/bird-house/birdhouse-deploy/tree/2.30.0) (2026-07-08)
 ------------------------------------------------------------------------------------------------------------------
 

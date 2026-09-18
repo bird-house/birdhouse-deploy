@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   secure-data-proxy:
     # below URL is only used to fill in the required location in Magpie

@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 #
 # Parameters:
 #   service:              service name to receive the permission (directly on it if no 'resource' mentioned, must exist)

@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   geoserver-secured:
     url: http://geoserver:8080/geoserver

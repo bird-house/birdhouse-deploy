@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+# -*- mode: sh -*-
 if ! echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q 'thredds[[:space:]]*$'; then
   log WARN 'The scheduler-job-deploy_raven_testdata component is enabled but the thredds component is not. This WILL cause problems. Please disable the scheduler-job-deploy_raven_testdata component.'
 fi

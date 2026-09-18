@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 permissions:
   - service: ${GENERIC_BIRD_NAME}
     permission: getcapabilities

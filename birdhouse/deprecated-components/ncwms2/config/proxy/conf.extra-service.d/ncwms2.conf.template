@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
     location /ncWMS2/ {
     #    proxy_pass http://${BIRDHOUSE_FQDN}:8080;
     #     proxy_set_header Host $host;

@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# -*- mode: sh -*-
 
 if [ "$(echo "${MAGPIE_NETWORK_ENABLED}" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
     if [ -z "${MAGPIE_NETWORK_INSTANCE_NAME}" ]; then

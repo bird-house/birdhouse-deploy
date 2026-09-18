@@ -51,6 +51,11 @@ TEST_ENV = {
     "JUPYTER_DEMO_USER_MEM_LIMIT": "3M",
     "JUPYTERHUB_ADMIN_GROUP_NAME": "admin-group",
     "JUPYTERHUB_DOCKER_EXTRA_HOSTS": "hostname:network other:other-network",
+    "JUPYTERHUB_COLLAB_ENABLED": "true",
+    "JUPYTERHUB_COLLAB_GROUP_PREFIX": "jupyterhub-collab-",
+    "JUPYTERHUB_COLLAB_GROUP_NAME": "test-rtc-group-name",
+    "JUPYTERHUB_COLLAB_ALLOWED_IMAGES": '{"d": "test4", "e": "test5", "f": "test6"}',
+    "JUPYTERHUB_COLLAB_SHARED_SUBDIR": "shared-dir",
 }
 
 BACK_COMPAT_VARS = [
@@ -235,6 +240,37 @@ class TestConstants:
         monkeypatch.delenv("JUPYTERHUB_DOCKER_EXTRA_HOSTS")
         reload(constants).JUPYTERHUB_DOCKER_EXTRA_HOSTS == {}
 
+    def test_JUPYTERHUB_COLLAB_ENABLED(self, constants, monkeypatch):
+        assert constants.JUPYTERHUB_COLLAB_ENABLED
+        self.check_required("JUPYTERHUB_COLLAB_ENABLED", constants, monkeypatch)
+        monkeypatch.setenv("JUPYTERHUB_COLLAB_ENABLED", "false")
+        assert not reload(constants).JUPYTERHUB_COLLAB_ENABLED
+        monkeypatch.setenv("JUPYTERHUB_COLLAB_ENABLED", "")
+        assert not reload(constants).JUPYTERHUB_COLLAB_ENABLED
+
+    def test_JUPYTERHUB_COLLAB_GROUP_PREFIX(self, constants, monkeypatch):
+        assert constants.JUPYTERHUB_COLLAB_GROUP_PREFIX
+        self.check_required("JUPYTERHUB_COLLAB_GROUP_PREFIX", constants, monkeypatch)
+
+    def test_JUPYTERHUB_COLLAB_GROUP_NAME(self, constants, monkeypatch):
+        assert constants.JUPYTERHUB_COLLAB_GROUP_NAME
+        self.check_required("JUPYTERHUB_COLLAB_GROUP_NAME", constants, monkeypatch)
+
+    def test_JUPYTERHUB_COLLAB_ALLOWED_IMAGES(self, constants, monkeypatch):
+        assert constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES == yaml.safe_load(TEST_ENV["JUPYTERHUB_COLLAB_ALLOWED_IMAGES"])
+        json_val = {"a": "b"}
+        yaml_val = {"c": "d"}
+        monkeypatch.setenv("JUPYTERHUB_COLLAB_ALLOWED_IMAGES", json.dumps(json_val))
+        assert reload(constants).JUPYTERHUB_COLLAB_ALLOWED_IMAGES == json_val
+        monkeypatch.setenv("JUPYTERHUB_COLLAB_ALLOWED_IMAGES", yaml.dump(yaml_val))
+        assert reload(constants).JUPYTERHUB_COLLAB_ALLOWED_IMAGES == yaml_val
+        monkeypatch.delenv("JUPYTERHUB_COLLAB_ALLOWED_IMAGES")
+        assert reload(constants).JUPYTERHUB_COLLAB_ALLOWED_IMAGES is None
+
+    def test_JUPYTERHUB_COLLAB_SHARED_SUBDIR(self, constants, monkeypatch):
+        assert constants.JUPYTERHUB_COLLAB_SHARED_SUBDIR
+        self.check_required("JUPYTERHUB_COLLAB_SHARED_SUBDIR", constants, monkeypatch)
+
     def test_backwards_compatible_star_importable(self, constants):
         assert constants.__all__ == BACK_COMPAT_VARS
 
@@ -325,36 +361,65 @@ class TestCustomDockerSpawner:
             ]
 
     class TestAllowedImages:
-        def test_custom(self, spawner, constants):
-            assert spawner.CustomDockerSpawner().allowed_images == constants.JUPYTERHUB_ALLOWED_IMAGES
+        @pytest.fixture
+        def allowed_images(self, spawner):
+            def _(name="user", groups=None):
+                spawner_inst = reload(spawner).CustomDockerSpawner()
+                spawner_inst.user = Mock()
+                spawner_inst.user.name = name
+                spawner_inst.user.groups = groups or []
+                return spawner_inst.allowed_images(spawner_inst)
+            return _
 
-        def test_custom_single(self, spawner, constants):
+        def test_custom(self, constants, allowed_images):
+            assert allowed_images() == constants.JUPYTERHUB_ALLOWED_IMAGES
+
+        def test_custom_collaborative_server(self, constants, allowed_images):
+            group = Mock()
+            group.name = constants.JUPYTERHUB_COLLAB_GROUP_NAME
+            assert allowed_images(groups=[group]) == constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES
+
+        def test_custom_is_collaborative_server_rtc_disabled(self, constants, allowed_images):
+            constants.JUPYTERHUB_COLLAB_ENABLED = False
+            assert allowed_images() == constants.JUPYTERHUB_ALLOWED_IMAGES
+
+        def test_custom_is_collaborative_server_rtc_no_images_specified(self, constants, allowed_images):
+            constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES = {}
+            assert allowed_images() == constants.JUPYTERHUB_ALLOWED_IMAGES
+
+        def test_custom_single(self, allowed_images, constants):
             constants.JUPYTERHUB_ALLOWED_IMAGES = {"a": "image1"}
-            assert reload(spawner).CustomDockerSpawner().allowed_images == []
+            assert allowed_images() == []
 
-        def test_with_names(self, spawner, constants):
+        def test_custom_collaborative_server_single(self, constants, allowed_images):
+            group = Mock()
+            group.name = constants.JUPYTERHUB_COLLAB_GROUP_NAME
+            constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES = {"d": "image5"}
+            assert allowed_images(groups=[group]) == []
+
+        def test_with_names(self, allowed_images, constants):
             constants.JUPYTERHUB_ALLOWED_IMAGES = None
             constants.JUPYTERHUB_IMAGE_SELECTION_NAMES = ["a", "b"]
             constants.JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES = ["image1", "image2"]
-            assert reload(spawner).CustomDockerSpawner().allowed_images == {"a": "image1", "b": "image2"}
+            assert allowed_images() == {"a": "image1", "b": "image2"}
 
-        def test_with_names_single(self, spawner, constants):
+        def test_with_names_single(self, allowed_images, constants):
             constants.JUPYTERHUB_ALLOWED_IMAGES = None
             constants.JUPYTERHUB_IMAGE_SELECTION_NAMES = ["a"]
             constants.JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES = ["image1"]
-            assert reload(spawner).CustomDockerSpawner().allowed_images == []
+            assert allowed_images() == []
 
-        def test_without_names(self, spawner, constants):
+        def test_without_names(self, allowed_images, constants):
             constants.JUPYTERHUB_ALLOWED_IMAGES = None
             constants.JUPYTERHUB_IMAGE_SELECTION_NAMES = []
             constants.JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES = ["image1", "image2"]
-            assert reload(spawner).CustomDockerSpawner().allowed_images == constants.JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES
+            assert allowed_images() == constants.JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES
 
-        def test_without_names_single(self, spawner, constants):
+        def test_without_names_single(self, allowed_images, constants):
             constants.JUPYTERHUB_ALLOWED_IMAGES = None
             constants.JUPYTERHUB_IMAGE_SELECTION_NAMES = []
             constants.JUPYTERHUB_DOCKER_NOTEBOOK_IMAGES = ["image1"]
-            assert reload(spawner).CustomDockerSpawner().allowed_images == []
+            assert allowed_images() == []
 
     class TestVolumes:
         def test_no_extras(self, spawner, constants):
@@ -412,11 +477,11 @@ class TestCustomDockerSpawner:
     class TestPreSpawnHook:
         @pytest.fixture
         def generate_spawner_inst(self):
-            def _(spawner, name="user"):
-                spawner_inst = spawner.CustomDockerSpawner()
+            def _(spawner, name="user", groups=None):
+                spawner_inst = reload(spawner).CustomDockerSpawner()
                 spawner_inst.user = Mock()
                 spawner_inst.user.name = name
-                spawner_inst.user.groups = []
+                spawner_inst.user.groups = groups or []
                 spawner_inst.user_options = {"image": "image1"}
                 return spawner_inst
 
@@ -612,6 +677,53 @@ class TestCustomDockerSpawner:
                 spawner_inst.run_pre_spawn_hook()
                 assert mock.call_args == ((spawner_inst, 22),)
 
+        class TestCreateCollaborativeSharedVolumes:
+            @pytest.fixture
+            def generate_spawner_inst_for_collab(self, generate_spawner_inst, constants):
+                def _(spawner):
+                    group1 = Mock()
+                    group2 = Mock()
+                    group1.name = constants.JUPYTERHUB_COLLAB_GROUP_NAME
+                    group2.name = constants.JUPYTERHUB_COLLAB_GROUP_PREFIX + "test"
+                    inst = generate_spawner_inst(spawner, groups=[group1, group2])
+                    user2 = Mock()
+                    user2.name = "other-user"
+                    group2.users = [inst.user, user2]
+                    return inst
+                return _
+
+            def expected_volume_key(self, spawner_inst, constants):
+                return os.path.join(
+                    constants.WORKSPACE_DIR,
+                    spawner_inst.user.groups[1].users[1].name,
+                    constants.JUPYTERHUB_COLLAB_SHARED_SUBDIR,
+                    spawner_inst.user.groups[1].name
+                )
+
+            def test_rtc_disabled(self, spawner, constants, generate_spawner_inst_for_collab):
+                constants.JUPYTERHUB_COLLAB_ENABLED = False
+                spawner_inst = generate_spawner_inst_for_collab(spawner)
+                spawner_inst.run_pre_spawn_hook()
+                assert self.expected_volume_key(spawner_inst, constants) not in spawner_inst.volumes
+
+            def test_not_collaborative_user(self, spawner, constants, generate_spawner_inst_for_collab):
+                spawner_inst = generate_spawner_inst_for_collab(spawner)
+                spawner_inst.user.groups[0].name = "other"
+                spawner_inst.run_pre_spawn_hook()
+                assert self.expected_volume_key(spawner_inst, constants) not in spawner_inst.volumes
+
+            def test_volume_added(self, spawner, constants, generate_spawner_inst_for_collab):
+                spawner_inst = generate_spawner_inst_for_collab(spawner)
+                spawner_inst.run_pre_spawn_hook()
+                key = self.expected_volume_key(spawner_inst, constants)
+                assert key in spawner_inst.volumes
+                assert spawner_inst.volumes[key]["mode"] == "ro"
+                assert spawner_inst.volumes[key]["bind"] == os.path.join(
+                    constants.NOTEBOOK_DIR,
+                    constants.JUPYTERHUB_COLLAB_SHARED_SUBDIR,
+                    spawner_inst.user.groups[1].users[1].name,
+                )
+
         class TestAdditionalPreSpawnHooks:
 
             def test_custom_pre_spawn_hook(self, spawner, generate_spawner_inst):
@@ -621,7 +733,6 @@ class TestCustomDockerSpawner:
                 spawner_inst.run_pre_spawn_hook()
                 assert mock.call_args == ((spawner_inst,),)
 
-# @pytest.mark.asyncio
 class TestMagpieAuthenticator:
     @pytest.fixture
     def authenticator(self, mock_env):
@@ -669,6 +780,49 @@ class TestMagpieAuthenticator:
 
         def test_get_handlers(self, magpie_authenticator, authenticator):
             assert magpie_authenticator.get_handlers({}) == [("/logout", authenticator.MagpieLogoutHandler)]
+
+        def test_manage_groups(self, magpie_authenticator):
+            assert magpie_authenticator.manage_groups
+
+        def test_manage_roles(self, magpie_authenticator):
+            assert magpie_authenticator.manage_roles
+
+        def test_reset_managed_roles_on_startup(self, magpie_authenticator):
+            assert magpie_authenticator.reset_managed_roles_on_startup
+
+        @pytest.mark.asyncio
+        class TestLoadManagedRoles:
+            roles = [{
+                        "name": "jupyterhub-admin",
+                                "description": "Give full admin (super-user) access",
+                                "scopes": ["admin-ui", "admin:users", "admin:servers", "admin:groups"],
+                                "groups": ["admin-group"],
+                    },
+                    {
+                        "name": "server",
+                        "description": "Allows parties to start and stop user servers",
+                        "scopes": [
+                            "access:servers!user",
+                            "read:users:activity!user",
+                            "users:activity!user",
+                            "admin:auth_state!user",
+                        ],
+                        "services": [],
+                    }]
+
+            async def test_crypt_key_set(self, magpie_authenticator):
+                roles = await magpie_authenticator.load_managed_roles()
+                assert roles == self.roles
+
+            async def test_crypt_key_unset(self, magpie_authenticator, constants):
+                constants.JUPYTERHUB_CRYPT_KEY_IS_SET = False
+                roles = await magpie_authenticator.load_managed_roles()
+                assert roles == self.roles[:-1]
+
+            async def test_set_admin_group_name(self, magpie_authenticator, constants):
+                constants.JUPYTERHUB_ADMIN_GROUP_NAME = "other"
+                roles = await magpie_authenticator.load_managed_roles()
+                assert roles[0]["groups"] == ["other"]
 
         @pytest.mark.asyncio
         class TestAuthenticate:
@@ -779,6 +933,64 @@ class TestMagpieAuthenticator:
                     assert handler.set_cookie.call_args.kwargs["name"] == "test"
                     assert handler.set_cookie.call_args.kwargs["value"] == "value"
                     assert handler.set_cookie.call_args.kwargs["domain"] == "example.com"
+
+            async def test_return_basic_roles(self, auth_data, magpie_authenticator):
+                with patch("requests.get") as authz_mock:
+                    first_resp, second_resp = Mock(), Mock()
+                    first_resp.ok = second_resp.ok = True
+                    second_resp.json.return_value = {
+                        "user": {"user_name": "user1", "group_names": ["group1", "group2"]}
+                    }
+                    authz_mock.side_effect = [first_resp, second_resp]
+                    data = await magpie_authenticator.authenticate(MagicMock(), auth_data)
+                    assert data["roles"] == [magpie_authenticator._base_user_role]
+
+            async def test_return_basic_roles_when_rtc_disabled(self, auth_data, magpie_authenticator, constants):
+                with patch("requests.get") as authz_mock:
+                    first_resp, second_resp = Mock(), Mock()
+                    first_resp.ok = second_resp.ok = True
+                    second_resp.json.return_value = {
+                        "user": {"user_name": "user1", "group_names": [
+                            "group1", f"{constants.JUPYTERHUB_COLLAB_GROUP_PREFIX}group2"
+                        ]}
+                    }
+                    authz_mock.side_effect = [first_resp, second_resp]
+                    constants.JUPYTERHUB_COLLAB_ENABLED = False
+                    data = await magpie_authenticator.authenticate(MagicMock(), auth_data)
+                    assert data["roles"] == [magpie_authenticator._base_user_role]
+
+            async def test_return_collab_roles(self, auth_data, magpie_authenticator, constants):
+                with patch("requests.get") as authz_mock:
+                    first_resp, second_resp = Mock(), Mock()
+                    first_resp.ok = second_resp.ok = True
+                    group2 = f"{constants.JUPYTERHUB_COLLAB_GROUP_PREFIX}group2"
+                    second_resp.json.return_value = {
+                        "user": {"user_name": "user1", "group_names": [
+                            "group1", group2
+                        ]}
+                    }
+                    authz_mock.side_effect = [first_resp, second_resp]
+                    handler = AsyncMock()
+                    data = await magpie_authenticator.authenticate(handler, auth_data)
+                    assert len(handler.auth_to_user.await_args_list) == 1
+                    assert handler.auth_to_user.await_args_list[0].args == ({
+                        "name": group2,
+                        "admin": False,
+                        "groups": [constants.JUPYTERHUB_COLLAB_GROUP_NAME, group2],
+                        "roles": [magpie_authenticator._base_user_role]
+                    },)
+                    assert data["roles"] == [
+                        magpie_authenticator._base_user_role,
+                        {
+                            "name": f"collab-access-{group2}",
+                            "scopes": [
+                                f"access:servers!user={group2}",
+                                f"admin:servers!user={group2}",
+                                f"list:users!user={group2}",
+                            ],
+                            "groups": [group2],
+                        }
+                    ]
 
         @pytest.mark.asyncio
         class TestRefreshUser:
