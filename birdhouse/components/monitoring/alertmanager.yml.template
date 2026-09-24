@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 # https://prometheus.io/docs/alerting/latest/configuration/
 # http://${BIRDHOUSE_FQDN}:9093/#/status
 global:

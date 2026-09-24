@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 - name: renew_letsencrypt_ssl
   comment: Auto-renew LetsEncrypt SSL certificate
   schedule: '${RENEW_LETSENCRYPT_SSL_SCHEDULE}'

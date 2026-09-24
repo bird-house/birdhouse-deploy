@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 # Weaver self-reference
 # Employed by default for looking at files available directly (e.g.: pre-fetched)
 localhost:

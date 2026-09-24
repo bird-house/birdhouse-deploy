@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - .github/**/*.yml
+      - tests/requirements.*
     types:
       - opened
       - synchronize
@@ -15,18 +16,16 @@ permissions:
 
 jobs:
   dependabot-auto-approve:
-    name: Auto-approve and auto-merge safe Dependabot updates for GitHub Actions
+    name: Auto-approve and set auto-merge safe Dependabot updates
     runs-on: ubuntu-latest
-    environment: automation
     if: >
-      github.event.pull_request.user.login == 'dependabot[bot]' &&
-      contains(github.event.pull_request.labels.*.name, 'github_actions')
+      github.event.pull_request.user.login == 'dependabot[bot]'
     permissions:
       contents: write
       pull-requests: write
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
         with:
           disable-sudo: true
           egress-policy: audit
@@ -56,7 +55,7 @@ jobs:
 
       - name: Checkout Repository
         if: steps.skip-condition.outputs.skip != 'true'
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.token_generator.outputs.token }}
           persist-credentials: false

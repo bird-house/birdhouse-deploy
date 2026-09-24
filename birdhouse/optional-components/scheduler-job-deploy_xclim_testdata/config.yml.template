@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 - name: deploy_xclim_testdata_to_thredds
   comment: 'Auto-deploy Xclim testdata to Thredds for Finch and Xclim tutorial notebooks.'
   schedule: '${SCHEDULER_JOB_XCLIM_DEPLOY_DATA_JOB_SCHEDULE}'

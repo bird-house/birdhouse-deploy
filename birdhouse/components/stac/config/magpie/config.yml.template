@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   # definition of STAC service for API access
   stac:

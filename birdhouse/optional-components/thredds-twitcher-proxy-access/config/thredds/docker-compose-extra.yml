@@ -1,0 +1,4 @@
+services:
+  proxy:
+    volumes:
+      - ./optional-components/thredds-twitcher-proxy-access/config/thredds/${THREDDS_TWITCHER_PROXY_POLICY}-twitcher-proxy.conf:/etc/nginx/conf.extra-service.d/thredds-twitcher-proxy-access/twitcher-proxy.conf:ro

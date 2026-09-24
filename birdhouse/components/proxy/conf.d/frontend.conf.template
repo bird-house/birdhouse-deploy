@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
 # top-level http config for websocket headers
 # If Upgrade is defined, Connection = upgrade
 # If Upgrade is empty, Connection = close
