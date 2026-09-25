@@ -1,5 +1,14 @@
 # -*- mode: nginx -*-
 # Some old scripts and notebooks accessed threads via the twitcher proxy directly.
 # In order to support this older syntax this redirects to the correct location.
+# Need to use proxy_pass because birdy.WPSClient do not support 301 redirect.
 # Accessing Thredds through the TWITCHER_PROTECTED_PATH is not recommended for all new scripts.
-rewrite ^${TWITCHER_PROTECTED_PATH}/thredds/(.*) /thredds/$1 permanent;
+location ${TWITCHER_PROTECTED_PATH}/thredds/ {
+    proxy_pass ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN}/thredds/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Host $host:$server_port;
+    proxy_set_header X-Forwarded-Proto $real_scheme;
+    proxy_set_header X-Original-URI $request_uri;
+    proxy_set_header X-Real-IP $remote_addr;
+}
