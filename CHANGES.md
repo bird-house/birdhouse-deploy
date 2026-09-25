@@ -16,6 +16,26 @@
 ------------------------------------------------------------------------------------------------------------------
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Thredds: Twitcher proxy endpoint was not 100% backward-compatible
+
+  In [2.31.0](https://github.com/bird-house/birdhouse-deploy/tree/2.31.0), Thredds switched to use
+  Twitcher verify endpoint (`twitcher/ows/verify`) instead of Twitcher proxy (`twitcher/ows/proxy`)
+  for authentication to avoid the performance penalty of the proxy endpoint.
+
+  The previous proxy endpoint was preserved for backward compatibility with finished projects
+  containing older notebooks.  To ensure reproducible science, we should be able to re-run those
+  finished projects notebooks as-is, with the same older runtime environment.
+
+  However, the previous proxy endpoint was not compatible with `birdy.WPSClient` because
+  `birdy.WPSClient` does not support `301` redirect, see
+  [finch-usage.ipynb](https://github.com/bird-house/finch/blob/e878eb53aecf87526b0687db7f3934a206a2e282/docs/source/notebooks/finch-usage.ipynb)
+  for how to reproduce the problem.
+
+  This fix will make the previous Twitcher proxy endpoint 100% backward-compatible with all
+  existing notebooks.
+
 
 [2.31.1](https://github.com/bird-house/birdhouse-deploy/tree/2.31.1) (2026-09-12)
 ------------------------------------------------------------------------------------------------------------------
