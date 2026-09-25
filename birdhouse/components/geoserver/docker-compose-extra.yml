@@ -13,6 +13,8 @@ services:
       # https://github.com/kartoza/docker-geoserver#proxy-base-url
       HTTP_PROXY_NAME: ${BIRDHOUSE_FQDN_PUBLIC}
       HTTP_SCHEME: ${BIRDHOUSE_PROXY_SCHEME}
+      CHOWN_DATA_DIR: false
+      CHOWN_GWC_DATA_DIR: false
     volumes:
       # run deployment/fix-geoserver-data-dir-perm on existing
       # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image
