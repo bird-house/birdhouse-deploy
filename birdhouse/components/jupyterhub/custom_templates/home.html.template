@@ -31,7 +31,7 @@
         </tbody>
     </table>
 </div>
-{% if rtc_enabled %}
+{% if collab_enabled %}
 <script>
     require(["jhapi"], (JHAPI) => {
         const api = new JHAPI("{{ base_url }}");
@@ -51,29 +51,32 @@
             }
             const tableBody = document.getElementById("group-server-table-body");
             const template = document.getElementById("group-server-row-template")
+            const currentUserGroups = "{{user.groups | map(attribute='name') | join(':')}}".split(":")
             for (groupUser of json) {
-                document.getElementById("group-container").style.display = "block";
-                const serverData = Object.values(groupUser.servers)[0]
-                const clone = document.importNode(template.content, true)
-                clone.querySelector("td").innerText = groupUser.name
-                clone.querySelector("td:nth-of-type(2)").innerText = serverData.last_activity || "Never"
-                const start = clone.querySelector(".btn-primary")
-                const stop = clone.querySelector(".btn-danger")
-                start.setAttribute("href", serverData.url)
-                if (serverData.ready) {
-                    start.innerText = "Access Server"
+                if (groupUser.name.startsWith("{{ collab_group_prefix }}") && currentUserGroups.includes(groupUser.name)) {
+                    document.getElementById("group-container").style.display = "block";
+                    const serverData = Object.values(groupUser.servers)[0]
+                    const clone = document.importNode(template.content, true)
+                    clone.querySelector("td").innerText = groupUser.name
+                    clone.querySelector("td:nth-of-type(2)").innerText = serverData.last_activity || "Never"
+                    const start = clone.querySelector(".btn-primary")
+                    const stop = clone.querySelector(".btn-danger")
+                    start.setAttribute("href", serverData.url)
+                    if (serverData.ready) {
+                        start.innerText = "Access Server"
+                    }
+                    if (serverData.stopped) {
+                        stop.classList.add("hidden")
+                    } else {
+                        stop.addEventListener("click", e => {
+                            const response = confirm("Other users may still be using this server and stopping it will interrupt their progress. Are you sure you want to continue?")
+                            if (response) {
+                                api.stop_server(groupUser.name, { success: () => window.location.reload() })
+                            }
+                        })
+                    }
+                    tableBody.appendChild(clone)
                 }
-                if (serverData.stopped) {
-                    stop.classList.add("hidden")
-                } else {
-                    stop.addEventListener("click", e => {
-                        const response = confirm("Other users may still be using this server and stopping it will interrupt their progress. Are you sure you want to continue?")
-                        if (response) {
-                            api.stop_server(groupUser.name, {success: () => window.location.reload()})
-                        }
-                    })
-                }
-                tableBody.appendChild(clone)
             }
         })
     })

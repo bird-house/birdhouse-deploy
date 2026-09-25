@@ -6,11 +6,11 @@ from jupyterhub.app import JupyterHub
 from jupyterhub.auth import Authenticator
 from jupyterhub.handlers.base import BaseHandler
 from jupyterhub.handlers.login import LogoutHandler
-from jupyterhub.spawner import Spawner
 from jupyterhub.user import User
 from traitlets import Unicode, default
 
 from . import constants
+from .custom_dockerspawner import CustomDockerSpawner
 
 
 class MagpieLogoutHandler(LogoutHandler):
@@ -256,11 +256,12 @@ class MagpieAuthenticator(Authenticator):
             handler.clear_login_cookie()
         return False
 
-    async def pre_spawn_start(self, user: User, spawner: Spawner) -> None:
+    async def pre_spawn_start(self, user: User, spawner: CustomDockerSpawner) -> None:
         """Call before spawning a user's server."""
-        auth_state = await user.get_auth_state()
-        if auth_state is None:
-            # MagpieAuthenticator is not configured to store user authorization data or the auth state
-            # has not been persisted to the database yet.
-            return
-        spawner.environment["MAGPIE_COOKIES"] = json.dumps(auth_state.get("magpie_cookies"))
+        if not spawner.is_collaborative_server():
+            auth_state = await user.get_auth_state()
+            if auth_state is None:
+                # MagpieAuthenticator is not configured to store user authorization data or the auth state
+                # has not been persisted to the database yet.
+                return
+            spawner.environment["MAGPIE_COOKIES"] = json.dumps(auth_state.get("magpie_cookies"))

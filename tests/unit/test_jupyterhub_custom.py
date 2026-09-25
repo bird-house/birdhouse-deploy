@@ -1048,18 +1048,17 @@ class TestMagpieAuthenticator:
 
         @pytest.mark.asyncio
         class TestPreSpawnStart:
-            async def test_auth_state_is_set(self, magpie_authenticator):
+            @pytest.mark.parametrize("collaborative", [True, False], ids=["collab", "personal"])
+            @pytest.mark.parametrize("state_set", [True, False], ids=["state_set", "no_state"])
+            async def test_set_magpie_cookies(self, magpie_authenticator, collaborative, state_set):
                 user = Mock()
                 spawner = Mock()
+                spawner.is_collaborative_server.return_value = collaborative
                 spawner.environment = {}
-                user.get_auth_state = AsyncMock(return_value={"magpie_cookies": {"test": "cookie"}})
+                auth_state = {"magpie_cookies": {"test": "cookie"}} if state_set else None
+                user.get_auth_state = AsyncMock(return_value=auth_state)
                 await magpie_authenticator.pre_spawn_start(user, spawner)
-                assert spawner.environment["MAGPIE_COOKIES"] == '{"test": "cookie"}'
-
-            async def test_auth_state_is_not_set(self, magpie_authenticator):
-                user = Mock()
-                spawner = Mock()
-                spawner.environment = {}
-                user.get_auth_state = AsyncMock(return_value=None)
-                await magpie_authenticator.pre_spawn_start(user, spawner)
-                assert "MAGPIE_COOKIES" not in spawner.environment
+                if not collaborative and state_set:
+                    assert spawner.environment["MAGPIE_COOKIES"] == '{"test": "cookie"}'
+                else:
+                    assert "MAGPIE_COOKIES" not in spawner.environment

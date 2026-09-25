@@ -178,7 +178,7 @@ class CustomDockerSpawner(DockerSpawner):
         # Provide a different list of images that support real-time-collaboration if specified.
         if (
             constants.JUPYTERHUB_COLLAB_ENABLED
-            and self._is_collaborative_server()
+            and self.is_collaborative_server()
             and constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES
         ):
             images = constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES
@@ -270,7 +270,7 @@ class CustomDockerSpawner(DockerSpawner):
         """
         return self.user.name
 
-    def _is_collaborative_server(self) -> bool:
+    def is_collaborative_server(self) -> bool:
         """Return true if the server being spawned is a collaborative (shared) server."""
         return any(group.name == constants.JUPYTERHUB_COLLAB_GROUP_NAME for group in self.user.groups)
 
@@ -370,7 +370,7 @@ class CustomDockerSpawner(DockerSpawner):
 
     def __create_collaborative_shared_volumes(self) -> None:
         """Create shared volumes for collaborative servers."""
-        if constants.JUPYTERHUB_COLLAB_ENABLED and self._is_collaborative_server():
+        if constants.JUPYTERHUB_COLLAB_ENABLED and self.is_collaborative_server():
             collab_groups = [
                 group for group in self.user.groups if group.name != constants.JUPYTERHUB_COLLAB_GROUP_NAME
             ]
