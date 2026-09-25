@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# -*- mode: sh -*-
 
 error=
 if [ "${BIRDHOUSE_FQDN}" != "host.docker.internal" ]; then

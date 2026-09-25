@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
     location /s3/ {
         auth_request /secure-s3-auth;
         auth_request_set $auth_status $upstream_status;

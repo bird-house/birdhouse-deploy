@@ -1,3 +1,4 @@
+# -*- mode: ini -*-
 ###
 # app configuration
 # https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
