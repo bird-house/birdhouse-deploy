@@ -18,6 +18,7 @@ services:
       # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image
       # only needed for versions before pavics/geoserver:2.25.2--v2024.06.25-kartoza
       - ${GEOSERVER_DATA_DIR}:/opt/geoserver/data_dir
+      - geoserver_settings_persistence:/settings
     links:
       - postgis
     restart: always
@@ -33,3 +34,8 @@ services:
     image: pavics/postgis:2.2
     container_name: postgis
     restart: always
+
+volumes:
+  geoserver_settings_persistence:
+    external: true
+    name: geoserver_settings_persistence
