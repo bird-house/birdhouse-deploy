@@ -17,6 +17,16 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+## Changes
+
+- Magpie/Twitcher: bump Dockers to `python:3.13.15-alpine3.24`
+
+  - OpenSSL CVE-2026-31789
+  - Magpie [v5.1.2](https://github.com/Ouranosinc/Magpie/releases/tag/5.1.2)
+    (PR https://github.com/Ouranosinc/Magpie/pull/725)
+  - Twitcher [v0.11.3](https://github.com/bird-house/twitcher/releases/tag/v0.11.3)
+    (PR https://github.com/bird-house/twitcher/pull/156)
+
 [2.31.1](https://github.com/bird-house/birdhouse-deploy/tree/2.31.1) (2026-09-12)
 ------------------------------------------------------------------------------------------------------------------
 
