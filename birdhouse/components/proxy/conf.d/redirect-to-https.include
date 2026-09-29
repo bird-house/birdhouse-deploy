@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
     location / {
         return 308 https://$host$request_uri;
     }
