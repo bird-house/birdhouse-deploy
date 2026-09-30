@@ -17,6 +17,11 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.32.2](https://github.com/bird-house/birdhouse-deploy/tree/2.32.2) (2026-09-30)
+------------------------------------------------------------------------------------------------------------------
+
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
 ## Changes
 
 - Magpie/Twitcher: bump Dockers to `python:3.13.15-alpine3.24`
