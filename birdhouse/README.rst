@@ -708,7 +708,8 @@ Release Procedure
   time.  Also, in the spirit of not losing the "push race", execute all these
   steps together, do not take a break in the middle.
 
-  * Merge with ``master`` branch, if needed, so next ``make bump <major|minor|patch>`` step will
+  * Merge ``master`` into your branch branch, if needed,
+    so next ``make bump <major|minor|patch>`` step will
     bump to the proper next version. Might need to review the places where
     CHANGES.md_ items were inserted following merge to make sure the new ones by
     this PR are under "unreleased".
@@ -716,7 +717,10 @@ Release Procedure
   * Run ``make bump <major|minor|patch>`` with appropriate options, as described
     in "Tagging policy" section above.  Push the changes.
 
-  * Merge this PR, copying the entire PR description into the merge commit description.
+  * Press the "Enable auto-merge" button on the PR.
+
+    The CI pipeline automation will take care of copying the entire PR description
+    into the merge commit description, once applicable validation checks have passed.
     This is so that the page https://github.com/bird-house/birdhouse-deploy/tags
     will contain relevant info nicely.  That page was previously used as an ad-hoc
     changelog before CHANGES.md_ was formally introduced.
