@@ -50,7 +50,7 @@ providers:
         target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_execute_outputs
 
       # WARNING: Weaver/Magpie/Twitcher hook 'filter_allowed_processes' deprecated.
-      #   Produces inconsistent results between different content negotiations and contained data of the reponse.
+      #   Produces inconsistent results between different content negotiations and contained data of the response.
       #   For instance, the script filtered JSON, but did not do it for HTML, nor did it update the paging details.
       #   If access is critical (i.e.: process list not publicly readable), consider instead blocking (read-deny-match)
       #   the entire endpoint to secure it and force users access via direct '/processes/{processID}' endpoint.
