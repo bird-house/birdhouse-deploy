@@ -35,12 +35,12 @@
 
   Fix the broken integration between components via
   [`weaver_hooks.py.template`](birdhouse/components/weaver/config/magpie/weaver_hooks.py.template).
-  Because Magpie access and enforcement by Twitcher was transfered from `/twitcher/ows/proxy` to `/twitcher/ows/verify`,
-  the [Magpie Adatper Service Hooks](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks)
+  Because Magpie access and enforcement by Twitcher was transferred from `/twitcher/ows/proxy` to `/twitcher/ows/verify`,
+  the [Magpie Adapter Service Hooks](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks)
   operations were not being applied anymore. Therefore, users could not leverage the auto-creation of Magpie resources
   and permissions from corresponding contents submitted to Weaver. The fix addresses this problem by re-enabling the
   proxy on endpoints that need it for hooks to apply, while remain with the verify pre-auth approach for others, to
-  preserve the faster and memory-efficient direct access to the Weaver resposne payloads in those cases.
+  preserve the faster and memory-efficient direct access to the Weaver response payloads in those cases.
 
   Furthermore, a lot of additional content negotiation capabilities have been added to Weaver since the creation of
   the service hooks. When enabling them, they could filter `/processes` responses according to user access permissions
