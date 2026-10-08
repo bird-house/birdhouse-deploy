@@ -87,6 +87,9 @@ def filter_allowed_processes(response, context):
 
     Using ``GET https://<weaver.url>/processes``
 
+    .. warning::
+        Deprecated. See the note in 'weaver/config/magpie/config.yml.template'.
+
     .. code-block:: json
         :caption: Detailed process listing from Weaver (other fields than 'processes' are removed for concise example).
 
@@ -269,7 +272,7 @@ def allow_user_deployed_processes(response):
 
             # find the nested resource matching: "weaver/processes/<p_id>"
             children = ru.get_resource_children(service, request.db, limit_depth=2)
-            p_res_create = False
+            processes_res_id = None
             p_res = None
             for res in children.values():
                 if res["node"].resource_name == "processes":
@@ -279,15 +282,13 @@ def allow_user_deployed_processes(response):
                             p_res = child_res["node"]
                             break
                     break
-            else:
-                p_res_create = True  # must create after in new transaction context
 
             # note:
             #  since this is running within a *response* hook, the request transaction is already handled
             #  define a new transaction to create new resources
             with transaction.manager:
                 session = request.db
-                if p_res_create:
+                if processes_res_id is None:
                     # resource 'processes' should already exist, but create it if somehow missing
                     # otherwise, it will be impossible to create '<p_id>' under it
                     resp = ru.create_resource("processes", None, Route.resource_type_name, service.resource_id, session)

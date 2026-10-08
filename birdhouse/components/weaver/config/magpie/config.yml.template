@@ -5,7 +5,8 @@
 providers:
   # definition of Weaver service
   ${WEAVER_MANAGER_NAME}:
-    url: http://weaver:4001
+    # Include Weaver configured SCRIPT_NAME prefix such that Nginx and Twithcer proxy redirects all align.
+    url: http://weaver:4001/${WEAVER_MANAGER_NAME}
     title: Weaver (${WEAVER_CONFIG})
     public: true
     c4i: false
@@ -33,6 +34,7 @@ providers:
         path: "/(jobs|execution)"
         method: POST
         target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:add_x_wps_output_context
+
       # apply relevant permissions to allow the user executing a process to retrieve its outputs
       - type: response
         path: "/providers/[\\w_-]+/processes/[\\w:_-]+/(jobs|execution)"
@@ -46,11 +48,19 @@ providers:
         path: "/(jobs|execution)"
         method: POST
         target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:allow_user_execute_outputs
-      # apply relevant permissions such that the user can access its deployed process
-      - type: response
-        path: "/processes"
-        method: GET
-        target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:filter_allowed_processes
+
+      # WARNING: Weaver/Magpie/Twitcher hook 'filter_allowed_processes' deprecated.
+      #   Produces inconsistent results between different content negotiations and contained data of the response.
+      #   For instance, the script filtered JSON, but did not do it for HTML, nor did it update the paging details.
+      #   If access is critical (i.e.: process list not publicly readable), consider instead blocking (read-deny-match)
+      #   the entire endpoint to secure it and force users access via direct '/processes/{processID}' endpoint.
+      # - type: response
+      #   path: "/processes"
+      #   method: GET
+      #   target: /opt/birdhouse/src/magpie/hooks/weaver_hooks.py:filter_allowed_processes
+
+      # apply relevant permissions such that the user can access its own deployed process
+      # prerequisite that the user can have access to POST on the deployment endpoint
       - type: response
         path: "/processes"
         method: POST
