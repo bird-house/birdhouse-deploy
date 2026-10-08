@@ -20,7 +20,7 @@
     }
 
     location ~ "^/${WEAVER_MANAGER_NAME}/(?<weaver_path>.*)$" {
-        # Match the methods and paths in the Magpie/Twitcher hooks configuration to enforce the requred proxy-auth.
+        # Match the methods and paths in the Magpie/Twitcher hooks configuration to enforce the required proxy-auth.
         # All other requests keep verify-only auth to reduce transfer (e.g. download job result) from Twitcher Proxy.
         # Internally dispatch hook requests before 'auth_request' is employed toward Twitcher verify-only auth.
         # The named location '@weaver-hooks' preserves method and body. We apply the redirect on this location such
