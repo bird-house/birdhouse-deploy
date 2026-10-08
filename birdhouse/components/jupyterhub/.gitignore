@@ -1,3 +1,4 @@
+custom_templates/home.html
 custom_templates/login.html
 jupyterhub_config.py
 config/proxy/conf.extra-service.d/jupyterhub.conf

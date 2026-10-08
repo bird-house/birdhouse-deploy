@@ -173,14 +173,17 @@ class CustomDockerSpawner(DockerSpawner):
         )
         return f"sh -c '{post_start_command}'"
 
-    @default("allowed_images")
-    def _default_allowed_images(self) -> list[str] | dict[str, str]:
-        """
-        Return a dictionary or list containing images that a user is allowed to select.
-
-        This is used to set CustomDockerSpawner.allowed_images
-        """
-        images = constants.JUPYTERHUB_ALLOWED_IMAGES
+    def allowed_images(self, _spawner: DockerSpawner) -> list[str] | dict[str, str]:
+        """Return a dictionary or list containing images that a user is allowed to select."""
+        # Provide a different list of images that support real-time-collaboration if specified.
+        if (
+            constants.JUPYTERHUB_COLLAB_ENABLED
+            and self.is_collaborative_server()
+            and constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES
+        ):
+            images = constants.JUPYTERHUB_COLLAB_ALLOWED_IMAGES
+        else:
+            images = constants.JUPYTERHUB_ALLOWED_IMAGES
         if images is None:
             if constants.JUPYTERHUB_IMAGE_SELECTION_NAMES:
                 images = dict(
@@ -254,6 +257,7 @@ class CustomDockerSpawner(DockerSpawner):
             CustomDockerSpawner.__create_dir_hook,
             CustomDockerSpawner.__limit_resource_hook,
             CustomDockerSpawner.__create_tutorial_notebook_hook,
+            CustomDockerSpawner.__create_collaborative_shared_volumes,
         ]
 
     @property
@@ -265,6 +269,10 @@ class CustomDockerSpawner(DockerSpawner):
         we expect the username to match the username set by Magpie.
         """
         return self.user.name
+
+    def is_collaborative_server(self) -> bool:
+        """Return true if the server being spawned is a collaborative (shared) server."""
+        return any(group.name == constants.JUPYTERHUB_COLLAB_GROUP_NAME for group in self.user.groups)
 
     def __create_tutorial_notebook_hook(self) -> None:
         """Mount tutorial notebooks as volumes based on the selected singleuser jupyterlab image."""
@@ -359,6 +367,34 @@ class CustomDockerSpawner(DockerSpawner):
             self.extra_host_config["device_requests"] = [
                 docker.types.DeviceRequest(device_ids=[str(i) for i in gpu_ids], capabilities=[["gpu"]])
             ]
+
+    def __create_collaborative_shared_volumes(self) -> None:
+        """Create shared volumes for collaborative servers."""
+        if constants.JUPYTERHUB_COLLAB_ENABLED and self.is_collaborative_server():
+            collab_groups = [
+                group for group in self.user.groups if group.name != constants.JUPYTERHUB_COLLAB_GROUP_NAME
+            ]
+            if not collab_groups:
+                # each collab user should only belong to the JUPYTERHUB_COLLAB_GROUP_NAME group and the current collaboration group
+                # fail silently instead of raising an error so that the container is still spawned
+                return
+            collab_group = collab_groups[0]
+            for user in collab_group.users:
+                # NOTE: these subdirs will be created the first time the collab server is spawned
+                if user.name != self.user.name:
+                    self.volumes[
+                        os.path.join(
+                            constants.WORKSPACE_DIR,
+                            user.name,
+                            constants.JUPYTERHUB_COLLAB_SHARED_SUBDIR,
+                            collab_group.name,
+                        )
+                    ] = {
+                        "bind": os.path.join(
+                            constants.NOTEBOOK_DIR, constants.JUPYTERHUB_COLLAB_SHARED_SUBDIR, user.name
+                        ),
+                        "mode": "ro",  # read-only to avoid concurrently updating the files from multiple servers
+                    }
 
     def run_pre_spawn_hook(self) -> None:
         """Run the builtin pre-spawn hooks as well as any set by pre_spawn_hook if defined."""
