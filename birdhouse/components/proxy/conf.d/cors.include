@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
     proxy_hide_header 'Access-Control-Allow-Origin';
 
     # assumes that the server default is configured or overridden by a specific location block as needed
