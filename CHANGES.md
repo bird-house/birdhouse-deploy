@@ -15,7 +15,18 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Finch: update from version `0.12.1` to `0.14.0`
+
+  Notable changes:
+
+  * Switch to running as nonroot user.  Output dir permission will be automatically updated.
+  * Updated to `xclim >=0.61`.
+
+  See [Finch release notes](https://github.com/bird-house/finch/blob/main/CHANGELOG.rst) for more details and
+  [Finch compare link](https://github.com/bird-house/finch/compare/v0.12.1...v0.14.0).
+
 
 [2.33.0](https://github.com/bird-house/birdhouse-deploy/tree/2.33.0) (2026-10-08)
 ------------------------------------------------------------------------------------------------------------------
