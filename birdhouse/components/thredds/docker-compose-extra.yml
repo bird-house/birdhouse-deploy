@@ -13,9 +13,9 @@ services:
       - ${THREDDS_SERVICE_DATA_LOCATION_ON_HOST}:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}
       - ${THREDDS_DATASET_LOCATION_ON_HOST}:${THREDDS_DATASET_LOCATION_ON_CONTAINER}
       - wps_outputs:${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}/wps_outputs
-      - ./components/thredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml:ro
-      - ./components/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml:ro
-      - ./components/thredds/wmsConfig.xml:/usr/local/tomcat/content/thredds/wmsConfig.xml:ro
+      - ./components/thredds/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml
+      - ./components/thredds/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml
+      - ./components/thredds/wmsConfig.xml:/usr/local/tomcat/content/thredds/wmsConfig.xml
       - ./components/thredds/entrypointwrapper:/entrypointwrapper:ro
     entrypoint: /entrypointwrapper
     restart: always
