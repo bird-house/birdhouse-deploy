@@ -17,6 +17,78 @@
 
 [//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
+[2.33.1](https://github.com/bird-house/birdhouse-deploy/tree/2.33.1) (2026-10-28)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Finch: update from version `0.12.1` to `0.14.0`
+
+  Notable changes:
+
+  * Switch to running as nonroot user.  Output dir permission will be automatically updated.
+  * Updated to `xclim >=0.61`.
+
+  See [Finch release notes](https://github.com/bird-house/finch/blob/main/CHANGELOG.rst) for more details and
+  [Finch compare link](https://github.com/bird-house/finch/compare/v0.12.1...v0.14.0).
+
+
+[2.33.0](https://github.com/bird-house/birdhouse-deploy/tree/2.33.0) (2026-10-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: bump version from `6.8.3` to `6.16.0`
+
+  Notable changes include:
+
+  - Multi-file CWL workflow deployment and single-request combined deployment/execution of ad-hoc workflows.
+  - Process execution through HTTP GET using KVP query parameters.
+  - Individual and indexed job output retrieval, alternate output formats, and file integrity digests.
+  - Expanded HTML navigation for providers, processes, and jobs, including CWL package display.
+  - Alignment with OGC API - Processes Core v2.0, job definitions, and provenance conventions.
+  - Improved CLI/client deployment, request options, URI references, and input-file handling.
+  - Smaller, hardened Docker images and improved rootless CWL execution support.
+
+## Fixes
+
+- Magpie/Twitcher/Weaver: request hook integration.
+
+  Fix the broken integration between components via
+  [`weaver_hooks.py.template`](birdhouse/components/weaver/config/magpie/weaver_hooks.py.template).
+  Because Magpie access and enforcement by Twitcher was transferred from `/twitcher/ows/proxy` to `/twitcher/ows/verify`,
+  the [Magpie Adapter Service Hooks](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks)
+  operations were not being applied anymore. Therefore, users could not leverage the auto-creation of Magpie resources
+  and permissions from corresponding contents submitted to Weaver. The fix addresses this problem by re-enabling the
+  proxy on endpoints that need it for hooks to apply, while remain with the verify pre-auth approach for others, to
+  preserve the faster and memory-efficient direct access to the Weaver response payloads in those cases.
+
+  Furthermore, a lot of additional content negotiation capabilities have been added to Weaver since the creation of
+  the service hooks. When enabling them, they could filter `/processes` responses according to user access permissions
+  on JSON responses. However, alternate HTML, paged, or mixed provider/process responses would not be handled correctly
+  and would report "leaked" contents not respecting the original JSON result. The hooks would not filter other
+  user-associated contents such as job list based on submitter. Therefore, the `filter_allowed_processes` hook has been
+  disabled (and left for reference) to favour reporting of consistent results across negotiated responses.
+
+  Platforms that wish to rely on protected processes listing should set a `read-deny-match` Magpie permission
+  (or a similar protection combination) on the `Weaver/processes` resource. Otherwise, the `/processes` endpoint
+  will keep listing all processes since the service hook is not operational.
+
+[2.32.2](https://github.com/bird-house/birdhouse-deploy/tree/2.32.2) (2026-09-30)
+------------------------------------------------------------------------------------------------------------------
+
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+## Changes
+
+- Magpie/Twitcher: bump Dockers to `python:3.13.15-alpine3.24`
+
+  - OpenSSL CVE-2026-31789
+  - Magpie [v5.1.2](https://github.com/Ouranosinc/Magpie/releases/tag/5.1.2)
+    (PR https://github.com/Ouranosinc/Magpie/pull/725)
+  - Twitcher [v0.11.3](https://github.com/bird-house/twitcher/releases/tag/v0.11.3)
+    (PR https://github.com/bird-house/twitcher/pull/156)
+
 [2.31.1](https://github.com/bird-house/birdhouse-deploy/tree/2.31.1) (2026-09-12)
 ------------------------------------------------------------------------------------------------------------------
 
