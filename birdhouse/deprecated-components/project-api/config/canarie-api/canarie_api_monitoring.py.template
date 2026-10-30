@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8; mode: python -*-
 PLATFORMS['server']['monitoring']['Project'] = {
     'request': {
         'url': '${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/project-api/explorer/'

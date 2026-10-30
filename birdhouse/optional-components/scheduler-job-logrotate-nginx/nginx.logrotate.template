@@ -1,3 +1,4 @@
+# -*- mode: logrotate -*-
 /var/log/nginx/${PROXY_LOG_FILE} {
         missingok
         # https://github.com/Ouranosinc/CanarieAPI/blob/cc0ae59231ee4b58a34571bd12097c660aefb2e3/canarieapi/logparser.py#L15

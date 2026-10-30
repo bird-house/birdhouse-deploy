@@ -1,0 +1,6 @@
+# -*- mode: nginx -*-
+location ~ ^${TWITCHER_PROTECTED_PATH}/thredds/ {
+    default_type text/plain;
+    return 410 "Accessing thredds through the twitcher proxy directly is no longer supported. Use the /thredds/ endpoint instead.";
+    deny all;
+}

@@ -33,6 +33,144 @@
   threddsConfig.xml file and a sample usage is provided in `env.local.example` to
   increase the OpenDap binary response max size to avoid having to chunk small datasets.
 
+[2.33.1](https://github.com/bird-house/birdhouse-deploy/tree/2.33.1) (2026-10-28)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Finch: update from version `0.12.1` to `0.14.0`
+
+  Notable changes:
+
+  * Switch to running as nonroot user.  Output dir permission will be automatically updated.
+  * Updated to `xclim >=0.61`.
+
+  See [Finch release notes](https://github.com/bird-house/finch/blob/main/CHANGELOG.rst) for more details and
+  [Finch compare link](https://github.com/bird-house/finch/compare/v0.12.1...v0.14.0).
+
+
+[2.33.0](https://github.com/bird-house/birdhouse-deploy/tree/2.33.0) (2026-10-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: bump version from `6.8.3` to `6.16.0`
+
+  Notable changes include:
+
+  - Multi-file CWL workflow deployment and single-request combined deployment/execution of ad-hoc workflows.
+  - Process execution through HTTP GET using KVP query parameters.
+  - Individual and indexed job output retrieval, alternate output formats, and file integrity digests.
+  - Expanded HTML navigation for providers, processes, and jobs, including CWL package display.
+  - Alignment with OGC API - Processes Core v2.0, job definitions, and provenance conventions.
+  - Improved CLI/client deployment, request options, URI references, and input-file handling.
+  - Smaller, hardened Docker images and improved rootless CWL execution support.
+
+## Fixes
+
+- Magpie/Twitcher/Weaver: request hook integration.
+
+  Fix the broken integration between components via
+  [`weaver_hooks.py.template`](birdhouse/components/weaver/config/magpie/weaver_hooks.py.template).
+  Because Magpie access and enforcement by Twitcher was transferred from `/twitcher/ows/proxy` to `/twitcher/ows/verify`,
+  the [Magpie Adapter Service Hooks](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks)
+  operations were not being applied anymore. Therefore, users could not leverage the auto-creation of Magpie resources
+  and permissions from corresponding contents submitted to Weaver. The fix addresses this problem by re-enabling the
+  proxy on endpoints that need it for hooks to apply, while remain with the verify pre-auth approach for others, to
+  preserve the faster and memory-efficient direct access to the Weaver response payloads in those cases.
+
+  Furthermore, a lot of additional content negotiation capabilities have been added to Weaver since the creation of
+  the service hooks. When enabling them, they could filter `/processes` responses according to user access permissions
+  on JSON responses. However, alternate HTML, paged, or mixed provider/process responses would not be handled correctly
+  and would report "leaked" contents not respecting the original JSON result. The hooks would not filter other
+  user-associated contents such as job list based on submitter. Therefore, the `filter_allowed_processes` hook has been
+  disabled (and left for reference) to favour reporting of consistent results across negotiated responses.
+
+  Platforms that wish to rely on protected processes listing should set a `read-deny-match` Magpie permission
+  (or a similar protection combination) on the `Weaver/processes` resource. Otherwise, the `/processes` endpoint
+  will keep listing all processes since the service hook is not operational.
+
+[2.32.2](https://github.com/bird-house/birdhouse-deploy/tree/2.32.2) (2026-09-30)
+------------------------------------------------------------------------------------------------------------------
+
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+## Changes
+
+- Magpie/Twitcher: bump Dockers to `python:3.13.15-alpine3.24`
+
+  - OpenSSL CVE-2026-31789
+  - Magpie [v5.1.2](https://github.com/Ouranosinc/Magpie/releases/tag/5.1.2)
+    (PR https://github.com/Ouranosinc/Magpie/pull/725)
+  - Twitcher [v0.11.3](https://github.com/bird-house/twitcher/releases/tag/v0.11.3)
+    (PR https://github.com/bird-house/twitcher/pull/156)
+
+[2.31.1](https://github.com/bird-house/birdhouse-deploy/tree/2.31.1) (2026-09-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- CanarieAPI: bump to version 1.2.1
+
+  Security updates and Docker rebuild from updated GitHub CI pipeline publishing the image on DockerHub.
+
+- Birdhouse: Add file code metadata declarations to help highlight and parse unconventional extensions.
+
+  All `.template`, `.example` or alternative YAML-like `.cfg` files that cannot be directly interpreted by their
+  file extension have been updated to provide either/all off an Editor Modelines (Emacs style) comment, a shebang
+  and `.gitattribute` linguist definitions to help parsers, IDEs and GitHub parse and highlight their code contents
+  in the appropriate format and coding language.
+
+- Remove [skip ci] from bumpversion commits
+
+  Commits created by the `bumpversion` tool were not triggering unit tests in the CI which are required by
+  github before a pull request can be merged. The previous workaround was to create an empty commit *after*
+  the commit that bumps the version. This is not an intuitive workflow and will likely continue to cause
+  confusion going forward.
+
+  To avoid this confusion, `[skip ci]` has been changed to `[skip jenkins]` so that the unit tests will
+  run as expected and only the integration tests run through jenkins will be skipped.
+
+[2.31.0](https://github.com/bird-house/birdhouse-deploy/tree/2.31.0) (2026-09-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Thredds: authenticate with twitcher verify instead of going through twitcher's proxy
+
+  The Thredds endpoints go through Twitcher's proxy (`twitcher/ows/proxy` by default) which adds some overhead
+  to the requests. In order to avoid this and increase efficiency, Twitcher endpoints now authenticate with the
+  Twitcher verify endpoint (`twitcher/ows/verify` by default) and then access the thredds service directly.
+
+  Note that some older scripts and notebooks were prone to accessing Thredds directly through Twitcher itself
+  (e.g. `twitcher/ows/proxy/thredds/...`). In order to continue supporting these requests this change adds an
+  Nginx rewrite rule to permanently redirect to the equivalent `thredds/...` endpoint. However, accessing Thredds
+  through the Twitcher proxy directly is not encouraged for new scripts in order to avoid an unnecessary redirect.
+
+- Magpie/THREDDS : Allow `remoteCatalogService` urls for THREDDS in Magpie.
+
+  Remote catalogs were already allowed in the default THREDDS config. This feature is usable by adding `<catalogRef>`
+  entries to the THREDDS catalog, via the `THREDDS_ADDITIONAL_CATALOG` variable of `env.local`. Example:
+
+  ```bash
+  export THREDDS_ADDITIONAL_CATALOG='<catalogRef xlink:title="External catalog" name="remote" xlink:href="https://EXTERNAL_URL/thredds/catalog/catalog.xml" />'
+  ```
+  Where `EXTERNAL_URL` is an URL to another THREDDS service. The generated HTML page will show "External catalog" as a
+  folder and navigating down the catalog will appear to the user as if it was hosted on the current instance. However,
+  any data links will direct to the other instance. The default THREDDS config only allows HTTP and OPeNDAP services
+  to be listed for remote catalogs.
+
+[2.30.1](https://github.com/bird-house/birdhouse-deploy/tree/2.30.1) (2026-07-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyterhub: bump version to 5.5.0
+
+  This version includes some bug fixes and changes to an authenticator not used by birdhouse.
+  See [the changelog](https://jupyterhub.readthedocs.io/en/stable/reference/changelog.html#id3)
+  for specifics.
+
 [2.30.0](https://github.com/bird-house/birdhouse-deploy/tree/2.30.0) (2026-07-08)
 ------------------------------------------------------------------------------------------------------------------
 

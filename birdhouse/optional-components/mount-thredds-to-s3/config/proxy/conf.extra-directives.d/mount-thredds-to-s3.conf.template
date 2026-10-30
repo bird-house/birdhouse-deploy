@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
     map $request_uri $request_uri_s3_thredds_path {
         # translate the S3 path to the resolved THREDDS fileServer path
         # see also the '/secure-mount-thredds-to-s3-auth' location

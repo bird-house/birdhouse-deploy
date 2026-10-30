@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+# -*- mode: sh -*-
 if ! echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q 'scheduler[[:space:]]*$'; then
   log WARN 'The scheduler-job-clean_old_files component is enabled but the scheduler component is not. This WILL cause problems. Please disable the scheduler-job-clean_old_files component.'
 fi

@@ -1,3 +1,4 @@
+<!-- -*- mode: html -*- -->
 {% extends "templates/login.html" %} {% set announcement_login = '
 
 ${JUPYTER_LOGIN_BANNER_TOP_SECTION}

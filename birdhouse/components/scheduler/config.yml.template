@@ -1,1 +1,2 @@
+# -*- mode: yaml -*-
 ${BIRDHOUSE_AUTODEPLOY_EXTRA_SCHEDULER_JOBS}

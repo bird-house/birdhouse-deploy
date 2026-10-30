@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8; mode: python -*-
 RAVEN_VERSION = "${RAVEN_VERSION}"
 RAVEN_RELEASE = get_release_time_from_repo_tag("github", "Ouranosinc/raven", RAVEN_VERSION)
 

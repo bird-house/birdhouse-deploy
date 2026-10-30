@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# -*- mode: sh -*-
 
 # Note: filename is not docker-compose-extra.yml so that it won't get added prematurely to COMPOSE_CONF_LIST
 

@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 - name: store_backups_to_restic_repository
   comment: Store backup data with restic service
   schedule: '${SCHEDULER_JOB_BACKUP_FREQUENCY}'

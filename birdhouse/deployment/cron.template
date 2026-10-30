@@ -1,3 +1,4 @@
+# -*- mode: crontab -*-
 PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
 # check if should deploy ${CRON_FREQUENCY_TXT}

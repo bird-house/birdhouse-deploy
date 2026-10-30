@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 # NOTE:
 # Assume 'secure-data-proxy' would exist if needed.
 # Since 'secure-data-proxy' < 'stac-data-proxy-public', it should be loaded first.

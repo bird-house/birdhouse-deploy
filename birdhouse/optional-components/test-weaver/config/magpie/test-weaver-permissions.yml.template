@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 ## Extra permissions for testing './components/weaver'
 #   Grant write access to execute hummingbird's ncdump process (submit job)
 #   (see https://github.com/Ouranosinc/pavics-sdi/blob/master/docs/source/notebook-components/weaver_example.ipynb)

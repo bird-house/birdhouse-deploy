@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+# -*- mode: sh -*-
 if ! echo "${BIRDHOUSE_EXTRA_CONF_DIRS}" | grep -q '/s3[[:space:]]*$'; then
   log ERROR 'The mount-thredds-to-s3 component is enabled but the s3 component is not. Please enable the s3 component or disable the mount-thredds-to-s3 component.'
   exit 1
