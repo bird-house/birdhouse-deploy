@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
     location ${STAC_DATA_PROXY_URL_PATH}/ {
         ${SECURE_DATA_PROXY_AUTH_INCLUDE}
 

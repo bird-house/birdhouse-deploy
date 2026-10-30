@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 ---
 # Ensure this combinabion of "hostname.domain" name really exist on the DNS of
 # the network you are bridging onto.

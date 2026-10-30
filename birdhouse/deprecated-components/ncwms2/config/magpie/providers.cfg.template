@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   ncWMS2:
     url: http://ncwms2:8080/ncWMS2

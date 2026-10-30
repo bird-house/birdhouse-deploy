@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
 server {
     listen       443 ssl ${PROXY_LISTEN_443_PARAMS};
     http2 ${PROXY_HTTP2_ON_OFF};

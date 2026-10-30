@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   # definition of Cowbird service for API access
   cowbird:

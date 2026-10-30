@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8; mode: python -*-
 broker_url = "mongodb://${COWBIRD_MONGODB_HOST}:${COWBIRD_MONGODB_PORT}/cowbird-jobs"
 result_backend = "mongodb://${COWBIRD_MONGODB_HOST}:${COWBIRD_MONGODB_PORT}"
 mongodb_backend_settings = {

@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
     location /${TESTTHREDDS_CONTEXT_ROOT}/ {
         # direct hit Thredds, bypassing Twitcher
         proxy_pass http://testthredds:${TESTTHREDDS_INTERNAL_PORT}/${TESTTHREDDS_CONTEXT_ROOT}/;

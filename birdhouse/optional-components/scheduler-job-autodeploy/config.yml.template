@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 - name: autodeploy
   comment: Auto-deploy entire Birdhouse platform
   schedule: '${BIRDHOUSE_AUTODEPLOY_PLATFORM_FREQUENCY}'

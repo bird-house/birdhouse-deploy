@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   raven:
     url: http://raven:9099/wps

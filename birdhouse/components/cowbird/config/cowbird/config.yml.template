@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 ## Combined configuration definition to setup objects at Cowbird startup
 ## See documentation 'Configuration' for more details on each section.
 

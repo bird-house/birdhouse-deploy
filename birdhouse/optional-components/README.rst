@@ -985,6 +985,22 @@ Enabling this component creates the additional endpoints:
 .. _optional-components-local-dev-test:
 .. _local-dev-test:
 
+Thredds Twitcher Proxy Access
+-----------------------------
+
+Previously, ``thredds`` endpoints were accessed directly through the twitcher proxy path
+(default: ``twitcher/ows/proxy/thredds``) but is now accessed directly through the ``/thredds/`` path.
+
+Some old scripts and notebooks still use the twitcher proxy path and this component can be used to
+continue supporting these use-cases.
+
+After enabling this component, the ``THREDDS_TWITCHER_PROXY_POLICY`` environment variable can be set
+to either:
+
+* ``redirect``: (default) permanently redirects requests using ``twitcher/ows/proxy/thredds/``
+                to go to the equivalent ``/thredds/`` path
+* ``deprecated``: requests using the ``twitcher/ows/proxy/thredds/`` path will receive a 410 response.
+
 Local Dev Test
 --------------
 
