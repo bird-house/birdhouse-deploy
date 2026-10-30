@@ -22,6 +22,13 @@
 
 ## Changes
 
+- STAC Browser: update from `5.0.0` to `5.1.0`
+
+  Still using the custom build because of the `/stac-browser/` prefix during CI build.
+  [`crim-ca/stac-browser#v5.1.0-rc.0-crim`](https://github.com/crim-ca/stac-browser/releases/tag/v5.1.0-rc.0-crim)
+
+  Mostly to bring in new search capabilities and dependency updates.
+
 - Finch: update from version `0.12.1` to `0.14.0`
 
   Notable changes:
