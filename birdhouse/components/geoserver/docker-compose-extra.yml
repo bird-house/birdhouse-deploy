@@ -13,11 +13,14 @@ services:
       # https://github.com/kartoza/docker-geoserver#proxy-base-url
       HTTP_PROXY_NAME: ${BIRDHOUSE_FQDN_PUBLIC}
       HTTP_SCHEME: ${BIRDHOUSE_PROXY_SCHEME}
+      SCRIPTS_LOCKFILE_DIR: /opt/geoserver/data_dir/lockfile_dir
     volumes:
       # run deployment/fix-geoserver-data-dir-perm on existing
       # GEOSERVER_DATA_DIR to match user geoserveruser inside docker image
       # only needed for versions before pavics/geoserver:2.25.2--v2024.06.25-kartoza
       - ${GEOSERVER_DATA_DIR}:/opt/geoserver/data_dir
+      - ./components/geoserver/entrypoint_override.sh:/entrypoint_override.sh:ro
+    entrypoint: ["/bin/bash", "/entrypoint_override.sh"]
     links:
       - postgis
     restart: always
