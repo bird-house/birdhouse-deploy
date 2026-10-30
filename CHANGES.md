@@ -15,7 +15,22 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- THREDDS: bump version from 5.5 to 5.10
+
+  Notable changes include:
+
+  - the entrypoint no longer calls `sync` which can cause the startup script to hang.
+  - update to tomcat version 11 and jdk version 17
+  - image no longer contains the [tdm](https://github.com/Unidata/tdm-docker) code (we aren't using this
+    but could be added as a separate service in the future if needed)
+
+  See the full changelogs for TDS in the [release notes](https://github.com/Unidata/tds/releases) and for
+  the docker image in the [changelog](https://github.com/Unidata/thredds-docker/blob/latest/CHANGELOG.md).
+
+  Note that this update required mounting some configuration files as `rw` instead of `ro` because an update
+  to the entrypoint script fails when running `chmod` on a read-only file.
 
 [2.33.1](https://github.com/bird-house/birdhouse-deploy/tree/2.33.1) (2026-10-28)
 ------------------------------------------------------------------------------------------------------------------
