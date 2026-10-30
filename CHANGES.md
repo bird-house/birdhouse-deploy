@@ -32,6 +32,22 @@
   Note that this update required mounting some configuration files as `rw` instead of `ro` because an update
   to the entrypoint script fails when running `chmod` on a read-only file.
 
+[2.33.1](https://github.com/bird-house/birdhouse-deploy/tree/2.33.1) (2026-10-28)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Finch: update from version `0.12.1` to `0.14.0`
+
+  Notable changes:
+
+  * Switch to running as nonroot user.  Output dir permission will be automatically updated.
+  * Updated to `xclim >=0.61`.
+
+  See [Finch release notes](https://github.com/bird-house/finch/blob/main/CHANGELOG.rst) for more details and
+  [Finch compare link](https://github.com/bird-house/finch/compare/v0.12.1...v0.14.0).
+
+
 [2.33.0](https://github.com/bird-house/birdhouse-deploy/tree/2.33.0) (2026-10-08)
 ------------------------------------------------------------------------------------------------------------------
 
