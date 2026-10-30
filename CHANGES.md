@@ -15,7 +15,25 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Nginx: update to version `1.31.8`
+
+  This update contains security fixes for:
+
+  - [CVE-2026-15176](https://www.cve.org/CVERecord?id=CVE-2026-15176)
+  - [CVE-2026-93479](https://www.cve.org/CVERecord?id=CVE-2026-93479)
+  - [CVE-2026-95101](https://www.cve.org/CVERecord?id=CVE-2026-95101)
+  - [CVE-2026-97629](https://www.cve.org/CVERecord?id=CVE-2026-97629)
+  - [CVE-2026-97205](https://www.cve.org/CVERecord?id=CVE-2026-97205)
+  - [CVE-2026-90439](https://www.cve.org/CVERecord?id=CVE-2026-90439)
+  - [CVE-2026-42533](https://www.cve.org/CVERecord?id=CVE-2026-42533)
+  - [CVE-2026-60005](https://www.cve.org/CVERecord?id=CVE-2026-60005)
+  - [CVE-2026-56434](https://www.cve.org/CVERecord?id=CVE-2026-56434)
+  - [CVE-2026-42530](https://www.cve.org/CVERecord?id=CVE-2026-42530)
+  - [CVE-2026-42055](https://www.cve.org/CVERecord?id=CVE-2026-42055)
+  - [CVE-2026-48142](https://www.cve.org/CVERecord?id=CVE-2026-48142)
+
 
 [2.33.1](https://github.com/bird-house/birdhouse-deploy/tree/2.33.1) (2026-10-28)
 ------------------------------------------------------------------------------------------------------------------
