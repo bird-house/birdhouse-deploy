@@ -22,6 +22,10 @@
 
 ## Changes
 
+- STAC: update from `2.4.0` to `2.4.1`
+
+  Security fix [crim-ca/stac-app#112](https://github.com/crim-ca/stac-app/pull/112).
+
 - STAC Browser: update from `5.0.0` to `5.1.0`
 
   Still using the custom build because of the `/stac-browser/` prefix during CI build.
