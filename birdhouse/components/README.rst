@@ -962,6 +962,58 @@ The service is available at ``${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLI
 Users are able to log in to Jupyterhub using the
 same user name and password as Magpie. They will then be able to launch a personal jupyterlab server.
 
+Collaborative Jupyterlab Servers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Jupyterhub allows users to create one personal jupyterlab server which only that user has access to. Jupyterhub can
+also optionally allow users to share jupyterlab servers in order to collaborate and work on projects together.
+
+In this mode, users can spawn a jupyterlab server owned by a group of users, not just a single user. Every
+member of the group can access that server simultaneously and can synchronously work on tasks within that server.
+
+To enable this mode:
+
+* Set the ``JUPYTERHUB_COLLAB_ENABLED`` environment variable to ``true`` in the local environment file
+* Create a group in Magpie whose name starts with the value of the ``JUPYTERHUB_COLLAB_GROUP_PREFIX`` variable (which is
+  ``jupyterhub-collab-`` by default)
+* Add some users to the group in Magpie
+
+The next time one of these users logs in to Jupyterhub they will be given the option to access their personal server
+or the server that belongs to this group. Once they start or access the group's jupyterlab server they will be able to
+use the server as normal except for the following differences:
+
+* The file system will contain the group's workspace, not their personal workspace
+* The file system will contain a subfolder named the value of the ``JUPYTERHUB_COLLAB_SHARED_SUBDIR`` variable (which is
+  ``group-share`` by default). Within that subfolder will be a folder for each user in the group, these are read-only
+  in the group's server but can be modified from within each user's personal server (see below).
+
+The next time the user logs in to their personal server they will also see the following difference:
+
+* The file system will contain a subfolder named the value of the ``JUPYTERHUB_COLLAB_SHARED_SUBDIR`` variable (which is
+  ``group-share`` by default). Within that subfolder will be a folder for each group that the user belongs to. Users can add
+  files to this folder and the contents of this folder will be visible in that group's server's filesystem (see above).
+
+.. note::
+
+  Because of the way that jupyterhub manages roles allowing access to these shared servers, a user may need to log out of
+  jupyterhub and back in again to see changes in group memberships reflected in jupyterhub.
+
+  Additionally, if the jupyterhub server restarts, users will have to log out and log in again in order to refresh their
+  group memberships. In this case a warning is displayed to the user on their home screen prompting them to log in again.
+
+.. note::
+
+  Jupyterlab also provides a plugin that allow for real-time-collaboration (RTC) between users on a shared jupyterlab server.
+  This can be enabled by installing the `juptyer-collaboration`_ package in the jupyterlab image. It is highly recommended to
+  create a jupyterlab image that contains this package and add it to the ``JUPYTERHUB_COLLAB_ALLOWED_IMAGES`` variable in the
+  local environment file.
+
+  ``JUPYTERHUB_COLLAB_ALLOWED_IMAGES`` will determine which images are allowed for the group owned jupyterlab servers (not the
+  ones for individual users). The admin may even consider creating two versions of each image, one which contains the
+  `juptyer-collaboration`_ package for group owned servers and on which doesn't for the individual servers.
+
+.. _jupyter-collaboration: https://github.com/jupyterlab/jupyter-collaboration
+
 How to Enable the Component
 ---------------------------
 
