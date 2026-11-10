@@ -15,7 +15,18 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Magpie/Twitcher/Cowbird: security updates
+
+  All services have been updated to support more recent Python 3.14 versions.
+  However, they are not yet integrated at this point (still using 3.13 in Dockers).
+  Future releases might bump them to Python 3.14.
+  In the meantime, all their dependencies and base images have been updated with more recent versions.
+
+  - Magpie 5.2.0
+  - Twitcher 0.12.1
+  - Cowbird 2.8.0
 
 [2.33.3](https://github.com/bird-house/birdhouse-deploy/tree/2.33.3) (2026-11-03)
 ------------------------------------------------------------------------------------------------------------------
