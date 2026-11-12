@@ -31,7 +31,18 @@
 [2.33.3](https://github.com/bird-house/birdhouse-deploy/tree/2.33.3) (2026-11-03)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- STAC: update from `2.4.0` to `2.4.1`
+
+  Security fix [crim-ca/stac-app#112](https://github.com/crim-ca/stac-app/pull/112).
+
+- STAC Browser: update from `5.0.0` to `5.1.0`
+
+  Still using the custom build because of the `/stac-browser/` prefix during CI build.
+  [`crim-ca/stac-browser#v5.1.0-rc.0-crim`](https://github.com/crim-ca/stac-browser/releases/tag/v5.1.0-rc.0-crim)
+
+  Mostly to bring in new search capabilities and dependency updates.
 
 [2.33.2](https://github.com/bird-house/birdhouse-deploy/tree/2.33.2) (2026-11-02)
 ------------------------------------------------------------------------------------------------------------------
@@ -60,17 +71,6 @@
 ------------------------------------------------------------------------------------------------------------------
 
 ## Changes
-
-- STAC: update from `2.4.0` to `2.4.1`
-
-  Security fix [crim-ca/stac-app#112](https://github.com/crim-ca/stac-app/pull/112).
-
-- STAC Browser: update from `5.0.0` to `5.1.0`
-
-  Still using the custom build because of the `/stac-browser/` prefix during CI build.
-  [`crim-ca/stac-browser#v5.1.0-rc.0-crim`](https://github.com/crim-ca/stac-browser/releases/tag/v5.1.0-rc.0-crim)
-
-  Mostly to bring in new search capabilities and dependency updates.
 
 - Finch: update from version `0.12.1` to `0.14.0`
 
