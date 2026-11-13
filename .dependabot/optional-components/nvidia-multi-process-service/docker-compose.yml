@@ -1,0 +1,3 @@
+services:
+  mps:
+    image: docker.io/library/debian:bookworm-slim

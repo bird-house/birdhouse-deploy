@@ -1,0 +1,9 @@
+services:
+  docker-proxy:
+    image: docker.io/library/mongo:5.0
+  weaver:
+    image: docker.io/pavics/weaver:6.16.0-manager
+  weaver-mongodb:
+    image: docker.io/library/mongo:5.0
+  weaver-worker:
+    image: docker.io/pavics/weaver:6.16.0-worker

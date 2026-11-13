@@ -1,0 +1,7 @@
+services:
+  stac:
+    image: ghcr.io/crim-ca/stac-app:2.4.0
+  stac-db:
+    image: ghcr.io/stac-utils/pgstac:v0.9.8
+  stac-migration:
+    image: ghcr.io/stac-utils/pgstac-pypgstac:v0.9.8

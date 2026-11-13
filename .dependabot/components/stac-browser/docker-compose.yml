@@ -1,0 +1,3 @@
+services:
+  stac-browser:
+    image: ghcr.io/crim-ca/stac-browser:5.0.0-rc.0-crim

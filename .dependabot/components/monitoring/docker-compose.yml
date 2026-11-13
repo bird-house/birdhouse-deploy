@@ -1,0 +1,11 @@
+services:
+  alertmanager:
+    image: docker.io/prom/alertmanager:v0.21.0
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.54.1
+  grafana:
+    image: docker.io/grafana/grafana:7.0.3
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:v1.0.0
+  prometheus:
+    image: docker.io/prom/prometheus:v2.53.3

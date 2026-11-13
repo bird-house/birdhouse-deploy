@@ -1,0 +1,5 @@
+services:
+  generic_bird:
+    image: docker.io/birdhouse/finch:version-0.14.0
+  postgres_generic_bird:
+    image: docker.io/library/postgres:10.12

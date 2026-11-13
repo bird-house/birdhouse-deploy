@@ -1,0 +1,3 @@
+services:
+  hummingbird:
+    image: docker.io/pavics/hummingbird:0.5_dev

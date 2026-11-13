@@ -1,0 +1,3 @@
+services:
+  stac-populator:
+    image: ghcr.io/crim-ca/stac-populator:0.0.0

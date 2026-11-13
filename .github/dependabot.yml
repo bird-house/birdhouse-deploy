@@ -48,3 +48,18 @@ updates:
           - major
     cooldown:
       default-days: 7
+  - package-ecosystem: docker-compose
+    directories:
+      - /.dependabot/components/*/
+      - /.dependabot/optional-components/*/
+    labels:
+      - "ci/docker"
+    commit-message:
+      include: scope
+      # Skip comment specifically for Jenkins CI builds on CRIM infrastructure
+      # [skip ci] cannot be used here in order for auto-accept-ci-changes.yml to function
+      prefix: "[skip jenkins] "
+    schedule:
+      interval: "quarterly"
+    cooldown:
+      default-days: 7

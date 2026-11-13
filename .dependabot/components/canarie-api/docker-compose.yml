@@ -1,0 +1,5 @@
+services:
+  canarie-api:
+    image: docker.io/pavics/canarieapi:1.2.1
+  canarie-api-cron:
+    image: docker.io/pavics/canarieapi:1.2.1
