@@ -1,6 +1,6 @@
 name: Dependabot update docker PRs
 
-on: 
+on:
   pull_request:
     types: [opened]
 

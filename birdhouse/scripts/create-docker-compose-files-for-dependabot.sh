@@ -2,7 +2,7 @@
 
 # Generates docker compose files for each component containing only service names and images
 # These files can then be monitored and updated by dependabot (through GitHub) in order to keep
-# docker dependencies up to date. 
+# docker dependencies up to date.
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
@@ -12,7 +12,7 @@ BIRDHOUSE_EXE="${COMPOSE_DIR}/../bin/birdhouse"
 OUTPUT_DIR="${OUTPUT_DIR:-"${COMPOSE_DIR}/../.dependabot/"}"
 
 cd "${COMPOSE_DIR}"
-export BIRDHOUSE_EXTRA_CONF_DIRS="$(find ./components/ ./optional-components/ -maxdepth 1 -mindepth 1 -type d)" 
+export BIRDHOUSE_EXTRA_CONF_DIRS="$(find ./components/ ./optional-components/ -maxdepth 1 -mindepth 1 -type d)"
 export PROXY_HTTP_PORT=80
 
 eval $("${BIRDHOUSE_EXE}" --quiet -e /dev/null configs --print-config-command)
