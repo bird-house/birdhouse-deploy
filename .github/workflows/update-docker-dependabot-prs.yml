@@ -1,0 +1,70 @@
+name: Dependabot update docker PRs
+
+on:
+  pull_request:
+    types: [opened]
+
+
+permissions:
+  pull-requests: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          disable-sudo: true
+          egress-policy: audit
+
+      - name: Generate GitHub App token
+        id: token_generator
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.BIRDHOUSE_HELPER_BOT_ID }}
+          private-key: ${{ secrets.BIRDHOUSE_HELPER_BOT_KEY }}
+          permission-contents: write
+
+      - name: Checkout Repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          token: ${{ steps.token_generator.outputs.token }}
+          ref: ${{ github.head_ref }}
+          fetch-depth: 2
+
+      - name: Import GPG Key
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.BIRDHOUSE_HELPER_BOT_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.BIRDHOUSE_HELPER_BOT_GPG_PRIVATE_KEY_PASSWORD }}
+          git_user_signingkey: true
+          git_tag_gpgsign: true
+          trust_level: 5
+
+      - name: Fetch Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: ${{ steps.token_generator.outputs.token }}
+
+      - name: Update relevant file
+        run: |
+          UPDATED_SERVICE="$(git diff origin/${{ github.base_ref }} HEAD --no-color -- .dependabot/ | grep '^-[[:space:]]' -B1 | head -1 | sed 's/^[[:space:]]*\([^:]\{1,\}\):/\1/')"
+          UPDATED_FILE="$(git diff origin/${{ github.base_ref }} HEAD --name-only -- ./.dependabot/)"
+          COMPOSE_FILE="$(echo ${UPDATED_FILE} | sed "s:.*/\(components\|optional-components\)/\([^/]*\)/docker-compose.yml:birdhouse/\1/\2/docker-compose-extra.yml:")"
+          ENV_FILE="${COMPOSE_FILE%/*}/default.env"
+          VARIABLE_PREFIX="$(tail -n+"$(grep -n "^[[:space:]]*${UPDATED_SERVICE}:[[:space:]]*$" "${COMPOSE_FILE}" | head -1 | cut -f1 -d:)" "$COMPOSE_FILE" | grep 'image:' | head -1 | cut -d: -f 2- | sed 's/[[:space:]]*\${\(.*\)_IMAGE}/\1/')"
+          sed -i "s/^\(export ${VARIABLE_PREFIX}_VERSION=['\''\"]\{0,1\}\)${{ steps.dependabot-metadata.outputs.previous-version }}\(['\''\"]\{0,1\}\)/\1${{ steps.dependabot-metadata.outputs.new-version }}\2/" "$ENV_FILE"
+          git add "$ENV_FILE"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "update ${{ steps.dependabot-metadata.outputs.dependency-names }} from ${{ steps.dependabot-metadata.outputs.previous-version }} to ${{ steps.dependabot-metadata.outputs.new-version }}"
+
+      - name: Push Changes
+        uses: ad-m/github-push-action@881a6320fdb16eb5318c5054f31c218aec2b324c # v1.3.0
+        with:
+          branch: ${{ github.head_ref }}
+          github_token: ${{ steps.token_generator.outputs.token }}

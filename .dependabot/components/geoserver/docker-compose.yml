@@ -1,0 +1,5 @@
+services:
+  geoserver:
+    image: docker.io/pavics/geoserver:2.27.2--v2025.08.05-kartoza
+  postgis:
+    image: docker.io/pavics/postgis:2.2

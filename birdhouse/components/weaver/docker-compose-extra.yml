@@ -98,7 +98,7 @@ services:
 
   # Dedicated database for Weaver, since other 'mongodb' image does not employ the same version.
   weaver-mongodb:
-    image: mongo:${WEAVER_MONGODB_VERSION}
+    image: ${WEAVER_MONGODB_IMAGE}
     container_name: weaver-mongodb
     networks:
       - weaver-mongodb
@@ -119,7 +119,7 @@ services:
     #   https://github.com/Tecnativa/docker-socket-proxy
     #   https://stackoverflow.com/a/47293798/5936364
     #   https://docs.docker.com/engine/api/
-    image: tecnativa/docker-socket-proxy:0.1.1
+    image: ${WEAVER_DOCKER_PROXY_IMAGE}
     container_name: docker-proxy
     environment:
       # DOCKER API permissions

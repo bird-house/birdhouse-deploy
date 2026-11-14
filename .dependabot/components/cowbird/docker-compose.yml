@@ -1,0 +1,7 @@
+services:
+  cowbird:
+    image: docker.io/pavics/cowbird:2.8.1-webservice
+  cowbird-mongodb:
+    image: docker.io/library/mongo:5.0
+  cowbird-worker:
+    image: docker.io/pavics/cowbird:2.8.1-worker

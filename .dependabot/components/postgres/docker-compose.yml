@@ -1,0 +1,3 @@
+services:
+  postgres:
+    image: docker.io/library/postgres:9.6

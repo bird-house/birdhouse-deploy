@@ -962,7 +962,7 @@ Additionally, a set of secrets is also required in order to make use of the spec
 All the above prvilieges and keys must be visible/accessible to the repository that uses workflows that rely on
 the following workflows:
 
-* ``auto-accept-ci-changes.yml`` and ``create-tag.yml``
+* ``auto-accept-ci-changes.yml``, ``create-full-compose-definition.yml`` and ``create-tag.yml``
 
   * Additionally, ``auto-accept-ci-changes.yml`` requires a valid ``dependabot.yml`` configuration
     (see: https://docs.github.com/en/code-security/tutorials/secure-your-dependencies/dependabot-quickstart-guide).

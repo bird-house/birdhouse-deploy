@@ -1,0 +1,3 @@
+services:
+  prometheus-log-parser:
+    image: docker.io/marbleclimate/log-parser:v1.1.1

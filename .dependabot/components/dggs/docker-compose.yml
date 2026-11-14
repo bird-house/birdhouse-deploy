@@ -1,0 +1,3 @@
+services:
+  dggs:
+    image: ghcr.io/crim-ca/pydggsapi:0.1.6-rc12
