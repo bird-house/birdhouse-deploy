@@ -57,7 +57,7 @@ updates:
     commit-message:
       include: scope
       # Skip comment specifically for Jenkins CI builds on CRIM infrastructure
-      # [skip ci] cannot be used here in order for auto-accept-ci-changes.yml to function
+      # The update to the dependabot PR made by update-docker-dependabot-prs.yml will run the Jenkins tests
       prefix: "[skip jenkins] "
     schedule:
       interval: "quarterly"

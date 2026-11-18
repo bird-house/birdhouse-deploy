@@ -1,3 +1,0 @@
-services:
-  prometheus-longterm-metrics:
-    image: docker.io/prom/prometheus:v2.53.3

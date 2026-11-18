@@ -1,3 +1,0 @@
-services:
-  s3:
-    image: docker.io/versity/versitygw:v1.3.1

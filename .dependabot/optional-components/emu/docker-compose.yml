@@ -1,3 +1,0 @@
-services:
-  emu:
-    image: docker.io/tlvu/emu:watchdog

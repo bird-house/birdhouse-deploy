@@ -23,7 +23,7 @@ jobs:
         id: token_generator
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
-          app-id: ${{ secrets.BIRDHOUSE_HELPER_BOT_ID }}
+          client-id: ${{ secrets.BIRDHOUSE_HELPER_BOT_ID }}
           private-key: ${{ secrets.BIRDHOUSE_HELPER_BOT_KEY }}
           permission-contents: write
 
@@ -52,16 +52,23 @@ jobs:
 
       - name: Update relevant file
         run: |
+          # Determine which service was updated by the dependabot PR
           UPDATED_SERVICE="$(git diff origin/${{ github.base_ref }} HEAD --no-color -- .dependabot/ | grep '^-[[:space:]]' -B1 | head -1 | sed 's/^[[:space:]]*\([^:]\{1,\}\):/\1/')"
+          # Determine which default.env file contains the environment variable that needs to be updated to reflect the version update
           UPDATED_FILE="$(git diff origin/${{ github.base_ref }} HEAD --name-only -- ./.dependabot/)"
           COMPOSE_FILE="$(echo ${UPDATED_FILE} | sed "s:.*/\(components\|optional-components\)/\([^/]*\)/docker-compose.yml:birdhouse/\1/\2/docker-compose-extra.yml:")"
           ENV_FILE="${COMPOSE_FILE%/*}/default.env"
+          # Update the environment variable that contains the version information
           VARIABLE_PREFIX="$(tail -n+"$(grep -n "^[[:space:]]*${UPDATED_SERVICE}:[[:space:]]*$" "${COMPOSE_FILE}" | head -1 | cut -f1 -d:)" "$COMPOSE_FILE" | grep 'image:' | head -1 | cut -d: -f 2- | sed 's/[[:space:]]*\${\(.*\)_IMAGE}/\1/')"
           sed -i "s/^\(export ${VARIABLE_PREFIX}_VERSION=['\''\"]\{0,1\}\)${{ steps.dependabot-metadata.outputs.previous-version }}\(['\''\"]\{0,1\}\)/\1${{ steps.dependabot-metadata.outputs.new-version }}\2/" "$ENV_FILE"
-          git add "$ENV_FILE"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -m "update ${{ steps.dependabot-metadata.outputs.dependency-names }} from ${{ steps.dependabot-metadata.outputs.previous-version }} to ${{ steps.dependabot-metadata.outputs.new-version }}"
+          # Describe the version update in the CHANGES.md file
+          MESSAGE="update ${{ steps.dependabot-metadata.outputs.dependency-names }} from ${{ steps.dependabot-metadata.outputs.previous-version }} to ${{ steps.dependabot-metadata.outputs.new-version }}"
+          CURRENT_VERSION="$(cut -d' ' -f1 RELEASE.txt | sed 's/\./\\./g')"
+          sed -i "\:^\[Unreleased\]:,\:\[${CURRENT_VERSION}\]: s:^\[\/\/\].*\|^##\sChanges:## Changes\n\n- ${MESSAGE}:" CHANGES.md # if there is a [//] placeholder or ## Changes heading
+          git diff --exit-code CHANGES.md > /dev/null || sed -i "\:\[${CURRENT_VERSION}\]:i ## Changes\n\n- ${MESSAGE}\n" CHANGES.md # otherwise add the changes to the end of the Unreleased section
+          # Add and commit changes
+          git add "$ENV_FILE" CHANGES.md
+          git commit -m "$MESSAGE"
 
       - name: Push Changes
         uses: ad-m/github-push-action@881a6320fdb16eb5318c5054f31c218aec2b324c # v1.3.0

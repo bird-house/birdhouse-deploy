@@ -1,3 +1,0 @@
-services:
-  scheduler:
-    image: docker.io/pavics/crontab:0.6-rc3

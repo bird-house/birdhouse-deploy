@@ -1,3 +1,0 @@
-services:
-  twitcher:
-    image: docker.io/pavics/twitcher:magpie-5.2.0

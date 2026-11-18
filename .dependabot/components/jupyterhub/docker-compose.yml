@@ -1,3 +1,0 @@
-services:
-  jupyterhub:
-    image: docker.io/pavics/jupyterhub:5.5.0-20260710

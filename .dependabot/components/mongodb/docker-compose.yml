@@ -1,3 +1,0 @@
-services:
-  mongodb:
-    image: docker.io/library/mongo:3.4.0

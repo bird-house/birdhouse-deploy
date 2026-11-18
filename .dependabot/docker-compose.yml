@@ -1,0 +1,86 @@
+services:
+  geoserver:
+    image: docker.io/pavics/geoserver:2.27.2--v2025.08.05-kartoza  # ./components/geoserver
+  postgis:
+    image: docker.io/pavics/postgis:2.2  # ./components/geoserver
+  scheduler:
+    image: docker.io/pavics/crontab:0.6-rc3  # ./components/scheduler
+  proxy:
+    image: docker.io/library/nginx:1.31.8  # ./components/proxy
+  hummingbird:
+    image: docker.io/pavics/hummingbird:0.5_dev  # ./components/hummingbird
+  postgres:
+    image: docker.io/library/postgres:9.6  # ./components/postgres
+  canarie-api:
+    image: docker.io/pavics/canarieapi:1.2.1  # ./components/canarie-api
+  canarie-api-cron:
+    image: docker.io/pavics/canarieapi:1.2.1  # ./components/canarie-api
+  thredds:
+    image: docker.io/pavics/thredds-docker:5.5-unidata-2024-11-19-with-tds-plugin-jar-with-dependencies.jar  # ./components/thredds
+  mongodb:
+    image: docker.io/library/mongo:3.4.0  # ./components/mongodb
+  stac-browser:
+    image: ghcr.io/crim-ca/stac-browser:5.1.0-rc.0-crim  # ./components/stac-browser
+  jupyterhub:
+    image: docker.io/pavics/jupyterhub:5.5.0-20260710  # ./components/jupyterhub
+  finch:
+    image: docker.io/birdhouse/finch:version-0.14.0  # ./components/finch
+  magpie:
+    image: docker.io/pavics/magpie:5.2.0  # ./components/magpie
+  postgres-magpie:
+    image: docker.io/library/postgres:9.6  # ./components/magpie
+  docker-proxy:
+    image: docker.io/tecnativa/docker-socket-proxy:0.1.1  # ./components/weaver
+  weaver:
+    image: docker.io/pavics/weaver:6.16.0-manager  # ./components/weaver
+  weaver-mongodb:
+    image: docker.io/library/mongo:5.0  # ./components/weaver
+  weaver-worker:
+    image: docker.io/pavics/weaver:6.16.0-worker  # ./components/weaver
+  stac:
+    image: ghcr.io/crim-ca/stac-app:2.4.1  # ./components/stac
+  stac-db:
+    image: ghcr.io/stac-utils/pgstac:v0.9.8  # ./components/stac
+  stac-migration:
+    image: ghcr.io/stac-utils/pgstac-pypgstac:v0.9.8  # ./components/stac
+  cowbird:
+    image: docker.io/pavics/cowbird:2.8.1-webservice  # ./components/cowbird
+  cowbird-mongodb:
+    image: docker.io/library/mongo:5.0  # ./components/cowbird
+  cowbird-worker:
+    image: docker.io/pavics/cowbird:2.8.1-worker  # ./components/cowbird
+  dggs:
+    image: ghcr.io/crim-ca/pydggsapi:0.1.6-rc12  # ./components/dggs
+  raven:
+    image: docker.io/pavics/raven:0.19.0  # ./components/raven
+  alertmanager:
+    image: docker.io/prom/alertmanager:v0.21.0  # ./components/monitoring
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.54.1  # ./components/monitoring
+  grafana:
+    image: docker.io/grafana/grafana:7.0.3  # ./components/monitoring
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:v1.0.0  # ./components/monitoring
+  prometheus:
+    image: docker.io/prom/prometheus:v2.53.3  # ./components/monitoring
+  s3:
+    image: docker.io/versity/versitygw:v1.3.1  # ./components/s3
+  prometheus-log-parser:
+    image: docker.io/marbleclimate/log-parser:v1.1.1  # ./optional-components/prometheus-log-parser
+
+  test-cowbird-jupyter-access:
+    image: docker.io/pavics/workflow-tests:py312-260415  # ./optional-components/test-cowbird-jupyter-access
+  testthredds:
+    image: docker.io/pavics/thredds-docker:5.5-unidata-2024-11-19-with-tds-plugin-jar-with-dependencies.jar  # ./optional-components/testthredds
+  generic_bird:
+    image: docker.io/birdhouse/finch:version-0.14.0  # ./optional-components/generic_bird
+  postgres_generic_bird:
+    image: docker.io/library/postgres:10.12  # ./optional-components/generic_bird
+  mps:
+    image: docker.io/library/debian:bookworm-slim  # ./optional-components/nvidia-multi-process-service
+  prometheus-longterm-metrics:
+    image: docker.io/prom/prometheus:v2.53.3  # ./optional-components/prometheus-longterm-metrics
+  stac-populator:
+    image: ghcr.io/crim-ca/stac-populator:0.0.0  # ./optional-components/stac-populator
+  emu:
+    image: docker.io/tlvu/emu:watchdog  # ./optional-components/emu

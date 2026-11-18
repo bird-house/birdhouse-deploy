@@ -1,4 +1,0 @@
-services:
-
-  test-cowbird-jupyter-access:
-    image: docker.io/pavics/workflow-tests:py312-260415

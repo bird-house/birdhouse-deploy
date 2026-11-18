@@ -1,3 +1,0 @@
-services:
-  finch:
-    image: docker.io/birdhouse/finch:version-0.14.0

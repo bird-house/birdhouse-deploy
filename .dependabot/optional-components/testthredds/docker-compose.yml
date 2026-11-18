@@ -1,3 +1,0 @@
-services:
-  testthredds:
-    image: docker.io/pavics/thredds-docker:5.5-unidata-2024-11-19-with-tds-plugin-jar-with-dependencies.jar
