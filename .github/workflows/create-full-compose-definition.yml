@@ -52,9 +52,9 @@ jobs:
         id: update-files
         run: |
           ./birdhouse/scripts/create-docker-compose-files-for-dependabot.sh
-          changed_files="$(git ls-files -mo --exclude-standard -- ./.dependabot | cut -d/ -f 3 | paste -d + -s)"
-          echo update=\'$changed_files\' >> "$GITHUB_OUTPUT"
-          test -n "${changed_files}"
+          UPDATED_SERVICES="$(git diff --no-color -- ./.dependabot/docker-compose.yml |  grep '^-[[:space:]]' -B1 | sed 's/^[[:space:]]*\([^:]\{1,\}\):/\1/' | grep -v '^-' | paste -d + -s"
+          echo updated=\'$UPDATED_SERVICES\' >> "$GITHUB_OUTPUT"
+          test -n "${UPDATED_SERVICES}"
           echo continue="$?" >> "$GITHUB_OUTPUT"
 
       - name: Create PR

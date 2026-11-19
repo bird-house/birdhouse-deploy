@@ -67,15 +67,6 @@ services:
     image: docker.io/versity/versitygw:v1.3.1  # ./components/s3
   prometheus-log-parser:
     image: docker.io/marbleclimate/log-parser:v1.1.1  # ./optional-components/prometheus-log-parser
-
-  test-cowbird-jupyter-access:
-    image: docker.io/pavics/workflow-tests:py312-260415  # ./optional-components/test-cowbird-jupyter-access
-  testthredds:
-    image: docker.io/pavics/thredds-docker:5.5-unidata-2024-11-19-with-tds-plugin-jar-with-dependencies.jar  # ./optional-components/testthredds
-  generic_bird:
-    image: docker.io/birdhouse/finch:version-0.14.0  # ./optional-components/generic_bird
-  postgres_generic_bird:
-    image: docker.io/library/postgres:10.12  # ./optional-components/generic_bird
   mps:
     image: docker.io/library/debian:bookworm-slim  # ./optional-components/nvidia-multi-process-service
   prometheus-longterm-metrics:

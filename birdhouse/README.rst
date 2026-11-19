@@ -610,6 +610,44 @@ After updating the dependency pins found in |tests-requirements.in|_, you can ru
 Note that the version of Python used to run the ``pip-compile`` command should match the minimum supported version
 of Python used in the Birdhouse stack!
 
+Docker image updates
+^^^^^^^^^^^^^^^^^^^^
+
+In order for Dependabot to be able to automatically update default docker image versions, docker images must be
+defined as an environment variable in the component's ``default.env`` file. For example:
+
+.. code-block:: shell
+
+  export X_VERSION=1.2.3
+  export X_IMAGE='image_name:${X_VERSION}'
+
+Or if a component uses the same version to update multiple images, the variable names can optionally include
+a suffix. For example:
+
+.. code-block:: shell
+
+  export X_VERSION=1.2.3
+  export X_IMAGE_MANAGER='image_name:${X_VERSION}-manager'
+  export X_IMAGE_WORKER='image_name:${X_VERSION}-worker'
+
+What matters is that the shared prefix ``X`` is immediately followed by either ``_IMAGE`` or ``_VERSION``.
+
+When developing a new component or updating the variables for an existing component, the image and version
+definitions must follow this format in order to be automatically updated.
+
+If you wish to exclude this component from automatic updates then add the component path to the ``EXCLUDE_COMPONENTS_RE``
+variable defined in ``birdhouse/scripts/dependabot-scripts.include.sh``.
+
+When developing a new component or updating the variables for an existing component, the image and version
+definitions must follow this format in order to be automatically updated.
+
+If you wish to exclude a component from automatic updates then add the component path to the ``EXCLUDE_COMPONENTS_RE``
+variable defined in ``birdhouse/scripts/dependabot-scripts.include.sh``.
+
+.. note::
+
+  There is a pre-commit hook that will ensure that image definitions conform to the format above.
+
 .. _versioning-policy:
 
 Versioning policy

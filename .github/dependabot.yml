@@ -50,8 +50,7 @@ updates:
       default-days: 7
   - package-ecosystem: docker-compose
     directories:
-      - /.dependabot/components/*/
-      - /.dependabot/optional-components/*/
+      - /.dependabot/
     labels:
       - "ci/docker"
     commit-message:

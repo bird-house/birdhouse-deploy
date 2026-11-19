@@ -25,3 +25,11 @@ repos:
     hooks:
       - id: codespell
         args: [ '--ignore-words=.github/codespell.txt' ]
+  - repo: local
+    hooks:
+      - id: docker-dependabot-pre-check
+        name: docker dependabot pre check
+        entry: ./birdhouse/scripts/check-docker-image-definitions.sh
+        language: unsupported_script
+        files: ^birdhouse/(components|optional-components)/[^/]+/docker-compose-extra.yml$
+        description: ensure that docker image definitions are properly configured
