@@ -48,3 +48,17 @@ updates:
           - major
     cooldown:
       default-days: 7
+  - package-ecosystem: docker-compose
+    directories:
+      - /.dependabot/
+    labels:
+      - "ci/docker"
+    commit-message:
+      include: scope
+      # Skip comment specifically for Jenkins CI builds on CRIM infrastructure
+      # The update to the dependabot PR made by update-docker-dependabot-prs.yml will run the Jenkins tests
+      prefix: "[skip jenkins] "
+    schedule:
+      interval: "quarterly"
+    cooldown:
+      default-days: 7

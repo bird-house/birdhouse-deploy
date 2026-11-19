@@ -1,6 +1,6 @@
 services:
   mongodb:
-    image: mongo:3.4.0
+    image: ${MONGODB_IMAGE}
     container_name: mongodb
     networks:
       - mongodb

@@ -30,6 +30,6 @@ services:
       start_interval: 5s
 
   postgis:
-    image: pavics/postgis:2.2
+    image: ${GEOSERVER_POSTGIS_IMAGE}
     container_name: postgis
     restart: always
