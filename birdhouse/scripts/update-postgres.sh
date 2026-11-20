@@ -31,7 +31,8 @@
 
 THIS_FILE="$(readlink -f "$0" || realpath "$0")"
 THIS_DIR="$(dirname "${THIS_FILE}")"
-BIRDHOUSE_EXE="${THIS_DIR}/../../bin/birdhouse"
+COMPOSE_DIR="${COMPOSE_DIR:-$(dirname "${THIS_DIR}")}"
+BIRDHOUSE_EXE="${COMPOSE_DIR}/../bin/birdhouse"
 
 # load logging functions
 eval $(${BIRDHOUSE_EXE} configs --print-log-command)
