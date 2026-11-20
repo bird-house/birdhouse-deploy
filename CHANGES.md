@@ -15,7 +15,9 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes 
+
+- Postgres Update Script: Employ the common `COMPOSE_DIR` approach to allow custom overrides.
 
 [2.33.4](https://github.com/bird-house/birdhouse-deploy/tree/2.33.4) (2026-11-12)
 ------------------------------------------------------------------------------------------------------------------
