@@ -87,7 +87,7 @@ REQUEST_TIMEOUT=2
 
 WEAVER_WPS_PROVIDERS_SKIP="$(echo "${WEAVER_WPS_PROVIDERS_SKIP:-false}" | tr [:lower:] [:upper:])"
 if [ "${WEAVER_WPS_PROVIDERS_SKIP}" = "TRUE" ]; then
-    log WARN "${PREFIX}Requsted WEAVER_WPS_PROVIDERS_SKIP. Not proceeding with updates."
+    log WARN "${PREFIX}Requested WEAVER_WPS_PROVIDERS_SKIP. Not proceeding with updates."
     reset_state
     exit 0
 fi

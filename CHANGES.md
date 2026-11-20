@@ -31,7 +31,7 @@
 - Weaver: provide `WEAVER_WPS_PROVIDERS_SKIP` option
 
   Allows skipping the entire `post-docker-compose-up` operations that updates registered WPS providers.
-  This can save a lot of time when they are not expected to have any metdata changes since the processes
+  This can save a lot of time when they are not expected to have any metadata changes since the processes
   themselves are dynamically retrieved anyway.
 
 ## Fixes
