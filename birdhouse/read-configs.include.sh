@@ -469,17 +469,20 @@ set_backwards_compatible_as_default() {
 # Record all currently exported environment variables and store them in the __BIRDHOUSE_PROCESS_ENV
 # variable. Calling reset_process_env later will re-export all these variables, setting them back to their
 # original value. See reset_process_env for an example.
+# The __BIRDHOUSE_INTERNAL_VARS is a space separated list of variables that will not be exported since they should be
+# recalculated every time.
 stage_process_env() {
-  __BIRDHOUSE_PROCESS_ENV="$(export -p)"
+  __BIRDHOUSE_INTERNAL_VARS="DELAYED_EVAL"
+  __BIRDHOUSE_PROCESS_ENV="$(sh -c "unset ${__BIRDHOUSE_INTERNAL_VARS} && export -p")"
 }
 
-# Re-export and set all environment variables that were exported when stage_process_env was last called. This 
-# effectively resets these variables to the values that they had when stage_process_env was last called.
+# Re-export and set all environment variables that were exported when stage_process_env was last called.
+# This effectively resets these variables to the values that they had when stage_process_env was last called.
 #
 # Note that this will not unset variables that were not exported when stage_process_env was last called.
 #
 # For example:
-# 
+#
 # export X=10
 # stage_process_env
 # echo $X  # prints 10

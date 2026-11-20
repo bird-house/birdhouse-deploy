@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   geoserver-secured:
     url: http://geoserver:8080/geoserver
@@ -6,4 +7,3 @@ providers:
     c4i: false
     type: geoserver
     sync_type: geoserver
-

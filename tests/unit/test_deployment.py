@@ -39,7 +39,7 @@ def template_substitutions(component_paths, root_dir, local_env_file):
     # type: (List[str]) -> Dict[str, Any]
     split_str = "##### this splits out the logs if any are written to stdout #####"
     proc = subprocess.run(
-        f'. {os.path.join(root_dir, "birdhouse", "read-configs.include.sh")}; read_configs; echo "{split_str}"; env -0;', 
+        f'. {os.path.join(root_dir, "birdhouse", "read-configs.include.sh")}; read_configs; echo "{split_str}"; env -0;',
         env={
             "BIRDHOUSE_EXTRA_CONF_DIRS": " ".join([os.path.relpath(path, root_dir / "birdhouse") for path in component_paths]),
             "BIRDHOUSE_LOCAL_ENV": local_env_file

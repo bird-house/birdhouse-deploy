@@ -135,6 +135,8 @@ Quick-start
   # Start the full stack.
   ./bin/birdhouse compose up -d
 
+.. _further-explanations:
+
 Further explanations
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -210,6 +212,77 @@ postgres instance. See |create-wps-pgsql-databases.sh|_.
 .. |create-wps-pgsql-databases.sh| replace:: ``birdhouse/scripts/create-wps-pgsql-databases.sh``
 .. _create-wps-pgsql-databases.sh: ./scripts/create-wps-pgsql-databases.sh
 
+.. _special-file-formatting:
+
+Special File Formatting
+^^^^^^^^^^^^^^^^^^^^^^^
+
+As indicated in the above `Explanations <further-explanations>`_, the infrastructure as code offered in this repository
+relies on special `".template"` files. Other files such as `".include"` scripts, Nginx configurations and even pre/post
+`docker compose` procedures are also employed. Some files also employ `".example"` suffixes to document expected
+definitions from their non-example counterparts (the concrete configuration files the insfratructure will employ).
+Finally, certain files employ alternative suffixes such `env.local` instead of `local.env` and `.cfg` instead
+of `.yaml` for historical or backward-compatibility reasons.
+
+In each of those cases, some IDEs, web-rendering or parser utilities might have trouble identifying the actual format
+of the file's contents from the extension alone. For such cases, it is strongly recommended that contributors provide
+appropriate metadata indicators in the files when possible. This section provides some guidance how to define this
+metadata.
+
+For example, a YAML file with another extension can indicate an Emacs-style hint about its YAML format using:
+
+.. code-block:: yaml
+
+    # -*- mode: yaml -*-
+    config: "..."  # rest of YAML config as necessary by the application
+
+Similarly, certain programming-language shebangs can be employed in specific cases.
+It is recommended to combine them with the above hints to ensure maximum coverage by parsers.
+Furthermore, the env-agnostic paths should be provided to allow alternate resolved paths when invoking those scripts,
+rather than enforcing OS-specific locations. For example:
+
+.. code-block:: python
+
+    #!/usr/bin/env python3
+    # -*- coding: utf-8; mode: python -*-
+
+.. code-block:: shell
+
+    #!/usr/bin/env sh
+    # -*- mode: shell -*-
+
+.. note::
+
+    In the case of a `.env` file that happens to execute `export` commands, but that is intended only to contain
+    environment variable overrides, it is recommended to combine the shell shebang with an Emacs dotenv hint to
+    properly relect the mixed use of this kind of definition.
+
+    .. code-block:: shell
+
+        #!/usr/bin/env sh
+        # -*- mode: dotenv -*-
+
+
+Certain files do not need additional comment hints because of their native definitions that provide similar strategies
+to identify their content's format. This is notably the case of XML that provides the following header. In such case,
+redundant comments should be avoided in favour of the well-known native definition for that format.
+
+.. code-block:: xml
+
+    <?xml version="1.0" encoding="UTF-8"?>
+
+
+Finally, the |gitattributes|_ are defined as a last resort to identify patterns using |github-linguist|_.
+This tool is automatically executed by GitHub to render formatted contents when viewing code in the web browser
+through Pull Requests, diffs, or any generic code navigation. If a new contribution is provided which defines
+new file types not already covered in the current configuration, they should be added to ensure proper rendering.
+
+
+.. |github-linguist| replace:: GitHub Linguist
+.. _github-linguist: https://github.com/github-linguist/linguist
+.. |gitattributes| replace:: ``.gitattributes``
+.. _gitattributes: https://github.com/bird-house/birdhouse-deploy/blob/master/.gitattributes
+
 
 Production deployment hardware recommendations
 ----------------------------------------------
@@ -231,7 +304,7 @@ Note about WPS request timeout
 
   Default value ``PROXY_READ_TIMEOUT_VALUE`` in |birdhouse-default.env|_.
 
-  Overrideable in ``env.local`` file, as usual for all values in ``default.env`` file.
+  Overridable in ``env.local`` file, as usual for all values in ``default.env`` file.
 
 .. |components-proxy-nginx.conf| replace:: ``components/proxy/nginx.conf``
 .. _components-proxy-nginx.conf: ./components/proxy/nginx.conf
@@ -537,6 +610,8 @@ After updating the dependency pins found in |tests-requirements.in|_, you can ru
 Note that the version of Python used to run the ``pip-compile`` command should match the minimum supported version
 of Python used in the Birdhouse stack!
 
+.. _versioning-policy:
+
 Versioning policy
 -----------------
 
@@ -603,6 +678,8 @@ intentionally automated to ensure that there are less opportunities for human er
 tagging new releases.  Tags are only ever triggered on the ``master`` branch, once all changes
 have been approved and merged.
 
+.. _release-procedure:
+
 Release Procedure
 -----------------
 
@@ -620,7 +697,7 @@ Release Procedure
 
 * Review PR description if something needs to be added or updated after the PR
   review process.  The goal is for the PR description to capture all the
-  essential informations for someone else not participating in the PR review
+  essential information for someone else not participating in the PR review
   process to understand it easily.  This "someone else" might even be your
   future self trying to understand what was going through your mind when you
   opened this PR :)
@@ -631,7 +708,8 @@ Release Procedure
   time.  Also, in the spirit of not losing the "push race", execute all these
   steps together, do not take a break in the middle.
 
-  * Merge with ``master`` branch, if needed, so next ``make bump <major|minor|patch>`` step will
+  * Merge ``master`` into your branch branch, if needed,
+    so next ``make bump <major|minor|patch>`` step will
     bump to the proper next version. Might need to review the places where
     CHANGES.md_ items were inserted following merge to make sure the new ones by
     this PR are under "unreleased".
@@ -639,7 +717,10 @@ Release Procedure
   * Run ``make bump <major|minor|patch>`` with appropriate options, as described
     in "Tagging policy" section above.  Push the changes.
 
-  * Merge this PR, copying the entire PR description into the merge commit description.
+  * Press the "Enable auto-merge" button on the PR.
+
+    The CI pipeline automation will take care of copying the entire PR description
+    into the merge commit description, once applicable validation checks have passed.
     This is so that the page https://github.com/bird-house/birdhouse-deploy/tags
     will contain relevant info nicely.  That page was previously used as an ad-hoc
     changelog before CHANGES.md_ was formally introduced.
@@ -647,14 +728,18 @@ Release Procedure
   * Once merged to ``master`` the ``create-tag.yml`` and ``release.yml`` workflows will run.
     If the version has changed, automation will tag this version then push the tag
     directly to the repository.  The new tag will then trigger the workflow that
-    creates a new release with an autogenerated summary of changes. 
+    creates a new release with an autogenerated summary of changes.
 
 .. warning::
     **Do not create tags or releases manually for this repository.**
 
-    Once merged to master, the [`.github/workflows/create-tag.yml`](../.github/workflows/create-tag.yml) 
-    and [`.github/workflows/release.yml`](../.github/workflows/release.yml) workflows will run.
+    Once merged to `master`, the |create-tag.yml|_ and |release.yml|_ workflows will run.
     The CI will automatically generate the tags and releases. No human intervention should be required.
+
+.. |create-tag.yml| replace:: ``.github/workflows/create-tag.yml``
+.. _create-tag.yml: ../.github/workflows/create-tag.yml
+.. |release.yml| replace:: ``.github/workflows/release.yml``
+.. _release.yml: ../.github/workflows/release.yml
 
 .. _backups:
 
@@ -844,3 +929,43 @@ the backup and restore jobs.
 .. _restic: https://restic.readthedocs.io/en/stable/
 .. |test-restic-keypair.sh| replace:: ``birdhouse/scripts/test-restic-keypair.sh``
 .. _test-restic-keypair.sh: scripts/test-restic-keypair.sh
+
+GitHub Workflows configurations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following section is meant for project maintainers which describes the requirements for setting up the various
+GitHub Workflow automations. Only administrators and users with repository secrets privilieges can use this information.
+
+There are a handful of automations that require specialized secrets, configurations, and tokens.
+Workflows that specifically depend on the *Birdhouse-Helper-Bot* App require that the app have certain repository
+privileges, specifically:
+
+* Read access to actions, issues, metadata, and organization secrets
+* Read and write access to code, organization projects, and pull requests
+
+Additionally, a set of secrets is also required in order to make use of the specialized workflows, specifically:
+
+* ``BIRDHOUSE_HELPER_BOT_GPG_PRIVATE_KEY`` : The private key used to perform commits.
+  This must be either associated with a user or a bot account that has tag creation privileges for the project.
+  As of time of writing, the RSA key type with AES256 encryption and a key length of 4096 is suggested.
+  **This key must be associated with a valid GitHub user account**. The associated public key does not need to
+  be uploaded to a public keyserver. The key should have an expiration date.
+
+* ``BIRDHOUSE_HELPER_BOT_GPG_PRIVATE_KEY_PASSWORD`` : The private key password. This should be adequately long
+  hard enough to not be easily guessed/brute-forced.
+
+* ``BIRDHOUSE_HELPER_BOT_ID`` : The ID number of the App. Available within the relevant entry under GitHub Apps.
+
+* ``BIRDHOUSE_HELPER_BOT_KEY`` : The unique key of the App. If this needs to be changed, it must be regenerated.
+  This is only shown once in order to prevent misuse/distribution.
+
+All the above prvilieges and keys must be visible/accessible to the repository that uses workflows that rely on
+the following workflows:
+
+* ``auto-accept-ci-changes.yml`` and ``create-tag.yml``
+
+  * Additionally, ``auto-accept-ci-changes.yml`` requires a valid ``dependabot.yml`` configuration
+    (see: https://docs.github.com/en/code-security/tutorials/secure-your-dependencies/dependabot-quickstart-guide).
+
+Finally, the ``label.yml`` workflow is a specialized workflow that requires a ``labeler.yml`` configuration.
+This workflow does not depend on any specific privileges (see: https://github.com/actions/labeler).

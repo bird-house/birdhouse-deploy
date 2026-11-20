@@ -4,15 +4,15 @@
          xmlns:xlink="http://www.w3.org/1999/xlink" >
 
     <service name="all" serviceType="Compound" base="" >
-        <service name="http" serviceType="HTTPServer" base="${TWITCHER_PROTECTED_PATH}/thredds/fileServer/" />
-        <service name="odap" serviceType="OpenDAP" base="${TWITCHER_PROTECTED_PATH}/thredds/dodsC/" />
-        <service name="ncml" serviceType="NCML" base="${TWITCHER_PROTECTED_PATH}/thredds/ncml/"/>
-        <service name="uddc" serviceType="UDDC" base="${TWITCHER_PROTECTED_PATH}/thredds/uddc/"/>
-        <service name="iso" serviceType="ISO" base="${TWITCHER_PROTECTED_PATH}/thredds/iso/"/>
-        <service name="wcs" serviceType="WCS" base="${TWITCHER_PROTECTED_PATH}/thredds/wcs/" />
-        <service name="wms" serviceType="WMS" base="${TWITCHER_PROTECTED_PATH}/thredds/wms/" />
-        <service name="ncssGrid" serviceType="NetcdfSubset" base="${TWITCHER_PROTECTED_PATH}/thredds/ncss/grid/" />
-        <service name="ncssPoint" serviceType="NetcdfSubset" base="${TWITCHER_PROTECTED_PATH}/thredds/ncss/point/" />
+        <service name="http" serviceType="HTTPServer" base="/thredds/fileServer/" />
+        <service name="odap" serviceType="OpenDAP" base="/thredds/dodsC/" />
+        <service name="ncml" serviceType="NCML" base="/thredds/ncml/"/>
+        <service name="uddc" serviceType="UDDC" base="/thredds/uddc/"/>
+        <service name="iso" serviceType="ISO" base="/thredds/iso/"/>
+        <service name="wcs" serviceType="WCS" base="/thredds/wcs/" />
+        <service name="wms" serviceType="WMS" base="/thredds/wms/" />
+        <service name="ncssGrid" serviceType="NetcdfSubset" base="/thredds/ncss/grid/" />
+        <service name="ncssPoint" serviceType="NetcdfSubset" base="/thredds/ncss/point/" />
     </service>
 
     <datasetScan name="${THREDDS_SERVICE_DATA_LOCATION_NAME}" ID="${THREDDS_SERVICE_DATA_URL_PATH}" path="${THREDDS_SERVICE_DATA_URL_PATH}" location="${THREDDS_SERVICE_DATA_LOCATION_ON_CONTAINER}">

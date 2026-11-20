@@ -7,7 +7,7 @@
 [//]: # (   see: https://github.com/c4urself/bump2version/issues/99)
 [//]: # ( - bump2version will not tag automatically, so it must be done manually after PR is merged and approved)
 [//]: # (   This is to ensure that new tags are applied directly on merge-commit, an not a commit within the PR)
-[//]: # (   see decission: https://github.com/bird-house/birdhouse-deploy/pull/161#discussion_r661746230)
+[//]: # (   see decision: https://github.com/bird-house/birdhouse-deploy/pull/161#discussion_r661746230)
 
 [//]: # (**DEFINE LATEST CHANGES UNDER BELOW 'Unreleased' SECTION - THEY WILL BE INTEGRATED IN NEXT RELEASE VERSION**)
 [//]: # (  bump2version will take care to generate a new empty 'Unreleased' section after version bump)
@@ -18,6 +18,408 @@
 ## Fixes 
 
 - Postgres Update Script: Employ the common `COMPOSE_DIR` approach to allow custom overrides.
+
+[2.33.4](https://github.com/bird-house/birdhouse-deploy/tree/2.33.4) (2026-11-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Magpie/Twitcher/Cowbird: security updates
+
+  All services have been updated to support more recent Python 3.14 versions.
+  However, they are not yet integrated at this point (still using 3.13 in Dockers).
+  Future releases might bump them to Python 3.14.
+  In the meantime, all their dependencies and base images have been updated with more recent versions.
+
+  - Magpie 5.2.0
+  - Twitcher 0.12.1
+  - Cowbird 2.8.1
+
+[2.33.3](https://github.com/bird-house/birdhouse-deploy/tree/2.33.3) (2026-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: update from `2.4.0` to `2.4.1`
+
+  Security fix [crim-ca/stac-app#112](https://github.com/crim-ca/stac-app/pull/112).
+
+- STAC Browser: update from `5.0.0` to `5.1.0`
+
+  Still using the custom build because of the `/stac-browser/` prefix during CI build.
+  [`crim-ca/stac-browser#v5.1.0-rc.0-crim`](https://github.com/crim-ca/stac-browser/releases/tag/v5.1.0-rc.0-crim)
+
+  Mostly to bring in new search capabilities and dependency updates.
+
+[2.33.2](https://github.com/bird-house/birdhouse-deploy/tree/2.33.2) (2026-11-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Nginx: update to version `1.31.8`
+
+  This update contains security fixes for:
+
+  - [CVE-2026-15176](https://www.cve.org/CVERecord?id=CVE-2026-15176)
+  - [CVE-2026-93479](https://www.cve.org/CVERecord?id=CVE-2026-93479)
+  - [CVE-2026-95101](https://www.cve.org/CVERecord?id=CVE-2026-95101)
+  - [CVE-2026-97629](https://www.cve.org/CVERecord?id=CVE-2026-97629)
+  - [CVE-2026-97205](https://www.cve.org/CVERecord?id=CVE-2026-97205)
+  - [CVE-2026-90439](https://www.cve.org/CVERecord?id=CVE-2026-90439)
+  - [CVE-2026-42533](https://www.cve.org/CVERecord?id=CVE-2026-42533)
+  - [CVE-2026-60005](https://www.cve.org/CVERecord?id=CVE-2026-60005)
+  - [CVE-2026-56434](https://www.cve.org/CVERecord?id=CVE-2026-56434)
+  - [CVE-2026-42530](https://www.cve.org/CVERecord?id=CVE-2026-42530)
+  - [CVE-2026-42055](https://www.cve.org/CVERecord?id=CVE-2026-42055)
+  - [CVE-2026-48142](https://www.cve.org/CVERecord?id=CVE-2026-48142)
+
+
+[2.33.1](https://github.com/bird-house/birdhouse-deploy/tree/2.33.1) (2026-10-28)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Finch: update from version `0.12.1` to `0.14.0`
+
+  Notable changes:
+
+  * Switch to running as nonroot user.  Output dir permission will be automatically updated.
+  * Updated to `xclim >=0.61`.
+
+  See [Finch release notes](https://github.com/bird-house/finch/blob/main/CHANGELOG.rst) for more details and
+  [Finch compare link](https://github.com/bird-house/finch/compare/v0.12.1...v0.14.0).
+
+
+[2.33.0](https://github.com/bird-house/birdhouse-deploy/tree/2.33.0) (2026-10-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Weaver: bump version from `6.8.3` to `6.16.0`
+
+  Notable changes include:
+
+  - Multi-file CWL workflow deployment and single-request combined deployment/execution of ad-hoc workflows.
+  - Process execution through HTTP GET using KVP query parameters.
+  - Individual and indexed job output retrieval, alternate output formats, and file integrity digests.
+  - Expanded HTML navigation for providers, processes, and jobs, including CWL package display.
+  - Alignment with OGC API - Processes Core v2.0, job definitions, and provenance conventions.
+  - Improved CLI/client deployment, request options, URI references, and input-file handling.
+  - Smaller, hardened Docker images and improved rootless CWL execution support.
+
+## Fixes
+
+- Magpie/Twitcher/Weaver: request hook integration.
+
+  Fix the broken integration between components via
+  [`weaver_hooks.py.template`](birdhouse/components/weaver/config/magpie/weaver_hooks.py.template).
+  Because Magpie access and enforcement by Twitcher was transferred from `/twitcher/ows/proxy` to `/twitcher/ows/verify`,
+  the [Magpie Adapter Service Hooks](https://pavics-magpie.readthedocs.io/en/latest/configuration.html#service-hooks)
+  operations were not being applied anymore. Therefore, users could not leverage the auto-creation of Magpie resources
+  and permissions from corresponding contents submitted to Weaver. The fix addresses this problem by re-enabling the
+  proxy on endpoints that need it for hooks to apply, while remain with the verify pre-auth approach for others, to
+  preserve the faster and memory-efficient direct access to the Weaver response payloads in those cases.
+
+  Furthermore, a lot of additional content negotiation capabilities have been added to Weaver since the creation of
+  the service hooks. When enabling them, they could filter `/processes` responses according to user access permissions
+  on JSON responses. However, alternate HTML, paged, or mixed provider/process responses would not be handled correctly
+  and would report "leaked" contents not respecting the original JSON result. The hooks would not filter other
+  user-associated contents such as job list based on submitter. Therefore, the `filter_allowed_processes` hook has been
+  disabled (and left for reference) to favour reporting of consistent results across negotiated responses.
+
+  Platforms that wish to rely on protected processes listing should set a `read-deny-match` Magpie permission
+  (or a similar protection combination) on the `Weaver/processes` resource. Otherwise, the `/processes` endpoint
+  will keep listing all processes since the service hook is not operational.
+
+[2.32.2](https://github.com/bird-house/birdhouse-deploy/tree/2.32.2) (2026-09-30)
+------------------------------------------------------------------------------------------------------------------
+
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+## Changes
+
+- Magpie/Twitcher: bump Dockers to `python:3.13.15-alpine3.24`
+
+  - OpenSSL CVE-2026-31789
+  - Magpie [v5.1.2](https://github.com/Ouranosinc/Magpie/releases/tag/5.1.2)
+    (PR https://github.com/Ouranosinc/Magpie/pull/725)
+  - Twitcher [v0.11.3](https://github.com/bird-house/twitcher/releases/tag/v0.11.3)
+    (PR https://github.com/bird-house/twitcher/pull/156)
+
+[2.31.1](https://github.com/bird-house/birdhouse-deploy/tree/2.31.1) (2026-09-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- CanarieAPI: bump to version 1.2.1
+
+  Security updates and Docker rebuild from updated GitHub CI pipeline publishing the image on DockerHub.
+
+- Birdhouse: Add file code metadata declarations to help highlight and parse unconventional extensions.
+
+  All `.template`, `.example` or alternative YAML-like `.cfg` files that cannot be directly interpreted by their
+  file extension have been updated to provide either/all off an Editor Modelines (Emacs style) comment, a shebang
+  and `.gitattribute` linguist definitions to help parsers, IDEs and GitHub parse and highlight their code contents
+  in the appropriate format and coding language.
+
+- Remove [skip ci] from bumpversion commits
+
+  Commits created by the `bumpversion` tool were not triggering unit tests in the CI which are required by
+  github before a pull request can be merged. The previous workaround was to create an empty commit *after*
+  the commit that bumps the version. This is not an intuitive workflow and will likely continue to cause
+  confusion going forward.
+
+  To avoid this confusion, `[skip ci]` has been changed to `[skip jenkins]` so that the unit tests will
+  run as expected and only the integration tests run through jenkins will be skipped.
+
+[2.31.0](https://github.com/bird-house/birdhouse-deploy/tree/2.31.0) (2026-09-11)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Thredds: authenticate with twitcher verify instead of going through twitcher's proxy
+
+  The Thredds endpoints go through Twitcher's proxy (`twitcher/ows/proxy` by default) which adds some overhead
+  to the requests. In order to avoid this and increase efficiency, Twitcher endpoints now authenticate with the
+  Twitcher verify endpoint (`twitcher/ows/verify` by default) and then access the thredds service directly.
+
+  Note that some older scripts and notebooks were prone to accessing Thredds directly through Twitcher itself
+  (e.g. `twitcher/ows/proxy/thredds/...`). In order to continue supporting these requests this change adds an
+  Nginx rewrite rule to permanently redirect to the equivalent `thredds/...` endpoint. However, accessing Thredds
+  through the Twitcher proxy directly is not encouraged for new scripts in order to avoid an unnecessary redirect.
+
+- Magpie/THREDDS : Allow `remoteCatalogService` urls for THREDDS in Magpie.
+
+  Remote catalogs were already allowed in the default THREDDS config. This feature is usable by adding `<catalogRef>`
+  entries to the THREDDS catalog, via the `THREDDS_ADDITIONAL_CATALOG` variable of `env.local`. Example:
+
+  ```bash
+  export THREDDS_ADDITIONAL_CATALOG='<catalogRef xlink:title="External catalog" name="remote" xlink:href="https://EXTERNAL_URL/thredds/catalog/catalog.xml" />'
+  ```
+  Where `EXTERNAL_URL` is an URL to another THREDDS service. The generated HTML page will show "External catalog" as a
+  folder and navigating down the catalog will appear to the user as if it was hosted on the current instance. However,
+  any data links will direct to the other instance. The default THREDDS config only allows HTTP and OPeNDAP services
+  to be listed for remote catalogs.
+
+[2.30.1](https://github.com/bird-house/birdhouse-deploy/tree/2.30.1) (2026-07-24)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Jupyterhub: bump version to 5.5.0
+
+  This version includes some bug fixes and changes to an authenticator not used by birdhouse.
+  See [the changelog](https://jupyterhub.readthedocs.io/en/stable/reference/changelog.html#id3)
+  for specifics.
+
+[2.30.0](https://github.com/bird-house/birdhouse-deploy/tree/2.30.0) (2026-07-08)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: Update default API version to `crim-ca/stac-app:2.4.0` for dependency updates and security fixes.
+
+  - Update Docker with Python 3.13.14 for security fixes.
+  - Update `stac-fastapi.api==6.3.2` and `stac-fastapi.pgstac==6.3.1` with extension breaking change from `core` module.
+
+[2.29.4](https://github.com/bird-house/birdhouse-deploy/tree/2.29.4) (2026-06-23)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Magpie/Twitcher: Maintenance release to version Magpie 5.1.1
+
+  - Update base Docker image with more recent security updates of OS and Python packages.
+  - Relates to [Ouranosinc/Magpie#658](https://github.com/Ouranosinc/Magpie/pull/658).
+
+[2.29.3](https://github.com/bird-house/birdhouse-deploy/tree/2.29.3) (2026-06-17)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- CanarieAPI: Maintenance release to version 1.2.0
+
+  - Update CI/CD pipeline to Python 3.12 (note: docker image was already based on 3.12).
+  - Update CI/CD to build and push docker image directly.
+  - Rebuild docker images with updated dependencies and security fixes.
+  - Relates to [Ouranosinc/CanarieAPI#56](https://github.com/Ouranosinc/CanarieAPI/pull/56)
+
+[2.29.2](https://github.com/bird-house/birdhouse-deploy/tree/2.29.2) (2026-06-16)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Filter internal variables from `process_env` in a posix compliant manner
+
+  When loading configuration variables, variables defined in the calling process' environment are given precedence
+  over those set in the configuration files
+  (see [2.18.8](https://github.com/bird-house/birdhouse-deploy/releases/tag/2.18.8)).
+  Certain internal variables were exempt from this since they should be recalculated each time the variables
+  are loaded (see [2.28.1](https://github.com/bird-house/birdhouse-deploy/releases/tag/2.28.1)).
+
+  These internal variables were being removed by filtering lines from the string generated by `export -p`.
+  Unfortunately the behaviour of `export -p` differs depending on the shell and so this was causing issues.
+
+  In shells that export variables using `declare` (i.e. `bash`) the output of `export -p` contains one variable per
+  line and newlines are encoded as the literal: `\n`. This means that it is easy to filter out an entire variable
+  using a tool like `grep` or `sed` which operate on single lines.
+
+  However, in shells that export variables using `export` (i.e. `sh`) the output of `export -p` can have variables
+  spanning multiple lines if the value of the variable contains newlines. This means that it is much more
+  complicated to filter out.
+
+  ```shell
+  $ env -i bash -c 'export x=$(printf "a\nb\n") && export -p'
+  declare -x x=$'a\nb'
+  $ env -i sh -c 'export x=$(printf "a\nb\n") && export -p'
+  export x='a
+  b'
+  ```
+
+  In order to fix this issue and allow for filtering out variables even when their values span multiple lines, this
+  change prevents them from being stored in the first place instead of storing them and then filtering them out
+  later.
+
+[2.29.1](https://github.com/bird-house/birdhouse-deploy/tree/2.29.1) (2026-06-15)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- CanarieAPI: Fix reflected metadata from server updates.
+
+  Add a dependency on `canarie-api -> proxy` such that `canarie-api` is always restarted (since `proxy` always restarts)
+  to make sure that server metadata updates in `docker_configuration.py` are considered by its internal API process to
+  reload them. Without this, updating the server (e.g.: pulling a new version and doing `bin/birdhouse compose up -d`)
+  would not reflect the updated server/node version changes reported by CanarieAPI endpoints, since the actual service
+  definition of `canarie-api` would not have changed (volume-mount/service config unchanged, only file contents change).
+
+[2.29.0](https://github.com/bird-house/birdhouse-deploy/tree/2.29.0) (2026-06-09)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Add auth cache in nginx for s3 endpoint
+
+  Adds a cache for the `s3` auth endpoint (that calls Twitcher's verify endpoint) so that repeated requests to the
+  S3 store don't overwhelm twitcher and cause client connection issues if twitcher or nginx fails to properly authorize
+  access to a resource.
+
+  This issue may arise if a client is processing a large S3 object in parallel by accessing different byte-ranges
+  simultaneously. This results in many simultaneous requests to the same resource, each of which hits twitcher's verify
+  endpoint. With this change, only the first request each minute will hit twitcher and the rest will only hit the cache.
+
+  Some implementation details to note:
+
+  - responses are only cached for 1 minute to ensure that if a user's permissions are changed (on Magpie) their previous
+    permissions expire quickly
+  - the value of Magpie's cookie as well as the auth header is used as a cache key which allows us to cache cookie based
+    and token-based authentication methods
+
+- Group dependabot updates for better handling by other workflows
+
+  Only group patch and minor updates which will allow the `dependabot-auto-approve` job to approve and
+  merge these updates without having to wait for approval.
+  Major updates will go into their own pull request and will require manual human approval.
+
+- Add additional pre-commit hooks to enforce file format styles
+
+  These hooks do the following:
+
+  - fix trailing whitespace at the end of lines
+  - format JSON files
+  - detect whether a private key is being committed
+  - ensures a single newline at the end of each file
+
+  This is to enforce styles for this project and to also keep other PRs uncluttered
+  since some developers use local tools that automatically enforce similar style
+  rules on files and others don't.
+
+- Update Nginx version to `1.31.1`
+
+  This update includes:
+
+    - a fix for [CVE-2026-9256](https://github.com/advisories/GHSA-h78r-86c6-jgp4)
+    - traffic is now routed to upstream servers with HTTP/1.1 and with keep-alive enabled by default.
+    - The `ssl on;` directive is no longer supported (replaced with `listen 443 ssl;`)
+    - The `listen 443 http2` directive is no longer supported (replaced with `http2 on;`)
+
+  See migration guide for configuration update details.
+
+## Fixes
+
+- Common spelling errors throughout the code base have been corrected via `codespell` pre-commit hook
+
+  The `codespell` hook scans for words that are suspected to be misspelled English words and suggests corrections
+  by way of pre-commit. A newline-separated list of words (`.github/codespell.txt`) is used to track ignored patterns.
+
+- JSON endpoints were being set before template variable expansion
+
+  Because `service`, `components`, and `version` endpoints were being written before
+  `.template` files were being processed, the `service` JSON endpoint could contain information that was out of date.
+
+  This fixes the issue by moving all of the logic that determines the content and
+  creates the files for these endpoints to the `proxy/pre-docker-compose-up.include`
+  file which will always run after the `.template` files are processed.
+
+- Apply logging arguments when running configuration "print" commands through `bin/birdhouse`
+
+  The logging flags available through the `bin/birdhouse` interface are not applied to the current shell if
+  the output of the `configs --print-config-command` and `configs --print-log-command` are `eval`ed in order to
+  load configuration settings or log functions in the current shell environment.
+
+  For example, if you run:
+
+  ```sh
+  eval $(bin/birdhouse --quiet configs --print-config-command)
+  ```
+
+  the log outputs will *not* be silenced as expected. Similarly, the following:
+
+  ```sh
+  eval $(bin/birdhouse --log-file example.log configs --print-log-command)
+  ```
+
+  will *not* write logs to `example.log`.
+
+  This change ensures that the expected logging variables are set properly so that setting these values
+  will have the expected effect.
+
+- Fix non-posix shell syntax in the `optional-components/emu` component
+
+  The `default.env` file in the `emu` component was using `==` to do string comparison which is not a bash-ism.
+  When loading this component in a non-bash shell (bourne shell `sh` is used by default) this will cause a syntax
+  error and the relevant `if` block will always fail. This may cause the `wps_volume` to not be properly loaded
+  causing the component to be misconfigured.
+
+[2.28.2](https://github.com/bird-house/birdhouse-deploy/tree/2.28.2) (2026-06-05)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- JupyterHub: Fix invalid `JUPYTER_VERSION` instead of `JUPYTERHUB_VERSION` in CanarieAPI configuration.
+
+  Fixes [#713](https://github.com/bird-house/birdhouse-deploy/issues/713)
+
+[2.28.1](https://github.com/bird-house/birdhouse-deploy/tree/2.28.1) (2026-06-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Fixes
+
+- Fix compose env resolution to preserve internal `DELAYED_EVAL` list when re-applying caller environment.
+
+  Calling `read_configs` re-applies exported variables from the caller process using `reset_process_env`.
+  If the caller shell had already exported `DELAYED_EVAL` preemptively (by mistake or by sourcing a file exporting it),
+  that step could overwrite the internally assembled delayed-eval list, causing following invocations to rely on a stale
+  list of variables. Many derived paths (e.g.: `${BIRDHOUSE_DATA_PERSIST_ROOT}/...`) would then remain unresolved.
+  Notably, this could fail compose commands (not files using `.template`, but directly including delayed-eval variables)
+  with errors such as `undefined volume ${BIRDHOUSE_DATA_PERSIST_ROOT}/...` due to invalid portions of volume mounts
+  (e.g.: `${COWBIRD_MONGODB_DATA_DIR}:/data/db` becomes `${BIRDHOUSE_DATA_PERSIST_ROOT}/mongodb_cowbird_persist:/data/db`)
+  because the environment variables are used directly in the compose files rather than by shell/templating resolution.
+
+  The fix filters `DELAYED_EVAL` from the staged caller environment before running `reset_process_env`,
+  ensuring the internally computed list (if any) is not overwritten by caller values breaking following references.
+
+- Cowbird: Fix missing `export` for `COWBIRD_MONGODB_DATA_DIR` default delayed-eval variable.
 
 [2.28.0](https://github.com/bird-house/birdhouse-deploy/tree/2.28.0) (2026-05-15)
 ------------------------------------------------------------------------------------------------------------------
@@ -54,9 +456,9 @@
 
   The `optional-components/prometheus-log-parser` was creating way too many metrics and it was taking a really
   long time for prometheus to scrape the metrics from the log parser. This reduces the number of metrics created
-  by: 
+  by:
 
-  - turning off the `_created` metrics by default (can be turned on by setting 
+  - turning off the `_created` metrics by default (can be turned on by setting
     `PROMETHEUS_LOG_PARSER_PROMETHEUS_DISABLE_CREATED_SERIES=False`)
   - moving the `tds_service` label to its own counter named `thredds_transfer_size_by_service_bytes`
 
@@ -76,7 +478,7 @@
   the registration process of the permissions could, in certain cases, yield an error causing the procedure to
   fail. Notably, if the admin user already exists, which is typically the case since it is required and the service
   auto-generates it if missing on startup, the permission registration would cause an error since it itself tries to
-  create the user, which is forbidden by the API. This is normally automatically handled by 409 conflict by the 
+  create the user, which is forbidden by the API. This is normally automatically handled by 409 conflict by the
   registration script, but another 400 error code is used for the special user case, which was not caught.
 
   In most deployments, this error is not observed since the administrator *group* is typically employed to
@@ -96,7 +498,7 @@
 - The `birdhouse/birdhouse-deploy` repository now makes more effective use of GitHub Workflows in order to automate
   the release procedure.
 
-  When preparing a new version, the tagging and release steps are now handled by the `create-tag.yml` and 
+  When preparing a new version, the tagging and release steps are now handled by the `create-tag.yml` and
   `release.yml` workflows, respectively. When changes are detected to `RELEASE.txt` on pushes to `master`, a new
   tag is created (`create-tag.yml`); this then triggers the second workflow (`release.yml`) to automatically publish
   the new tag with an autogenerated summary of changes. Developers should no longer tag new releases manually.
@@ -104,7 +506,7 @@
 - New GitHub Workflow for automatically accepting minor/patch GitHub Actions updates.
 
   The `auto-accept-ci-changes.yml` workflow will now automatically approve and set to auto-merge `minor` and `patch`
-  updates of existing GitHub Actions. The approval and merge is performed with a short-lived token created by the 
+  updates of existing GitHub Actions. The approval and merge is performed with a short-lived token created by the
   `Bird-house Helper App`, and should handle most updates automatically.
 
 - Pull Request titles and commits containing `[skip jenkins]` will no longer trigger Jenkins on CRIM infrastructure.
@@ -115,15 +517,15 @@
   of `pre-commit` that can use the same configuration files and runs much faster with less storage usage.
 
 - All workflow jobs/steps have names for easier-to-understand build summaries as well as constrained permissions
-  for less potentially attack surface. 
+  for less potentially attack surface.
 
 - Update jupyterhub version to `5.4.5-20260506`
 
-  This update includes bug fixes and a fix for 
+  This update includes bug fixes and a fix for
   [CVE-2026-33709](https://github.com/jupyterhub/jupyterhub/security/advisories/GHSA-3vff-hjqv-m7h8).
 
-  This update also removes the source code for the magpie authenticator from the 
-  [jupyterhub package](https://github.com/Ouranosinc/jupyterhub/) since that code is now maintained 
+  This update also removes the source code for the magpie authenticator from the
+  [jupyterhub package](https://github.com/Ouranosinc/jupyterhub/) since that code is now maintained
   in this repo since version [2.22.0](#2220-2026-02-09).
 
 [2.27.0](https://github.com/bird-house/birdhouse-deploy/tree/2.27.0) (2026-04-21)
@@ -534,7 +936,7 @@
   - The *Job Results* responses of `weaver` can return a lot of `Link` headers. This is done to provide job metadata
     references and provenance traceability details, but also for actual results locations that can vary in quantity
     depending on the actual process execution.
-    Therefore, the Ngnix `proxy_buffer_size` and `proxy_buffers` directives of the `proxy` service must be added with
+    Therefore, the Nginx `proxy_buffer_size` and `proxy_buffers` directives of the `proxy` service must be added with
     sufficiently large values to avoid HTTP 502 errors when the response headers exceed the default buffer sizes.
     The `WEAVER_PROXY_RESPONSE_BUFFER_SIZE` and `WEAVER_PROXY_RESPONSE_BUFFER_COUNT` variables are added to allow
     further customization as needed by the server. Their defaults are reasonable values to meet minimal requirements
@@ -734,7 +1136,7 @@
   Note: this means that if no optional components require `optional-components/proxy-log-volume` as a dependency
   then logs from the `proxy` container will only be written to stdout/stderr. This means that there is no need
   for any additional custom log rotation handling since the logs are handled directly by docker. This means that
-  the `proxy` service itself no longer need to be dependant on the `scheduler` and `scheduler-job-logrotate-nginx`
+  the `proxy` service itself no longer need to be dependent on the `scheduler` and `scheduler-job-logrotate-nginx`
   components.
 
   Note: a previous discussion suggested that logs could be parsed directly from the stdout stream of the `proxy`
@@ -1272,7 +1674,7 @@
 
 - STAC Browser: fix resolution against the pre-built prefix path to align with proxy configuration.
   - Add `STAC_BROWSER_PATH_PREFIX` variable that makes the mapping more easily configurable.
-    However, changing its value requires building the corresponding docker wih the same prefix.
+    However, changing its value requires building the corresponding docker with the same prefix.
     The change will not be effective "simply" by modifying the variable.
   - Revert to `crim-ca/stac-browser:3.3.5` (rather than `crim-ca/stac-browser:3.4.0-dev`)
     without need of the temporary patch (relates to https://github.com/radiantearth/stac-browser/pull/653).
@@ -1327,7 +1729,7 @@
     This bug only affect external repos still using old variable names for
     delayed eval.
 
-  - Lost new lines when new value is transfered to old value and vice-versa
+  - Lost new lines when new value is transferred to old value and vice-versa
 
     Example: if `ENABLE_JUPYTERHUB_MULTI_NOTEBOOKS` (old var) is set in
     `env.local`, the new matching var `JUPYTERHUB_ENABLE_MULTI_NOTEBOOKS` is
@@ -1339,7 +1741,7 @@
     it will generate badly formatted code since the new lines are lost.
 
     The reverse case: external repos still using old vars for template
-    expansion but in `env.local` the new var is used, the value transfered
+    expansion but in `env.local` the new var is used, the value transferred
     from the new var to the old var is missing all the new lines and also
     generate broken code.
 
@@ -1817,7 +2219,7 @@
     - application data, user data, and log data for all components
     - birdhouse logs
     - docker container logs
-    - local environement file
+    - local environment file
 
   Restoring data either involves restoring it to a named volume (determined by `BIRDHOUSE_BACKUP_VOLUME`) or in the case
   of user data and application data, to overwrite the current data with the backup.
@@ -1965,7 +2367,7 @@
     create additional jobs by adding them as custom components instead.
 
   What about... ?
-    - just schedule these jobs for a non-existant day like February 31st?
+    - just schedule these jobs for a non-existent day like February 31st?
       - Answer: This would technically work but is not obvious to the user. It is better to make this explicit.
     - just set the schedule to the `'#'` string?
       - Answer: This is a hack that would work based on the specific way that the docker-crontab image sets schedules.
@@ -2136,7 +2538,7 @@
 
 - Fix bug where compose directory can't be found in `bin/birdhouse` script
 
-    The `COMPOSE_DIR` variable cannnot be discovered properly if:
+    The `COMPOSE_DIR` variable cannot be discovered properly if:
 
     - the `bin/birdhouse` script is called with the `configs --print-config-command` options.
     - the result of that call is `eval`ed in order to load the birdhouse configuration settings into
@@ -2374,7 +2776,7 @@
   - new integration tests are written in the `tests/integration/` directory. More tests will be added in the
     future!
   - `conftest.py` scripts updated to bring the stack up/down in a consistent way for the integration tests.
-  - unit tests updated to accomodate new testing infrastructure as needed.
+  - unit tests updated to accommodate new testing infrastructure as needed.
   - unit tests updated to test logging outputs better
   - `birdhouse` interface script updated to support testing infrastructure (this should not change anything for
     other end-users).
@@ -2408,7 +2810,7 @@
 
 - Add resolver for http nginx configuration
 
-  Nginx requires a resolver to be explicity defined when using `proxy_pass` with a variable in the argument passed
+  Nginx requires a resolver to be explicitly defined when using `proxy_pass` with a variable in the argument passed
   to `proxy_pass`. This resolver is defined explicitly for the https server block but not for the http server block.
 
   This adds the explicit resolver for the http server block as well so that `proxy_pass` works when called using using
@@ -3102,7 +3504,7 @@
 
 ## Fixes
 
-- Autodeploy broken due to instanciated left-over files in ./config/ dir
+- Autodeploy broken due to instantiated left-over files in ./config/ dir
 
   The `.gitignore` syntax was wrong.  Regression from v2.0.0.
 
@@ -3632,7 +4034,7 @@ described for Weaver in
 - Monitoring: allow access to magpie members of group `monitoring`
 
   To allow accessing the various monitoring WebUI without having full blown
-  magpie admin priviledge to add and remove users.
+  magpie admin privileges to add and remove users.
 
   Add existing users to this new `monitoring` group to allow them access to the
   various monitoring WebUI.  This way, we do not need to share the `admin` user
@@ -3771,7 +4173,7 @@ described for Weaver in
 
   Before, test runs can only be started from inside the checkout, at some
   "popular" locations inside the checkout.  Now it can be started from
-  litterally anywhere.
+  literally anywhere.
 
 
 [1.26.7](https://github.com/bird-house/birdhouse-deploy/tree/1.26.7) (2023-06-19)
@@ -3894,12 +4296,12 @@ described for Weaver in
 - CanarieAPI: update to `0.7.1`.
 
   - The server node now provides a generic ``server`` configuration for the current ``platform`` definition.
-  - Added multiple missing docuementation references for all the services included within `CanarieAPI` configurations.
+  - Added multiple missing documentation references for all the services included within `CanarieAPI` configurations.
   - With new `CanarieAPI` version, a slightly improved UI with more service details are provided for the active server:
 
 ![image](https://user-images.githubusercontent.com/19194484/232822454-e39c0111-54dc-4f9b-adf6-5ea6e59d67e3.png)
 
-- Add optional variables witht defaults to define reference Docker image version tags.
+- Add optional variables with defaults to define reference Docker image version tags.
 
   Following optional variables are defined by default. These are used as reference in the respective Docker compose
   service definition of these components, as well as in their `CanarieAPI` configuration to retrieve the release time
@@ -4000,7 +4402,7 @@ described for Weaver in
 
 ## Fixes
 
-- Fix disapearing Thredds docker image
+- Fix disappearing Thredds docker image
 
   The current docker image version for thredds (4.6.18) is no longer hosted in the
   [Unidata docker repository](https://hub.docker.com/r/unidata/thredds-docker/tags).
@@ -4031,9 +4433,9 @@ described for Weaver in
 ## Fixes
 - Enforce the load order of components defined in env.local
 
-  Extra components defined in the `EXTRA_CONF_DIRS` variables were being loaded before the dependant components
+  Extra components defined in the `EXTRA_CONF_DIRS` variables were being loaded before the dependent components
   defined in the `COMPONENT_DEPENDENCIES` variables in each default.env file. This meant that if an extra component
-  was meant to override some setting defined in a dependant component, the setting would not be overridden by the
+  was meant to override some setting defined in a dependent component, the setting would not be overridden by the
   extra component.
 
   This change enforces the following load order rules:
@@ -4251,7 +4653,7 @@ described for Weaver in
 
 - env.local.example: change default Geoserver admin user from 'admin' to 'admingeo'
 
-  This only impacts new deployment when `env.local.example` is instanciated
+  This only impacts new deployment when `env.local.example` is instantiated
   to `env.local`.
 
   This is to avoid confusion with the admin user of Magpie, which is also 'admin'.
@@ -4578,7 +4980,7 @@ described for Weaver in
   `env.local` is the last file to be read.  However those steps should not be
   forgotten in any `default.env` for all components.
 
-  So the impact or burden is on the developpers to write their `default.env`
+  So the impact or burden is on the developers to write their `default.env`
   file properly, not on the users that only modify the `env.local` file.
 
   All `default.env` files header have been updated with notice about this new
@@ -4984,12 +5386,12 @@ described for Weaver in
 
   All the major browsers and OS platform has previously added the new root
   certificate "ISRG Root X1" ahead of time so the transition to the new
-  root certificate is seemless for all clients.
+  root certificate is seamless for all clients.
 
   Python `requests` package bundle their own copy of known root
   certificates and is late to add this new root cert "ISRG Root X1".  Had
   it automatically fallback to the OS copy of the root cert bundle, this
-  would have been seemless.
+  would have been seamless.
 
   The fix is to force `requests` to use the OS copy of the root cert bundle.
 
@@ -5192,7 +5594,7 @@ described for Weaver in
   for the moment so will have to be handle in another PR.
 
   So for the moment we have not achieved full non-root user in cronjobs
-  launched by the `scheduler` compoment but the most important part, the part
+  launched by the `scheduler` component but the most important part, the part
   that perform the actual job (rsync or execute custom command using an
   external docker container) is running as non-root.
 
@@ -7778,13 +8180,13 @@ Deployed to https://medus.ouranos.ca/jupyter/ for acceptance testing.
 
 [1.11.0](https://github.com/bird-house/birdhouse-deploy/tree/1.11.0) (2020-08-25)
 ------------------------------------------------------------------------------------------------------------------
-- Improved plugable component architecture.
+- Improved pluggable component architecture.
 
   Before this PR, components needing default values, needing template variable substitution, needing to execute commands pre and post `docker-compose up` are hardcoding their needs directly to the "core" system, basically "leaking" their requirements out even when they are not activated (fixes https://github.com/bird-house/birdhouse-deploy/issues/62).
 
-  This PR provides true plugable architecture for the components so they can provide all their needs without having to modify the code of the "core" system.
+  This PR provides true pluggable architecture for the components so they can provide all their needs without having to modify the code of the "core" system.
 
-  All the components (monitoring, generic_bird, emu, testthredds) are modified to leverage the new plugable architecture, with additional customizations given it is cleaner/easier to have default configuration values.
+  All the components (monitoring, generic_bird, emu, testthredds) are modified to leverage the new pluggable architecture, with additional customizations given it is cleaner/easier to have default configuration values.
 
   Given this PR both changes the architecture and modify many components at the same time, it is best to read each commit separately to easier understand which code change belongs to which "goal".
 
@@ -8453,7 +8855,7 @@ Deployed to https://medus.ouranos.ca/jupyter/ for acceptance testing.
   ab56994 jupyter: limit memory of public user to 500 MB
   90c1950 jupyter: prevent user from loading user-owned config at spawner server startup
   e8f2fa3 jupyter: avoid terminating user running jobs on Hub update
-  3f97cc7 jupyter: get ready to prevent browser session re-use even if password changed
+  3f97cc7 jupyter: get ready to prevent browser session reuse even if password changed
   e2ebcc3 jupyter: disable notebook terminal for security reasons
 
 [1.8.0](https://github.com/bird-house/birdhouse-deploy/tree/1.8.0) (2020-02-03)

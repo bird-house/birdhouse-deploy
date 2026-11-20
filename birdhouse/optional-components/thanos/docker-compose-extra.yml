@@ -38,7 +38,7 @@ services:
     depends_on:
       - thanos-sidecar
     restart: always
-  
+
   thanos-compactor:
     image: ${THANOS_IMAGE}
     container_name: thanos-compactor

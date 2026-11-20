@@ -8,6 +8,7 @@ dependencies:
 
   # for generating requirements.txt with hashes
   - pip-tools
+  - prek
 
   - pip
   - pip:

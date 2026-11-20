@@ -23,6 +23,6 @@ assignees: tlvu, fmigneault, mishaschwartz
 | Information           | Value
 | --------------------- | --------------------------------------------------------------
 | Server/Platform URL   | <!-- e.g: https://pavics.ouranos.ca -->
-| Version Tag/Commit    | <!-- 1.2.3 --> 
+| Version Tag/Commit    | <!-- 1.2.3 -->
 | Related issues/PR     | <!-- #<issue> #<pr> -->
 | Related components    | <!-- thredds, magpie, monitoring, etc. -->

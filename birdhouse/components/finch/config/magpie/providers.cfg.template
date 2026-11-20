@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   finch:
     url: http://finch:5000/wps
@@ -6,4 +7,3 @@ providers:
     c4i: false
     type: wps
     sync_type: wps
-

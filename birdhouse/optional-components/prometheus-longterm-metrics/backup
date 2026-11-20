@@ -17,7 +17,7 @@ backup_application() {
 }
 
 restore_application() {
-  _do_restore() { 
+  _do_restore() {
     docker run --rm \
                -v ${BIRDHOUSE_BACKUP_VOLUME}:/backup \
                -v prometheus_longterm_persistence:/persist \

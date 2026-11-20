@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 # Override the default request options with specific ones for tests.
 #
 # See original:

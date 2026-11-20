@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
     location / {
         ${BIRDHOUSE_PROXY_ROOT_LOCATION}
     }

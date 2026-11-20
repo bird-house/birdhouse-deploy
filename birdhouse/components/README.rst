@@ -640,7 +640,7 @@ The `Job Results <https://pavics-weaver.readthedocs.io/en/latest/processes.html#
 can return a lot of ``Link`` headers. This is done to provide job metadata references and provenance traceability
 details, but also for actual results locations that can vary in quantity depending on the actual process execution.
 
-By default, the Ngnix `proxy_buffer_size <https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_buffer_size>`_
+By default, the Nginx `proxy_buffer_size <https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_buffer_size>`_
 and `proxy_buffers <https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_buffers>`_ directives of
 the |proxy|_ service are added to the |weaver|_ API endpoints with sufficiently large values to avoid HTTP 502 errors
 when the response headers exceed the default buffer sizes.

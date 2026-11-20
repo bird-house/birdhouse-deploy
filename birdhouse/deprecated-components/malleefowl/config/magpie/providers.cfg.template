@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 providers:
   malleefowl:
     url: http://${BIRDHOUSE_FQDN}:8091/wps

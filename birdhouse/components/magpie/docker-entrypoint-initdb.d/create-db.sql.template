@@ -1,1 +1,2 @@
+-- -*- mode: sql -*-
 CREATE DATABASE ${MAGPIE_DB_NAME};

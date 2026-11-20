@@ -4,7 +4,7 @@ services:
     container_name: mps
     restart: always
     ipc: shareable
-    volumes:      
+    volumes:
       - nvidia_mps:/tmp/nvidia-mps
     init: true
     command: ["nvidia-cuda-mps-control", "-f"]

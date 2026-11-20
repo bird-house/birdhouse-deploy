@@ -1,3 +1,4 @@
+# -*- mode: yaml -*-
 - name: logrotate
   comment: Rotate log files under ${BIRDHOUSE_LOG_DIR}
   schedule: '@daily'

@@ -1,3 +1,4 @@
+# -*- mode: nginx -*-
 
     location /project-api/ {
         proxy_pass http://${BIRDHOUSE_FQDN}:3005/;

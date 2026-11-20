@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+# -*- mode: sh -*-
 if ! command -v nvidia-smi >/dev/null; then
     log ERROR "The optional-components/nvidia-multi-process-service component is enabled but no Nvidia GPUs or drivers can be detected on this system (no nvidia-smi command exists). Please ensure that GPUs are installed properly or disable this component."
     expect_exit 1

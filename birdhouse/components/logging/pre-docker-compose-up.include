@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# -*- mode: sh -*-
 
 # Note: filename is not docker-compose-extra.yml so that it won't get added prematurely to COMPOSE_CONF_LIST
 DEFAULT_COMPOSE_FILE="${COMPOSE_DIR}/components/logging/docker-compose-extra-defaults.yml"
@@ -20,7 +21,7 @@ done
 log INFO "adding ${DEFAULT_COMPOSE_FILE} to COMPOSE_CONF_LIST"
 COMPOSE_CONF_LIST="-f docker-compose.yml -f "${DEFAULT_COMPOSE_FILE}" ${COMPOSE_CONF_LIST#-f[[:space:]]+docker-compose.yml}"
 
-if [ -n "${SERVICES_ADDED}" ]; then 
+if [ -n "${SERVICES_ADDED}" ]; then
     log INFO "adding ${SERVICE_COMPOSE_FILE} to COMPOSE_CONF_LIST"
     COMPOSE_CONF_LIST="${COMPOSE_CONF_LIST} -f ${SERVICE_COMPOSE_FILE}"
 fi

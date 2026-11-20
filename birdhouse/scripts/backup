@@ -31,7 +31,7 @@ backup_local_env_file() {
 }
 
 restore_logs() {
-  BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER=true backup_restore_runner 'birdhouse logs and docker container logs' : 'birdhouse-logs' 
+  BIRDHOUSE_BACKUP_RESTORE_NO_CLOBBER=true backup_restore_runner 'birdhouse logs and docker container logs' : 'birdhouse-logs'
 }
 
 restore_local_env_file() {

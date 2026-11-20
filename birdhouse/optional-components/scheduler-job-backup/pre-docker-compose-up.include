@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+# -*- mode: sh -*-
 if [ ! -f "${BIRDHOUSE_BACKUP_RESTIC_ENV_FILE}" ]; then
   log WARN "Cannot find restic environment file at '$BIRDHOUSE_BACKUP_RESTIC_ENV_FILE'. Backups will fail! Please set the BIRDHOUSE_BACKUP_RESTIC_ENV_FILE variable to an absolute path to the restic environment file."
 fi

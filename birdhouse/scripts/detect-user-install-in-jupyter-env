@@ -1,5 +1,5 @@
 #!/bin/sh
-# Detect user install (pip intall --user) in Jupyter environment.
+# Detect user install (pip install --user) in Jupyter environment.
 #
 # User install is error-prone since it overrides the official package version
 # from the environment.  This means when new environments are available, user

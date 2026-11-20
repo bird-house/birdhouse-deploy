@@ -3,7 +3,7 @@
 # support NO_COLOR flag (https://no-color.org/)
 if [ -z "${BIRDHOUSE_COLOR}" ] && [ -z "${NO_COLOR}" ]; then
     BIRDHOUSE_COLOR=1
-fi 
+fi
 
 if [ "${BIRDHOUSE_COLOR}" = "1" ] && [ -n "${TERM}" ]; then
     BLUE=$(tput setaf 12)
@@ -52,7 +52,7 @@ export LOG_CRITICAL="${REG_BG_BOLD}CRITICAL${NORMAL}: "  # to report misuse of f
 # - BIRDHOUSE_LOG_FD=2; BIRDHOUSE_LOG_QUIET=True
 #    - all log file output will be suppressed (this is the same as setting BIRDHOUSE_LOG_QUIET=True but also demonstrates that it overrides BIRDHOUSE_LOG_FD)
 # - BIRDHOUSE_LOG_FD=1, BIRDHOUSE_LOG_DEST_OVERRIDE='DEBUG:file:debug.log'
-#    - all log levels will be written to stdout 
+#    - all log levels will be written to stdout
 #    - DEBUG will also be written to debug.log
 # - BIRDHOUSE_LOG_FILE=all.log, BIRDHOUSE_LOG_DEST_OVERRIDE='INFO:file:info.log:ERROR:quiet::WARN:fd:1'
 #    - all log levels will be written to all.log except for INFO which will be written to info.log
@@ -103,7 +103,7 @@ log_dest() {
 }
 
 
-for level in CRITICAL DEBUG INFO WARN ERROR; do 
+for level in CRITICAL DEBUG INFO WARN ERROR; do
     override="$(echo "${BIRDHOUSE_LOG_DEST_OVERRIDE}" | sed "s/\(^\|.*:\)\(${level}:\(quiet\|fd\|file\):[^:]*\).*\|.*/\2/")"
     no_override="$([ "${level}" = "CRITICAL" ] && echo NO_OVERRIDE)" || true
     if [ -z "${override}" ] && echo "${BIRDHOUSE_LOG_DEST_OVERRIDE}" | grep -q "\(^\|.*:\)${level}:"; then

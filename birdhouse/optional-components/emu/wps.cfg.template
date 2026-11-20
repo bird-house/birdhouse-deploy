@@ -1,3 +1,4 @@
+# -*- mode: ini -*-
 [server]
 outputurl = ${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}/wpsoutputs
 outputpath = /data/wpsoutputs

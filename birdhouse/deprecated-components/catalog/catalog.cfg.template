@@ -1,3 +1,4 @@
+# -*- mode: ini -*-
 [catalog]
 solr_host=http://${BIRDHOUSE_FQDN}:8983/solr/${THREDDS_SERVICE_DATA_URL_PATH}/
 

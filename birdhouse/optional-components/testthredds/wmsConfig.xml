@@ -42,7 +42,7 @@ copy to /var/lib/tomcat7/content/thredds/
             <standardName name="precipitation_flux" units="kg m-3">
                 <defaultColorScaleRange>0 1000</defaultColorScaleRange>
             </standardName>
-            
+
             <!-- TODO: how about allowing "*fraction" to map to 0:1? -->
             <!-- TODO: how about allowing multiple standard names to map to the same settings,
                  either through a glob expression or through a list? -->
@@ -50,7 +50,7 @@ copy to /var/lib/tomcat7/content/thredds/
     </global>
 
     <overrides>
-        
+
         <datasetPath pathSpec="birdhouse/*.nc">
             <!-- Will apply to all paths that match the path spec above -->
             <pathDefaults>
@@ -67,7 +67,7 @@ copy to /var/lib/tomcat7/content/thredds/
                 </variable>
             </variables>
         </datasetPath>
-        
+
     </overrides>
 
 </wmsConfig>
