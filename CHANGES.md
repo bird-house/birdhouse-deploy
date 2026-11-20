@@ -15,7 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Proxy: update nginx to 1.31.9
+
+  This update includes a security fix for [CVE-2026-123007](https://www.cve.org/CVERecord?id=CVE-2026-123007).
 
 [2.33.4](https://github.com/bird-house/birdhouse-deploy/tree/2.33.4) (2026-11-12)
 ------------------------------------------------------------------------------------------------------------------
