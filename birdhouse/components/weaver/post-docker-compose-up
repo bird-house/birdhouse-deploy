@@ -24,6 +24,8 @@
 #   WEAVER_WPS_PROVIDERS:
 #       list of provider names (comma or space delimited), all are assumed to be available at
 #       "${BIRDHOUSE_PROXY_SCHEME}://${BIRDHOUSE_FQDN_PUBLIC}${TWITCHER_PROTECTED_PATH}/<provider-name>"
+#   WEAVER_WPS_PROVIDERS_SKIP:
+#       skip the provider update operations performed by this script if 'true' (case insensitive)
 #   WEAVER_WPS_PROVIDERS_MAX_TIME:
 #       limit script execution up to a maximum of this number of seconds
 #   WEAVER_WPS_PROVIDERS_RETRY_COUNT:
@@ -83,6 +85,12 @@ WEAVER_WPS_PROVIDERS_RETRY_COUNT=${WEAVER_WPS_PROVIDERS_RETRY_COUNT:-5}
 WEAVER_WPS_PROVIDERS=$(echo $(echo "${WEAVER_WPS_PROVIDERS}" | tr ',' ' '))
 REQUEST_TIMEOUT=2
 
+WEAVER_WPS_PROVIDERS_SKIP="$(echo "${WEAVER_WPS_PROVIDERS_SKIP:-false}" | tr [:lower:] [:upper:])"
+if [ "${WEAVER_WPS_PROVIDERS_SKIP}" = "TRUE" ]; then
+    log WARN "${PREFIX}Requsted WEAVER_WPS_PROVIDERS_SKIP. Not proceeding with updates."
+    reset_state
+    exit 0
+fi
 if [ -z "${WEAVER_WPS_PROVIDERS}" ]; then
     log WARN "${PREFIX}Nothing specified in WEAVER_WPS_PROVIDERS to register WPS remote providers."
     reset_state

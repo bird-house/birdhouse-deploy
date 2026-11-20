@@ -15,7 +15,27 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Weaver: update from version `6.16.0` to `6.18.0`
+
+  - Version [6.18.0](https://github.com/crim-ca/weaver/blob/master/CHANGES.rst#6180-2026-11-13) adjusts the
+    supported Python versions, but the Docker remains based on Python 3.13.
+  - Improves worlflow/process run provenance metadata.
+  - Support process metadata filtering by profiles of process, inputs and outputs.
+  - Support Zarr and Zarr+ZIP media-types (with converters).
+  - Support `OPTIONS` requests and better communicates supported content negotiation media-types.
+  - Multiple parsing and rendering fixes.
+  - Dependency updates and security fixes.
+
+- Weaver: provide `WEAVER_WPS_PROVIDERS_SKIP` option
+
+  Allows skipping the entire `post-docker-compose-up` operations that updates registered WPS providers.
+  This can save a lot of time when they are not expected to have any metdata changes since the processes
+  themselves are dynamically retrieved anyway.
+
+## Fixes
+
 
 [2.33.4](https://github.com/bird-house/birdhouse-deploy/tree/2.33.4) (2026-11-12)
 ------------------------------------------------------------------------------------------------------------------
