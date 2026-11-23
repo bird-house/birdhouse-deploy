@@ -16,7 +16,7 @@ services:
   canarie-api-cron:
     image: docker.io/pavics/canarieapi:1.2.1  # ./components/canarie-api
   thredds:
-    image: docker.io/pavics/thredds-docker:5.5-unidata-2024-11-19-with-tds-plugin-jar-with-dependencies.jar  # ./components/thredds
+    image: docker.io/pavics/thredds-docker:5.10-unidata-2026-10-26  # ./components/thredds
   mongodb:
     image: docker.io/library/mongo:3.4.0  # ./components/mongodb
   stac-browser:
