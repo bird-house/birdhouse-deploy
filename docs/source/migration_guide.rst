@@ -14,10 +14,10 @@ Migration Guide
 
 .. contents::
 
-Version 2.34.0
+Version 2.34.2
 --------------
 
-Version 2.34.0 updates the environment variable names used to define docker images. This is to allow
+Version 2.34.2 updates the environment variable names used to define docker images. This is to allow
 for automated updates of docker images.
 
 As part of this update the following variables have been updated:
