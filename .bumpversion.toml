@@ -72,7 +72,7 @@ search = """Unreleased
 replace = """Unreleased
 ----------
 
-.. list updates here, using remove this when items are added
+.. list updates here, remove this when items are added
 
 Version {new_version}
 -------------"""
@@ -83,7 +83,7 @@ search = """
 Version {new_version}
 -------------
 
-.. list updates here, using remove this when items are added
+.. list updates here, remove this when items are added
 
 """
 replace = """"""
