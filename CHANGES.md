@@ -32,6 +32,65 @@
   Note that this update required mounting some configuration files as `rw` instead of `ro` because an update
   to the entrypoint script fails when running `chmod` on a read-only file.
 
+## Fixes
+
+- Postgres Update Script: Employ the common `COMPOSE_DIR` approach to allow custom overrides.
+
+[2.33.4](https://github.com/bird-house/birdhouse-deploy/tree/2.33.4) (2026-11-12)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Magpie/Twitcher/Cowbird: security updates
+
+  All services have been updated to support more recent Python 3.14 versions.
+  However, they are not yet integrated at this point (still using 3.13 in Dockers).
+  Future releases might bump them to Python 3.14.
+  In the meantime, all their dependencies and base images have been updated with more recent versions.
+
+  - Magpie 5.2.0
+  - Twitcher 0.12.1
+  - Cowbird 2.8.1
+
+[2.33.3](https://github.com/bird-house/birdhouse-deploy/tree/2.33.3) (2026-11-03)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- STAC: update from `2.4.0` to `2.4.1`
+
+  Security fix [crim-ca/stac-app#112](https://github.com/crim-ca/stac-app/pull/112).
+
+- STAC Browser: update from `5.0.0` to `5.1.0`
+
+  Still using the custom build because of the `/stac-browser/` prefix during CI build.
+  [`crim-ca/stac-browser#v5.1.0-rc.0-crim`](https://github.com/crim-ca/stac-browser/releases/tag/v5.1.0-rc.0-crim)
+
+  Mostly to bring in new search capabilities and dependency updates.
+
+[2.33.2](https://github.com/bird-house/birdhouse-deploy/tree/2.33.2) (2026-11-02)
+------------------------------------------------------------------------------------------------------------------
+
+## Changes
+
+- Nginx: update to version `1.31.8`
+
+  This update contains security fixes for:
+
+  - [CVE-2026-15176](https://www.cve.org/CVERecord?id=CVE-2026-15176)
+  - [CVE-2026-93479](https://www.cve.org/CVERecord?id=CVE-2026-93479)
+  - [CVE-2026-95101](https://www.cve.org/CVERecord?id=CVE-2026-95101)
+  - [CVE-2026-97629](https://www.cve.org/CVERecord?id=CVE-2026-97629)
+  - [CVE-2026-97205](https://www.cve.org/CVERecord?id=CVE-2026-97205)
+  - [CVE-2026-90439](https://www.cve.org/CVERecord?id=CVE-2026-90439)
+  - [CVE-2026-42533](https://www.cve.org/CVERecord?id=CVE-2026-42533)
+  - [CVE-2026-60005](https://www.cve.org/CVERecord?id=CVE-2026-60005)
+  - [CVE-2026-56434](https://www.cve.org/CVERecord?id=CVE-2026-56434)
+  - [CVE-2026-42530](https://www.cve.org/CVERecord?id=CVE-2026-42530)
+  - [CVE-2026-42055](https://www.cve.org/CVERecord?id=CVE-2026-42055)
+  - [CVE-2026-48142](https://www.cve.org/CVERecord?id=CVE-2026-48142)
+
+
 [2.33.1](https://github.com/bird-house/birdhouse-deploy/tree/2.33.1) (2026-10-28)
 ------------------------------------------------------------------------------------------------------------------
 
