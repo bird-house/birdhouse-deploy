@@ -71,7 +71,5 @@ services:
     image: docker.io/library/debian:bookworm-slim  # ./optional-components/nvidia-multi-process-service
   prometheus-longterm-metrics:
     image: docker.io/prom/prometheus:v2.53.3  # ./optional-components/prometheus-longterm-metrics
-  stac-populator:
-    image: ghcr.io/crim-ca/stac-populator:0.0.0  # ./optional-components/stac-populator
   emu:
     image: docker.io/tlvu/emu:watchdog  # ./optional-components/emu
