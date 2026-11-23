@@ -635,13 +635,7 @@ What matters is that the shared prefix ``X`` is immediately followed by either `
 When developing a new component or updating the variables for an existing component, the image and version
 definitions must follow this format in order to be automatically updated.
 
-If you wish to exclude this component from automatic updates then add the component path to the ``EXCLUDE_COMPONENTS_RE``
-variable defined in ``birdhouse/scripts/dependabot-scripts.include.sh``.
-
-When developing a new component or updating the variables for an existing component, the image and version
-definitions must follow this format in order to be automatically updated.
-
-If you wish to exclude a component from automatic updates then add the component path to the ``EXCLUDE_COMPONENTS_RE``
+If you wish to exclude this component from automatic updates then add the component path to the ``EXCLUDE_COMPONENTS``
 variable defined in ``birdhouse/scripts/dependabot-scripts.include.sh``.
 
 .. note::
