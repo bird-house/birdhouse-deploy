@@ -15,6 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
+[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+
+[2.34.1](https://github.com/bird-house/birdhouse-deploy/tree/2.34.1) (2026-11-23)
+------------------------------------------------------------------------------------------------------------------
+
 ## Changes
 
 - Proxy: update nginx to 1.31.9
