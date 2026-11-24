@@ -636,7 +636,9 @@ When developing a new component or updating the variables for an existing compon
 definitions must follow this format in order to be automatically updated.
 
 If you wish to exclude this component from automatic updates then add the component path to the ``EXCLUDE_COMPONENTS``
-variable defined in ``birdhouse/scripts/dependabot-scripts.include.sh``.
+variable defined in ``birdhouse/scripts/dependabot-scripts.include.sh`` and run
+``birdhouse/scripts/create-docker-compose-files-for-dependabot.sh``. This will recreate the file at
+``.dependabot/docker-compose.yml`` without the excluded component images.
 
 .. note::
 

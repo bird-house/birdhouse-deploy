@@ -71,5 +71,3 @@ services:
     image: docker.io/library/debian:bookworm-slim  # ./optional-components/nvidia-multi-process-service
   prometheus-longterm-metrics:
     image: docker.io/prom/prometheus:v2.53.3  # ./optional-components/prometheus-longterm-metrics
-  emu:
-    image: docker.io/tlvu/emu:watchdog  # ./optional-components/emu
