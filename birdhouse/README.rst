@@ -703,19 +703,19 @@ Release Procedure
   opened this PR :)
 
 * Only when you are ready to merge the PR immediately, you can continue with
-  the following steps to.  Doing the following steps too early and you might
-  lose the "push race" if someone else is also trying to release at the same
+  the following steps to perform a new release. Doing the following steps too early
+  risks losing the "push race" if someone else is also trying to release at the same
   time.  Also, in the spirit of not losing the "push race", execute all these
   steps together, do not take a break in the middle.
 
   * Merge ``master`` into your branch branch, if needed,
     so next ``make bump <major|minor|patch>`` step will
-    bump to the proper next version. Might need to review the places where
+    bump to the proper next version. You might need to review the places where
     CHANGES.md_ items were inserted following merge to make sure the new ones by
     this PR are under "unreleased".
 
   * Run ``make bump <major|minor|patch>`` with appropriate options, as described
-    in "Tagging policy" section above.  Push the changes.
+    in `Versioning policy <versioning-policy>`_ section above.  Push the changes.
 
   * Press the "Enable auto-merge" button on the PR.
 
