@@ -15,7 +15,67 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Add dependabot configuration to keep track of docker image dependencies
+
+  This allows dependabot to track and update docker images. Dependabot requires a
+  docker compose file where images are defined in plain text (not environment variables) so
+  this change also introduces two additional actions to support this requirement:
+
+  - `.github/workflows/create-full-compose-definition.yml`
+    - updates the file at `.dependabot/docker-compose.yml` which contains the docker image
+      definitions for all services in plain text.
+    - this runs whenever a change is made to a default docker image (as defined in one of the
+      `default.env` files.
+  - `.github/workflows/update-docker-dependabot-prs.yml`
+    - updates the relevant `default.env` file whenever dependabot creates a PR updating one
+      of the docker images.
+
+  The file at `.dependabot/docker-compose.yml` can also be manually updated by running the
+  new script at `birdhouse/scripts/create-docker-compose-files-for-dependabot.sh`. This script
+  is also used by the `create-full-compose-definition.yml` action.
+
+  In order to ensure that these scripts can properly identify and update the relevant docker image
+  versions, additional restrictions have been put on how docker images can be defined:
+
+  Docker images must be defined as an environment variable in the component's ``default.env``
+  file. For example:
+
+  ```sh
+  export X_VERSION=1.2.3
+  export X_IMAGE='image_name:${X_VERSION}'
+  ```
+
+  Or if a component uses the same version to update multiple images, the variable names can
+  optionally include a suffix. For example:
+
+  ```sh
+  export X_VERSION=1.2.3
+  export X_IMAGE_MANAGER='image_name:${X_VERSION}-manager'
+  export X_IMAGE_WORKER='image_name:${X_VERSION}-worker'
+  ```
+
+  What matters is that the shared prefix ``X`` is immediately followed by either ``_IMAGE`` or
+  ``_VERSION``.
+
+  When developing a new component or updating the variables for an existing component, the image
+  and version definitions must follow this format in order to be automatically updated.
+
+  If you wish to exclude this component from automatic updates then add the component path to the
+  ``EXCLUDE_COMPONENTS`` variable defined in ``birdhouse/scripts/dependabot-scripts.include.sh``.
+
+  In order to enforce these image format definitions a pre-commit hook has been added that will
+  ensure that image definitions conform to the format above.
+
+  As part of this update the following variables have been updated in order to conform to the format
+  described above:
+
+  - ``WEAVER_MANAGER_IMAGE`` has been updated to ``WEAVER_IMAGE_MANAGER``
+  - ``WEAVER_WORKER_IMAGE`` has been updated to ``WEAVER_IMAGE_WORKER``
+
+  If you are using these variable names in any external scripts or overriding the default values in a
+  local environment file, please update the variable names.
 
 [2.34.2](https://github.com/bird-house/birdhouse-deploy/tree/2.34.2) (2026-11-23)
 ------------------------------------------------------------------------------------------------------------------
@@ -189,8 +249,6 @@
 
 [2.32.2](https://github.com/bird-house/birdhouse-deploy/tree/2.32.2) (2026-09-30)
 ------------------------------------------------------------------------------------------------------------------
-
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
 ## Changes
 
@@ -4858,8 +4916,6 @@ described for Weaver in
 
 [1.23.1](https://github.com/bird-house/birdhouse-deploy/tree/1.23.1) (2023-02-13)
 ------------------------------------------------------------------------------------------------------------------
-
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
 
 ## Fixes
 - Vars in `DELAYED_EVAL` list are not expanded properly outside of `pavics-compose.sh`

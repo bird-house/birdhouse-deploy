@@ -14,6 +14,20 @@ Migration Guide
 
 .. contents::
 
+Version 2.34.2
+--------------
+
+Version 2.34.2 updates the environment variable names used to define docker images. This is to allow
+for automated updates of docker images.
+
+As part of this update the following variables have been updated:
+
+* ``WEAVER_MANAGER_IMAGE`` has been updated to ``WEAVER_IMAGE_MANAGER``
+* ``WEAVER_WORKER_IMAGE`` has been updated to ``WEAVER_IMAGE_WORKER``
+
+If you are using these variable names in any external scripts or overriding the default values in a local
+environment file, please update the variable names.
+
 Version 2.29
 ------------
 

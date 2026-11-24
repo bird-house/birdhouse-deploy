@@ -610,6 +610,40 @@ After updating the dependency pins found in |tests-requirements.in|_, you can ru
 Note that the version of Python used to run the ``pip-compile`` command should match the minimum supported version
 of Python used in the Birdhouse stack!
 
+Docker image updates
+^^^^^^^^^^^^^^^^^^^^
+
+In order for Dependabot to be able to automatically update default docker image versions, docker images must be
+defined as an environment variable in the component's ``default.env`` file. For example:
+
+.. code-block:: shell
+
+  export X_VERSION=1.2.3
+  export X_IMAGE='image_name:${X_VERSION}'
+
+Or if a component uses the same version to update multiple images, the variable names can optionally include
+a suffix. For example:
+
+.. code-block:: shell
+
+  export X_VERSION=1.2.3
+  export X_IMAGE_MANAGER='image_name:${X_VERSION}-manager'
+  export X_IMAGE_WORKER='image_name:${X_VERSION}-worker'
+
+What matters is that the shared prefix ``X`` is immediately followed by either ``_IMAGE`` or ``_VERSION``.
+
+When developing a new component or updating the variables for an existing component, the image and version
+definitions must follow this format in order to be automatically updated.
+
+If you wish to exclude this component from automatic updates then add the component path to the ``EXCLUDE_COMPONENTS``
+variable defined in ``birdhouse/scripts/dependabot-scripts.include.sh`` and run
+``birdhouse/scripts/create-docker-compose-files-for-dependabot.sh``. This will recreate the file at
+``.dependabot/docker-compose.yml`` without the excluded component images.
+
+.. note::
+
+  There is a pre-commit hook that will ensure that image definitions conform to the format above.
+
 .. _versioning-policy:
 
 Versioning policy
@@ -962,7 +996,7 @@ Additionally, a set of secrets is also required in order to make use of the spec
 All the above prvilieges and keys must be visible/accessible to the repository that uses workflows that rely on
 the following workflows:
 
-* ``auto-accept-ci-changes.yml`` and ``create-tag.yml``
+* ``auto-accept-ci-changes.yml``, ``create-full-compose-definition.yml`` and ``create-tag.yml``
 
   * Additionally, ``auto-accept-ci-changes.yml`` requires a valid ``dependabot.yml`` configuration
     (see: https://docs.github.com/en/code-security/tutorials/secure-your-dependencies/dependabot-quickstart-guide).
