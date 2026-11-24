@@ -703,9 +703,8 @@ Release Procedure
   opened this PR :)
 
 * Only when you are ready to merge the PR immediately, you can continue with
-  the following steps to perform a new release.
-  Doing the following steps too early and you might
-  lose the "push race" if someone else is also trying to release at the same
+  the following steps to perform a new release. Doing the following steps too early
+  risks losing the "push race" if someone else is also trying to release at the same
   time.  Also, in the spirit of not losing the "push race", execute all these
   steps together, do not take a break in the middle.
 
