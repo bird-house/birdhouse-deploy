@@ -5,6 +5,7 @@ message = "Bump version: {current_version} → {new_version} [skip jenkins]"
 tag = false
 tag_name = "{new_version}"
 allow_dirty = true
+ignore_missing_version = true
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = [
     "{major}.{minor}.{patch}",
@@ -63,3 +64,33 @@ filename = "docs/source/conf.py"
 part = "version"
 search = "'{current_version}'"
 replace = "'{new_version}'"
+
+[[tool.bumpversion.files]]
+filename = "docs/source/migration_guide.rst"
+search = """Unreleased
+----------"""
+replace = """Unreleased
+----------
+
+.. list updates here, remove this when items are added
+
+Version {new_version}
+-------------"""
+
+# If nothing was added to the migration guide then this ensures
+# that the migration guide is not updated with an empty heading.
+[[tool.bumpversion.files]]
+filename = "docs/source/migration_guide.rst"
+search = """
+Version {new_version}
+-------------
+
+.. list updates here, remove this when items are added
+
+"""
+replace = """"""
+
+[[tool.bumpversion.files]]
+filename = "docs/source/migration_guide.rst"
+search = "[Unreleased]"
+replace = "{new_version}"

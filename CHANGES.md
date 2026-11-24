@@ -15,7 +15,14 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Changes
+
+- Add `bumpmyversion` support for the `migration_guide.rst` file
+
+  Add to the `.bumpversion.toml` configuration to support automatic version bumping for the migration guide file.
+
+  This updates the version header only if changes were made to this file in the `Unreleased` section. This also
+  will update the literal string `[Unreleased]` anywhere in the file to the current version.
 
 [2.34.2](https://github.com/bird-house/birdhouse-deploy/tree/2.34.2) (2026-11-23)
 ------------------------------------------------------------------------------------------------------------------
