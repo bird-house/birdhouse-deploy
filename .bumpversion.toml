@@ -77,6 +77,8 @@ replace = """Unreleased
 Version {new_version}
 -------------"""
 
+# If nothing was added to the migration guide then this ensures
+# that the migration guide is not updated with an empty heading.
 [[tool.bumpversion.files]]
 filename = "docs/source/migration_guide.rst"
 search = """
