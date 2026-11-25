@@ -15,7 +15,11 @@
 [Unreleased](https://github.com/bird-house/birdhouse-deploy/tree/master) (latest)
 ------------------------------------------------------------------------------------------------------------------
 
-[//]: # (list changes here, using '-' for each new entry, remove this when items are added)
+## Fixes
+
+- Weaver: fix typo in `post-docker-compose-up`
+
+  Fixes a typo introduces previously that prevented `post-docker-compose-up` file from running.
 
 [2.34.2](https://github.com/bird-house/birdhouse-deploy/tree/2.34.2) (2026-11-23)
 ------------------------------------------------------------------------------------------------------------------

@@ -86,7 +86,7 @@ WEAVER_WPS_PROVIDERS=$(echo $(echo "${WEAVER_WPS_PROVIDERS}" | tr ',' ' '))
 REQUEST_TIMEOUT=2
 
 WEAVER_WPS_PROVIDERS_SKIP="$(echo "${WEAVER_WPS_PROVIDERS_SKIP:-false}" | tr [:lower:] [:upper:])"
-if [ "${WEAVER_WPS_PROVIDERS_SKIP}" = "TRUE" ]; theni
+if [ "${WEAVER_WPS_PROVIDERS_SKIP}" = "TRUE" ]; then
     log WARN \
         "${PREFIX}Skipping WPS updates/sync because 'WEAVER_WPS_PROVIDERS_SKIP=true'." \
         "Changes to WPS services since the last deployment will not be visible to Weaver."
